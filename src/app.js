@@ -251,6 +251,16 @@
         }
       }
     };
+    // the shell is a desktop layout: below ~900px render it at 1000px and scale
+    if (frame && body) {
+      const fit = () => {
+        const w = body.clientWidth;
+        if (w < 900) { frame.classList.add("is-scaled"); frame.style.transform = `scale(${w / 1000})`; }
+        else { frame.classList.remove("is-scaled"); frame.style.transform = ""; }
+      };
+      fit();
+      new ResizeObserver(fit).observe(body);
+    }
     stage.addEventListener("click", (e) => {
       const s = e.target.closest(".chip[data-scheme]");
       if (s) scheme(s.dataset.scheme);
