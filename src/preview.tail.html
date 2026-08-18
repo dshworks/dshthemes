@@ -1,0 +1,135 @@
+
+  <div class="preview-dock">
+    <a class="back" href="/">← dshthemes</a>
+    <h1 id="theme-title">theme preview</h1>
+    <span class="scheme" role="group" aria-label="colour scheme">
+      <button type="button" class="chip is-on" data-scheme="dark" aria-pressed="true">Dark</button>
+      <button type="button" class="chip" data-scheme="light" aria-pressed="false">Light</button>
+    </span>
+    <p class="install" id="install-wrap" hidden>
+      <code id="install-cmd"></code>
+      <button type="button" class="copy" id="copy-install">Copy</button>
+    </p>
+    <p class="live-note" id="live-note" hidden></p>
+  </div>
+
+  <script>window.__PREVIEW__ = /*PREVIEW_DATA*/{};</script>
+  <script>
+    // The stock rc.6 shell, restyled by injecting the theme's own stylesheet.
+    // Nothing here is a screenshot: it is the theme's CSS on the real chrome.
+    const params = new URLSearchParams(location.search);
+    const parent = window.parent !== window ? window.parent : null;
+
+    function applyScheme(scheme) {
+      const dark = scheme === "dark";
+      document.documentElement.dataset.scheme = dark ? "dark" : "light";
+      document.documentElement.style.colorScheme = dark ? "dark" : "light";
+      if (dark) document.body.setAttribute("data-ds-dark-theme", "");
+      else document.body.removeAttribute("data-ds-dark-theme");
+      document.querySelectorAll("[data-scheme]").forEach((el) => {
+        const on = el.dataset.scheme === scheme;
+        el.classList.toggle("is-on", on);
+        el.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+    }
+
+    function rewriteOverride(css, sheetUrl) {
+      let base = sheetUrl;
+      try { base = new URL(".", sheetUrl).href; }
+      catch { base = sheetUrl.replace(/\/[^/?#]+(?:\?.*)?$/, "/"); }
+      return css.replace(/url\(\s*(['"]?)([^'")]+)\1\s*\)/g, (m, q, raw) => {
+        const url = String(raw || "").trim();
+        if (!url || /^(https?:|data:|blob:|#)/i.test(url)) return m;
+        if (url.startsWith("/")) {
+          const name = url.split("/").filter(Boolean).pop();
+          return 'url("' + base + name + '")';
+        }
+        try { return 'url("' + new URL(url, base).href + '")'; } catch { return m; }
+      });
+    }
+
+    // Theme plugins set host attributes from JS at runtime (valueless
+    // body[data-dsh-*] flags and valued ones like body[data-dsh-skin='miku']).
+    // The mock has no plugin runtime, so mirror both forms here.
+    function hostAttrs(css) {
+      const skip = { "ds-dark-theme": 1, scheme: 1 };
+      const seen = {};
+      for (const m of css.matchAll(/body\[data-([a-z0-9-]+)(?:\s*=\s*['"]?([a-z0-9._-]+)['"]?)?\]/gi)) {
+        const name = m[1].toLowerCase();
+        if (skip[name]) continue;
+        if (!(name in seen) || (!seen[name] && m[2])) seen[name] = m[2] || "";
+      }
+      for (const [name, value] of Object.entries(seen)) document.body.setAttribute("data-" + name, value);
+    }
+
+    async function injectOverride(url) {
+      const href = new URL(url, location.href).href;
+      if (!/^https?:$/i.test(new URL(href).protocol)) return;
+      const res = await fetch(href);
+      if (!res.ok) throw new Error("override " + res.status);
+      const css = rewriteOverride(await res.text(), href);
+      document.querySelectorAll("style[data-preview-override]").forEach((el) => el.remove());
+      const style = document.createElement("style");
+      style.setAttribute("data-preview-override", href);
+      style.textContent = css;
+      document.head.appendChild(style);
+      hostAttrs(css);
+    }
+
+    async function copyText(text, btn) {
+      try { await navigator.clipboard.writeText(text); }
+      catch {
+        const ta = document.createElement("textarea");
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        document.execCommand("copy"); ta.remove();
+      }
+      if (btn) {
+        btn.classList.add("is-copied"); btn.textContent = "Copied";
+        setTimeout(() => { btn.classList.remove("is-copied"); btn.textContent = "Copy"; }, 1400);
+      }
+    }
+
+    const scheme = params.get("scheme") === "light" ? "light" : "dark";
+    applyScheme(scheme);
+
+    const slug = params.get("theme");
+    const theme = (slug && window.__PREVIEW__[slug]) || null;
+    if (theme) {
+      document.getElementById("theme-title").textContent = theme.name;
+      document.title = theme.name + " — live on the dsh shell";
+      if (theme.install) {
+        document.getElementById("install-cmd").textContent = theme.install;
+        document.getElementById("install-wrap").hidden = false;
+        document.getElementById("copy-install").onclick = () => copyText(theme.install, document.getElementById("copy-install"));
+      }
+    }
+
+    const css = (theme && theme.css) || params.get("css");
+    if (css) {
+      injectOverride(css).then(() => {
+        if (parent) parent.postMessage({ type: "dshthemes:preview", state: "ready", slug }, "*");
+      }).catch((err) => {
+        const note = document.getElementById("live-note");
+        note.textContent = "live CSS failed to load (" + err.message + ") — showing the stock shell";
+        note.hidden = false;
+        if (parent) parent.postMessage({ type: "dshthemes:preview", state: "error", slug, error: String(err.message) }, "*");
+      });
+    }
+
+    document.querySelectorAll("[data-scheme]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        applyScheme(btn.dataset.scheme);
+        const url = new URL(location.href);
+        url.searchParams.set("scheme", btn.dataset.scheme);
+        history.replaceState(null, "", url.pathname + url.search);
+      });
+    });
+
+    // The theme page drives the scheme from outside the frame.
+    window.addEventListener("message", (e) => {
+      const d = e.data || {};
+      if (d.type === "dshthemes:scheme" && (d.scheme === "dark" || d.scheme === "light")) applyScheme(d.scheme);
+    });
+  </script>
+</body>
+</html>

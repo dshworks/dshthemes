@@ -1,0 +1,131 @@
+/* Preview-page glue only. Hashed module classes live in vendor/dsh-web-chrome.
+   .preview-dock is ours so the overlay stays readable on any skin. */
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+
+html { color-scheme: light; }
+html[data-scheme="dark"] { color-scheme: dark; }
+
+body {
+  font-family: var(--dsw-font-family);
+  color: var(--dsw-alias-label-primary);
+  background: var(--dsw-alias-bg-base);
+  overflow: hidden;
+}
+
+.preview-wordmark {
+  height: 24px;
+  width: auto;
+  color: inherit;
+  display: block;
+}
+
+.preview-dock {
+  position: fixed;
+  z-index: 40;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  max-width: min(720px, calc(100vw - 24px));
+  padding: 8px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(12, 16, 22, 0.72);
+  color: #f4f7fb;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  font-family: var(--dsw-font-family);
+  font-size: 13px;
+  line-height: 20px;
+  pointer-events: auto;
+}
+
+html:not([data-scheme="dark"]) .preview-dock {
+  border-color: rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.82);
+  color: #1a1f27;
+}
+
+.preview-dock a {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.preview-dock a:hover,
+.preview-dock a:focus-visible { text-decoration: underline; }
+
+.preview-dock h1 {
+  margin: 0;
+  flex: 1;
+  min-width: 8rem;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.preview-dock .scheme,
+.preview-dock .install {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.preview-dock .chip,
+.preview-dock .copy {
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+html:not([data-scheme="dark"]) .preview-dock .chip,
+html:not([data-scheme="dark"]) .preview-dock .copy {
+  border-color: rgba(0, 0, 0, 0.12);
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.preview-dock .chip.is-on,
+.preview-dock .chip[aria-pressed="true"],
+.preview-dock .copy.is-copied {
+  background: #4d6bfe;
+  border-color: transparent;
+  color: #fff;
+}
+
+.preview-dock .install[hidden] { display: none; }
+
+.preview-dock .live-note {
+  flex-basis: 100%;
+  font-size: 11px;
+  line-height: 16px;
+  color: #ffb4a8;
+}
+
+html:not([data-scheme="dark"]) .preview-dock .live-note { color: #b3261e; }
+
+.preview-dock .live-note[hidden] { display: none; }
+
+.preview-dock .install code {
+  max-width: 28ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+html[data-embed] .preview-dock { display: none !important; }

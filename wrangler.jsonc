@@ -1,0 +1,22 @@
+// dshthemes.com — a static site on Cloudflare Workers. The Worker is nine
+// lines (www -> apex, then the assets binding); _headers is honoured. There is
+// no data at request time; everything is rendered by scripts/build.mjs.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "dshthemes",
+  "compatibility_date": "2026-02-12",
+  "main": "src/worker.js",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": true,
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash"
+  },
+  "workers_dev": true,
+  "routes": [
+    { "pattern": "dshthemes.com", "custom_domain": true },
+    { "pattern": "www.dshthemes.com", "custom_domain": true }
+  ],
+  "observability": { "enabled": true }
+}
