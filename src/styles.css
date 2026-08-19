@@ -316,7 +316,10 @@ img { display: block; max-width: 100%; }
 .card[hidden] { display: none; }
 .card-visual { position: relative; display: block; border-bottom: 1px solid var(--line); background: var(--surface-2); }
 .card-visual .mini { border: 0; border-radius: 0; }
-.card-visual .shot { aspect-ratio: 16 / 10; width: 100%; object-fit: cover; object-position: top; background: var(--surface-2); }
+/* `height: auto` is load-bearing: the img carries width/height attributes so the
+   browser reserves the right box before it loads, and those map to a
+   presentational height that `aspect-ratio` does not override on its own. */
+.card-visual .shot { aspect-ratio: 16 / 10; width: 100%; height: auto; object-fit: cover; object-position: top; background: var(--surface-2); }
 .card-visual .shot.is-tall { object-fit: contain; object-position: center; }
 .swatches { display: flex; height: 0.35rem; }
 .swatches i { flex: 1; transition: flex 260ms var(--ease-out); }
