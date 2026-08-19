@@ -196,30 +196,46 @@ function card(t) {
 </article>`;
 }
 
-// --- the four seats --------------------------------------------------------
-// The same band dsh.works wears, in this site's dialect: one gold nothing else
-// here uses, its own rules top and bottom, "advertising" said in the first
-// line, and empty seats drawn empty. It sits between the hero and the shelves
-// — the first thing after the work, never over it. A gallery that puts ads
-// above the pictures has told you what it thinks the pictures are for.
+// --- the sponsor board ------------------------------------------------------
+// Four seats as a split-flap departure board, the same one dsh.works wears.
+// It breaks register with this gallery on purpose: an advertising region should
+// read as something laid ON the page rather than drawn into it, so the board
+// keeps its own matte ground in both schemes, its own cell grid and its own
+// single status ink while everything around it stays in the site's material.
 //
-// Nothing in here can touch a theme: the seat data and the registry are loaded
-// from different files by different scripts and never joined. That is the only
-// reason a seat on a site like this is worth selling.
+// Amber marks STATE — the seat the idle loop is on, the seat under the pointer,
+// the one action — and never a paying sponsor's mark, which is set in board
+// white at full strength. The first version painted every seat gold and made a
+// real sponsor indistinguishable from an empty seat's call to action.
+//
+// Rendered here in its resting state so the whole board reads with no
+// JavaScript; src/app.js only adds the demonstration.
+const SEAT_CELLS = 24;
+const seatPad = (t) => t.slice(0, SEAT_CELLS).padEnd(SEAT_CELLS, " ");
+const seatCells = (t) => seatPad(t).split("").map((c) => `<b class="cell">${c === " " ? "&nbsp;" : esc(c)}</b>`).join("");
+
 function seatsBand(sp) {
   const open = sp.seats.filter((s) => !s.sponsor).length;
   const buy = sp.checkout || sp.terms;
-  const cells = sp.seats.map((s) => s.sponsor
-    ? `<li><a class="seat is-taken" href="${esc(s.sponsor.url)}" rel="sponsored nofollow noopener" target="_blank"><span class="tag">seat ${String(s.n).padStart(2, "0")} · sponsor</span><span class="who">${esc(s.sponsor.name)}</span><span class="say">${esc(s.sponsor.line)}</span></a></li>`
-    : `<li><a class="seat" href="${esc(buy)}" aria-label="Seat ${s.n} is open — ${esc(sp.price.said)}"><span class="plus" aria-hidden="true">[<b>+</b>]</span><span class="n">seat ${String(s.n).padStart(2, "0")}</span><span class="say">open</span></a></li>`
-  ).join("");
-  const said = open === 4
-    ? "All four are open, and they are drawn open — nobody has bought one yet. "
-    : open === 0 ? "All four are taken. " : `${open} of the four ${open === 1 ? "is" : "are"} open. `;
-  return `<section class="seats" aria-labelledby="seats-h">
-<div class="seats-head"><h2 id="seats-h" class="title">Four seats · advertising</h2><span class="terms">${esc(sp.price.said)} · <a href="${esc(sp.terms)}">what a seat buys</a></span></div>
-<ul class="seats-grid">${cells}</ul>
-<p class="seats-fine">${said}<strong>A seat buys the box and nothing else:</strong> no place in the registry, no shelf, no rank in the gallery, no screenshot, and no say in which themes are listed or how they are painted. Every card here is painted from the theme's own stylesheet by a script in a public repo, and no sponsor has ever been able to change a colour in one. That is the whole product — if a seat could bend it, there would be nothing left worth sponsoring.</p>
+  const rows = sp.seats.map((s) => {
+    const n = String(s.n).padStart(2, "0");
+    const field = s.sponsor
+      ? `<a class="bcells" href="${esc(s.sponsor.url)}" rel="sponsored nofollow noopener" target="_blank" title="${esc(s.sponsor.name)}">${seatCells(s.sponsor.name.toUpperCase())}</a>`
+      : `<a class="bcells" href="${esc(buy)}" aria-label="Seat ${s.n} is open — ${esc(sp.price.said)}">${seatCells("[+]")}</a>`;
+    const stat = s.sponsor
+      ? `<span class="tag-sponsor">Sponsor</span>`
+      : `<a class="tag-open" href="${esc(buy)}">Open <i>${esc(sp.price.said)}</i></a>`;
+    return `<li class="brow${s.sponsor ? " is-taken" : ""}" data-seat="${s.n}"${s.sponsor ? "" : ' data-open'}>` +
+      `<span class="bseat">${n}</span>${field}<span class="bstat">${stat}</span>` +
+      (s.sponsor?.line ? `<p class="bline">${esc(s.sponsor.line)}</p>` : "") + `</li>`;
+  }).join("");
+  const said = open === sp.seats.length ? `All ${sp.seats.length} open`
+    : open === 0 ? "Sold out" : `${open} of ${sp.seats.length} open`;
+  return `<section class="board" aria-labelledby="seats-h" data-board>
+<div class="board-head"><h2 id="seats-h">Sponsor board</h2><span class="board-sub">${said} · ${esc(sp.price.said)} · <a href="${esc(sp.terms)}">what a seat buys</a></span></div>
+<div class="board-cols" aria-hidden="true"><span>Seat</span><span>Sponsor</span><span>Status</span></div>
+<ul class="board-rows">${rows}</ul>
+<p class="board-foot">Advertising. <strong>A seat buys the board and nothing else</strong> — no place in the registry, no shelf, no rank in the gallery, no screenshot, and no say in which themes are listed or how they are painted. Every card here is painted from the theme's own stylesheet by a script in a public repo, and no sponsor has ever been able to change a colour in one. That is the whole product: if a seat could bend it, there would be nothing left worth sponsoring.</p>
 </section>`;
 }
 

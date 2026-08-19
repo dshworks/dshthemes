@@ -225,6 +225,73 @@
   }
 
   // ---- view transitions: the visual you clicked becomes the stage --------------
+  // ---- sponsor board: an open seat demonstrates the purchase ------------------
+  // The board renders complete without this; all it adds is the flap. An open
+  // seat clatters through to a mark tagged SPECIMEN, holds it, then clatters
+  // back to [+]. The point is that nobody has to read a sentence explaining
+  // what buying the space would do — they watch it happen once.
+  //
+  // The tag is live for exactly as long as the mark is on screen. Under reduced
+  // motion there is no loop at all: one seat settles on its specimen and stays,
+  // so the offer still reads without anything moving.
+  const board = $("[data-board]");
+  if (board) {
+    const CELLS = 24, FLAP = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\u00b7-.&+ ";
+    const SPEC = "YOUR PRODUCT";
+    const pad = (t) => t.slice(0, CELLS).padEnd(CELLS, " ");
+    const openRows = $$("[data-open]", board);
+    const write = (row, text) => {
+      const cells = $$(".cell", row);
+      pad(text).split("").forEach((c, i) => { if (cells[i]) cells[i].textContent = c === " " ? "\u00a0" : c; });
+    };
+    const mark = (row, on) => {
+      row.classList.toggle("is-demo", on);
+      const stat = $(".bstat", row);
+      if (!stat) return;
+      if (on && !stat.dataset.was) { stat.dataset.was = stat.innerHTML; stat.innerHTML = '<span class="tag-specimen">Specimen</span>'; }
+      else if (!on && stat.dataset.was) { stat.innerHTML = stat.dataset.was; delete stat.dataset.was; }
+    };
+
+    if (openRows.length && reduced) {
+      write(openRows[0], SPEC);
+      mark(openRows[0], true);
+    } else if (openRows.length) {
+      let paused = false, i = 0, timer;
+      board.addEventListener("pointerenter", () => { paused = true; });
+      board.addEventListener("pointerleave", () => { paused = false; });
+      board.addEventListener("focusin", () => { paused = true; });
+      board.addEventListener("focusout", () => { paused = false; });
+
+      const flip = (row, from, to, done) => {
+        let step = 0; const STEPS = 9;
+        const tick = () => {
+          step += 1;
+          const out = pad(to).split("").map((ch, idx) => {
+            const settleAt = Math.floor((idx / CELLS) * (STEPS - 3)) + 3;
+            if (step >= settleAt || pad(from)[idx] === ch) return ch;
+            return FLAP[(step * 7 + idx * 13) % FLAP.length];
+          }).join("");
+          write(row, out);
+          if (step < STEPS) timer = setTimeout(tick, 55); else done();
+        };
+        tick();
+      };
+
+      const cycle = () => {
+        if (paused || document.hidden) { timer = setTimeout(cycle, 1200); return; }
+        const row = openRows[i++ % openRows.length];
+        mark(row, true);
+        flip(row, "[+]", SPEC, () => {
+          timer = setTimeout(() => {
+            mark(row, false);              // tag goes as the field starts emptying
+            flip(row, SPEC, "[+]", () => { timer = setTimeout(cycle, 2600); });
+          }, 2200);
+        });
+      };
+      timer = setTimeout(cycle, 1800);
+    }
+  }
+
   if ("startViewTransition" in document && !reduced) {
     document.addEventListener("click", (e) => {
       const a = e.target.closest("a[href^='/t/']");

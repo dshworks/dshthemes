@@ -39,12 +39,12 @@
   --green: #3ddc84;
   --green: light-dark(#0f7a3c, #3ddc84);
 
-  /* Gold belongs to the four sponsor seats and to nothing else on this site.
-   * Deliberately not --yellow, which is already a state colour: an
-   * advertisement wearing a warning colour reads as a fault. On a stage whose
-   * whole job is to show other people's colours, the one colour the stage
-   * keeps for itself is the one thing that was paid for. Same values as
-   * dsh.works, because it is the same seat. */
+  /* Amber is the sponsor board's STATUS ink and only that: the seat the idle
+   * loop is on, the seat under the pointer, the one action. It does NOT mean
+   * "sponsor" — a paying sponsor's mark is board-white at full strength. The
+   * first version painted the whole seat gold, which made a real sponsor look
+   * identical to an empty seat's call to action. Same values as dsh.works,
+   * because it is the same seat sold once. */
   --gold: #f0c14b;
   --gold: light-dark(#8a6206, #f0c14b);
   /* The seat's resting border and its [ ] brackets. Measured, not eyeballed:
@@ -487,64 +487,83 @@ img { display: block; max-width: 100%; }
   .deck:hover .deck-cards .mini { transform: none !important; }
 }
 
-/* --- the four seats -------------------------------------------------------
- * The same band dsh.works wears, speaking this site's dialect: spring on the
- * lift instead of a plain ease, the local radius, the local surface. One seat
- * is one seat across both sites, so the gold and the geometry match exactly;
- * only the motion is local.
- *
- * It sits between the hero and the shelves. Not above the hero — this is a
- * gallery, and a gallery that puts advertising over the pictures has told you
- * what it thinks the pictures are for. First thing after the work is the most
- * prominent position that keeps that order true. */
-.seats {
+/* --- the sponsor board ---------------------------------------------------
+ * Four seats as a split-flap departure board. This gallery's whole job is to
+ * show other people's colours, so the advertising has to be unmistakably not
+ * one of them: the board keeps its own matte enamel ground in BOTH schemes,
+ * its own cell grid, its own condensed caps and one status ink. It is the only
+ * thing on the site that does not change clothes with the theme, which is
+ * exactly how you know it is not a theme. */
+:root {
+  --board-bg: #0a0a0b;
+  --board-cell: #131316;
+  --board-seam: #232327;
+  --board-ink: #f2f0ea;
+  --board-dim: #7c7c85;
+}
+.board {
   margin: 3rem 0 0;
-  border-top: 1px solid var(--gold-line);
-  border-bottom: 1px solid var(--gold-line);
-  padding: 0.9rem 0 1.1rem;
-  background: var(--gold-wash);
-}
-.seats-head { display: flex; align-items: baseline; gap: 0.6rem 1rem; flex-wrap: wrap; margin-bottom: 0.8rem; }
-.seats-head .title {
-  color: var(--gold); font-size: 0.7rem; text-transform: uppercase;
-  letter-spacing: 0.14em; font-weight: 700; margin: 0;
-}
-.seats-head .terms { margin-left: auto; color: var(--muted); font-size: 0.74rem; }
-.seats-head .terms a { color: var(--gold); text-decoration: underline; }
-
-.seats-grid {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.7rem;
-  list-style: none; margin: 0; padding: 0;
-}
-.seat {
-  display: flex; flex-direction: column; justify-content: center; align-items: center;
-  gap: 0.3rem;
-  min-height: 6.8rem;
-  padding: 0.9rem 0.7rem;
-  border: 1px solid var(--gold-line);
+  background: var(--board-bg);
+  border: 1px solid var(--board-seam);
   border-radius: var(--r);
-  background: var(--bg);
-  text-align: center; text-decoration: none; color: var(--muted);
-  transition: transform var(--spring-snap-dur) var(--spring-snap),
-              border-color var(--dur-fast) var(--ease);
+  padding: 0.9rem 1rem 1rem;
+  color: var(--board-ink);
 }
-.seat:hover, .seat:focus-visible { text-decoration: none; border-color: var(--gold); transform: scale(1.02); }
-.seat:active { transform: scale(0.97); }
-.seat:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
-.seat .plus { font-size: 2.1rem; line-height: 1; color: var(--gold-line); font-weight: 300; }
-.seat .plus b { color: var(--gold); font-weight: 400; padding: 0 0.15em; }
-.seat:hover .plus { color: var(--gold); }
-.seat .n { font-size: 0.64rem; letter-spacing: 0.14em; text-transform: uppercase; font-variant-numeric: tabular-nums; }
-.seat .say { font-size: 0.72rem; color: var(--muted); }
-.seat.is-taken { align-items: flex-start; text-align: left; justify-content: flex-start; border-color: var(--gold); }
-.seat.is-taken .who { color: var(--strong); font-weight: 700; font-size: 0.92rem; letter-spacing: -0.02em; }
-.seat.is-taken .say { color: var(--muted); font-size: 0.76rem; line-height: 1.45; }
-.seat.is-taken .tag { color: var(--gold); font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; }
+.board-head { display: flex; align-items: baseline; gap: 0.5rem 1rem; flex-wrap: wrap; margin-bottom: 0.7rem; }
+.board-head h2 {
+  margin: 0; color: var(--board-ink);
+  font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.18em; font-weight: 700;
+}
+.board-sub { margin-left: auto; color: var(--board-dim); font-size: 0.72rem; }
+.board-sub a { color: var(--gold); text-decoration: underline; }
 
-.seats-fine { color: var(--muted); font-size: 0.76rem; margin: 0.9rem 0 0; max-width: 78ch; }
-.seats-fine strong { color: var(--gold); font-weight: 400; }
+.board-cols,
+.brow { display: grid; grid-template-columns: 2.2rem max-content 1fr; gap: 0.75rem; align-items: center; }
+.board-cols {
+  color: var(--board-dim); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.16em;
+  padding-bottom: 0.35rem; border-bottom: 1px solid var(--board-seam);
+}
+.board-cols span:last-child { text-align: right; }
+.board-rows { list-style: none; margin: 0; padding: 0; }
+.brow { padding: 0.4rem 0; border-bottom: 1px solid var(--board-seam); }
+.brow:last-child { border-bottom: none; }
 
-@media (max-width: 44rem) {
-  .seats-grid { grid-template-columns: repeat(2, 1fr); }
-  .seats-head .terms { margin-left: 0; }
+.bseat { color: var(--board-dim); font-size: 0.78rem; font-variant-numeric: tabular-nums; letter-spacing: 0.06em; }
+.brow.is-demo .bseat, .brow:hover .bseat { color: var(--gold); }
+
+.bcells { display: flex; gap: 1px; min-width: 0; text-decoration: none; overflow: hidden; }
+.bcells:hover, .bcells:focus-visible { text-decoration: none; }
+.bcells:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.cell {
+  flex: none; min-width: 1.45ch; padding: 0.22rem 0;
+  background: var(--board-cell); border-radius: 1px;
+  color: var(--board-ink);
+  font-weight: 400; font-size: 0.86rem; line-height: 1.25;
+  text-align: center; white-space: pre; font-variant-numeric: tabular-nums;
+}
+.brow:not(.is-taken) .cell { color: var(--board-dim); }
+.brow.is-demo .cell, .brow:not(.is-taken):hover .cell { color: var(--gold); }
+.brow.is-taken .cell { color: var(--board-ink); }
+
+.bstat { text-align: right; font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; }
+.tag-open { color: var(--gold); text-decoration: none; }
+.tag-open i { font-style: normal; color: var(--board-dim); margin-left: 0.4rem; letter-spacing: 0.04em; }
+.tag-open:hover { text-decoration: underline; }
+.tag-specimen { color: var(--gold); opacity: 0.85; }
+.tag-sponsor { color: var(--board-dim); }
+
+.bline { grid-column: 2 / -1; margin: 0.15rem 0 0.1rem; color: var(--board-dim); font-size: 0.76rem; line-height: 1.45; max-width: 52ch; }
+.board-foot {
+  margin: 0.8rem 0 0; padding-top: 0.7rem; border-top: 1px solid var(--board-seam);
+  color: var(--board-dim); font-size: 0.74rem; max-width: 78ch;
+}
+.board-foot strong { color: var(--board-ink); font-weight: 400; }
+
+@media (max-width: 40rem) {
+  .board { padding: 0.7rem 0.7rem 0.8rem; }
+  .board-cols { display: none; }
+  .brow { grid-template-columns: 1.9rem minmax(0, 1fr); row-gap: 0.15rem; }
+  .bstat, .bline { grid-column: 2; text-align: left; }
+  .cell { min-width: 1.25ch; font-size: 0.76rem; }
+  .board-sub { margin-left: 0; }
 }
