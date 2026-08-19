@@ -1,0 +1,118 @@
+/* lehhair/dsh-home-ui — src/client/home-ui.css
+   fetched 2026-08-19 from https://raw.githubusercontent.com/lehhair/dsh-home-ui/HEAD/src/client/home-ui.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* dsh-home-ui global sheet — every rule is scoped under [data-dsh-home-ui]
+   (set on <html> by the controller at apply), so uninstalling the plugin
+   leaves the stock GUI byte-identical.
+
+   Selectors key off stable, version-independent hooks only: the AppFrame's
+   data-* attributes (data-sidebar-collapsed / data-details-collapsed, which
+   the frame div itself carries in every snapshot and official bundle,
+   wherever it sits in the shell tree), the conversation skeleton's data-slot
+   seats ([data-slot='conversation.session.header']), and the bare <header>
+   element (the session header is the page's only header). No hashed class
+   names — the same sheet must work against unpatched distributions.
+
+   Three OpenCodeUI-inspired refinements:
+   1. Sidebar palette unified with the conversation feed: the sidebar column
+      and every nested shell layer rebind to the feed's base background
+      instead of the bluish-50 tint, so left rail and feed read as one
+      surface (OpenCodeUI draws sidebar and chat on the same bg).
+   2. Feed header title aligned with the sidebar controls: the sidebar's
+      top control row sits at center 36 in BOTH the expanded and collapsed
+      states (stock geometry — 6px shell padding + 60px logo row expanded,
+      18px + 36px rail collapsed). The stock header title sits at center 28
+      (12px top padding). Dropping the header title to center 36 (20px top
+      padding) aligns it with the sidebar controls in every state, without
+      touching the sidebar's own geometry.
+   3. Header hairline -> soft gradient: the stock 1px solid hairline under
+      the header becomes an OpenCodeUI-style fade band from the feed
+      background to transparent, so the header melts into the feed instead
+      of being cut by a line. */
+
+/* ---------- 1. sidebar palette unified with the feed ---------- */
+
+/* Rebind the sidebar fill token to the feed's base background in both
+   color schemes. The token is defined on `body` by the theme sheets; the
+   scoped attribute selector wins the cascade, and the dark rebind repeats
+   the same value because the dark base is already the feed background
+   there. */
+[data-dsh-home-ui] body {
+  --dsw-specific-sidebar-fill: var(--dsw-alias-bg-base);
+}
+
+[data-dsh-home-ui] body[data-ds-dark-theme] {
+  --dsw-specific-sidebar-fill: var(--dsw-alias-bg-base);
+}
+
+/* The layout column also paints the old tint directly (AppFrame.module.css
+   sidebarCol). The union of the two frame attributes always selects the
+   frame; its first child is the sidebar column in every state (expanded,
+   rail, details open/closed). */
+[data-dsh-home-ui] div[data-sidebar-collapsed] > :first-child,
+[data-dsh-home-ui] div[data-details-collapsed] > :first-child {
+  background: var(--dsw-alias-bg-base);
+}
+
+/* The sidebar shell's own fill (specific-sidebar-fill) was the only tinted
+   layer left; the token rebind above already takes the shell, so nothing
+   further is needed there. */
+
+/* ---------- 2. feed header title aligned with the sidebar controls ---------- */
+
+/* The stock header pads its top 12px (title center 28); the sidebar's top
+   control row centers at 36 in both the expanded and collapsed states
+   (stock geometry, untouched here). Lowering the STANDALONE header's top
+   padding to 20px drops the title onto the sidebar's center line (36).
+
+   Split panes must NOT be pushed: the split-panes plugin renders the stock
+   conversation inside a padded frame, where the stock 12px already lands
+   the title at center ~37 (the frame's 8px padding + 1px border shift it
+   down onto the sidebar's line). Its split container carries a stable
+   data-direction attribute (never a hashed class), so the pane-header
+   rule restores the stock 12px for headers inside it. Without split-panes
+   (or in the single full-bleed pane) the 20px rule applies. The header
+   element is the page's only <header> per conversation, wrapped by the
+   conversation.session.header slot seat. */
+[data-dsh-home-ui] [data-slot='conversation.session.header'] header {
+  padding-top: 20px;
+}
+
+[data-dsh-home-ui] [data-slot='conversation.panes'] [data-direction]
+  [data-slot='conversation.session.header'] header {
+  padding-top: 12px;
+}
+
+/* ---------- 3. header hairline -> soft gradient ---------- */
+
+/* Replace the stock 1px solid hairline (header::after, border-l2) with an
+   OpenCodeUI-style fade band: from the feed base background (opaque) down
+   to transparent, so content emerges from under the header instead of
+   being cut by a line. The band hangs below the header (top: 100%),
+   overlapping the top of the scroll body — exactly like OpenCodeUI's
+   data-chat-header-shadow (h-8 from-bg-100 to-transparent). It paints
+   above ordinary scroll-body content but below the sticky composer seat,
+   and never intercepts pointers. */
+[data-dsh-home-ui] [data-slot='conversation.session.header'] header::after {
+  top: 100%;
+  bottom: auto;
+  z-index: 5;
+  height: 32px;
+  background: linear-gradient(180deg, var(--dsw-alias-bg-base), transparent);
+}
+
+/* ---------- 4. feed width modes ---------- */
+
+/* The conversation skeleton declares --dsh-chat-content-width (748px) on
+   its root (the [data-phase] element); every column surface — message
+   column, stats line, dock cards, approval/question panels, and the
+   composer card (which derives its width from the same variable +32px) —
+   reads that variable. Wide mode rewrites it up (PiUI's airier feed on
+   large screens) on that same element, so all surfaces follow naturally,
+   exactly as they do at the stock 748px. The attribute is set on <html>
+   by the apply world from the persisted settings mode (both ride the
+   same <html> element, so the selector combines the two attributes). */
+[data-dsh-home-ui][data-dsh-wide] [data-phase] {
+  --dsh-chat-content-width: 1080px;
+}
+

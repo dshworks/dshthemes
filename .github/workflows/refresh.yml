@@ -1,6 +1,12 @@
-# Nightly: pull the registry, re-read stars and any stale stylesheets, rebuild,
-# and deploy. Deploy needs CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID as repo
-# secrets; without them the job builds and stops, which is still a useful check.
+# Nightly: pull the registry, re-read stars and any stale stylesheets, re-shoot
+# whatever changed, rebuild, and deploy. Deploy needs CLOUDFLARE_API_TOKEN +
+# CLOUDFLARE_ACCOUNT_ID as repo secrets; without them the job builds and stops,
+# which is still a useful check.
+#
+# The shots step is what keeps "live" honest: a theme only carries the claim if
+# its render came back different from the stock shell, and that has to be
+# re-checked whenever its stylesheet changes. The runner's own Chrome is enough
+# (playwright-core, channel: chrome), so no browser download.
 name: refresh
 on:
   schedule:
@@ -23,6 +29,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: npm test
       - run: node scripts/build.mjs
+      - name: shoot what changed
+        run: node scripts/shots.mjs
+      - name: rebuild with the new shots
+        run: node scripts/build.mjs
       - name: commit data
         run: |
           git config user.name "dshthemes-bot"

@@ -1,0 +1,334 @@
+/* justintangsysu/dsh-amadeus-skin — src/client.template.js
+   fetched 2026-08-19 from https://raw.githubusercontent.com/justintangsysu/dsh-amadeus-skin/main/src/client.template.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+background-color: #101113;
+  background-size: auto, cover;
+  background-position: center, center;
+  background-repeat: no-repeat, no-repeat;
+}
+
+/* ---------- Stage 3: Kurisu standing in the scene ---------- */
+.amadeus-kurisu {
+  position: fixed;
+  right: 3vw;
+  bottom: 0;
+  height: 60vh;
+  max-height: 82vh;
+  width: auto;
+  /* never cross the centered composer card (its right edge ≈ 50vw + 530px);
+     the sprite scales down proportionally on narrower windows */
+  max-width: calc(47vw - 554px);
+  object-fit: contain;
+  object-position: center bottom;
+  pointer-events: none;
+  user-select: none;
+  z-index: 5;
+  filter: brightness(0.95) contrast(1.03) drop-shadow(0 12px 22px rgba(0, 0, 0, 0.42));
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 92%, rgba(0, 0, 0, 0.55) 97%, rgba(0, 0, 0, 0.45) 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 92%, rgba(0, 0, 0, 0.55) 97%, rgba(0, 0, 0, 0.45) 100%);
+  display: none;
+}
+html[style*="dark"] body:has([data-phase="hero"]) .amadeus-kurisu,
+html[style*="dark"] body:has([data-phase="active"]) .amadeus-kurisu,
+html[style*="dark"] body:has([data-phase="settling"]) .amadeus-kurisu {
+  display: block;
+  animation: amadeus-kurisu-fade 0.9s ease-out both;
+}
+html[style*="dark"] body:has([role="dialog"]) .amadeus-kurisu,
+html[style*="dark"] body[data-dsh-details-open="1"] .amadeus-kurisu {
+  display: none !important;
+}
+@media (max-width: 1280px) {
+  .amadeus-kurisu { display: none !important; }
+}
+/* tuck the sprite closer to the edge so the content column keeps room */
+@media (max-width: 1620px) {
+  .amadeus-kurisu { right: 2vw; }
+}
+/* smaller windows: fade the sprite a little */
+@media (max-width: 1420px) {
+  .amadeus-kurisu {
+    filter: brightness(0.90) contrast(1.03) drop-shadow(0 10px 20px rgba(0, 0, 0, 0.38));
+  }
+}
+@keyframes amadeus-kurisu-fade {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ---------- Stage 4: chat layout (width / padding / scrim) ---------- */
+html[style*="dark"] body[data-dsh-amadeus] .Md3f7G_column {
+  max-width: 780px;
+  padding: 8px 0 22px;
+}
+/* soft scrim under the composer seat — ACTIVE conversation only. In the
+   hero/empty state the composer floats mid-page and this scrim would read
+   as a big dark block over the lab, so it is deliberately not applied there. */
+html[style*="dark"] body[data-dsh-amadeus] [data-phase="active"] .wSkVaW_composerSeat,
+html[style*="dark"] body[data-dsh-amadeus] [data-phase="settling"] .wSkVaW_composerSeat {
+  background: linear-gradient(to top,
+    rgba(16, 17, 20, 0.80) 0%,
+    rgba(16, 17, 20, 0.48) 42%,
+    rgba(16, 17, 20, 0) 100%);
+}
+
+/* ---------- Stage 5: assistant VN dialogue textbox (lighter glass) ---------- */
+html[style*="dark"] body[data-dsh-amadeus] .Sxvs8a_root {
+  position: relative;
+  margin: 10px 0 4px;
+  padding: 16px 18px 14px;
+  background: linear-gradient(180deg,
+    rgba(20, 21, 24, 0.46) 0%,
+    rgba(13, 14, 17, 0.52) 100%);
+  border: 1px solid rgba(180, 58, 54, 0.16);
+  border-radius: 12px;
+  box-shadow:
+    0 8px 22px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(9px);
+  animation: amadeus-panel-breathe 7s ease-in-out infinite;
+}
+html[style*="dark"] body[data-dsh-amadeus] .Sxvs8a_root::before {
+  content: "AMadeus";
+  position: absolute;
+  top: -10px;
+  left: 14px;
+  padding: 1px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  line-height: 18px;
+  color: rgba(206, 76, 71, 0.88);
+  background: rgba(17, 18, 21, 0.92);
+  border: 1px solid rgba(180, 58, 54, 0.26);
+  border-radius: 7px;
+  pointer-events: none;
+  user-select: none;
+}
+@keyframes amadeus-panel-breathe {
+  0%, 100% {
+    box-shadow:
+      0 8px 22px rgba(0, 0, 0, 0.28),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+  50% {
+    box-shadow:
+      0 8px 26px rgba(180, 58, 54, 0.09),
+      0 8px 22px rgba(0, 0, 0, 0.28),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+}
+html[style*="dark"] body[data-dsh-amadeus] .Sxvs8a_root ._markdown_1nba0_5 > p,
+html[style*="dark"] body[data-dsh-amadeus] .Sxvs8a_root ._markdown_1nba0_5 > ul,
+html[style*="dark"] body[data-dsh-amadeus] .Sxvs8a_root ._markdown_1nba0_5 > ol,
+html[style*="dark"] body[data-dsh-amadeus] .Sxvs8a_root ._markdown_1nba0_5 > h1,
+html[style*="dark"] body[data-dsh-amadeus] .Sxvs8a_root ._markdown_1nba0_5 > h2,
+html[style*="dark"] body[data-dsh-amadeus] .Sxvs8a_root ._markdown_1nba0_5 > h3 {
+  max-width: 66ch;
+}
+html[style*="dark"] body[data-dsh-amadeus] .Sxvs8a_root pre {
+  background: rgba(8, 9, 11, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 8px;
+}
+html[style*="dark"] body[data-dsh-amadeus] .gdEzaW_bubble {
+  background: rgba(22, 23, 26, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
+}
+
+/* ---------- Stage 6: composer as a galgame command/dialogue box ---------- */
+html[style*="dark"] body[data-dsh-amadeus] .uV2eYG_card {
+  padding: 5px 10px 4px 12px;
+  background: linear-gradient(180deg,
+    rgba(22, 23, 26, 0.74) 0%,
+    rgba(16, 17, 20, 0.84) 100%);
+  border: 1px solid rgba(180, 58, 54, 0.30);
+  border-radius: 12px;
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.40),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+html[style*="dark"] body[data-dsh-amadeus] .uV2eYG_card:hover {
+  border-color: rgba(180, 58, 54, 0.44);
+}
+html[style*="dark"] body[data-dsh-amadeus] .uV2eYG_card:focus-within {
+  border-color: rgba(206, 76, 71, 0.60);
+  box-shadow:
+    0 0 0 3px rgba(180, 58, 54, 0.16),
+    0 0 24px rgba(45, 212, 191, 0.10),
+    0 12px 32px rgba(0, 0, 0, 0.40);
+}
+
+/* ---------- Stage 7: Think / Tool call rows (visual only) ---------- */
+html[style*="dark"] body[data-dsh-amadeus] .QWLzlG_root,
+html[style*="dark"] body[data-dsh-amadeus] .o3BgMG_root {
+  margin: 2px 0;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  background: rgba(18, 19, 22, 0.30);
+  overflow: hidden;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+html[style*="dark"] body[data-dsh-amadeus] .QWLzlG_root {
+  border-left: 2px solid rgba(45, 212, 191, 0.35);
+}
+html[style*="dark"] body[data-dsh-amadeus] .o3BgMG_root {
+  border-left: 2px solid rgba(180, 58, 54, 0.40);
+}
+html[style*="dark"] body[data-dsh-amadeus] .QWLzlG_root:hover,
+html[style*="dark"] body[data-dsh-amadeus] .o3BgMG_root:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(22, 23, 26, 0.42);
+}
+html[style*="dark"] body[data-dsh-amadeus] [data-variant][data-state="error"] {
+  border-color: rgba(180, 58, 54, 0.55);
+  background: rgba(180, 58, 54, 0.07);
+}
+html[style*="dark"] body[data-dsh-amadeus] .QWLzlG_root:has([aria-expanded="true"]),
+html[style*="dark"] body[data-dsh-amadeus] .o3BgMG_root:has([aria-expanded="true"]) {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(20, 21, 24, 0.46);
+}
+html[style*="dark"] body[data-dsh-amadeus] .QWLzlG_root:has([aria-expanded="true"]) .QWLzlG_bodyWrap,
+html[style*="dark"] body[data-dsh-amadeus] .o3BgMG_root:has([aria-expanded="true"]) .o3BgMG_bodyWrap {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  animation: amadeus-disclose 0.18s ease-out both;
+}
+@keyframes amadeus-disclose {
+  from { opacity: 0; transform: translateY(-3px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ---------- Stage 8: sidebar / header integration (kept quiet) ---------- */
+html[style*="dark"] body[data-dsh-amadeus] .wSkVaW_header {
+  background: linear-gradient(180deg,
+    rgba(14, 15, 18, 0.62) 0%,
+    rgba(14, 15, 18, 0.30) 62%,
+    rgba(14, 15, 18, 0) 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+html[style*="dark"] body[data-dsh-amadeus] .YDXeBa_sessionRow {
+  border-radius: 8px;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+html[style*="dark"] body[data-dsh-amadeus] .YDXeBa_sessionRow:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+html[style*="dark"] body[data-dsh-amadeus] .YDXeBa_sessionRow[aria-selected="true"],
+html[style*="dark"] body[data-dsh-amadeus] .YDXeBa_sessionRow[aria-current] {
+  background: rgba(180, 58, 54, 0.10);
+  box-shadow: inset 2px 0 0 rgba(180, 58, 54, 0.65);
+}
+/* NOTE: the sidebar COLUMN background/border are intentionally left to the
+   app's native values — a translucent override made the sidebar look
+   transparent, so only the row-level accents above remain. */
+html[style*="dark"] body[data-dsh-amadeus] .Sh0Q9G_trigger:hover,
+html[style*="dark"] body[data-dsh-amadeus] ._7KE1Ra_trigger:hover,
+html[style*="dark"] body[data-dsh-amadeus] .nL4_yW_sessionLogButton:hover {
+  border-color: rgba(180, 58, 54, 0.45);
+  color: rgba(233, 96, 91, 0.95);
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+/* ---------- Stage 9: easter egg glitch ---------- */
+.amadeus-kurisu.amadeus-glitch {
+  animation: amadeus-glitch 0.7s steps(2, end) both !important;
+}
+@keyframes amadeus-glitch {
+  0%   { opacity: 1; }
+  18%  { opacity: 0.35; transform: translateX(3px); }
+  30%  { opacity: 1; transform: none; }
+  48%  { opacity: 0.55; transform: translateX(-2px); }
+  62%  { opacity: 1; transform: none; }
+  78%  { filter: brightness(0.95) contrast(1.03) drop-shadow(0 12px 22px rgba(0,0,0,0.42)) drop-shadow(2px 0 0 rgba(180,58,54,0.55)) drop-shadow(-2px 0 0 rgba(45,212,191,0.55)); }
+  100% { opacity: 1; filter: brightness(0.95) contrast(1.03) drop-shadow(0 12px 22px rgba(0, 0, 0, 0.42)); }
+}
+
+/* ---------- Reading Steiner: session disappears from the worldline ---------- */
+.amadeus-rs-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+}
+html[style*="dark"] body[data-dsh-amadeus][data-dsh-reading-steiner="1"] .amadeus-rs-overlay {
+  visibility: visible;
+  animation: amadeus-rs 700ms ease-out both;
+}
+@keyframes amadeus-rs {
+  0%   { opacity: 0; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  22%  { opacity: 1; backdrop-filter: blur(1.5px) brightness(1.30) contrast(1.15); -webkit-backdrop-filter: blur(1.5px) brightness(1.30) contrast(1.15); }
+  40%  { opacity: 1; backdrop-filter: blur(2.5px) contrast(1.40) saturate(1.25) hue-rotate(-8deg); -webkit-backdrop-filter: blur(2.5px) contrast(1.40) saturate(1.25) hue-rotate(-8deg); }
+  58%  { opacity: 1; backdrop-filter: blur(1px) brightness(1.15); -webkit-backdrop-filter: blur(1px) brightness(1.15); }
+  100% { opacity: 0; backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
+.amadeus-rs-label {
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 0 12px rgba(180, 58, 54, 0.5);
+  opacity: 0;
+}
+html[style*="dark"] body[data-dsh-amadeus][data-dsh-reading-steiner="1"] .amadeus-rs-label {
+  animation: amadeus-rs-label 700ms ease-out both;
+}
+@keyframes amadeus-rs-label {
+  0%, 26% { opacity: 0; }
+  42% { opacity: 0.65; }
+  68% { opacity: 0.40; }
+  100% { opacity: 0; }
+}
+  animation: amadeus-rs-lab 700ms ease-out both;
+}
+@keyframes amadeus-rs-lab {
+  0%   { background-position: center, center; }
+  34%  { background-position: center, calc(50% + 10px) center; }
+  66%  { background-position: center, calc(50% - 4px) center; }
+  100% { background-position: center, center; }
+}
+/* Reading Steiner shake: conversation + lab + Kurisu move AS ONE — the
+   center column and the sprite run the exact same keyframes so they stay
+   locked together; the sidebar never moves. Irregular 1–5px offsets that
+   decay back to translate(0, 0). */
+html[style*="dark"] body[data-dsh-amadeus][data-dsh-reading-steiner="1"] .pI_x6G_centerCol,
+html[style*="dark"] body[data-dsh-amadeus][data-dsh-reading-steiner="1"] .amadeus-kurisu {
+  animation: amadeus-rs-shake 480ms ease-out both !important;
+}
+@keyframes amadeus-rs-shake {
+  0%   { transform: translate(0, 0); }
+  8%   { transform: translate(3px, -2px); }
+  18%  { transform: translate(-4px, 2px); }
+  28%  { transform: translate(2px, 3px); }
+  38%  { transform: translate(-3px, -2px); }
+  48%  { transform: translate(2px, 1px); }
+  58%  { transform: translate(-1px, -1px); }
+  70%  { transform: translate(1px, 1px); }
+  84%  { transform: translate(-1px, 0); }
+  100% { transform: translate(0, 0); }
+}
+
+/* ---------- accessibility: honor reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+    animation: none !important;
+    transition: none !important;
+  }
+  html[style*="dark"] body[data-dsh-amadeus][data-dsh-reading-steiner="1"] .amadeus-rs-overlay {
+    visibility: hidden;
+  }
+}

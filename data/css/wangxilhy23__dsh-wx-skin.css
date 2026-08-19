@@ -1,0 +1,86 @@
+/* wangxilhy23/dsh-wx-skin — src/client/global-skin-css.ts
+   fetched 2026-08-19 from https://raw.githubusercontent.com/wangxilhy23/dsh-wx-skin/main/src/client/global-skin-css.ts
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/* ---- background layer (paints behind the app, above the canvas) ---- */
+html[data-wx-skin-active] div[data-wx-skin-layer] {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: var(--wx-skin-bg-image, none);
+  background-color: var(--wx-skin-bg-color, transparent);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  filter: blur(var(--wx-skin-blur, 0px));
+}
+
+/* dim / scrim overlay between the image and the translucent surfaces */
+html[data-wx-skin-active] div[data-wx-skin-layer]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--wx-skin-scrim, transparent);
+}
+
+/* keep the canvas neutral so nothing opaque hides the layer */
+html[data-wx-skin-active] body {
+  background: transparent !important;
+}
+
+/* lift the app above the layer; its translucent surfaces let it show through */
+html[data-wx-skin-active] #root {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* ---- translucent surfaces: light palette ---- */
+html[data-wx-skin-active] body {
+  --dsw-alias-bg-base: rgb(255 255 255 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-alias-bg-layer-1: rgb(255 255 255 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-alias-bg-layer-2: rgb(255 255 255 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-alias-bg-layer-3: rgb(255 255 255 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-alias-bg-overlay: rgb(233 236 242 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-alias-bg-module-platform: rgb(245 246 247 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-alias-bg-multi-select: rgb(245 246 247 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-specific-sidebar-fill: rgb(249 250 251 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-specific-input-major: rgb(255 255 255 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-specific-selector: rgb(245 246 247 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-specific-tip: rgb(245 246 247 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-specific-bubble: rgb(237 243 254 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-specific-bubble-highlight: rgb(211 226 255 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-alias-markdown-code-block: rgb(249 250 251 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-alias-markdown-code-block-banner: rgb(249 250 251 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-alias-markdown-inline-code: rgb(235 238 242 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-alias-markdown-placeholder: rgb(245 246 247 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-alias-markdown-tag: rgb(241 243 245 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-alias-markdown-citation: rgb(235 238 242 / var(--wx-skin-surface, 0.72)) !important;
+}
+
+/* ---- translucent surfaces: dark palette ---- */
+html[data-wx-skin-active] body[data-ds-dark-theme] {
+  --dsw-alias-bg-base: rgb(21 21 23 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-alias-bg-layer-1: rgb(35 35 36 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-alias-bg-layer-2: rgb(44 44 46 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-alias-bg-layer-3: rgb(53 54 56 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-alias-bg-overlay: rgb(97 102 107 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-alias-bg-module-platform: rgb(53 54 56 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-alias-bg-multi-select: rgb(44 44 46 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-specific-sidebar-fill: rgb(27 27 28 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-specific-input-major: rgb(44 44 46 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-specific-selector: rgb(53 54 56 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-specific-tip: rgb(53 54 56 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-specific-bubble: rgb(44 44 46 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-specific-bubble-highlight: rgb(67 69 74 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-alias-markdown-code-block: rgb(27 27 28 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-alias-markdown-code-block-banner: rgb(44 44 46 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-alias-markdown-inline-code: rgb(44 44 46 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-alias-markdown-placeholder: rgb(44 44 46 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-alias-markdown-tag: rgb(44 44 46 / var(--wx-skin-surface, 0.72)) !important;
+  --dsw-alias-markdown-citation: rgb(53 54 56 / var(--wx-skin-surface, 0.72)) !important;
+}
+
+/* ---- sidebar entry active indicator ---- */
+html[data-wx-skin-active] button[data-wx-skin-entry] {
+  color: var(--dsw-alias-state-business-primary, #4176e6);
+}

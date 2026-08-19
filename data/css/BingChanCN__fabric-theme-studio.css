@@ -1,0 +1,169 @@
+/* BingChanCN/fabric-theme-studio — src/client/theme-engine.ts
+   fetched 2026-08-19 from https://raw.githubusercontent.com/BingChanCN/fabric-theme-studio/main/src/client/theme-engine.ts
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+  background-position: center center !important;
+  background-attachment: fixed !important;
+  transition: opacity 0.4s ease, filter 0.4s ease !important;
+  display: block !important;
+}
+
+html[data-fabric-has-wallpaper="true"] #root,
+body[data-fabric-has-wallpaper="true"] #root {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 2147483000;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='128' height='128' viewBox='0 0 128 128'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url("https://raw.githubusercontent.com/BingChanCN/fabric-theme-studio/main/src/client/%23n")' opacity='0.7'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  mix-blend-mode: overlay;
+  opacity: var(--fabric-material-noise-opacity, 0);
+  transition: opacity 0.3s ease;
+}
+
+body[data-fabric-ambient-speed="slow"] [data-fabric-workbench="true"] {
+  --fts-ambient-duration: 36s;
+  --fts-ambient-duration-alt: 44s;
+  --fts-scan-duration: 16s;
+}
+body[data-fabric-ambient-speed="normal"] [data-fabric-workbench="true"] {
+  --fts-ambient-duration: 24s;
+  --fts-ambient-duration-alt: 30s;
+  --fts-scan-duration: 10s;
+}
+body[data-fabric-ambient-speed="fast"] [data-fabric-workbench="true"] {
+  --fts-ambient-duration: 12s;
+  --fts-ambient-duration-alt: 16s;
+  --fts-scan-duration: 6s;
+}
+
+body[data-fabric-ambient="aurora"] [data-fabric-workbench="true"]::before {
+  content: "";
+  position: absolute;
+  top: -18%;
+  left: -16%;
+  width: 80%;
+  height: 78%;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(circle, var(--fabric-accent-primary, #4176e6) 0%, transparent 68%);
+  filter: blur(42px);
+  opacity: calc(0.62 * var(--fabric-ambient-intensity, 0.75));
+  animation: fts-aurora-drift var(--fts-ambient-duration, 24s) ease-in-out infinite alternate;
+}
+
+body[data-fabric-ambient="aurora"] [data-fabric-workbench="true"]::after {
+  content: "";
+  position: absolute;
+  bottom: -22%;
+  right: -14%;
+  width: 72%;
+  height: 72%;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(circle, var(--fabric-accent-primary, #ff77c6) 0%, transparent 68%);
+  filter: blur(48px);
+  opacity: calc(0.5 * var(--fabric-ambient-intensity, 0.75));
+  animation: fts-aurora-orbit var(--fts-ambient-duration-alt, 30s) ease-in-out infinite alternate-reverse;
+}
+
+@keyframes fts-aurora-drift {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(10%, 8%, 0) scale(1.1); }
+  100% { transform: translate3d(-8%, 12%, 0) scale(0.96); }
+}
+
+@keyframes fts-aurora-orbit {
+  0% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  100% { transform: translate3d(-12%, -10%, 0) rotate(180deg); }
+}
+
+body[data-fabric-ambient="cyber-grid"] [data-fabric-workbench="true"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    linear-gradient(rgba(255, 0, 127, 0.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 255, 0.14) 1px, transparent 1px);
+  background-size: 32px 32px;
+  opacity: var(--fabric-ambient-intensity, 0.85);
+}
+
+body[data-fabric-ambient="cyber-grid"] [data-fabric-workbench="true"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 255, 255, 0.2) 50%, transparent 100%);
+  background-size: 100% 220%;
+  animation: fts-scanline var(--fts-scan-duration, 10s) linear infinite;
+  opacity: var(--fabric-ambient-intensity, 0.85);
+}
+
+@keyframes fts-scanline {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 220%; }
+}
+
+body[data-fabric-ambient="mesh-gradient"] [data-fabric-workbench="true"]::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(at 0% 0%, var(--fabric-accent-primary, #cba6f7) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, var(--fabric-accent-primary, #f5c2e7) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, var(--fabric-accent-hover, #89b4fa) 0px, transparent 50%);
+  filter: blur(48px);
+  opacity: calc(0.42 * var(--fabric-ambient-intensity, 0.75));
+  animation: fts-mesh-pulse var(--fts-ambient-duration, 16s) ease-in-out infinite alternate;
+}
+
+@keyframes fts-mesh-pulse {
+  0% { transform: scale(1); filter: blur(48px) hue-rotate(0deg); }
+  100% { transform: scale(1.08); filter: blur(56px) hue-rotate(24deg); }
+}
+
+body[data-fabric-ambient="spotlight"] [data-fabric-workbench="true"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(circle at 50% 24%, var(--fabric-accent-primary, #4176e6) 0%, transparent 58%);
+  filter: blur(52px);
+  opacity: calc(0.4 * var(--fabric-ambient-intensity, 0.75));
+}
+
+body[data-fabric-ambient-paused="true"] [data-fabric-workbench="true"]::before,
+body[data-fabric-ambient-paused="true"] [data-fabric-workbench="true"]::after {
+  animation-play-state: paused !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-fabric-workbench="true"]::before,
+  [data-fabric-workbench="true"]::after {
+    animation: none !important;
+  }
+}

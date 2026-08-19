@@ -1,0 +1,210 @@
+/* wuzhong962-alt/dsh-matrix-theme — lib/client.js
+   fetched 2026-08-19 from https://raw.githubusercontent.com/wuzhong962-alt/dsh-matrix-theme/main/lib/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/* ── dsh-matrix-theme: Matrix / cyberpunk skin ─────────────────────── */
+
+/* IME compatibility (2026-08-15, round 3): do NOT force color-scheme: dark.
+   Chrome reports the page's color-scheme to the macOS text input system; with
+   the built-in Pinyin IME the native candidate window fails to render when the
+   page reports dark (broken on this Chrome/macOS combo even when the OS itself
+   is dark). The Matrix dark look is preserved via the token palette below —
+   the page just reports light to the IME/native widgets. */
+
+/* Force the Matrix dark palette no matter which preference the app resolved
+   (light or dark): both selectors are covered, all declarations are
+   !important, and the style tag is appended after the app's own CSS. */
+body, body[data-ds-dark-theme] {
+  /* IME-safe: no color-scheme override (see :root comment above). */
+  background-color: #030610 !important;
+  background-image:
+    radial-gradient(1100px 750px at 28% 22%, rgba(38, 68, 150, 0.22), transparent 62%),
+    radial-gradient(950px 700px at 74% 68%, rgba(96, 50, 160, 0.18), transparent 62%),
+    radial-gradient(800px 600px at 55% 45%, rgba(16, 120, 140, 0.14), transparent 62%),
+    radial-gradient(600px 500px at 86% 18%, rgba(20, 90, 60, 0.14), transparent 62%) !important;
+
+  /* neutral-bluish: green-tinted blacks/grays for surfaces & text */
+  --dsw-static-neutral-bluish-00: #f2f7f2 !important;
+  --dsw-static-neutral-bluish-50: #d9e7dd !important;
+  --dsw-static-neutral-bluish-60: #ccdcd2 !important;
+  --dsw-static-neutral-bluish-75: #c0d6c9 !important;
+  --dsw-static-neutral-bluish-100: #abcab6 !important;
+  --dsw-static-neutral-bluish-150: #92baa3 !important;
+  --dsw-static-neutral-bluish-200: #7aa98f !important;
+  --dsw-static-neutral-bluish-300: #54836a !important;
+  --dsw-static-neutral-bluish-400: #37694a !important;
+  --dsw-static-neutral-bluish-500: #275233 !important;
+  --dsw-static-neutral-bluish-600: #1a3d25 !important;
+  --dsw-static-neutral-bluish-700: #122c1a !important;
+  --dsw-static-neutral-bluish-750: #0e2415 !important;
+  --dsw-static-neutral-bluish-800: #0a1c10 !important;
+  --dsw-static-neutral-bluish-850: #08170d !important;
+  --dsw-static-neutral-bluish-875: #07140b !important;
+  --dsw-static-neutral-bluish-900: #06110a !important;
+  --dsw-static-neutral-bluish-950: #040c07 !important;
+  --dsw-static-neutral-bluish-1000: #030a06 !important;
+
+  /* neutral: scrollbars & grays */
+  --dsw-static-neutral-00: #ffffff !important;
+  --dsw-static-neutral-50: #9cb5a5 !important;
+  --dsw-static-neutral-100: #7d9c89 !important;
+  --dsw-static-neutral-150: #557a63 !important;
+  --dsw-static-neutral-200: #47694f !important;
+  --dsw-static-neutral-250: #3f5c49 !important;
+  --dsw-static-neutral-300: #35503f !important;
+  --dsw-static-neutral-400: #2b4534 !important;
+  --dsw-static-neutral-500: #223b2b !important;
+  --dsw-static-neutral-550: #1a3322 !important;
+  --dsw-static-neutral-600: #142b1b !important;
+  --dsw-static-neutral-700: #0f2415 !important;
+  --dsw-static-neutral-800: #0b1a0f !important;
+  --dsw-static-neutral-850: #09150c !important;
+  --dsw-static-neutral-900: #07100a !important;
+  --dsw-static-neutral-1000: #000000 !important;
+
+  /* deepseek brand → Matrix green */
+  --dsw-static-deepseek-50: #e2f7ea !important;
+  --dsw-static-deepseek-100: #c3eed6 !important;
+  --dsw-static-deepseek-200: #9fe3bf !important;
+  --dsw-static-deepseek-300: #66d49c !important;
+  --dsw-static-deepseek-400: #2ee06f !important;
+  --dsw-static-deepseek-450: #00e05c !important;
+  --dsw-static-deepseek-500: #00cc4d !important;
+  --dsw-static-deepseek-600: #00aa41 !important;
+  --dsw-static-deepseek-700-delete: #008a35 !important;
+  --dsw-static-deepseek-800: #0a6b2b !important;
+  --dsw-static-deepseek-900: #0c4d20 !important;
+
+  /* green: success → classic terminal green */
+  --dsw-static-green-100: #d2f5df !important;
+  --dsw-static-green-400: #46e37a !important;
+  --dsw-static-green-500: #00ff41 !important;
+  --dsw-static-green-900: #0d2b18 !important;
+
+  /* red: errors stay neon */
+  --dsw-static-red-50: #ffe9e9 !important;
+  --dsw-static-red-100: #ffd4d4 !important;
+  --dsw-static-red-400: #ff5c5c !important;
+  --dsw-static-red-500: #ff3b3b !important;
+  --dsw-static-red-600: #ff2222 !important;
+  --dsw-static-red-900: #5c0e0e !important;
+
+  /* amber: warnings stay neon */
+  --dsw-static-amber-100: #fff3dd !important;
+  --dsw-static-amber-400: #ffc35c !important;
+  --dsw-static-amber-500: #ffb02e !important;
+  --dsw-static-amber-600: #f59f00 !important;
+  --dsw-static-amber-900: #3d2c0d !important;
+
+  /* blue → teal/cyan (secondary accent) */
+  --dsw-static-blue-50: #e0f7f5 !important;
+  --dsw-static-blue-50p: #d6f3f1 !important;
+  --dsw-static-blue-75: #c8efec !important;
+  --dsw-static-blue-100: #b5e8e4 !important;
+  --dsw-static-blue-300: #62d2cc !important;
+  --dsw-static-blue-400: #2fbfb9 !important;
+  --dsw-static-blue-450: #00b0aa !important;
+  --dsw-static-blue-500: #009c96 !important;
+  --dsw-static-blue-600: #00807b !important;
+  --dsw-static-blue-800: #04514e !important;
+  --dsw-static-blue-900: #063a38 !important;
+  --dsw-static-blue-950: #062b2a !important;
+
+  /* ── direct alias overrides ─────────────────────────────────────── */
+  --dsw-alias-brand-primary: #00e05c !important;
+  --dsw-alias-brand-text: #00e05c !important;
+  --dsw-alias-brand-primary-invert: #04100a !important;
+  --dsw-alias-brand-primary-new-colorprimary-new-color: #00cc4d !important;
+
+  --dsw-alias-state-business-primary: #00e05c !important;
+  --dsw-alias-state-business-tertiary: #0d2b18 !important;
+  --dsw-alias-state-success-primary: #00ff41 !important;
+  --dsw-alias-state-success-secondary: #46e37a !important;
+  --dsw-alias-state-success-tertiary: #0d2b18 !important;
+
+  --dsw-alias-button-primary-fill: #00cc4d !important;
+  --dsw-alias-button-primary-hover: #12301c !important;
+  --dsw-alias-button-primary-dimmed: #0b2415 !important;
+  --dsw-alias-button-contrast-fill: #0f2b1a !important;
+  --dsw-alias-button-info-fill: #00cc4d !important;
+  --dsw-alias-button-info-hover: #00e05c !important;
+  --dsw-alias-button-tool-bar-fill: rgba(0, 255, 65, 0.12) !important;
+  --dsw-alias-button-tool-bar-hover: rgba(0, 255, 65, 0.20) !important;
+  --dsw-alias-button-tool-bar-fill-invisible: rgba(0, 255, 65, 0.06) !important;
+
+  --dsw-alias-interactive-bg-hover: rgba(0, 255, 65, 0.09) !important;
+  --dsw-alias-interactive-bg-hover-accent: rgba(0, 255, 65, 0.16) !important;
+  --dsw-alias-interactive-bg-active: rgba(0, 255, 65, 0.13) !important;
+  --dsw-alias-interactive-bg-hover-danger: rgba(255, 34, 34, 0.14) !important;
+  --dsw-alias-interactive-bg-hover-solid: #0a1c10 !important;
+
+  --dsw-alias-border-l1: rgba(0, 255, 65, 0.10) !important;
+  --dsw-alias-border-l2: rgba(0, 255, 65, 0.16) !important;
+  --dsw-alias-border-l2-darkmode-thin: rgba(0, 255, 65, 0.10) !important;
+  --dsw-alias-border-l3: rgba(0, 255, 65, 0.22) !important;
+  --dsw-alias-border-l4: rgba(0, 255, 65, 0.30) !important;
+  --dsw-alias-border-inverted: rgba(0, 255, 65, 0.16) !important;
+  --dsw-alias-border-inverted2: rgba(0, 255, 65, 0.12) !important;
+
+  --dsw-alias-bg-skeleton: rgba(0, 255, 65, 0.06) !important;
+  --dsw-alias-bg-mask-1: rgba(0, 0, 0, 0.55) !important;
+  --dsw-alias-bg-mask-2: rgba(0, 0, 0, 0.28) !important;
+  --dsw-alias-bg-mask-3: rgba(0, 0, 0, 0.55) !important;
+
+  --dsw-alias-toast-bg: #0f2b1a !important;
+  --dsw-alias-tooltip-bg: #0f2b1a !important;
+
+  --dsw-linear-gradient-think: linear-gradient(180deg, #07140c 20.19%, rgba(7, 20, 12, 0) 100%) !important;
+  --dsw-linear-think-select: linear-gradient(180deg, #0c1f14 20.19%, rgba(12, 31, 20, 0) 100%) !important;
+
+  --dsw-specific-bubble: #07140b !important;
+  --dsw-specific-bubble-highlight: #0e2415 !important;
+  --dsw-specific-input-major: #08170d !important;
+  --dsw-specific-login-input: #06110a !important;
+  --dsw-specific-selector: #0a1c10 !important;
+  --dsw-specific-sidebar-fill: #06110a !important;
+  --dsw-specific-sidebar-nav-item-active: #0e2415 !important;
+  --dsw-specific-sidebar-nav-item-active-accent: #0a1c10 !important;
+  --dsw-specific-sidebar-nav-item-hover: #07140b !important;
+  --dsw-specific-tip: #0a1c10 !important;
+
+  --dsh-scrollbar-thumb: #14502b !important;
+  --dsh-scrollbar-thumb-hover: #1e6e3b !important;
+  --dsh-scrollbar-width: 8px !important;
+}
+
+/* syntax highlighting → green terminal */
+body[data-ds-dark-theme], body {
+  --shiki-token-constant: #5effa8 !important;
+  --shiki-token-string: #a5ffc0 !important;
+  --shiki-token-comment: #4d6b57 !important;
+  --shiki-token-keyword: #00ff9d !important;
+  --shiki-token-parameter: #ffd9a0 !important;
+  --shiki-token-function: #00e05c !important;
+  --shiki-token-string-expression: #8ce99a !important;
+  --shiki-token-punctuation: #9fb5a8 !important;
+  --shiki-token-link: #4dff88 !important;
+}
+
+/* selection + caret */
+::selection { background: rgba(0, 255, 65, 0.30) !important; color: #c9ffdd !important; }
+input, textarea, [contenteditable="true"] { caret-color: #00ff41 !important; }
+
+/* CRT scanlines over everything (pointer-transparent) */
+body::after {
+  content: "" !important;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147483000 !important;
+  pointer-events: none !important;
+  background: repeating-linear-gradient(0deg, rgba(0, 255, 65, 0.030) 0px, rgba(0, 255, 65, 0.030) 1px, transparent 1px, transparent 3px) !important;
+}
+
+/* soft CRT vignette */
+body::before {
+  content: "" !important;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147483001 !important;
+  pointer-events: none !important;
+  background: radial-gradient(ellipse at 50% 38%, transparent 58%, rgba(0, 0, 0, 0.30) 100%) !important;
+}

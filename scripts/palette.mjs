@@ -295,15 +295,19 @@ export function extractPalette(baseSheets, themeCss) {
       let hex = null;
       let baseHex = null;
       for (const t of tokens) {
+        const b = resolveValue(`var(--${t})`, base, scope);
+        if (b && baseHex === null) baseHex = toHex(composite(b, SCOPE_BG[scope]));
         const rgba = resolveValue(`var(--${t})`, all, scope);
         if (rgba) {
           hex = toHex(composite(rgba, SCOPE_BG[scope]));
-          const b = resolveValue(`var(--${t})`, base, scope);
           baseHex = b ? toHex(composite(b, SCOPE_BG[scope])) : null;
           break;
         }
       }
-      pal[role] = hex;
+      // A theme can redefine a role in terms of a variable it never declares.
+      // The stock value is then what a reader would actually see through the
+      // hole, so that is what is reported — and it does not count as changed.
+      pal[role] = hex ?? baseHex;
       if (hex && hex !== baseHex) changed++;
     }
     pal.changed = changed;

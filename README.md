@@ -4,9 +4,9 @@
 
 <img src="https://raw.githubusercontent.com/dshworks/dshthemes/main/src/og.png" alt="dshthemes — a fan of dsh themes painted from their own stylesheets" width="720">
 
-Most dsh themes have no screenshot. A gallery of 325 themes where 176 cards
-are the same whale placeholder is a gallery of 149. So this site does not wait
-for a screenshot: **a theme is a stylesheet, and we read it.** Each theme's
+Most dsh themes have no screenshot. A gallery where half the cards are the same
+whale placeholder is not a gallery. So this site does not wait for a
+screenshot: **a theme is a stylesheet, and we read it.** Each theme's
 `--dsw-*` tokens are resolved against the stock 0.1.0-rc.6 shell and a
 dsh-shaped frame is painted from six roles — background, surface, border,
 muted, text, brand. Themes that restyle hashed classes directly get their
@@ -19,11 +19,39 @@ never a second source of truth.
 
 | Surface | What it is |
 | --- | --- |
-| `/` | the gallery: hero that keeps changing its clothes, five shelves that fan open, 325 cards; filter, sort, search on the DOM already there |
-| `/t/<slug>/` | one theme: live on the rc.6 shell (39), the repo's screenshot (149), the signature (276); wear / proof / colours / shelf; the "Not" |
+| `/` | the gallery: hero that keeps changing its clothes, five shelves that fan open, a card per theme; filter, sort, search on the DOM already there |
+| `/t/<slug>/` | one theme: live on the rc.6 shell, the repo's screenshot, the signature; wear / renders / proof / colours / shelf; the "Not" |
 | `/shelf/<shelf>/` | one shelf, same cards |
-| `/preview/?theme=<slug>` | the vendored rc.6 web shell with the theme's `previewCss` injected — CSS on the real chrome, not a screenshot |
+| `/notes/` | dated notes on what changed here and what the registry is doing, plus a "right now" panel read straight from the data. RSS at `/notes/feed.xml` |
+| `/preview/?theme=<slug>` | the vendored rc.6 web shell with the theme's own stylesheet injected: CSS on the real chrome, not a screenshot |
 | `/themes.json` · `/llms.txt` · `/sitemap.xml` | the projection, the agent map, the crawl |
+
+## Live, and how it is earned
+
+A theme carries the live view only if it passes two gates.
+
+1. **Reach.** Its stylesheet has to set `--dsw-*` tokens, flip a
+   `body[data-…]` / `html[data-…]` attribute its plugin would set, or select
+   one of the shell's compiled class names. Plenty of themes ship real CSS that
+   only styles elements the plugin creates at runtime; injected into a static
+   shell those change nothing.
+2. **Difference.** `scripts/shots.mjs` opens every candidate at 1440x900 and
+   compares it pixel for pixel against the stock shell. Identical means the
+   claim is dropped, whatever the stylesheet looked like.
+
+The picture that comparison produces is kept and shipped: `data/shots/*.webp`,
+one render of the shell wearing each theme, same frame and same conversation
+every time. That is what the cards show.
+
+The rendered stylesheets are frozen into the repo under `data/css/` with their
+source URL and fetch date in a header comment, and served from our own origin.
+Fetching them from `raw.githubusercontent.com` at read time meant a renamed
+branch degraded the page silently for every future reader; now it breaks the
+build instead.
+
+The shell stays at 0.1.0-rc.6 on purpose. The token stylesheets are identical
+in rc.7, but the chrome's compiled class names are content hashes, and those
+strings are what community skins are written against.
 
 ## Motion
 
@@ -38,12 +66,17 @@ stage. Everything stops under `prefers-reduced-motion`.
 
 ```
 npm run registry     # data/themes.json  <- awesome-dsh-themes (or --local=../awesome-dsh-themes)
-npm run enrich       # data/enrich.json  <- GitHub: stars, last push, the stylesheet, the palette (incremental; --force, --repalette)
-npm run build        # dist/             <- 325 pages, one stylesheet, one script
-npm test             # palette parser + springs
+npm run enrich       # data/enrich.json + data/css/ <- GitHub: stars, last push, the stylesheet, the palette, the sheet we render (incremental; --force, --repalette)
+npm run build        # dist/             <- a page per theme, one stylesheet, one script
+npm run shots        # data/shots/ + data/shots.json <- build, photograph every renderable theme, build again
+npm test             # palette parser, CSS extraction, springs
 node scripts/og.mjs  # src/og.png from dist/og.html (needs a Chromium; the png is committed)
 npm run deploy       # Cloudflare Workers, static assets + a nine-line www redirect
 ```
+
+`shots.mjs` uses cloakbrowser where it exists and falls back to
+`playwright-core` driving the system Chrome, which is what the nightly workflow
+runs on.
 
 No framework, no database, no request-time data. `enrich.mjs` costs one tree
 listing per repo plus raw fetches (which are free), and refreshes stars every run.
@@ -60,6 +93,11 @@ listing per repo plus raw fetches (which are free), and refreshes stars every ru
   set, else the repo tree ranked by name (`theme`, `skin`, `dsw`, `token`, …),
   fetched off `raw.githubusercontent`, scored by `--dsw-` declarations then
   colour literals.
+- `scripts/csstext.mjs` decides what can be rendered. Only 59 of the themes we
+  can read keep their colours in a `.css` file; the rest are template strings
+  inside JavaScript, so the CSS is lifted back out of the code. It never
+  synthesises: a theme that builds its palette with `setProperty` in a loop has
+  no stylesheet to render, and keeps its painted signature instead.
 - Every theme page links the exact file. If we read the wrong one, open an
   issue; if the registry sets `previewCss`, that file wins.
 

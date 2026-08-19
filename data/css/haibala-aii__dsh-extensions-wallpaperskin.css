@@ -1,0 +1,100 @@
+/* haibala-aii/dsh-extensions-wallpaperskin — lib/client.js
+   fetched 2026-08-19 from https://raw.githubusercontent.com/haibala-aii/dsh-extensions-wallpaperskin/main/lib/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+.dswsk-background, .dswsk-video {
+        position: fixed;
+        left: 0; top: 0;
+        width: 100%; height: 100%;
+        pointer-events: none;
+        z-index: 0;
+        opacity: var(--dswsk-opacity, 0);
+        transition: opacity 0.3s ease;
+      }
+      .dswsk-background {
+        background-image: var(--dswsk-image, none);
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+      }
+      .dswsk-video {
+        display: block;
+        object-fit: cover;
+        object-position: center;
+        background: #000;
+      }
+      body.dswsk-active {
+        --dsw-alias-bg-base: color-mix(in srgb, var(--dswsk-base-color) var(--dswsk-base-opacity, 64%), transparent);
+        --dsw-specific-sidebar-fill: color-mix(in srgb, var(--dswsk-sidebar-color) var(--dswsk-sidebar-opacity, 78%), transparent);
+        background: transparent !important;
+      }
+      body.dswsk-active > #root {
+        position: relative;
+        z-index: 1;
+        background: transparent !important;
+      }
+      body.dswsk-active #root > [class*="_frame"],
+      body.dswsk-active #root [class*="centerCol"],
+      body.dswsk-active #root [class*="detailsCol"] {
+        background: transparent !important;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .dswsk-background, .dswsk-video { transition: none; }
+      }
+      .dswsk-page { padding: 4px 20px 28px; max-width: 960px; display: flex; flex-direction: column; gap: 16px; }
+      .dswsk-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+      .dswsk-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+      .dswsk-tabs { display: flex; gap: 4px; padding: 3px; border-radius: 10px; background: var(--dsw-alias-bg-layer-2); }
+      .dswsk-tab { height: 32px; padding: 0 12px; border: 0; border-radius: 8px; background: transparent; color: var(--dsw-alias-label-secondary); cursor: pointer; font: inherit; font-size: 13px; }
+      .dswsk-tab[aria-selected="true"] { background: var(--dsw-alias-bg-layer-3); color: var(--dsw-alias-label-primary); box-shadow: 0 1px 2px rgb(0 0 0 / 10%); }
+      .dswsk-tab:focus-visible, .dswsk-card:focus-visible, .dswsk-link:focus-visible { outline: 2px solid var(--dsw-alias-brand-primary); outline-offset: 2px; }
+      .dswsk-title { font-size: 16px; line-height: 24px; font-weight: 600; margin: 0; color: var(--dsw-alias-label-primary); }
+      .dswsk-subtitle { font-size: 13px; line-height: 20px; color: var(--dsw-alias-label-secondary); }
+      .dswsk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+      .dswsk-card {
+        border: 1px solid var(--dsw-alias-border-l1);
+        border-radius: 12px;
+        overflow: hidden;
+        cursor: pointer;
+        background: var(--dsw-alias-bg-layer-2);
+        transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+      }
+      .dswsk-card:hover { border-color: var(--dsw-alias-brand-primary); transform: translateY(-2px); }
+      .dswsk-card.dswsk-selected {
+        border-color: var(--dsw-alias-brand-primary);
+        box-shadow: 0 0 0 2px var(--dsw-alias-brand-primary);
+      }
+      .dswsk-thumb { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; background: var(--dsw-alias-bg-layer-3); }
+      .dswsk-thumb-empty { width: 100%; aspect-ratio: 16 / 9; display: grid; place-items: center; background: var(--dsw-alias-bg-layer-3); color: var(--dsw-alias-label-secondary); font-size: 12px; }
+      .dswsk-meta { padding: 8px 10px; min-width: 0; }
+      .dswsk-name {
+        font-size: 13px; line-height: 20px; color: var(--dsw-alias-label-primary);
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      .dswsk-type { font-size: 11px; line-height: 18px; color: var(--dsw-alias-label-secondary); text-transform: capitalize; }
+      .dswsk-hint { font-size: 12px; line-height: 18px; color: var(--dsw-alias-label-secondary); }
+      .dswsk-error { font-size: 12px; line-height: 18px; color: var(--dsw-alias-state-error-primary); }
+      .dswsk-ok { font-size: 12px; line-height: 18px; color: var(--dsw-alias-state-success-primary); }
+      .dswsk-btn {
+        box-sizing: border-box; height: 32px; padding: 0 14px; cursor: pointer;
+        background: var(--dsw-alias-bg-layer-2); color: var(--dsw-alias-label-primary);
+        border: 1px solid var(--dsw-alias-border-l1); border-radius: 8px;
+        font-family: inherit; font-size: 13px; line-height: 20px; flex: none;
+      }
+      .dswsk-btn:hover { background: var(--dsw-alias-bg-layer-3, var(--dsw-alias-bg-layer-2)); }
+      .dswsk-btn:disabled { cursor: not-allowed; opacity: 0.45; }
+      .dswsk-btn-primary {
+        background: var(--dsw-alias-brand-primary); border-color: transparent; color: #fff;
+      }
+      .dswsk-btn-primary:hover { opacity: 0.9; background: var(--dsw-alias-brand-primary); }
+      .dswsk-status { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+      .dswsk-control { display: flex; flex-direction: column; gap: 6px; padding: 10px 12px; border: 1px solid var(--dsw-alias-border-l2); border-radius: 8px; background: var(--dsw-alias-bg-layer-1); }
+      .dswsk-control-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--dsw-alias-label-primary); font-size: 13px; line-height: 20px; }
+      .dswsk-control-value { color: var(--dsw-alias-label-secondary); font-variant-numeric: tabular-nums; }
+      .dswsk-range { width: 100%; height: 24px; margin: 0; accent-color: var(--dsw-alias-brand-primary); cursor: pointer; }
+      .dswsk-range:focus-visible { outline: 2px solid var(--dsw-alias-brand-primary); outline-offset: 2px; }
+      .dswsk-link { color: var(--dsw-alias-brand-primary); font-size: 12px; line-height: 18px; text-decoration: none; }
+      .dswsk-link:hover { text-decoration: underline; }
+      .dswsk-footer-actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; width: 100%; }
+      .dswsk-modal { width: min(900px, calc(100vw - 48px)); }
+      .dswsk-modal-content { max-height: min(78vh, 760px); overflow: auto; }
+      .dswsk-modal-page { padding: 0; max-width: none; gap: 12px; }

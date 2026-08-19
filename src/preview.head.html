@@ -21,6 +21,12 @@
   <link rel="stylesheet" href="/vendor/dsh-web-chrome@0.1.0-rc.6/ConversationRoot.css">
   <link rel="stylesheet" href="/vendor/dsh-web-chrome@0.1.0-rc.6/HeroShell.css">
   <link rel="stylesheet" href="/vendor/dsh-web-chrome@0.1.0-rc.6/InputBar.css">
+  <link rel="stylesheet" href="/vendor/dsh-web-chrome@0.1.0-rc.6/ChatView.css">
+  <link rel="stylesheet" href="/vendor/dsh-web-chrome@0.1.0-rc.6/MessageItem.css">
+  <link rel="stylesheet" href="/vendor/dsh-web-chrome@0.1.0-rc.6/AssistantMarkdown.css">
+  <link rel="stylesheet" href="/vendor/dsh-web-chrome@0.1.0-rc.6/ReasoningRow.css">
+  <link rel="stylesheet" href="/vendor/dsh-web-chrome@0.1.0-rc.6/GenericCommandCard.css">
+  <link rel="stylesheet" href="/vendor/dsh-web-chrome@0.1.0-rc.6/StatsLine.css">
   <link rel="stylesheet" href="/assets/chrome.css">
 </head>
 <body data-ds-dark-theme>
@@ -96,32 +102,81 @@
       </aside>
 
       <main class="pI_x6G_centerCol" data-pane="conversation">
-        <div class="wSkVaW_root" data-phase="hero">
-          <div class="wSkVaW_header wSkVaW_headerHidden"></div>
+        <div class="wSkVaW_root" data-phase="active">
+          <div class="wSkVaW_header">
+            <div class="wSkVaW_titleRow">
+              <div class="wSkVaW_titleCluster">
+                <div class="wSkVaW_crumbs">
+                  <span class="wSkVaW_crumbSeg"><button class="wSkVaW_crumb" type="button">awesome-dsh-themes</button></span>
+                  <span class="wSkVaW_crumbSep">/</span>
+                  <span class="wSkVaW_crumbSeg"><button class="wSkVaW_crumb wSkVaW_crumbCurrent" type="button">read the stylesheet</button></span>
+                </div>
+              </div>
+              <div class="wSkVaW_headerActions"></div>
+            </div>
+          </div>
           <div class="wSkVaW_scrollBody">
-            <div class="wSkVaW_viewArea"></div>
-            <div class="wSkVaW_composerSeat wSkVaW_composerHero wSkVaW_composerStack">
-              <div class="wSkVaW_heroGlow" aria-hidden="true"></div>
-              <div class="pXSMma_headline">
-                <span class="pXSMma_fishHitbox"><svg xmlns="http://www.w3.org/2000/svg" width="34" height="25" class="pXSMma_fish" viewBox="0 0 23.16 17.04" fill="none" aria-hidden="true">
-  <path d="M22.9168 1.43018C22.6713 1.31018 22.5658 1.53918 22.4223 1.65519C22.3733 1.69269 22.3318 1.74169 22.2903 1.78669C21.9317 2.1697 21.5127 2.42121 20.9657 2.39121C20.1657 2.34621 19.4827 2.59771 18.8787 3.20973C18.7502 2.45521 18.3236 2.0047 17.6746 1.71569C17.3351 1.56568 16.9916 1.41518 16.7536 1.08867C16.5876 0.856163 16.5421 0.597155 16.4591 0.341647C16.4061 0.187643 16.3536 0.0301382 16.1761 0.00363739C15.9836 -0.0263635 15.9081 0.135141 15.8326 0.270145C15.5306 0.822162 15.4136 1.43018 15.4251 2.0462C15.4516 3.43174 16.0366 4.53527 17.1991 5.3203C17.3311 5.4103 17.3651 5.5003 17.3236 5.63181C17.2441 5.90231 17.1501 6.16482 17.0671 6.43533C17.0141 6.60784 16.9351 6.64584 16.7501 6.57033C16.1121 6.30383 15.5611 5.90931 15.074 5.4328C14.2475 4.63328 13.5 3.75075 12.568 3.05973C12.349 2.89822 12.13 2.74822 11.9034 2.60522C10.9524 1.68169 12.028 0.923165 12.277 0.833162C12.5375 0.739159 12.3675 0.41615 11.5259 0.42015C10.6844 0.42365 9.91439 0.705658 8.93286 1.08117C8.78935 1.13767 8.63835 1.17867 8.48384 1.21267C7.59332 1.04367 6.66829 1.00617 5.70226 1.11517C3.88321 1.31768 2.43016 2.1777 1.36213 3.64575C0.0790928 5.4103 -0.222916 7.41536 0.146595 9.50642C0.535106 11.7105 1.66014 13.535 3.38869 14.9616C5.18125 16.4406 7.24581 17.1657 9.60138 17.0266C11.0319 16.9441 12.6245 16.7526 14.421 15.2321C14.874 15.4576 15.3496 15.5476 16.1381 15.6151C16.7456 15.6716 17.3306 15.5851 17.7836 15.4911C18.4931 15.3411 18.4441 14.6841 18.1876 14.5636C16.1081 13.595 16.5646 13.9891 16.1496 13.67C17.2061 12.42 18.8202 10.1979 19.3182 7.17235C19.3672 6.83834 19.4297 6.36783 19.4222 6.09732C19.4182 5.93231 19.4562 5.86831 19.6447 5.84931C20.1657 5.78931 20.6712 5.64681 21.1357 5.3913C22.4833 4.65528 23.0268 3.44624 23.1548 1.9972C23.1738 1.77569 23.1508 1.54668 22.9168 1.43018ZM11.1749 14.4736C9.15936 12.889 8.18184 12.3675 7.77832 12.39C7.40081 12.4125 7.46881 12.8445 7.55182 13.126C7.63882 13.404 7.75182 13.5955 7.91033 13.8396C8.01983 14.0011 8.09533 14.2411 7.80083 14.4216C7.15181 14.8231 6.02327 14.2866 5.97027 14.2601C4.65673 13.4865 3.5587 12.4655 2.78467 11.069C2.03715 9.72493 1.60314 8.28289 1.53164 6.74384C1.51264 6.37233 1.62214 6.24082 1.99215 6.17332C2.47916 6.08332 2.98118 6.06432 3.46769 6.13582C5.52476 6.43633 7.27581 7.35586 8.74385 8.8129C9.58188 9.64243 10.2159 10.634 10.8689 11.6025C11.5634 12.631 12.3105 13.611 13.262 14.4146C13.598 14.6961 13.866 14.9101 14.1225 15.0681C13.349 15.1546 12.058 15.1731 11.1749 14.4746L11.1749 14.4736ZM12.141 8.25988C12.141 8.09488 12.273 7.96338 12.439 7.96338C12.4765 7.96338 12.5105 7.97088 12.541 7.98188C12.5825 7.99688 12.6205 8.01938 12.6505 8.05338C12.7035 8.10588 12.7335 8.18088 12.7335 8.25988C12.7335 8.42489 12.6015 8.55639 12.4355 8.55639C12.2695 8.55639 12.141 8.42489 12.141 8.25988ZM15.1415 9.79893C14.949 9.87793 14.7565 9.94544 14.5715 9.95294C14.2845 9.96794 13.9715 9.85143 13.8015 9.70893C13.5375 9.48742 13.3485 9.36342 13.2695 8.97691C13.2355 8.8119 13.2545 8.55639 13.2845 8.40989C13.3525 8.09438 13.277 7.89187 13.0545 7.70787C12.8735 7.55786 12.643 7.51636 12.39 7.51636C12.2955 7.51636 12.209 7.47486 12.1445 7.44136C12.039 7.38886 11.9519 7.25735 12.035 7.09585C12.0615 7.04335 12.19 6.91584 12.22 6.89334C12.5635 6.69784 12.9595 6.76184 13.326 6.90834C13.6655 7.04735 13.9225 7.30236 14.292 7.66287C14.6695 8.09838 14.7375 8.21838 14.9525 8.54539C15.1225 8.8009 15.277 9.06341 15.3831 9.36392C15.4471 9.55142 15.3641 9.70493 15.1415 9.79893Z" fill="currentColor"/>
-</svg></span>
-                <span class="pXSMma_headlineText">探索未至之境</span>
-                <span class="pXSMma_previewBadge">预览版</span>
+            <div class="wSkVaW_viewArea">
+              <div class="Md3f7G_root">
+                <div class="Md3f7G_scroll">
+                  <div class="Md3f7G_column">
+
+                    <div class="Md3f7G_flowItem">
+                      <div class="gdEzaW_userRow"><div class="gdEzaW_userStack">
+                        <div class="gdEzaW_bubble">Which file does this theme keep its colours in?</div>
+                      </div></div>
+                    </div>
+
+                    <div class="Md3f7G_flowItem">
+                      <div class="QWLzlG_root" data-state="done">
+                        <div class="QWLzlG_row" style="display:flex;align-items:center">
+                          <span class="QWLzlG_leading" style="width:16px;height:16px;display:inline-grid;place-items:center"><svg class="QWLzlG_chevron" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M5 3l5 4-5 4z" fill="currentColor"/></svg></span>
+                          <span class="QWLzlG_title">Thought for 3s</span>
+                          <span class="QWLzlG_separator"></span>
+                          <span class="QWLzlG_summary">a dsh plugin usually keeps the sheet in src/client/style.ts, not a .css file</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="Md3f7G_flowItem">
+                      <div class="_Xvjua_root" data-state="done">
+                        <div class="_Xvjua_row" style="display:flex;align-items:center">
+                          <span class="_Xvjua_leading" style="width:16px;height:16px;display:inline-grid;place-items:center"><svg class="_Xvjua_chevron" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M5 3l5 4-5 4z" fill="currentColor"/></svg></span>
+                          <span class="_Xvjua_title">Bash</span>
+                          <span class="_Xvjua_separator"></span>
+                          <span class="_Xvjua_summary">rg -l "--dsw-" src/</span>
+                        </div>
+                        <div class="_Xvjua_body">src/client/style.ts
+src/client/tokens.ts</div>
+                      </div>
+                    </div>
+
+                    <div class="Md3f7G_flowItem">
+                      <div class="Sxvs8a_root"><div class="Sxvs8a_body">
+                        <p><code>src/client/style.ts</code> — the palette is a template string, so it never shows up as a stylesheet in the tree. Six roles come out of it:</p>
+                        <div class="md-code-block">
+                          <div class="md-banner"><span>css</span><button type="button">复制</button></div>
+                          <pre class="shiki"><code>body[data-dsh-skin] {
+  --dsw-alias-bg-primary: #0d1117;
+  --dsw-alias-label-primary: #ebf0f6;
+  --dsw-alias-brand-primary: #679efe;
+}</code></pre>
+                        </div>
+                        <p>Everything else in the file styles elements the plugin adds at runtime.</p>
+                      </div></div>
+                    </div>
+
+                  </div>
+                </div>
               </div>
-              <div class="wSkVaW_heroWorkspaceRow">
-                <button class="pXSMma_workspace" type="button">
-                  <svg class="pXSMma_folder" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5.19629 1.57104C5.81144 1.5711 6.38623 1.8786 6.72754 2.39038L7.19922 3.09839C7.28454 3.22635 7.42824 3.30344 7.58203 3.30347H12.1699C13.5039 3.30348 14.5859 4.38548 14.5859 5.71948V6.62671C15.2694 7.02689 15.6605 7.85012 15.4385 8.68726L14.3848 12.658C14.1037 13.7164 13.1449 14.4527 12.0498 14.4529H2.91699C1.51651 14.4529 0.451662 13.2814 0.501954 11.9519V3.98706C0.501954 2.65305 1.58396 1.57104 2.91797 1.57104H5.19629ZM3.7793 7.75562C3.30994 7.75562 2.89883 8.07153 2.77832 8.52515L1.91602 11.7722C1.74167 12.4291 2.23734 13.073 2.91699 13.073H12.0498C12.5191 13.0728 12.9304 12.757 13.0508 12.3035L14.1045 8.33374C14.1819 8.04202 13.9619 7.756 13.6602 7.75562H3.7793ZM2.91797 2.9519C2.34625 2.9519 1.88281 3.41534 1.88281 3.98706V7.2937C2.33068 6.7269 3.02249 6.37476 3.7793 6.37476H13.2051V5.71948C13.2051 5.14777 12.7416 4.68434 12.1699 4.68433H7.58203C6.96675 4.6843 6.39209 4.37595 6.05078 3.86401L5.5791 3.15601C5.49379 3.02821 5.34995 2.95196 5.19629 2.9519H2.91797Z" fill="currentColor"/></svg>
-                  <span class="pXSMma_workspaceLabel">选择工作区</span>
-                  <svg class="pXSMma_chevron" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M11.8486 5.5L11.4238 5.92383L8.69727 8.65137C8.44157 8.90706 8.21562 9.13382 8.01172 9.29785C7.79912 9.46883 7.55595 9.61756 7.25 9.66602C7.08435 9.69222 6.91565 9.69222 6.75 9.66602C6.44405 9.61756 6.20088 9.46883 5.98828 9.29785C5.78438 9.13382 5.55843 8.90706 5.30273 8.65137L2.57617 5.92383L2.15137 5.5L3 4.65137L3.42383 5.07617L6.15137 7.80273C6.42595 8.07732 6.59876 8.24849 6.74023 8.3623C6.87291 8.46904 6.92272 8.47813 6.9375 8.48047C6.97895 8.48703 7.02105 8.48703 7.0625 8.48047C7.07728 8.47813 7.12709 8.46904 7.25977 8.3623C7.40124 8.24849 7.57405 8.07732 7.84863 7.80273L10.5762 5.07617L11 4.65137L11.8486 5.5Z" fill="currentColor"/></svg>
-                </button>
-              </div>
-              <div class="uV2eYG_root uV2eYG_hero">
+            </div>
+            <div class="wSkVaW_composerSeat wSkVaW_composerStack">
+              <div class="uV2eYG_root">
                 <div class="uV2eYG_card">
                   <div class="uV2eYG_scroll">
                     <div class="uV2eYG_grow">
                       <div class="uV2eYG_mirror" aria-hidden="true">&nbsp;</div>
-                      <textarea class="uV2eYG_input" placeholder="描述你想要构建的内容" rows="2" readonly></textarea>
+                      <textarea class="uV2eYG_input" placeholder="描述你想要构建的内容" rows="1" readonly></textarea>
                     </div>
                   </div>
                   <div class="uV2eYG_row">
@@ -135,6 +190,7 @@
                   </div>
                 </div>
               </div>
+              <div class="FJxK0a_root">18.4k tokens<span class="FJxK0a_sep">·</span>dsh 0.1.0-rc.6<span class="FJxK0a_sep">·</span>deepseek-v4-pro</div>
             </div>
           </div>
         </div>

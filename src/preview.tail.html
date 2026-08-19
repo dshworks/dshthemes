@@ -48,18 +48,40 @@
       });
     }
 
-    // Theme plugins set host attributes from JS at runtime (valueless
-    // body[data-dsh-*] flags and valued ones like body[data-dsh-skin='miku']).
-    // The mock has no plugin runtime, so mirror both forms here.
+    // Theme plugins set host attributes from JS at runtime: valueless flags
+    // (body[data-dsh-mine]) and valued ones (body[data-dsh-skin='miku']), on
+    // <body> or on <html> depending on the plugin. The mock has no plugin
+    // runtime, so every form is mirrored onto the element the selector names.
     function hostAttrs(css) {
-      const skip = { "ds-dark-theme": 1, scheme: 1 };
-      const seen = {};
-      for (const m of css.matchAll(/body\[data-([a-z0-9-]+)(?:\s*=\s*['"]?([a-z0-9._-]+)['"]?)?\]/gi)) {
-        const name = m[1].toLowerCase();
-        if (skip[name]) continue;
-        if (!(name in seen) || (!seen[name] && m[2])) seen[name] = m[2] || "";
+      const skip = { "ds-dark-theme": 1, scheme: 1, embed: 1, theme: 1 };
+      const seen = { html: {}, body: {} };
+      const classes = { html: new Set(), body: new Set() };
+      const take = (host, name, value) => {
+        name = name.toLowerCase();
+        if (skip[name]) return;
+        const bag = seen[host];
+        value = (value || "").trim();
+        if (!(name in bag) || (!bag[name] && value)) bag[name] = value;
+      };
+      // body[data-dsh-x] / html[data-dsh-x='y']
+      for (const m of css.matchAll(/(^|[\s,>+~{}])(html|body)\s*\[data-([a-z0-9-]+)(?:\s*=\s*['"]?([^'"\]]*)['"]?)?\]/gi)) {
+        take(m[2].toLowerCase(), m[3], m[4]);
       }
-      for (const [name, value] of Object.entries(seen)) document.body.setAttribute("data-" + name, value);
+      // A bare [data-dsh-x] at the head of a selector is the same hook written
+      // without naming the element. Only theme-shaped names are mirrored, so
+      // the shell's own [data-slot], [data-phase] and friends are left alone.
+      for (const m of css.matchAll(/(^|[\s,>+~{}])\[data-((?:dsh|dsw)-[a-z0-9-]+|[a-z0-9-]*(?:skin|theme)[a-z0-9-]*)(?:\s*=\s*['"]?([^'"\]]*)['"]?)?\]/gi)) {
+        take("html", m[2], m[3]);
+        take("body", m[2], m[3]);
+      }
+      // body.theme-academic — a class the plugin adds, same job as an attribute.
+      for (const m of css.matchAll(/(^|[\s,>+~{}])(html|body)\.([A-Za-z_][\w-]*)/g)) {
+        classes[m[2].toLowerCase()].add(m[3]);
+      }
+      for (const [name, value] of Object.entries(seen.html)) document.documentElement.setAttribute("data-" + name, value);
+      for (const [name, value] of Object.entries(seen.body)) document.body.setAttribute("data-" + name, value);
+      for (const c of classes.html) document.documentElement.classList.add(c);
+      for (const c of classes.body) document.body.classList.add(c);
     }
 
     async function injectOverride(url) {

@@ -1,0 +1,410 @@
+/* ai7603/dsh-cyberpunk-theme — lib/client.js
+   fetched 2026-08-19 from https://raw.githubusercontent.com/ai7603/dsh-cyberpunk-theme/main/lib/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+:root {
+  --cp-font: 'Rajdhani', 'Chakra Petch', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --cp-mono: 'Share Tech Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --cp-glow: color-mix(in srgb, var(--dsw-alias-brand-primary) 45%, transparent);
+}
+html[data-cp-enabled],
+html[data-cp-enabled] body { font-family: var(--cp-font) !important; }
+html[data-cp-enabled] button { font-family: var(--cp-font) !important; }
+html[data-cp-enabled] code,
+html[data-cp-enabled] pre,
+html[data-cp-enabled] kbd,
+html[data-cp-enabled] samp { font-family: var(--cp-mono) !important; }
+html[data-cp-enabled] ::selection { background: var(--dsw-alias-brand-primary); color: #08090f; }
+html[data-cp-enabled] :focus-visible { outline: 1px solid var(--dsw-alias-brand-primary); outline-offset: 1px; }
+html[data-cp-enabled] ::-webkit-scrollbar { width: 10px; height: 10px; }
+html[data-cp-enabled] ::-webkit-scrollbar-track { background: transparent; }
+html[data-cp-enabled] ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--dsw-alias-brand-primary) 55%, #0b0c14), color-mix(in srgb, var(--dsw-alias-state-success-primary) 40%, #0b0c14));
+  border: 2px solid var(--dsw-alias-bg-base);
+  border-radius: 6px;
+}
+
+/* HUD typography + terminal touches */
+html[data-cp-enabled] h1,
+html[data-cp-enabled] h2,
+html[data-cp-enabled] h3,
+html[data-cp-enabled] h4 { letter-spacing: 0.06em; }
+html[data-cp-enabled] pre { border-left: 2px solid color-mix(in srgb, var(--dsw-alias-state-success-primary) 35%, transparent); }
+html[data-cp-enabled] input,
+html[data-cp-enabled] textarea { caret-color: var(--dsw-alias-brand-primary); }
+html[data-cp-enabled] input:not([type='checkbox']):not([type='radio']):focus,
+html[data-cp-enabled] textarea:focus,
+html[data-cp-enabled] select:focus {
+  outline: none;
+  border-color: var(--dsw-alias-brand-primary) !important;
+  box-shadow: 0 0 0 1px var(--dsw-alias-brand-primary), 0 0 12px var(--cp-glow);
+}
+
+/* user message bubble → cyberpunk diagonal two-corner cut (top-left + bottom-right),
+   with a neon cut-edge: the 1px border is clipped along the diagonal, so the cut
+   line itself glows */
+html[data-cp-enabled] [data-chat-flow-kind='user'] [data-time-hover-root] > div:first-child > div:last-child {
+  background: color-mix(in srgb, var(--dsw-alias-brand-primary) 14%, var(--dsw-alias-bg-layer-1));
+  border: 1px solid color-mix(in srgb, var(--dsw-alias-brand-primary) 50%, transparent);
+  border-radius: 0;
+  clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--dsw-alias-brand-primary) 30%, transparent);
+  filter: drop-shadow(0 0 10px color-mix(in srgb, var(--dsw-alias-brand-primary) 22%, transparent));
+}
+
+/* tool call groups → a REAL cut-corner card (the underlying rows are chrome-free,
+   so the group seat becomes the visible cyberpunk card) */
+html[data-cp-enabled] [data-chat-flow-kind='tool-call'] {
+  margin: 2px 0 12px;
+  padding: 8px 12px;
+  background: color-mix(in srgb, var(--dsw-alias-brand-primary) 5%, var(--dsw-alias-bg-layer-1));
+  border: 1px solid color-mix(in srgb, var(--dsw-alias-state-success-primary) 25%, transparent);
+  border-radius: 0;
+  clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--dsw-alias-brand-primary) 18%, transparent);
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--dsw-alias-state-success-primary) 12%, transparent));
+}
+
+/* code blocks inside the conversation → two-corner cut too */
+html[data-cp-enabled] [data-chat-flow-kind] pre {
+  border-radius: 0;
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+}
+
+/* sidebar workspace/session rows → cyberpunk: neon rail, tint, accent text */
+html[data-cp-enabled] [role='treeitem'] {
+  position: relative;
+  letter-spacing: 0.02em;
+  transition: background 120ms ease, color 120ms ease;
+}
+html[data-cp-enabled] [role='treeitem']:hover {
+  background: color-mix(in srgb, var(--dsw-alias-brand-primary) 6%, transparent);
+  color: var(--dsw-alias-brand-primary);
+}
+html[data-cp-enabled] [role='treeitem']:hover::before,
+html[data-cp-enabled] [role='treeitem'][aria-selected='true']::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 20%;
+  bottom: 20%;
+  width: 2px;
+  background: var(--dsw-alias-brand-primary);
+  box-shadow: 0 0 8px var(--cp-glow);
+  z-index: 1;
+}
+html[data-cp-enabled] [role='treeitem'][aria-selected='true'] {
+  background: color-mix(in srgb, var(--dsw-alias-brand-primary) 10%, transparent);
+  color: var(--dsw-alias-brand-primary);
+}
+
+/* real New Session button → cut-corner rectangle.
+   NB: the brand wordmark button sits above it and is 100% filled by the
+   wordmark svg — clipping THAT button would cut the brand, so it is left
+   untouched (its wordmark keeps only the flowing color + glitch). The New
+   Session button is the sidebar root's direct button child carrying the
+   14×14 plus icon. */
+html[data-cp-enabled] [data-slot="sidebar"] > div > button:has(> svg[viewBox="0 0 16 16"][width="14"]) {
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  border-radius: 0;
+  border: 1px solid color-mix(in srgb, var(--dsw-alias-brand-primary) 30%, transparent);
+  background: color-mix(in srgb, var(--dsw-alias-brand-primary) 8%, transparent);
+  transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+html[data-cp-enabled] [data-slot="sidebar"] > div > button:has(> svg[viewBox="0 0 16 16"][width="14"]):hover {
+  background: color-mix(in srgb, var(--dsw-alias-brand-primary) 16%, transparent);
+  border-color: color-mix(in srgb, var(--dsw-alias-brand-primary) 50%, transparent);
+}
+
+/* composer card → cut-corner neon frame, drawn on a ::before layer.
+   CRITICAL: never clip-path the card itself — the model selector and
+   reasoning-effort menu render INSIDE the card (conversation.input.overlay
+   anchor), and a clip-path on an ancestor hard-clips its descendants (they
+   cannot escape, not even with position: fixed). The pseudo-element carries
+   the cut shape instead: it paints the card fill + neon border + glow and is
+   clipped alone, so the menus stay fully visible and clickable. */
+html[data-cp-enabled] [data-composer-card] {
+  position: relative;
+  z-index: 0; /* stacking context so the ::before layer stays under the content */
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+html[data-cp-enabled] [data-composer-card]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: var(--dsw-specific-input-major);
+  border: 1px solid color-mix(in srgb, var(--dsw-alias-brand-primary) 35%, transparent);
+  border-radius: 0;
+  clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--dsw-alias-brand-primary) 22%, transparent);
+  filter: drop-shadow(0 4px 12px color-mix(in srgb, var(--dsw-alias-brand-primary) 14%, transparent));
+}
+
+/* brand wordmark + whale logo → flowing palette + glitch flicker */
+html[data-cp-enabled] svg[viewBox="0 0 182 24"],
+html[data-cp-enabled] svg[viewBox="0 0 23.16 17.04"] {
+  animation: cp-brand 8s linear infinite, cp-brand-glitch 5s steps(1) infinite;
+}
+/* empty-session hero: headline + Preview badge follow the little whale's
+   flowing color and RGB glitch (they are the fish hitbox span's siblings) */
+html[data-cp-enabled] span:has(> svg[viewBox="0 0 23.16 17.04"]) + span {
+  color: var(--dsw-alias-brand-primary);
+  animation: cp-brand 8s linear infinite, cp-brand-glitch 5s steps(1) infinite;
+}
+html[data-cp-enabled] span:has(> svg[viewBox="0 0 23.16 17.04"]) + span + span {
+  color: var(--dsw-alias-brand-primary);
+  background: color-mix(in srgb, var(--dsw-alias-brand-primary) 14%, transparent);
+  border-color: color-mix(in srgb, var(--dsw-alias-brand-primary) 45%, transparent);
+  animation: cp-brand 8s linear infinite, cp-brand-glitch 5s steps(1) infinite;
+}
+@keyframes cp-brand {
+  0% { color: #fcee0a; }
+  25% { color: #00f0ff; }
+  50% { color: #ff2d6b; }
+  75% { color: #b026ff; }
+  100% { color: #fcee0a; }
+}
+@keyframes cp-brand-glitch {
+  0%, 85%, 100% { transform: none; filter: none; opacity: 1; }
+  86% { transform: translateX(-2px) skewX(-8deg); opacity: 0.8; filter: drop-shadow(2px 0 0 rgba(255,45,85,0.85)) drop-shadow(-2px 0 0 rgba(0,240,255,0.85)); }
+  89% { transform: translateX(2px) skewX(6deg); opacity: 1; filter: drop-shadow(-2px 0 0 rgba(255,45,85,0.85)) drop-shadow(2px 0 0 rgba(0,240,255,0.85)); }
+  93% { transform: translateX(-1px); opacity: 0.85; filter: drop-shadow(3px 0 0 rgba(255,45,85,0.7)) drop-shadow(-3px 0 0 rgba(0,240,255,0.7)); }
+  97% { transform: none; filter: none; opacity: 1; }
+}
+
+/* ambient overlay */
+html[data-cp-enabled] .cp-overlay { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+html[data-cp-enabled][data-cp-perf='full'] .cp-overlay { transform: translateZ(0); backface-visibility: hidden; }
+html[data-cp-enabled] .cp-layer { position: absolute; inset: 0; }
+html[data-cp-enabled] .cp-grid {
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--dsw-alias-state-success-primary) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--dsw-alias-state-success-primary) 7%, transparent) 1px, transparent 1px);
+  background-size: 44px 44px;
+  -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,0.9) 25%, transparent 72%);
+  mask-image: radial-gradient(ellipse at center, rgba(0,0,0,0.9) 25%, transparent 72%);
+}
+html[data-cp-enabled] .cp-scanlines { background: repeating-linear-gradient(0deg, rgba(0,0,0,0.12) 0px, rgba(0,0,0,0.12) 1px, transparent 1px, transparent 3px); }
+html[data-cp-enabled] [data-ds-dark-theme] .cp-scanlines { background: repeating-linear-gradient(0deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 3px); }
+html[data-cp-enabled] .cp-vignette { background: radial-gradient(ellipse at center, transparent 50%, rgba(4,5,10,0.5) 100%); }
+/* Flowing neon frame, implemented as four THIN EDGE STRIPS instead of one
+   full-screen gradient. Only the small inner strips move, and they animate
+   transform (compositor-only), never background-position (which would
+   force a full-size repaint every frame). The gradient tile is exactly one
+   edge length, so translating the 2x strip by -50% loops seamlessly. */
+html[data-cp-enabled] .cp-ribbon { position: absolute; inset: 0; pointer-events: none; opacity: 0.85; }
+html[data-cp-enabled] .cp-ribbon-edge { position: absolute; overflow: hidden; }
+html[data-cp-enabled] .cp-ribbon-edge--top { top: 2px; left: 2px; right: 2px; height: 2px; }
+html[data-cp-enabled] .cp-ribbon-edge--right { right: 2px; top: 2px; bottom: 2px; width: 2px; }
+html[data-cp-enabled] .cp-ribbon-edge--bottom { bottom: 2px; left: 2px; right: 2px; height: 2px; }
+html[data-cp-enabled] .cp-ribbon-edge--left { left: 2px; top: 2px; bottom: 2px; width: 2px; }
+html[data-cp-enabled] .cp-ribbon-flow { position: absolute; will-change: transform; }
+html[data-cp-enabled] .cp-ribbon-edge--top .cp-ribbon-flow,
+html[data-cp-enabled] .cp-ribbon-edge--bottom .cp-ribbon-flow {
+  top: 0; bottom: 0; left: 0; width: 200%;
+  background: linear-gradient(90deg, #fcee0a 0%, #00f0ff 25%, #ff2d6b 50%, #b026ff 75%, #fcee0a 100%);
+  background-size: 50% 100%;
+  animation: cp-ribbon-flow-x 7s linear infinite;
+}
+html[data-cp-enabled] .cp-ribbon-edge--right .cp-ribbon-flow,
+html[data-cp-enabled] .cp-ribbon-edge--left .cp-ribbon-flow {
+  left: 0; right: 0; top: 0; height: 200%;
+  background: linear-gradient(180deg, #fcee0a 0%, #00f0ff 25%, #ff2d6b 50%, #b026ff 75%, #fcee0a 100%);
+  background-size: 100% 50%;
+  animation: cp-ribbon-flow-y 7s linear infinite;
+}
+html[data-cp-enabled][data-cp-perf='full'] .cp-ribbon-edge { box-shadow: 0 0 8px rgba(0,240,255,0.35); }
+@keyframes cp-ribbon-flow-x {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes cp-ribbon-flow-y {
+  from { transform: translateY(0); }
+  to { transform: translateY(-50%); }
+}
+html[data-cp-enabled] .cp-glitch {
+  opacity: 0;
+  background: linear-gradient(180deg,
+    transparent 0%, transparent 18%,
+    color-mix(in srgb, var(--dsw-alias-state-success-primary) 18%, transparent) 18.2%,
+    transparent 18.8%,
+    transparent 42%,
+    color-mix(in srgb, var(--dsw-alias-brand-primary) 14%, transparent) 42.2%,
+    transparent 42.8%,
+    transparent 66%,
+    color-mix(in srgb, #ff2d6b 12%, transparent) 66.2%,
+    transparent 66.8%,
+    transparent 100%);
+  animation: cp-glitch 6s steps(1) infinite;
+}
+@keyframes cp-glitch {
+  0%, 100% { opacity: 0; transform: translateX(0); }
+  1% { opacity: 0.8; transform: translateX(-6px) skewX(-8deg); }
+  3% { opacity: 0; }
+  4% { opacity: 0.6; transform: translateX(5px); }
+  6% { opacity: 0; transform: translateX(0); }
+  27% { opacity: 0; }
+  28% { opacity: 0.7; transform: translateX(4px) skewX(7deg); }
+  30% { opacity: 0; }
+  31% { opacity: 0.55; transform: translateX(-4px); }
+  33% { opacity: 0; transform: translateX(0); }
+  53% { opacity: 0; }
+  54% { opacity: 0.7; transform: translateX(-5px) skewX(-7deg); }
+  56% { opacity: 0; }
+  57% { opacity: 0.55; transform: translateX(5px); }
+  59% { opacity: 0; transform: translateX(0); }
+  79% { opacity: 0; }
+  80% { opacity: 0.65; transform: translateX(4px) skewX(8deg); }
+  82% { opacity: 0; }
+  83% { opacity: 0.5; transform: translateX(-4px); }
+  85% { opacity: 0; transform: translateX(0); }
+}
+
+/* shipped LLM stats line → compact one-line chips, color synced with the brand (same keyframes) */
+html[data-cp-enabled] div:has(+ .cp-status) > span:not([aria-hidden]) {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 2px;
+  padding: 1px 6px;
+  font-size: 11px;
+  border: 1px solid color-mix(in srgb, #00f0ff 20%, transparent);
+  color: #fcee0a;
+  clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
+  animation: cp-brand 8s linear infinite, cp-stats-glitch 8s steps(1) infinite;
+}
+html[data-cp-enabled] div:has(+ .cp-status) > span[aria-hidden] { display: none; }
+@keyframes cp-stats-glitch {
+  0%, 88%, 100% { transform: none; filter: drop-shadow(0 0 6px rgba(0,240,255,0.35)); opacity: 1; }
+  89% { transform: translateX(-1px); opacity: 0.85; filter: drop-shadow(1px 0 0 rgba(255,45,85,0.6)) drop-shadow(-1px 0 0 rgba(0,240,255,0.6)); }
+  93% { transform: translateX(1px); opacity: 1; filter: drop-shadow(-1px 0 0 rgba(255,45,85,0.6)) drop-shadow(1px 0 0 rgba(0,240,255,0.6)); }
+  96% { transform: translateX(-1px); opacity: 0.85; filter: drop-shadow(2px 0 0 rgba(255,45,85,0.55)) drop-shadow(-2px 0 0 rgba(0,240,255,0.55)); }
+  98% { transform: none; filter: drop-shadow(0 0 6px rgba(0,240,255,0.35)); opacity: 1; }
+}
+
+/* status strip under the composer stats line */
+html[data-cp-enabled] .cp-status {
+  display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+  font-family: var(--cp-mono); font-size: 11px; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--dsw-alias-label-secondary);
+}
+html[data-cp-enabled] .cp-status-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 2px 8px; border: 1px solid var(--dsw-alias-border-l2);
+  color: var(--dsw-alias-label-secondary);
+  clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
+}
+html[data-cp-enabled] .cp-status-time { color: var(--dsw-alias-brand-primary); border-color: color-mix(in srgb, var(--dsw-alias-brand-primary) 45%, transparent); }
+html[data-cp-enabled] .cp-status-net { color: var(--dsw-alias-state-success-primary); border-color: color-mix(in srgb, var(--dsw-alias-state-success-primary) 45%, transparent); }
+html[data-cp-enabled] .cp-status-net[data-net='offline'] { color: var(--dsw-alias-state-error-primary); border-color: color-mix(in srgb, var(--dsw-alias-state-error-primary) 45%, transparent); }
+html[data-cp-enabled] .cp-status-net[data-net='sync'] { color: var(--dsw-alias-state-warn-primary); border-color: color-mix(in srgb, var(--dsw-alias-state-warn-primary) 45%, transparent); }
+html[data-cp-enabled] .cp-status-dot { animation: cp-dot 2s ease-in-out infinite; }
+html[data-cp-enabled] .cp-status-net[data-net='offline'] .cp-status-dot,
+html[data-cp-enabled] .cp-status-net[data-net='sync'] .cp-status-dot { animation: none; }
+@keyframes cp-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
+html[data-cp-enabled] .cp-status--glitch .cp-status-chip { animation: cp-status-glitch 5s steps(1) infinite; }
+html[data-cp-enabled] .cp-status--glitch .cp-status-chip:nth-child(2) { animation-delay: -1.2s; }
+html[data-cp-enabled] .cp-status--glitch .cp-status-chip:nth-child(3) { animation-delay: -2.4s; }
+html[data-cp-enabled] .cp-status--glitch .cp-status-chip:nth-child(4) { animation-delay: -3.6s; }
+@keyframes cp-status-glitch {
+  0%, 84%, 100% { transform: none; text-shadow: none; opacity: 1; }
+  85% { transform: translateX(-2px) skewX(-4deg); text-shadow: 2px 0 #ff2d55, -2px 0 #00f0ff; }
+  89% { transform: translateX(2px); text-shadow: -2px 0 #ff2d55, 2px 0 #00f0ff; }
+  93% { transform: translateX(-1px); opacity: 0.7; text-shadow: 2px 0 #ff2d55, -2px 0 #00f0ff; }
+  97% { transform: none; text-shadow: none; opacity: 1; }
+}
+
+/* settings page */
+.cp-settings { padding: 6px 4px; max-width: 680px; color: var(--dsw-alias-label-primary); }
+.cp-settings-title { margin: 0 0 4px; font-size: 22px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+.cp-settings-sub { margin: 0 0 20px; font-size: 13px; color: var(--dsw-alias-label-secondary); letter-spacing: 0.02em; }
+.cp-group { margin-bottom: 22px; }
+.cp-group-label { margin-bottom: 8px; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dsw-alias-label-secondary); }
+.cp-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.cp-note { font-size: 12px; letter-spacing: 0.04em; color: var(--dsw-alias-label-secondary); }
+.cp-note strong { color: var(--dsw-alias-label-primary); }
+.cp-btn {
+  appearance: none; cursor: pointer; border: 1px solid var(--dsw-alias-border-l2);
+  background: var(--dsw-alias-bg-layer-1); color: var(--dsw-alias-label-primary);
+  font-family: var(--cp-font); font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+  padding: 9px 14px;
+  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  transition: filter 120ms ease, border-color 120ms ease, background 120ms ease, color 120ms ease;
+}
+.cp-btn:hover { border-color: var(--dsw-alias-brand-primary); filter: drop-shadow(0 0 6px var(--cp-glow)); }
+.cp-btn--active { background: var(--dsw-alias-brand-primary); border-color: var(--dsw-alias-brand-primary); color: #08090f; filter: drop-shadow(0 0 8px var(--cp-glow)); }
+.cp-btn--dark {
+  background: var(--dsw-alias-brand-primary); border-color: var(--dsw-alias-brand-primary); color: #08090f;
+  filter: drop-shadow(0 0 8px var(--cp-glow));
+}
+.cp-toggle { display: flex; align-items: center; gap: 10px; padding: 10px 0; cursor: pointer; font-size: 14px; letter-spacing: 0.04em; }
+.cp-toggle input { width: 16px; height: 16px; accent-color: var(--dsw-alias-brand-primary); cursor: pointer; }
+.cp-group--off { opacity: 0.5; }
+.cp-btn:disabled { cursor: not-allowed; opacity: 0.45; filter: none; }
+.cp-toggle input:disabled { cursor: not-allowed; opacity: 0.45; }
+.cp-toggle--master { padding: 12px 0; font-size: 15px; }
+.cp-toggle--master span { font-weight: 700; letter-spacing: 0.08em; }
+
+/* performance tiers.
+   full: every ambient layer + all motion, promoted to its own compositor
+   layer so the animated ribbon/glitch do not repaint the app underneath.
+   balanced (default): transform-only edge ribbon (slowed + stepped), static
+   grid/scanlines/vignette, no decorative filters; brand/stats/status keep
+   only their tiny intermittent glitch flashes (no continuous color flow).
+   eco: no static atmosphere, no decorative drop-shadows or transitions;
+   keeps the screen glitch + brand/stats/status glitch flashes. */
+html[data-cp-enabled][data-cp-perf='balanced'] .cp-ribbon { opacity: 0.55; }
+html[data-cp-enabled][data-cp-perf='balanced'] .cp-ribbon-flow { animation-duration: 30s; animation-timing-function: steps(90, end); }
+html[data-cp-enabled][data-cp-perf='balanced'] .cp-grid { background-size: 64px 64px; }
+html[data-cp-enabled][data-cp-perf='balanced'] .cp-scanlines { background: repeating-linear-gradient(0deg, rgba(0,0,0,0.08) 0px, rgba(0,0,0,0.08) 1px, transparent 1px, transparent 6px); }
+html[data-cp-enabled][data-cp-perf='balanced'] [data-ds-dark-theme] .cp-scanlines { background: repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 6px); }
+html[data-cp-enabled][data-cp-perf='balanced'] .cp-vignette { background: radial-gradient(ellipse at center, transparent 58%, rgba(4,5,10,0.35) 100%); }
+html[data-cp-enabled][data-cp-perf='balanced'] svg[viewBox="0 0 182 24"],
+html[data-cp-enabled][data-cp-perf='balanced'] svg[viewBox="0 0 23.16 17.04"] { animation: cp-brand-glitch 5s steps(1) infinite; color: var(--dsw-alias-brand-primary); }
+html[data-cp-enabled][data-cp-perf='balanced'] span:has(> svg[viewBox="0 0 23.16 17.04"]) + span,
+html[data-cp-enabled][data-cp-perf='balanced'] span:has(> svg[viewBox="0 0 23.16 17.04"]) + span + span { animation: cp-brand-glitch 5s steps(1) infinite; color: var(--dsw-alias-brand-primary); }
+html[data-cp-enabled][data-cp-perf='balanced'] div:has(+ .cp-status) > span:not([aria-hidden]) { animation: cp-stats-glitch 8s steps(1) infinite; color: var(--dsw-alias-brand-primary); }
+html[data-cp-enabled][data-cp-perf='balanced'] .cp-status--glitch .cp-status-chip { animation: cp-status-glitch 5s steps(1) infinite; }
+html[data-cp-enabled][data-cp-perf='balanced'] .cp-status-dot { animation: none !important; }
+html[data-cp-enabled][data-cp-perf='balanced'] [data-chat-flow-kind='user'] [data-time-hover-root] > div:first-child > div:last-child { filter: none; }
+html[data-cp-enabled][data-cp-perf='balanced'] [data-chat-flow-kind='tool-call'] { filter: none; }
+html[data-cp-enabled][data-cp-perf='balanced'] [data-composer-card]::before { filter: none; }
+
+html[data-cp-enabled][data-cp-perf='eco'] .cp-ribbon,
+html[data-cp-enabled][data-cp-perf='eco'] .cp-grid,
+html[data-cp-enabled][data-cp-perf='eco'] .cp-scanlines,
+html[data-cp-enabled][data-cp-perf='eco'] .cp-vignette { display: none !important; }
+html[data-cp-enabled][data-cp-perf='eco'] svg[viewBox="0 0 182 24"],
+html[data-cp-enabled][data-cp-perf='eco'] svg[viewBox="0 0 23.16 17.04"] { animation: cp-brand-glitch 5s steps(1) infinite; color: var(--dsw-alias-brand-primary); }
+html[data-cp-enabled][data-cp-perf='eco'] span:has(> svg[viewBox="0 0 23.16 17.04"]) + span,
+html[data-cp-enabled][data-cp-perf='eco'] span:has(> svg[viewBox="0 0 23.16 17.04"]) + span + span { animation: cp-brand-glitch 5s steps(1) infinite; color: var(--dsw-alias-brand-primary); }
+html[data-cp-enabled][data-cp-perf='eco'] div:has(+ .cp-status) > span:not([aria-hidden]) { animation: cp-stats-glitch 8s steps(1) infinite; color: var(--dsw-alias-brand-primary) !important; }
+html[data-cp-enabled][data-cp-perf='eco'] .cp-status--glitch .cp-status-chip { animation: cp-status-glitch 5s steps(1) infinite; }
+html[data-cp-enabled][data-cp-perf='eco'] .cp-status-dot { animation: none !important; }
+html[data-cp-enabled][data-cp-perf='eco'] [data-chat-flow-kind='user'] [data-time-hover-root] > div:first-child > div:last-child,
+html[data-cp-enabled][data-cp-perf='eco'] [data-chat-flow-kind='tool-call'],
+html[data-cp-enabled][data-cp-perf='eco'] [data-composer-card]::before { filter: none; box-shadow: none; }
+html[data-cp-enabled][data-cp-perf='eco'] .cp-btn { transition: none; }
+html[data-cp-enabled][data-cp-perf='eco'] .cp-btn--active,
+html[data-cp-enabled][data-cp-perf='eco'] .cp-btn--dark { filter: none; }
+html[data-cp-enabled][data-cp-perf='eco'] [role='treeitem'],
+html[data-cp-enabled][data-cp-perf='eco'] [data-slot="sidebar"] > div > button:has(> svg[viewBox="0 0 16 16"][width="14"]) { transition: none; }
+@media (prefers-reduced-motion: reduce) {
+  html[data-cp-enabled] svg[viewBox="0 0 182 24"],
+  html[data-cp-enabled] svg[viewBox="0 0 23.16 17.04"] { animation: none !important; color: var(--dsw-alias-brand-primary) !important; }
+  html[data-cp-enabled] span:has(> svg[viewBox="0 0 23.16 17.04"]) + span,
+  html[data-cp-enabled] span:has(> svg[viewBox="0 0 23.16 17.04"]) + span + span { animation: none !important; color: var(--dsw-alias-brand-primary) !important; }
+  html[data-cp-enabled] div:has(+ .cp-status) > span:not([aria-hidden]) { animation: none !important; color: var(--dsw-alias-brand-primary) !important; }
+  html[data-cp-enabled] [data-slot="sidebar"] > div > button:has(> svg[viewBox="0 0 16 16"][width="14"]) { transition: none; }
+  html[data-cp-enabled] .cp-glitch { animation: none !important; opacity: 0 !important; }
+  html[data-cp-enabled] .cp-ribbon-flow { animation: none !important; }
+  html[data-cp-enabled] .cp-status--glitch .cp-status-chip { animation: none !important; }
+  html[data-cp-enabled] .cp-status-dot { animation: none !important; }
+  html[data-cp-enabled] [role='treeitem'] { transition: none; }
+  .cp-btn { transition: none; }
+}

@@ -1,0 +1,282 @@
+/* gavinlee9051/dsh-modern-skin — styles/modern-skin.css
+   fetched 2026-08-19 from https://raw.githubusercontent.com/gavinlee9051/dsh-modern-skin/main/styles/modern-skin.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* ============================================================
+   DeepSeek Harness — Modern Skin (v2)
+   Codex / Claude-Code inspired visual refresh.
+   Overrides the --dsw-* design tokens for BOTH palettes; loaded
+   after the base bundle so the cascade applies to every component.
+   Light values on body, dark overrides on body[data-ds-dark-theme]
+   (the same contract as design-platform.css).
+   ============================================================ */
+
+/* ---------- Light palette ---------- */
+body {
+  /* Surfaces */
+  --dsw-alias-bg-base: #f3f3f0;
+  --dsw-alias-bg-layer-1: #ffffff;
+  --dsw-alias-bg-layer-2: #ffffff;
+  --dsw-alias-bg-layer-3: #ffffff;
+  --dsw-alias-bg-overlay: #ffffff;
+  --dsw-alias-bg-module-platform: #ecece8;
+  --dsw-alias-bg-multi-select: #ecece8;
+  --dsw-alias-bg-skeleton: rgba(15, 23, 42, 0.05);
+
+  /* Masks */
+  --dsw-alias-bg-mask-1: rgba(15, 23, 42, 0.45);
+  --dsw-alias-bg-mask-2: rgba(15, 23, 42, 0.12);
+  --dsw-alias-bg-mask-3: rgba(15, 23, 42, 0.55);
+  --dsw-alias-bg-mask-photo: rgba(15, 23, 42, 0.85);
+  --dsw-alias-bg-mask-drop: rgba(255, 255, 255, 0.72);
+
+  /* Borders */
+  --dsw-alias-border-inverted2: rgba(255, 255, 255, 0.12);
+  --dsw-alias-border-inverted: rgba(255, 255, 255, 0.08);
+  --dsw-alias-border-l1: rgba(15, 23, 42, 0.08);
+  --dsw-alias-border-l2-darkmode-thin: rgba(15, 23, 42, 0.08);
+  --dsw-alias-border-l2: rgba(15, 23, 42, 0.12);
+  --dsw-alias-border-l3: rgba(15, 23, 42, 0.14);
+  --dsw-alias-border-l4: rgba(15, 23, 42, 0.18);
+
+  /* Brand — "ink" buttons like Codex light mode */
+  --dsw-alias-brand-primary-invert: #ffffff;
+  --dsw-alias-brand-primary-new-colorprimary-new-color: #2f66e8;
+  --dsw-alias-brand-primary: #17181c;
+  --dsw-alias-brand-text: #17181c;
+
+  /* Buttons */
+  --dsw-alias-button-contrast-fill: #3f434a;
+  --dsw-alias-button-elevated-fill: #ffffff;
+  --dsw-alias-button-floating-fill: #ffffff;
+  --dsw-alias-button-floating-hover: #f4f4f2;
+  --dsw-alias-button-ghost-active-border: #9ba0a8;
+  --dsw-alias-button-ghost-active-fill: #eaeae7;
+  --dsw-alias-button-ghost-active-hover: #e2e2df;
+  --dsw-alias-button-info-fill: #3b6fe0;
+  --dsw-alias-button-info-hover: #2f5ee0;
+  --dsw-alias-button-primary-dimmed: #eaeae7;
+  --dsw-alias-button-primary-fill: var(--dsw-alias-brand-primary);
+  --dsw-alias-button-primary-hover: #2e3036;
+  --dsw-alias-button-tool-bar-fill-invisible: rgba(31, 31, 31, 0.36);
+  --dsw-alias-button-tool-bar-fill: rgba(80, 85, 92, 0.55);
+  --dsw-alias-button-tool-bar-hover: rgba(80, 85, 92, 0.65);
+
+  /* Interactive */
+  --dsw-alias-interactive-bg-active: rgba(15, 23, 42, 0.08);
+  --dsw-alias-interactive-bg-hover-accent: rgba(59, 111, 224, 0.1);
+  --dsw-alias-interactive-bg-hover-danger: rgba(229, 72, 77, 0.06);
+  --dsw-alias-interactive-bg-hover-solid: #f2f2f0;
+  --dsw-alias-interactive-bg-hover: rgba(15, 23, 42, 0.06);
+
+  /* Labels */
+  --dsw-alias-label-caption: #9ba1a9;
+  --dsw-alias-label-dimmed: #c9cdd3;
+  --dsw-alias-label-primary-bluish: #14306b;
+  --dsw-alias-label-primary-dimmed: #22262c;
+  --dsw-alias-label-primary-foreground: #ffffff;
+  --dsw-alias-label-primary-inverted: #ffffff;
+  --dsw-alias-label-primary: #17181c;
+  --dsw-alias-label-secondary: #4b4f57;
+  --dsw-alias-label-tertiary: #767b84;
+
+  /* Markdown / code */
+  --dsw-alias-markdown-citation: #f0f0ed;
+  --dsw-alias-markdown-code-block-banner: #efefec;
+  --dsw-alias-markdown-code-block: #f5f5f3;
+  --dsw-alias-markdown-code-segment-selected: #ffffff;
+  --dsw-alias-markdown-code-segment-unselected: #f4f4f1;
+  --dsw-alias-markdown-inline-code: #eeeee9;
+  --dsw-alias-markdown-placeholder: #f5f5f3;
+  --dsw-alias-markdown-tag: #efefeb;
+
+  /* Scrollbar */
+  --dsw-alias-scrollbar-bg-l1: #d7d9dd;
+  --dsw-alias-scrollbar-bg-l2: #d7d9dd;
+  --dsw-alias-scrollbar-hover-l1: #bec2c9;
+  --dsw-alias-scrollbar-hover-l2: #bec2c9;
+
+  /* States */
+  --dsw-alias-state-business-primary: #3b6fe0;
+  --dsw-alias-state-business-tertiary: #e3ebfd;
+  --dsw-alias-state-error-primary: #e5484d;
+  --dsw-alias-state-error-secondary: #f2555a;
+  --dsw-alias-state-success-primary: #1fa971;
+  --dsw-alias-state-success-secondary: #3ecf8e;
+  --dsw-alias-state-success-tertiary: #e3f6ec;
+  --dsw-alias-state-warn-label: #b45309;
+  --dsw-alias-state-warn-primary: #f59e0b;
+  --dsw-alias-state-warn-secondary: #f7b73c;
+  --dsw-alias-state-warn-tertiary: #fdf0dc;
+  --dsw-alias-toast-bg: #23262b;
+  --dsw-alias-tooltip-bg: #23262b;
+
+  /* Feature-specific */
+  --dsw-specific-bubble-highlight: #d2e0fb;
+  --dsw-specific-bubble: #e9f0fd;
+  --dsw-specific-input-major: #ffffff;
+  --dsw-specific-login-input: #fafaf8;
+  --dsw-specific-menu: var(--dsw-alias-bg-layer-3);
+  --dsw-specific-selector: #f2f2f0;
+  --dsw-specific-sidebar-fill: #ecece9;
+  --dsw-specific-sidebar-nav-item-active-accent: #d6e2fa;
+  --dsw-specific-sidebar-nav-item-active: #e2e2dd;
+  --dsw-specific-sidebar-nav-item-hover: #e8e8e4;
+  --dsw-specific-tip: #f4f4f1;
+
+  /* Shadows — soft, layered */
+  --dsw-shadow-lv1: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --dsw-shadow-lv1-blur: 0 4px 12px rgba(15, 23, 42, 0.04);
+  --dsw-shadow-lv2: 0 2px 8px rgba(15, 23, 42, 0.05), 0 12px 28px rgba(15, 23, 42, 0.08);
+  --dsw-shadow-lv3: 0 0 1px rgba(15, 23, 42, 0.12), 0 10px 20px rgba(15, 23, 42, 0.07), 0 28px 56px rgba(15, 23, 42, 0.12);
+}
+
+/* ---------- Dark palette ---------- */
+body[data-ds-dark-theme] {
+  /* Surfaces — rich near-black with a cool blue tint */
+  --dsw-alias-bg-base: #0f1115;
+  --dsw-alias-bg-layer-1: #17191e;
+  --dsw-alias-bg-layer-2: #1c1f24;
+  --dsw-alias-bg-layer-3: #21242b;
+  --dsw-alias-bg-overlay: #1e2126;
+  --dsw-alias-bg-module-platform: #1a1d22;
+  --dsw-alias-bg-multi-select: #1a1d22;
+  --dsw-alias-bg-skeleton: rgba(255, 255, 255, 0.06);
+
+  /* Masks */
+  --dsw-alias-bg-mask-1: rgba(0, 0, 0, 0.55);
+  --dsw-alias-bg-mask-2: rgba(0, 0, 0, 0.3);
+  --dsw-alias-bg-mask-3: rgba(0, 0, 0, 0.55);
+  --dsw-alias-bg-mask-photo: rgba(0, 0, 0, 0.85);
+  --dsw-alias-bg-mask-drop: rgba(23, 25, 30, 0.75);
+
+  /* Borders */
+  --dsw-alias-border-inverted2: rgba(255, 255, 255, 0.12);
+  --dsw-alias-border-inverted: rgba(255, 255, 255, 0.08);
+  --dsw-alias-border-l1: rgba(255, 255, 255, 0.06);
+  --dsw-alias-border-l2-darkmode-thin: rgba(255, 255, 255, 0.07);
+  --dsw-alias-border-l2: rgba(255, 255, 255, 0.1);
+  --dsw-alias-border-l3: rgba(255, 255, 255, 0.14);
+  --dsw-alias-border-l4: rgba(255, 255, 255, 0.18);
+
+  /* Brand — light ink buttons in dark mode */
+  --dsw-alias-brand-primary-invert: #17181c;
+  --dsw-alias-brand-primary-new-colorprimary-new-color: #6e9bff;
+  --dsw-alias-brand-primary: #f0f1f4;
+  --dsw-alias-brand-text: #f0f1f4;
+
+  /* Buttons */
+  --dsw-alias-button-contrast-fill: #f0f1f4;
+  --dsw-alias-button-elevated-fill: #23262c;
+  --dsw-alias-button-floating-fill: #1c1f24;
+  --dsw-alias-button-floating-hover: #21242b;
+  --dsw-alias-button-ghost-active-border: #5c616b;
+  --dsw-alias-button-ghost-active-fill: #262930;
+  --dsw-alias-button-ghost-active-hover: #2b2f36;
+  --dsw-alias-button-info-fill: #4d7ef0;
+  --dsw-alias-button-info-hover: #5f8df5;
+  --dsw-alias-button-primary-dimmed: #262930;
+  --dsw-alias-button-primary-fill: var(--dsw-alias-brand-primary);
+  --dsw-alias-button-primary-hover: #d9dbe0;
+  --dsw-alias-button-tool-bar-fill-invisible: rgba(31, 31, 31, 0.36);
+  --dsw-alias-button-tool-bar-fill: rgba(148, 154, 166, 0.35);
+  --dsw-alias-button-tool-bar-hover: rgba(148, 154, 166, 0.45);
+
+  /* Interactive */
+  --dsw-alias-interactive-bg-active: rgba(255, 255, 255, 0.12);
+  --dsw-alias-interactive-bg-hover-accent: rgba(110, 155, 255, 0.14);
+  --dsw-alias-interactive-bg-hover-danger: rgba(242, 85, 90, 0.14);
+  --dsw-alias-interactive-bg-hover-solid: #202329;
+  --dsw-alias-interactive-bg-hover: rgba(255, 255, 255, 0.07);
+
+  /* Labels */
+  --dsw-alias-label-caption: #60656e;
+  --dsw-alias-label-dimmed: #383c44;
+  --dsw-alias-label-primary-bluish: #cdd9f5;
+  --dsw-alias-label-primary-dimmed: #dde0e6;
+  --dsw-alias-label-primary-foreground: #17181c;
+  --dsw-alias-label-primary-inverted: #21242b;
+  --dsw-alias-label-primary: #f0f1f4;
+  --dsw-alias-label-secondary: #a7acb5;
+  --dsw-alias-label-tertiary: #7e838d;
+
+  /* Markdown / code */
+  --dsw-alias-markdown-citation: #1a1d23;
+  --dsw-alias-markdown-code-block-banner: #16181d;
+  --dsw-alias-markdown-code-block: #14161a;
+  --dsw-alias-markdown-code-segment-selected: #1d2026;
+  --dsw-alias-markdown-code-segment-unselected: #15181d;
+  --dsw-alias-markdown-inline-code: #1d2026;
+  --dsw-alias-markdown-placeholder: #171a1f;
+  --dsw-alias-markdown-tag: #191c22;
+
+  /* Scrollbar */
+  --dsw-alias-scrollbar-bg-l1: #3a3e46;
+  --dsw-alias-scrollbar-bg-l2: #3a3e46;
+  --dsw-alias-scrollbar-hover-l1: #4a4f58;
+  --dsw-alias-scrollbar-hover-l2: #4a4f58;
+
+  /* States */
+  --dsw-alias-state-business-primary: #5f8df5;
+  --dsw-alias-state-business-tertiary: #16223c;
+  --dsw-alias-state-error-primary: #f2555a;
+  --dsw-alias-state-error-secondary: #ff6a6f;
+  --dsw-alias-state-success-primary: #34c07e;
+  --dsw-alias-state-success-secondary: #3ed394;
+  --dsw-alias-state-success-tertiary: #122a20;
+  --dsw-alias-state-warn-label: #f5b84e;
+  --dsw-alias-state-warn-primary: #f5a524;
+  --dsw-alias-state-warn-secondary: #f7b84e;
+  --dsw-alias-state-warn-tertiary: #2b2114;
+  --dsw-alias-toast-bg: #2b2f36;
+  --dsw-alias-tooltip-bg: #2b2f36;
+
+  /* Feature-specific */
+  --dsw-specific-bubble-highlight: #222a40;
+  --dsw-specific-bubble: #1a1d24;
+  --dsw-specific-input-major: #1c1f24;
+  --dsw-specific-login-input: #171a1f;
+  --dsw-specific-menu: var(--dsw-alias-bg-layer-3);
+  --dsw-specific-selector: #1a1d22;
+  --dsw-specific-sidebar-fill: #12141a;
+  --dsw-specific-sidebar-nav-item-active-accent: #1b2234;
+  --dsw-specific-sidebar-nav-item-active: #1e222b;
+  --dsw-specific-sidebar-nav-item-hover: #191c23;
+  --dsw-specific-tip: #1a1d22;
+
+  /* Shadows — deep, soft */
+  --dsw-shadow-lv1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --dsw-shadow-lv1-blur: 0 4px 12px rgba(0, 0, 0, 0.25);
+  --dsw-shadow-lv2: 0 2px 8px rgba(0, 0, 0, 0.3), 0 12px 28px rgba(0, 0, 0, 0.35);
+  --dsw-shadow-lv3: 0 0 1px rgba(0, 0, 0, 0.6), 0 12px 32px rgba(0, 0, 0, 0.45), 0 32px 64px rgba(0, 0, 0, 0.5);
+}
+
+/* ---------- Refinements ---------- */
+
+/* Modern pill scrollbars (replaces the 4px square thumb) */
+::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  border-radius: 999px;
+}
+
+/* Smooth theme switching without jank */
+@media (prefers-reduced-motion: no-preference) {
+  body,
+  body *,
+  body *::before,
+  body *::after {
+    transition-property: background-color, border-color, color, fill, stroke, box-shadow;
+    transition-duration: 160ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+/* Sharper markdown headings and links for a modern feel */
+body {
+  --dsw-font-markdown-h1: 700 22px/32px var(--dsw-font-family);
+  --dsw-font-markdown-h2: 700 19px/28px var(--dsw-font-family);
+  --dsw-font-markdown-h3: 600 17px/26px var(--dsw-font-family);
+  --dsw-font-markdown-h4: 600 15px/24px var(--dsw-font-family);
+}
+

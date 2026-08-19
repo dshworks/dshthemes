@@ -1,0 +1,404 @@
+/* zhangyuzhangyu233/dsh-angelsanddemon-fatesumphony-skin — client.js
+   fetched 2026-08-19 from https://raw.githubusercontent.com/zhangyuzhangyu233/dsh-angelsanddemon-fatesumphony-skin/main/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/* ============ 《天魔命曲》皮肤 ============ */
+
+/* --- 1. 页面光标（mouse.png → .cur，热点 2,2） --- */
+body[data-dsh-tenma] { }
+body[data-dsh-tenma] textarea,
+body[data-dsh-tenma] input { cursor: text; }
+
+/* --- 2. 壁纸（background.png → jpg）：全局一整张完整显示 ---
+   固定定位的独立图层承载（不用 background-attachment:fixed，
+   后者在浏览器缩放时会把背景渲染成条块）；100% 拉伸保证整图无裁剪。 */
+body[data-dsh-tenma] {
+  background: #86a7d6;
+}
+body[data-dsh-tenma]::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+body[data-dsh-tenma] [data-slot='root'] > :first-child { background: transparent; }
+body[data-dsh-tenma] [data-slot='conversation'] > :first-child {
+  background: transparent;
+  /* 平行四边形（输入框）调大：放宽聊天内容宽度 */
+  --dsh-chat-content-width: 950px;
+  --dsh-composer-card-max-width: calc(950px + 32px);
+}
+/* 右侧详情面板半透明，让壁纸全局透出 */
+body[data-dsh-tenma] [data-slot='details'] > :first-child {
+  background: rgba(255, 255, 255, 0.82);
+}
+
+/* --- 2.5 中和液态玻璃插件的覆盖层 ---
+   若同机启用了 dsh-liquid-glass，其壁纸层会盖住本皮肤背景
+   （底部白色渐变即其所为），其玻璃岛也会叠在自定义表面上；全部移除。 */
+body[data-dsh-tenma] [data-dsh-liquid-glass-wallpaper] {
+  display: none !important;
+}
+body[data-dsh-tenma] [data-slot='sidebar'] > :first-child::before,
+body[data-dsh-tenma] [data-slot='conversation'] > :first-child::before {
+  display: none !important;
+}
+
+/* --- 3. 空会话（hero 态）：跟随全局壁纸（效果图 JPG 仅作参考，不再当背景用） --- */
+
+/* --- 3.5 工作区标题行：右侧三个图标（搜索/状态/添加）移到“工作区”文字下方 --- */
+body[data-dsh-tenma] [data-slot='sidebar.workspaces'] > :first-child > :first-child {
+  flex-wrap: wrap;
+  height: auto;
+  justify-content: flex-start;
+  row-gap: 2px;
+  padding-bottom: 3px;
+}
+body[data-dsh-tenma] [data-slot='sidebar.workspaces'] > :first-child > :first-child > :first-child {
+  flex: 1 0 100%;
+  max-width: none !important;
+}
+body[data-dsh-tenma] [data-slot='sidebar.workspaces'] > :first-child > :first-child > :nth-child(2) {
+  margin-left: 0;
+}
+
+/* 3.6 会话树：展开/折叠按钮靠左对齐（去掉 28px 左内边距，与列表文字 x21 对齐） */
+body[data-dsh-tenma] [data-slot='sidebar.workspaces'] [role='tree'] button {
+  padding-left: 9px;
+}
+/* 所有未选中条目（会话 + 工作区行）：白色半透明背景清零 + 去掉线框；选中项保留纯白/蓝框 */
+body[data-dsh-tenma] [data-slot='sidebar'] [role='treeitem']:not([aria-selected='true']) {
+  background: transparent !important;
+  border: none !important;
+}
+/* 选中项：无边框 + 半透明白降 Alpha（0.5）；文字偏蓝；宽度恢复整行（不缩短） */
+body[data-dsh-tenma] [data-slot='sidebar'] [role='treeitem'][aria-selected='true'] {
+  background: rgba(255, 255, 255, 0.5) !important;
+  border: none !important;
+  color: #12305e !important;
+}
+body[data-dsh-tenma] [data-slot='sidebar'] [role='treeitem'][aria-selected='true'] * {
+  color: #12305e !important;
+}
+/* 用户消息气泡（“我的气泡”）：浅蓝白底色降低 Alpha，透出壁纸 */
+body[data-dsh-tenma] .gdEzaW_userStack .gdEzaW_bubble {
+  background: rgba(237, 243, 254, 0.5) !important;
+}
+
+/* --- 4. 左侧栏：只保留 leftbar 梯形条（顶斜帽 78px + 中段 repeat + 底斜收口 90px），
+   其余区域透明透出壁纸；展开/折叠渲染不变 --- */
+body[data-dsh-tenma] *:has(> [data-slot='sidebar']) {
+  position: relative;
+  background: transparent;
+  border-right: none;
+}
+body[data-dsh-tenma] *:has(> [data-slot='sidebar'])::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 137px;
+  pointer-events: none;
+  opacity: 0.6; /* 素材本身为 75% 白 → 叠加后约 45%，梯形条更透 */
+  border: 78px solid transparent;
+  border-width: 78px 0 90px 0;
+}
+body[data-dsh-tenma] [data-slot='sidebar'] > :first-child {
+  position: relative;
+  z-index: 1;
+  background: transparent;
+}
+body[data-dsh-tenma] [data-slot='sidebar'] {
+  --dsw-alias-label-secondary: #3a5a8c;
+  --dsw-alias-label-tertiary: #5c7ba6;
+  --dsw-alias-label-caption: #7d97b8;
+  --dsw-alias-interactive-bg-hover: rgba(15, 62, 200, 0.08);
+  --dsw-alias-interactive-bg-hover-solid: rgba(15, 62, 200, 0.12);
+  --dsw-specific-sidebar-fill: transparent;
+  --dsw-alias-border-l1: rgba(15, 62, 200, 0.14);
+  --dsw-alias-border-l2: rgba(15, 62, 200, 0.10);
+}
+/* 会话行：白色药丸（参考图白色菜单面板） */
+body[data-dsh-tenma] [data-slot='sidebar'] [role='treeitem'] {
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(15, 62, 200, 0.16);
+  border-radius: 10px;
+}
+body[data-dsh-tenma] [data-slot='sidebar'] [role='treeitem']:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(15, 62, 200, 0.35);
+}
+body[data-dsh-tenma] [data-slot='sidebar'] [role='treeitem'][aria-selected='true'] {
+  background: #ffffff;
+  font-weight: 600;
+}
+/* 选中光标：按需求移除（selected.png 小疙瘩） */
+body[data-dsh-tenma] [data-slot='sidebar'] [role='treeitem'] { position: relative; }
+body[data-dsh-tenma] [data-slot='sidebar'] [role='treeitem'][aria-selected='true']::before,
+body[data-dsh-tenma] [data-sidebar-collapsed] [data-slot='sidebar'] [role='treeitem'][aria-selected='true']::before {
+  display: none;
+}
+/* 设置按钮上移避开底部梯形收口，缩短至与新会话药丸同宽（100px），内容居中，贴左缘 */
+body[data-dsh-tenma] [data-slot='sidebar.settings'] > button[aria-haspopup='dialog'] {
+  width: 100px !important;
+  margin: 4px -12px 100px !important;
+  justify-content: center !important;
+  padding: 6px 0 !important;
+}
+body[data-dsh-tenma] [data-sidebar-collapsed] [data-slot='sidebar.settings'] > button[aria-haspopup='dialog'] {
+  width: 34px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  margin: 4px -12px 100px !important;
+}
+
+/* --- 5. 新会话按钮：newsession 药丸（紧凑；品牌按钮 aria 相同，故用结构定位） --- */
+body[data-dsh-tenma] [data-slot='sidebar'] > :first-child > :nth-child(2) {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: auto !important;
+  min-width: 80px;
+  max-width: 100px;
+  height: 34px !important;
+  margin: 2px 0 10px 2px !important;
+  padding: 0 6px !important;
+  font-size: 12.5px;
+  border: none !important;
+  border-radius: 17px !important;
+  color: #fff !important;
+  font-weight: 600;
+  box-shadow: none;
+}
+body[data-dsh-tenma] [data-slot='sidebar'] > :first-child > :nth-child(2) svg { color: #fff; }
+/* 折叠态：顶部 logo 行与新会话按钮整体下移一点点 */
+body[data-dsh-tenma] [data-sidebar-collapsed] [data-slot='sidebar'] > :first-child > :first-child {
+  margin-top: 14px !important;
+}
+body[data-dsh-tenma] [data-sidebar-collapsed] [data-slot='sidebar'] > :first-child > :nth-child(2) {
+  width: 34px !important;
+  min-width: 34px;
+  max-width: 34px;
+  height: 34px !important;
+  padding: 0 !important;
+  margin: 12px auto 10px !important;
+  border-radius: 50% !important;
+}
+
+/* --- 6. 输入座白底：移除官方的白色渐变粘性背景 ---
+   官方在 active 态的 composerSeat 上画了 transparent→白(36px) 的渐变，
+   渐变终点以下整片纯白 —— 即底部白色渐变/白边，整层移除让壁纸透出。 */
+body[data-dsh-tenma] [data-composer-seat] {
+  background: none !important;
+}
+
+/* --- 7. 输入框：talkingbar 原比例 3172:400，宽 980 → 高自动 123.6px --- */
+body[data-dsh-tenma] [data-composer-card] {
+  width: 100%;
+  max-width: 980px !important;
+  height: 124px;
+  background-color: transparent;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 6px 148px;
+  gap: 10px;
+}
+body[data-dsh-tenma] [data-composer-card]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.62;
+}
+body[data-dsh-tenma] [data-composer-card] > * {
+  position: relative;
+  z-index: 1;
+}
+/* 文本输入区：固定卡片高度内的内部滚动区域（高度不被文字影响） */
+body[data-dsh-tenma] [data-input-scroll] {
+  scrollbar-width: none;
+  min-height: 0;
+  overflow-y: auto;
+  flex: 1 1 auto;
+}
+body[data-dsh-tenma] [data-input-scroll]::-webkit-scrollbar {
+  display: none;
+}
+body[data-dsh-tenma] [data-composer-card] textarea {
+  height: auto !important;
+  min-height: 0 !important;
+}
+/* 消息中的代码块背景：alpha 0.5 半透明（只命中代码块容器 .md-code-block，不含整条消息） */
+body[data-dsh-tenma] [data-slot='conversation'] div.md-code-block {
+  background: rgba(249, 250, 251, 0.5) !important;
+}
+/* 代码块标题栏：背景 alpha 0.65（banner 0.65，外层白色 wrap 透明避免叠层失真） */
+body[data-dsh-tenma] [data-slot='conversation'] div.md-code-block > :first-child {
+  background: transparent !important;
+}
+body[data-dsh-tenma] [data-slot='conversation'] div.md-code-block > :first-child > :first-child {
+  background: rgba(249, 250, 251, 0.65) !important;
+}
+/* 工作区标签行：左缘对准 talkingbar 左上角尖点（卡片左缘 446 + 69 ≈ 515） */
+body[data-dsh-tenma] [data-slot='conversation.composer'] button[aria-label='选择工作区'] {
+  margin-left: 66px;
+}
+/* 附件轨 → 悬浮窗：内部样式原封不动，只把容器做成浮窗放在卡片正上方 */
+body[data-dsh-tenma] [data-composer-card] > :has(img):not([data-input-scroll]) {
+  position: absolute;
+  left: 148px;
+  bottom: calc(100% + 8px);
+  z-index: 6;
+  max-width: calc(100% - 296px);
+  padding: 6px 8px;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(9, 20, 60, 0.1);
+}
+
+/* --- 8. 底部调用数据区：等比三角形 + 拉长中段 ---
+   数据条尺寸不变（748×49 定比）；
+   两端三角形从原图等比缩放（115×97 → 58×49，无畸变）；
+   中段白色单独横向拉伸。 */
+body[data-dsh-tenma] [data-slot='conversation.composer.dock'] > *:has(> span) {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 520px;
+  aspect-ratio: 1483 / 97;
+  box-sizing: border-box;
+  padding: 0 67px;
+  overflow: hidden;
+  color: #16305f;
+}
+/* 数据文本模块：单向循环走马灯（底部滑入 → 顶部滑出，永不回滚），每模块可见 5 秒。
+   动画由插件 JS 主时钟每帧按当前 span 数量与序号重算 translateY ——
+   智能体运行中统计更新引发 React 重建节点也不会打乱相位，杜绝重叠。 */
+body[data-dsh-tenma] [data-slot='conversation.composer.dock'] > *:has(> span) > span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 34px;
+  line-height: 34px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+}
+body[data-dsh-tenma] [data-slot='conversation.composer.dock'] > *:has(> span) > span:nth-child(even) {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  body[data-dsh-tenma] [data-slot='conversation.composer.dock'] > *:has(> span) > span:nth-child(odd) {
+    opacity: 0;
+  }
+  body[data-dsh-tenma] [data-slot='conversation.composer.dock'] > *:has(> span) > span:nth-child(1) {
+    opacity: 1;
+  }
+}
+body[data-dsh-tenma] [data-slot='conversation.composer.dock'] > *:has(> span)::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 40px;
+  pointer-events: none;
+}
+body[data-dsh-tenma] [data-slot='conversation.composer.dock'] > *:has(> span)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 40px;
+  pointer-events: none;
+}
+body[data-dsh-tenma] [data-slot='conversation.composer.dock'] > *:has(> span) > * {
+  position: relative;
+  z-index: 1;
+}
+body[data-dsh-tenma] [data-slot='conversation.composer.dock'] > *:not(:has(> span)) {
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(15, 62, 200, 0.22);
+  border-radius: 12px;
+  color: #16305f;
+}
+body[data-dsh-tenma] [data-slot='conversation.composer.dock'] > * + * {
+  margin-top: 6px;
+}
+body[data-dsh-tenma] [data-slot='conversation.composer.dock'] > *:not(:has(> span)) > :first-child {
+  background: transparent;
+}
+body[data-dsh-tenma] [data-slot='conversation.composer.dock'] > *:not(:has(> span)) > :first-child::after {
+  display: none;
+}
+
+/* --- 9. 发送按钮：next 素材（蓝 V 箭头），剥离出卡片悬浮在右侧 --- */
+body[data-dsh-tenma] [data-composer-card] button[aria-label='发送消息'],
+body[data-dsh-tenma] [data-composer-card] button[aria-label='Send message'] {
+  position: absolute;
+  left: calc(100% + 19px);
+  top: -50%;
+  transform: translateY(-50%);
+  z-index: 7;
+  width: 118px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  color: transparent;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+/* 停止按钮：保留浮动坐标（与确认按钮一致），恢复官方原始样式 */
+body[data-dsh-tenma] [data-composer-card] button[aria-label='停止生成'],
+body[data-dsh-tenma] [data-composer-card] button[aria-label='Stop generating'] {
+  position: absolute;
+  left: calc(100% + 60px);
+  top: -60%;
+  transform: translateY(-50%);
+  z-index: 7;
+}
+body[data-dsh-tenma] [data-composer-card] button[aria-label='发送消息'] svg,
+body[data-dsh-tenma] [data-composer-card] button[aria-label='Send message'] svg { display: none; }
+body[data-dsh-tenma] [data-composer-card] button[aria-label='发送消息']:disabled,
+body[data-dsh-tenma] [data-composer-card] button[aria-label='Send message']:disabled {
+  opacity: 0.45;
+  box-shadow: none;
+}
+
+/* 模型/推理/进度条区域小幅右移（负 margin，不动 transform，避免影响按钮定位） */
+body[data-dsh-tenma] [data-composer-card] > :last-child > :last-child {
+  margin-right: -40px;
+}
+
+/* --- 10. 运行中“Deep diving...”旁的天命轮盘（rolling.png）：
+   智能体运行期间官方渲染 role="status" + aria-live="polite" 的回合状态行
+   （inline-flex），用 ::before 在最左插入轮盘图并匀速旋转；
+   图标缩小为 16px 并降低 alpha（opacity 0.7）避免喧宾夺主。
+   重试提示（role="status" 无 aria-live）不命中，保持原样。 */
+body[data-dsh-tenma] [data-slot='conversation'] [role='status'][aria-live='polite'] {
+  gap: 6px;
+}
+body[data-dsh-tenma] [data-slot='conversation'] [role='status'][aria-live='polite']::before {
+  content: '';
+  flex: none;
+  width: 16px;
+  height: 16px;
+  opacity: 0.7;
+  animation: dsh-tenma-roll-spin 1.4s linear infinite;
+}
+@keyframes dsh-tenma-roll-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  body[data-dsh-tenma] [data-slot='conversation'] [role='status'][aria-live='polite']::before {
+    animation: none;
+  }
+}

@@ -129,3 +129,62 @@ html:not([data-scheme="dark"]) .preview-dock .live-note { color: #b3261e; }
 }
 
 html[data-embed] .preview-dock { display: none !important; }
+
+/* The transcript. Every hashed class in the mock comes from vendor/; the two
+   things here that do not are the assistant's prose and the code block, and
+   both are styled from the same tokens the real components read
+   (ui-primitives/src/markdown/CodeBlock.module.css). `md-code-block` is a
+   global class in dsh, not a compiled one, so a skin that targets it hits this
+   exactly as it would hit the real thing. */
+
+.Sxvs8a_body p {
+  margin: 0;
+}
+
+.Sxvs8a_body :not(pre) > code {
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-family: var(--ds-font-family-code);
+  font-size: 0.9em;
+  background-color: var(--dsw-alias-markdown-inline-code);
+}
+
+.md-code-block {
+  position: relative;
+  margin: 0;
+  color: var(--dsw-alias-label-primary);
+  background: var(--dsw-alias-markdown-code-block);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.md-code-block .md-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 14px;
+  background: var(--dsw-alias-markdown-code-block-banner);
+  font-family: var(--ds-font-family-code);
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--dsw-alias-label-primary);
+}
+
+.md-code-block .md-banner button {
+  appearance: none;
+  border: 0;
+  background: none;
+  color: var(--dsw-alias-label-secondary);
+  font: inherit;
+  cursor: pointer;
+}
+
+.md-code-block pre {
+  margin: 0;
+  padding: 12px 16px;
+  overflow: auto;
+  font-family: var(--ds-font-family-code);
+  font-size: 13px;
+  line-height: 21px;
+}

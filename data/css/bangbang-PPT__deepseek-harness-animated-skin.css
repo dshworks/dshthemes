@@ -1,0 +1,265 @@
+/* bangbang-PPT/deepseek-harness-animated-skin — packages/client/ui-theme/src/skin.ts
+   fetched 2026-08-19 from https://raw.githubusercontent.com/bangbang-PPT/deepseek-harness-animated-skin/master/packages/client/ui-theme/src/skin.ts
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+#dsh-skin-bg {
+  --dsh-skin-opacity: 0.55;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  object-position: center;
+  opacity: var(--dsh-skin-opacity);
+  pointer-events: none;
+  background: #0c0e14;
+}
+#dsh-skin-bg[data-off] { display: none; }
+#dsh-skin-img {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  object-position: center;
+  opacity: var(--dsh-skin-opacity, 0.55);
+  pointer-events: none;
+  background: #0c0e14;
+  display: none;
+}
+#dsh-skin-img[data-on] { display: block; }
+#root {
+  position: relative;
+  z-index: 1;
+}
+/* Dim the base surface so the motion layer shows through under the text.
+   The mask alpha is driven by the opacity slider: 100% -> no mask at all. */
+body {
+  --dsh-skin-mask-alpha: 0.5;
+  --dsw-alias-bg-base: rgba(12, 14, 20, var(--dsh-skin-mask-alpha));
+  --dsw-specific-sidebar-fill: rgba(12, 14, 20, calc(var(--dsh-skin-mask-alpha) - 0.08));
+}
+body[data-ds-dark-theme] {
+  --dsh-skin-mask-alpha: 0.5;
+  --dsw-alias-bg-base: rgba(12, 14, 20, var(--dsh-skin-mask-alpha));
+  --dsw-specific-sidebar-fill: rgba(12, 14, 20, calc(var(--dsh-skin-mask-alpha) - 0.08));
+}
+body:not([data-ds-dark-theme]) {
+  --dsh-skin-mask-alpha: 0.5;
+  --dsw-alias-bg-base: rgba(244, 246, 250, var(--dsh-skin-mask-alpha));
+  --dsw-specific-sidebar-fill: rgba(244, 246, 250, calc(var(--dsh-skin-mask-alpha) - 0.1));
+}
+@media (prefers-reduced-motion: reduce) {
+  #dsh-skin-bg { display: none; }
+}
+/* ---------- skin control panel ---------- */
+#dsh-skin-toggle {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 9990;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(18, 20, 26, 0.72);
+  color: #dbe2f0;
+  font-size: 18px;
+  line-height: 38px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  transition: background 0.15s ease, transform 0.15s ease;
+  user-select: none;
+  backdrop-filter: blur(6px);
+}
+#dsh-skin-toggle:hover { background: rgba(40, 44, 56, 0.85); transform: scale(1.06); }
+#dsh-skin-panel {
+  position: fixed;
+  right: 18px;
+  bottom: 66px;
+  z-index: 9991;
+  width: 292px;
+  max-height: 72vh;
+  overflow: auto;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(20, 22, 28, 0.94);
+  color: #dbe2f0;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  padding: 14px 14px 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  display: none;
+  backdrop-filter: blur(10px);
+}
+#dsh-skin-panel[data-open] { display: block; }
+#dsh-skin-panel h3 {
+  margin: 0 0 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #eef2fa;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+#dsh-skin-mode-row { margin-bottom: 10px; }
+#dsh-skin-mode-row > span {
+  display: block;
+  font-size: 12px;
+  color: #9aa4b8;
+  margin-bottom: 5px;
+}
+#dsh-skin-modes { display: flex; gap: 6px; }
+#dsh-skin-modes button {
+  flex: 1;
+  padding: 6px 0;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: #c6cfdf;
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+}
+#dsh-skin-modes button:hover { background: rgba(255, 255, 255, 0.09); }
+#dsh-skin-modes button[data-current] {
+  background: rgba(78, 134, 244, 0.22);
+  border-color: rgba(78, 134, 244, 0.6);
+  color: #e8f0ff;
+}
+#dsh-skin-opacity-row { margin-bottom: 12px; }
+#dsh-skin-opacity-row label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #9aa4b8;
+  margin-bottom: 4px;
+}
+#dsh-skin-opacity { width: 100%; accent-color: #4e86f4; }
+#dsh-skin-transform-row { margin-bottom: 12px; padding: 8px 10px; border-radius: 8px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); }
+.dsh-skin-tf-line { margin-bottom: 7px; }
+.dsh-skin-tf-line label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #9aa4b8;
+  margin-bottom: 3px;
+}
+.dsh-skin-tf-line input { width: 100%; accent-color: #4e86f4; }
+#dsh-skin-tf-reset {
+  width: 100%;
+  margin-top: 4px;
+  padding: 5px 0;
+  border-radius: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: #c6cfdf;
+  font-size: 12px;
+  cursor: pointer;
+}
+#dsh-skin-tf-reset:hover { background: rgba(78, 134, 244, 0.25); color: #eef2fa; }
+#dsh-skin-list { display: flex; flex-direction: column; gap: 3px; margin-bottom: 10px; }
+#dsh-skin-list .dsh-skin-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #c6cfdf;
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease;
+  text-align: left;
+  width: 100%;
+  box-sizing: border-box;
+}
+#dsh-skin-list .dsh-skin-item:hover { background: rgba(255, 255, 255, 0.07); }
+#dsh-skin-list .dsh-skin-item[data-current] {
+  background: rgba(78, 134, 244, 0.18);
+  border-color: rgba(78, 134, 244, 0.55);
+  color: #e8f0ff;
+}
+#dsh-skin-list .dsh-skin-item .dsh-skin-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#dsh-skin-list .dsh-skin-item .dsh-skin-tag {
+  flex: none;
+  font-size: 10px;
+  color: #8b94a8;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 4px;
+  padding: 0 4px;
+}
+#dsh-skin-list .dsh-skin-op {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: #8b94a8;
+  font-size: 12px;
+  cursor: pointer;
+  line-height: 22px;
+  padding: 0;
+}
+#dsh-skin-list .dsh-skin-op:hover { background: rgba(255, 255, 255, 0.12); color: #e8f0ff; }
+#dsh-skin-upload {
+  display: block;
+  width: 100%;
+  padding: 8px 0;
+  border-radius: 9px;
+  border: 1px dashed rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.04);
+  color: #c6cfdf;
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+#dsh-skin-upload:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(78, 134, 244, 0.6); }
+#dsh-skin-upload[data-busy] { opacity: 0.6; cursor: wait; }
+#dsh-skin-hidden {
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+#dsh-skin-hidden[data-empty] { display: none; }
+#dsh-skin-hidden-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11.5px;
+  color: #9aa4b8;
+  margin-bottom: 5px;
+}
+#dsh-skin-hidden-title button,
+.dsh-skin-hidden-item button {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.07);
+  color: #c6cfdf;
+  font-size: 11px;
+  padding: 2px 8px;
+  cursor: pointer;
+}
+#dsh-skin-hidden-title button:hover,
+.dsh-skin-hidden-item button:hover { background: rgba(78, 134, 244, 0.3); color: #eef2fa; }
+.dsh-skin-hidden-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  font-size: 12px;
+  color: #aeb7c9;
+  padding: 3px 0;
+}

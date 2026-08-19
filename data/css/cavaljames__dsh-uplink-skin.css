@@ -1,0 +1,513 @@
+/* cavaljames/dsh-uplink-skin — src/client/uplink.module.css
+   fetched 2026-08-19 from https://raw.githubusercontent.com/cavaljames/dsh-uplink-skin/master/src/client/uplink.module.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* Uplink cyberpunk skin — every rule is scoped to the skin's body attribute so
+ * the theme overlays the DSH Web UI without touching any built-in stylesheet.
+ * Light = "neon daylight" (icy white-blue + electric cyan/violet/magenta),
+ * dark = classic cyberpunk night (deep indigo + neon cyan/magenta/violet).
+ * Surfaces are translucent glass so the corner wallpaper glows through. */
+
+/* ============ 静态令牌（浅色 = 霓虹白昼） ============ */
+body[data-dsh-uplink] {
+  --dsw-static-amber-100: rgb(255, 240, 210);
+  --dsw-static-amber-400: rgb(255, 190, 61);
+  --dsw-static-amber-500: rgb(245, 158, 0);
+  --dsw-static-amber-600: rgb(199, 123, 0);
+  --dsw-static-amber-900: rgb(77, 50, 8);
+  --dsw-static-blue-100: rgb(217, 221, 255);
+  --dsw-static-blue-300: rgb(179, 188, 255);
+  --dsw-static-blue-400: rgb(139, 152, 255);
+  --dsw-static-blue-450: rgb(123, 137, 255);
+  --dsw-static-blue-500: rgb(102, 117, 240);
+  --dsw-static-blue-50: rgb(240, 241, 255);
+  --dsw-static-blue-50p: rgb(236, 238, 255);
+  --dsw-static-blue-600: rgb(90, 95, 208);
+  --dsw-static-blue-75: rgb(230, 233, 255);
+  --dsw-static-blue-800: rgb(63, 63, 158);
+  --dsw-static-blue-900: rgb(48, 48, 128);
+  --dsw-static-blue-950: rgb(29, 29, 82);
+  --dsw-static-deepseek-100: rgb(211, 245, 255);
+  --dsw-static-deepseek-200: rgb(174, 234, 255);
+  --dsw-static-deepseek-300: rgb(124, 220, 255);
+  --dsw-static-deepseek-400: rgb(43, 193, 240);
+  --dsw-static-deepseek-450: rgb(18, 177, 228);
+  --dsw-static-deepseek-500: rgb(0, 149, 208);
+  --dsw-static-deepseek-50: rgb(232, 251, 255);
+  --dsw-static-deepseek-600: rgb(0, 120, 171);
+  --dsw-static-deepseek-700-delete: rgb(11, 92, 134);
+  --dsw-static-deepseek-800: rgb(10, 74, 112);
+  --dsw-static-deepseek-900: rgb(11, 58, 92);
+  --dsw-static-green-100: rgb(212, 251, 231);
+  --dsw-static-green-400: rgb(0, 217, 138);
+  --dsw-static-green-500: rgb(0, 184, 116);
+  --dsw-static-green-900: rgb(13, 58, 42);
+  --dsw-static-neutral-00: rgb(255, 255, 255);
+  --dsw-static-neutral-1000: rgb(0, 0, 0);
+  --dsw-static-neutral-100: rgb(242, 242, 246);
+  --dsw-static-neutral-150: rgb(233, 233, 238);
+  --dsw-static-neutral-200: rgb(222, 222, 230);
+  --dsw-static-neutral-250: rgb(210, 210, 220);
+  --dsw-static-neutral-300: rgb(194, 194, 207);
+  --dsw-static-neutral-400: rgb(157, 157, 174);
+  --dsw-static-neutral-500: rgb(126, 126, 146);
+  --dsw-static-neutral-50: rgb(250, 250, 252);
+  --dsw-static-neutral-550: rgb(107, 107, 128);
+  --dsw-static-neutral-600: rgb(92, 92, 111);
+  --dsw-static-neutral-700: rgb(67, 67, 90);
+  --dsw-static-neutral-800: rgb(47, 47, 66);
+  --dsw-static-neutral-850: rgb(38, 38, 55);
+  --dsw-static-neutral-900: rgb(23, 23, 42);
+  --dsw-static-neutral-bluish-00: rgb(255, 255, 255);
+  --dsw-static-neutral-bluish-1000: rgb(10, 17, 34);
+  --dsw-static-neutral-bluish-100: rgb(229, 236, 247);
+  --dsw-static-neutral-bluish-150: rgb(219, 228, 242);
+  --dsw-static-neutral-bluish-200: rgb(205, 217, 236);
+  --dsw-static-neutral-bluish-300: rgb(183, 198, 222);
+  --dsw-static-neutral-bluish-400: rgb(150, 168, 198);
+  --dsw-static-neutral-bluish-500: rgb(118, 137, 173);
+  --dsw-static-neutral-bluish-50: rgb(246, 249, 254);
+  --dsw-static-neutral-bluish-600: rgb(101, 117, 157);
+  --dsw-static-neutral-bluish-60: rgb(242, 246, 252);
+  --dsw-static-neutral-bluish-700: rgb(85, 104, 143);
+  --dsw-static-neutral-bluish-750: rgb(65, 82, 122);
+  --dsw-static-neutral-bluish-75: rgb(237, 242, 250);
+  --dsw-static-neutral-bluish-800: rgb(53, 69, 107);
+  --dsw-static-neutral-bluish-850: rgb(42, 58, 94);
+  --dsw-static-neutral-bluish-875: rgb(33, 48, 79);
+  --dsw-static-neutral-bluish-900: rgb(26, 40, 68);
+  --dsw-static-neutral-bluish-950: rgb(20, 32, 58);
+  --dsw-static-red-100: rgb(255, 224, 232);
+  --dsw-static-red-400: rgb(255, 92, 125);
+  --dsw-static-red-500: rgb(245, 42, 82);
+  --dsw-static-red-50: rgb(255, 240, 244);
+  --dsw-static-red-600: rgb(216, 15, 60);
+  --dsw-static-red-900: rgb(82, 16, 31);
+}
+
+/* ============ 静态令牌（暗色 = 霓虹夜） ============ */
+body[data-dsh-uplink][data-ds-dark-theme] {
+  --dsw-static-amber-100: rgb(255, 243, 214);
+  --dsw-static-amber-400: rgb(255, 196, 77);
+  --dsw-static-amber-500: rgb(255, 176, 46);
+  --dsw-static-amber-600: rgb(245, 154, 0);
+  --dsw-static-amber-900: rgb(77, 50, 8);
+  --dsw-static-blue-100: rgb(212, 219, 255);
+  --dsw-static-blue-300: rgb(163, 180, 255);
+  --dsw-static-blue-400: rgb(126, 147, 255);
+  --dsw-static-blue-450: rgb(108, 130, 255);
+  --dsw-static-blue-500: rgb(90, 112, 247);
+  --dsw-static-blue-50: rgb(238, 240, 255);
+  --dsw-static-blue-50p: rgb(233, 236, 255);
+  --dsw-static-blue-600: rgb(74, 85, 216);
+  --dsw-static-blue-75: rgb(226, 231, 255);
+  --dsw-static-blue-800: rgb(51, 57, 154);
+  --dsw-static-blue-900: rgb(38, 44, 120);
+  --dsw-static-blue-950: rgb(22, 26, 74);
+  --dsw-static-deepseek-100: rgb(201, 246, 255);
+  --dsw-static-deepseek-200: rgb(156, 236, 255);
+  --dsw-static-deepseek-300: rgb(99, 221, 255);
+  --dsw-static-deepseek-400: rgb(34, 207, 245);
+  --dsw-static-deepseek-450: rgb(12, 192, 236);
+  --dsw-static-deepseek-500: rgb(0, 174, 220);
+  --dsw-static-deepseek-50: rgb(223, 251, 255);
+  --dsw-static-deepseek-600: rgb(0, 144, 184);
+  --dsw-static-deepseek-700-delete: rgb(10, 95, 125);
+  --dsw-static-deepseek-800: rgb(11, 74, 102);
+  --dsw-static-deepseek-900: rgb(10, 53, 80);
+  --dsw-static-green-100: rgb(214, 255, 233);
+  --dsw-static-green-400: rgb(61, 255, 176);
+  --dsw-static-green-500: rgb(46, 232, 138);
+  --dsw-static-green-900: rgb(13, 58, 42);
+  --dsw-static-neutral-00: rgb(255, 255, 255);
+  --dsw-static-neutral-1000: rgb(0, 0, 0);
+  --dsw-static-neutral-100: rgb(242, 242, 246);
+  --dsw-static-neutral-150: rgb(233, 233, 238);
+  --dsw-static-neutral-200: rgb(222, 222, 230);
+  --dsw-static-neutral-250: rgb(210, 210, 220);
+  --dsw-static-neutral-300: rgb(194, 194, 207);
+  --dsw-static-neutral-400: rgb(157, 157, 174);
+  --dsw-static-neutral-500: rgb(126, 126, 146);
+  --dsw-static-neutral-50: rgb(250, 250, 252);
+  --dsw-static-neutral-550: rgb(107, 107, 128);
+  --dsw-static-neutral-600: rgb(92, 92, 111);
+  --dsw-static-neutral-700: rgb(67, 67, 90);
+  --dsw-static-neutral-800: rgb(47, 47, 66);
+  --dsw-static-neutral-850: rgb(38, 38, 55);
+  --dsw-static-neutral-900: rgb(23, 23, 42);
+  --dsw-static-neutral-bluish-00: rgb(250, 252, 255);
+  --dsw-static-neutral-bluish-1000: rgb(238, 244, 255);
+  --dsw-static-neutral-bluish-100: rgb(216, 223, 239);
+  --dsw-static-neutral-bluish-150: rgb(199, 208, 232);
+  --dsw-static-neutral-bluish-200: rgb(182, 193, 224);
+  --dsw-static-neutral-bluish-300: rgb(154, 168, 208);
+  --dsw-static-neutral-bluish-400: rgb(124, 139, 184);
+  --dsw-static-neutral-bluish-500: rgb(90, 104, 152);
+  --dsw-static-neutral-bluish-50: rgb(243, 246, 251);
+  --dsw-static-neutral-bluish-600: rgb(70, 86, 143);
+  --dsw-static-neutral-bluish-60: rgb(236, 239, 248);
+  --dsw-static-neutral-bluish-700: rgb(53, 70, 122);
+  --dsw-static-neutral-bluish-750: rgb(43, 58, 104);
+  --dsw-static-neutral-bluish-75: rgb(228, 233, 244);
+  --dsw-static-neutral-bluish-800: rgb(35, 47, 88);
+  --dsw-static-neutral-bluish-850: rgb(27, 37, 71);
+  --dsw-static-neutral-bluish-875: rgb(20, 28, 57);
+  --dsw-static-neutral-bluish-900: rgb(15, 21, 44);
+  --dsw-static-neutral-bluish-950: rgb(10, 14, 31);
+  --dsw-static-red-100: rgb(255, 217, 226);
+  --dsw-static-red-400: rgb(255, 92, 125);
+  --dsw-static-red-500: rgb(255, 61, 99);
+  --dsw-static-red-50: rgb(255, 238, 242);
+  --dsw-static-red-600: rgb(240, 20, 70);
+  --dsw-static-red-900: rgb(82, 16, 31);
+}
+
+/* ============ 别名令牌（浅色） ============ */
+body[data-dsh-uplink] {
+  --dsw-alias-bg-base: rgba(246, 249, 254, 0.55);
+  --dsw-alias-bg-layer-1: rgba(255, 255, 255, 0.88);
+  --dsw-alias-bg-layer-2: rgba(255, 255, 255, 0.9);
+  --dsw-alias-bg-layer-3: rgba(255, 255, 255, 0.94);
+  --dsw-alias-bg-mask-1: rgba(16, 24, 48, 0.28);
+  --dsw-alias-bg-mask-2: rgba(16, 24, 48, 0.14);
+  --dsw-alias-bg-mask-3: rgba(16, 24, 48, 0.5);
+  --dsw-alias-bg-mask-photo: rgba(6, 10, 24, 0.9);
+  --dsw-alias-bg-mask-drop: rgba(246, 249, 254, 0.72);
+  --dsw-alias-bg-module-platform: rgba(242, 246, 252, 0.9);
+  --dsw-alias-bg-multi-select: rgba(242, 246, 252, 0.9);
+  --dsw-alias-bg-overlay: rgba(219, 228, 242, 0.94);
+  --dsw-alias-bg-skeleton: rgba(0, 149, 208, 0.08);
+  --dsw-alias-border-inverted2: rgba(0, 0, 0, 0);
+  --dsw-alias-border-inverted: rgba(0, 0, 0, 0);
+  --dsw-alias-border-l1: rgba(16, 34, 70, 0.08);
+  --dsw-alias-border-l2-darkmode-thin: rgba(16, 34, 70, 0.12);
+  --dsw-alias-border-l2: rgba(16, 34, 70, 0.14);
+  --dsw-alias-border-l3: rgba(16, 34, 70, 0.2);
+  --dsw-alias-border-l4: rgba(16, 34, 70, 0.28);
+  --dsw-alias-brand-primary-invert: var(--dsw-static-neutral-bluish-00);
+  --dsw-alias-brand-primary-new-colorprimary-new-color: rgb(0, 143, 212);
+  --dsw-alias-brand-primary: var(--dsw-static-deepseek-500);
+  --dsw-alias-brand-text: var(--dsw-static-deepseek-700-delete);
+  --dsw-alias-button-contrast-fill: var(--dsw-static-neutral-bluish-800);
+  --dsw-alias-button-elevated-fill: var(--dsw-static-neutral-bluish-00);
+  --dsw-alias-button-floating-fill: var(--dsw-static-neutral-bluish-00);
+  --dsw-alias-button-floating-hover: var(--dsw-static-neutral-bluish-75);
+  --dsw-alias-button-ghost-active-border: var(--dsw-static-neutral-bluish-500);
+  --dsw-alias-button-ghost-active-fill: var(--dsw-static-neutral-bluish-100);
+  --dsw-alias-button-ghost-active-hover: var(--dsw-static-neutral-bluish-150);
+  --dsw-alias-button-info-fill: var(--dsw-static-blue-500);
+  --dsw-alias-button-info-hover: var(--dsw-static-blue-450);
+  --dsw-alias-button-primary-dimmed: var(--dsw-static-neutral-bluish-100);
+  --dsw-alias-button-primary-fill: var(--dsw-alias-brand-primary);
+  --dsw-alias-button-primary-hover: var(--dsw-static-deepseek-600);
+  --dsw-alias-button-tool-bar-fill-invisible: rgba(10, 17, 34, 0.36);
+  --dsw-alias-button-tool-bar-fill: rgba(53, 69, 107, 0.5);
+  --dsw-alias-button-tool-bar-hover: rgba(53, 69, 107, 0.62);
+  --dsw-alias-interactive-bg-active: rgba(0, 149, 208, 0.14);
+  --dsw-alias-interactive-bg-hover-accent: rgba(102, 117, 240, 0.12);
+  --dsw-alias-interactive-bg-hover-danger: rgba(216, 15, 60, 0.06);
+  --dsw-alias-interactive-bg-hover-solid: var(--dsw-static-neutral-bluish-75);
+  --dsw-alias-interactive-bg-hover: rgba(0, 149, 208, 0.07);
+  --dsw-alias-label-caption: var(--dsw-static-neutral-bluish-500);
+  --dsw-alias-label-dimmed: var(--dsw-static-neutral-bluish-300);
+  --dsw-alias-label-primary-bluish: var(--dsw-static-deepseek-800);
+  --dsw-alias-label-primary-dimmed: var(--dsw-static-neutral-bluish-900);
+  --dsw-alias-label-primary-foreground: var(--dsw-static-neutral-bluish-00);
+  --dsw-alias-label-primary-inverted: var(--dsw-static-neutral-bluish-00);
+  --dsw-alias-label-primary: var(--dsw-static-neutral-bluish-1000);
+  --dsw-alias-label-secondary: var(--dsw-static-neutral-bluish-700);
+  --dsw-alias-label-tertiary: var(--dsw-static-neutral-bluish-600);
+  --dsw-alias-markdown-citation: var(--dsw-static-neutral-bluish-100);
+  --dsw-alias-markdown-code-block-banner: var(--dsw-static-neutral-bluish-60);
+  --dsw-alias-markdown-code-block: var(--dsw-static-neutral-bluish-50);
+  --dsw-alias-markdown-code-segment-selected: var(--dsw-static-neutral-bluish-00);
+  --dsw-alias-markdown-code-segment-unselected: var(--dsw-static-neutral-bluish-75);
+  --dsw-alias-markdown-inline-code: var(--dsw-static-neutral-bluish-100);
+  --dsw-alias-markdown-placeholder: var(--dsw-static-neutral-bluish-60);
+  --dsw-alias-markdown-tag: var(--dsw-static-neutral-bluish-75);
+  --dsw-alias-scrollbar-bg-l1: var(--dsw-static-neutral-bluish-300);
+  --dsw-alias-scrollbar-bg-l2: var(--dsw-static-neutral-bluish-200);
+  --dsw-alias-scrollbar-hover-l1: var(--dsw-static-deepseek-400);
+  --dsw-alias-scrollbar-hover-l2: var(--dsw-static-deepseek-500);
+  --dsw-alias-state-business-primary: var(--dsw-static-deepseek-500);
+  --dsw-alias-state-business-tertiary: var(--dsw-static-deepseek-100);
+  --dsw-alias-state-error-primary: var(--dsw-static-red-600);
+  --dsw-alias-state-error-secondary: var(--dsw-static-red-400);
+  --dsw-alias-state-success-primary: var(--dsw-static-green-500);
+  --dsw-alias-state-success-secondary: var(--dsw-static-green-400);
+  --dsw-alias-state-success-tertiary: var(--dsw-static-green-100);
+  --dsw-alias-state-warn-label: var(--dsw-static-amber-600);
+  --dsw-alias-state-warn-primary: var(--dsw-static-amber-500);
+  --dsw-alias-state-warn-secondary: var(--dsw-static-amber-400);
+  --dsw-alias-state-warn-tertiary: var(--dsw-static-amber-100);
+  --dsw-alias-toast-bg: rgba(42, 58, 94, 0.96);
+  --dsw-alias-tooltip-bg: rgba(33, 48, 79, 0.96);
+  --dsw-specific-bubble-highlight: var(--dsw-static-deepseek-200);
+  --dsw-specific-bubble: rgba(232, 251, 255, 0.92);
+  --dsw-specific-input-major: rgba(255, 255, 255, 0.94);
+  --dsw-specific-login-input: rgba(246, 249, 254, 0.92);
+  --dsw-specific-menu: var(--dsw-alias-bg-layer-3);
+  --dsw-specific-selector: rgba(242, 246, 252, 0.9);
+  --dsw-specific-sidebar-fill: rgba(246, 249, 254, 0.86);
+  --dsw-specific-sidebar-nav-item-active-accent: var(--dsw-static-deepseek-100);
+  --dsw-specific-sidebar-nav-item-active: var(--dsw-static-neutral-bluish-100);
+  --dsw-specific-sidebar-nav-item-hover: var(--dsw-static-neutral-bluish-75);
+  --dsw-specific-tip: rgba(242, 246, 252, 0.92);
+
+  /* 字体与霓虹 */
+  --dsw-font-family: 'Rajdhani', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei',
+    'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --dsw-font-display: 'Orbitron', 'ZCOOL QingKe HuangYou', 'Rajdhani', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --ds-font-family-code: 'JetBrains Mono', 'SF Mono', 'Fira Code', Consolas,
+    'Liberation Mono', Menlo, Courier, 'PingFang SC', 'Microsoft YaHei';
+  --dsw-neon-cyan: rgb(0, 143, 212);
+  --dsw-neon-magenta: rgb(216, 15, 60);
+  --dsw-neon-violet: rgb(102, 117, 240);
+  --dsw-neon-yellow: rgb(245, 158, 0);
+  --dsw-neon-green: rgb(0, 184, 116);
+  --dsw-neon-focus: rgb(0, 149, 208);
+  --dsw-neon-glow: rgba(0, 143, 212, 0.35);
+
+  /* 标题/展示字与阴影（浅色） */
+  --dsw-font-markdown-h1: 700 24px/34px var(--dsw-font-display);
+  --dsw-font-markdown-h1-font-family: var(--dsw-font-display);
+  --dsw-font-markdown-h2: 700 22px/32px var(--dsw-font-display);
+  --dsw-font-markdown-h2-font-family: var(--dsw-font-display);
+  --dsw-font-markdown-h3: 700 20px/30px var(--dsw-font-display);
+  --dsw-font-markdown-h3-font-family: var(--dsw-font-display);
+  --dsw-font-xl-24: 600 24px/32px var(--dsw-font-display);
+  --dsw-font-xl-24-font-family: var(--dsw-font-display);
+  --dsw-font-l-20: 500 20px/28px var(--dsw-font-display);
+  --dsw-font-l-20-font-family: var(--dsw-font-display);
+  --dsw-shadow-lv1: 0 2px 4px 0 rgba(23, 31, 74, 0.06);
+  --dsw-shadow-lv1-blur: 0 4px 12px 0 rgba(23, 31, 74, 0.04);
+  --dsw-shadow-lv2: 0 4px 12px 0 rgba(23, 31, 74, 0.05), 0 2px 8px 0 rgba(23, 31, 74, 0.06);
+  --dsw-shadow-lv3:
+    0 0 1px 0 rgba(0, 160, 220, 0.35), 0 0 4px 0 rgba(0, 160, 220, 0.06), 0 12px 32px 0 rgba(23, 31, 74, 0.1);
+  --dsw-linear-gradient-think: linear-gradient(180deg, #f6f9fe 20.19%, rgba(246, 249, 254, 0) 100%);
+  --dsw-linear-think-select: linear-gradient(180deg, #eef4ff 20.19%, rgba(238, 244, 255, 0) 100%);
+
+  /* 代码高亮（浅色） */
+  --shiki-token-constant: #0077b8;
+  --shiki-token-string: #00915f;
+  --shiki-token-comment: #7d8aa0;
+  --shiki-token-keyword: #c2187a;
+  --shiki-token-parameter: #c76a00;
+  --shiki-token-function: #5a3fd0;
+  --shiki-token-string-expression: #007a52;
+  --shiki-token-punctuation: #55688f;
+  --shiki-token-link: #0066c8;
+
+  /* 壁纸参数（可在此微调） */
+  --dsh-uplink-wall-size-x: 85vw;
+  --dsh-uplink-wall-size-y: 85vh;
+  --dsh-uplink-wall-ratio: 1000 / 1506;
+  --dsh-uplink-wall-hold: 35%;
+}
+
+/* ============ 别名令牌（暗色） ============ */
+body[data-dsh-uplink][data-ds-dark-theme] {
+  --dsw-alias-bg-base: rgba(10, 14, 31, 0.45);
+  --dsw-alias-bg-layer-1: rgba(15, 21, 44, 0.86);
+  --dsw-alias-bg-layer-2: rgba(20, 28, 57, 0.9);
+  --dsw-alias-bg-layer-3: rgba(27, 37, 71, 0.94);
+  --dsw-alias-bg-mask-1: rgba(2, 4, 12, 0.6);
+  --dsw-alias-bg-mask-2: rgba(2, 4, 12, 0.3);
+  --dsw-alias-bg-mask-3: rgba(2, 4, 12, 0.72);
+  --dsw-alias-bg-mask-photo: rgba(1, 2, 7, 0.9);
+  --dsw-alias-bg-mask-drop: rgba(12, 18, 40, 0.75);
+  --dsw-alias-bg-module-platform: rgba(27, 37, 71, 0.94);
+  --dsw-alias-bg-multi-select: rgba(20, 28, 57, 0.9);
+  --dsw-alias-bg-overlay: rgba(43, 58, 104, 0.95);
+  --dsw-alias-bg-skeleton: rgba(0, 229, 245, 0.08);
+  --dsw-alias-border-inverted2: rgba(0, 229, 245, 0.5);
+  --dsw-alias-border-inverted: rgba(0, 229, 245, 0.35);
+  --dsw-alias-border-l1: rgba(0, 229, 245, 0.1);
+  --dsw-alias-border-l2-darkmode-thin: rgba(0, 229, 245, 0.12);
+  --dsw-alias-border-l2: rgba(126, 147, 255, 0.2);
+  --dsw-alias-border-l3: rgba(0, 229, 245, 0.3);
+  --dsw-alias-border-l4: rgba(0, 229, 245, 0.45);
+  --dsw-alias-brand-primary-invert: var(--dsw-static-neutral-bluish-1000);
+  --dsw-alias-brand-primary-new-colorprimary-new-color: rgb(0, 224, 245);
+  --dsw-alias-brand-primary: var(--dsw-static-deepseek-400);
+  --dsw-alias-brand-text: var(--dsw-static-deepseek-300);
+  --dsw-alias-button-contrast-fill: var(--dsw-static-neutral-bluish-700);
+  --dsw-alias-button-elevated-fill: var(--dsw-static-neutral-bluish-850);
+  --dsw-alias-button-floating-fill: var(--dsw-static-neutral-bluish-850);
+  --dsw-alias-button-floating-hover: var(--dsw-static-neutral-bluish-800);
+  --dsw-alias-button-ghost-active-border: var(--dsw-static-neutral-bluish-500);
+  --dsw-alias-button-ghost-active-fill: var(--dsw-static-neutral-bluish-800);
+  --dsw-alias-button-ghost-active-hover: var(--dsw-static-neutral-bluish-750);
+  --dsw-alias-button-info-fill: var(--dsw-static-blue-450);
+  --dsw-alias-button-info-hover: var(--dsw-static-blue-400);
+  --dsw-alias-button-primary-dimmed: var(--dsw-static-neutral-bluish-800);
+  --dsw-alias-button-primary-fill: var(--dsw-alias-brand-primary);
+  --dsw-alias-button-primary-hover: var(--dsw-static-deepseek-450);
+  --dsw-alias-button-tool-bar-fill-invisible: rgba(0, 0, 0, 0.36);
+  --dsw-alias-button-tool-bar-fill: rgba(0, 229, 245, 0.22);
+  --dsw-alias-button-tool-bar-hover: rgba(0, 229, 245, 0.3);
+  --dsw-alias-interactive-bg-active: rgba(0, 229, 245, 0.18);
+  --dsw-alias-interactive-bg-hover-accent: rgba(126, 147, 255, 0.2);
+  --dsw-alias-interactive-bg-hover-danger: rgba(255, 92, 125, 0.16);
+  --dsw-alias-interactive-bg-hover-solid: var(--dsw-static-neutral-bluish-800);
+  --dsw-alias-interactive-bg-hover: rgba(0, 229, 245, 0.09);
+  --dsw-alias-label-caption: var(--dsw-static-neutral-bluish-400);
+  --dsw-alias-label-dimmed: var(--dsw-static-neutral-bluish-750);
+  --dsw-alias-label-primary-bluish: var(--dsw-static-neutral-bluish-100);
+  --dsw-alias-label-primary-dimmed: var(--dsw-static-neutral-bluish-100);
+  --dsw-alias-label-primary-foreground: rgb(1, 17, 26);
+  --dsw-alias-label-primary-inverted: var(--dsw-static-neutral-bluish-850);
+  --dsw-alias-label-primary: var(--dsw-static-neutral-bluish-50);
+  --dsw-alias-label-secondary: var(--dsw-static-neutral-bluish-300);
+  --dsw-alias-label-tertiary: var(--dsw-static-neutral-bluish-400);
+  --dsw-alias-markdown-citation: var(--dsw-static-neutral-bluish-800);
+  --dsw-alias-markdown-code-block-banner: var(--dsw-static-neutral-bluish-850);
+  --dsw-alias-markdown-code-block: var(--dsw-static-neutral-bluish-900);
+  --dsw-alias-markdown-code-segment-selected: var(--dsw-static-neutral-bluish-800);
+  --dsw-alias-markdown-code-segment-unselected: var(--dsw-static-neutral-bluish-900);
+  --dsw-alias-markdown-inline-code: var(--dsw-static-neutral-bluish-850);
+  --dsw-alias-markdown-placeholder: var(--dsw-static-neutral-bluish-850);
+  --dsw-alias-markdown-tag: var(--dsw-static-neutral-bluish-850);
+  --dsw-alias-scrollbar-bg-l1: var(--dsw-static-neutral-bluish-700);
+  --dsw-alias-scrollbar-bg-l2: var(--dsw-static-neutral-bluish-600);
+  --dsw-alias-scrollbar-hover-l1: var(--dsw-static-deepseek-600);
+  --dsw-alias-scrollbar-hover-l2: var(--dsw-static-deepseek-500);
+  --dsw-alias-state-business-primary: var(--dsw-static-deepseek-400);
+  --dsw-alias-state-business-tertiary: var(--dsw-static-deepseek-900);
+  --dsw-alias-state-error-primary: var(--dsw-static-red-400);
+  --dsw-alias-state-error-secondary: var(--dsw-static-red-400);
+  --dsw-alias-state-success-primary: var(--dsw-static-green-500);
+  --dsw-alias-state-success-secondary: var(--dsw-static-green-400);
+  --dsw-alias-state-success-tertiary: var(--dsw-static-green-900);
+  --dsw-alias-state-warn-label: var(--dsw-static-amber-400);
+  --dsw-alias-state-warn-primary: var(--dsw-static-amber-500);
+  --dsw-alias-state-warn-secondary: var(--dsw-static-amber-400);
+  --dsw-alias-state-warn-tertiary: var(--dsw-static-amber-900);
+  --dsw-alias-toast-bg: rgba(43, 58, 104, 0.96);
+  --dsw-alias-tooltip-bg: rgba(43, 58, 104, 0.96);
+  --dsw-specific-bubble-highlight: var(--dsw-static-neutral-bluish-700);
+  --dsw-specific-bubble: rgba(27, 37, 71, 0.9);
+  --dsw-specific-input-major: rgba(20, 28, 57, 0.9);
+  --dsw-specific-login-input: rgba(15, 21, 44, 0.9);
+  --dsw-specific-menu: var(--dsw-alias-bg-layer-3);
+  --dsw-specific-selector: rgba(27, 37, 71, 0.94);
+  --dsw-specific-sidebar-fill: rgba(15, 21, 44, 0.88);
+  --dsw-specific-sidebar-nav-item-active-accent: var(--dsw-static-neutral-bluish-750);
+  --dsw-specific-sidebar-nav-item-active: var(--dsw-static-neutral-bluish-800);
+  --dsw-specific-sidebar-nav-item-hover: var(--dsw-static-neutral-bluish-875);
+  --dsw-specific-tip: rgba(27, 37, 71, 0.94);
+
+  /* 霓虹（暗色） */
+  --dsw-neon-cyan: rgb(0, 224, 245);
+  --dsw-neon-magenta: rgb(255, 47, 214);
+  --dsw-neon-violet: rgb(108, 130, 255);
+  --dsw-neon-yellow: rgb(255, 225, 77);
+  --dsw-neon-green: rgb(46, 232, 138);
+  --dsw-neon-focus: rgb(0, 224, 245);
+  --dsw-neon-glow: rgba(0, 224, 245, 0.4);
+
+  /* 阴影与思维链渐变（暗色，霓虹微光） */
+  --dsw-shadow-lv1: 0 2px 4px 0 rgba(0, 0, 0, 0.4);
+  --dsw-shadow-lv1-blur: 0 4px 12px 0 rgba(0, 0, 0, 0.35);
+  --dsw-shadow-lv2: 0 4px 12px 0 rgba(0, 0, 0, 0.4), 0 2px 8px 0 rgba(0, 0, 0, 0.45);
+  --dsw-shadow-lv3:
+    0 0 1px 0 rgba(0, 224, 245, 0.4), 0 0 6px 0 rgba(0, 224, 245, 0.08), 0 12px 32px 0 rgba(0, 0, 0, 0.5);
+  --dsw-linear-gradient-think: linear-gradient(180deg, #0a0f1f 20.19%, rgba(10, 15, 31, 0) 100%);
+  --dsw-linear-think-select: linear-gradient(180deg, #121a36 20.19%, rgba(18, 26, 54, 0) 100%);
+
+  /* 代码高亮（暗色，合成波） */
+  --shiki-token-constant: #4df3ff;
+  --shiki-token-string: #3dffb0;
+  --shiki-token-comment: #6f7ea8;
+  --shiki-token-keyword: #ff5ce0;
+  --shiki-token-parameter: #ffc44d;
+  --shiki-token-function: #8f6bff;
+  --shiki-token-string-expression: #7cffc4;
+  --shiki-token-punctuation: #9aa8d0;
+  --shiki-token-link: #7c9fff;
+}
+
+/* ============ 全局质感 ============ */
+body[data-dsh-uplink] {
+  font-family: var(--dsw-font-family);
+  color: var(--dsw-alias-label-primary);
+  background-color: var(--dsw-alias-bg-base);
+  /* 霓虹角光：右上青、左下品红 */
+  background-image:
+    radial-gradient(1100px 520px at 88% -12%, rgba(0, 143, 212, 0.09), transparent 62%),
+    radial-gradient(900px 520px at -8% 112%, rgba(216, 15, 60, 0.06), transparent 62%);
+  background-attachment: fixed;
+}
+
+body[data-dsh-uplink][data-ds-dark-theme] {
+  background-image:
+    radial-gradient(1100px 520px at 88% -12%, rgba(0, 224, 245, 0.07), transparent 62%),
+    radial-gradient(900px 520px at -8% 112%, rgba(255, 47, 214, 0.06), transparent 62%);
+}
+
+/* CRT 扫描线（暗色） */
+body[data-dsh-uplink][data-ds-dark-theme]::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 224, 245, 0.03) 0 1px,
+    transparent 1px 4px
+  );
+}
+
+/* 展示字体：按钮与标题（逐字形回退：拉丁 Orbitron、中文站酷庆科黄油体） */
+body[data-dsh-uplink] button,
+body[data-dsh-uplink] h1,
+body[data-dsh-uplink] h2,
+body[data-dsh-uplink] h3,
+body[data-dsh-uplink] h4 {
+  font-family: var(--dsw-font-display);
+}
+
+body[data-dsh-uplink] button {
+  letter-spacing: 0.04em;
+}
+
+body[data-dsh-uplink] ::selection {
+  background: var(--dsw-neon-cyan);
+  color: var(--dsw-alias-label-primary-foreground);
+}
+
+body[data-dsh-uplink] :focus-visible {
+  outline: 2px solid var(--dsw-neon-focus);
+  outline-offset: 1px;
+}
+
+/* ============ 右下角霓虹壁纸 ============
+ * 盒子紧贴图片：宽度受 size-x 与 "size-y × 宽高比" 双重限制，
+ * 高度按比例跟随，cover 填满。两条渐变 mask 交叠相乘：
+ * 从右到左 → 0%、从下到上 → 0%，前 hold 段保持全显，
+ * 左/上边缘透明度精确归零——无硬边、无分界线。 */
+body[data-dsh-uplink]::before {
+  content: '';
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  width: min(var(--dsh-uplink-wall-size-x), calc(var(--dsh-uplink-wall-size-y) * var(--dsh-uplink-wall-ratio)));
+  aspect-ratio: var(--dsh-uplink-wall-ratio);
+  z-index: -1;
+  pointer-events: none;
+  background: var(--dsh-uplink-wall, none) no-repeat right bottom / cover;
+  -webkit-mask-image:
+    linear-gradient(to left, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) var(--dsh-uplink-wall-hold), rgba(0, 0, 0, 0) 100%),
+    linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) var(--dsh-uplink-wall-hold), rgba(0, 0, 0, 0) 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to left, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) var(--dsh-uplink-wall-hold), rgba(0, 0, 0, 0) 100%),
+    linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) var(--dsh-uplink-wall-hold), rgba(0, 0, 0, 0) 100%);
+  mask-composite: intersect;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* 皮肤无主动画；占位符动画在 JS 侧退化为静态文本。 */
+}
+

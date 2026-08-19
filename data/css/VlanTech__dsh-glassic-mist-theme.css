@@ -1,0 +1,255 @@
+/* VlanTech/dsh-glassic-mist-theme — lib/client/index.js
+   fetched 2026-08-19 from https://raw.githubusercontent.com/VlanTech/dsh-glassic-mist-theme/main/lib/client/index.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+body[style*='--dsh-mistblue'] #root {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* 蒙版：近白雾蓝底色 + 白色柔光斑（位于 #root 之下，不压暗、不盖内容） */
+    body[style*='--dsh-mistblue']::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: var(--dsh-mistblue-veil-opacity, 0);
+      filter: blur(14px) saturate(var(--dsh-mistblue-veil-saturate, 1));
+      background:
+        radial-gradient(ellipse 70% 55% at 12% 8%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0) 62%),
+        radial-gradient(ellipse 56% 44% at 90% 18%, rgba(216, 232, 248, 0.75), rgba(216, 232, 248, 0) 60%),
+        radial-gradient(ellipse 60% 50% at 76% 84%, rgba(200, 222, 244, 0.65), rgba(200, 222, 244, 0) 62%),
+        radial-gradient(ellipse 50% 40% at 22% 90%, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0) 58%),
+        linear-gradient(160deg, #f5f9fd 0%, #e7f1fa 45%, #f7fafd 72%, #eaf2fb 100%);
+    }
+
+    /* 实时流动的白色云雾 */
+    body[style*='--dsh-mistblue']::after {
+      content: '';
+      position: fixed;
+      inset: -22%;
+      z-index: 0;
+      pointer-events: none;
+      opacity: var(--dsh-mistblue-mist-opacity, 0);
+      will-change: transform, opacity;
+      background:
+        radial-gradient(ellipse 42% 30% at 32% 44%, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0) 70%),
+        radial-gradient(ellipse 34% 26% at 68% 62%, rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0) 70%),
+        radial-gradient(ellipse 30% 22% at 55% 26%, rgba(214, 232, 250, 0.55), rgba(214, 232, 250, 0) 70%),
+        radial-gradient(ellipse 38% 28% at 14% 76%, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 70%),
+        radial-gradient(ellipse 26% 20% at 86% 34%, rgba(228, 241, 252, 0.55), rgba(228, 241, 252, 0) 70%);
+      background-repeat: repeat;
+      background-size: 95% 85%, 115% 95%, 100% 90%, 110% 100%, 90% 80%;
+      filter: blur(26px);
+      animation: dsh-mistblue-sway 74s ease-in-out infinite alternate;
+    }
+    @keyframes dsh-mistblue-sway {
+      from { transform: translate3d(0, 0, 0) scale(1); }
+      to   { transform: translate3d(-2.4%, -1.6%, 0) scale(1.08); }
+    }
+
+    /* 用户对话气泡：1px 雾蓝线段轮廓 */
+    body[style*='--dsh-mistblue'] .gdEzaW_bubble {
+      border: 1px solid rgba(112, 140, 178, 0.55);
+    }
+
+    /* 聊天输入框毛玻璃（滚动时消息滑过被模糊，不与输入文字重叠） */
+    body[style*='--dsh-mistblue'] .uV2eYG_card {
+      -webkit-backdrop-filter: blur(20px) saturate(1.15);
+      backdrop-filter: blur(20px) saturate(1.15);
+    }
+
+    /* 对话框上方的可收折任务条（队列面板/计划条）：半透明底 + 毛玻璃 */
+    body[style*='--dsh-mistblue'] ._7yHdaG_panel,
+    body[style*='--dsh-mistblue'] .lXshSW_root {
+      -webkit-backdrop-filter: blur(18px) saturate(1.15);
+      backdrop-filter: blur(18px) saturate(1.15);
+      background: rgba(244, 248, 253, 0.75);
+    }
+
+    /* 一键回到底部按钮：半透明底 + 毛玻璃 */
+    body[style*='--dsh-mistblue'] .Md3f7G_toBottom {
+      -webkit-backdrop-filter: blur(14px) saturate(1.2);
+      backdrop-filter: blur(14px) saturate(1.2);
+      background: rgba(244, 248, 253, 0.7);
+    }
+
+    /* 上下文用量弹窗：真毛玻璃 */
+    body[style*='--dsh-mistblue'] .JObwrW_panel {
+      -webkit-backdrop-filter: blur(24px) saturate(1.25);
+      backdrop-filter: blur(24px) saturate(1.25);
+      background: rgba(238, 245, 252, 0.62);
+      border-color: rgba(112, 140, 178, 0.5);
+    }
+
+    /* HoverCard 悬浮卡：半透明深雾蓝玻璃 */
+    body[style*='--dsh-mistblue'] ._card_1b2ny_13 {
+      -webkit-backdrop-filter: blur(16px) saturate(1.2);
+      backdrop-filter: blur(16px) saturate(1.2);
+    }
+
+    /* Toast 通知：半透明深雾蓝玻璃 */
+    body[style*='--dsh-mistblue'] ._toast_fvpz7_7 {
+      background: rgba(56, 72, 100, 0.85);
+    }
+
+    /* cordis 插件界面：毛玻璃 + 雾蓝描边 */
+    body[style*='--dsh-mistblue'] .cvtE3a_business,
+    body[style*='--dsh-mistblue'] .cvtE3a_output,
+    body[style*='--dsh-mistblue'] .gNWCoW_output,
+    body[style*='--dsh-mistblue'] .Nqubda_panel {
+      -webkit-backdrop-filter: blur(16px) saturate(1.1);
+      backdrop-filter: blur(16px) saturate(1.1);
+      border-color: rgba(112, 140, 178, 0.5);
+    }
+
+    /* 审批卡/问题卡：近不透明底（防 Safari backdrop-filter 裁切子元素） */
+    body[style*='--dsh-mistblue'] .bqrRRG_card,
+    body[style*='--dsh-mistblue'] .Mbwy4a_card,
+    body[style*='--dsh-mistblue'] .LVzXQa_card {
+      background: rgba(248, 251, 254, 0.97);
+    }
+
+    /* 审批弹窗按钮：强制正确配色 */
+    body[style*='--dsh-mistblue'] .bqrRRG_actionRow button:last-child {
+      background: rgb(63, 116, 208) !important;
+      color: #ffffff !important;
+      border: 1px solid #0000 !important;
+    }
+    body[style*='--dsh-mistblue'] .bqrRRG_actionRow button:first-child {
+      background: transparent !important;
+      color: rgb(68, 89, 117) !important;
+      border-color: rgba(104, 134, 172, 0.6) !important;
+    }
+
+    /* Modal 弹窗（含 Full access 确认框、目录选择器）：毛玻璃 + 雾蓝描边 */
+    body[style*='--dsh-mistblue'] ._dialog_15u5s_22 {
+      -webkit-backdrop-filter: blur(28px) saturate(1.3);
+      backdrop-filter: blur(28px) saturate(1.3);
+      border-color: rgba(112, 140, 178, 0.5);
+    }
+
+    /* Full access 确认框按钮 */
+    body[style*='--dsh-mistblue'] ._confirmAction_1nu42_71 {
+      background: rgb(63, 116, 208) !important;
+      color: #ffffff !important;
+      border: 1px solid #0000 !important;
+    }
+    body[style*='--dsh-mistblue'] ._modalAction_1nu42_67 {
+      background: transparent !important;
+      color: rgb(68, 89, 117) !important;
+      border: 1px solid rgba(104, 134, 172, 0.6) !important;
+    }
+
+    /* 禁用按钮淡出更轻（原 0.4 过淡） */
+    body[style*='--dsh-mistblue'] ._button_kz6gm_4:disabled {
+      opacity: 0.75;
+    }
+
+    /* 深色显示模块：毛玻璃 */
+    body[style*='--dsh-mistblue'] pre,
+    body[style*='--dsh-mistblue'] .ydkMvW_code,
+    body[style*='--dsh-mistblue'] .CY-8Ka_ioCard,
+    body[style*='--dsh-mistblue'] .iWrAna_instructionsCard,
+    body[style*='--dsh-mistblue'] ._Xvjua_body {
+      -webkit-backdrop-filter: blur(var(--dsh-mistblue-glass-blur, 0px)) saturate(1.1);
+      backdrop-filter: blur(var(--dsh-mistblue-glass-blur, 0px)) saturate(1.1);
+    }
+
+    /* 弹出式菜单：毛玻璃（role 通用覆盖） */
+    body[style*='--dsh-mistblue'] [role='menu'],
+    body[style*='--dsh-mistblue'] [role='listbox'] {
+      -webkit-backdrop-filter: blur(24px) saturate(1.25);
+      backdrop-filter: blur(24px) saturate(1.25);
+      background: rgba(244, 248, 253, 0.84);
+    }
+
+    /* 提示气泡 / 通知 */
+    body[style*='--dsh-mistblue'] [role='tooltip'],
+    body[style*='--dsh-mistblue'] [role='status'],
+    body[style*='--dsh-mistblue'] [role='alert'] {
+      -webkit-backdrop-filter: blur(12px) saturate(1.2);
+      backdrop-filter: blur(12px) saturate(1.2);
+    }
+
+    /* 菜单类弹层（无角色兜底） */
+    body[style*='--dsh-mistblue'] .mufS8W_card,
+    body[style*='--dsh-mistblue'] ._3e4SsG_menu,
+    body[style*='--dsh-mistblue'] .QsffPG_menu,
+    body[style*='--dsh-mistblue'] .h8S2Va_menu,
+    body[style*='--dsh-mistblue'] ._7KE1Ra_menu,
+    body[style*='--dsh-mistblue'] .re-model-menu {
+      -webkit-backdrop-filter: blur(24px) saturate(1.25);
+      backdrop-filter: blur(24px) saturate(1.25);
+    }
+
+    /* 设置面板 / 内容列 */
+    body[style*='--dsh-mistblue'] .VOzbGW_panel {
+      -webkit-backdrop-filter: blur(24px) saturate(1.25);
+      backdrop-filter: blur(24px) saturate(1.25);
+    }
+    body[style*='--dsh-mistblue'] .VOzbGW_content {
+      -webkit-backdrop-filter: blur(28px) saturate(1.3);
+      backdrop-filter: blur(28px) saturate(1.3);
+      background: rgba(243, 248, 253, 0.78);
+    }
+
+    /* 工作区选中行：雾蓝色块 */
+    body[style*='--dsh-mistblue'] .YDXeBa_sessionRow.YDXeBa_selected,
+    body[style*='--dsh-mistblue'] .YDXeBa_searchResultRow.YDXeBa_selected {
+      background: rgba(92, 124, 168, 0.3);
+    }
+
+    /* 第三方插件（dsh-reasoning-effort）开关：雾蓝轨道 */
+    body[style*='--dsh-mistblue'] .re-setting-switch {
+      background: rgba(104, 130, 168, 0.55) !important;
+    }
+    body[style*='--dsh-mistblue'] .re-setting-switch.is-on {
+      background: rgb(58, 132, 216) !important;
+    }
+    body[style*='--dsh-mistblue'] .re-setting-switch .re-setting-switch-knob {
+      background: #ffffff !important;
+    }
+
+    /* 设置选择器药丸：雾蓝渐变 + 描边（未悬停也带皮肤） */
+    body[style*='--dsh-mistblue'] .hVGvvW_selector,
+    body[style*='--dsh-mistblue'] .oY77xG_selector,
+    body[style*='--dsh-mistblue'] .T1PP_q_selector,
+    body[style*='--dsh-mistblue'] ._5QVD0a_selector {
+      border: 1px solid rgba(112, 140, 178, 0.6);
+      background: linear-gradient(135deg, rgb(235, 242, 251), rgb(222, 234, 250));
+      color: var(--dsw-alias-label-primary);
+    }
+
+    /* 插件设置保存/取消按钮 */
+    body[style*='--dsh-mistblue'] .YyYd_a_save {
+      background: rgb(63, 116, 208) !important;
+      color: #ffffff !important;
+      border: 1px solid #0000 !important;
+    }
+    body[style*='--dsh-mistblue'] .YyYd_a_discard {
+      background: transparent !important;
+      color: rgb(68, 89, 117) !important;
+      border-color: rgba(104, 134, 172, 0.6) !important;
+    }
+
+    /* Agent 预设徽章 */
+    body[style*='--dsh-mistblue'] .rtSEdW_inUse {
+      background: rgb(58, 132, 216) !important;
+      color: #ffffff !important;
+    }
+    body[style*='--dsh-mistblue'] .rtSEdW_badge {
+      background: rgba(148, 178, 218, 0.5) !important;
+      color: rgb(52, 70, 96) !important;
+    }
+
+    /* 表单控件：雾蓝强调色（含滑块） */
+    body[style*='--dsh-mistblue'] input[type='checkbox'],
+    body[style*='--dsh-mistblue'] input[type='radio'],
+    body[style*='--dsh-mistblue'] input[type='range'] {
+      accent-color: rgb(58, 132, 216);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      body[style*='--dsh-mistblue']::after { animation: none; }
+    }

@@ -1,0 +1,121 @@
+/* springbrand-lab/dsh-skin-universe — packages/skins/first-love/src/client/first-love.module.css
+   fetched 2026-08-19 from https://raw.githubusercontent.com/springbrand-lab/dsh-skin-universe/main/packages/skins/first-love/src/client/first-love.module.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+body[data-dsh-first-love] {
+  --dsw-alias-brand-primary: #d96868;
+  --dsw-alias-brand-text: #b94e58;
+  --dsw-alias-button-primary-fill: #d96868;
+  --dsw-alias-button-primary-hover: #c9585f;
+  --dsw-alias-bg-base: rgba(255, 252, 249, .2);
+  --dsw-alias-bg-layer-1: rgba(255, 252, 249, .3);
+  --dsw-alias-bg-layer-2: rgba(255, 252, 249, .42);
+  --dsw-alias-bg-layer-3: rgba(255, 252, 249, .58);
+  --dsw-alias-bg-overlay: rgba(255, 252, 249, .78);
+  --dsw-specific-sidebar-fill: rgba(255, 252, 249, .28);
+  --dsw-specific-input-major: rgba(255, 255, 255, .64);
+  --skin-accent: #d96868;
+  --skin-accent-soft: rgba(217, 104, 104, .14);
+  --skin-border: rgba(146, 96, 91, .24);
+  --skin-panel: rgba(255, 252, 249, .52);
+  --skin-panel-strong: rgba(255, 252, 249, .82);
+  --skin-text: #352a28;
+  color: var(--skin-text);
+  background-color: #eadfd8;
+}
+
+body[data-dsh-first-love][data-ds-dark-theme] {
+  --dsw-alias-bg-base: rgba(20, 27, 25, .46);
+  --dsw-alias-bg-layer-1: rgba(20, 27, 25, .54);
+  --dsw-alias-bg-layer-2: rgba(20, 27, 25, .62);
+  --dsw-alias-bg-layer-3: rgba(20, 27, 25, .72);
+  --dsw-alias-bg-overlay: rgba(20, 27, 25, .86);
+  --dsw-specific-sidebar-fill: rgba(20, 27, 25, .5);
+  --dsw-specific-input-major: rgba(24, 33, 30, .7);
+  --skin-accent: #ef9892;
+  --skin-accent-soft: rgba(239, 152, 146, .17);
+  --skin-border: rgba(239, 184, 170, .24);
+  --skin-panel: rgba(18, 27, 24, .56);
+  --skin-panel-strong: rgba(18, 27, 24, .84);
+  --skin-text: #f5eee9;
+  color: var(--skin-text);
+  background-color: #171c1a;
+}
+
+body[data-dsh-first-love] [data-dsh-first-love-backdrop] {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  opacity: 0;
+  pointer-events: none;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  transition: opacity 1.6s ease;
+}
+
+body[data-dsh-first-love] [data-dsh-first-love-backdrop][data-active] { opacity: 1; }
+body[data-dsh-first-love] [id='root'] { position: relative; z-index: 1; background: transparent; }
+body[data-dsh-first-love] [data-dsh-frame] { background: rgba(255, 255, 255, .08) !important; }
+body[data-dsh-first-love] [data-pane] { border-color: var(--skin-border) !important; }
+body[data-dsh-first-love] [data-pane='sidebar'] { background: var(--skin-panel) !important; }
+body[data-dsh-first-love] [data-pane='conversation'] { background: rgba(255, 255, 255, .12) !important; }
+body[data-dsh-first-love] [data-pane='details'] { background: rgba(255, 252, 249, .4) !important; }
+body[data-dsh-first-love][data-ds-dark-theme] [data-pane='details'] { background: rgba(18, 27, 24, .42) !important; }
+
+body[data-dsh-first-love] [data-pane],
+body[data-dsh-first-love] [class*='composer'],
+body[data-dsh-first-love] [class*='settings'] {
+  backdrop-filter: blur(7px) saturate(112%);
+  -webkit-backdrop-filter: blur(7px) saturate(112%);
+}
+
+body[data-dsh-first-love] textarea,
+body[data-dsh-first-love] [contenteditable='true'],
+body[data-dsh-first-love] input:not([type='checkbox']):not([type='radio']) {
+  background: var(--dsw-specific-input-major) !important;
+  border: 1px solid var(--skin-border) !important;
+  box-shadow: 0 8px 24px rgba(81, 51, 45, .08);
+  color: var(--skin-text) !important;
+}
+
+body[data-dsh-first-love] textarea:focus,
+body[data-dsh-first-love] [contenteditable='true']:focus,
+body[data-dsh-first-love] input:focus { border-color: var(--skin-accent) !important; box-shadow: 0 0 0 2px var(--skin-accent-soft); }
+
+body[data-dsh-first-love] button,
+body[data-dsh-first-love] [role='button'] { border-radius: 8px !important; border-color: var(--skin-border); }
+body[data-dsh-first-love] [class*='primary'],
+body[data-dsh-first-love] [class*='newSession'] {
+  color: #fff !important;
+  background: linear-gradient(135deg, #cf5f64, #e98e7d) !important;
+  border: 1px solid rgba(255, 255, 255, .34) !important;
+  box-shadow: 0 5px 16px rgba(143, 64, 64, .2) !important;
+}
+body[data-dsh-first-love] button:hover,
+body[data-dsh-first-love] [role='button']:hover { background-color: var(--skin-accent-soft); }
+
+body[data-dsh-first-love] [class*='menu'],
+body[data-dsh-first-love] [class*='popover'],
+body[data-dsh-first-love] [class*='dialog'],
+body[data-dsh-first-love] [class*='drawer'],
+body[data-dsh-first-love] [role='menu'],
+body[data-dsh-first-love] [role='listbox'] {
+  background: var(--skin-panel-strong) !important;
+  border: 1px solid var(--skin-border) !important;
+  box-shadow: 0 16px 38px rgba(71, 43, 39, .18) !important;
+  backdrop-filter: blur(14px) saturate(116%);
+  -webkit-backdrop-filter: blur(14px) saturate(116%);
+}
+
+body[data-dsh-first-love] [data-dsh-taskboard-board] { background: rgba(255, 252, 249, .24) !important; }
+body[data-dsh-first-love] [data-dsh-taskboard-board] [class*='column'] { background: var(--skin-panel) !important; border-color: var(--skin-border) !important; }
+body[data-dsh-first-love] [data-dsh-taskboard-board] [class*='card'] { background: var(--skin-panel-strong) !important; border-color: var(--skin-border) !important; }
+body[data-dsh-first-love] [data-dsh-taskboard-board] [class*='card']:hover { border-color: var(--skin-accent) !important; }
+
+body[data-dsh-first-love] ::selection { color: white; background: var(--skin-accent); }
+body[data-dsh-first-love] ::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--skin-accent) 42%, transparent); border-radius: 8px; }
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-dsh-first-love] [data-dsh-first-love-backdrop] { transition: none; }
+}
+

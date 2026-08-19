@@ -1,0 +1,464 @@
+/* kevinnn04/dsh-qq-skin — qq-skin.css
+   fetched 2026-08-19 from https://raw.githubusercontent.com/kevinnn04/dsh-qq-skin/main/qq-skin.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* =====================================================================
+   DeepSeek Harness — 古早QQ 皮肤 (old-QQ chat skin) v2
+   - QQ 蓝色顶部标题栏 / 蓝色侧边栏
+   - 用户绿色气泡 + 传统QQ企鹅头像；助手白色气泡 + DeepSeek 鲸鱼头像
+   - 鲸鱼 logo 白色（避免与蓝色侧边栏混淆）
+   ===================================================================== */
+
+/* ---------------------------------------------------------------------
+   1. 强制浅色配色
+   --------------------------------------------------------------------- */
+html {
+  color-scheme: light !important;
+}
+
+/* ---------------------------------------------------------------------
+   2. 全局设计 token：QQ 蓝 + 天空蓝
+   --------------------------------------------------------------------- */
+body,
+body[data-ds-dark-theme] {
+  /* 背景 */
+  --dsw-alias-bg-base: #dceeff !important;
+  --dsw-alias-bg-layer-1: #eaf4ff !important;
+  --dsw-alias-bg-layer-2: #ffffff !important;
+  --dsw-alias-bg-layer-3: #ffffff !important;
+  --dsw-alias-bg-module-platform: #f5f6f7 !important;
+  --dsw-alias-bg-multi-select: #f5f6f7 !important;
+  --dsw-alias-bg-overlay: #e9ecf2 !important;
+  --dsw-alias-bg-skeleton: rgba(0, 0, 0, 0.04) !important;
+  --dsw-alias-bg-mask-1: rgba(0, 0, 0, 0.24) !important;
+  --dsw-alias-bg-mask-2: rgba(0, 0, 0, 0.12) !important;
+  --dsw-alias-bg-mask-3: rgba(0, 0, 0, 0.48) !important;
+  --dsw-alias-bg-mask-drop: rgba(255, 255, 255, 0.7) !important;
+
+  --dsw-specific-sidebar-fill: linear-gradient(180deg, #2a93e8 0%, #3fb1f7 100%) !important;
+  --dsw-specific-bubble: #ffffff !important;
+  --dsw-specific-bubble-highlight: #b5e86a !important;
+  --dsw-specific-input-major: #ffffff !important;
+  --dsw-specific-login-input: #f9fafb !important;
+  --dsw-specific-selector: #eef6ff !important;
+  --dsw-specific-tip: #f2f8ff !important;
+  --dsw-specific-sidebar-nav-item-active-accent: #d6eeff !important;
+  --dsw-specific-sidebar-nav-item-active: #dceeff !important;
+  --dsw-specific-sidebar-nav-item-hover: #eaf4ff !important;
+
+  /* 品牌 / 按钮 */
+  --dsw-alias-brand-primary: #0c8fe8 !important;
+  --dsw-alias-brand-text: #0c8fe8 !important;
+  --dsw-alias-brand-primary-invert: #0f1115 !important;
+  --dsw-alias-button-info-fill: #12b7f5 !important;
+  --dsw-alias-button-info-hover: #0c9ee0 !important;
+  --dsw-alias-button-primary-fill: #12b7f5 !important;
+  --dsw-alias-button-primary-hover: #0c9ee0 !important;
+  --dsw-alias-button-primary-dimmed: #eef1f5 !important;
+  --dsw-alias-button-contrast-fill: #53555a !important;
+  --dsw-alias-button-elevated-fill: #ffffff !important;
+  --dsw-alias-button-floating-fill: #ffffff !important;
+  --dsw-alias-button-floating-hover: #f1f3f5 !important;
+  --dsw-alias-button-ghost-active-border: #7a8ea3 !important;
+  --dsw-alias-button-ghost-active-fill: #eef1f5 !important;
+  --dsw-alias-button-ghost-active-hover: #e9ecf2 !important;
+
+  /* 状态色 */
+  --dsw-alias-state-business-primary: #0c8fe8 !important;
+  --dsw-alias-state-business-tertiary: #d6eeff !important;
+  --dsw-alias-state-error-primary: #ec1313 !important;
+  --dsw-alias-state-error-secondary: #f25a5a !important;
+  --dsw-alias-state-success-primary: #22c55e !important;
+  --dsw-alias-state-success-secondary: #4ed17e !important;
+  --dsw-alias-state-success-tertiary: #e6faed !important;
+  --dsw-alias-state-warn-label: #dda00c !important;
+  --dsw-alias-state-warn-primary: #f59e0b !important;
+  --dsw-alias-state-warn-secondary: #f7ad31 !important;
+  --dsw-alias-state-warn-tertiary: #fef5e7 !important;
+
+  /* 文字 */
+  --dsw-alias-label-primary: #1f2d3d !important;
+  --dsw-alias-label-secondary: #47586b !important;
+  --dsw-alias-label-tertiary: #7a8ea3 !important;
+  --dsw-alias-label-caption: #8aa2b5 !important;
+  --dsw-alias-label-dimmed: #d9dce0 !important;
+  --dsw-alias-label-primary-bluish: #0c6bc5 !important;
+  --dsw-alias-label-primary-dimmed: #151517 !important;
+  --dsw-alias-label-primary-foreground: #ffffff !important;
+  --dsw-alias-label-primary-inverted: #ffffff !important;
+
+  /* Markdown / 代码块（浅底） */
+  --dsw-alias-markdown-citation: #eef1f5 !important;
+  --dsw-alias-markdown-code-block-banner: #f9fafb !important;
+  --dsw-alias-markdown-code-block: #f9fafb !important;
+  --dsw-alias-markdown-code-segment-selected: #ffffff !important;
+  --dsw-alias-markdown-code-segment-unselected: #f1f3f5 !important;
+  --dsw-alias-markdown-inline-code: #eef1f5 !important;
+  --dsw-alias-markdown-placeholder: #f5f6f7 !important;
+  --dsw-alias-markdown-tag: #f1f3f5 !important;
+
+  /* 滚动条 */
+  --dsw-alias-scrollbar-bg-l1: #e5e5e5 !important;
+  --dsw-alias-scrollbar-bg-l2: #e5e5e5 !important;
+  --dsw-alias-scrollbar-hover-l1: #d4d4d4 !important;
+  --dsw-alias-scrollbar-hover-l2: #d4d4d4 !important;
+
+  /* 边框 */
+  --dsw-alias-border-inverted: rgba(0, 0, 0, 0) !important;
+  --dsw-alias-border-inverted2: rgba(0, 0, 0, 0) !important;
+  --dsw-alias-border-l1: rgba(12, 90, 180, 0.10) !important;
+  --dsw-alias-border-l2-darkmode-thin: rgba(12, 90, 180, 0.10) !important;
+  --dsw-alias-border-l2: rgba(12, 90, 180, 0.16) !important;
+  --dsw-alias-border-l3: rgba(12, 90, 180, 0.22) !important;
+  --dsw-alias-border-l4: rgba(12, 90, 180, 0.28) !important;
+
+  /* 交互悬停 */
+  --dsw-alias-interactive-bg-active: rgba(12, 143, 232, 0.14) !important;
+  --dsw-alias-interactive-bg-hover: rgba(12, 143, 232, 0.10) !important;
+  --dsw-alias-interactive-bg-hover-accent: rgba(12, 143, 232, 0.16) !important;
+  --dsw-alias-interactive-bg-hover-danger: rgba(236, 19, 19, 0.05) !important;
+  --dsw-alias-interactive-bg-hover-solid: rgba(12, 143, 232, 0.16) !important;
+
+  /* Toast / Tooltip 保持深底白字 */
+  --dsw-alias-toast-bg: #353638 !important;
+  --dsw-alias-tooltip-bg: #2c2c2e !important;
+}
+
+/* 聊天区整体：天空蓝渐变背景 */
+.pI_x6G_frame,
+.wSkVaW_root {
+  background:
+    radial-gradient(1200px 500px at 50% -10%, #f2faff 0%, rgba(242, 250, 255, 0) 60%),
+    linear-gradient(180deg, #d9edff 0%, #c8e4fd 100%) !important;
+}
+
+/* ---------------------------------------------------------------------
+   3. 侧边栏：QQ 蓝面板，文字全白，鲸鱼 logo 白色
+   --------------------------------------------------------------------- */
+.pI_x6G_sidebarCol,
+.hHd-Xa_root {
+  background: linear-gradient(180deg, #2a93e8 0%, #3fb1f7 100%) !important;
+}
+
+/* 侧边栏内所有文字统一为白色 */
+.hHd-Xa_root {
+  color: #ffffff !important;
+  --dsw-alias-label-primary: #ffffff !important;
+  --dsw-alias-label-secondary: rgba(255, 255, 255, 0.85) !important;
+  --dsw-alias-label-tertiary: rgba(255, 255, 255, 0.7) !important;
+  --dsw-alias-label-caption: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* 鲸鱼 logo 改白色（避免蓝色与蓝底混淆） */
+.hHd-Xa_brand svg path,
+.hHd-Xa_toggle svg path,
+.hHd-Xa_toggle svg rect {
+  fill: #ffffff !important;
+}
+
+.hHd-Xa_iconButton {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+.hHd-Xa_iconButton:hover {
+  background: rgba(255, 255, 255, 0.16) !important;
+}
+
+/* “新建会话”按钮 */
+.hHd-Xa_newSession {
+  background: rgba(255, 255, 255, 0.16) !important;
+  border: 1px solid rgba(255, 255, 255, 0.32) !important;
+  color: #ffffff !important;
+  border-radius: 8px !important;
+}
+.hHd-Xa_newSession:hover {
+  background: rgba(255, 255, 255, 0.26) !important;
+}
+
+/* 会话 / 项目行悬停、选中 */
+.YDXeBa_sessionRow:hover,
+.YDXeBa_sessionRow.YDXeBa_selected,
+.YDXeBa_projectRow:hover,
+.YDXeBa_searchResultRow:hover {
+  background: rgba(255, 255, 255, 0.16) !important;
+}
+.YDXeBa_slot {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+
+/* ---------------------------------------------------------------------
+   4. QQ 风格顶部标题栏（对话区顶部的蓝条）
+   --------------------------------------------------------------------- */
+.wSkVaW_header {
+  background: linear-gradient(180deg, #2a93e8 0%, #1f7fd0 100%) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.22) !important;
+  --dsw-alias-label-primary: #ffffff !important;
+  --dsw-alias-label-secondary: rgba(255, 255, 255, 0.9) !important;
+  --dsw-alias-label-tertiary: rgba(255, 255, 255, 0.75) !important;
+  --dsw-alias-label-caption: rgba(255, 255, 255, 0.6) !important;
+}
+.wSkVaW_header:after {
+  display: none !important;
+}
+.wSkVaW_crumbCurrent {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+.wSkVaW_crumb {
+  color: rgba(255, 255, 255, 0.78) !important;
+}
+.wSkVaW_crumb:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.14) !important;
+}
+.wSkVaW_crumbSep {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+.wSkVaW_tab {
+  color: rgba(255, 255, 255, 0.72) !important;
+}
+.wSkVaW_tabActive {
+  color: #ffffff !important;
+}
+.wSkVaW_tabActive:after {
+  background: #ffffff !important;
+}
+.wSkVaW_headerActions svg,
+.wSkVaW_headerUtilities svg {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+/* ---------------------------------------------------------------------
+   5. 聊天气泡 —— 用户（右侧绿色气泡 + 传统QQ企鹅头像）
+   --------------------------------------------------------------------- */
+.Md3f7G_flowItem[data-chat-flow-kind="user"] .gdEzaW_userRow {
+  position: relative !important;
+  padding-right: 52px !important;
+  align-items: flex-end !important;
+}
+
+/* 用户头像：QQ 风格人形头像（白底人形剪影，绿色方块底） */
+.Md3f7G_flowItem[data-chat-flow-kind="user"] .gdEzaW_userRow::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  background:
+    url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2064%2064%22%20fill=%22%23ffffff%22%3E%0A%20%20%3Ccircle%20cx=%2232%22%20cy=%2222%22%20r=%2213.5%22/%3E%0A%20%20%3Cpath%20d=%22M8%2062C8%2042%2020%2034%2032%2034C44%2034%2056%2042%2056%2062H8Z%22/%3E%0A%3C/svg%3E") center / 62% no-repeat,
+    linear-gradient(180deg, #7edb56 0%, #5bbf3a 100%);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+}
+
+/* 用户气泡：绿色渐变 */
+.gdEzaW_bubble {
+  box-sizing: border-box !important;
+  background: linear-gradient(180deg, #b9e87b 0%, #97d948 100%) !important;
+  color: #1f3a0e !important;
+  border-radius: 8px !important;
+  padding: 9px 13px !important;
+  font-size: 15px !important;
+  line-height: 22px !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.10);
+  position: relative !important;
+}
+
+/* 用户气泡尾巴（指向右侧头像） */
+.gdEzaW_bubble::after {
+  content: "";
+  position: absolute;
+  right: -7px;
+  top: 13px;
+  width: 0;
+  height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 8px solid #97d948;
+}
+
+/* ---------------------------------------------------------------------
+   6. 聊天气泡 —— 助手（左侧白色气泡 + DeepSeek 鲸鱼头像）
+   --------------------------------------------------------------------- */
+.Sxvs8a_root {
+  position: relative !important;
+  box-sizing: border-box !important;
+  margin-left: 52px !important;
+  max-width: min(620px, calc(100% - 52px)) !important;
+  width: fit-content !important;
+  background: #ffffff !important;
+  border: 1px solid #d7e6f2 !important;
+  border-radius: 8px !important;
+  padding: 10px 14px !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  color: #1f2d3d !important;
+}
+
+/* 助手头像：蓝色圆角方块 + 白色 DeepSeek 鲸鱼 */
+.Sxvs8a_root::before {
+  content: "";
+  position: absolute;
+  left: -52px;
+  top: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  background:
+    url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2018%22%20fill=%22none%22%3E%0A%3Cpath%20fill=%22%23ffffff%22%20d=%22M22.9168%201.43018C22.6713%201.31018%2022.5658%201.53918%2022.4223%201.65519C22.3733%201.69269%2022.3318%201.74169%2022.2903%201.78669C21.9317%202.1697%2021.5127%202.42121%2020.9657%202.39121C20.1657%202.34621%2019.4827%202.59771%2018.8787%203.20973C18.7502%202.45521%2018.3236%202.0047%2017.6746%201.71569C17.3351%201.56568%2016.9916%201.41518%2016.7536%201.08867C16.5876%200.856163%2016.5421%200.597155%2016.4591%200.341647C16.4061%200.187643%2016.3536%200.0301382%2016.1761%200.00363739C15.9836%20-0.0263635%2015.9081%200.135141%2015.8326%200.270145C15.5306%200.822162%2015.4136%201.43018%2015.4251%202.0462C15.4516%203.43174%2016.0366%204.53527%2017.1991%205.3203C17.3311%205.4103%2017.3651%205.5003%2017.3236%205.63181C17.2441%205.90231%2017.1501%206.16482%2017.0671%206.43533C17.0141%206.60784%2016.9351%206.64584%2016.7501%206.57033C16.1121%206.30383%2015.5611%205.90931%2015.074%205.4328C14.2475%204.63328%2013.5%203.75075%2012.568%203.05973C12.349%202.89822%2012.13%202.74822%2011.9034%202.60522C10.9524%201.68169%2012.028%200.923165%2012.277%200.833162C12.5375%200.739159%2012.3675%200.41615%2011.5259%200.42015C10.6844%200.42365%209.91439%200.705658%208.93286%201.08117C8.78935%201.13767%208.63835%201.17867%208.48384%201.21267C7.59332%201.04367%206.66829%201.00617%205.70226%201.11517C3.88321%201.31768%202.43016%202.1777%201.36213%203.64575C0.0790928%205.4103%20-0.222916%207.41536%200.146595%209.50642C0.535106%2011.7105%201.66014%2013.535%203.38869%2014.9616C5.18125%2016.4406%207.24581%2017.1657%209.60138%2017.0266C11.0319%2016.9441%2012.6245%2016.7526%2014.421%2015.2321C14.874%2015.4576%2015.3496%2015.5476%2016.1381%2015.6151C16.7456%2015.6716%2017.3306%2015.5851%2017.7836%2015.4911C18.4931%2015.3411%2018.4441%2014.6841%2018.1876%2014.5636C16.1081%2013.595%2016.5646%2013.9891%2016.1496%2013.67C17.2061%2012.42%2018.8202%2010.1979%2019.3182%207.17235C19.3672%206.83834%2019.4297%206.36783%2019.4222%206.09732C19.4182%205.93231%2019.4562%205.86831%2019.6447%205.84931C20.1657%205.78931%2020.6712%205.64681%2021.1357%205.3913C22.4833%204.65528%2023.0268%203.44624%2023.1548%201.9972C23.1738%201.77569%2023.1508%201.54668%2022.9168%201.43018ZM11.1749%2014.4736C9.15936%2012.889%208.18184%2012.3675%207.77832%2012.39C7.40081%2012.4125%207.46881%2012.8445%207.55182%2013.126C7.63882%2013.404%207.75182%2013.5955%207.91033%2013.8396C8.01983%2014.0011%208.09533%2014.2411%207.80083%2014.4216C7.15181%2014.8231%206.02327%2014.2866%205.97027%2014.2601C4.65673%2013.4865%203.5587%2012.4655%202.78467%2011.069C2.03715%209.72493%201.60314%208.28289%201.53164%206.74384C1.51264%206.37233%201.62214%206.24082%201.99215%206.17332C2.47916%206.08332%202.98118%206.06432%203.46769%206.13582C5.52476%206.43633%207.27581%207.35586%208.74385%208.8129C9.58188%209.64243%2010.2159%2010.634%2010.8689%2011.6025C11.5634%2012.631%2012.3105%2013.611%2013.262%2014.4146C13.598%2014.6961%2013.866%2014.9101%2014.1225%2015.0681C13.349%2015.1546%2012.058%2015.1731%2011.1749%2014.4746L11.1749%2014.4736ZM12.141%208.25988C12.141%208.09488%2012.273%207.96338%2012.439%207.96338C12.4765%207.96338%2012.5105%207.97088%2012.541%207.98188C12.5825%207.99688%2012.6205%208.01938%2012.6505%208.05338C12.7035%208.10588%2012.7335%208.18088%2012.7335%208.25988C12.7335%208.42489%2012.6015%208.55639%2012.4355%208.55639C12.2695%208.55639%2012.141%208.42489%2012.141%208.25988ZM15.1415%209.79893C14.949%209.87793%2014.7565%209.94544%2014.5715%209.95294C14.2845%209.96794%2013.9715%209.85143%2013.8015%209.70893C13.5375%209.48742%2013.3485%209.36342%2013.2695%208.97691C13.2355%208.8119%2013.2545%208.55639%2013.2845%208.40989C13.3525%208.09438%2013.277%207.89187%2013.0545%207.70787C12.8735%207.55786%2012.643%207.51636%2012.39%207.51636C12.2955%207.51636%2012.209%207.47486%2012.1445%207.44136C12.039%207.38886%2011.9519%207.25735%2012.035%207.09585C12.0615%207.04335%2012.19%206.91584%2012.22%206.89334C12.5635%206.69784%2012.9595%206.76184%2013.326%206.90834C13.6655%207.04735%2013.9225%207.30236%2014.292%207.66287C14.6695%208.09838%2014.7375%208.21838%2014.9525%208.54539C15.1225%208.8009%2015.277%209.06341%2015.3831%209.36392C15.4471%209.55142%2015.3641%209.70493%2015.1415%209.79893Z%22/%3E%0A%3C/svg%3E") center / 58% no-repeat,
+    linear-gradient(180deg, #3fb1f7 0%, #2a93e8 100%);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+}
+
+/* 助手气泡尾巴（指向左侧头像） */
+.Sxvs8a_root::after {
+  content: "";
+  position: absolute;
+  left: -7px;
+  top: 13px;
+  width: 0;
+  height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-right: 8px solid #ffffff;
+}
+
+/* 气泡内间距 / 代码块保持浅色 */
+.Sxvs8a_body {
+  gap: 12px !important;
+}
+.Sxvs8a_root :is(pre, ._Xvjua_body) {
+  background: #f4f8fc !important;
+}
+
+/* ---------------------------------------------------------------------
+   7. 输入框：圆角 + QQ 蓝发送按钮
+   --------------------------------------------------------------------- */
+.uV2eYG_card {
+  border-radius: 10px !important;
+  border: 1px solid rgba(12, 143, 232, 0.35) !important;
+  box-shadow: 0 2px 8px rgba(12, 90, 180, 0.12) !important;
+}
+
+.uV2eYG_primary {
+  background: linear-gradient(180deg, #12b7f5 0%, #0c8fe8 100%) !important;
+  border-radius: 50% !important;
+  box-shadow: 0 1px 4px rgba(12, 143, 232, 0.4) !important;
+}
+.uV2eYG_primary:hover:not(:disabled) {
+  background: linear-gradient(180deg, #0c9ee0 0%, #0a7fd0 100%) !important;
+}
+
+/* ---------------------------------------------------------------------
+   8. 显式保证文字可见（兜底修复“探索未至之境”等文字发白）
+   --------------------------------------------------------------------- */
+.pXSMma_headline,
+.pXSMma_headlineText {
+  color: #1f2d3d !important;
+  -webkit-text-fill-color: #1f2d3d !important;
+}
+.pXSMma_fish {
+  color: #0c8fe8 !important;
+}
+.pXSMma_fish path {
+  fill: #0c8fe8 !important;
+}
+.pXSMma_previewBadge {
+  color: #0c6bc5 !important;
+}
+
+/* ---------------------------------------------------------------------
+   9. 侧边栏顶部：大鲸鱼 + DeepSeek 文字（更贴合 QQ 会话框）
+      ┌────────────┐
+      │  🐋(大鲸鱼) │  动态游动
+      │  DeepSeek  │
+      │ [新会话]   │
+      │ [会话列表] │
+      └────────────┘
+   --------------------------------------------------------------------- */
+
+/* logo 行改为纵向：大鲸鱼在上，DeepSeek 文字在下 */
+.hHd-Xa_logoRow {
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  height: auto !important;
+  min-height: 110px !important;
+  margin-bottom: 10px !important;
+  padding: 14px 8px 10px !important;
+  gap: 8px !important;
+  position: relative !important;
+}
+
+/* 隐藏原来的小 wordmark（小鲸鱼 + DeepSeek Harness 一体 logo） */
+.hHd-Xa_brand {
+  display: none !important;
+}
+
+/* 大鲸鱼：动态游动 */
+.hHd-Xa_logoRow::before {
+  content: "";
+  display: block !important;
+  width: 80px !important;
+  height: 58px !important;
+  background: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2018%22%20fill=%22none%22%3E%0A%3Cpath%20fill=%22%23ffffff%22%20d=%22M22.9168%201.43018C22.6713%201.31018%2022.5658%201.53918%2022.4223%201.65519C22.3733%201.69269%2022.3318%201.74169%2022.2903%201.78669C21.9317%202.1697%2021.5127%202.42121%2020.9657%202.39121C20.1657%202.34621%2019.4827%202.59771%2018.8787%203.20973C18.7502%202.45521%2018.3236%202.0047%2017.6746%201.71569C17.3351%201.56568%2016.9916%201.41518%2016.7536%201.08867C16.5876%200.856163%2016.5421%200.597155%2016.4591%200.341647C16.4061%200.187643%2016.3536%200.0301382%2016.1761%200.00363739C15.9836%20-0.0263635%2015.9081%200.135141%2015.8326%200.270145C15.5306%200.822162%2015.4136%201.43018%2015.4251%202.0462C15.4516%203.43174%2016.0366%204.53527%2017.1991%205.3203C17.3311%205.4103%2017.3651%205.5003%2017.3236%205.63181C17.2441%205.90231%2017.1501%206.16482%2017.0671%206.43533C17.0141%206.60784%2016.9351%206.64584%2016.7501%206.57033C16.1121%206.30383%2015.5611%205.90931%2015.074%205.4328C14.2475%204.63328%2013.5%203.75075%2012.568%203.05973C12.349%202.89822%2012.13%202.74822%2011.9034%202.60522C10.9524%201.68169%2012.028%200.923165%2012.277%200.833162C12.5375%200.739159%2012.3675%200.41615%2011.5259%200.42015C10.6844%200.42365%209.91439%200.705658%208.93286%201.08117C8.78935%201.13767%208.63835%201.17867%208.48384%201.21267C7.59332%201.04367%206.66829%201.00617%205.70226%201.11517C3.88321%201.31768%202.43016%202.1777%201.36213%203.64575C0.0790928%205.4103%20-0.222916%207.41536%200.146595%209.50642C0.535106%2011.7105%201.66014%2013.535%203.38869%2014.9616C5.18125%2016.4406%207.24581%2017.1657%209.60138%2017.0266C11.0319%2016.9441%2012.6245%2016.7526%2014.421%2015.2321C14.874%2015.4576%2015.3496%2015.5476%2016.1381%2015.6151C16.7456%2015.6716%2017.3306%2015.5851%2017.7836%2015.4911C18.4931%2015.3411%2018.4441%2014.6841%2018.1876%2014.5636C16.1081%2013.595%2016.5646%2013.9891%2016.1496%2013.67C17.2061%2012.42%2018.8202%2010.1979%2019.3182%207.17235C19.3672%206.83834%2019.4297%206.36783%2019.4222%206.09732C19.4182%205.93231%2019.4562%205.86831%2019.6447%205.84931C20.1657%205.78931%2020.6712%205.64681%2021.1357%205.3913C22.4833%204.65528%2023.0268%203.44624%2023.1548%201.9972C23.1738%201.77569%2023.1508%201.54668%2022.9168%201.43018ZM11.1749%2014.4736C9.15936%2012.889%208.18184%2012.3675%207.77832%2012.39C7.40081%2012.4125%207.46881%2012.8445%207.55182%2013.126C7.63882%2013.404%207.75182%2013.5955%207.91033%2013.8396C8.01983%2014.0011%208.09533%2014.2411%207.80083%2014.4216C7.15181%2014.8231%206.02327%2014.2866%205.97027%2014.2601C4.65673%2013.4865%203.5587%2012.4655%202.78467%2011.069C2.03715%209.72493%201.60314%208.28289%201.53164%206.74384C1.51264%206.37233%201.62214%206.24082%201.99215%206.17332C2.47916%206.08332%202.98118%206.06432%203.46769%206.13582C5.52476%206.43633%207.27581%207.35586%208.74385%208.8129C9.58188%209.64243%2010.2159%2010.634%2010.8689%2011.6025C11.5634%2012.631%2012.3105%2013.611%2013.262%2014.4146C13.598%2014.6961%2013.866%2014.9101%2014.1225%2015.0681C13.349%2015.1546%2012.058%2015.1731%2011.1749%2014.4746L11.1749%2014.4736ZM12.141%208.25988C12.141%208.09488%2012.273%207.96338%2012.439%207.96338C12.4765%207.96338%2012.5105%207.97088%2012.541%207.98188C12.5825%207.99688%2012.6205%208.01938%2012.6505%208.05338C12.7035%208.10588%2012.7335%208.18088%2012.7335%208.25988C12.7335%208.42489%2012.6015%208.55639%2012.4355%208.55639C12.2695%208.55639%2012.141%208.42489%2012.141%208.25988ZM15.1415%209.79893C14.949%209.87793%2014.7565%209.94544%2014.5715%209.95294C14.2845%209.96794%2013.9715%209.85143%2013.8015%209.70893C13.5375%209.48742%2013.3485%209.36342%2013.2695%208.97691C13.2355%208.8119%2013.2545%208.55639%2013.2845%208.40989C13.3525%208.09438%2013.277%207.89187%2013.0545%207.70787C12.8735%207.55786%2012.643%207.51636%2012.39%207.51636C12.2955%207.51636%2012.209%207.47486%2012.1445%207.44136C12.039%207.38886%2011.9519%207.25735%2012.035%207.09585C12.0615%207.04335%2012.19%206.91584%2012.22%206.89334C12.5635%206.69784%2012.9595%206.76184%2013.326%206.90834C13.6655%207.04735%2013.9225%207.30236%2014.292%207.66287C14.6695%208.09838%2014.7375%208.21838%2014.9525%208.54539C15.1225%208.8009%2015.277%209.06341%2015.3831%209.36392C15.4471%209.55142%2015.3641%209.70493%2015.1415%209.79893Z%22/%3E%0A%3C/svg%3E") center / contain no-repeat !important;
+  animation: dsh-qq-whale-swim 4.5s ease-in-out infinite !important;
+}
+
+/* DeepSeek 文字（大鲸鱼下方） */
+.hHd-Xa_logoRow::after {
+  content: "DeepSeek";
+  display: block !important;
+  color: #ffffff !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  letter-spacing: 1.5px !important;
+  line-height: 1 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* 折叠按钮移到右上角，不占中间位置 */
+.hHd-Xa_logoRow .hHd-Xa_toggle {
+  position: absolute !important;
+  top: 6px !important;
+  right: 6px !important;
+}
+
+/* 鲸鱼游动动画 */
+@keyframes dsh-qq-whale-swim {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(-2px, -3px) rotate(-5deg); }
+  50% { transform: translate(1px, -2px) rotate(3deg); }
+  75% { transform: translate(2px, 2px) rotate(-2deg); }
+}
+
+/* 折叠态（56px 轨道）：恢复原始小布局 */
+.hHd-Xa_collapsed .hHd-Xa_logoRow {
+  flex-direction: row !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  margin-bottom: 12px !important;
+  padding: 0 !important;
+  gap: 0 !important;
+}
+.hHd-Xa_collapsed .hHd-Xa_logoRow::before,
+.hHd-Xa_collapsed .hHd-Xa_logoRow::after {
+  display: none !important;
+}
+.hHd-Xa_collapsed .hHd-Xa_toggle {
+  position: static !important;
+}
+
+/* ---------------------------------------------------------------------
+   10. 设置面板：白底上的文字改为蓝色（修复白字看不见）
+       设置面板渲染在侧边栏内部，会继承侧边栏的白色文字 token，
+       这里在面板作用域内重置为蓝色。
+   --------------------------------------------------------------------- */
+.VOzbGW_panel {
+  --dsw-alias-label-primary: #0c6bc5 !important;
+  --dsw-alias-label-secondary: #1a63ad !important;
+  --dsw-alias-label-tertiary: #4a76ad !important;
+  --dsw-alias-label-caption: #6a8cbb !important;
+  color: #0c6bc5 !important;
+}
+

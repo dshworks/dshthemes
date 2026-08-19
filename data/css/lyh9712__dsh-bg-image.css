@@ -1,0 +1,80 @@
+/* lyh9712/dsh-bg-image — lib/client.js
+   fetched 2026-08-19 from https://raw.githubusercontent.com/lyh9712/dsh-bg-image/main/lib/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/* ── 背景图插件 @local/dsh-bg-image 生成的样式 ── */
+html, body {
+	background-size: cover !important;
+	background-position: center !important;
+	background-repeat: no-repeat !important;
+	background-attachment: fixed !important;
+}
+.pI_x6G_frame {
+	background-color: transparent !important;
+}
+.pI_x6G_frame::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	pointer-events: none;
+	background-size: cover !important;
+	background-position: center !important;
+	background-repeat: no-repeat !important;
+}
+.pI_x6G_sidebarCol,
+.hHd-Xa_root {
+}
+/* 新建会话按钮融入磨砂背景（消除侧边栏里的白色块） */
+.hHd-Xa_newSession {
+	border-color: color-mix(in srgb, var(--dsw-alias-border-l2) 65%, transparent) !important;
+}
+.hHd-Xa_newSession:hover {
+}
+.wSkVaW_root {
+}
+.wSkVaW_root[data-phase="active"] .wSkVaW_composerSeat {
+}
+.ydkMvW_root {
+}
+@supports not (background: color-mix(in srgb, red 50%, blue)) {
+	.pI_x6G_frame::before { display: none !important; }
+	.pI_x6G_sidebarCol,
+	.hHd-Xa_root {
+		background-color: var(--dsw-specific-sidebar-fill) !important;
+	}
+	.wSkVaW_root,
+	.ydkMvW_root {
+		background-color: var(--dsw-alias-bg-base) !important;
+	}
+}
+/* ── 设置行 UI ── */
+.bgImg_row { display: flex; flex-direction: column; gap: 10px; padding: 4px 0; }
+.bgImg_title { font-size: 16px; line-height: 24px; font-weight: 600; color: var(--dsw-alias-label-primary); }
+.bgImg_desc { font-size: 13px; line-height: 20px; color: var(--dsw-alias-label-tertiary); margin: 0; }
+.bgImg_field { display: flex; flex-direction: column; gap: 6px; padding: 10px 0; border-top: 1px solid var(--dsw-alias-border-l2); }
+.bgImg_label { font-size: 13px; line-height: 20px; font-weight: 500; color: var(--dsw-alias-label-secondary); }
+.bgImg_inline { display: flex; align-items: center; gap: 8px; }
+.bgImg_input {
+	flex: 1; min-width: 0; height: 34px; padding: 0 10px; box-sizing: border-box;
+	border: 1px solid var(--dsw-alias-border-l2); border-radius: 10px;
+	background: var(--dsw-alias-bg-module-platform); color: var(--dsw-alias-label-primary);
+	font: inherit; font-size: 13px;
+}
+.bgImg_button {
+	flex: none; height: 34px; padding: 0 14px; border: none; border-radius: 10px;
+	background: var(--dsw-alias-brand-primary, #3964fe); color: #fff;
+	font: inherit; font-size: 13px; cursor: pointer;
+}
+.bgImg_button:hover { filter: brightness(1.08); }
+.bgImg_fileBtn, .bgImg_reset {
+	align-self: flex-start; height: 32px; padding: 0 14px; border-radius: 10px;
+	border: 1px solid var(--dsw-alias-border-l2); background: transparent;
+	color: var(--dsw-alias-label-primary); font: inherit; font-size: 13px; cursor: pointer;
+}
+.bgImg_fileBtn:hover, .bgImg_reset:hover { background: var(--dsw-alias-interactive-bg-hover); }
+.bgImg_slider { flex: 1; min-width: 0; }
+.bgImg_value {
+	flex: none; min-width: 46px; text-align: right; font-size: 13px;
+	color: var(--dsw-alias-label-secondary); font-variant-numeric: tabular-nums;
+}
+.bgImg_hint { font-size: 12px; line-height: 18px; color: var(--dsw-alias-label-tertiary); margin: 0; }

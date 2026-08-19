@@ -3,10 +3,12 @@
 // we derived). Plain HTML, one stylesheet, one script. Every theme gets a real
 // URL. Nothing here is fetched at request time.
 
-import { cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { loadNotes } from "./notes.mjs";
 import { springCss } from "./spring.mjs";
+import { loadSponsors } from "./sponsors.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const SRC = join(ROOT, "src");
@@ -16,7 +18,15 @@ const REGISTRY_URL = "https://github.com/dshworks/awesome-dsh-themes";
 
 const registry = JSON.parse(readFileSync(join(ROOT, "data", "themes.json"), "utf8"));
 const enrich = JSON.parse(readFileSync(join(ROOT, "data", "enrich.json"), "utf8"));
+const shotsPath = join(ROOT, "data", "shots.json");
+// Renders of the shell wearing each theme, taken by scripts/shots.mjs. Absent
+// on a machine with no browser: the build still works, it just has fewer
+// pictures.
+const shots = existsSync(shotsPath) ? JSON.parse(readFileSync(shotsPath, "utf8")) : { updated: null, shots: {} };
 const today = new Date().toISOString().slice(0, 10);
+// The seat inventory, from its one home in dshworks/plugins. Loaded here so a
+// failure is visible in the build log rather than as a silently empty band.
+const { data: sponsors, from: sponsorsFrom } = await loadSponsors();
 
 // ---------------------------------------------------------------------------
 // model
@@ -51,6 +61,11 @@ const themes = registry.themes.map((t) => {
   const pal = e.palette && e.palette.source ? e.palette : null;
   const evPath = t.evidence ? t.evidence.split("#")[0] : null;
   const branch = e.branch || "HEAD";
+  // A rendered sheet that turned out to change nothing on the shell is not a
+  // live view; shots.mjs marks it and it falls back to the signature.
+  const shotRow = shots.shots[t.repo] || null;
+  const render = e.render && e.render.file && (!shotRow || !shotRow.same) ? e.render : null;
+  const rendered = render && shotRow && shotRow.file ? shotRow : null;
   return {
     ...t,
     slug: slugify(t.name),
@@ -61,7 +76,7 @@ const themes = registry.themes.map((t) => {
     repoUrl: t.path ? `https://github.com/${t.repo}/tree/${branch}/${t.path}` : `https://github.com/${t.repo}`,
     evidencePath: evPath,
     evidenceUrl: evPath ? `https://github.com/${t.repo}/blob/${branch}/${evPath}` : null,
-    install: installOf(t),
+    install: t.status === "broken" ? null : installOf(t),
     license: t.license || e.ghLicense || null,
     homepage: e.homepage || null,
     stars: typeof e.stars === "number" ? e.stars : null,
@@ -70,8 +85,18 @@ const themes = registry.themes.map((t) => {
     palette: pal,
     css: e.css || null,
     cssBlobUrl: e.css ? `https://github.com/${t.repo}/blob/${branch}/${e.css.path}` : null,
-    hasLive: Boolean(t.previewCss),
-    hasShot: Boolean(t.preview),
+    // The sheet we actually render, frozen into the build. Registry-curated
+    // when the registry named one, otherwise the best sheet found in the repo
+    // — the page says which, and links the file either way.
+    render: render || null,
+    renderUrl: render ? `/theme-css/${render.file}` : null,
+    renderBlobUrl: render ? `https://github.com/${t.repo}/blob/${branch}/${render.path}` : null,
+    shot: rendered || null,
+    hasLive: Boolean(render),
+    // A gone repository takes its screenshot with it: the URL still exists in
+    // the registry row and 404s, which renders as a broken image rather than as
+    // the theme. Same for the install line, which cannot succeed.
+    hasShot: Boolean(t.preview) && t.status !== "broken",
     signature: pal ? pal[pal.leads] : null,
   };
 });
@@ -130,15 +155,22 @@ function swatches(sig) {
   return `<div class="swatches" aria-hidden="true">${["bg", "surface", "border", "muted", "text", "brand"].map((k) => `<i style="background:${sig[k]}"></i>`).join("")}</div>`;
 }
 
+// What a card shows, best first: our own render of the shell wearing the theme
+// (same frame every time, so the grid reads as one wall), then whatever
+// screenshot the repository published, then the painted signature.
+function cardVisual(t) {
+  if (t.shot?.file) return `<img class="shot" src="/shot/${esc(t.shot.file)}" alt="the dsh shell wearing ${esc(t.name)}" width="1200" height="750" loading="lazy" decoding="async">`;
+  if (t.hasShot) return `<img class="shot" src="${esc(t.preview)}" alt="${esc(t.name)} screenshot" loading="lazy" decoding="async">`;
+  return mini(t.signature, { note: t.signature ? null : "no stylesheet read" });
+}
+
 function card(t) {
-  const visual = t.hasShot
-    ? `<img class="shot" src="${esc(t.preview)}" alt="${esc(t.name)} screenshot" loading="lazy" decoding="async">`
-    : mini(t.signature, { note: t.signature ? null : "no stylesheet read" });
+  const visual = cardVisual(t);
   const meta = [
     `<span class="shelf">${esc(t.shelfInfo.label)}</span>`,
     t.stars != null ? `<span class="stars">${t.stars}</span>` : "",
     t.pushedDays != null ? `<span title="last push ${esc(t.pushedAt)}">pushed ${ago(t.pushedDays)}</span>` : "",
-    t.hasLive ? `<span class="live">live</span>` : "",
+    t.hasLive ? `<span class="live">renders</span>` : "",
     t.status !== "verified" ? `<span class="warn">${esc(t.status)}</span>` : "",
   ].filter(Boolean).join("");
   const wear = t.install
@@ -151,13 +183,40 @@ function card(t) {
 </article>`;
 }
 
+// --- the four seats --------------------------------------------------------
+// The same band dsh.works wears, in this site's dialect: one gold nothing else
+// here uses, its own rules top and bottom, "advertising" said in the first
+// line, and empty seats drawn empty. It sits between the hero and the shelves
+// — the first thing after the work, never over it. A gallery that puts ads
+// above the pictures has told you what it thinks the pictures are for.
+//
+// Nothing in here can touch a theme: the seat data and the registry are loaded
+// from different files by different scripts and never joined. That is the only
+// reason a seat on a site like this is worth selling.
+function seatsBand(sp) {
+  const open = sp.seats.filter((s) => !s.sponsor).length;
+  const buy = sp.checkout || sp.terms;
+  const cells = sp.seats.map((s) => s.sponsor
+    ? `<li><a class="seat is-taken" href="${esc(s.sponsor.url)}" rel="sponsored nofollow noopener" target="_blank"><span class="tag">seat ${String(s.n).padStart(2, "0")} · sponsor</span><span class="who">${esc(s.sponsor.name)}</span><span class="say">${esc(s.sponsor.line)}</span></a></li>`
+    : `<li><a class="seat" href="${esc(buy)}" aria-label="Seat ${s.n} is open — ${esc(sp.price.said)}"><span class="plus" aria-hidden="true">[<b>+</b>]</span><span class="n">seat ${String(s.n).padStart(2, "0")}</span><span class="say">open</span></a></li>`
+  ).join("");
+  const said = open === 4
+    ? "All four are open, and they are drawn open — nobody has bought one yet. "
+    : open === 0 ? "All four are taken. " : `${open} of the four ${open === 1 ? "is" : "are"} open. `;
+  return `<section class="seats" aria-labelledby="seats-h">
+<div class="seats-head"><h2 id="seats-h" class="title">Four seats · advertising</h2><span class="terms">${esc(sp.price.said)} · <a href="${esc(sp.terms)}">what a seat buys</a></span></div>
+<ul class="seats-grid">${cells}</ul>
+<p class="seats-fine">${said}<strong>A seat buys the box and nothing else:</strong> no place in the registry, no shelf, no rank in the gallery, no screenshot, and no say in which themes are listed or how they are painted. Every card here is painted from the theme's own stylesheet by a script in a public repo, and no sponsor has ever been able to change a colour in one. That is the whole product — if a seat could bend it, there would be nothing left worth sponsoring.</p>
+</section>`;
+}
+
 function sitebar(current) {
-  const links = [["/", "themes"], ["/about/", "about"], ["https://dsh.works/", "plugins"], [REGISTRY_URL, "registry"]];
+  const links = [["/", "themes"], ["/notes/", "notes"], ["/about/", "about"], ["https://dsh.works/", "plugins"], [REGISTRY_URL, "registry"]];
   return `<header class="sitebar"><a class="sitebar-brand" href="/"><span class="caret">&gt;</span> dsh<i>themes</i></a><nav class="sitebar-links">${links.map(([h, l]) => `<a href="${h}"${h === current ? ' aria-current="page"' : ""}${h.startsWith("http") ? ' rel="noopener"' : ""}>${l}</a>`).join("")}<button type="button" class="themectl" data-themectl>theme: <b>auto</b></button></nav></header>`;
 }
 
 function footer() {
-  return `<footer class="wrap foot"><span>dshthemes.com reads <a href="${REGISTRY_URL}" rel="noopener">dshworks/awesome-dsh-themes</a> · registry ${esc(stats.updated)} · colours read ${esc(stats.enriched)}</span><span class="spacer"></span><a href="/themes.json">themes.json</a><a href="/llms.txt">llms.txt</a><a href="https://dsh.works/" rel="noopener">dsh.works</a><a href="https://github.com/dshworks/dshthemes" rel="noopener">source</a><span>not affiliated with DeepSeek</span></footer>`;
+  return `<footer class="wrap foot"><span>dshthemes.com reads <a href="${REGISTRY_URL}" rel="noopener">dshworks/awesome-dsh-themes</a> · registry ${esc(stats.updated)} · colours read ${esc(stats.enriched)}</span><span class="spacer"></span><a href="/themes.json">themes.json</a><a href="/notes/feed.xml">rss</a><a href="/llms.txt">llms.txt</a><a href="https://dsh.works/" rel="noopener">dsh.works</a><a href="https://github.com/dshworks/dshthemes" rel="noopener">source</a><span>not affiliated with DeepSeek</span></footer>`;
 }
 
 function layout({ title, description, body, path = "/", current = "/", head = "", bodyClass = "" }) {
@@ -236,6 +295,9 @@ const colourScore = (t) => {
   const stockL = t.palette.leads === "light" ? 1 : 0.08;
   return satOf(rgbOf(s.brand)) * 2 + satOf(rgbOf(s.bg)) * 3 + satOf(rgbOf(s.surface)) + Math.abs(lumOf(rgbOf(s.bg)) - stockL) + (t.palette.source === "tokens" ? 0.6 : 0) + Math.min(t.stars ?? 0, 20) / 40;
 };
+// A photograph of the shell wearing the theme beats a painting of its palette,
+// so the hero cycles the ones we have shot and keeps the painted frame for the
+// rest. Both are labelled underneath.
 const heroPool = themes
   .filter((t) => t.palette && (t.palette.source === "tokens" ? Math.max(t.palette.dark.changed, t.palette.light.changed) >= 3 : true))
   .map((t) => ({ t, score: colourScore(t) }))
@@ -243,7 +305,8 @@ const heroPool = themes
   .slice(0, 36)
   // interleave by hue-ish so neighbours in the cycle differ
   .sort((a, b) => (a.t.name.charCodeAt(0) * 7919 + a.t.name.length) % 97 - (b.t.name.charCodeAt(0) * 7919 + b.t.name.length) % 97)
-  .map(({ t }) => ({ slug: t.slug, name: t.name, owner: t.owner, url: t.url, css: t.css?.path || null, sig: t.signature, light: t.palette.leads === "light" }));
+  .map(({ t }) => ({ slug: t.slug, name: t.name, owner: t.owner, url: t.url, css: t.css?.path || null, sig: t.signature, light: t.palette.leads === "light", shot: t.shot?.file ? `/shot/${t.shot.file}` : null }))
+  .sort((a, b) => Number(Boolean(b.shot)) - Number(Boolean(a.shot)));
 const heroFirst = heroPool[0];
 
 const decks = Object.entries(SHELVES).map(([k, v]) => {
@@ -256,16 +319,17 @@ const heroHtml = `<section class="hero">
 <div class="hero-copy">
 <p class="eyebrow">DeepSeek Harness · community themes · not a store</p>
 <h1>Every dsh theme,<br><b>in its own colours.</b></h1>
-<p class="lede">A theme is a stylesheet. We read each one, resolve its <code>--dsw-*</code> tokens against the stock rc.6 shell, and paint the harness with what it declares — no screenshot needed, nothing invented. Then you wear it in one line.</p>
+<p class="lede">A theme is a stylesheet, so we read each one. ${stats.live} of them go on a real copy of the dsh shell and get photographed there. The rest are painted from the <code>--dsw-*</code> tokens they declare, and say so. Nothing is invented, and every card links the file it came from.</p>
 <div class="hero-actions"><a class="btn primary" href="#gallery">Browse ${stats.total} themes ${ICONS.arrow}</a><button type="button" class="btn" data-surprise>${ICONS.shuffle} Surprise me</button></div>
-<div class="stats"><span><b data-count="${stats.total}">${stats.total}</b>themes</span><span><b data-count="${stats.signatures}">${stats.signatures}</b>colour signatures</span><span><b data-count="${stats.live}">${stats.live}</b>live on the shell</span><span><b data-count="${stats.shots}">${stats.shots}</b>screenshots</span></div>
+<div class="stats"><span><b data-count="${stats.total}">${stats.total}</b>themes</span><span><b data-count="${stats.live}">${stats.live}</b>on the real shell</span><span><b data-count="${stats.signatures}">${stats.signatures}</b>colour signatures</span></div>
 </div>
 <div class="hero-stage">
-<a id="hero-mini-link" href="${heroFirst ? heroFirst.url : "/"}" aria-label="open the theme currently shown">${mini(heroFirst?.sig || null, { cls: "mini-lg", light: heroFirst?.light })}</a>
-<div class="hero-label"><span class="swap" data-hero-label><span><b>${esc(heroFirst?.name || "")}</b> <i>by ${esc(heroFirst?.owner || "")}</i></span></span><a class="source" href="/about/#signatures">painted from its stylesheet ↗</a></div>
+<a id="hero-mini-link" href="${heroFirst ? heroFirst.url : "/"}" aria-label="open the theme currently shown">${mini(heroFirst?.sig || null, { cls: "mini-lg", light: heroFirst?.light })}<img class="hero-shot" src="${esc(heroFirst?.shot || "")}" alt="the dsh shell wearing ${esc(heroFirst?.name || "")}" width="1200" height="750" ${heroFirst?.shot ? "" : "hidden "}data-hero-shot></a>
+<div class="hero-label"><span class="swap" data-hero-label><span><b>${esc(heroFirst?.name || "")}</b> <i>by ${esc(heroFirst?.owner || "")}</i></span></span><a class="source" href="/about/#live" data-hero-source>${heroFirst?.shot ? "its CSS on the real shell ↗" : "painted from its stylesheet ↗"}</a></div>
 <script>window.__HERO__=${JSON.stringify(heroPool)};</script>
 </div>
 </section>
+${seatsBand(sponsors)}
 <div class="section-head"><h2>Shelves</h2><span class="rule"></span><a href="/about/#shelves">what the shelves mean</a></div>
 <section class="decks">${decks.map((d) => `<a class="deck" href="/shelf/${d.slug}/"><div class="deck-cards">${d.top.map((t) => mini(t.signature)).join("")}</div><h3>${esc(d.label)} <b>${d.count}</b></h3><p>${esc(d.blurb)}</p></a>`).join("")}</section>
 <div class="section-head"><h2>All themes</h2><span class="rule"></span><a href="${REGISTRY_URL}" rel="noopener">add yours to the registry</a></div>`;
@@ -282,11 +346,22 @@ function themePage(t) {
   if (t.hasShot) views.push(["shot", "Screenshot"]);
   views.push(["paint", "Signature"]);
   const first = views[0][0];
+  // The live view is an iframe running the shell, so it is the one thing on
+  // this page that cannot be a picture. The render we took of it is used as the
+  // frame's backdrop: the stage is filled the moment the page paints, and the
+  // frame lands on top of it a beat later with nothing flashing in between.
+  const poster = t.shot?.file ? ` style="background-image:url('/shot/${esc(t.shot.file)}')"` : "";
+  // A parchment skin opened on the dark shell says nothing true about it. The
+  // frame, the chips and the photograph all start on the scheme the theme's
+  // own stylesheet leads with.
+  const leads = pal?.leads === "light" ? "light" : "dark";
   const stageBody = `
-${t.hasLive ? `<div data-view="live"${first !== "live" ? " hidden" : ""}><iframe title="${esc(t.name)} on the dsh shell" src="/preview/?theme=${esc(t.slug)}&scheme=dark&embed=1" loading="lazy" data-preview-frame></iframe></div>` : ""}
+${t.hasLive ? `<div class="live-wrap" data-view="live"${first !== "live" ? " hidden" : ""}${poster}><iframe title="${esc(t.name)} on the dsh shell" src="/preview/?theme=${esc(t.slug)}&scheme=${leads}&embed=1" loading="lazy" data-preview-frame></iframe></div>` : ""}
 ${t.hasShot ? `<div data-view="shot"${first !== "shot" ? " hidden" : ""}><img class="shot" src="${esc(t.preview)}" alt="${esc(t.name)} screenshot from its repository" decoding="async"></div>` : ""}
-<div data-view="paint"${first !== "paint" ? " hidden" : ""}>${mini(sig, { note: sig ? null : "no stylesheet read", light: pal?.leads === "light" })}</div>
-<span class="stage-note" data-stage-note${first === "live" ? "" : " hidden"}>the theme's CSS on the stock rc.6 shell — not a screenshot</span>`;
+<div data-view="paint"${first !== "paint" ? " hidden" : ""}>${mini(pal ? pal[leads] : null, { note: sig ? null : "no stylesheet read", light: leads === "light" })}</div>`;
+  const stageNote = t.hasLive
+    ? `<span class="stage-note" data-stage-note${first === "live" ? "" : " hidden"}>${esc(t.render.curated ? "The stylesheet the registry named, injected into the stock rc.6 shell. No plugin JavaScript is running." : "The stylesheet we found in the repo, injected into the stock rc.6 shell. No plugin JavaScript is running.")}</span>`
+    : "";
 
   const paletteRows = pal ? `<div class="palette" data-palette>${["bg", "surface", "border", "muted", "text", "brand"].map((k) => `<span class="sw"><i data-role="${k}" style="background:${sig[k]}"></i><span><b>${k}</b><span data-hex="${k}">${sig[k]}</span></span></span>`).join("")}</div>
 <p class="meta">${pal.source === "tokens" ? `Resolved from <b>${pal.tokenCount}</b> <code>--dsw-*</code> declarations` : `Cast from the colour literals`} in <a href="${esc(t.cssBlobUrl)}" rel="noopener"><code>${esc(t.css.path)}</code></a>${pal.font ? ` · font <b>${esc(pal.font)}</b>` : ""}${pal.images ? " · ships images" : ""}. ${pal.source === "tokens" ? "" : "This theme restyles the chrome directly rather than through tokens, so this is a signature, not its palette."}</p>`
@@ -299,18 +374,23 @@ ${t.hasShot ? `<div data-view="shot"${first !== "shot" ? " hidden" : ""}><img cl
 <div class="tp-actions">${t.install ? `<button type="button" class="btn primary wear" data-cmd="${esc(t.install)}"><span class="ico"><span class="i-a">${ICONS.copy}</span><span class="i-b">${ICONS.check}</span></span><span class="lbl"><span class="l-a">Wear it</span><span class="l-b">Copied</span></span></button>` : ""}<a class="btn" href="${esc(t.repoUrl)}" rel="noopener">${ICONS.github} Repo</a></div>
 </div>
 <p class="tp-lede">${esc(t.description)}</p>
+${t.status === "broken" ? `<p class="gone"><b>This one is gone.</b> The registry marks it broken: <code>${esc(t.repo)}</code> returns 404. The row is kept so the record survives, and everything below is what we last read from it${t.notes ? ` (${esc(t.notes)})` : ""}.</p>` : ""}
 <section class="stage" aria-label="preview">
 <div class="stage-bar"><span class="dots"><i></i><i></i><i></i></span><span>${t.hasLive ? "dsh web · 0.1.0-rc.6 shell" : t.hasShot ? "screenshot from the repository" : "colour signature"}</span><span class="spacer"></span>
 ${views.length > 1 ? `<div class="chips stage-tabs" data-chips="view"><span class="ink no-anim"></span>${views.map(([k, l], i) => `<button type="button" class="chip" data-view-tab="${k}" aria-pressed="${i === 0}">${l}</button>`).join("")}</div>` : ""}
-${t.hasLive || pal ? `<div class="chips" data-chips="scheme"><span class="ink no-anim"></span><button type="button" class="chip" data-scheme="dark" aria-pressed="true">Dark</button><button type="button" class="chip" data-scheme="light" aria-pressed="false">Light</button></div>` : ""}
+${t.hasLive || pal ? `<div class="chips" data-chips="scheme"><span class="ink no-anim"></span><button type="button" class="chip" data-scheme="dark" aria-pressed="${leads === "dark"}">Dark</button><button type="button" class="chip" data-scheme="light" aria-pressed="${leads === "light"}">Light</button></div>` : ""}
 </div>
 <div class="stage-body"${palAttrs(t)}>${stageBody}</div>
+${stageNote}
 </section>
 
 <div class="tp-grid">
 <div class="panel">
-<div class="row"><span class="label">Wear</span><div class="body">${t.install ? `<div class="cmd"><code>${esc(t.install)}</code><button type="button" class="btn wear" data-cmd="${esc(t.install)}"><span class="ico"><span class="i-a">${ICONS.copy}</span><span class="i-b">${ICONS.check}</span></span><span class="lbl"><span class="l-a">Copy</span><span class="l-b">Copied</span></span></button></div><p class="meta">Installs a plugin into your web profile. A plugin runs code in your harness — read the repo before you paste.${t.npm ? ` Also on npm as <code>${esc(t.npm)}</code>.` : ""}</p>` : `<p>${t.official ? "Ships with dsh — nothing to install." : `See the <a href="${esc(t.repoUrl)}" rel="noopener">repository</a> for how this one is applied.`}</p>`}</div></div>
+<div class="row"><span class="label">Wear</span><div class="body">${t.status === "broken" ? `<p>Nothing to install. <code>${esc(t.repo)}</code> is gone, so <code>dsh plugin add</code> has nothing to fetch.</p>` : t.install ? `<div class="cmd"><code>${esc(t.install)}</code><button type="button" class="btn wear" data-cmd="${esc(t.install)}"><span class="ico"><span class="i-a">${ICONS.copy}</span><span class="i-b">${ICONS.check}</span></span><span class="lbl"><span class="l-a">Copy</span><span class="l-b">Copied</span></span></button></div><p class="meta">Installs a plugin into your web profile. A plugin runs code in your harness — read the repo before you paste.${t.npm ? ` Also on npm as <code>${esc(t.npm)}</code>.` : ""}</p>` : `<p>${t.official ? "Ships with dsh — nothing to install." : `See the <a href="${esc(t.repoUrl)}" rel="noopener">repository</a> for how this one is applied.`}</p>`}</div></div>
 <div class="row"><span class="label">Proof</span><div class="body">${t.evidenceUrl ? `<p><a href="${esc(t.evidenceUrl)}" rel="noopener"><code>${esc(t.evidence)}</code></a></p><p class="meta">The file in the repository that proves the restyle path, as recorded by the registry on ${esc(t.lastVerified)} against dsh ${esc(t.verifiedAgainst)}.</p>` : `<p class="warn">${esc(t.status)}</p><p class="meta">The registry has not recorded a proving file for this entry.</p>`}</div></div>
+<div class="row"><span class="label">Renders</span><div class="body">${t.hasLive
+    ? `<p>Yes — from <a href="${esc(t.renderBlobUrl)}" rel="noopener"><code>${esc(t.render.path)}</code></a>${t.render.mode === "extracted" ? ", read out of the code around it" : ""}.</p><p class="meta">${t.render.curated ? "The registry names this file as the theme's stylesheet." : "The registry names no stylesheet for this theme, so this is the sheet we found in the repository."} It is frozen into this site (<a href="${esc(t.renderUrl)}"><code>${esc(t.renderUrl)}</code></a>) and injected into a static copy of the shell — CSS only, with none of the JavaScript the plugin runs.</p>`
+    : `<p>No.</p><p class="meta">${t.render === null && t.css ? "The stylesheet we read declares nothing the stock shell has — it styles elements the plugin adds at runtime, which a static copy of the shell does not have. " : ""}The signature below is still read from its code.</p>`}</div></div>
 <div class="row"><span class="label">Colours</span><div class="body">${paletteRows}</div></div>
 <div class="row"><span class="label">Shelf</span><div class="body"><p><a href="/shelf/${t.shelfInfo.slug}/">${esc(t.shelfInfo.label)}</a> · ${shelfCount} on this shelf, ${esc(t.shelfInfo.blurb)}.</p><p class="meta">Added to the registry ${esc(t.added)}${t.notes ? ` · ${esc(t.notes)}` : ""}${t.homepage ? ` · <a href="${esc(t.homepage)}" rel="noopener">homepage</a>` : ""}</p></div></div>
 </div>
@@ -321,12 +401,12 @@ ${pal ? `<div style="height:.8rem"></div>${mini(pal.light, { light: true })}<p c
 </aside>
 </div>
 
-<p class="not"><b>Not:</b> this page is not evidence that the theme is safe to run, that it renders like this in your dsh today, or that its author endorses this rendering. The live view is its CSS on a static copy of the rc.6 shell; the signature is derived from its stylesheet on ${esc(stats.enriched)}; the screenshot is whatever the repository published.</p>
+<p class="not"><b>Not:</b> this page is not evidence that the theme is safe to run, that it renders like this in your dsh today, or that its author endorses this rendering. The live view is its CSS on a static copy of the rc.6 shell, with no plugin JavaScript running; the signature is derived from its stylesheet on ${esc(stats.enriched)}; the screenshot is whatever the repository published.</p>
 
 ${sib.length ? `<section class="also"><div class="section-head"><h2>Also on the ${esc(t.shelfInfo.label.toLowerCase())} shelf</h2><span class="rule"></span><a href="/shelf/${t.shelfInfo.slug}/">all ${shelfCount}</a></div><div class="grid">${sib.map(card).join("")}</div></section>` : ""}
 </main>`;
-  const description = `${t.name} — ${t.description.slice(0, 150)}${t.description.length > 150 ? "…" : ""} A ${t.shelfInfo.one} for DeepSeek Harness, painted in its own colours.`;
-  return layout({ title: `${t.name} — a dsh ${t.shelfInfo.one} by ${t.owner} · dshthemes`, description, body, path: t.url, current: "/" });
+  const description = `${t.description.slice(0, 140)}${t.description.length > 140 ? "…" : ""} A DeepSeek Harness (dsh) ${t.shelfInfo.one} by ${t.owner}${t.hasLive ? ", shown on the real dsh shell" : ""}. One line to install.`;
+  return layout({ title: `${t.name} — DeepSeek Harness ${t.shelfInfo.one} by ${t.owner} | dshthemes`, description, body, path: t.url, current: "/" });
 }
 
 // ---------------------------------------------------------------------------
@@ -342,8 +422,14 @@ const aboutBody = `<main class="wrap prose">
 <li><b>Nothing</b> (${stats.total - stats.signatures}): no colours in code (wallpaper loaders, pets, pure images). The card stays grey and says so. Nothing is invented.</li>
 </ul>
 <p>Every theme page links the exact file the colours came from. If we read the wrong one, <a href="https://github.com/dshworks/dshthemes/issues" rel="noopener">tell us</a>; if the theme sets <code>previewCss</code> in the registry, that file wins.</p>
-<h2>Live on the shell</h2>
-<p>${stats.live} themes carry a <code>previewCss</code> in the registry. For those the theme page injects that stylesheet into a static copy of the rc.6 web shell (MIT, vendored from <code>@deepseek-ai/dsh-client-ui-*</code>). It is the theme's CSS on the real chrome, not a screenshot — and not a plugin runtime, so anything the plugin does in JavaScript is absent.</p>
+<h2 id="live">Live on the shell</h2>
+<p>${stats.live} themes render. Each one's stylesheet is fetched once at build time, frozen into this site under <code>/theme-css/</code>, and injected into a static copy of the rc.6 web shell (MIT, vendored from <code>@deepseek-ai/dsh-client-ui-*</code>). It is the theme's own CSS on the real chrome. It is not a plugin runtime, so anything the plugin does in JavaScript is absent, and it is not fetched from GitHub while you read: if a repository moves the file, our build breaks instead of your page.</p>
+<p>Two gates decide whether a theme gets that view.</p>
+<ol>
+<li><b>Does the sheet reach the shell?</b> It has to set <code>--dsw-*</code> tokens, flip a <code>body[data-…]</code> or <code>html[data-…]</code> attribute the plugin would set, or select one of the shell's own compiled class names. A stylesheet that only styles elements the plugin creates at runtime cannot change a static copy of the shell.</li>
+<li><b>Does the render actually differ?</b> Every renderable theme is opened in a browser at 1440&times;900 and compared pixel for pixel against the stock shell. A theme that comes back identical loses the claim, whatever its stylesheet looked like.</li>
+</ol>
+<p>The picture that comparison produces is kept. That is where the screenshot on every card comes from: the same room, the same conversation, in different clothes. A theme with no render keeps its painted signature and says so.</p>
 <h2 id="shelves">Shelves</h2>
 <table><tr><th>shelf</th><th>count</th><th>meaning</th></tr>${Object.entries(SHELVES).filter(([k]) => stats.shelves[k]).map(([k, v]) => `<tr><td><a href="/shelf/${v.slug}/">${v.label}</a></td><td>${stats.shelves[k]}</td><td>${esc(v.blurb)}</td></tr>`).join("")}</table>
 <p>A shelf is where the registry filed it, not a verdict on quality.</p>
@@ -352,6 +438,45 @@ const aboutBody = `<main class="wrap prose">
 <h2>Data</h2>
 <p><a href="/themes.json">/themes.json</a> is the site's projection: registry rows plus stars, last push, the stylesheet read and the signature. <a href="/llms.txt">/llms.txt</a> is the map for agents. Registry ${esc(stats.updated)}, colours read ${esc(stats.enriched)}, verified against dsh ${esc(stats.verifiedAgainst)}.</p>
 <p>Not affiliated with DeepSeek. Source: <a href="https://github.com/dshworks/dshthemes" rel="noopener">dshworks/dshthemes</a>.</p>
+</main>`;
+
+// ---------------------------------------------------------------------------
+// notes: what changed here, and what the registry is doing
+const notes = loadNotes();
+
+// The panel above the notes. Nobody writes this — it is the registry read back,
+// so the page has something true on it on a week when nobody writes anything.
+function rightNow() {
+  const newest = [...themes].sort((a, b) => (b.added || "").localeCompare(a.added || "") || a.name.localeCompare(b.name));
+  const latestDay = newest[0]?.added;
+  const admitted = newest.filter((t) => t.added === latestDay);
+  // "Pushed this week" reads as 340 of 344, because the whole topic is a week
+  // old. Today is the number that means something.
+  const fresh = [...themes].filter((t) => t.pushedDays === 0).sort((a, b) => (b.stars ?? 0) - (a.stars ?? 0) || a.name.localeCompare(b.name));
+  const row = (t) => `<li><a href="${t.url}">${esc(t.name)}</a> <span>${esc(t.owner)}${t.stars ? ` · ★ ${t.stars}` : ""}</span></li>`;
+  return `<section class="now">
+<div class="section-head"><h2>Right now</h2><span class="rule"></span><span class="meta">registry ${esc(stats.updated)}</span></div>
+<div class="now-stats"><span><b>${stats.total}</b>themes</span><span><b>${stats.live}</b>render on the shell</span><span><b>${stats.signatures}</b>colour signatures</span><span><b>${stats.shots}</b>repo screenshots</span></div>
+<div class="now-cols">
+<div><h3>Admitted ${esc(latestDay || "")} <b>${admitted.length}</b></h3><ul>${admitted.slice(0, 8).map(row).join("")}</ul>${admitted.length > 8 ? `<p class="meta"><a href="/">and ${admitted.length - 8} more</a></p>` : ""}</div>
+<div><h3>Pushed today <b>${fresh.length}</b></h3><ul>${fresh.slice(0, 8).map(row).join("")}</ul>${fresh.length ? "" : `<p class="meta">Nobody has pushed yet today.</p>`}</div>
+</div>
+</section>`;
+}
+
+function noteHead(n) {
+  return `<p class="crumbs"><a href="/notes/">notes</a> / ${esc(n.date)}</p>
+<h1>${esc(n.title)}</h1>
+<p class="note-sum">${esc(n.summary)}</p>`;
+}
+
+const notesIndex = `<main class="wrap prose notes">
+<h1>Notes</h1>
+<p class="lede">What changed on this site, what we found in the registry while changing it, and what people are shipping. Dated, kept, and never rewritten after the fact: a correction gets its own line. <a href="/notes/feed.xml">RSS</a>.</p>
+${rightNow()}
+<div class="section-head"><h2>Written</h2><span class="rule"></span></div>
+<ol class="note-list">${notes.map((n) => `<li><a href="/notes/${esc(n.slug)}/"><span class="d">${esc(n.date)}</span><span class="t">${esc(n.title)}</span></a><p>${esc(n.summary)}</p></li>`).join("")}</ol>
+${notes.length ? "" : "<p class=\"meta\">Nothing written yet.</p>"}
 </main>`;
 
 // ---------------------------------------------------------------------------
@@ -368,23 +493,51 @@ write("assets/site.css", readFileSync(join(SRC, "styles.css"), "utf8").replace("
 write("assets/app.js", readFileSync(join(SRC, "app.js"), "utf8"));
 write("assets/chrome.css", readFileSync(join(SRC, "chrome.css"), "utf8"));
 cpSync(join(SRC, "vendor"), join(DIST, "vendor"), { recursive: true });
+// The stylesheets we render, frozen at enrich time and served from our own
+// origin. A live view that fetched raw.githubusercontent at read time went
+// blank the day a repo renamed a branch; this way the break happens in the
+// build, where somebody sees it.
+if (existsSync(join(ROOT, "data", "css"))) cpSync(join(ROOT, "data", "css"), join(DIST, "theme-css"), { recursive: true });
+if (existsSync(join(ROOT, "data", "shots"))) cpSync(join(ROOT, "data", "shots"), join(DIST, "shot"), { recursive: true });
 write("favicon.svg", readFileSync(join(SRC, "favicon.svg"), "utf8"));
 write("robots.txt", `User-agent: *\nAllow: /\nSitemap: ${SITE}/sitemap.xml\n`);
-write("_headers", `/assets/*\n  Cache-Control: public, max-age=3600\n/vendor/*\n  Cache-Control: public, max-age=86400\n/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n`);
+write("_headers", `/assets/*\n  Cache-Control: public, max-age=3600\n/vendor/*\n  Cache-Control: public, max-age=86400\n/theme-css/*\n  Cache-Control: public, max-age=86400\n/shot/*\n  Cache-Control: public, max-age=86400\n/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n`);
 
 const sortedFresh = [...themes].sort((a, b) => (b.pushedAt || "").localeCompare(a.pushedAt || "") || a.name.localeCompare(b.name));
 write("index.html", galleryPage({ list: sortedFresh, hero: heroHtml, path: "/", current: "/", title: "dshthemes — every DeepSeek Harness theme, in its own colours", description: `${stats.total} community themes for DeepSeek Harness (dsh), each painted from its own stylesheet, ${stats.live} live on the rc.6 shell, one line to wear any of them.` }));
 for (const [k, v] of Object.entries(SHELVES)) {
   const list = sortedFresh.filter((t) => t.shelf === k);
   if (!list.length) continue;
-  write(`shelf/${v.slug}/index.html`, galleryPage({ list, fixedShelf: k, path: `/shelf/${v.slug}/`, current: "/", hero: `<div class="section-head" style="margin-top:2.4rem"><h2>Shelf</h2><span class="rule"></span></div><h1 style="font-size:1.6rem;margin-bottom:.4rem">${esc(v.label)} <span style="color:var(--muted);font-weight:300">· ${list.length}</span></h1><p style="color:var(--muted);max-width:60ch;margin-bottom:1.6rem">${esc(v.blurb)}. Every card is painted from the theme's own stylesheet; <a href="/about/#signatures">how</a>.</p>`, title: `${v.label} — ${list.length} dsh themes · dshthemes`, description: `${list.length} DeepSeek Harness themes on the ${v.label.toLowerCase()} shelf: ${v.blurb}. Each in its own colours, one line to wear.` }));
+  write(`shelf/${v.slug}/index.html`, galleryPage({ list, fixedShelf: k, path: `/shelf/${v.slug}/`, current: "/", hero: `<div class="section-head" style="margin-top:2.4rem"><h2>Shelf</h2><span class="rule"></span></div><h1 style="font-size:1.6rem;margin-bottom:.4rem">${esc(v.label)} <span style="color:var(--muted);font-weight:300">· ${list.length}</span></h1><p style="color:var(--muted);max-width:60ch;margin-bottom:1.6rem">${esc(v.blurb)}. Every card is painted from the theme's own stylesheet; <a href="/about/#signatures">how</a>.</p>`, title: `${v.label}: ${list.length} DeepSeek Harness themes | dshthemes`, description: `${list.length} DeepSeek Harness themes on the ${v.label.toLowerCase()} shelf: ${v.blurb}. Each in its own colours, one line to wear.` }));
 }
 for (const t of themes) write(`t/${t.slug}/index.html`, themePage(t));
-write("about/index.html", layout({ title: "About — dshthemes", description: "How dshthemes.com paints every dsh theme in its own colours, what the shelves mean, and where the data comes from.", body: aboutBody, path: "/about/", current: "/about/" }));
+write("about/index.html", layout({ title: "How every DeepSeek Harness theme gets its colours | dshthemes", description: "How dshthemes.com paints every dsh theme in its own colours, what the shelves mean, and where the data comes from.", body: aboutBody, path: "/about/", current: "/about/" }));
+write("notes/index.html", layout({ title: "Notes: what changed, and what dsh theme authors are shipping | dshthemes", description: `What changed on dshthemes.com and what the ${stats.total} DeepSeek Harness themes in the registry are doing. Dated notes, plus the registry read back live.`, body: notesIndex, path: "/notes/", current: "/notes/" }));
+for (const n of notes) {
+  write(`notes/${n.slug}/index.html`, layout({
+    title: `${n.title} | dshthemes notes`,
+    description: n.summary || n.text.slice(0, 180),
+    body: `<main class="wrap prose note">${noteHead(n)}${n.html}<p class="note-foot"><a href="/notes/">All notes</a> · <a href="/notes/feed.xml">RSS</a> · <a href="https://github.com/dshworks/dshthemes/blob/main/content/notes/${esc(n.file)}" rel="noopener">source of this note</a></p></main>`,
+    path: `/notes/${n.slug}/`,
+    current: "/notes/",
+    head: `<meta property="article:published_time" content="${esc(n.date)}">`,
+  }));
+}
+write("notes/feed.xml", `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"><channel>
+<title>dshthemes notes</title>
+<link>${SITE}/notes/</link>
+<description>What changed on dshthemes.com, and what the dsh theme registry is doing.</description>
+<language>en</language>
+<lastBuildDate>${new Date(`${notes[0]?.date || today}T00:00:00Z`).toUTCString()}</lastBuildDate>
+${notes.map((n) => `<item><title>${esc(n.title)}</title><link>${SITE}/notes/${esc(n.slug)}/</link><guid>${SITE}/notes/${esc(n.slug)}/</guid><pubDate>${new Date(`${n.date}T00:00:00Z`).toUTCString()}</pubDate><description>${esc(n.summary)}</description></item>`).join("\n")}
+</channel></rss>
+`);
+
 write("404.html", layout({ title: "Not here — dshthemes", description: "No such page.", body: `<main class="wrap prose"><h1>Not here.</h1><p>No theme lives at this address. Try the <a href="/">gallery</a>, or a <a href="/" data-surprise>random one</a>.</p></main>`, path: "/404", current: "" }));
 
 // preview: mock shell + slug -> {name, css, install} map
-const previewData = Object.fromEntries(themes.filter((t) => t.hasLive).map((t) => [t.slug, { name: t.name, css: t.previewCss, install: t.install }]));
+const previewData = Object.fromEntries(themes.filter((t) => t.hasLive).map((t) => [t.slug, { name: t.name, css: t.renderUrl, install: t.install }]));
 write("preview/index.html", readFileSync(join(SRC, "preview.head.html"), "utf8") + readFileSync(join(SRC, "preview.tail.html"), "utf8").replace("/*PREVIEW_DATA*/{}", JSON.stringify(previewData)));
 
 // og.html: the social card, rendered to src/og.png by scripts/og.mjs (needs a
@@ -423,11 +576,12 @@ write("themes.json", JSON.stringify({
     stars: t.stars, pushedAt: t.pushedAt, homepage: t.homepage,
     stylesheet: t.css ? { path: t.css.path, url: t.css.url, tokens: t.css.tokens } : null,
     signature: t.palette ? { source: t.palette.source, leads: t.palette.leads, font: t.palette.font, dark: t.palette.dark, light: t.palette.light } : null,
+    renders: t.render ? { path: t.render.path, source: t.render.url, css: SITE + t.renderUrl, mode: t.render.mode, curated: t.render.curated, shot: t.shot?.file ? `${SITE}/shot/${t.shot.file}` : null, scheme: t.shot?.scheme || null } : null,
   })),
 }, null, 1));
 
 // sitemap + llms
-const urls = ["/", "/about/", ...Object.values(SHELVES).filter((v) => stats.shelves[shelfBySlug[v.slug]]).map((v) => `/shelf/${v.slug}/`), ...themes.map((t) => t.url)];
+const urls = ["/", "/notes/", ...notes.map((n) => `/notes/${n.slug}/`), "/about/", ...Object.values(SHELVES).filter((v) => stats.shelves[shelfBySlug[v.slug]]).map((v) => `/shelf/${v.slug}/`), ...themes.map((t) => t.url)];
 write("sitemap.xml", `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `<url><loc>${SITE}${u}</loc><lastmod>${today}</lastmod></url>`).join("\n")}\n</urlset>\n`);
 write("llms.txt", `# dshthemes
 
@@ -438,6 +592,7 @@ ${stats.total} themes · ${stats.signatures} colour signatures (${stats.fromToke
 ## Pages
 - ${SITE}/ : gallery, filter by shelf, sort by fresh / stars / new / a-z
 - ${SITE}/about/ : how signatures are derived, what shelves mean
+- ${SITE}/notes/ : dated notes on what changed here and what the registry is doing (${notes.length}), RSS at /notes/feed.xml
 - ${SITE}/themes.json : full projection (registry rows + stars, last push, stylesheet read, signature)
 ${Object.values(SHELVES).filter((v) => stats.shelves[shelfBySlug[v.slug]]).map((v) => `- ${SITE}/shelf/${v.slug}/ : ${v.label} (${stats.shelves[shelfBySlug[v.slug]]})`).join("\n")}
 
@@ -446,3 +601,4 @@ ${themes.map((t) => `- ${SITE}${t.url} : ${t.name} — ${t.shelfInfo.one} by ${t
 `);
 
 console.error(`built ${themes.length} theme pages, ${stats.signatures} signatures (${stats.fromTokens} tokens), ${stats.live} live, ${stats.shots} shots → dist/`);
+console.error(`seats: ${sponsors.seats.filter((s) => s.sponsor).length}/4 sold, inventory from ${sponsorsFrom}`);

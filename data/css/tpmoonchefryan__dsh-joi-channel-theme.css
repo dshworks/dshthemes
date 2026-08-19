@@ -1,0 +1,111 @@
+/* tpmoonchefryan/dsh-joi-channel-theme — src/client/css.ts
+   fetched 2026-08-19 from https://raw.githubusercontent.com/tpmoonchefryan/dsh-joi-channel-theme/main/src/client/css.ts
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+background-image: var(--joi-texture-image);
+  background-size: var(--joi-texture-size);
+}
+  background-color: var(--dsw-alias-bg-base) !important;
+  background-image: var(--joi-texture-image) !important;
+  background-size: var(--joi-texture-size) !important;
+} background: transparent !important; }
+
+
+ box-shadow: inset 3px 0 0 var(--dsw-alias-brand-primary); } }
+  outline: none;
+}
+
+/* 其余控件的焦点环统一走瞳金。 */
+:where(button, a, input, textarea, select, [tabindex]):focus-visible {
+  outline-offset: 2px;
+}
+
+/* 会话/轨迹 tab 药丸化：激活态用墨底反白字，与侧栏那套圆角语言对齐。
+   非激活态只是圆角热区，不给底色——两个都上底色就分不出主次。 */
+/* 药丸只向外溢墨，占位一格不动：横向 padding 加多少、margin 就负多少。
+   负外边距把 margin 边往里收，border 盒因此向外溢出，而 flex 的 gap 量的是
+   margin 盒——每个标签的 x 与原来逐像素相同。纵向 -Y 抵消 padding-top，
+   margin-bottom 用 11px 减回来，让「标签底 → tab 条底」仍是 app 那 11px。
+   app 原值：.tab{padding:0 0 11px; line-height:16px}、.tabs{gap:36px; padding-left:8px}
+  --joi-tab-ink-x: 12px;
+  --joi-tab-ink-y: 4px;
+  border-radius: 999px !important;
+  padding: var(--joi-tab-ink-y) var(--joi-tab-ink-x) !important;
+  margin:
+    calc(-1 * var(--joi-tab-ink-y))
+    calc(-1 * var(--joi-tab-ink-x))
+    calc(11px - var(--joi-tab-ink-y)) !important;
+}
+  background: var(--dsw-alias-label-primary) !important;
+  color: var(--dsw-alias-bg-base) !important;
+} background: transparent !important; }
+
+/* ── 轨迹工具栏 ───────────────────────────────────────────────
+   三条都锁在 [role=toolbar] 内。该 role 全仓唯一（TrajectoryToolbar），
+   比任何哈希类名稳。 */
+
+/* 竖直居中。工具栏 .root 是 border-box 32px 且带 1px 下边框，内容盒只有 31px，
+   里面那层在 31px 里居中，于是上下恒差 1px、看着偏高。把这 1px 补回 padding 盒，
+   22px 搜索框与 20px 按钮就同时落在整像素上，工具栏总高不变。 */
+[role=toolbar] > div { padding-top: 1px; }
+
+/* 搜索框「没样式」的真因：app 在 :focus-within 时把底色换成 bg-layer-1，
+   而 layer-1 恰好就是工具栏自己的底色——原生调色板里两者同值，所以看得见；
+   本插件把 layer-1/layer-2 映射成了不同的 panel/panel2，填色就消失了。
+   不去写 background，而是在这一层上把 layer-1 的取值改回与工具栏底色有别，
+   app 自己的规则随即恢复原意，hover 态也一并正确。 */
+[role=toolbar] div:has(> input[type=search]) {
+  --dsw-alias-bg-layer-1: var(--dsw-alias-bg-layer-2);
+  /* 同一手法顺带统一焦点色：app 的聚焦边框读 state-business-primary（鲸蓝），
+     配上瞳金外环会让一个控件出现两种焦点色。焦点归瞳金是语义槽表定的，
+     鲸蓝代表引擎、不该跑到焦点上来。只在这一层改取值，别处的鲸蓝不受影响。 */
+  --dsw-alias-state-business-primary: var(--dsw-alias-state-warn-primary);
+}
+
+/* 焦点环错位的真因：可见边框画在外层 div 上，里面的 input 是 border:0/padding:0，
+   环打在 input 上左缘会缩进约 20px（边框+内距+图标+间隙）。把环移到承载边框的那层。
+   两条都带 :has()：引擎不支持时「抑制」与「补环」一起失效、回到现状，
+   而不是留下一个没有焦点提示的输入框。 */
+[role=toolbar] div:has(> input[type=search]) input:focus-visible { outline: none; }
+[role=toolbar] div:has(> input[type=search]:focus-visible) {
+  outline-offset: 1px;
+}
+
+/* 用户气泡的文字色随气泡底走。
+   限定 div：Tooltip 自己的局部类也叫 .bubble（哈希后仍含该子串），
+   不限定就会把气泡的深棕字泼到深底提示上，变成深底配深字。
+   提示条是 span[role=tooltip]，据此排除。div 限定同时把特异度提到 (0,1,1)，
+   稳胜 harness 的 (0,1,0)，不必 !important 也不依赖样式表插入顺序。 */
+div[class*=bubble], div[class*=Bubble] { color: var(--joi-bubble-ink); }
+  background: var(--dsw-alias-button-primary-fill) !important;
+  color: var(--joi-send-ink) !important;
+}
+  background: color-mix(in srgb, var(--dsw-alias-button-primary-fill) 85%, var(--dsw-alias-label-primary)) !important;
+}
+
+/* Markdown 一级列表的记号换成 🍊；二级退回圆点——
+   每一层都放橘子会从点缀变成图案。 */
+[class*=markdown] > ul > li::marker,
+[class*=Markdown] > ul > li::marker { content: '🍊 '; }
+
+
+
+  position: fixed;
+  pointer-events: none;
+  z-index: 0 !important;
+}
+  position: absolute;
+  pointer-events: none;
+  z-index: 0 !important;
+} filter: var(--joi-rim); } filter: var(--joi-contact-shadow); }
+  background-repeat: no-repeat;
+  transition: top .28s cubic-bezier(.34, 1.4, .5, 1), background-position .12s step-end;
+}
+@media (prefers-reduced-motion: reduce) { transition: none; }
+} position: relative; z-index: 1; }
+  /* 只留描边。层序归上面那条线程容器规则，这里再写 position/z-index 有两害：
+     一是把 position:fixed 的元素拽进普通流（提示条闪烁的直接成因），
+     二是 z-index:7 在列的层叠上下文里会盖过代码块的粘性标题（app 用 6）。 */
+  text-shadow:
+     1px 0 0 var(--dsw-alias-bg-base), -1px 0 0 var(--dsw-alias-bg-base),
+     0 1px 0 var(--dsw-alias-bg-base), 0 -1px 0 var(--dsw-alias-bg-base);
+}

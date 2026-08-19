@@ -1,0 +1,300 @@
+/* xassuyge003-ui/dsh-skin-yanisuu — packages/ui-skin-yanisuu/src/client/skin.module.css
+   fetched 2026-08-19 from https://raw.githubusercontent.com/xassuyge003-ui/dsh-skin-yanisuu/HEAD/packages/ui-skin-yanisuu/src/client/skin.module.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/**
+ * Global skin surfaces and the drawer chrome. Local classes (drawer layout)
+ * ride the CSS-Module hash; product-wide surfaces use `:global` selectors on
+ * the layout's stable class suffixes. The wallpaper layers read
+ * `--yanisuu-wall` / `--yanisuu-fill` body variables the plugin writes.
+ */
+
+body {
+  background-image:
+    linear-gradient(rgba(247, 242, 234, 0.03), rgba(247, 242, 234, 0.12)),
+    var(--yanisuu-wall),
+    var(--yanisuu-fill) !important;
+  background-size: auto, contain, cover !important;
+  background-position: center, center, center !important;
+  background-repeat: no-repeat, no-repeat, no-repeat !important;
+}
+
+body[data-ds-dark-theme] {
+  background-image:
+    linear-gradient(rgba(26, 23, 21, 0.18), rgba(24, 21, 19, 0.4)),
+    var(--yanisuu-wall),
+    var(--yanisuu-fill) !important;
+}
+
+[class$='_frame'] {
+  background: transparent !important;
+}
+
+[class$='_sidebarCol'],
+[class$='_centerCol'],
+[class$='_detailsCol'] {
+  -webkit-backdrop-filter: saturate(1.02);
+  backdrop-filter: saturate(1.02);
+  transition: background-color 0.35s ease;
+}
+
+[class$='_sidebarCol'] {
+  background-color: rgba(250, 247, 242, 0.12) !important;
+  background-color: color-mix(in srgb, var(--dsw-specific-sidebar-fill) 14%, transparent) !important;
+}
+
+body[data-ds-dark-theme] [class$='_sidebarCol'] {
+  background-color: rgba(28, 26, 24, 0.14) !important;
+  background-color: color-mix(in srgb, var(--dsw-specific-sidebar-fill) 18%, transparent) !important;
+}
+
+[class$='_centerCol'] {
+  background-color: rgba(250, 247, 242, 0.16) !important;
+  background-color: color-mix(in srgb, var(--dsw-alias-bg-base) 18%, transparent) !important;
+}
+
+body[data-ds-dark-theme] [class$='_centerCol'] {
+  background-color: rgba(34, 31, 29, 0.2) !important;
+  background-color: color-mix(in srgb, var(--dsw-alias-bg-base) 22%, transparent) !important;
+}
+
+[class$='_detailsCol'] {
+  background-color: rgba(250, 247, 242, 0.3) !important;
+  background-color: color-mix(in srgb, var(--dsw-alias-bg-base) 32%, transparent) !important;
+}
+
+body[data-ds-dark-theme] [class$='_detailsCol'] {
+  background-color: rgba(34, 31, 29, 0.34) !important;
+  background-color: color-mix(in srgb, var(--dsw-alias-bg-base) 36%, transparent) !important;
+}
+
+[class$='_centerCol'] > * {
+  background: transparent !important;
+}
+
+[class$='_centerCol'] [class$='_scrollBody'] {
+  background: transparent !important;
+}
+
+.drawerHandle {
+  position: fixed;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 92px;
+  background: var(--dsw-alias-bg-layer-2);
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-left: none;
+  border-radius: 0 10px 10px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  z-index: 90;
+  opacity: 0.55;
+  transition: opacity 0.2s ease, width 0.2s ease;
+}
+
+.drawerHandle:hover {
+  opacity: 1;
+  width: 28px;
+}
+
+.handleIcon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.handleText {
+  font-size: 10px;
+  line-height: 1.1;
+  color: var(--dsw-alias-label-secondary);
+  writing-mode: vertical-rl;
+  letter-spacing: 2px;
+}
+
+.drawer {
+  position: fixed;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 252px;
+  z-index: 95;
+  background: var(--dsw-alias-bg-layer-2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.1);
+  backdrop-filter: blur(14px) saturate(1.1);
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 14px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+}
+
+.drawerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.drawerTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--dsw-alias-label-primary);
+}
+
+.drawerClose {
+  border: 1px solid var(--dsw-alias-border-l2);
+  background: transparent;
+  color: var(--dsw-alias-label-secondary);
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.drawerClose:hover {
+  color: var(--dsw-alias-brand-primary);
+  border-color: var(--dsw-alias-brand-primary);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.rowLabel {
+  font-size: 11px;
+  color: var(--dsw-alias-label-secondary);
+  white-space: nowrap;
+}
+
+.toggle {
+  border: 1px solid var(--dsw-alias-border-l2);
+  background: var(--dsw-alias-bg-layer-3);
+  color: var(--dsw-alias-label-secondary);
+  font-size: 11px;
+  line-height: 1.4;
+  padding: 3px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.toggle:hover {
+  color: var(--dsw-alias-brand-primary);
+  border-color: var(--dsw-alias-brand-primary);
+}
+
+.blurRow {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.blurEnds {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--dsw-alias-label-secondary);
+}
+
+.blurSlider {
+  width: 100%;
+  accent-color: var(--dsw-alias-brand-primary);
+}
+
+.freqInput {
+  width: 56px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  background: var(--dsw-alias-bg-layer-3);
+  color: var(--dsw-alias-label-primary);
+  border-radius: 8px;
+  padding: 3px 6px;
+  font-size: 12px;
+  text-align: center;
+}
+
+.posterGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.uploadButton {
+  border: 1px dashed var(--dsw-alias-border-l2);
+  background: transparent;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 11px;
+  line-height: 1.4;
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.uploadButton:hover {
+  color: var(--dsw-alias-brand-primary);
+  border-color: var(--dsw-alias-brand-primary);
+}
+
+.posterCell {
+  position: relative;
+}
+
+.posterDelete {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid var(--dsw-alias-border-l2);
+  background: var(--dsw-alias-bg-overlay);
+  color: var(--dsw-alias-label-secondary);
+  font-size: 10px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.posterDelete:hover {
+  color: var(--dsw-alias-state-error-primary);
+  border-color: var(--dsw-alias-state-error-primary);
+}
+
+.poster {
+  width: 100%;
+  aspect-ratio: 28 / 50;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  opacity: 0.8;
+  cursor: pointer;
+  transition: transform 0.18s ease, opacity 0.18s ease, border-color 0.18s ease;
+  display: block;
+}
+
+.poster:hover {
+  transform: translateY(-2px) scale(1.05);
+  opacity: 1;
+}
+
+.posterActive {
+  border-color: var(--dsw-alias-brand-primary);
+  opacity: 1;
+}
+

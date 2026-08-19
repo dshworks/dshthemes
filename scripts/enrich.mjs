@@ -13,14 +13,19 @@
 // (run scripts/registry.mjs first).
 
 import { execFileSync } from "node:child_process";
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { extractPalette } from "./palette.mjs";
+import { absolutiseUrls, cssFileName, extractCss, touchesShell } from "./csstext.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const REG = join(ROOT, "data", "themes.json");
 const OUT = join(ROOT, "data", "enrich.json");
+const CSS_DIR = join(ROOT, "data", "css");
+// Held at rc.6 on purpose: the token stylesheets are byte-identical in rc.7,
+// and the shell's hashed CSS-module class names are what community skins
+// target. Re-vendoring would re-hash them and stop matching the skins.
 const VENDOR = join(ROOT, "src", "vendor", "dsh-client-ui-theme@0.1.0-rc.6");
 const args = new Set(process.argv.slice(2));
 const FORCE = args.has("--force");
@@ -143,6 +148,7 @@ async function readTheme(t) {
   }
 
   let best = null;
+  let render = null;
   for (const c of candidates) {
     let css;
     try { css = await fetchText(c.url); } catch { continue; }
@@ -151,14 +157,36 @@ async function readTheme(t) {
     const literals = countLiterals(css);
     const score = tokens * 10 + Math.min(literals, 200) + (c.curated ? 5 : 0);
     if (!best || score > best.score) best = { ...c, css, tokens, literals, score };
-    if (c.curated && tokens > 5) break; // the registry already chose; trust it
+    // The signature only needs declarations; the live view needs a sheet a
+    // browser will accept, so it is chosen separately and can be a different
+    // file in the same repo.
+    const cand = renderable(c, css);
+    if (cand && (!render || cand.score > render.score)) render = cand;
+    if (c.curated && tokens > 5 && render?.curated) break; // the registry already chose; trust it
   }
   if (best) {
     const pal = extractPalette(BASE_SHEETS, best.css);
     entry.css = { url: best.url, path: best.path, tokens: best.tokens, literals: best.literals, curated: best.curated, bytes: best.css.length };
     entry.palette = pal;
   }
+  entry.render = render ? { url: render.url, path: render.path, mode: render.mode, curated: render.curated, bytes: render.css.length, ...render.reach } : null;
+  entry.renderCss = render ? render.css : null;
   return entry;
+}
+
+// A stylesheet earns the live view only if it can restyle the shell: it sets
+// `--dsw-*` tokens, names a host attribute the plugin flips, or targets the
+// shell's own hashed classes. A plugin's settings-panel CSS passes none of
+// these and would render as the stock shell while claiming to be the theme.
+const RENDER_MAX_BYTES = 400_000;
+function renderable(c, source) {
+  const { css: raw, mode } = extractCss(source, c.path);
+  const css = absolutiseUrls(raw, c.url);
+  if (!css || css.length < 120 || css.length > RENDER_MAX_BYTES) return null;
+  const reach = touchesShell(css);
+  const power = reach.tokens * 4 + reach.hostAttrs * 3 + reach.shellClasses * 2 + reach.shellVars * 2 + reach.roots * 3;
+  if (power < 6) return null;
+  return { ...c, css, mode, reach, score: power + (c.curated ? 40 : 0) + (mode === "verbatim" ? 10 : 0) };
 }
 
 // --repalette: keep the chosen stylesheet, refetch just it and recompute the
@@ -196,12 +224,26 @@ const queue = registry.themes.filter((t) => {
 });
 console.error(`css: ${queue.length} of ${registry.themes.length} themes to (re)read`);
 
+// The rendered sheet is committed next to the data so the live view has no
+// request-time dependency on a third-party host: a repo that renames its
+// branch or moves the file breaks the next build, loudly, instead of quietly
+// serving the stock shell to a reader. One file per repo, named for the repo.
+mkdirSync(CSS_DIR, { recursive: true });
+
 let done = 0;
 async function worker() {
   while (queue.length) {
     const t = queue.shift();
     let entry;
-    try { entry = await readTheme(t); } catch (err) { entry = { fetchedAt: today, css: null, palette: null, error: String(err.message || err) }; }
+    try { entry = await readTheme(t); } catch (err) { entry = { fetchedAt: today, css: null, palette: null, render: null, error: String(err.message || err) }; }
+    const file = join(CSS_DIR, cssFileName(t.repo));
+    if (entry.renderCss) {
+      writeFileSync(file, `/* ${t.repo} — ${entry.render.path}\n   fetched ${today} from ${entry.render.url}\n   ${entry.render.mode === "verbatim" ? "verbatim" : "CSS strings extracted from the source"}; rendered on the stock rc.6 shell at dshthemes.com */\n${entry.renderCss}\n`);
+      entry.render.file = cssFileName(t.repo);
+    } else if (existsSync(file)) {
+      rmSync(file);
+    }
+    delete entry.renderCss;
     cache.repos[t.repo] = { ...(cache.repos[t.repo] || {}), ...entry };
     done++;
     if (done % 25 === 0) console.error(`  ${done} read`);
@@ -219,5 +261,7 @@ writeFileSync(OUT, JSON.stringify(cache, null, 1) + "\n");
 
 const all = Object.values(cache.repos);
 const withPal = all.filter((r) => r.palette && r.palette.source);
+const withRender = all.filter((r) => r.render);
 console.error(`palettes: ${withPal.length}/${all.length} (${withPal.filter((r) => r.palette.source === "tokens").length} from tokens, ${withPal.filter((r) => r.palette.source === "literals").length} from literals)`);
+console.error(`renderable: ${withRender.length}/${all.length} (${withRender.filter((r) => r.render.mode === "verbatim").length} verbatim, ${withRender.filter((r) => r.render.mode === "extracted").length} extracted from code, ${withRender.filter((r) => r.render.curated).length} registry-curated)`);
 console.error(`wrote ${OUT}`);

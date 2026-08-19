@@ -1,0 +1,123 @@
+/* Gao-Yee/dsh-wallpaper — styles.css
+   fetched 2026-08-19 from https://raw.githubusercontent.com/Gao-Yee/dsh-wallpaper/main/styles.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* dsh-elaina-bg — custom wallpaper background, light theme only.
+ *
+ * Layer model:
+ *   1. body::before paints the image (fixed, cover = aspect ratio preserved,
+ *      never stretched) with a light white veil so the picture is softened.
+ *   2. The big app surfaces (frame, sidebar, composer, cards) keep their
+ *      token-driven colors, which we rebind to translucent whites — text
+ *      tokens stay untouched, so contrast is preserved.
+ *   3. Popovers / menus stay near-opaque so floating content never washes out.
+ *
+ * Tunables are CSS custom properties (--elaina-*) with built-in defaults;
+ * the bundled control panel rewrites them live on <body> and persists them
+ * to localStorage. No rebuild is needed for parameter tweaks.
+ *
+ * Everything is scoped to body:not([data-ds-dark-theme]): dark mode is
+ * completely unaffected.
+ *
+ * NOTE: no backdrop-filter here — it makes the element a containing block
+ * for position:fixed descendants and squeezed the settings popover once.
+ */
+
+/* ── 1. the image layer ─────────────────────────────────────────────────── */
+
+body:not([data-ds-dark-theme])::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(
+      rgba(255, 255, 255, var(--elaina-veil, 0.08)),
+      rgba(255, 255, 255, var(--elaina-veil, 0.08))
+    ),
+    var(--elaina-image, var(--dsh-elaina-bg-image)); /* panel can override with a custom wallpaper */
+  background-size: cover;              /* preserve aspect ratio: crop, never stretch */
+  background-position: var(--elaina-pos-x, 62%) center; /* horizontal focal point, panel-tunable */
+  background-repeat: no-repeat;
+  filter: saturate(var(--elaina-saturate, 1.12)); /* counter the veil's washout */
+}
+
+/* ── 2. translucent surfaces (token rebind) ─────────────────────────────── */
+
+body:not([data-ds-dark-theme]) {
+  /* main backdrop: app frame, conversation root, details panel */
+  --dsw-alias-bg-base: rgba(255, 255, 255, var(--elaina-base, 0.28)) !important;
+
+  /* generic elevation layers; layer-3 backs menus, keep it near-opaque */
+  --dsw-alias-bg-layer-1: rgba(255, 255, 255, 0.45) !important;
+  --dsw-alias-bg-layer-2: rgba(255, 255, 255, 0.60) !important;
+  --dsw-alias-bg-layer-3: rgba(255, 255, 255, 0.94) !important;
+
+  /* module chips / selectors */
+  --dsw-alias-bg-module-platform: rgba(241, 243, 245, 0.55) !important;
+
+  /* overlays (popovers etc.): readable above all */
+  --dsw-alias-bg-overlay: rgba(229, 231, 235, 0.94) !important;
+
+  /* sidebar */
+  --dsw-specific-sidebar-fill: rgba(248, 249, 251, var(--elaina-sidebar, 0.42)) !important;
+
+  /* composer / approval cards */
+  --dsw-specific-input-major: rgba(255, 255, 255, var(--elaina-input, 0.78)) !important;
+
+  /* todo dock / tip panels */
+  --dsw-specific-tip: rgba(241, 243, 245, var(--elaina-tip, 0.62)) !important;
+
+  /* context menus */
+  --dsw-specific-menu: rgba(255, 255, 255, 0.94) !important;
+
+  /* user message bubble: keep the bluish tint, slightly translucent */
+  --dsw-specific-bubble: rgba(230, 240, 254, var(--elaina-bubble, 0.85)) !important;
+}
+
+/* ── 4. liquid glass surfaces (iOS-26 style) ──────────────────────────────
+ * backdrop-filter lives ONLY on ::before pseudo-layers: on real containers
+ * it turns them into containing blocks for fixed/absolute popovers (the
+ * settings dialog .VOzbGW_overlay is position:fixed inside the sidebar
+ * column and got squeezed once). Pseudos have no positioned descendants,
+ * so the blur is safe here. Strength is panel-tunable via --elaina-glass-*.
+ */
+
+/* sidebar column: anchor + glass pseudo + right-edge specular line */
+body:not([data-ds-dark-theme]) [class*="pI_x6G_sidebarCol"] {
+  position: relative; /* does NOT trap position:fixed popovers; anchors the pseudo */
+}
+body:not([data-ds-dark-theme]) [class*="pI_x6G_sidebarCol"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  backdrop-filter: blur(var(--elaina-glass-blur, 20px)) saturate(var(--elaina-glass-saturate, 1.5));
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.35); /* specular edge */
+}
+
+/* composer / approval cards / settings dialog: glass pseudo + sheen */
+body:not([data-ds-dark-theme]) [class*="uV2eYG_card"]::before,
+body:not([data-ds-dark-theme]) [class*="bqrRRG_card"]::before,
+body:not([data-ds-dark-theme]) [class*="VOzbGW_panel"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: inherit;
+  backdrop-filter: blur(var(--elaina-glass-blur, 20px)) saturate(var(--elaina-glass-saturate, 1.5));
+}
+
+/* specular borders + depth shadow (liquid glass edge lighting) */
+body:not([data-ds-dark-theme]) [class*="uV2eYG_card"],
+body:not([data-ds-dark-theme]) [class*="bqrRRG_card"],
+body:not([data-ds-dark-theme]) [class*="VOzbGW_panel"] {
+  border-color: rgba(255, 255, 255, 0.45);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),   /* top specular highlight */
+    inset 0 -1px 0 rgba(255, 255, 255, 0.10),  /* bottom refraction line */
+    0 12px 32px rgba(30, 40, 60, 0.18);        /* soft depth shadow */
+}
+

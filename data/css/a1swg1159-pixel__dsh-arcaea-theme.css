@@ -1,0 +1,685 @@
+/* a1swg1159-pixel/dsh-arcaea-theme — src/client.js
+   fetched 2026-08-19 from https://raw.githubusercontent.com/a1swg1159-pixel/dsh-arcaea-theme/main/src/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+@font-face {
+  font-family: "Arc Exo";
+  src: url("https://raw.githubusercontent.com/a1swg1159-pixel/dsh-arcaea-theme/main/src/__ARC_FONT_EXO__") format("truetype");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Arc Noto Sans CJK SC";
+  src: url("https://raw.githubusercontent.com/a1swg1159-pixel/dsh-arcaea-theme/main/src/__ARC_FONT_NOTO_LIGHT__") format("opentype");
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Arc Noto Sans CJK SC";
+  src: url("https://raw.githubusercontent.com/a1swg1159-pixel/dsh-arcaea-theme/main/src/__ARC_FONT_NOTO_REGULAR__") format("opentype");
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Arc Noto Sans CJK SC";
+  src: url("https://raw.githubusercontent.com/a1swg1159-pixel/dsh-arcaea-theme/main/src/__ARC_FONT_NOTO_BOLD__") format("opentype");
+  font-style: normal;
+  font-weight: 700 900;
+  font-display: swap;
+}
+
+:root {
+  --arc-cyan: #39d7f2;
+  --arc-blue: #5e8cff;
+  --arc-violet: #a993ff;
+  --arc-rose: #ff8fcf;
+  --arc-glass: rgba(255, 255, 255, .50);
+  --arc-line: rgba(61, 201, 235, .24);
+  --dsw-font-family: "Segoe UI Variable Text", "Inter", "Noto Sans SC", sans-serif;
+}
+
+body[data-ds-dark-theme] {
+  --arc-glass: rgba(14, 19, 40, .56);
+  --arc-line: rgba(95, 223, 255, .20);
+}
+
+body {
+  position: relative;
+  isolation: isolate;
+  background: var(--dsw-alias-bg-base);
+  letter-spacing: .006em;
+}
+
+body::before,
+body::after {
+  position: fixed;
+  z-index: -2;
+  pointer-events: none;
+  content: "";
+}
+
+body::before {
+  inset: -18vmax;
+  background:
+    radial-gradient(circle at 15% 22%, rgba(80, 221, 255, .23), transparent 22%),
+    radial-gradient(circle at 82% 16%, rgba(169, 147, 255, .23), transparent 24%),
+    radial-gradient(circle at 72% 78%, rgba(255, 143, 207, .13), transparent 24%),
+    linear-gradient(145deg, rgba(255,255,255,.18), transparent 42%);
+  filter: saturate(115%);
+  animation: arc-aurora 24s ease-in-out infinite alternate;
+}
+
+body[data-ds-dark-theme]::before {
+  background:
+    radial-gradient(circle at 12% 18%, rgba(30, 172, 224, .18), transparent 24%),
+    radial-gradient(circle at 80% 12%, rgba(118, 89, 255, .20), transparent 26%),
+    radial-gradient(circle at 74% 80%, rgba(245, 91, 186, .11), transparent 25%),
+    linear-gradient(145deg, rgba(34, 63, 110, .13), transparent 48%);
+}
+
+body::after {
+  left: 50%;
+  bottom: -42vh;
+  width: min(1160px, 118vw);
+  height: 122vh;
+  opacity: .72;
+  background:
+    linear-gradient(90deg, transparent 49.88%, var(--arc-line) 50%, transparent 50.12%),
+    repeating-linear-gradient(90deg, transparent 0 13.8%, var(--arc-line) 14% 14.15%),
+    repeating-linear-gradient(0deg, transparent 0 8.6%, var(--arc-line) 8.8% 8.95%);
+  clip-path: polygon(43% 0, 57% 0, 96% 100%, 4% 100%);
+  mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 78%, transparent);
+  transform: translateX(-50%) perspective(620px) rotateX(59deg);
+  transform-origin: center top;
+}
+
+[class*="_frame"] {
+  background-color: transparent !important;
+}
+
+[class*="_sidebarCol"] {
+  border-right-color: var(--arc-line) !important;
+  box-shadow: 16px 0 54px rgba(35, 149, 198, .06);
+}
+
+[class*="_centerCol"] {
+  position: relative;
+}
+
+[class*="_centerCol"]::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(180deg, var(--arc-glass), transparent 25%, transparent 72%, var(--arc-glass));
+  pointer-events: none;
+  content: "";
+}
+
+[class*="_centerCol"] > * {
+  position: relative;
+  z-index: 1;
+}
+
+[class*="_centerCol"] [class*="_header"] {
+  backdrop-filter: blur(16px) saturate(130%);
+}
+
+[class*="_centerCol"] [class*="_header"]::after {
+  background: linear-gradient(90deg, transparent, var(--arc-cyan), var(--arc-violet), transparent) !important;
+  opacity: .32;
+}
+
+button[class*="_newSession"],
+[class*="_card"],
+[class*="_panel"],
+[class*="_dialog"],
+[class*="_menu"] {
+  border-color: var(--arc-line) !important;
+  box-shadow: 0 14px 44px rgba(42, 126, 174, .09);
+}
+
+[class*="_composerStack"] [class*="_card"] {
+  overflow: hidden;
+  border-color: rgba(68, 206, 236, .42) !important;
+  background: linear-gradient(135deg, var(--dsw-specific-input-major), color-mix(in srgb, var(--dsw-specific-input-major) 84%, var(--arc-violet))) !important;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.22) inset, 0 18px 54px rgba(35, 135, 183, .16) !important;
+  backdrop-filter: blur(22px) saturate(140%);
+}
+
+[class*="_composerStack"] [class*="_card"]::before {
+  position: absolute;
+  top: 0;
+  left: 12%;
+  width: 76%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--arc-cyan), var(--arc-violet), transparent);
+  content: "";
+}
+
+[class*="_bubble"] {
+  border: 1px solid rgba(65, 188, 226, .22);
+  background: linear-gradient(135deg, var(--dsw-specific-bubble), color-mix(in srgb, var(--dsw-specific-bubble) 80%, var(--arc-blue))) !important;
+  box-shadow: 0 10px 32px rgba(34, 126, 170, .10);
+}
+
+[class*="_tabActive"] {
+  color: var(--arc-cyan) !important;
+  text-shadow: 0 0 18px rgba(57, 215, 242, .42);
+}
+
+[class*="_tabActive"]::after {
+  background: linear-gradient(90deg, var(--arc-cyan), var(--arc-violet)) !important;
+  box-shadow: 0 0 12px rgba(74, 213, 246, .54);
+}
+
+[class*="_primary"]:not(:disabled),
+[class*="_selected"] {
+  box-shadow: 0 0 0 1px rgba(255,255,255,.25) inset, 0 0 22px rgba(45, 205, 239, .25);
+}
+
+[class*="_flowItem"],
+[class*="_turnStatus"] {
+  animation: arc-rise .32s cubic-bezier(.2,.75,.25,1) both;
+}
+
+[class*="_ioCard"],
+[class*="_block"] {
+  border-color: rgba(91, 176, 215, .18) !important;
+  background-color: color-mix(in srgb, var(--dsw-alias-bg-layer-1) 92%, transparent) !important;
+  backdrop-filter: blur(12px);
+}
+
+button,
+[role="button"] {
+  transition: background-color .16s ease, border-color .16s ease, color .16s ease, box-shadow .16s ease, transform .16s ease;
+}
+
+button:active:not(:disabled),
+[role="button"]:active {
+  transform: translateY(1px);
+}
+
+:where(button, input, textarea, select, [role="button"]):focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--arc-cyan) 78%, white) !important;
+  outline-offset: 2px !important;
+}
+
+::selection {
+  background: rgba(64, 207, 238, .28);
+}
+
+@keyframes arc-aurora {
+  from { transform: translate3d(-1.5%, -1%, 0) rotate(-1deg); }
+  to { transform: translate3d(1.5%, 1%, 0) rotate(1deg); }
+}
+
+@keyframes arc-rise {
+  from { opacity: 0; transform: translateY(7px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Shared visual layer mounting and clipped surface treatment. */
+body::after {
+  display: none;
+}
+
+[data-arcaea-theme-layer] {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+[class*="_frame"] {
+  position: relative;
+  z-index: 1;
+}
+
+[class*="_centerCol"] {
+  isolation: isolate;
+  overflow: hidden;
+}
+
+[class*="_centerCol"] > *:not([data-arcaea-theme-layer]) {
+  position: relative;
+  z-index: 1;
+}
+
+.dsh-arcaea-shard {
+  position: absolute;
+  width: var(--shard-w, 54px);
+  height: var(--shard-h, 110px);
+  border: 1px solid rgba(63, 46, 72, .16);
+  background: linear-gradient(145deg, rgba(255,255,255,.52), rgba(100,81,112,.05));
+  clip-path: polygon(50% 0, 100% 28%, 72% 100%, 12% 82%, 0 26%);
+  opacity: var(--shard-o, .34);
+  transform: rotate(var(--shard-r, 18deg));
+}
+
+.dsh-arcaea-shard:nth-of-type(1) { top: 8%; left: 7%; --shard-w: 42px; --shard-h: 92px; --shard-r: -24deg; }
+.dsh-arcaea-shard:nth-of-type(2) { top: 14%; right: 11%; --shard-w: 67px; --shard-h: 136px; --shard-r: 31deg; --shard-o: .25; }
+.dsh-arcaea-shard:nth-of-type(3) { bottom: 13%; left: 18%; --shard-w: 35px; --shard-h: 76px; --shard-r: 42deg; --shard-o: .22; }
+.dsh-arcaea-shard:nth-of-type(4) { bottom: 8%; right: 17%; --shard-w: 48px; --shard-h: 105px; --shard-r: -38deg; --shard-o: .26; }
+
+/* DSH surfaces adopt the game's clipped HUD silhouette instead of glassy pills. */
+button[class*="_newSession"] {
+  border-radius: 2px !important;
+  clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+}
+
+[class*="_composerStack"] [class*="_card"] {
+  border-color: rgba(101, 46, 117, .34) !important;
+  border-radius: 3px !important;
+  background: linear-gradient(105deg, var(--dsw-specific-input-major), color-mix(in srgb, var(--dsw-specific-input-major) 91%, #8e4c9e)) !important;
+  box-shadow: 8px 10px 0 rgba(46, 27, 57, .06), 0 0 0 1px rgba(255,255,255,.42) inset !important;
+  clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+  backdrop-filter: blur(8px);
+}
+
+[class*="_composerStack"] [class*="_card"]::before {
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #12bdd4, #e13fad 72%, transparent);
+}
+
+[class*="_bubble"] {
+  border-color: rgba(93, 48, 106, .20) !important;
+  border-radius: 2px !important;
+  background: linear-gradient(112deg, var(--dsw-specific-bubble), color-mix(in srgb, var(--dsw-specific-bubble) 88%, #d340a5)) !important;
+  box-shadow: 7px 7px 0 rgba(53, 32, 62, .06);
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+}
+
+[class*="_tabActive"] {
+  color: #a52c82 !important;
+  text-shadow: none;
+}
+
+[class*="_tabActive"]::after {
+  height: 3px !important;
+  border-radius: 0 !important;
+  background: linear-gradient(90deg, #25152f, #d83aa6) !important;
+  box-shadow: 0 0 8px rgba(216, 58, 166, .28);
+}
+
+[class*="_primary"]:not(:disabled) {
+  border-radius: 2px !important;
+  background: linear-gradient(135deg, #08b9d1, #087f9d) !important;
+  box-shadow: 4px 4px 0 rgba(19, 61, 75, .18) !important;
+  clip-path: polygon(7px 0, 100% 0, calc(100% - 7px) 100%, 0 100%);
+}
+
+[class*="_centerCol"] [class*="_header"]::after {
+  background: linear-gradient(90deg, transparent, rgba(48,30,58,.48) 20%, #cf3d9f 50%, rgba(48,30,58,.48) 80%, transparent) !important;
+  opacity: .55;
+}
+
+[class*="_centerCol"] > * > [class*="_header"] {
+  background:
+    linear-gradient(112deg, rgba(255,255,255,.34) 0 64%, rgba(69,38,78,.08) 64% 82%, rgba(39,22,48,.12) 82% 100%);
+}
+
+@media (max-width: 720px) {
+  [class*="_composerStack"] [class*="_card"] { backdrop-filter: blur(5px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before,
+  [class*="_flowItem"],
+  [class*="_turnStatus"] {
+    animation: none !important;
+  }
+  button,
+  [role="button"] {
+    transition: none !important;
+  }
+}
+
+@media (forced-colors: active) {
+  body::before,
+  body::after,
+  [data-arcaea-theme-layer],
+  [class*="_centerCol"]::before {
+    display: none;
+  }
+}
+
+/* 0.3 — original high-key memory space, derived from local visual research. */
+:root {
+  --arc-ink: #312a35;
+  --arc-muted: #756c78;
+  --arc-plum: #514657;
+  --arc-mauve: #bda6b7;
+  --arc-blush: #dbc6d1;
+  --arc-paper: #faf9fa;
+  --arc-cool: #b7d8df;
+  --arc-display-font: "Arc Exo", "Exo", "Segoe UI Variable Display", "Segoe UI", sans-serif;
+  --arc-body-font: "Arc Exo", "Arc Noto Sans CJK SC", "Noto Sans CJK SC", "Noto Sans SC", "Microsoft YaHei UI", "Segoe UI Variable Text", sans-serif;
+  --dsw-font-family: var(--arc-body-font) !important;
+}
+
+html,
+body {
+  color: var(--arc-ink);
+  font-family: var(--arc-body-font) !important;
+  background: #f8f7f8 !important;
+}
+
+body::before {
+  inset: 0;
+  opacity: .82;
+  background:
+    radial-gradient(circle at 77% 12%, rgba(214, 187, 204, .28), transparent 26%),
+    radial-gradient(circle at 33% 42%, rgba(183, 216, 223, .17), transparent 27%),
+    linear-gradient(118deg, rgba(255,255,255,.82), rgba(238,233,238,.48) 62%, rgba(255,255,255,.86));
+  filter: none;
+  animation: none;
+}
+
+[class*="_frame"] {
+  background: #f8f7f8 !important;
+}
+
+[class*="_sidebarCol"] {
+  --dsw-alias-label-primary: #f8f4f7;
+  --dsw-alias-label-primary-bluish: #f2eaf0;
+  --dsw-alias-label-primary-dimmed: #d8ccd5;
+  --dsw-alias-label-secondary: #c1b4bf;
+  --dsw-alias-label-tertiary: #9e919d;
+  --dsw-alias-label-caption: #887c88;
+  --dsw-alias-border-l1: rgba(255,255,255,.07);
+  --dsw-alias-border-l2: rgba(255,255,255,.13);
+  --dsw-alias-button-elevated-fill: rgba(255,255,255,.075);
+  --dsw-specific-sidebar-fill: #3b3340;
+  position: relative;
+  overflow: hidden;
+  color: #f8f4f7 !important;
+  border-right: 1px solid rgba(86, 72, 91, .36) !important;
+  background:
+    linear-gradient(140deg, rgba(255,255,255,.025), transparent 46%),
+    linear-gradient(180deg, #403744, #332c37 76%, #2d2731) !important;
+  box-shadow: 18px 0 52px rgba(48, 37, 52, .10);
+}
+
+[class*="_sidebarCol"]::before {
+  position: absolute;
+  top: auto;
+  right: -36px;
+  bottom: 22%;
+  left: 18%;
+  height: 72px;
+  content: "";
+  opacity: .16;
+  background:
+    repeating-linear-gradient(-55deg, rgba(246,220,237,.13) 0 2px, transparent 2px 8px),
+    linear-gradient(90deg, rgba(190,145,178,.13), rgba(255,255,255,.03));
+  clip-path: polygon(5% 0, 100% 0, 91% 100%, 0 100%);
+}
+
+[class*="_sidebarCol"]::after {
+  position: absolute;
+  right: -5%;
+  bottom: 7%;
+  width: 76%;
+  height: 28%;
+  border: 1px solid rgba(235,218,231,.07);
+  content: "";
+  transform: skewY(-13deg);
+}
+
+[class*="_sidebarCol"] [class*="_active"],
+[class*="_sidebarCol"] [aria-current="page"] {
+  border-color: rgba(236, 213, 229, .25) !important;
+  background:
+    repeating-linear-gradient(-55deg, rgba(255,255,255,.045) 0 2px, transparent 2px 8px),
+    linear-gradient(90deg, rgba(221,188,211,.17), rgba(255,255,255,.04)) !important;
+  box-shadow: -3px 0 0 #d7a9c8 inset;
+}
+
+[class*="_sidebarCol"] button[class*="_newSession"] {
+  color: #f8f4f7 !important;
+  border-color: rgba(240,221,234,.22) !important;
+  background:
+    repeating-linear-gradient(-55deg, rgba(255,255,255,.04) 0 2px, transparent 2px 8px),
+    linear-gradient(100deg, rgba(202,164,192,.19), rgba(255,255,255,.035)) !important;
+}
+
+/* Settings is a fixed-position descendant of the sidebar. Keep every
+   ancestor filter-free so its containing block remains the viewport, then
+   restore light-surface tokens inside the dialog instead of inheriting the
+   dark sidebar palette. */
+[class*="_sidebarCol"] [role="dialog"] {
+  --dsw-alias-label-primary: #2f2832;
+  --dsw-alias-label-primary-bluish: #3b303e;
+  --dsw-alias-label-primary-dimmed: #675b69;
+  --dsw-alias-label-secondary: #746a76;
+  --dsw-alias-label-tertiary: #918793;
+  --dsw-alias-label-caption: #a59ca7;
+  --dsw-alias-border-l1: rgba(73, 59, 77, .10);
+  --dsw-alias-border-l2: rgba(73, 59, 77, .18);
+  --dsw-alias-bg-layer-1: rgba(255,255,255,.94);
+  --dsw-alias-bg-layer-2: #f5f2f5;
+  --dsw-alias-bg-layer-3: #ebe6ec;
+  --dsw-specific-sidebar-nav-item-active: rgba(184, 139, 172, .18);
+  --dsw-specific-sidebar-nav-item-hover: rgba(117, 87, 111, .08);
+  color: #2f2832 !important;
+  font-family: var(--arc-body-font);
+}
+
+[class*="_sidebarCol"] [role="dialog"] [class*="_active"] {
+  border-color: transparent !important;
+  background: rgba(184, 139, 172, .18) !important;
+  box-shadow: inset 3px 0 0 #b66f9d;
+}
+
+[class*="_centerCol"] {
+  isolation: isolate;
+  background:
+    linear-gradient(rgba(255,255,255,.70), rgba(249,247,249,.82)),
+    repeating-linear-gradient(45deg, rgba(73,60,79,.025) 0 1px, transparent 1px 5px) !important;
+}
+
+[class*="_centerCol"] > *:not([data-arcaea-theme-layer]) {
+  background-color: transparent !important;
+}
+
+[class*="_centerCol"]::before {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.96), transparent 19%, transparent 77%, rgba(250,248,250,.91)),
+    radial-gradient(ellipse at 50% 57%, rgba(255,255,255,.12), rgba(248,245,248,.53) 62%, rgba(230,223,230,.26));
+}
+
+[class*="_centerCol"] [class*="_header"],
+[class*="_centerCol"] [class*="_header"] * {
+  font-family: var(--arc-display-font);
+}
+
+[class*="_centerCol"] [class*="_header"] {
+  background: rgba(250,249,250,.84) !important;
+  backdrop-filter: blur(18px) saturate(90%);
+}
+
+[class*="_centerCol"] [class*="_header"]::after {
+  height: 1px !important;
+  opacity: .66;
+  background: linear-gradient(90deg, transparent 2%, #776578 24%, #c99bbd 54%, transparent 92%) !important;
+  box-shadow: none;
+}
+
+[class*="_tabActive"] {
+  color: #8d3b77 !important;
+  font-weight: 600;
+  letter-spacing: .08em;
+}
+
+[class*="_tabActive"]::after {
+  height: 2px !important;
+  background: linear-gradient(90deg, #5c4b5f, #c876ac) !important;
+  box-shadow: none;
+}
+
+[class*="_composerStack"] [class*="_card"] {
+  border: 1px solid rgba(93, 76, 99, .35) !important;
+  background:
+    linear-gradient(116deg, rgba(255,255,255,.95), rgba(244,238,244,.93) 73%, rgba(227,210,224,.90)) !important;
+  box-shadow: 9px 10px 0 rgba(71, 54, 76, .055), 0 17px 48px rgba(74, 54, 78, .08) !important;
+  clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+  backdrop-filter: blur(14px) saturate(85%);
+}
+
+[class*="_composerStack"] [class*="_card"]::before {
+  height: 2px;
+  background: linear-gradient(90deg, #8dbec8, #d7aac8 67%, transparent 94%);
+}
+
+[class*="_bubble"] {
+  border: 1px solid rgba(101, 78, 103, .22) !important;
+  background:
+    repeating-linear-gradient(-55deg, rgba(255,255,255,.09) 0 2px, transparent 2px 8px),
+    linear-gradient(112deg, rgba(239,230,237,.96), rgba(218,194,213,.94)) !important;
+  box-shadow: 7px 7px 0 rgba(64, 48, 68, .055);
+}
+
+[class*="_card"],
+[class*="_panel"],
+[class*="_dialog"],
+[class*="_menu"],
+[class*="_ioCard"],
+[class*="_block"] {
+  border-color: rgba(92, 77, 97, .19) !important;
+  box-shadow: 0 14px 38px rgba(69, 53, 73, .065);
+}
+
+[class*="_primary"]:not(:disabled) {
+  color: #fff !important;
+  background: linear-gradient(135deg, #9a638a, #65566a) !important;
+  box-shadow: 4px 4px 0 rgba(49, 39, 52, .15) !important;
+}
+
+:where(button, input, textarea, select, [role="button"]):focus-visible {
+  outline-color: #a56992 !important;
+}
+
+::selection {
+  color: #2f2732;
+  background: rgba(205, 161, 191, .40);
+}
+
+[data-arcaea-theme-layer] {
+  opacity: .72;
+}
+
+.dsh-memory-architecture {
+  position: absolute;
+  inset: 0;
+  opacity: .48;
+  background:
+    linear-gradient(102deg, transparent 0 9%, rgba(109,94,113,.08) 9.1% 9.25%, transparent 9.35% 82%, rgba(109,94,113,.06) 82.1% 82.22%, transparent 82.32%),
+    linear-gradient(79deg, transparent 0 22%, rgba(109,94,113,.055) 22.08% 22.2%, transparent 22.3% 73%, rgba(109,94,113,.045) 73.08% 73.18%, transparent 73.28%),
+    repeating-linear-gradient(45deg, transparent 0 7px, rgba(69,57,74,.022) 7px 8px);
+  mask-image: linear-gradient(to bottom, #000, rgba(0,0,0,.45) 72%, transparent);
+}
+
+.dsh-memory-architecture::before,
+.dsh-memory-architecture::after {
+  position: absolute;
+  border: 1px solid rgba(91,77,96,.10);
+  content: "";
+}
+
+.dsh-memory-architecture::before {
+  top: -12%;
+  left: 8%;
+  width: 35%;
+  height: 66%;
+  transform: rotate(-10deg);
+  clip-path: polygon(0 8%, 82% 0, 100% 76%, 29% 100%);
+  background: repeating-linear-gradient(90deg, transparent 0 18%, rgba(94,79,100,.055) 18.2% 18.45%);
+}
+
+.dsh-memory-architecture::after {
+  top: -18%;
+  right: 7%;
+  width: 28%;
+  height: 70%;
+  transform: rotate(12deg);
+  clip-path: polygon(18% 0, 100% 11%, 82% 100%, 0 79%);
+  background: repeating-linear-gradient(0deg, transparent 0 14%, rgba(94,79,100,.045) 14.2% 14.5%);
+}
+
+.dsh-memory-horizon {
+  position: absolute;
+  left: 50%;
+  bottom: -43%;
+  width: min(1050px, 104vw);
+  height: 104%;
+  opacity: .26;
+  background:
+    linear-gradient(90deg, transparent 49.88%, rgba(84,69,90,.19) 50%, transparent 50.12%),
+    repeating-linear-gradient(90deg, transparent 0 11.8%, rgba(84,69,90,.11) 12% 12.14%),
+    repeating-linear-gradient(0deg, transparent 0 10.8%, rgba(84,69,90,.09) 11% 11.14%),
+    radial-gradient(ellipse at 50% 5%, rgba(255,255,255,.90), rgba(220,211,220,.20) 45%, transparent 72%);
+  clip-path: polygon(42% 0, 58% 0, 100% 100%, 0 100%);
+  mask-image: linear-gradient(to bottom, transparent, #000 13%, #000 70%, transparent);
+  transform: translateX(-50%) perspective(700px) rotateX(59deg);
+  transform-origin: center top;
+}
+
+.dsh-memory-glow {
+  position: absolute;
+  top: 38%;
+  left: 13%;
+  width: 74%;
+  height: 1px;
+  opacity: .76;
+  background: linear-gradient(90deg, transparent, rgba(121,103,126,.18), rgba(209,169,198,.72), rgba(128,112,132,.18), transparent);
+  box-shadow: 0 0 24px rgba(201,169,190,.28);
+}
+
+.dsh-memory-prisms {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: .36;
+  filter: saturate(74%);
+}
+
+.dsh-memory-prisms polygon {
+  vector-effect: non-scaling-stroke;
+}
+
+.dsh-arcaea-shard {
+  border-color: rgba(89,73,94,.12);
+  background:
+    linear-gradient(128deg, rgba(255,255,255,.68), rgba(206,186,201,.08) 38%, rgba(174,211,219,.13) 72%, rgba(255,255,255,.38));
+  box-shadow: inset 0 0 18px rgba(255,255,255,.55);
+}
+
+.dsh-arcaea-shard:nth-of-type(1) { top: 10%; left: 5%; --shard-w: 36px; --shard-h: 78px; --shard-r: -31deg; --shard-o: .27; }
+.dsh-arcaea-shard:nth-of-type(2) { top: 16%; right: 7%; --shard-w: 54px; --shard-h: 114px; --shard-r: 26deg; --shard-o: .20; }
+.dsh-arcaea-shard:nth-of-type(3) { bottom: 17%; left: 12%; --shard-w: 28px; --shard-h: 62px; --shard-r: 38deg; --shard-o: .18; }
+.dsh-arcaea-shard:nth-of-type(4) { bottom: 11%; right: 13%; --shard-w: 39px; --shard-h: 88px; --shard-r: -34deg; --shard-o: .20; }
+
+@media (max-width: 720px) {
+  [class*="_sidebarCol"]::before { opacity: .32; }
+  .dsh-memory-architecture { opacity: .36; }
+  .dsh-memory-prisms { opacity: .32; }
+  .dsh-memory-horizon { width: 150vw; }
+}
+
+@media (forced-colors: active) {
+  .dsh-memory-architecture,
+  .dsh-memory-horizon,
+  .dsh-memory-glow,
+  .dsh-memory-prisms {
+    display: none;
+  }
+}

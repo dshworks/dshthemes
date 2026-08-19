@@ -1,0 +1,159 @@
+/* SweetCandy-gift/dsh-beige-theme — lib/client.js
+   fetched 2026-08-19 from https://raw.githubusercontent.com/SweetCandy-gift/dsh-beige-theme/main/lib/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+@supports (background: radial-gradient(circle at 0 0, #fff, #000)) {
+        body[data-beige-active="true"]::before {
+          content: ""; position: fixed; inset: 0; z-index: 30; pointer-events: none;
+          background:
+            radial-gradient(110% 80% at 86% -8%, rgba(255,214,150,.20), transparent 55%),
+            radial-gradient(90% 65% at 8% -4%, rgba(150,190,235,.16), transparent 58%),
+            radial-gradient(150% 110% at 50% 118%, rgba(210,170,120,.15), transparent 62%),
+            radial-gradient(130% 100% at 50% 50%, transparent 62%, rgba(120,95,60,.05) 100%);
+        }
+        body[data-beige-active="true"]::after {
+          content: ""; position: fixed; inset: -12%; z-index: 31; pointer-events: none;
+          background-image:
+            radial-gradient(1.6px 1.6px at 12% 22%, rgba(255,238,205,.55), transparent 60%),
+            radial-gradient(1.2px 1.2px at 34% 64%, rgba(255,244,220,.45), transparent 60%),
+            radial-gradient(1.8px 1.8px at 58% 18%, rgba(235,246,255,.5), transparent 60%),
+            radial-gradient(1.1px 1.1px at 76% 42%, rgba(255,236,200,.42), transparent 60%),
+            radial-gradient(1.4px 1.4px at 90% 74%, rgba(255,241,210,.4), transparent 60%),
+            radial-gradient(1.2px 1.2px at 22% 86%, rgba(240,250,244,.4), transparent 60%),
+            radial-gradient(1.5px 1.5px at 46% 8%, rgba(255,245,224,.45), transparent 60%),
+            radial-gradient(1.1px 1.1px at 66% 58%, rgba(255,238,205,.38), transparent 60%);
+          background-size: 620px 620px;
+          animation: sxm-dust-drift 48s linear infinite;
+          opacity: .9;
+        }
+        @keyframes sxm-dust-drift {
+          from { transform: translate3d(0,0,0); }
+          to   { transform: translate3d(-180px,-120px,0); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          body[data-beige-active="true"]::after { animation: none; }
+        }
+      }
+
+
+      /* 选区 */
+      body[data-beige-active="true"] ::selection { background: rgba(101,152,198,.28); }
+
+      /* 代码语法色：暖纸墨色 */
+      body[data-beige-active="true"] {
+        --shiki-token-constant: #b0723c;
+        --shiki-token-string: #5d8f5a;
+        --shiki-token-comment: #9b8f7c;
+        --shiki-token-keyword: #b0566a;
+        --shiki-token-parameter: #c07a35;
+        --shiki-token-function: #5b7fa6;
+        --shiki-token-string-expression: #4f8a57;
+        --shiki-token-punctuation: #6b5f4e;
+        --shiki-token-link: #4f7fb3;
+      }
+
+      /* ── 左侧导航栏 · 欧洲学院橡木书架 ── */
+      body[data-beige-active="true"] .pI_x6G_sidebarCol {
+        background:
+          linear-gradient(180deg, rgba(255,252,244,.5), rgba(255,252,244,0) 70px),
+          linear-gradient(0deg, rgba(120,90,50,.06), rgba(120,90,50,0) 150px),
+          var(--dsw-specific-sidebar-fill);
+        box-shadow:
+          inset -1px 0 0 rgba(90,74,50,.07),
+          inset -16px 0 30px -22px rgba(96,66,26,.30);
+      }
+      body[data-beige-active="true"] .hHd-Xa_root {
+        background-image: repeating-linear-gradient(90deg, rgba(120,90,50,.02) 0 2px, transparent 2px 7px);
+      }
+      body[data-beige-active="true"] .hHd-Xa_logoRow {
+        border-bottom: 1px solid rgba(120,90,50,.16);
+        box-shadow: 0 1px 0 rgba(255,255,255,.55);
+        margin-bottom: 10px;
+      }
+      body[data-beige-active="true"] .hHd-Xa_newSession {
+        box-shadow:
+          inset 0 1px 0 rgba(255,255,255,.22),
+          inset 0 -1px 0 rgba(90,60,20,.16),
+          0 1px 2px rgba(90,74,50,.14);
+        border-radius: 10px;
+        font-weight: 500;
+        letter-spacing: .2px;
+      }
+
+      /* ── 卡片 · 纸张质感 ── */
+      body[data-beige-active="true"] [data-tool],
+      body[data-beige-active="true"] [data-variant="think"] {
+        background-image:
+          linear-gradient(180deg, rgba(255,255,255,.34), rgba(255,255,255,0) 44px),
+          repeating-linear-gradient(0deg, rgba(120,100,70,.014) 0 1px, transparent 1px 3px);
+        box-shadow:
+          0 1px 1px rgba(90,74,50,.04),
+          0 4px 14px rgba(90,74,50,.07);
+        border-radius: 14px;
+      }
+
+      /* ── 柔和阴影 + 玻璃 ── */
+      body[data-beige-active="true"] [role="menu"] {
+        background: var(--dsw-specific-menu);
+        background: color-mix(in srgb, var(--dsw-specific-menu) 86%, transparent);
+        -webkit-backdrop-filter: blur(12px) saturate(1.05);
+        backdrop-filter: blur(12px) saturate(1.05);
+        box-shadow: 0 6px 24px rgba(90,60,20,.16), 0 1px 3px rgba(90,74,50,.08);
+        border-radius: 12px;
+      }
+      body[data-beige-active="true"] [role="dialog"] {
+        background: var(--dsw-alias-bg-layer-1);
+        background: color-mix(in srgb, var(--dsw-alias-bg-layer-1) 90%, transparent);
+        -webkit-backdrop-filter: blur(16px) saturate(1.05);
+        backdrop-filter: blur(16px) saturate(1.05);
+        box-shadow: 0 16px 48px rgba(90,60,20,.2), 0 2px 8px rgba(90,74,50,.1);
+        border-radius: 18px;
+      }
+      body[data-beige-active="true"] [role="tooltip"] {
+        box-shadow: 0 6px 20px rgba(60,45,25,.18);
+        border-radius: 10px;
+      }
+
+      /* ── 输入框 · 木质书桌上的笔记本 ── */
+      body[data-beige-active="true"] [data-composer-card] {
+        background:
+          radial-gradient(120% 60% at 0% 0%, rgba(255,255,255,.5), transparent 42%),
+          var(--dsw-specific-input-major);
+        border-color: rgba(90,74,50,.16);
+        border-radius: 16px;
+        box-shadow:
+          0 1px 2px rgba(90,74,50,.06),
+          0 10px 30px rgba(90,60,20,.13),
+          inset 0 1px 0 rgba(255,255,255,.6);
+      }
+      body[data-beige-active="true"] [data-composer-card] textarea {
+        caret-color: var(--dsw-alias-state-business-primary, #4f82b4);
+      }
+
+      /* ── 代码区 · 纸张代码页 ── */
+      body[data-beige-active="true"] .md-code-block {
+        position: relative;
+        background:
+          radial-gradient(140% 90% at 50% 0%, rgba(255,251,240,.55), transparent 55%),
+          var(--dsw-alias-markdown-code-block);
+        border: 1px solid rgba(120,90,50,.18);
+        border-radius: 14px;
+        box-shadow:
+          0 1px 2px rgba(90,74,50,.06),
+          0 8px 26px rgba(90,60,20,.12),
+          inset 0 0 0 1px rgba(255,255,255,.32),
+          inset 0 0 34px rgba(210,170,110,.10);
+      }
+      body[data-beige-active="true"] .md-code-block::before {
+        content: "";
+        position: absolute;
+        left: 0; top: 12px; bottom: 12px;
+        width: 3px;
+        border-radius: 3px;
+        background: linear-gradient(180deg, rgba(79,130,180,.5), rgba(221,154,82,.42));
+        pointer-events: none;
+      }
+      body[data-beige-active="true"] .md-code-block pre.shiki {
+        background:
+          radial-gradient(120% 80% at 50% 0%, rgba(255,250,238,.4), transparent 55%),
+          var(--dsw-alias-markdown-code-block) !important;
+      }

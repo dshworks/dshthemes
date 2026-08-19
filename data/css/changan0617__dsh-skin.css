@@ -1,0 +1,62 @@
+/* changan0617/dsh-skin — harness-bg.css
+   fetched 2026-08-19 from https://raw.githubusercontent.com/changan0617/dsh-skin/main/harness-bg.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* ============================================================================
+   DeepSeek Harness 首页风格聊天背景（深色主题）v6
+   对照 www.deepseek.com/harness/en/ 首页实测还原：
+   1. 基底渐变：顶部深蓝 (#0e1a2c) → 中段稍亮 → 底部近黑 (#0a0a0a)
+      （实测首页 y=3%:rgb(15,27,44) y=20%:rgb(17,30,47) y=65%:rgb(12,16,24)
+        y=95%:rgb(9,10,10)，对应 --ds-color-bg-page:#0a0a0a）
+   2. 白色点线网格 + 雾流 + 鲸鱼由 harness-fluid.js（Canvas + DOM）实现
+   3. 聊天输入区：移除黑色遮罩、输入卡片半透明玻璃
+   应用方式：替换 dsh-web-frontend/dist/assets/index-*.css 与
+   dsh-client-ui-theme/lib/styles/base.css 末尾的旧补丁块；刷新页面后生效。
+   ============================================================================ */
+
+/* ---- 1. html 画布兜底：与 body 同款渐变，杜绝黑边/滚动露底 ---- */
+html {
+  background: linear-gradient(180deg, #0e1a2c 0%, #111f31 25%, #0d1724 55%, #0a0e15 82%, #0a0a0a 100%) fixed;
+}
+
+/* ---- 2. body 基底渐变（点阵/网格已由 Canvas 绘制，此处只放底色） ---- */
+body[data-ds-dark-theme] {
+  background-color: #0a0e15;
+  background-image: linear-gradient(180deg, #0e1a2c 0%, #111f31 25%, #0d1724 55%, #0a0e15 82%, #0a0a0a 100%);
+}
+
+/* ---- 3. 侧边栏半透明深海蓝，融入页面底图 ---- */
+body[data-ds-dark-theme] {
+  --dsw-specific-sidebar-fill: rgba(9, 19, 32, 0.62);
+}
+body[data-ds-dark-theme] .pI_x6G_sidebarCol {
+  background: rgba(9, 19, 32, 0.62);
+}
+
+/* ---- 4. 应用框架：透明背景 + 自成层叠上下文（Canvas 背景层位于其下） ---- */
+body[data-ds-dark-theme] .pI_x6G_frame {
+  background: transparent;
+  isolation: isolate;
+}
+
+/* ---- 5. 聊天区 / 右侧面板背景透明，露出首页式底图 ---- */
+body[data-ds-dark-theme] .wSkVaW_root,
+body[data-ds-dark-theme] .ydkMvW_root {
+  background: transparent;
+}
+
+/* ---- 6. 聊天输入区：移除黑色遮罩、输入卡片改半透明玻璃 ---- */
+body[data-ds-dark-theme] .wSkVaW_composerSeat {
+  background: transparent !important;
+}
+body[data-ds-dark-theme] .uV2eYG_card {
+  background: rgba(10, 20, 34, 0.58);
+  backdrop-filter: blur(18px) saturate(1.12);
+  -webkit-backdrop-filter: blur(18px) saturate(1.12);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.22);
+}
+body[data-ds-dark-theme] ._7yHdaG_panel {
+  background: rgba(10, 20, 34, 0.5);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+

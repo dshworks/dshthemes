@@ -1,0 +1,45 @@
+/* tzy168/dsh-web-theme-packs — themes/misty-forest/theme.css
+   fetched 2026-08-19 from https://raw.githubusercontent.com/tzy168/dsh-web-theme-packs/master/themes/misty-forest/theme.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+body[data-dsh-theme-pack="misty-forest"] {
+  background-color: transparent;
+  background-image: url("https://raw.githubusercontent.com/tzy168/dsh-web-theme-packs/master/themes/misty-forest/assets/bg.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+body[data-dsh-theme-pack="misty-forest"] [data-slot="conversation.session.header"] header,
+body[data-dsh-theme-pack="misty-forest"] [data-phase="active"] [data-composer-seat],
+body[data-dsh-theme-pack="misty-forest"] [data-chat-flow] {
+  background: rgba(245, 240, 214, 0.58);
+  backdrop-filter: blur(20px) saturate(1.15);
+  -webkit-backdrop-filter: blur(20px) saturate(1.15);
+}
+
+body[data-dsh-theme-pack="misty-forest"] [data-chat-flow] {
+  box-sizing: border-box;
+  padding: 16px 20px;
+  border-radius: 16px;
+}
+
+/* Replaces the seat's bg-base fade (transparent in this pack) with the same
+   36px lead-in into the glass fill. */
+body[data-dsh-theme-pack="misty-forest"] [data-phase="active"] [data-composer-seat] {
+  background: linear-gradient(
+    180deg,
+    rgba(245, 240, 214, 0) 0px,
+    rgba(245, 240, 214, 0.62) 36px
+  );
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  body[data-dsh-theme-pack="misty-forest"] [data-slot="conversation.session.header"] header,
+  body[data-dsh-theme-pack="misty-forest"] [data-phase="active"] [data-composer-seat],
+  body[data-dsh-theme-pack="misty-forest"] [data-chat-flow] {
+    background: #f5f0d6;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+

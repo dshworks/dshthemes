@@ -1,0 +1,272 @@
+/* lx963/dsh-webui-background — src/client/styles.ts
+   fetched 2026-08-19 from https://raw.githubusercontent.com/lx963/dsh-webui-background/main/src/client/styles.ts
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+body[data-dsh-webui-background='enabled'] {
+  --dsh-webui-background-mask: rgba(255, 255, 255, var(--dsh-webui-background-light-mask));
+}
+
+body[data-dsh-webui-background='enabled'][data-ds-dark-theme] {
+  --dsh-webui-background-mask: rgba(0, 0, 0, var(--dsh-webui-background-dark-mask));
+}
+
+.dsh-wbg-root {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 760px;
+  color: var(--dsw-alias-label-primary);
+}
+
+.dsh-wbg-status,
+.dsh-wbg-help,
+.dsh-wbg-meta,
+.dsh-wbg-readonly {
+  margin: 0;
+  color: var(--dsw-alias-label-tertiary);
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.dsh-wbg-alert {
+  margin: 0;
+  color: var(--dsw-alias-state-error-primary);
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.dsh-wbg-preview {
+  position: relative;
+  display: grid;
+  min-height: 250px;
+  overflow: hidden;
+  place-items: center;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 12px;
+  background:
+    linear-gradient(45deg, var(--dsw-alias-bg-layer-2) 25%, transparent 25%) 0 0 / 18px 18px,
+    linear-gradient(-45deg, var(--dsw-alias-bg-layer-2) 25%, transparent 25%) 0 9px / 18px 18px,
+    linear-gradient(45deg, transparent 75%, var(--dsw-alias-bg-layer-2) 75%) 9px -9px / 18px 18px,
+    linear-gradient(-45deg, transparent 75%, var(--dsw-alias-bg-layer-2) 75%) -9px 0 / 18px 18px,
+    var(--dsw-alias-bg-layer-1);
+}
+
+.dsh-wbg-preview[data-dragging='true'] {
+  border-color: var(--dsw-alias-state-business-primary);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--dsw-alias-state-business-primary) 18%, transparent);
+}
+
+.dsh-wbg-preview img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dsh-wbg-preview-empty {
+  z-index: 1;
+  padding: 24px;
+  color: var(--dsw-alias-label-tertiary);
+  text-align: center;
+  font-size: 13px;
+}
+
+.dsh-wbg-preview-mask {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, var(--dsh-wbg-preview-light-mask));
+  pointer-events: none;
+}
+
+body[data-ds-dark-theme] .dsh-wbg-preview-mask {
+  background: rgba(0, 0, 0, var(--dsh-wbg-preview-dark-mask));
+}
+
+.dsh-wbg-preview-actions {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 2;
+}
+
+.dsh-wbg-button,
+.dsh-wbg-file-button {
+  box-sizing: border-box;
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 8px;
+  padding: 6px 13px;
+  background: var(--dsw-alias-bg-layer-1);
+  color: var(--dsw-alias-label-primary);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.dsh-wbg-button:hover:not(:disabled),
+.dsh-wbg-file-button:hover {
+  background: var(--dsw-alias-interactive-bg-hover);
+}
+
+.dsh-wbg-button:focus-visible,
+.dsh-wbg-file-button:focus-visible,
+.dsh-wbg-range:focus-visible,
+.dsh-wbg-toggle input:focus-visible + span {
+  outline: 2px solid var(--dsw-alias-state-business-primary);
+  outline-offset: 2px;
+}
+
+.dsh-wbg-button:disabled,
+.dsh-wbg-file-button[data-disabled='true'] {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.dsh-wbg-file-button input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.dsh-wbg-meta {
+  overflow-wrap: anywhere;
+}
+
+.dsh-wbg-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 12px;
+  padding: 16px;
+  background: var(--dsw-alias-bg-layer-1);
+}
+
+.dsh-wbg-setting-row,
+.dsh-wbg-range-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.dsh-wbg-setting-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dsh-wbg-setting-copy strong {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.dsh-wbg-setting-copy span {
+  color: var(--dsw-alias-label-tertiary);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.dsh-wbg-toggle {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+}
+
+.dsh-wbg-toggle input {
+  position: absolute;
+  opacity: 0;
+}
+
+.dsh-wbg-toggle span {
+  position: relative;
+  width: 38px;
+  height: 22px;
+  border-radius: 999px;
+  background: var(--dsw-alias-border-l1);
+  cursor: pointer;
+}
+
+.dsh-wbg-toggle span::after {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: var(--dsw-shadow-lv1);
+  content: '';
+  transition: transform 140ms ease;
+}
+
+.dsh-wbg-toggle input:checked + span {
+  background: var(--dsw-alias-state-business-primary);
+}
+
+.dsh-wbg-toggle input:checked + span::after {
+  transform: translateX(16px);
+}
+
+.dsh-wbg-toggle input:disabled + span {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.dsh-wbg-range-control {
+  display: grid;
+  width: min(320px, 48%);
+  flex: none;
+  grid-template-columns: minmax(100px, 1fr) 44px;
+  align-items: center;
+  gap: 10px;
+}
+
+.dsh-wbg-range {
+  width: 100%;
+  accent-color: var(--dsw-alias-state-business-primary);
+}
+
+.dsh-wbg-range-value {
+  color: var(--dsw-alias-label-secondary);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.dsh-wbg-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.dsh-wbg-save {
+  border-color: var(--dsw-alias-state-business-primary);
+  background: var(--dsw-alias-state-business-primary);
+  color: white;
+}
+
+.dsh-wbg-save:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--dsw-alias-state-business-primary) 86%, black);
+}
+
+.dsh-wbg-reset {
+  margin-right: auto;
+  color: var(--dsw-alias-state-error-primary);
+}
+
+@media (max-width: 620px) {
+  .dsh-wbg-preview { min-height: 210px; }
+  .dsh-wbg-range-row { align-items: flex-start; flex-direction: column; gap: 8px; }
+  .dsh-wbg-range-control { width: 100%; }
+  .dsh-wbg-footer { flex-wrap: wrap; }
+}

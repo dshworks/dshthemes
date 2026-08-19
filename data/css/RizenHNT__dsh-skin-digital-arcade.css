@@ -1,0 +1,1949 @@
+/* RizenHNT/dsh-skin-digital-arcade — skin.css
+   fetched 2026-08-19 from https://raw.githubusercontent.com/RizenHNT/dsh-skin-digital-arcade/master/skin.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* Personal theme overlay: Rizen Signal Console.
+ *
+ * The shipped UI owns layout and editor rendering. This file only changes
+ * color, surface treatment, short-control typography, and non-layout effects.
+ * The composer text remains on the official rendering path.
+ */
+
+@font-face {
+  font-family: 'Fusion Pixel 12px Mono latin';
+  src: url("https://raw.githubusercontent.com/RizenHNT/dsh-skin-digital-arcade/master/skin-assets/fonts/fusion-pixel-12px-latin.otf.woff2") format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF;
+}
+
+@font-face {
+  font-family: 'Fusion Pixel 12px Mono zh_hans';
+  src: url("https://raw.githubusercontent.com/RizenHNT/dsh-skin-digital-arcade/master/skin-assets/fonts/fusion-pixel-12px-zh_hans.otf.woff2") format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+3000-303F, U+3040-30FF, U+4E00-9FFF, U+FF00-FFEF;
+}
+
+:root {
+  --dsw-font-pixel: 'Fusion Pixel 12px Mono latin', 'Fusion Pixel 12px Mono zh_hans', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+  --dsw-font-pixel-small: 'Fusion Pixel 12px Mono latin', 'Fusion Pixel 12px Mono zh_hans', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+  --rizen-cyan: #6fffe0;
+  --rizen-cyan-bright: #e1fff8;
+  --rizen-violet: #d28cff;
+  --rizen-blue: #8874e8;
+  --rizen-ink: #edf5ff;
+  --rizen-muted: #91a0bf;
+  --rizen-amber: #ffc36b;
+  --rizen-magenta: #ff62bd;
+  --rizen-lime: #b7ff73;
+  --rizen-night: #080d1d;
+  --rizen-panel: rgba(10, 16, 35, 0.96);
+  --rizen-panel-soft: rgba(14, 22, 46, 0.92);
+  --rizen-particle-atlas: url("https://raw.githubusercontent.com/RizenHNT/dsh-skin-digital-arcade/master/skin-assets/rizen-particle-atlas.webp");
+  --rizen-energy-fx-atlas: url("https://raw.githubusercontent.com/RizenHNT/dsh-skin-digital-arcade/master/skin-assets/rizen-energy-fx-atlas.webp");
+  --rizen-scene-fx-atlas: url("https://raw.githubusercontent.com/RizenHNT/dsh-skin-digital-arcade/master/skin-assets/rizen-scene-fx-atlas.webp");
+  --rizen-crosshair-cursor: url("https://raw.githubusercontent.com/RizenHNT/dsh-skin-digital-arcade/master/skin-assets/rizen-crosshair-cursor-64.webp");
+}
+
+body {
+  font-family: var(--dsw-font-family);
+  color: #27324a;
+  --dsw-alias-brand-primary-new-colorprimary-new-color: rgb(46, 122, 176);
+  --dsw-alias-button-info-fill: rgb(46, 122, 176);
+  --dsw-alias-button-info-hover: rgb(29, 99, 151);
+  --dsw-alias-state-business-primary: rgb(46, 122, 176);
+  --dsw-alias-state-business-tertiary: rgb(231, 243, 252);
+  --dsw-specific-sidebar-nav-item-active-accent: rgb(46, 122, 176);
+  --dsw-specific-bubble: rgb(248, 251, 255);
+  --dsw-specific-bubble-highlight: rgb(46, 122, 176);
+}
+
+body:not([data-ds-dark-theme]) {
+  background:
+    radial-gradient(ellipse 90% 55% at 50% 0%, rgba(91, 140, 255, 0.1), transparent 58%),
+    radial-gradient(ellipse 120% 80% at 50% 115%, rgba(167, 139, 250, 0.08), transparent 62%),
+    repeating-linear-gradient(0deg, rgba(46, 122, 176, 0.04) 0 1px, transparent 1px 32px),
+    repeating-linear-gradient(90deg, rgba(46, 122, 176, 0.04) 0 1px, transparent 1px 32px),
+    #f7faff;
+}
+
+body[data-ds-dark-theme] {
+  color: var(--rizen-ink);
+  font-family: var(--dsw-font-family);
+
+  --dsw-alias-bg-base: rgb(8, 13, 29);
+  --dsw-alias-bg-layer-1: rgb(12, 19, 40);
+  --dsw-alias-bg-layer-2: rgb(17, 26, 52);
+  --dsw-alias-bg-layer-3: rgb(24, 35, 68);
+  --dsw-alias-bg-overlay: rgb(29, 42, 78);
+  --dsw-alias-bg-module-platform: rgb(14, 22, 46);
+  --dsw-alias-bg-multi-select: rgb(24, 35, 68);
+  --dsw-alias-bg-skeleton: rgba(182, 244, 255, 0.08);
+
+  --dsw-alias-brand-primary-new-colorprimary-new-color: rgb(111, 255, 224);
+  --dsw-alias-button-info-fill: rgb(111, 255, 224);
+  --dsw-alias-button-info-hover: rgb(225, 255, 248);
+  --dsw-alias-button-primary-dimmed: rgb(42, 42, 85);
+  --dsw-alias-state-business-primary: rgb(210, 140, 255);
+  --dsw-alias-state-business-tertiary: rgb(42, 42, 85);
+  --dsw-alias-state-success-secondary: rgb(98, 190, 140);
+
+  --dsw-specific-sidebar-fill: rgb(8, 14, 31);
+  --dsw-specific-sidebar-nav-item-active: rgb(19, 31, 61);
+  --dsw-specific-sidebar-nav-item-active-accent: rgb(111, 255, 224);
+  --dsw-specific-sidebar-nav-item-hover: rgb(14, 25, 51);
+  --dsw-specific-bubble: rgb(14, 23, 47);
+  --dsw-specific-bubble-highlight: rgb(255, 98, 189);
+  --dsw-specific-input-major: rgb(9, 16, 35);
+  --dsw-specific-login-input: rgb(17, 27, 55);
+  --dsw-specific-selector: rgb(17, 27, 55);
+  --dsw-specific-tip: rgb(17, 27, 55);
+
+  --dsw-alias-border-l1: rgba(124, 231, 255, 0.13);
+  --dsw-alias-border-l2: rgba(124, 231, 255, 0.22);
+  --dsw-alias-border-l3: rgba(167, 139, 250, 0.34);
+  --dsw-alias-border-l4: rgba(182, 244, 255, 0.48);
+
+  --dsw-alias-label-primary: rgb(237, 245, 255);
+  --dsw-alias-label-secondary: rgb(170, 187, 216);
+  --dsw-alias-label-tertiary: rgb(126, 145, 178);
+  --dsw-alias-label-caption: rgb(126, 145, 178);
+  --dsw-alias-label-primary-bluish: rgb(237, 245, 255);
+
+  --dsw-alias-interactive-bg-hover: rgba(124, 231, 255, 0.08);
+  --dsw-alias-interactive-bg-active: rgba(124, 231, 255, 0.14);
+  --dsw-alias-interactive-bg-hover-accent: rgba(167, 139, 250, 0.2);
+  --dsw-alias-interactive-bg-hover-solid: rgb(24, 35, 68);
+
+  --dsw-alias-markdown-code-block: rgb(8, 14, 30);
+  --dsw-alias-markdown-code-block-banner: rgb(12, 20, 42);
+  --dsw-alias-markdown-inline-code: rgb(24, 35, 68);
+  --dsw-alias-markdown-tag: rgb(24, 35, 68);
+  --dsw-alias-markdown-placeholder: rgb(17, 27, 55);
+
+  --dsw-alias-toast-bg: rgb(17, 27, 55);
+  --dsw-alias-tooltip-bg: rgb(17, 27, 55);
+  --dsw-alias-scrollbar-bg-l1: rgb(14, 22, 46);
+  --dsw-alias-scrollbar-bg-l2: rgb(24, 35, 68);
+  --dsw-alias-scrollbar-hover-l1: rgb(91, 140, 255);
+  --dsw-alias-scrollbar-hover-l2: rgb(167, 139, 250);
+
+  background:
+    radial-gradient(ellipse 120% 100% at 50% 42%, transparent 54%, rgba(0, 0, 0, 0.3) 100%),
+    radial-gradient(ellipse 80% 58% at 12% 0%, rgba(255, 98, 189, 0.12), transparent 62%),
+    radial-gradient(ellipse 76% 58% at 90% 100%, rgba(255, 195, 107, 0.11), transparent 64%),
+    repeating-linear-gradient(0deg, rgba(124, 231, 255, 0.035) 0 1px, transparent 1px 32px),
+    repeating-linear-gradient(90deg, rgba(124, 231, 255, 0.035) 0 1px, transparent 1px 32px),
+    radial-gradient(circle, rgba(124, 231, 255, 0.34) 0 1px, transparent 1.6px) 0 0 / 128px 128px,
+    radial-gradient(circle, rgba(167, 139, 250, 0.26) 0 1px, transparent 1.6px) 40px 22px / 176px 176px,
+    var(--rizen-night);
+  animation: dsh-background-drift 42s linear infinite;
+}
+
+@keyframes dsh-background-drift {
+  0%,
+  100% {
+    background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 40px 22px;
+  }
+
+  50% {
+    background-position: 0 0, 4px 8px, -6px -4px, 18px 18px, -18px 12px, 24px 12px, 22px 40px;
+  }
+}
+
+/* Keep the existing hero illustration, but bring its glow into the console
+   palette instead of the old gold accent. */
+body[data-ds-dark-theme] svg ellipse[fill='#6187D8'] {
+  fill: var(--rizen-violet);
+  animation: dsh-hero-glow 4.8s ease-in-out infinite;
+}
+
+@keyframes dsh-hero-glow {
+  0%,
+  100% {
+    opacity: 0.58;
+  }
+
+  50% {
+    opacity: 0.95;
+  }
+}
+
+/* Fusion Pixel is reserved for compact controls. Paragraphs and the composer
+   stay on the readable system stack. */
+body[data-ds-dark-theme] button,
+body[data-ds-dark-theme] [role='button'],
+body[data-ds-dark-theme] select {
+  font-family: var(--dsw-font-pixel);
+  letter-spacing: 0.1px;
+}
+
+body[data-ds-dark-theme] [class*='headlineText'],
+body[data-ds-dark-theme] [class*='previewBadge'],
+body[data-ds-dark-theme] [class*='newSessionLabel'],
+body[data-ds-dark-theme] [class*='crumb'],
+body[data-ds-dark-theme] [role='tab'],
+body[data-ds-dark-theme] [data-time-hover-root] :is([class*='timeStart'], [class*='timeEnd']) {
+  font-family: var(--dsw-font-pixel);
+}
+
+/* Sidebar session tree: workspace names, session titles, and status labels
+   ride the treeitem rows — pixel face for the whole tree. */
+body[data-ds-dark-theme] [class*='sidebarCol'] [role='treeitem'],
+body[data-ds-dark-theme] [class*='sidebarCol'] [role='treeitem'] :is(span, div) {
+  font-family: var(--dsw-font-pixel);
+}
+
+body[data-ds-dark-theme] [class*='sidebarCol'] [role='treeitem'] [class*='time'],
+body[data-ds-dark-theme] [class*='sidebarCol'] [role='treeitem'] [class*='status'] {
+  font-family: var(--dsw-font-pixel-small);
+  letter-spacing: 0.3px;
+}
+
+body[data-ds-dark-theme] [class*='sidebarCol'] [class*='sectionLabel'] {
+  font-family: var(--dsw-font-pixel);
+}
+
+/* Settings rows: option titles and their 12px descriptions share the pixel
+   face; both class suffixes are stable across the panel's CSS modules. */
+body[data-ds-dark-theme] [role='dialog'] [class$='_title'],
+body[data-ds-dark-theme] [role='dialog'] [class$='_desc'] {
+  font-family: var(--dsw-font-pixel);
+}
+
+/* The official editor renderer owns font, color, smoothing, and shadows.
+   Only the caret color is themed, so composing text cannot ghost or emboss. */
+body[data-ds-dark-theme] [data-phase] textarea,
+body[data-ds-dark-theme] [data-phase] [contenteditable='true'] {
+  caret-color: var(--rizen-cyan);
+}
+
+/* Opaque columns keep the starfield atmospheric without sacrificing reading
+   contrast. No backdrop-filter: fixed dialogs must retain the full viewport. */
+body[data-ds-dark-theme] [class*='_frame'] {
+  background: transparent;
+}
+
+body[data-ds-dark-theme] [data-phase='hero'],
+body[data-ds-dark-theme] [data-phase='active'],
+body[data-ds-dark-theme] [data-phase='settling'] {
+  background: rgba(8, 13, 29, 0.72);
+}
+
+/* The scene stays visible behind the transcript. A quiet veil and two soft
+   color pools preserve contrast without turning the conversation into a hard
+   rectangular mask. */
+body[data-ds-dark-theme] [data-phase='hero'],
+body[data-ds-dark-theme] [data-phase='active'],
+body[data-ds-dark-theme] [data-phase='settling'] {
+  background-image:
+    linear-gradient(180deg, rgba(8, 13, 29, 0.12) 0%, rgba(8, 13, 29, 0.2) 46%, rgba(7, 14, 31, 0.56) 100%),
+    url("https://raw.githubusercontent.com/RizenHNT/dsh-skin-digital-arcade/master/skin-assets/rizen-arcade-background.webp"),
+    radial-gradient(circle at 18% 16%, rgba(124, 231, 255, 0.07), transparent 22%),
+    radial-gradient(circle at 88% 78%, rgba(167, 139, 250, 0.07), transparent 26%);
+  background-position: 0 0, center center, 0 0, 0 0;
+  background-size: 100% 100%, cover, 100% 100%, 100% 100%;
+  background-repeat: no-repeat;
+  animation: dsh-phase-signal 36s ease-in-out infinite;
+}
+
+body[data-ds-dark-theme] [data-phase='hero'],
+body[data-ds-dark-theme] [data-phase='active'],
+body[data-ds-dark-theme] [data-phase='settling'] {
+  position: relative;
+  --dsh-detail-rail-width: 236px;
+  --dsh-detail-rail-min-width: 196px;
+  --dsh-detail-rail-max-width: min(520px, calc(100vw - 24px));
+  --dsh-detail-rail-gap: 18px;
+}
+
+/* Two low-opacity HUD sprites live in unused breathing room on the right of
+   the conversation. They add motion and identity without entering the text
+   column or affecting the page's layout. */
+body[data-ds-dark-theme] [data-phase='hero']::before,
+body[data-ds-dark-theme] [data-phase='active']::before,
+body[data-ds-dark-theme] [data-phase='settling']::before {
+  content: '';
+  position: absolute;
+  top: 104px;
+  right: 26px;
+  width: 72px;
+  height: 72px;
+  pointer-events: none;
+  background: url("https://raw.githubusercontent.com/RizenHNT/dsh-skin-digital-arcade/master/skin-assets/rizen-data-core-sprite.webp") no-repeat 0 0 / 400% 200%;
+  image-rendering: pixelated;
+  mix-blend-mode: screen;
+  opacity: 0.18;
+  z-index: 0;
+  animation:
+    dsh-core-frames 2.6s infinite,
+    dsh-phase-orbit 17s ease-in-out infinite;
+}
+
+body[data-ds-dark-theme] [data-phase='hero']::after,
+body[data-ds-dark-theme] [data-phase='active']::after,
+body[data-ds-dark-theme] [data-phase='settling']::after {
+  content: '';
+  position: absolute;
+  top: 210px;
+  right: 118px;
+  width: 34px;
+  height: 34px;
+  pointer-events: none;
+  background: url("https://raw.githubusercontent.com/RizenHNT/dsh-skin-digital-arcade/master/skin-assets/rizen-data-shard-sprite.webp") no-repeat 0 0 / 400% 200%;
+  image-rendering: pixelated;
+  mix-blend-mode: screen;
+  opacity: 0.24;
+  z-index: 0;
+  animation:
+    dsh-shard-frames 1.9s infinite reverse,
+    dsh-shard-float 11s ease-in-out infinite;
+}
+
+@keyframes dsh-phase-orbit {
+  0% { transform: translate3d(0, 0, 0) rotate(-3deg); }
+  22% { transform: translate3d(-86px, 22px, 0) rotate(4deg); }
+  48% { transform: translate3d(-154px, 108px, 0) rotate(-2deg); }
+  74% { transform: translate3d(-92px, 214px, 0) rotate(5deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(-3deg); }
+}
+
+@keyframes dsh-shard-float {
+  0% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  28% { transform: translate3d(74px, 52px, 0) rotate(8deg); }
+  58% { transform: translate3d(-42px, 142px, 0) rotate(-7deg); }
+  82% { transform: translate3d(-104px, 68px, 0) rotate(4deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+}
+
+@keyframes dsh-phase-signal {
+  0% {
+    background-position: 0 0, center center, 0 0, 0 0;
+  }
+
+  50% {
+    background-position: 0 0, center center, 8px -6px, -8px 8px;
+  }
+
+  100% {
+    background-position: 0 0, center center, 0 0, 0 0;
+  }
+}
+
+body[data-ds-dark-theme] [class*='sidebarCol'] {
+  background: rgba(8, 14, 31, 0.96);
+  background-image:
+    linear-gradient(180deg, rgba(255, 98, 189, 0.12), rgba(8, 14, 31, 0.9)),
+    url("https://raw.githubusercontent.com/RizenHNT/dsh-skin-digital-arcade/master/skin-assets/rizen-arcade-background.webp"),
+    linear-gradient(180deg, rgba(124, 231, 255, 0.1), transparent 24%),
+    repeating-linear-gradient(0deg, rgba(124, 231, 255, 0.026) 0 1px, transparent 1px 28px);
+  background-position: 0 0, center center, 0 0, 0 0;
+  background-size: 100% 100%, cover, 100% 100%, 100% 28px;
+  background-repeat: no-repeat, no-repeat, no-repeat, repeat;
+  border-right: 1px solid rgba(124, 231, 255, 0.16);
+  animation: dsh-sidebar-scan 24s linear infinite;
+}
+
+@keyframes dsh-sidebar-scan {
+  0% {
+    background-position: 0 0, center center, 0 0, 0 0;
+  }
+
+  50% {
+    background-position: 0 0, center center, 0 18px, 0 14px;
+  }
+
+  100% {
+    background-position: 0 0, center center, 0 0, 0 0;
+  }
+}
+
+body[data-ds-dark-theme] [class*='detailsCol'] {
+  background: rgba(12, 19, 40, 0.96);
+  background-image: linear-gradient(180deg, rgba(167, 139, 250, 0.07), transparent 26%);
+  border-left: 1px solid rgba(167, 139, 250, 0.16);
+}
+
+/* Short-form navigation and status elements carry the personal signature:
+   a cool neon edge with a tiny amber status glint. */
+body[data-ds-dark-theme] [class*='sidebarCol'] [aria-selected='true'] {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 42px;
+  padding-right: 54px;
+  box-shadow:
+    inset 2px 0 0 var(--rizen-cyan),
+    inset 0 0 24px rgba(91, 140, 255, 0.08),
+    0 0 18px rgba(91, 140, 255, 0.08);
+}
+
+body[data-ds-dark-theme] [class*='sidebarCol'] [aria-selected='true']::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 48px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: var(--rizen-amber);
+  box-shadow: 0 0 8px rgba(240, 183, 102, 0.72);
+  transform: translateY(-50%);
+  animation: dsh-status-beacon 2.6s ease-in-out infinite;
+}
+
+/* The selected workspace carries the personal mascot. It is an eight-frame
+   4x2 sprite sheet, displayed with crisp pixel edges and no layout impact. */
+body[data-ds-dark-theme] [class*='sidebarCol'] [aria-selected='true']::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 7px;
+  width: 38px;
+  height: 38px;
+  pointer-events: none;
+  background-image: url("https://raw.githubusercontent.com/RizenHNT/dsh-skin-digital-arcade/master/skin-assets/rizen-signal-mascot-sprite.webp");
+  background-repeat: no-repeat;
+  background-size: 400% 200%;
+  background-position: 0 0;
+  image-rendering: pixelated;
+  transform: translateY(-50%);
+  animation:
+    dsh-mascot-frames 1.8s infinite,
+    dsh-mascot-breathe 1.8s ease-in-out infinite;
+}
+
+@keyframes dsh-mascot-frames {
+  0% {
+    background-position: 0 0;
+    animation-timing-function: steps(1, end);
+  }
+
+  12.5% {
+    background-position: 33.333% 0;
+    animation-timing-function: steps(1, end);
+  }
+
+  25% {
+    background-position: 66.666% 0;
+    animation-timing-function: steps(1, end);
+  }
+
+  37.5% {
+    background-position: 100% 0;
+    animation-timing-function: steps(1, end);
+  }
+
+  50% {
+    background-position: 0 100%;
+    animation-timing-function: steps(1, end);
+  }
+
+  62.5% {
+    background-position: 33.333% 100%;
+    animation-timing-function: steps(1, end);
+  }
+
+  75% {
+    background-position: 66.666% 100%;
+    animation-timing-function: steps(1, end);
+  }
+
+  87.5% {
+    background-position: 100% 100%;
+    animation-timing-function: steps(1, end);
+  }
+
+  100% {
+    background-position: 0 0;
+  }
+}
+
+@keyframes dsh-mascot-breathe {
+  0%,
+  100% {
+    transform: translateY(-50%) translateY(0);
+    filter: drop-shadow(0 0 4px rgba(124, 231, 255, 0.38));
+  }
+
+  50% {
+    transform: translateY(-50%) translateY(-1px);
+    filter: drop-shadow(0 0 8px rgba(167, 139, 250, 0.58));
+  }
+}
+
+@keyframes dsh-status-beacon {
+  0%,
+  100% {
+    opacity: 0.45;
+    box-shadow: 0 0 4px rgba(240, 183, 102, 0.36);
+  }
+
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 10px rgba(240, 183, 102, 0.9);
+  }
+}
+
+body[data-ds-dark-theme] [class*='sidebarCol'] button:hover svg {
+  color: var(--rizen-cyan);
+  filter: drop-shadow(0 0 5px rgba(124, 231, 255, 0.72));
+}
+
+body[data-ds-dark-theme] [class*='newSession'][aria-label='新建会话'] {
+  border: 1px solid rgba(124, 231, 255, 0.28);
+  background:
+    linear-gradient(135deg, rgba(124, 231, 255, 0.14), rgba(167, 139, 250, 0.16)),
+    rgba(17, 27, 55, 0.94);
+  box-shadow:
+    inset 0 0 16px rgba(124, 231, 255, 0.08),
+    0 0 18px rgba(91, 140, 255, 0.1);
+  transition:
+    background var(--ds-transition-duration) var(--ds-ease-in-out),
+    border-color var(--ds-transition-duration) var(--ds-ease-in-out),
+    box-shadow var(--ds-transition-duration) var(--ds-ease-in-out),
+    transform var(--ds-transition-duration) var(--ds-ease-in-out);
+}
+
+body[data-ds-dark-theme] [class*='newSession'][aria-label='新建会话']:hover {
+  border-color: rgba(182, 244, 255, 0.68);
+  background:
+    linear-gradient(135deg, rgba(124, 231, 255, 0.24), rgba(167, 139, 250, 0.26)),
+    rgba(17, 27, 55, 0.98);
+  box-shadow:
+    inset 0 0 18px rgba(124, 231, 255, 0.14),
+    0 0 22px rgba(124, 231, 255, 0.24),
+    0 0 34px rgba(167, 139, 250, 0.16);
+  transform: translateY(-1px);
+}
+
+body[data-ds-dark-theme] [class*='sidebarCol'] :is([aria-label='搜索会话'], [aria-label='视图选项'], [aria-label='添加工作区']) {
+  border: 1px solid transparent;
+  border-radius: 8px;
+}
+
+body[data-ds-dark-theme] [class*='sidebarCol'] :is([aria-label='搜索会话'], [aria-label='视图选项'], [aria-label='添加工作区']):hover {
+  border-color: rgba(124, 231, 255, 0.24);
+  background-color: rgba(124, 231, 255, 0.08);
+}
+
+body[data-ds-dark-theme] [data-phase] button[aria-label^='上下文已用'] {
+  border: 1px solid rgba(124, 231, 255, 0.2);
+  border-radius: 50%;
+  background: rgba(17, 27, 55, 0.62);
+  box-shadow: 0 0 10px rgba(124, 231, 255, 0.12);
+  animation: dsh-context-ring 4.4s ease-in-out infinite;
+}
+
+@keyframes dsh-context-ring {
+  0%,
+  100% { box-shadow: 0 0 8px rgba(124, 231, 255, 0.1); }
+  50% { box-shadow: 0 0 16px rgba(167, 139, 250, 0.28); }
+}
+
+/* One icon language across the console: quiet cyan at rest, violet/cyan
+   energy on hover, and a small lift that never changes layout dimensions. */
+body[data-ds-dark-theme] :is(button, [role='button']) svg {
+  color: rgba(164, 210, 238, 0.88);
+  filter: drop-shadow(0 0 2px rgba(124, 231, 255, 0.28));
+  transition:
+    color var(--ds-transition-duration) var(--ds-ease-in-out),
+    filter var(--ds-transition-duration) var(--ds-ease-in-out),
+    transform var(--ds-transition-duration) var(--ds-ease-in-out);
+}
+
+body[data-ds-dark-theme] :is(button, [role='button']):not(:disabled):hover svg {
+  color: var(--rizen-cyan);
+  filter:
+    drop-shadow(0 0 4px rgba(124, 231, 255, 0.82))
+    drop-shadow(0 0 10px rgba(167, 139, 250, 0.38));
+  transform: translateY(-1px) scale(1.08);
+}
+
+body[data-ds-dark-theme] :is(button, [role='button']):focus-visible {
+  outline: 1px solid var(--rizen-cyan);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgba(124, 231, 255, 0.14), 0 0 18px rgba(167, 139, 250, 0.22);
+}
+
+/* Generated sprites become part of the interface chrome, not loose floating
+   stickers: the core belongs to the session-log control and the shard marks
+   the active task/tab state. */
+body[data-ds-dark-theme] [class*='sessionLogButton'],
+body[data-ds-dark-theme] button[aria-label='2 个后台任务'] {
+  position: relative;
+  border-color: rgba(124, 231, 255, 0.28);
+  background-image: linear-gradient(135deg, rgba(124, 231, 255, 0.06), rgba(167, 139, 250, 0.1));
+}
+
+body[data-ds-dark-theme] [class*='sessionLogButton']::after {
+  content: '';
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 22px;
+  height: 22px;
+  pointer-events: none;
+  background: url("https://raw.githubusercontent.com/RizenHNT/dsh-skin-digital-arcade/master/skin-assets/rizen-data-core-sprite.webp") no-repeat 0 0 / 400% 200%;
+  image-rendering: pixelated;
+  mix-blend-mode: screen;
+  animation: dsh-core-frames 2.1s infinite;
+}
+
+body[data-ds-dark-theme] button[aria-label='2 个后台任务']::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -7px;
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+  background: url("https://raw.githubusercontent.com/RizenHNT/dsh-skin-digital-arcade/master/skin-assets/rizen-data-shard-sprite.webp") no-repeat 0 0 / 400% 200%;
+  image-rendering: pixelated;
+  mix-blend-mode: screen;
+  animation: dsh-shard-frames 1.7s infinite;
+}
+
+body[data-ds-dark-theme] [data-phase] [class*='tabActive'] {
+  position: relative;
+}
+
+body[data-ds-dark-theme] [data-phase] [class*='tabActive']::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  right: -8px;
+  width: 12px;
+  height: 12px;
+  pointer-events: none;
+  background: url("https://raw.githubusercontent.com/RizenHNT/dsh-skin-digital-arcade/master/skin-assets/rizen-data-shard-sprite.webp") no-repeat 0 0 / 400% 200%;
+  image-rendering: pixelated;
+  mix-blend-mode: screen;
+  animation: dsh-shard-frames 1.7s infinite reverse;
+}
+
+@keyframes dsh-core-frames {
+  0% { background-position: 0 0; animation-timing-function: steps(1, end); }
+  12.5% { background-position: 33.333% 0; animation-timing-function: steps(1, end); }
+  25% { background-position: 66.666% 0; animation-timing-function: steps(1, end); }
+  37.5% { background-position: 100% 0; animation-timing-function: steps(1, end); }
+  50% { background-position: 0 100%; animation-timing-function: steps(1, end); }
+  62.5% { background-position: 33.333% 100%; animation-timing-function: steps(1, end); }
+  75% { background-position: 66.666% 100%; animation-timing-function: steps(1, end); }
+  87.5% { background-position: 100% 100%; animation-timing-function: steps(1, end); }
+  100% { background-position: 0 0; }
+}
+
+@keyframes dsh-shard-frames {
+  0% { background-position: 0 0; animation-timing-function: steps(1, end); }
+  12.5% { background-position: 33.333% 0; animation-timing-function: steps(1, end); }
+  25% { background-position: 66.666% 0; animation-timing-function: steps(1, end); }
+  37.5% { background-position: 100% 0; animation-timing-function: steps(1, end); }
+  50% { background-position: 0 100%; animation-timing-function: steps(1, end); }
+  62.5% { background-position: 33.333% 100%; animation-timing-function: steps(1, end); }
+  75% { background-position: 66.666% 100%; animation-timing-function: steps(1, end); }
+  87.5% { background-position: 100% 100%; animation-timing-function: steps(1, end); }
+  100% { background-position: 0 0; }
+}
+
+/* Hero title and compact tabs use a quiet signal glow instead of a large
+   decorative treatment that competes with the conversation. */
+body[data-ds-dark-theme] [data-phase='hero'] [class*='headlineText'] {
+  color: var(--rizen-ink);
+  text-shadow:
+    0 0 10px rgba(124, 231, 255, 0.28),
+    0 0 24px rgba(167, 139, 250, 0.2);
+  animation: dsh-headline-pulse 5.2s ease-in-out infinite;
+}
+
+@keyframes dsh-headline-pulse {
+  0%,
+  100% {
+    text-shadow:
+      0 0 8px rgba(124, 231, 255, 0.2),
+      0 0 18px rgba(167, 139, 250, 0.12);
+  }
+
+  50% {
+    text-shadow:
+      0 0 12px rgba(124, 231, 255, 0.42),
+      0 0 28px rgba(167, 139, 250, 0.28);
+  }
+}
+
+body[data-ds-dark-theme] [role='tab'][aria-selected='true'] {
+  color: var(--rizen-cyan);
+  border-bottom-color: var(--rizen-cyan);
+  box-shadow: 0 4px 12px rgba(124, 231, 255, 0.16);
+}
+
+/* Conversation cards: cool borders, violet depth, restrained hover lift. */
+body[data-ds-dark-theme] [data-chat-flow] [class*='bubble'] {
+  border-color: rgba(124, 231, 255, 0.2);
+  box-shadow:
+    0 0 0 1px rgba(124, 231, 255, 0.08),
+    0 0 18px rgba(167, 139, 250, 0.1),
+    0 2px 14px rgba(0, 0, 0, 0.3);
+  transition:
+    border-color var(--ds-transition-duration) var(--ds-ease-in-out),
+    box-shadow var(--ds-transition-duration) var(--ds-ease-in-out);
+}
+
+body[data-ds-dark-theme] [data-chat-flow] [class*='bubble']:hover {
+  border-color: rgba(124, 231, 255, 0.42);
+  box-shadow:
+    0 0 0 1px rgba(124, 231, 255, 0.18),
+    0 0 26px rgba(167, 139, 250, 0.2),
+    0 2px 14px rgba(0, 0, 0, 0.3);
+}
+
+body[data-ds-dark-theme] .md-code-block {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(124, 231, 255, 0.045) 0 1px,
+    transparent 1px 4px
+  );
+  border-left-color: var(--rizen-violet);
+}
+
+body[data-ds-dark-theme] :is(code, [class*='inlineCode']) {
+  color: var(--rizen-cyan-bright);
+  background-color: rgba(91, 140, 255, 0.13);
+}
+
+/* Composer: a static grid, an opaque readable surface, and one thin moving
+   scanline at the bottom edge. No falling blocks and no animation on text. */
+body[data-ds-dark-theme] [data-phase] [class*='card']:has(textarea) {
+  background-color: rgba(9, 16, 35, 0.98);
+  background-image:
+    repeating-linear-gradient(0deg, rgba(124, 231, 255, 0.035) 0 1px, transparent 1px 16px),
+    repeating-linear-gradient(90deg, rgba(124, 231, 255, 0.035) 0 1px, transparent 1px 16px);
+  background-size: 16px 16px;
+  box-shadow:
+    0 0 0 1px rgba(124, 231, 255, 0.36),
+    0 0 22px rgba(91, 140, 255, 0.18),
+    0 0 34px rgba(167, 139, 250, 0.1),
+    0 2px 16px rgba(0, 0, 0, 0.42);
+  position: relative;
+  overflow: hidden;
+  animation: dsh-composer-breathe 5.8s ease-in-out infinite;
+}
+
+body[data-ds-dark-theme] [data-phase] [class*='card']:has(textarea)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(124, 231, 255, 0.7) 32%,
+    rgba(167, 139, 250, 0.78) 68%,
+    transparent 92%
+  );
+  background-size: 200% 100%;
+  animation: dsh-input-scan 3.6s linear infinite;
+}
+
+@keyframes dsh-input-scan {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes dsh-composer-breathe {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px rgba(124, 231, 255, 0.3),
+      0 0 18px rgba(91, 140, 255, 0.14),
+      0 0 30px rgba(167, 139, 250, 0.08),
+      0 2px 16px rgba(0, 0, 0, 0.42);
+  }
+
+  50% {
+    box-shadow:
+      0 0 0 1px rgba(124, 231, 255, 0.52),
+      0 0 26px rgba(91, 140, 255, 0.24),
+      0 0 42px rgba(167, 139, 250, 0.16),
+      0 2px 16px rgba(0, 0, 0, 0.42);
+  }
+}
+
+/* The semantic aria-label is stable and keeps this rule away from unrelated
+   send-like class names elsewhere in the application. */
+body[data-ds-dark-theme] [data-phase] button[aria-label='发送消息'] {
+  position: relative;
+  color: var(--rizen-cyan);
+  border-color: rgba(124, 231, 255, 0.58);
+  background: linear-gradient(135deg, rgba(124, 231, 255, 0.15), rgba(167, 139, 250, 0.24));
+  box-shadow:
+    0 0 0 1px rgba(8, 13, 29, 0.9),
+    0 0 14px rgba(124, 231, 255, 0.3),
+    0 0 28px rgba(167, 139, 250, 0.22),
+    inset 0 0 10px rgba(124, 231, 255, 0.14);
+  transition:
+    color var(--ds-transition-duration) var(--ds-ease-in-out),
+    border-color var(--ds-transition-duration) var(--ds-ease-in-out),
+    box-shadow var(--ds-transition-duration) var(--ds-ease-in-out),
+    transform var(--ds-transition-duration) var(--ds-ease-in-out);
+}
+
+/* The mascot badge is anchored to the send control, so the composer keeps a
+   deliberate right-side rhythm instead of a floating decoration. */
+body[data-ds-dark-theme] [data-phase] button[aria-label='发送消息']::before {
+  content: '';
+  position: absolute;
+  top: 7px;
+  right: -8px;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  background-image: url("https://raw.githubusercontent.com/RizenHNT/dsh-skin-digital-arcade/master/skin-assets/rizen-signal-mascot-sprite.webp");
+  background-repeat: no-repeat;
+  background-size: 400% 200%;
+  background-position: 0 0;
+  image-rendering: pixelated;
+  opacity: 0.9;
+  animation:
+    dsh-mascot-frames 1.8s infinite,
+    dsh-mascot-breathe 1.8s ease-in-out infinite;
+}
+
+body[data-ds-dark-theme] [data-phase] button[aria-label='发送消息'] svg {
+  filter: drop-shadow(0 0 4px rgba(124, 231, 255, 0.88));
+  transition: transform var(--ds-transition-duration) var(--ds-ease-in-out);
+}
+
+body[data-ds-dark-theme] [data-phase] button[aria-label='发送消息']:not(:disabled):hover {
+  color: var(--rizen-cyan-bright);
+  border-color: rgba(182, 244, 255, 0.86);
+  box-shadow:
+    0 0 0 1px rgba(8, 13, 29, 0.9),
+    0 0 18px rgba(124, 231, 255, 0.52),
+    0 0 34px rgba(167, 139, 250, 0.34),
+    inset 0 0 12px rgba(124, 231, 255, 0.22);
+  transform: translateY(-1px);
+}
+
+body[data-ds-dark-theme] [data-phase] button[aria-label='发送消息']:not(:disabled):hover svg {
+  transform: translateY(-1px);
+  filter:
+    drop-shadow(0 0 6px rgba(124, 231, 255, 1))
+    drop-shadow(0 0 12px rgba(167, 139, 250, 0.76));
+}
+
+body[data-ds-dark-theme] [data-phase] [class*='card']:has(button[aria-label='发送消息']:active) {
+  animation: dsh-send-burst 0.6s ease-out;
+}
+
+@keyframes dsh-send-burst {
+  0% {
+    box-shadow:
+      0 0 0 2px rgba(124, 231, 255, 0.84),
+      0 0 28px rgba(167, 139, 250, 0.52);
+  }
+
+  45% {
+    box-shadow:
+      0 0 0 6px rgba(124, 231, 255, 0.34),
+      0 0 44px rgba(167, 139, 250, 0.3);
+  }
+
+  100% {
+    box-shadow:
+      0 0 0 12px rgba(124, 231, 255, 0),
+      0 0 60px rgba(167, 139, 250, 0);
+  }
+}
+
+/* Menus and settings surfaces remain readable and fully opaque. */
+body[data-ds-dark-theme] :is([role='dialog'], [role='menu'], [role='listbox']) {
+  background: rgba(10, 16, 35, 0.99);
+  border-color: rgba(124, 231, 255, 0.22);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    0 0 28px rgba(91, 140, 255, 0.12);
+}
+
+body[data-ds-dark-theme] :is([role='dialog'], [role='menu'], [role='listbox']) :is(button, [role='button']):hover {
+  background-color: rgba(124, 231, 255, 0.09);
+}
+
+/* Rizen Arcade HUD layer: generated pixel assets carry the game identity;
+   CSS only supplies responsive placement, readable surfaces, and state color. */
+body[data-ds-dark-theme] {
+  cursor: var(--rizen-crosshair-cursor) 32 32, crosshair;
+}
+
+body[data-ds-dark-theme] :is(textarea, input, [contenteditable='true']) {
+  cursor: text;
+}
+
+body[data-ds-dark-theme] :is(button, [role='button'], a, select) {
+  cursor: var(--rizen-crosshair-cursor) 32 32, pointer;
+}
+
+body[data-ds-dark-theme] [class*='sidebarCol'] {
+  position: relative;
+  isolation: isolate;
+}
+
+/* SettingsRoot mounts its fixed dialog inside the sidebar slot. While that
+   dialog is open, let its viewport layer escape the column clip and place the
+   sidebar stack above the conversation; the mask then covers the whole shell
+   and the panel remains clickable. The lift stays below body-level layers
+   (Modal 1000, Toast/Menu 1100) so dialogs opened from inside settings — e.g.
+   the provider delete confirm — still render above the settings panel. */
+body[data-ds-dark-theme] [class*='sidebarCol']:has([role='dialog']) {
+  z-index: 999;
+  overflow: visible;
+}
+
+body[data-ds-dark-theme] [class*='sidebarCol']::before {
+  content: '';
+  position: absolute;
+  top: 76px;
+  right: -36px;
+  width: 126px;
+  height: 126px;
+  pointer-events: none;
+  background: var(--rizen-scene-fx-atlas) no-repeat 0 0 / 400% 200%;
+  image-rendering: pixelated;
+  mix-blend-mode: screen;
+  opacity: 0.16;
+  z-index: 0;
+  animation: dsh-sidebar-radar 12s ease-in-out infinite;
+}
+
+body[data-ds-dark-theme] [class*='sidebarCol']::after {
+  content: '';
+  position: absolute;
+  right: 20px;
+  bottom: 86px;
+  width: 54px;
+  height: 54px;
+  pointer-events: none;
+  background: var(--rizen-particle-atlas) no-repeat 100% 100% / 400% 400%;
+  image-rendering: pixelated;
+  mix-blend-mode: screen;
+  opacity: 0.22;
+  z-index: 0;
+  animation: dsh-sidebar-particle 4.8s ease-in-out infinite;
+}
+
+@keyframes dsh-sidebar-radar {
+  0%,
+  100% { transform: translate3d(0, 0, 0) rotate(-8deg); opacity: 0.1; }
+  50% { transform: translate3d(-18px, 12px, 0) rotate(8deg); opacity: 0.22; }
+}
+
+@keyframes dsh-sidebar-particle {
+  0%,
+  100% { transform: translate3d(0, 0, 0) scale(0.84); opacity: 0.08; }
+  50% { transform: translate3d(-14px, -20px, 0) scale(1.08); opacity: 0.28; }
+}
+
+body[data-ds-dark-theme] [data-phase] [data-chat-flow] {
+  position: relative;
+  isolation: isolate;
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 18px 30px clamp(144px, 20vh, 176px) 32px;
+  background:
+    radial-gradient(ellipse at 50% 36%, rgba(10, 17, 38, 0.66), rgba(10, 17, 38, 0.42) 58%, rgba(10, 17, 38, 0.12) 88%, transparent 100%),
+    linear-gradient(180deg, rgba(8, 14, 31, 0.46), rgba(8, 15, 33, 0.3) 58%, rgba(8, 15, 33, 0.18)),
+    radial-gradient(ellipse at 8% 12%, rgba(210, 140, 255, 0.08), transparent 34%),
+    radial-gradient(ellipse at 76% 82%, rgba(111, 255, 224, 0.06), transparent 38%);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+  border: 1px solid rgba(124, 231, 255, 0.12);
+  border-radius: 16px;
+  box-shadow:
+    inset 0 0 30px rgba(210, 140, 255, 0.04),
+    0 12px 34px rgba(0, 0, 0, 0.12);
+  font-family: var(--dsw-font-pixel);
+  transition: transform 220ms ease;
+}
+
+body[data-ds-dark-theme] [data-phase] [data-chat-flow-kind] {
+  box-sizing: border-box;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Give long turns and tool rows a readable cadence. The margins stay inside
+   the transcript column and do not change the composer or sidebar geometry. */
+body[data-ds-dark-theme] [data-phase] [data-chat-flow-kind='assistant-step'] {
+  margin-block: 8px;
+}
+
+body[data-ds-dark-theme] [data-phase] [data-chat-flow-kind='tool-call'] {
+  margin-block: 6px;
+}
+
+/* The composer stack is sticky with the input seat. Keep the veil attached to
+   that stack instead of the viewport, so it follows the conversation scroll
+   and never becomes a full-page mask. */
+body[data-ds-dark-theme] [data-phase] [class*='composerStack'] {
+  position: relative;
+  z-index: 2;
+  isolation: isolate;
+}
+
+body[data-ds-dark-theme] [data-phase] [class*='composerStack']::before {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: calc(100% - 1px);
+  left: 0;
+  height: clamp(68px, 11vh, 92px);
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 0%, rgba(8, 13, 29, 0.34) 46%, rgba(8, 13, 29, 0.92) 100%);
+  z-index: 0;
+}
+
+body[data-ds-dark-theme] [data-phase] [class*='composerStack'] [class*='card'] {
+  position: relative;
+  z-index: 1;
+}
+
+/* An open disclosure uses the unused left rail. The main transcript shifts
+   as one surface so the detail card never sits on top of readable prose. */
+body[data-ds-dark-theme] [data-phase] [data-chat-flow]:has([data-disclosure-row][aria-expanded='true']),
+body[data-ds-dark-theme] [data-phase]:has([class*='NjBokG_panel']) [data-chat-flow] {
+  transform: translateX(132px);
+}
+
+/* Assistant replies stay visually connected, but the text gets a quiet
+   local scrim so the city scene never competes with a long paragraph. */
+body[data-ds-dark-theme] [data-phase] [data-chat-flow-kind='assistant'],
+body[data-ds-dark-theme] [data-phase] [data-chat-flow-kind='assistant-step'] {
+  background: linear-gradient(90deg, rgba(12, 19, 41, 0.42), rgba(24, 20, 48, 0.2) 72%, transparent);
+}
+
+/* Markdown owns its own font shorthand, so the conversation root alone is
+   not enough to make the prose consistently pixel-styled. Keep math and code
+   readable while giving headings, paragraphs, lists, and quotes one family. */
+body[data-ds-dark-theme] [data-phase] [data-chat-flow] [class*='markdown'],
+body[data-ds-dark-theme] [data-phase] [data-chat-flow] [class*='markdown'] :is(h1, h2, h3, h4, h5, h6, p, ul, ol, li, blockquote, a, strong, em) {
+  font-family: var(--dsw-font-pixel) !important;
+}
+
+body[data-ds-dark-theme] [data-phase] [data-chat-flow] [class*='markdown'] :is(pre, code, .md-code-block, [class*='code']) {
+  font-family: var(--dsw-font-pixel-small) !important;
+}
+
+/* Tables ride the same pixel face as the surrounding prose; the official
+   shorthand keeps 15px sizing, only the family is swapped. */
+body[data-ds-dark-theme] [data-phase] [data-chat-flow] [class*='markdown'] :is(table, th, td) {
+  font-family: var(--dsw-font-pixel) !important;
+}
+
+/* The scene atlas is a restrained landmark in the open transcript space. It
+   is anchored to the column, so it never wanders over the message text. */
+body[data-ds-dark-theme] [data-phase] [data-chat-flow]::before {
+  content: '';
+  position: absolute;
+  top: 22px;
+  right: 16px;
+  width: 80px;
+  height: 80px;
+  pointer-events: none;
+  background: var(--rizen-scene-fx-atlas) no-repeat 100% 0 / 400% 200%;
+  image-rendering: pixelated;
+  mix-blend-mode: screen;
+  opacity: 0.1;
+  z-index: 0;
+  animation: dsh-transcript-landmark 18s ease-in-out infinite;
+}
+
+@keyframes dsh-transcript-landmark {
+  0%,
+  100% { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 0.06; }
+  50% { transform: translate3d(-22px, 30px, 0) rotate(12deg); opacity: 0.16; }
+}
+
+/* Think details become a compact left-side dossier while the disclosure row
+   remains in the transcript as the control and summary. */
+body[data-ds-dark-theme] [data-phase] [data-chat-flow-kind='assistant-step']:has([data-disclosure-row][aria-expanded='true']) {
+  z-index: 3;
+}
+
+body[data-ds-dark-theme] [data-phase] [data-chat-flow-kind='assistant-step']:has([data-disclosure-row][aria-expanded='true']) [class*='thinkBody'] {
+  position: absolute;
+  top: 0;
+  right: calc(100% + var(--dsh-detail-rail-gap));
+  width: var(--dsh-panel-width, var(--dsh-detail-rail-width));
+  height: var(--dsh-panel-height, auto);
+  max-height: min(460px, var(--dsh-panel-safe-height, calc(100vh - 220px)));
+  box-sizing: border-box;
+  overflow: auto;
+  padding: 14px 16px;
+  border: 1px solid rgba(124, 231, 255, 0.28);
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(8, 18, 40, 0.96), rgba(15, 22, 47, 0.9)),
+    repeating-linear-gradient(0deg, rgba(124, 231, 255, 0.04) 0 1px, transparent 1px 6px);
+  box-shadow:
+    0 0 0 1px rgba(167, 139, 250, 0.08),
+    0 12px 28px rgba(0, 0, 0, 0.34),
+    0 0 26px rgba(124, 231, 255, 0.1);
+  z-index: 4;
+}
+
+/* Tool output uses the same rail, while its disclosure header stays in the
+   main stream. The sibling selector targets the existing body wrapper without
+   depending on generated class names. */
+body[data-ds-dark-theme] [data-phase] [data-chat-flow-kind='tool-call']:has([data-disclosure-row][aria-expanded='true']) [data-tool] {
+  z-index: 3;
+}
+
+body[data-ds-dark-theme] [data-phase] [data-chat-flow-kind='tool-call']:has([data-disclosure-row][aria-expanded='true']) [data-tool] > div > [data-disclosure-row] ~ div {
+  position: absolute;
+  top: 30px;
+  right: calc(100% + var(--dsh-detail-rail-gap));
+  width: var(--dsh-panel-width, var(--dsh-detail-rail-width));
+  height: var(--dsh-panel-height, auto);
+  max-height: min(460px, var(--dsh-panel-safe-height, calc(100vh - 220px)));
+  box-sizing: border-box;
+  overflow: auto;
+  padding: 10px;
+  border: 1px solid rgba(124, 231, 255, 0.28);
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(8, 18, 40, 0.98), rgba(14, 22, 47, 0.92)),
+    repeating-linear-gradient(0deg, rgba(124, 231, 255, 0.04) 0 1px, transparent 1px 6px);
+  box-shadow:
+    0 0 0 1px rgba(167, 139, 250, 0.08),
+    0 12px 28px rgba(0, 0, 0, 0.34),
+    0 0 26px rgba(124, 231, 255, 0.1);
+  z-index: 4;
+}
+
+/* A pinned code panel keeps its measured viewport position while the
+   transcript avoids its rail. The flow is the containing block for this
+   fixed child, so the React panel stores coordinates relative to the flow
+   before pinning; this keeps it stable when the left rail opens. */
+body[data-ds-dark-theme] [data-phase] [data-chat-flow] [data-tool][data-dsh-panel-pinned='true'] > div > [data-disclosure-row] ~ div {
+  position: fixed;
+  top: var(--dsh-panel-top, 120px);
+  right: auto;
+  left: var(--dsh-panel-left, -220px);
+  width: min(var(--dsh-panel-width, var(--dsh-detail-rail-width)), calc(100vw - 24px));
+  height: var(--dsh-panel-height, auto);
+  max-height: min(520px, var(--dsh-panel-safe-height, calc(100vh - 80px)));
+  margin: 0;
+  transform: none;
+  z-index: 40;
+}
+
+/* Expanded detail surfaces size through the theme runtime's window-style
+   resize drag: width/height come from CSS variables set while the pointer
+   drags an edge or corner, with the browser keeping min/max guards. The
+   safe-height observer limits their vertical surface above the sticky
+   composer, while overflow keeps long code and Think text inside the panel. */
+body[data-ds-dark-theme] [data-phase] :is([class*='thinkBody'], [data-dsh-detail-panel], [data-dsh-code-panel]) {
+  box-sizing: border-box;
+  min-width: var(--dsh-detail-rail-min-width);
+  max-width: calc(100vw - 24px);
+  overflow: auto;
+}
+
+body[data-ds-dark-theme] [data-phase] :is([class*='thinkBody'], [data-dsh-detail-panel], [data-dsh-code-panel])::after {
+  content: '';
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 12px;
+  height: 12px;
+  pointer-events: none;
+  background: linear-gradient(135deg, transparent 0 45%, rgba(124, 231, 255, 0.72) 46% 54%, transparent 55% 66%, rgba(255, 98, 189, 0.74) 67% 75%, transparent 76%);
+  opacity: 0.58;
+}
+
+/* A pinned panel's rail is reserved live: the theme runtime mirrors the
+   widest pinned panel width per side into --dsh-flow-avoid-*, so the flow
+   yields exactly what the panel occupies (plus the rail gap) while it is
+   dragged or resized, without ever changing the conversation's own size. */
+body[data-ds-dark-theme] [data-phase] [data-chat-flow]:has([data-dsh-panel-pinned='true'][data-dsh-panel-side='left']) {
+  transform: translateX(var(--dsh-flow-avoid-left, 0px));
+}
+
+body[data-ds-dark-theme] [data-phase] [data-chat-flow]:has([data-dsh-panel-pinned='true'][data-dsh-panel-side='right']) {
+  transform: translateX(calc(-1 * var(--dsh-flow-avoid-right, 0px)));
+}
+
+body[data-ds-dark-theme] [data-phase] [data-chat-flow]:has([data-dsh-panel-pinned='true'][data-dsh-panel-side='left']):has([data-dsh-panel-pinned='true'][data-dsh-panel-side='right']) {
+  transform: translateX(0);
+}
+
+/* Multiple pinned cards share the same rail without changing the normal
+   message width. Their local drag offsets determine the final vertical
+   stack, while the rail-safe transcript remains readable between them. */
+body[data-ds-dark-theme] [data-phase] [data-chat-flow] [data-tool][data-dsh-panel-pinned='true'] [data-dsh-code-panel] {
+  border-color: rgba(255, 98, 189, 0.48);
+  box-shadow:
+    0 0 0 1px rgba(255, 98, 189, 0.12),
+    0 14px 32px rgba(0, 0, 0, 0.48),
+    0 0 28px rgba(210, 140, 255, 0.18);
+}
+
+body[data-ds-dark-theme] [data-phase] [data-chat-flow] [data-tool][data-dsh-panel-dragging='true'] [data-dsh-code-panel] {
+  cursor: grabbing;
+  user-select: none;
+  box-shadow:
+    0 0 0 1px rgba(255, 195, 107, 0.34),
+    0 18px 42px rgba(0, 0, 0, 0.56),
+    0 0 38px rgba(255, 98, 189, 0.24);
+}
+
+/* The existing context-meter panel already contains the live used/capacity
+   projection. Move that real panel into the left rail when it is opened. */
+body[data-ds-dark-theme] [data-phase] [class*='NjBokG_panel'] {
+  position: fixed;
+  top: auto;
+  right: auto;
+  bottom: clamp(140px, 22vh, 210px);
+  left: max(288px, calc(18vw + 8px));
+  width: var(--dsh-detail-rail-width);
+  max-height: min(420px, calc(100vh - 220px));
+  overflow: auto;
+  border: 1px solid rgba(124, 231, 255, 0.32);
+  border-radius: 12px;
+  box-shadow:
+    0 0 0 1px rgba(167, 139, 250, 0.1),
+    0 12px 28px rgba(0, 0, 0, 0.42),
+    0 0 28px rgba(124, 231, 255, 0.12);
+  z-index: 20;
+}
+
+/* User and steering messages become angular game dialogue panels instead of
+   generic rounded cards. The clipped corners preserve the existing width. */
+body[data-ds-dark-theme] [data-chat-flow-kind='user'] [class*='bubble'],
+body[data-ds-dark-theme] [data-chat-flow-kind='steering'] [class*='bubble'] {
+  position: relative;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  clip-path: none;
+  background:
+    linear-gradient(135deg, rgba(23, 35, 74, 0.96), rgba(14, 22, 47, 0.96)) padding-box,
+    linear-gradient(135deg, rgba(124, 231, 255, 0.72), rgba(167, 139, 250, 0.46), rgba(240, 183, 102, 0.5)) border-box;
+  box-shadow:
+    0 0 0 1px rgba(124, 231, 255, 0.08),
+    0 0 24px rgba(91, 140, 255, 0.16),
+    0 8px 22px rgba(0, 0, 0, 0.28);
+}
+
+body[data-ds-dark-theme] [data-chat-flow-kind='user'] [class*='bubble']::after,
+body[data-ds-dark-theme] [data-chat-flow-kind='steering'] [class*='bubble']::after {
+  content: none;
+}
+
+body[data-ds-dark-theme] [data-chat-flow-kind='user'] [class*='bubble']:hover,
+body[data-ds-dark-theme] [data-chat-flow-kind='steering'] [class*='bubble']:hover {
+  box-shadow:
+    0 0 0 1px rgba(124, 231, 255, 0.2),
+    0 0 30px rgba(124, 231, 255, 0.22),
+    0 8px 22px rgba(0, 0, 0, 0.3);
+}
+
+body[data-ds-dark-theme] [data-chat-flow-kind='assistant'],
+body[data-ds-dark-theme] [data-chat-flow-kind='assistant-step'] {
+  position: relative;
+  padding-left: 18px;
+  padding-right: 10px;
+  border-radius: 8px;
+}
+
+body[data-ds-dark-theme] [data-chat-flow-kind='assistant']::before,
+body[data-ds-dark-theme] [data-chat-flow-kind='assistant-step']::before {
+  content: '';
+  position: absolute;
+  top: 12px;
+  bottom: 12px;
+  left: 0;
+  width: 2px;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent, var(--rizen-cyan), var(--rizen-violet), transparent);
+  box-shadow: 0 0 12px rgba(124, 231, 255, 0.46);
+  opacity: 0.64;
+  animation: dsh-assistant-signal 3.8s ease-in-out infinite;
+}
+
+@keyframes dsh-assistant-signal {
+  0%,
+  100% { opacity: 0.34; transform: scaleY(0.72); }
+  50% { opacity: 0.92; transform: scaleY(1); }
+}
+
+/* Tool rows read as compact telemetry cards. The existing tool content keeps
+   ownership of layout and disclosure behavior; this only adds the HUD shell. */
+body[data-ds-dark-theme] [data-chat-flow] [data-tool] {
+  position: relative;
+  box-sizing: border-box;
+  margin-left: 18px;
+  margin-right: 10px;
+  padding-left: 12px;
+  border: 1px solid rgba(124, 231, 255, 0.18);
+  border-radius: 8px;
+  clip-path: none;
+  background:
+    linear-gradient(90deg, rgba(8, 18, 40, 0.88), rgba(14, 22, 47, 0.66)),
+    repeating-linear-gradient(0deg, rgba(124, 231, 255, 0.045) 0 1px, transparent 1px 5px);
+  box-shadow: inset 3px 0 0 rgba(124, 231, 255, 0.48), 0 0 18px rgba(91, 140, 255, 0.08);
+}
+
+body[data-ds-dark-theme] [data-chat-flow] [data-tool]::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  width: 30px;
+  height: 30px;
+  pointer-events: none;
+  background: var(--rizen-particle-atlas) no-repeat 33.333% 0 / 400% 400%;
+  image-rendering: pixelated;
+  mix-blend-mode: screen;
+  opacity: 0.12;
+  transform: translateY(-50%);
+  animation: dsh-tool-particle 3.6s ease-in-out infinite;
+}
+
+body[data-ds-dark-theme] [data-chat-flow] [data-tool][data-state='running'] {
+  border-color: rgba(124, 231, 255, 0.42);
+  box-shadow:
+    inset 3px 0 0 var(--rizen-cyan),
+    0 0 22px rgba(124, 231, 255, 0.14),
+    0 0 36px rgba(167, 139, 250, 0.08);
+}
+
+@keyframes dsh-tool-particle {
+  0%,
+  100% { opacity: 0.06; transform: translate3d(0, -50%, 0) scale(0.8); }
+  50% { opacity: 0.22; transform: translate3d(-8px, -62%, 0) scale(1.08); }
+}
+
+/* Composer: an angular command console with a scene-atlas beacon in its
+   corner and the existing readable editor surface left untouched. */
+body[data-ds-dark-theme] [data-phase] [class*='card']:has(textarea) {
+  border-radius: 0;
+  clip-path: polygon(0 14px, 14px 0, calc(100% - 20px) 0, 100% 20px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 20px 100%, 0 calc(100% - 20px));
+}
+
+/* Menus open upward from the composer. The normal card shell clips its
+   decorative corners, but that would also clip the model/access popovers and
+   the context-occupancy meter panel (a role=dialog). Relax the shell only
+   while a popup exists and raise the whole control rail above the transcript
+   surface. */
+body[data-ds-dark-theme] [data-phase] [class*='card']:has(textarea):has([role='menu'], [role='listbox'], [role='dialog'], [class*='menu']) {
+  z-index: 8;
+  overflow: visible;
+  clip-path: none;
+}
+
+body[data-ds-dark-theme] [data-phase] [class*='card']:has(textarea)::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  right: 22px;
+  width: 74px;
+  height: 74px;
+  pointer-events: none;
+  background: var(--rizen-scene-fx-atlas) no-repeat 66.666% 100% / 400% 200%;
+  image-rendering: pixelated;
+  mix-blend-mode: screen;
+  opacity: 0.1;
+  z-index: 0;
+  animation: dsh-composer-beacon 7s ease-in-out infinite;
+}
+
+@keyframes dsh-composer-beacon {
+  0%,
+  100% { transform: rotate(-8deg) scale(0.8); opacity: 0.05; }
+  50% { transform: rotate(8deg) scale(1.04); opacity: 0.18; }
+}
+
+body[data-ds-dark-theme] [data-phase] button[aria-label='发送消息']::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: 44px;
+  height: 44px;
+  pointer-events: none;
+  background: var(--rizen-energy-fx-atlas) no-repeat 0 0 / 400% 300%;
+  image-rendering: pixelated;
+  mix-blend-mode: screen;
+  opacity: 0;
+}
+
+body[data-ds-dark-theme] [data-phase] button[aria-label='发送消息']:not(:disabled):hover::after {
+  opacity: 0.56;
+  animation: dsh-energy-frames 1.2s steps(1, end) infinite;
+}
+
+@keyframes dsh-energy-frames {
+  0% { background-position: 0 0; }
+  8.333% { background-position: 33.333% 0; }
+  16.666% { background-position: 66.666% 0; }
+  25% { background-position: 100% 0; }
+  33.333% { background-position: 0 50%; }
+  41.666% { background-position: 33.333% 50%; }
+  50% { background-position: 66.666% 50%; }
+  58.333% { background-position: 100% 50%; }
+  66.666% { background-position: 0 100%; }
+  75% { background-position: 33.333% 100%; }
+  83.333% { background-position: 66.666% 100%; }
+  91.666%,
+  100% { background-position: 100% 100%; }
+}
+
+/* Bottom telemetry becomes the page's HUD status rail: still one compact
+   readable line, but framed like a live game-system readout. */
+body[data-ds-dark-theme] [data-phase] [class*='composerSeat'] [class*='root']:has(> [class*='sep']) {
+  position: relative;
+  box-sizing: border-box;
+  min-height: 28px;
+  padding: 5px 36px 4px;
+  border-top: 1px solid rgba(124, 231, 255, 0.3);
+  border-bottom: 1px solid rgba(167, 139, 250, 0.22);
+  color: rgba(182, 244, 255, 0.82);
+  font-family: var(--dsw-font-pixel-small);
+  font-size: 11px;
+  letter-spacing: 0.4px;
+  text-shadow: 0 0 8px rgba(124, 231, 255, 0.28);
+  background:
+    linear-gradient(90deg, rgba(8, 17, 37, 0.94), rgba(18, 25, 56, 0.78), rgba(8, 17, 37, 0.94)),
+    repeating-linear-gradient(90deg, rgba(124, 231, 255, 0.04) 0 1px, transparent 1px 18px);
+  clip-path: polygon(0 5px, 5px 0, calc(100% - 5px) 0, 100% 5px, 100% calc(100% - 5px), calc(100% - 5px) 100%, 5px 100%, 0 calc(100% - 5px));
+  box-shadow: 0 0 18px rgba(91, 140, 255, 0.1), inset 0 0 18px rgba(124, 231, 255, 0.04);
+}
+
+body[data-ds-dark-theme] [data-phase] [class*='composerSeat'] [class*='root']:has(> [class*='sep'])::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -2px;
+  width: 34px;
+  height: 34px;
+  pointer-events: none;
+  background: var(--rizen-scene-fx-atlas) no-repeat 0 100% / 400% 200%;
+  image-rendering: pixelated;
+  mix-blend-mode: screen;
+  opacity: 0.16;
+  transform: translateY(-50%);
+  animation: dsh-hud-radar 5.2s ease-in-out infinite;
+}
+
+body[data-ds-dark-theme] [data-phase] [class*='composerSeat'] [class*='root']:has(> [class*='sep'])::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(124, 231, 255, 0.82), rgba(167, 139, 250, 0.74), transparent);
+  background-size: 220% 100%;
+  animation: dsh-hud-sweep 4.4s linear infinite;
+}
+
+body[data-ds-dark-theme] [data-phase] [class*='composerSeat'] [class*='root']:has(> [class*='sep']) [class*='sep'] {
+  color: rgba(240, 183, 102, 0.78);
+  text-shadow: 0 0 6px rgba(240, 183, 102, 0.42);
+}
+
+@keyframes dsh-hud-radar {
+  0%,
+  100% { transform: translateY(-50%) rotate(0deg); opacity: 0.08; }
+  50% { transform: translateY(-50%) rotate(180deg); opacity: 0.28; }
+}
+
+@keyframes dsh-hud-sweep {
+  from { background-position: 220% 0; }
+  to { background-position: -220% 0; }
+}
+
+/* Interaction pass: the console should react like a game surface. Teal is
+   reserved for active signal, violet and magenta mark focus, and amber marks
+   a confirmed action. This keeps the page luminous without turning every
+   state into the same blue glow. */
+body[data-ds-dark-theme] :is(button, [role='button'], a, select) {
+  transition:
+    color var(--ds-transition-duration) var(--ds-ease-in-out),
+    border-color var(--ds-transition-duration) var(--ds-ease-in-out),
+    box-shadow var(--ds-transition-duration) var(--ds-ease-in-out),
+    filter var(--ds-transition-duration) var(--ds-ease-in-out),
+    transform var(--ds-transition-duration) var(--ds-ease-in-out);
+}
+
+body[data-ds-dark-theme] :is(button, [role='button'], a, select):not(:disabled):hover {
+  color: var(--rizen-cyan-bright);
+  filter:
+    drop-shadow(0 0 4px rgba(111, 255, 224, 0.64))
+    drop-shadow(0 0 10px rgba(255, 98, 189, 0.24));
+  transform: translateY(-1px);
+}
+
+body[data-ds-dark-theme] :is(button, [role='button'], a, select):not(:disabled):active {
+  color: var(--rizen-amber);
+  filter:
+    drop-shadow(0 0 6px rgba(255, 195, 107, 0.8))
+    drop-shadow(0 0 12px rgba(255, 98, 189, 0.34));
+  transform: translateY(1px) scale(0.97);
+}
+
+body[data-ds-dark-theme] :is(button, [role='button'], a, select):focus-visible {
+  outline: 1px solid var(--rizen-magenta);
+  outline-offset: 3px;
+  box-shadow:
+    0 0 0 3px rgba(255, 98, 189, 0.18),
+    0 0 18px rgba(210, 140, 255, 0.34);
+}
+
+/* The cursor itself is the moving reticle. These target states add a second
+   layer of feedback so a pointer crossing the UI feels like a lock-on. */
+body[data-ds-dark-theme] :is(button, [role='button'], a, select):not(:disabled):hover svg {
+  color: var(--rizen-cyan);
+  filter:
+    drop-shadow(0 0 4px rgba(111, 255, 224, 0.9))
+    drop-shadow(0 0 9px rgba(255, 98, 189, 0.46));
+}
+
+body[data-ds-dark-theme] [role='tab']:not([aria-selected='true']) {
+  position: relative;
+  overflow: hidden;
+}
+
+body[data-ds-dark-theme] [role='tab']:not([aria-selected='true'])::after {
+  content: '';
+  position: absolute;
+  right: 8px;
+  bottom: 0;
+  left: 8px;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, var(--rizen-magenta), var(--rizen-amber), transparent);
+  opacity: 0;
+  transform: translateX(-120%);
+}
+
+body[data-ds-dark-theme] [role='tab']:not([aria-selected='true']):hover::after {
+  opacity: 0.86;
+  animation: dsh-hover-scan 0.72s steps(5, end) both;
+}
+
+/* Hovering a dialogue panel briefly decodes its text in chromatic slices. It
+   is intentionally short and only starts on entry, so reading stays calm. */
+body[data-ds-dark-theme] [data-chat-flow] [class*='bubble']::before {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 10px;
+  width: 42%;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, var(--rizen-magenta), var(--rizen-amber), transparent);
+  opacity: 0;
+  transform: translateX(-130%);
+}
+
+body[data-ds-dark-theme] [data-chat-flow] [class*='bubble']:hover::before {
+  opacity: 0.9;
+  animation: dsh-bubble-scan 0.68s steps(6, end) both;
+}
+
+body[data-ds-dark-theme] [data-chat-flow] [data-tool]:hover {
+  border-color: rgba(255, 98, 189, 0.64);
+  box-shadow:
+    inset 3px 0 0 var(--rizen-magenta),
+    0 0 0 1px rgba(255, 98, 189, 0.14),
+    0 0 26px rgba(210, 140, 255, 0.2),
+    0 0 42px rgba(255, 195, 107, 0.1);
+}
+
+body[data-ds-dark-theme] [data-chat-flow] [data-tool]:hover::before {
+  opacity: 0.34;
+  filter: drop-shadow(0 0 7px rgba(255, 195, 107, 0.72));
+}
+
+/* Pointer feedback is placed by the theme runtime at the actual click point,
+   so the crosshair reads as an arcade hit rather than a button-only ripple. */
+body[data-ds-dark-theme] .dsh-click-hit {
+  position: fixed;
+  z-index: 2000;
+  width: 56px;
+  height: 56px;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(255, 195, 107, 0.84);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(255, 195, 107, 0.34) 0 2px, transparent 3px 12px, rgba(111, 255, 224, 0.24) 13px 14px, transparent 15px),
+    conic-gradient(from 12deg, transparent 0 8%, rgba(255, 98, 189, 0.92) 9% 11%, transparent 12% 33%, rgba(111, 255, 224, 0.9) 34% 36%, transparent 37% 66%, rgba(255, 195, 107, 0.88) 67% 69%, transparent 70%);
+  box-shadow:
+    0 0 0 2px rgba(255, 98, 189, 0.18),
+    0 0 16px rgba(255, 195, 107, 0.64),
+    0 0 34px rgba(255, 98, 189, 0.42);
+  animation: dsh-hit-fire 0.56s steps(5, end) both;
+}
+
+body[data-ds-dark-theme] .dsh-click-hit::before,
+body[data-ds-dark-theme] .dsh-click-hit::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  background: var(--rizen-cyan);
+  box-shadow: 0 0 8px rgba(111, 255, 224, 0.88);
+}
+
+body[data-ds-dark-theme] .dsh-click-hit::before {
+  top: 50%;
+  right: -9px;
+  left: -9px;
+  height: 1px;
+}
+
+body[data-ds-dark-theme] .dsh-click-hit::after {
+  top: -9px;
+  bottom: -9px;
+  left: 50%;
+  width: 1px;
+}
+
+@keyframes dsh-hit-fire {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.28) rotate(-18deg);
+    filter: brightness(1.8) saturate(1.8);
+  }
+  28% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.92) rotate(10deg);
+  }
+  62% {
+    opacity: 0.82;
+    transform: translate(-50%, -50%) scale(1.12) rotate(28deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.42) rotate(52deg);
+    filter: brightness(1) saturate(1);
+  }
+}
+
+/* Docked headers are the handle and the explicit panel actions for every
+   floating detail surface (code, tool, think). Keeping the pin/min/max/close
+   targets above the surface makes a pinned panel reversible instead of
+   turning the decoration into a permanent overlay. */
+body[data-ds-dark-theme] [data-phase] [data-dsh-detail-panel] [data-dsh-drag-handle] {
+  position: relative;
+  border-bottom: 1px solid rgba(124, 231, 255, 0.2);
+  background:
+    linear-gradient(90deg, rgba(255, 98, 189, 0.1), rgba(124, 231, 255, 0.05) 62%, transparent),
+    repeating-linear-gradient(90deg, rgba(124, 231, 255, 0.05) 0 1px, transparent 1px 12px);
+  color: rgba(182, 244, 255, 0.78);
+}
+
+body[data-ds-dark-theme] [data-phase] [data-dsh-detail-panel] [data-dsh-drag-handle]::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, var(--rizen-magenta), var(--rizen-cyan), transparent);
+  background-size: 220% 100%;
+  animation: dsh-dock-sweep 3.4s linear infinite;
+}
+
+body[data-ds-dark-theme] [data-phase] [data-dsh-detail-panel] [data-dsh-drag-handle] [data-dsh-panel-actions] {
+  position: relative;
+  z-index: 1;
+}
+
+body[data-ds-dark-theme] [data-phase] [data-dsh-detail-panel] button[aria-label*='固定面板'],
+body[data-ds-dark-theme] [data-phase] [data-dsh-detail-panel] button[aria-label='关闭面板'] {
+  position: relative;
+  z-index: 2;
+  border: 1px solid transparent;
+  color: rgba(182, 244, 255, 0.82);
+}
+
+body[data-ds-dark-theme] [data-phase] [data-dsh-detail-panel] button[aria-label*='固定面板'][aria-pressed='true'] {
+  border-color: rgba(255, 195, 107, 0.62);
+  color: var(--rizen-amber);
+  filter: drop-shadow(0 0 6px rgba(255, 195, 107, 0.7));
+}
+
+@keyframes dsh-dock-sweep {
+  from { background-position: 220% 0; }
+  to { background-position: -220% 0; }
+}
+
+/* Focus is the input's boot-up state. The small status label and composer
+   glow provide feedback without rewriting the user's actual text or moving
+   the editor's layout. */
+body[data-ds-dark-theme] [data-phase] [class*='card']:has(textarea:focus, [contenteditable='true']:focus) {
+  border-color: rgba(255, 98, 189, 0.78);
+  box-shadow:
+    0 0 0 1px rgba(255, 98, 189, 0.28),
+    0 0 24px rgba(210, 140, 255, 0.3),
+    0 0 46px rgba(255, 195, 107, 0.14),
+    inset 0 0 24px rgba(111, 255, 224, 0.08);
+  animation: dsh-composer-focus 1.8s ease-in-out infinite;
+}
+
+body[data-ds-dark-theme] [data-phase] [class*='card']:has(textarea:focus, [contenteditable='true']:focus)::after {
+  content: 'INPUT // DECODE 01';
+  top: 9px;
+  right: 18px;
+  bottom: auto;
+  left: auto;
+  width: 142px;
+  height: 12px;
+  color: rgba(255, 195, 107, 0.92);
+  font-family: var(--dsw-font-pixel-small);
+  font-size: 9px;
+  line-height: 12px;
+  letter-spacing: 0.8px;
+  text-align: right;
+  white-space: nowrap;
+  background:
+    linear-gradient(90deg, transparent, rgba(255, 98, 189, 0.75), rgba(111, 255, 224, 0.84), transparent) bottom / 220% 1px no-repeat,
+    repeating-linear-gradient(90deg, rgba(255, 195, 107, 0.26) 0 1px, transparent 1px 5px);
+  text-shadow:
+    -2px 0 rgba(255, 98, 189, 0.72),
+    2px 0 rgba(111, 255, 224, 0.58),
+    0 0 8px rgba(255, 195, 107, 0.72);
+  opacity: 0.92;
+  animation: dsh-input-decode 0.92s steps(2, end) infinite;
+}
+
+body[data-ds-dark-theme] [data-phase] :is(textarea, input, [contenteditable='true']):focus {
+  caret-color: var(--rizen-magenta);
+}
+
+body[data-ds-dark-theme] [data-phase] :is(textarea, input, [contenteditable='true'])::selection {
+  color: var(--rizen-night);
+  background: rgba(255, 195, 107, 0.82);
+  text-shadow: none;
+}
+
+/* A held click reads as a hit-confirm rather than a generic pressed state. */
+body[data-ds-dark-theme] [data-phase] button[aria-label='发送消息']:active::after {
+  opacity: 1;
+  animation:
+    dsh-energy-frames 0.42s steps(1, end),
+    dsh-click-flash 0.42s ease-out;
+}
+
+@keyframes dsh-hover-scan {
+  0% { transform: translateX(-130%); }
+  100% { transform: translateX(130%); }
+}
+
+@keyframes dsh-bubble-scan {
+  0% { transform: translateX(-130%) scaleX(0.6); }
+  34% { transform: translateX(-20%) scaleX(1.15); }
+  68% { transform: translateX(70%) scaleX(0.8); }
+  100% { transform: translateX(130%) scaleX(0.4); }
+}
+
+@keyframes dsh-composer-focus {
+  0%, 100% {
+    box-shadow:
+      0 0 0 1px rgba(255, 98, 189, 0.22),
+      0 0 20px rgba(210, 140, 255, 0.2),
+      0 0 38px rgba(255, 195, 107, 0.08),
+      inset 0 0 18px rgba(111, 255, 224, 0.05);
+  }
+  50% {
+    box-shadow:
+      0 0 0 2px rgba(255, 98, 189, 0.42),
+      0 0 30px rgba(210, 140, 255, 0.36),
+      0 0 54px rgba(255, 195, 107, 0.16),
+      inset 0 0 26px rgba(111, 255, 224, 0.1);
+  }
+}
+
+@keyframes dsh-input-decode {
+  0%, 100% { opacity: 0.32; clip-path: inset(0 0 0 62%); transform: translateX(3px); }
+  18% { opacity: 1; clip-path: inset(0 28% 0 0); transform: translateX(-2px); }
+  38% { opacity: 0.58; clip-path: inset(0 0 0 14%); transform: translateX(1px); }
+  64% { opacity: 0.96; clip-path: inset(0 46% 0 0); transform: translateX(-1px); }
+}
+
+@keyframes dsh-click-flash {
+  0% { filter: brightness(1.8) saturate(1.7); transform: scale(0.82); }
+  55% { filter: brightness(1.18) saturate(1.3); transform: scale(1.12); }
+  100% { filter: brightness(1) saturate(1); transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-ds-dark-theme],
+  body[data-ds-dark-theme] *,
+  body[data-ds-dark-theme] *::before,
+  body[data-ds-dark-theme] *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Think dossiers pin like code panels: viewport-fixed at the measured offset
+   with the transcript avoiding their rail. This rule must out-specify the
+   inline left-rail dossier rule (assistant-step + :has + thinkBody), or the
+   pinned panel snaps back into the rail instead of floating. */
+body[data-ds-dark-theme] [data-phase] [data-chat-flow-kind='assistant-step'][data-variant='think'][data-dsh-panel-pinned='true'] [class*='thinkBody'] {
+  position: fixed;
+  top: var(--dsh-panel-top, 120px);
+  right: auto;
+  left: var(--dsh-panel-left, -220px);
+  width: min(var(--dsh-panel-width, var(--dsh-detail-rail-width)), calc(100vw - 24px));
+  height: var(--dsh-panel-height, auto);
+  max-height: min(520px, var(--dsh-panel-safe-height, calc(100vh - 80px)));
+  margin: 0;
+  z-index: 40;
+}
+
+/* Minimized panels park in the dock: hidden from the transcript until the
+   theme runtime restores them from the taskbar list. */
+body[data-ds-dark-theme] [data-phase] [data-dsh-detail-panel][data-dsh-panel-minimized='true'],
+body[data-ds-dark-theme] [data-phase] [class*='thinkBody'][data-dsh-panel-minimized='true'] {
+  display: none;
+}
+
+/* Maximized panels fill the viewport like a fullscreen window; the explicit
+   overrides win over the pinned rail rules while the window is enlarged. */
+body[data-ds-dark-theme] [data-phase] [data-dsh-detail-panel][data-dsh-panel-maximized='true'],
+body[data-ds-dark-theme] [data-phase] [class*='thinkBody'][data-dsh-panel-maximized='true'] {
+  position: fixed !important;
+  inset: 10px !important;
+  width: auto !important;
+  height: auto !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  z-index: 500 !important;
+  overflow: auto;
+}
+
+/* Taskbar docks on both free flanks of the transcript. Each side holds a
+   stack button that opens the list of minimized panels parked there. */
+.rizen-dock {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 480;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 5px;
+  border: 1px solid rgba(124, 231, 255, 0.28);
+  border-radius: 10px;
+  background:
+    linear-gradient(180deg, rgba(10, 18, 40, 0.94), rgba(8, 14, 31, 0.94)),
+    repeating-linear-gradient(0deg, rgba(124, 231, 255, 0.05) 0 1px, transparent 1px 8px);
+  box-shadow:
+    0 0 0 1px rgba(167, 139, 250, 0.1),
+    0 8px 22px rgba(0, 0, 0, 0.42),
+    0 0 18px rgba(124, 231, 255, 0.12);
+  font-family: var(--dsw-font-pixel);
+}
+
+.rizen-dock[data-side='left'] {
+  left: 288px;
+}
+
+.rizen-dock[data-side='right'] {
+  right: 12px;
+}
+
+.rizen-dock[data-empty='true'] {
+  display: none;
+}
+
+.rizen-dock-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 8px;
+  border: 1px solid rgba(124, 231, 255, 0.32);
+  border-radius: 7px;
+  background: rgba(15, 26, 52, 0.92);
+  color: var(--rizen-cyan-bright);
+  font-family: var(--dsw-font-pixel);
+  font-size: 11px;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+}
+
+.rizen-dock-button:hover,
+.rizen-dock-button[data-open='true'] {
+  border-color: rgba(255, 98, 189, 0.6);
+  color: var(--rizen-magenta);
+  box-shadow: 0 0 12px rgba(255, 98, 189, 0.25);
+}
+
+.rizen-dock-list {
+  position: absolute;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 168px;
+  max-height: 320px;
+  padding: 6px;
+  overflow: auto;
+  border: 1px solid rgba(124, 231, 255, 0.35);
+  border-radius: 10px;
+  background: rgba(8, 15, 34, 0.97);
+  box-shadow:
+    0 0 0 1px rgba(167, 139, 250, 0.12),
+    0 12px 30px rgba(0, 0, 0, 0.5);
+}
+
+.rizen-dock[data-side='left'] .rizen-dock-list {
+  left: calc(100% + 8px);
+}
+
+.rizen-dock[data-side='right'] .rizen-dock-list {
+  right: calc(100% + 8px);
+}
+
+.rizen-dock-item {
+  padding: 6px 10px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: var(--rizen-ink);
+  font-family: var(--dsw-font-pixel);
+  font-size: 12px;
+  line-height: 18px;
+  text-align: start;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.rizen-dock-item:hover {
+  border-color: rgba(124, 231, 255, 0.4);
+  background: rgba(124, 231, 255, 0.08);
+  color: var(--rizen-cyan-bright);
+}
+

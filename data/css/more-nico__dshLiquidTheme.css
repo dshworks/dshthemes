@@ -1,0 +1,842 @@
+/* more-nico/dshLiquidTheme — lib/styles/liquid-glass.css
+   fetched 2026-08-19 from https://raw.githubusercontent.com/more-nico/dshLiquidTheme/HEAD/lib/styles/liquid-glass.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* Production Liquid Glass for DeepSeek Harness.
+   macOS-style floating frost: sidebar + session header + composer.
+   Settings live inside the sidebar, so the sidebar column itself must
+   never carry backdrop-filter / filter (that traps position:fixed). */
+
+html[data-liquid-glass],
+html:has(body[data-liquid-glass]) {
+  background-color: #07141f;
+}
+
+body[data-liquid-glass] {
+  --lg-blur: 5px;
+  --lg-sat: 110%;
+  --lg-contrast: 1;
+  --lg-bright: 1.2;
+  --lg-radius: 22px;
+  --lg-radius-bar: 18px;
+  --lg-inset: 10px;
+  --lg-alpha: 1;
+  --lg-scrim: 0.25;
+  --lg-scrim-blur: 5px;
+  --lg-wash: 255 255 255;
+  --lg-hairline: 1px solid rgba(255, 255, 255, 0.1);
+  --lg-fill: rgba(255, 255, 255, calc(0.16 * var(--lg-alpha)));
+  --lg-fill-strong: rgba(255, 255, 255, calc(0.38 * var(--lg-alpha)));
+  --lg-fill-float: rgba(255, 255, 255, calc(0.12 * var(--lg-alpha)));
+  --lg-frost: blur(var(--lg-blur)) saturate(var(--lg-sat)) contrast(var(--lg-contrast)) brightness(var(--lg-bright));
+  --lg-dialog-frost: blur(calc(var(--lg-blur) * 1.3)) saturate(var(--lg-sat)) contrast(var(--lg-contrast)) brightness(var(--lg-bright));
+  --lg-mx: 50%;
+  --lg-my: 0%;
+  --lg-rim-size: 260px;
+  --lg-rim: rgba(255, 255, 255, 0.82);
+  --lg-shine:
+    inset 0 -16px 26px rgba(30, 40, 60, 0.08);
+  --lg-elev: 0 8px 28px rgba(30, 40, 60, 0.1), 0 1px 2px rgba(30, 40, 60, 0.05);
+  --dsw-shadow-lv1: 0 2px 8px rgba(20, 28, 45, 0.05);
+  --dsw-shadow-lv2: 0 8px 24px rgba(20, 28, 45, 0.07);
+  --dsw-shadow-lv3: 0 16px 40px rgba(20, 28, 45, 0.12);
+  --dsw-mask-blur: none;
+  min-height: 100%;
+  background-color: #07141f;
+  background-image: var(--lg-default-wallpaper,
+    radial-gradient(980px 680px at 6% -12%, rgba(120, 176, 240, 0.95), transparent 58%),
+    radial-gradient(860px 620px at 98% 4%, rgba(236, 170, 210, 0.72), transparent 54%),
+    radial-gradient(800px 560px at 72% 108%, rgba(140, 214, 200, 0.58), transparent 52%),
+    linear-gradient(168deg, #c5d8f0 0%, #e8e4ef 48%, #d4e4ee 100%));
+  background-size: cover;
+  background-position: center right;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+body[data-liquid-glass][data-ds-dark-theme] {
+  --lg-wash: 12 14 20;
+  --lg-hairline: 1px solid rgba(255, 255, 255, 0.06);
+  --lg-fill: rgba(22, 24, 30, calc(0.4 * var(--lg-alpha)));
+  --lg-fill-strong: rgba(22, 24, 30, calc(0.52 * var(--lg-alpha)));
+  --lg-fill-float: rgba(22, 24, 30, calc(0.24 * var(--lg-alpha)));
+  --lg-rim: rgba(255, 255, 255, 0.72);
+  --lg-shine:
+    inset 0 -16px 26px rgba(0, 0, 0, 0.22);
+  --lg-elev: 0 12px 36px rgba(0, 0, 0, 0.32);
+  --dsw-shadow-lv1: 0 2px 10px rgba(0, 0, 0, 0.28);
+  --dsw-shadow-lv2: 0 10px 28px rgba(0, 0, 0, 0.34);
+  --dsw-shadow-lv3: 0 20px 48px rgba(0, 0, 0, 0.42);
+  --dsw-mask-blur: none;
+  background-color: #071018;
+}
+
+/* Custom wallpaper replaces the built-in mesh. Set by the settings page. */
+body[data-liquid-glass][data-lg-wallpaper] {
+  background-color: #0b0d12;
+  background-image: var(--lg-wallpaper);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+body[data-liquid-glass][data-lg-bg="color"] {
+  background-color: var(--lg-bg-color, #0b1420);
+  background-image: none;
+}
+
+/* Adaptive ink: client.js chooses WCAG-AA colors from the sampled wallpaper
+   and the known glass layers. These values keep the first paint readable
+   while the image sampler is loading or unavailable. */
+body[data-liquid-glass][data-lg-ink-auto] {
+  --lg-ink: #17202d;
+  --lg-ink-soft: #4b5666;
+  --lg-ink-faint: #586372;
+  --lg-ink-guard: rgba(255, 255, 255, 0.18);
+}
+
+body[data-liquid-glass][data-lg-ink-auto][data-ds-dark-theme] {
+  --lg-ink: #f4f7ff;
+  --lg-ink-soft: #c5cddd;
+  --lg-ink-faint: #b5bfce;
+  --lg-ink-guard: rgba(0, 0, 0, 0.18);
+}
+
+body[data-liquid-glass][data-lg-ink-auto] [data-lg-ink-text] {
+  --dsw-alias-label-primary: var(--lg-ink);
+  --dsw-alias-label-secondary: var(--lg-ink-soft);
+  --dsw-alias-label-tertiary: var(--lg-ink-faint);
+  --dsw-alias-label-quaternary: var(--lg-ink-faint);
+  --dsw-alias-label-placeholder: var(--lg-ink-soft);
+  --dsw-alias-icon-primary: var(--lg-ink);
+  --dsw-alias-icon-secondary: var(--lg-ink-soft);
+  --dsw-alias-icon-tertiary: var(--lg-ink-faint);
+  color: var(--lg-ink) !important;
+  caret-color: var(--lg-ink);
+}
+
+body[data-liquid-glass][data-lg-ink-auto] [data-lg-ink-text]:is(textarea, input, [contenteditable="true"]) {
+  color: var(--dsw-alias-label-primary);
+  caret-color: var(--dsw-alias-label-primary);
+}
+
+/* InputBar renders draft text in data-input-backdrop while its textarea is
+   intentionally transparent. Keep adaptive ink from making both layers draw
+   the same glyphs, which produces a doubled CJK face. */
+body[data-liquid-glass][data-lg-ink-auto] [data-composer-card]:has([data-input-backdrop]) textarea[data-lg-ink-text] {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  caret-color: var(--lg-ink);
+}
+
+body[data-liquid-glass][data-lg-ink-auto] [data-lg-ink-text]::placeholder {
+  color: var(--dsw-alias-label-secondary);
+}
+
+/* A guard is a small background behind short text, never a glyph effect. */
+body[data-liquid-glass][data-lg-ink-auto] [data-lg-ink-text][data-lg-ink-guard] {
+  background-color: var(--lg-ink-guard);
+  border-radius: 4px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+body[data-liquid-glass][data-lg-ink-auto] [data-lg-ink-text].dsh-lg-pref-hint,
+body[data-liquid-glass][data-lg-ink-auto] [data-lg-ink-text].dsh-lg-pref-lead,
+body[data-liquid-glass][data-lg-ink-auto] [data-lg-ink-text].dsh-lg-pref-meta {
+  color: var(--lg-ink-soft) !important;
+}
+
+body[data-liquid-glass][data-lg-ink-auto] .dsh-lg-pref-error {
+  color: var(--dsw-alias-label-danger, #c44747);
+}
+
+body[data-liquid-glass] #root,
+body[data-liquid-glass] #root > [data-slot],
+body[data-liquid-glass] #root > [data-slot] > div,
+body[data-liquid-glass] #root > [data-slot] > div > div:nth-child(2) {
+  background: transparent !important;
+}
+
+body[data-liquid-glass] #root {
+  position: relative;
+  z-index: 1;
+}
+
+/* Floating sidebar slab. Blur lives on ::before, never on the column:
+   backdrop-filter on the column traps the settings modal (a descendant). */
+body[data-liquid-glass] #root > [data-slot] > div > div:first-child {
+  position: relative;
+  z-index: 8;
+  box-sizing: border-box;
+  margin: var(--lg-inset) 6px var(--lg-inset) var(--lg-inset);
+  padding: 0;
+  border: var(--lg-hairline) !important;
+  border-radius: var(--lg-radius);
+  background: var(--lg-fill);
+  box-shadow: var(--lg-shine), var(--lg-elev);
+}
+
+body[data-liquid-glass] #root > [data-slot] > div > div:first-child::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  backdrop-filter: var(--lg-fx, var(--lg-frost));
+  -webkit-backdrop-filter: var(--lg-fx, var(--lg-frost));
+}
+
+/* Mouse-follow rim. Sidebar uses ::after so we never put a filter on the column. */
+body[data-liquid-glass] #root > [data-slot] > div > div:first-child::after,
+body[data-liquid-glass] .dsh-lg-rim {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  box-sizing: border-box;
+  pointer-events: none;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(
+    var(--lg-rim-size) circle at var(--lg-mx) var(--lg-my),
+    var(--lg-rim) 0%,
+    rgba(255, 255, 255, 0.28) 30%,
+    rgba(255, 255, 255, 0.08) 55%,
+    transparent 74%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+/* Pin the official 280px inner root to the floating column.
+   Keep the official 12px inline padding so left/right gutters match.
+   Slot is display:contents, so this is the real box above the frost. */
+body[data-liquid-glass] #root > [data-slot] > div > div:first-child [data-slot="sidebar"] > * {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  --dsh-sidebar-inline-padding: 12px;
+}
+
+/* Conversation root is the positioning context for the overlay header.
+   Keep it transparent so the wallpaper reads as one sheet. */
+body[data-liquid-glass] [data-slot="conversation"] > *,
+body[data-liquid-glass] [data-slot="conversation.view"] > *,
+body[data-liquid-glass] [data-slot="conversation.session"] {
+  background: transparent !important;
+}
+
+body[data-liquid-glass] [data-slot="conversation"] > * {
+  position: relative;
+}
+
+/* Per-block reading pads: user bubble + assistant prose. Think/tool
+   rows stay clear until expanded. Pwsh/Bash put the terminal in a
+   DisclosureRow (or a sibling of [data-sample=bash]); CSS covers that
+   surface even before client.js retags it. Do not set padding on
+   [data-terminal] — it owns a 30px prompt gutter. */
+body[data-liquid-glass][data-lg-scrim] [data-lg-pad="assistant"],
+body[data-liquid-glass][data-lg-scrim] [data-lg-pad="expand"],
+body[data-liquid-glass][data-lg-scrim] [data-variant]:has([aria-expanded="true"]) [data-terminal],
+body[data-liquid-glass][data-lg-scrim] [data-sample][aria-expanded="true"] + * [data-terminal] {
+  box-sizing: border-box;
+  background: rgb(var(--lg-wash) / var(--lg-scrim));
+  backdrop-filter: blur(var(--lg-scrim-blur)) saturate(var(--lg-sat));
+  -webkit-backdrop-filter: blur(var(--lg-scrim-blur)) saturate(var(--lg-sat));
+  border-radius: 16px;
+}
+
+body[data-liquid-glass][data-lg-scrim] [data-lg-pad="assistant"],
+body[data-liquid-glass][data-lg-scrim] [data-lg-pad="expand"]:not([data-terminal]) {
+  padding: 10px 16px;
+}
+
+body[data-liquid-glass][data-lg-scrim] [data-lg-pad="user"] {
+  backdrop-filter: blur(var(--lg-scrim-blur)) saturate(var(--lg-sat));
+  -webkit-backdrop-filter: blur(var(--lg-scrim-blur)) saturate(var(--lg-sat));
+}
+
+/* Official collapsed track is 56px. A left inset + hairline would clip
+   the 36px icons unless the slab itself shrinks. 8+48 stays on the track;
+   5px inline pad + 1px border leaves a 36px centered hit target. */
+body[data-liquid-glass] #root > [data-slot] > div[data-sidebar-collapsed] > div:first-child {
+  margin: var(--lg-inset) 0 var(--lg-inset) 8px;
+  padding: 0;
+  width: 48px;
+  min-width: 48px;
+  max-width: 48px;
+  flex: 0 0 48px;
+  border-radius: var(--lg-radius);
+  overflow: hidden;
+  background: var(--lg-fill);
+}
+
+body[data-liquid-glass] #root > [data-slot] > div[data-sidebar-collapsed] > div:first-child [data-slot="sidebar"] > * {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 14px 5px 8px;
+  align-items: center;
+  background: transparent !important;
+}
+
+body[data-liquid-glass] #root > [data-slot] > div[data-sidebar-collapsed] [class*="logoRow"],
+body[data-liquid-glass] #root > [data-slot] > div[data-sidebar-collapsed] [class*="regionArea"],
+body[data-liquid-glass] #root > [data-slot] > div[data-sidebar-collapsed] [class*="headerActions"] {
+  justify-content: center;
+}
+
+body[data-liquid-glass] #root > [data-slot] > div[data-sidebar-collapsed] [class*="newSession"] {
+  align-self: center;
+}
+
+body[data-liquid-glass] #root > [data-slot] > div[data-sidebar-collapsed] > div:first-child [class*="footArea"],
+body[data-liquid-glass] #root > [data-slot] > div[data-sidebar-collapsed] > div:first-child [class*="settingsArea"],
+body[data-liquid-glass] #root > [data-slot] > div[data-sidebar-collapsed] > div:first-child [class*="overlay"]:not(:has(> [role="dialog"])) {
+  background: transparent !important;
+  box-shadow: none !important;
+  mask-image: none;
+  -webkit-mask-image: none;
+}
+
+body[data-liquid-glass] #root > [data-slot] > div > div:nth-child(3) {
+  margin: var(--lg-inset) var(--lg-inset) var(--lg-inset) 6px;
+  border: var(--lg-hairline);
+  border-radius: var(--lg-radius);
+  background: var(--lg-fill);
+  box-shadow: var(--lg-shine), var(--lg-elev);
+}
+
+body[data-liquid-glass] #root > [data-slot] > div[data-details-collapsed] > div:nth-child(3) {
+  margin: 0;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+}
+
+/* Overlay header: out of flow so the transcript is full-height and
+   scrolls underneath the frost. */
+body[data-liquid-glass] [data-lg-host="header"],
+body[data-liquid-glass] [data-slot="conversation.session.header"] > * {
+  position: absolute;
+  top: var(--lg-inset);
+  left: 16px;
+  right: 16px;
+  z-index: 8;
+  box-sizing: border-box;
+  margin: 0;
+  border: var(--lg-hairline);
+  border-radius: var(--lg-radius-bar);
+  background: var(--lg-fill);
+  box-shadow: var(--lg-shine), var(--lg-elev);
+}
+
+/* Official header hairline sits under the frost bar — hide it. */
+body[data-liquid-glass] [data-slot="conversation.session.header"] > *::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* 对话 / 轨迹: compact glass segment, not a text underline. */
+body[data-liquid-glass] [data-slot="conversation.session.header"] [role="tablist"] {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 2px;
+  width: auto;
+  margin-top: 6px;
+  margin-bottom: 6px;
+  padding: 3px;
+  border: var(--lg-hairline);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, calc(0.16 * var(--lg-alpha)));
+  box-shadow: var(--lg-shine);
+}
+
+body[data-liquid-glass][data-ds-dark-theme] [data-slot="conversation.session.header"] [role="tablist"] {
+  background: rgba(255, 255, 255, calc(0.06 * var(--lg-alpha)));
+}
+
+body[data-liquid-glass] [data-slot="conversation.session.header"] [role="tablist"] button {
+  margin: 0;
+  padding: 4px 12px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  line-height: 18px;
+}
+
+body[data-liquid-glass] [data-slot="conversation.session.header"] [role="tablist"] button::after {
+  content: none !important;
+  display: none !important;
+}
+
+body[data-liquid-glass] [data-slot="conversation.session.header"] [role="tablist"] button[data-lg-tab="active"] {
+  background: var(--lg-fill-strong);
+  box-shadow: var(--lg-shine);
+  color: var(--dsw-alias-label-primary);
+}
+
+/* Session log: filled frost chip, same family as 新会话. */
+body[data-liquid-glass] [data-slot="conversation.session.header.utilities"] button {
+  background: var(--lg-fill-strong) !important;
+  border: var(--lg-hairline) !important;
+  border-radius: 12px !important;
+  box-shadow: var(--lg-shine);
+  backdrop-filter: var(--lg-fx, var(--lg-frost));
+  -webkit-backdrop-filter: var(--lg-fx, var(--lg-frost));
+}
+
+/* Keep the first message readable at scroll=0; further scrolling goes under. */
+body[data-liquid-glass] [data-slot="conversation.session"] > * {
+  padding-top: 88px;
+}
+
+/* Composer host: frost only, no displacement.
+   Do not set overflow:hidden — permission/model menus are descendants. */
+body[data-liquid-glass] [data-lg-host="composer"] {
+  position: relative;
+  isolation: isolate;
+  background: var(--lg-fill-strong) !important;
+  box-shadow: var(--lg-shine), var(--lg-elev);
+}
+
+/* Sticky footer seat: a full-pane frost sheet; composer/dock float on it. */
+body[data-liquid-glass] [data-lg-host="seat"] {
+  isolation: isolate;
+  overflow: visible !important;
+  padding-top: 28px;
+}
+
+body[data-liquid-glass] [data-lg-host="seat"] > .dsh-lg-effect {
+  inset: auto;
+  border-radius: 0;
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 48%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 48%);
+}
+
+/* Session stats under the composer: a long thin glass bar. */
+body[data-liquid-glass] [data-slot="conversation.composer.dock"] > * {
+  box-sizing: border-box;
+  width: min(780px, calc(100% - 32px));
+  margin: 8px auto 2px;
+  padding: 5px 16px;
+  border: var(--lg-hairline);
+  border-radius: 999px;
+  background: var(--lg-fill);
+  box-shadow: var(--lg-shine);
+  backdrop-filter: var(--lg-fx, var(--lg-frost));
+  -webkit-backdrop-filter: var(--lg-fx, var(--lg-frost));
+}
+
+/* Todo and agent takeovers are their own glass cards. The host components
+   provide stable semantic hooks, so their refraction can follow each card's
+   live size instead of borrowing the composer filter. */
+body[data-liquid-glass] [data-testid="todo-panel"],
+body[data-liquid-glass] [data-question-key] > section,
+body[data-liquid-glass] [data-plan-review-key] > section {
+  border: var(--lg-hairline) !important;
+  background: var(--lg-fill-strong) !important;
+  box-shadow: var(--lg-shine), var(--lg-elev);
+  backdrop-filter: var(--lg-fx, var(--lg-frost));
+  -webkit-backdrop-filter: var(--lg-fx, var(--lg-frost));
+}
+
+body[data-liquid-glass] .dsh-lg-effect {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+  backdrop-filter: var(--lg-fx, var(--lg-frost));
+  -webkit-backdrop-filter: var(--lg-fx, var(--lg-frost));
+}
+
+/* Shine stays under chrome. A z-index above content covers composer menus. */
+body[data-liquid-glass] .dsh-lg-shine {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+  background: none;
+  box-shadow: var(--lg-shine);
+}
+
+body[data-liquid-glass] [data-lg-host="header"] > :not(.dsh-lg-effect):not(.dsh-lg-shine):not(.dsh-lg-rim),
+body[data-liquid-glass] [data-lg-host="composer"] > :not(.dsh-lg-effect):not(.dsh-lg-shine):not(.dsh-lg-rim),
+body[data-liquid-glass] [data-lg-host="seat"] > :not(.dsh-lg-effect):not(.dsh-lg-shine):not(.dsh-lg-rim),
+body[data-liquid-glass] [data-lg-host="float"] > :not(.dsh-lg-effect):not(.dsh-lg-shine):not(.dsh-lg-rim) {
+  position: relative;
+  z-index: 1;
+}
+
+/* Composer slot anchors are display:contents. Lift their actual boxes above
+   the fixed seat veil, otherwise translucent Todo and takeover cards are
+   blurred by the veil even though the seat's direct-child rule matches the
+   zero-size anchor. */
+body[data-liquid-glass] [data-lg-host="seat"] [data-chain-overlay-fallback="conversation.composer"] > *,
+body[data-liquid-glass] [data-lg-host="seat"] [data-testid="todo-panel"],
+body[data-liquid-glass] [data-lg-host="seat"] [data-question-key],
+body[data-liquid-glass] [data-lg-host="seat"] [data-plan-review-key] {
+  position: relative;
+  z-index: 1;
+}
+
+/* An open model/context popup must escape the seat's sibling stack. Without
+   lifting the display:contents fallback branch, its own z-index is trapped
+   below the Todo card even when the popup itself is z-index:20010. */
+body[data-liquid-glass] [data-lg-host="seat"]:has([role="menu"], [role="listbox"], [role="dialog"], [data-lg-host="float"]) [data-chain-overlay-fallback="conversation.composer"] > *,
+body[data-liquid-glass] [data-lg-host="seat"]:has([role="menu"], [role="listbox"], [role="dialog"], [data-lg-host="float"]) [data-slot="conversation.composer"] > *,
+body[data-liquid-glass] [data-lg-host="seat"]:has([role="menu"], [role="listbox"], [role="dialog"], [data-lg-host="float"]) [data-lg-host="composer"] {
+  z-index: 20010 !important;
+}
+
+/* Settings overlay lives in the sidebar. The inner rail is z-index 1 so
+   frost can sit underneath; the home composer is sticky z=7 and would
+   paint over the dialog unless the whole column is lifted while open. */
+body[data-liquid-glass] #root > [data-slot] > div > div:first-child:has([role="dialog"]) {
+  z-index: 20000;
+}
+
+body[data-liquid-glass] :has(> [role="dialog"]) {
+  z-index: 20000 !important;
+}
+
+body[data-liquid-glass] :has(> [role="dialog"]) > :not([role="dialog"]) {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body[data-liquid-glass] [role="dialog"] {
+  backdrop-filter: var(--lg-fx, var(--lg-dialog-frost));
+  -webkit-backdrop-filter: var(--lg-fx, var(--lg-dialog-frost));
+}
+
+/* Menus stay readable; the context meter should stay a thin frost, not a milky card.
+   Official menu z-index is 1100; the settings overlay is 20000 so it can cover
+   header/composer. Portaled menus must sit above that overlay. */
+body[data-liquid-glass] [role="menu"],
+body[data-liquid-glass] [role="listbox"] {
+  z-index: 20010 !important;
+  background: var(--lg-fill-strong) !important;
+  border: var(--lg-hairline) !important;
+  box-shadow: var(--lg-shine), var(--lg-elev) !important;
+  backdrop-filter: var(--lg-frost);
+  -webkit-backdrop-filter: var(--lg-frost);
+}
+
+/* Menus and the context dialog live inside the composer. Their translucent
+   surface must not sit below the parent's rim or inherit a second outline. */
+body[data-liquid-glass] [data-lg-host="composer"]:has([role="menu"], [role="listbox"], [role="dialog"], [data-lg-host="float"]) > .dsh-lg-rim,
+body[data-liquid-glass]:has([role="menu"], [role="listbox"], [role="dialog"], [data-lg-host="float"]) [data-lg-host="composer"] > .dsh-lg-rim {
+  display: none !important;
+}
+
+body[data-liquid-glass] span:has(> button[aria-label*="上下文"]) > [class*="panel"],
+body[data-liquid-glass] span:has(> button[aria-label*="context"]) > [class*="panel"],
+body[data-liquid-glass] [data-lg-host="float"] {
+  z-index: 20010 !important;
+  background: var(--lg-fill-float) !important;
+  border: var(--lg-hairline) !important;
+  box-shadow: var(--lg-shine), var(--lg-elev) !important;
+  backdrop-filter: blur(var(--lg-blur)) saturate(150%);
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(150%);
+}
+
+body[data-liquid-glass] [data-lg-host="float"] > .dsh-lg-effect {
+  display: none;
+}
+
+body[data-liquid-glass] [data-lg-host="jump"],
+body[data-liquid-glass] button[aria-label="回到底部"],
+body[data-liquid-glass] button[aria-label="Back to bottom"] {
+  background: var(--lg-fill-strong) !important;
+  border: var(--lg-hairline) !important;
+  box-shadow: var(--lg-shine), var(--lg-elev) !important;
+  backdrop-filter: var(--lg-fx, var(--lg-frost));
+  -webkit-backdrop-filter: var(--lg-fx, var(--lg-frost));
+}
+
+/* Trajectory card: same 16px inset as the overlay header, rounded top. */
+body[data-liquid-glass] [data-lg-host="traces"] {
+  box-sizing: border-box;
+  width: calc(100% - 32px);
+  max-width: calc(100% - 32px);
+  height: calc(100% - var(--lg-traces-shift, 0px));
+  margin: var(--lg-traces-shift, 0px) 16px 0;
+  border: var(--lg-hairline);
+  border-bottom: none;
+  border-radius: var(--lg-radius-bar) var(--lg-radius-bar) 0 0;
+  background: rgba(255, 255, 255, calc(0.10 * var(--lg-alpha))) !important;
+  box-shadow: var(--lg-shine);
+  overflow: hidden;
+  backdrop-filter: var(--lg-fx, var(--lg-frost));
+  -webkit-backdrop-filter: var(--lg-fx, var(--lg-frost));
+}
+
+body[data-liquid-glass][data-ds-dark-theme] [data-lg-host="traces"] {
+  background: rgba(22, 24, 30, calc(0.28 * var(--lg-alpha))) !important;
+}
+
+body[data-liquid-glass] [data-lg-host="traces"] > *:first-child {
+  background: var(--lg-fill) !important;
+  border-bottom: var(--lg-hairline) !important;
+  box-shadow: var(--lg-shine);
+  backdrop-filter: var(--lg-frost);
+  -webkit-backdrop-filter: var(--lg-frost);
+}
+
+body[data-liquid-glass] [data-lg-host="traces"] input {
+  background: var(--lg-fill-strong) !important;
+  border: var(--lg-hairline) !important;
+  border-radius: 999px;
+  box-shadow: var(--lg-shine);
+}
+
+body[data-liquid-glass] [data-side] {
+  filter: drop-shadow(0 2px 8px rgba(20, 28, 45, 0.1));
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  body[data-liquid-glass] {
+    --lg-fill: #f3f5f8;
+    --lg-fill-strong: #ffffff;
+    --lg-fill-float: #f7f8fb;
+    background-image: none;
+    background-color: #eef1f5;
+  }
+
+  body[data-liquid-glass][data-ds-dark-theme] {
+    --lg-fill: #1c1e26;
+    --lg-fill-strong: #22242e;
+    background-color: #12141a;
+  }
+
+  body[data-liquid-glass] .dsh-lg-effect,
+  body[data-liquid-glass] .dsh-lg-shine,
+  body[data-liquid-glass] .dsh-lg-rim,
+  body[data-liquid-glass] #root > [data-slot] > div > div:first-child::after {
+    display: none;
+  }
+
+  body[data-liquid-glass] [data-lg-ink-text][data-lg-ink-guard] {
+    background-color: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-liquid-glass] .dsh-lg-rim,
+  body[data-liquid-glass] #root > [data-slot] > div > div:first-child::after {
+    display: none;
+  }
+
+  body[data-liquid-glass] * {
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Settings section — lives in the official modal, so it must not depend on
+   data-liquid-glass (the user has to be able to turn the theme back on). */
+.dsh-lg-pref {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  max-width: 560px;
+  padding: 4px 0 28px;
+  color: var(--dsw-alias-label-primary);
+}
+
+.dsh-lg-pref-lead {
+  margin: 0;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.dsh-lg-pref-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 14px;
+  background: var(--dsw-alias-bg-module-platform);
+}
+
+.dsh-lg-pref-heading {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 20px;
+  letter-spacing: 0.02em;
+}
+
+.dsh-lg-pref-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.dsh-lg-pref-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.dsh-lg-pref-title {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 22px;
+}
+
+.dsh-lg-pref-hint {
+  color: var(--dsw-alias-label-secondary);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.dsh-lg-pref-switch {
+  position: relative;
+  flex: none;
+  width: 44px;
+  height: 26px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: var(--dsw-alias-button-ghost-active-fill);
+  cursor: pointer;
+}
+
+.dsh-lg-pref-switch[aria-checked="true"] {
+  background: var(--dsw-alias-button-primary-fill);
+}
+
+.dsh-lg-pref-switch::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+  transition: transform 0.16s ease;
+}
+
+.dsh-lg-pref-switch[aria-checked="true"]::after {
+  transform: translateX(18px);
+}
+
+.dsh-lg-pref-meta {
+  flex: none;
+  min-width: 3em;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 13px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.dsh-lg-pref-range {
+  width: 100%;
+  margin: 2px 0 0;
+  accent-color: var(--dsw-alias-button-primary-fill, #2b2f3a);
+}
+
+.dsh-lg-pref-field {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.dsh-lg-pref-field input[type="text"] {
+  box-sizing: border-box;
+  flex: 1;
+  min-width: 0;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 10px;
+  background: var(--dsw-alias-bg-layer-2);
+  color: var(--dsw-alias-label-primary);
+  font: inherit;
+  font-size: 13px;
+}
+
+.dsh-lg-pref-field input[type="text"]:focus {
+  outline: none;
+  border-color: var(--dsw-static-neutral-bluish-400, #7aa2e8);
+}
+
+.dsh-lg-pref-btn {
+  flex: none;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 10px;
+  background: var(--dsw-alias-button-elevated-fill);
+  color: var(--dsw-alias-label-primary);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.dsh-lg-pref-btn:hover {
+  background: var(--dsw-alias-button-floating-hover);
+}
+
+.dsh-lg-pref-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.dsh-lg-pref-color {
+  box-sizing: border-box;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 10px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.dsh-lg-pref-color:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.dsh-lg-pref-preview {
+  width: 100%;
+  height: 88px;
+  border-radius: 12px;
+  background-color: #1a1d24;
+  background-image: var(--lg-pref-preview);
+  background-size: cover;
+  background-position: center;
+  border: 1px solid var(--dsw-alias-border-l2);
+}
+
+.dsh-lg-pref-error {
+  margin: 0;
+  color: var(--dsw-alias-label-danger, #c44747);
+  font-size: 12px;
+  line-height: 18px;
+}
+

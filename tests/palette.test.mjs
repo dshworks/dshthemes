@@ -88,3 +88,13 @@ test("springs land at 1 and the snap overshoots", () => {
   assert.equal(pts[pts.length - 1], 1);
   assert.ok(Math.max(...pts) > 1.05, "underdamped spring should overshoot");
 });
+
+// A theme that redefines a role in terms of a variable it never declares used
+// to produce a null colour, which the build then tried to parse as a hex.
+test("an unresolvable override falls back to the stock value, uncounted", () => {
+  const base = [":root { --dsw-alias-brand-primary: #4d6bfe; --dsw-alias-bg-primary: #ffffff; }"];
+  const theme = ":root { --dsw-alias-brand-primary: var(--never-declared); }";
+  const pal = extractPalette(base, theme);
+  assert.equal(pal.dark.brand, "#4d6bfe");
+  assert.equal(pal.light.brand, "#4d6bfe");
+});

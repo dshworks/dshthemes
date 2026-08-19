@@ -1,0 +1,323 @@
+/* chinaRXQ/dsh-wallpaper — client.js
+   fetched 2026-08-19 from https://raw.githubusercontent.com/chinaRXQ/dsh-wallpaper/main/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/* ===== dsh-wallpaper：html 兜底底色（图片层会盖住它） ===== */
+html.dsh-wallpaper-on { background-color: #0f1115; }
+/* ===== dsh-wallpaper：背景图层（垫在 #root 下面） ===== */
+#dsh-wallpaper-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: var(--dsh-wallpaper-image-opacity, 1);
+  filter: blur(var(--dsh-wallpaper-blur, 0px));
+  transition: opacity 0.15s ease;
+}
+/* ===== dsh-wallpaper：压暗遮罩（提升可读性，盖在背景图上） ===== */
+#dsh-wallpaper-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: rgba(0, 0, 0, var(--dsh-wallpaper-mask, 0));
+}
+/* 应用内容抬升到背景层之上 */
+html.dsh-wallpaper-on #root {
+  position: relative;
+  z-index: 1;
+}
+/* ===== dsh-wallpaper：让面板半透明，图片透出来（浅色） ===== */
+html.dsh-wallpaper-on body {
+  --dsw-alias-bg-base: color-mix(in srgb, var(--dsw-static-neutral-bluish-00) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-alias-bg-layer-1: color-mix(in srgb, var(--dsw-static-neutral-bluish-00) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-alias-bg-layer-2: color-mix(in srgb, var(--dsw-static-neutral-bluish-00) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-alias-bg-layer-3: color-mix(in srgb, var(--dsw-static-neutral-bluish-00) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-alias-bg-overlay: color-mix(in srgb, var(--dsw-static-neutral-bluish-150) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-alias-bg-module-platform: color-mix(in srgb, var(--dsw-static-neutral-bluish-60) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-alias-bg-multi-select: color-mix(in srgb, var(--dsw-static-neutral-bluish-60) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-specific-sidebar-fill: color-mix(in srgb, var(--dsw-static-neutral-bluish-50) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-specific-input-major: color-mix(in srgb, var(--dsw-static-neutral-bluish-00) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-specific-login-input: color-mix(in srgb, var(--dsw-static-neutral-bluish-50) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-specific-selector: color-mix(in srgb, var(--dsw-static-neutral-bluish-60) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-specific-tip: color-mix(in srgb, var(--dsw-static-neutral-bluish-60) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-specific-bubble: color-mix(in srgb, var(--dsw-static-deepseek-50) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-specific-bubble-highlight: color-mix(in srgb, var(--dsw-static-deepseek-200) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-alias-markdown-code-block: color-mix(in srgb, var(--dsw-static-neutral-bluish-50) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-alias-markdown-code-block-banner: color-mix(in srgb, var(--dsw-static-neutral-bluish-50) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-alias-markdown-inline-code: color-mix(in srgb, var(--dsw-static-neutral-bluish-100) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-alias-markdown-citation: color-mix(in srgb, var(--dsw-static-neutral-bluish-100) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-alias-scrollbar-bg-l1: color-mix(in srgb, var(--dsw-static-neutral-200) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-alias-scrollbar-bg-l2: color-mix(in srgb, var(--dsw-static-neutral-200) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-alias-scrollbar-hover-l1: color-mix(in srgb, var(--dsw-static-neutral-300) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-alias-scrollbar-hover-l2: color-mix(in srgb, var(--dsw-static-neutral-300) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+}
+/* ===== 深色模式下对应的静态底色 ===== */
+html.dsh-wallpaper-on body[data-ds-dark-theme] {
+  --dsw-alias-bg-base: color-mix(in srgb, var(--dsw-static-neutral-bluish-950) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-alias-bg-layer-1: color-mix(in srgb, var(--dsw-static-neutral-bluish-875) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-alias-bg-layer-2: color-mix(in srgb, var(--dsw-static-neutral-bluish-850) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-alias-bg-layer-3: color-mix(in srgb, var(--dsw-static-neutral-bluish-800) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-alias-bg-overlay: color-mix(in srgb, var(--dsw-static-neutral-bluish-700) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-alias-bg-module-platform: color-mix(in srgb, var(--dsw-static-neutral-bluish-800) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-alias-bg-multi-select: color-mix(in srgb, var(--dsw-static-neutral-bluish-850) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-specific-sidebar-fill: color-mix(in srgb, var(--dsw-static-neutral-bluish-900) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-specific-input-major: color-mix(in srgb, var(--dsw-static-neutral-bluish-850) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-specific-login-input: color-mix(in srgb, var(--dsw-static-neutral-bluish-900) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-specific-selector: color-mix(in srgb, var(--dsw-static-neutral-bluish-800) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-specific-tip: color-mix(in srgb, var(--dsw-static-neutral-bluish-800) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-specific-bubble: color-mix(in srgb, var(--dsw-static-neutral-bluish-850) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-specific-bubble-highlight: color-mix(in srgb, var(--dsw-static-neutral-bluish-750) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-alias-markdown-code-block: color-mix(in srgb, var(--dsw-static-neutral-bluish-900) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-alias-markdown-code-block-banner: color-mix(in srgb, var(--dsw-static-neutral-bluish-850) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-alias-markdown-inline-code: color-mix(in srgb, var(--dsw-static-neutral-bluish-850) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-alias-markdown-citation: color-mix(in srgb, var(--dsw-static-neutral-bluish-800) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-alias-scrollbar-bg-l1: color-mix(in srgb, var(--dsw-static-neutral-700) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-alias-scrollbar-bg-l2: color-mix(in srgb, var(--dsw-static-neutral-600) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-alias-scrollbar-hover-l1: color-mix(in srgb, var(--dsw-static-neutral-600) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+  --dsw-alias-scrollbar-hover-l2: color-mix(in srgb, var(--dsw-static-neutral-550) calc(var(--dsh-wallpaper-panel-opacity, 1) * 100%), transparent) !important;
+}
+/* ===== 控制面板本体（Apple / iOS 毛玻璃风） ===== */
+#dsh-wallpaper-toggle {
+  --dswp-accent: #007aff;
+  position: fixed;
+  right: 14px;
+  bottom: 14px;
+  z-index: 2147483001;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.72);
+  color: #1c1c1e;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14), inset 0 0.5px 0 rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), background 0.18s ease;
+}
+#dsh-wallpaper-toggle:hover { transform: scale(1.06); }
+#dsh-wallpaper-toggle:active { transform: scale(0.96); }
+body[data-ds-dark-theme] #dsh-wallpaper-toggle {
+  --dswp-accent: #0a84ff;
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(30, 30, 32, 0.55);
+  color: #f2f2f7;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), inset 0 0.5px 0 rgba(255, 255, 255, 0.12);
+}
+#dsh-wallpaper-panel {
+  --dswp-bg: rgba(247, 248, 250, 0.72);
+  --dswp-field: rgba(255, 255, 255, 0.65);
+  --dswp-text: #1c1c1e;
+  --dswp-text-2: #6e6e73;
+  --dswp-border: rgba(0, 0, 0, 0.09);
+  --dswp-hairline: rgba(255, 255, 255, 0.7);
+  --dswp-accent: #007aff;
+  --dswp-accent-soft: rgba(0, 122, 255, 0.12);
+  --dswp-track: rgba(0, 0, 0, 0.12);
+  --dswp-ok: #1f9d55;
+  --dswp-err: #d70015;
+  position: fixed;
+  right: 14px;
+  bottom: 68px;
+  z-index: 2147483002;
+  width: 316px;
+  box-sizing: border-box;
+  border-radius: 18px;
+  border: 1px solid var(--dswp-border);
+  background: var(--dswp-bg);
+  color: var(--dswp-text);
+  font: 13px/1.5 -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  letter-spacing: -0.01em;
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  backdrop-filter: blur(28px) saturate(180%);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22), 0 2px 8px rgba(0, 0, 0, 0.06), inset 0 0.5px 0 var(--dswp-hairline);
+  padding: 16px 18px;
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+}
+body[data-ds-dark-theme] #dsh-wallpaper-panel {
+  --dswp-bg: rgba(30, 30, 32, 0.55);
+  --dswp-field: rgba(255, 255, 255, 0.08);
+  --dswp-text: #f2f2f7;
+  --dswp-text-2: #98989d;
+  --dswp-border: rgba(255, 255, 255, 0.14);
+  --dswp-hairline: rgba(255, 255, 255, 0.12);
+  --dswp-accent: #0a84ff;
+  --dswp-accent-soft: rgba(10, 132, 255, 0.2);
+  --dswp-track: rgba(255, 255, 255, 0.22);
+  --dswp-ok: #30d158;
+  --dswp-err: #ff453a;
+}
+#dsh-wallpaper-panel.dsh-open { display: flex; }
+#dsh-wallpaper-panel .dswp-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+#dsh-wallpaper-panel .dswp-close {
+  background: none;
+  border: none;
+  color: var(--dswp-text-2);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  width: 44px;
+  height: 44px;
+  margin: -8px -10px -8px 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+#dsh-wallpaper-panel .dswp-close:hover { background: var(--dswp-accent-soft); color: var(--dswp-text); }
+#dsh-wallpaper-panel .dswp-row { display: flex; flex-direction: column; gap: 6px; }
+#dsh-wallpaper-panel .dswp-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  color: var(--dswp-text-2);
+  font-size: 12px;
+  font-weight: 500;
+}
+#dsh-wallpaper-panel .dswp-label b {
+  color: var(--dswp-text);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+/* range slider（iOS 风格圆钮） */
+#dsh-wallpaper-panel input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 24px;
+  background: transparent;
+  cursor: pointer;
+}
+#dsh-wallpaper-panel input[type="range"]::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--dswp-track);
+}
+#dsh-wallpaper-panel input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: -8px;
+  border-radius: 50%;
+  border: none;
+  background: #fff;
+  box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+#dsh-wallpaper-panel input[type="range"]::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--dswp-track);
+}
+#dsh-wallpaper-panel input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+#dsh-wallpaper-panel input[type="text"] {
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 10px;
+  border: 1px solid var(--dswp-border);
+  background: var(--dswp-field);
+  color: var(--dswp-text);
+  padding: 9px 11px;
+  font: 13px/1.4 inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+#dsh-wallpaper-panel input[type="text"]:focus {
+  outline: none;
+  border-color: var(--dswp-accent);
+  box-shadow: 0 0 0 3px var(--dswp-accent-soft);
+}
+#dsh-wallpaper-panel input[type="text"]::placeholder { color: var(--dswp-text-2); }
+#dsh-wallpaper-panel input[type="file"] { font: 12px/1.4 inherit; color: var(--dswp-text-2); }
+#dsh-wallpaper-panel input[type="file"]::file-selector-button {
+  margin-right: 10px;
+  border: 1px solid var(--dswp-border);
+  border-radius: 8px;
+  background: var(--dswp-field);
+  color: var(--dswp-accent);
+  font: 600 12px/1 inherit;
+  padding: 9px 12px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+#dsh-wallpaper-panel input[type="file"]::file-selector-button:hover { background: var(--dswp-accent-soft); }
+#dsh-wallpaper-panel .dswp-btns { display: flex; gap: 8px; }
+#dsh-wallpaper-panel button.dswp-btn {
+  flex: 1;
+  min-height: 44px;
+  border-radius: 11px;
+  border: 1px solid var(--dswp-border);
+  background: var(--dswp-field);
+  color: var(--dswp-text);
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+#dsh-wallpaper-panel button.dswp-btn:hover { background: var(--dswp-accent-soft); }
+#dsh-wallpaper-panel button.dswp-btn:active { transform: scale(0.98); }
+#dsh-wallpaper-panel button.dswp-btn.dswp-primary {
+  background: var(--dswp-accent);
+  border-color: var(--dswp-accent);
+  color: #fff;
+  font-weight: 600;
+}
+#dsh-wallpaper-panel button.dswp-btn.dswp-primary:hover { background: var(--dswp-accent); filter: brightness(1.08); }
+#dsh-wallpaper-panel .dswp-thumb {
+  max-width: 100%;
+  max-height: 76px;
+  border-radius: 12px;
+  object-fit: cover;
+  display: none;
+  border: 1px solid var(--dswp-border);
+}
+#dsh-wallpaper-panel .dswp-thumb.dswp-show { display: block; }
+#dsh-wallpaper-panel .dswp-status {
+  font-size: 12px;
+  line-height: 1.45;
+  border-radius: 10px;
+  padding: 8px 10px;
+  display: none;
+  word-break: break-all;
+}
+#dsh-wallpaper-panel .dswp-status.dswp-show { display: block; }
+#dsh-wallpaper-panel .dswp-status.dswp-ok { background: rgba(31, 157, 85, 0.14); color: var(--dswp-ok); }
+#dsh-wallpaper-panel .dswp-status.dswp-err { background: rgba(215, 0, 21, 0.12); color: var(--dswp-err); }
+/* 焦点可见性 + 减少动态 */
+#dsh-wallpaper-toggle:focus-visible,
+#dsh-wallpaper-panel button:focus-visible,
+#dsh-wallpaper-panel input:focus-visible {
+  outline: 2px solid var(--dswp-accent, #007aff);
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  #dsh-wallpaper-toggle,
+  #dsh-wallpaper-panel button.dswp-btn,
+  #dsh-wallpaper-panel .dswp-close { transition: none; }
+}

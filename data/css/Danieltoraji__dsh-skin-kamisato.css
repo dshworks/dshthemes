@@ -1,0 +1,632 @@
+/* Danieltoraji/dsh-skin-kamisato — lib/skin.css
+   fetched 2026-08-19 from https://raw.githubusercontent.com/Danieltoraji/dsh-skin-kamisato/main/lib/skin.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* ============================================================================
+ * 神里印象 · Kamisato Impression — DeepSeek Harness 皮肤
+ * ----------------------------------------------------------------------------
+ * 主题来源：参考图「神里之纹」取色（青→蓝绿→深藏青渐变）+ 原神 UI 风格点缀
+ * 设计原则：
+ *   - 不改动任何页面结构与布局，仅覆盖颜色、标题字体与少量点缀样式；
+ *   - 正文/小字号/代码字体保持 dsh 原样（只动 --dsw-font-{xl-24,l-20,m-18,
+ *     markdown-h1..h4} 等标题级字体变量）；
+ *   - 标题字体：汉仪文黑（本机已装 35W–85W 六字重；缺失时回退系统字体）；
+ *   - 不把参考图作为背景：仅在页面右下角放置一枚极淡（≈5%）的纹章水印。
+ * 生效方式：本文件由 build-client.ps1 内联进 lib/client.js，由 client 插件
+ *   注入为 <style>，位于既有样式之后，级联覆盖同名令牌。
+ * ========================================================================== */
+
+/* ---------------------------------------------------------------------------
+ * 〇、自托管字体（@font-face）
+ * ---------------------------------------------------------------------------
+ * Chromium 对「按用户安装」的字体（%LOCALAPPDATA%\...\Fonts）存在渲染回退：
+ * check() 为 true 但光栅化时不用它。这里通过 /skin-fonts/<weight>W 路由
+ * （Host 侧插件提供，读取本机安装的正版字体文件）走正常字体加载管线。
+ * 故意不用 local() —— 本机恰好会「查得到但渲染不了」，local() 会踩坑。
+ * 目标机器未安装汉仪文黑时路由 404，字体栈自然回退，不影响其余皮肤。
+ * 注意：汉仪文黑为商业字体，请勿将 TTF 随皮肤包分发。
+ */
+@font-face {
+  font-family: "汉仪文黑-85W";
+  src: url("https://raw.githubusercontent.com/Danieltoraji/dsh-skin-kamisato/main/lib/skin-fonts/85W") format("truetype");
+  font-weight: 700 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "汉仪文黑-75W";
+  src: url("https://raw.githubusercontent.com/Danieltoraji/dsh-skin-kamisato/main/lib/skin-fonts/75W") format("truetype");
+  font-weight: 600 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "汉仪文黑-65W";
+  src: url("https://raw.githubusercontent.com/Danieltoraji/dsh-skin-kamisato/main/lib/skin-fonts/65W") format("truetype");
+  font-weight: 500 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: "汉仪文黑-55W";
+  src: url("https://raw.githubusercontent.com/Danieltoraji/dsh-skin-kamisato/main/lib/skin-fonts/55W") format("truetype");
+  font-weight: 400 500;
+  font-display: swap;
+}
+
+/* ---------------------------------------------------------------------------
+ * 一、浅色模式（body）
+ * ------------------------------------------------------------------------- */
+body {
+  /* ---- 静态色板：中性（冷白微青） ---- */
+  --dsw-static-neutral-bluish-00: #ffffff;
+  --dsw-static-neutral-bluish-50: #f5f9fb;
+  --dsw-static-neutral-bluish-60: #eef5f8;
+  --dsw-static-neutral-bluish-75: #e9f1f4;
+  --dsw-static-neutral-bluish-100: #e2edf1;
+  --dsw-static-neutral-bluish-150: #dce9ee;
+  --dsw-static-neutral-bluish-200: #d2e2e8;
+  --dsw-static-neutral-bluish-300: #bccfd6;
+  --dsw-static-neutral-bluish-400: #a3bcc4;
+  --dsw-static-neutral-bluish-500: #8aa7b0;
+  --dsw-static-neutral-bluish-550: #7c99a3;
+  --dsw-static-neutral-bluish-600: #6b8790;
+  --dsw-static-neutral-bluish-700: #4c6670;
+  --dsw-static-neutral-bluish-750: #3d555f;
+  --dsw-static-neutral-bluish-800: #31474f;
+  --dsw-static-neutral-bluish-850: #283c44;
+  --dsw-static-neutral-bluish-875: #22343b;
+  --dsw-static-neutral-bluish-900: #1b2b33;
+  --dsw-static-neutral-bluish-950: #16242b;
+  --dsw-static-neutral-bluish-1000: #101c22;
+
+  /* ---- 静态色板：品牌青（神里青，替代 deepseek 蓝） ---- */
+  --dsw-static-deepseek-50: #eff7f9;
+  --dsw-static-deepseek-100: #e0f0f3;
+  --dsw-static-deepseek-200: #c9e6eb;
+  --dsw-static-deepseek-300: #a9d5dd;
+  --dsw-static-deepseek-400: #6fb4c4;
+  --dsw-static-deepseek-450: #5aa5b6;
+  --dsw-static-deepseek-500: #388090;
+  --dsw-static-deepseek-600: #2f7083;
+  --dsw-static-deepseek-700-delete: #2a6071;
+  --dsw-static-deepseek-800: #234e5c;
+  --dsw-static-deepseek-900: #1a3a45;
+
+  /* ---- 静态色板：靛蓝（神里绫华 · 第二强调色） ---- */
+  --dsw-static-blue-50: #eef3fa;
+  --dsw-static-blue-75: #e6eef8;
+  --dsw-static-blue-100: #dce8f5;
+  --dsw-static-blue-300: #a8c2e2;
+  --dsw-static-blue-400: #7da3d0;
+  --dsw-static-blue-450: #6d95c6;
+  --dsw-static-blue-500: #5d86bb;
+  --dsw-static-blue-600: #4a74a8;
+  --dsw-static-blue-800: #33527c;
+  --dsw-static-blue-900: #27405f;
+  --dsw-static-blue-950: #1f344f;
+
+  /* ---- 静态色板：成功（冷调青绿） ---- */
+  --dsw-static-green-100: #ddf4ea;
+  --dsw-static-green-400: #4ccf9c;
+  --dsw-static-green-500: #2ebd85;
+  --dsw-static-green-900: #1e4a38;
+
+  /* ---- 语义：背景 ---- */
+  --dsw-alias-bg-base: #f5f9fb;
+  --dsw-alias-bg-layer-1: #ffffff;
+  --dsw-alias-bg-layer-2: #ffffff;
+  --dsw-alias-bg-layer-3: #ffffff;
+  --dsw-alias-bg-overlay: #e9f1f4;
+  --dsw-alias-bg-module-platform: #e6eff3;
+  --dsw-alias-bg-multi-select: #e6eff3;
+  --dsw-alias-bg-skeleton: rgba(27, 43, 51, 0.05);
+
+  /* ---- 语义：边框（藏青透明） ---- */
+  --dsw-alias-border-l1: rgba(27, 60, 74, 0.08);
+  --dsw-alias-border-l2: rgba(27, 60, 74, 0.14);
+  --dsw-alias-border-l2-darkmode-thin: rgba(27, 60, 74, 0.1);
+  --dsw-alias-border-l3: rgba(27, 60, 74, 0.2);
+  --dsw-alias-border-l4: rgba(27, 60, 74, 0.28);
+  --dsw-alias-border-inverted: rgba(255, 255, 255, 0);
+  --dsw-alias-border-inverted2: rgba(255, 255, 255, 0);
+
+  /* ---- 语义：品牌 ---- */
+  --dsw-alias-brand-primary: #2a6577;
+  --dsw-alias-brand-primary-invert: #e4eef1;
+  --dsw-alias-brand-primary-new-colorprimary-new-color: #388090;
+  --dsw-alias-brand-text: #101c22;
+
+  /* ---- 语义：文字 ---- */
+  --dsw-alias-label-primary: #1b2b33;
+  --dsw-alias-label-primary-bluish: #16323d;
+  --dsw-alias-label-primary-dimmed: #16242b;
+  --dsw-alias-label-primary-foreground: #ffffff;
+  --dsw-alias-label-primary-inverted: #ffffff;
+  --dsw-alias-label-secondary: #41575f;
+  --dsw-alias-label-tertiary: #647b84;
+  --dsw-alias-label-caption: #7c939c;
+  --dsw-alias-label-dimmed: #9fb3ba;
+
+  /* ---- 语义：按钮 ---- */
+  /* ---- 语义：按钮（青蓝加深，避免过淡） ---- */
+  --dsw-alias-button-primary-fill: #2f7083;
+  --dsw-alias-button-primary-hover: #2a6577;
+  --dsw-alias-button-primary-dimmed: #d3e2e8;
+  --dsw-alias-button-info-fill: #4875a6;
+  --dsw-alias-button-info-hover: #5683b4;
+  --dsw-alias-button-contrast-fill: #31474f;
+  --dsw-alias-button-elevated-fill: #f4f8fa;
+  --dsw-alias-button-floating-fill: #f4f8fa;
+  --dsw-alias-button-floating-hover: #dce9ee;
+  --dsw-alias-button-ghost-active-fill: #d3e2e8;
+  --dsw-alias-button-ghost-active-hover: #c9dde4;
+  --dsw-alias-button-ghost-active-border: #8aa7b0;
+  --dsw-alias-button-tool-bar-fill: rgba(52, 71, 79, 0.5);
+  --dsw-alias-button-tool-bar-hover: rgba(52, 71, 79, 0.6);
+  --dsw-alias-button-tool-bar-fill-invisible: rgba(31, 31, 31, 0.36);
+
+  /* ---- 语义：交互（青底、冰蓝强调） ---- */
+  --dsw-alias-interactive-bg-hover: rgba(56, 128, 144, 0.07);
+  --dsw-alias-interactive-bg-active: rgba(96, 144, 200, 0.12);
+  --dsw-alias-interactive-bg-hover-accent: rgba(96, 144, 200, 0.16);
+  --dsw-alias-interactive-bg-hover-solid: #e9f1f4;
+  --dsw-alias-interactive-bg-hover-danger: rgba(214, 58, 58, 0.06);
+
+  /* ---- 语义：Markdown ---- */
+  --dsw-alias-markdown-inline-code: #e2edf1;
+  --dsw-alias-markdown-code-block: #f2f7f9;
+  --dsw-alias-markdown-code-block-banner: #eaf2f5;
+  --dsw-alias-markdown-code-segment-selected: #ffffff;
+  --dsw-alias-markdown-code-segment-unselected: #e9f1f4;
+  --dsw-alias-markdown-citation: #edf3f9;
+  --dsw-alias-markdown-tag: #e7eef7;
+  --dsw-alias-markdown-placeholder: #eef5f7;
+
+  /* ---- 语义：滚动条（青灰） ---- */
+  --dsw-alias-scrollbar-bg-l1: #cbdce2;
+  --dsw-alias-scrollbar-bg-l2: #b9cdd5;
+  --dsw-alias-scrollbar-hover-l1: #a8c0c9;
+  --dsw-alias-scrollbar-hover-l2: #93afb8;
+
+  /* ---- 语义：状态 ---- */
+  --dsw-alias-state-business-primary: #388090;
+  --dsw-alias-state-business-tertiary: #e0f0f3;
+  --dsw-alias-state-success-primary: #2ebd85;
+  --dsw-alias-state-success-secondary: #4ccf9c;
+  --dsw-alias-state-success-tertiary: #ddf4ea;
+  --dsw-alias-state-warn-primary: #e8a23b;
+  --dsw-alias-state-warn-secondary: #f0b85c;
+  --dsw-alias-state-warn-tertiary: #fbf1dd;
+  --dsw-alias-state-warn-label: #c07f1f;
+  --dsw-alias-state-error-primary: #d63a3a;
+  --dsw-alias-state-error-secondary: #e06060;
+
+  /* ---- 语义：浮层 ---- */
+  --dsw-alias-toast-bg: #283c44;
+  --dsw-alias-tooltip-bg: #283c44;
+
+  /* ---- 组件：气泡 / 输入 / 侧栏 ---- */
+  --dsw-specific-bubble: #e1f0f4;
+  --dsw-specific-bubble-highlight: #d3e9ef;
+  --dsw-specific-input-major: #ffffff;
+  --dsw-specific-login-input: #eef5f8;
+  --dsw-specific-selector: #eef5f8;
+  --dsw-specific-menu: #ffffff;
+  --dsw-specific-tip: #eef5f7;
+  --dsw-specific-sidebar-fill: #dbe8ec;
+  --dsw-specific-sidebar-nav-item-active: #c9dde4;
+  --dsw-specific-sidebar-nav-item-active-accent: #78aed9;
+  --dsw-specific-sidebar-nav-item-hover: #d3e2e8;
+
+  /* ---- 思考渐变（与底色同调） ---- */
+  --dsw-linear-gradient-think: linear-gradient(180deg, #f5f9fb 20.19%, rgba(245, 249, 251, 0) 100%);
+  --dsw-linear-think-select: linear-gradient(180deg, #eef5f8 20.19%, rgba(238, 245, 248, 0) 100%);
+
+  /* ---- 标题字体：汉仪文黑（仅标题级，正文/代码不动） ---- */
+  --dsw-font-title-heavy: "汉仪文黑-85W", "汉仪文黑-75W", "汉仪文黑-65W", "汉仪文黑-55W", "HYWenHei", "Source Han Sans SC", "Noto Sans SC", "Microsoft YaHei", "PingFang SC", sans-serif;
+  --dsw-font-title: "汉仪文黑-75W", "汉仪文黑-65W", "汉仪文黑-55W", "HYWenHei", "Source Han Sans SC", "Noto Sans SC", "Microsoft YaHei", "PingFang SC", sans-serif;
+
+  --dsw-font-markdown-h1: 700 24px/34px var(--dsw-font-title-heavy);
+  --dsw-font-markdown-h1-font-family: var(--dsw-font-title-heavy);
+  --dsw-font-markdown-h2: 700 22px/32px var(--dsw-font-title-heavy);
+  --dsw-font-markdown-h2-font-family: var(--dsw-font-title-heavy);
+  --dsw-font-markdown-h3: 700 20px/30px var(--dsw-font-title-heavy);
+  --dsw-font-markdown-h3-font-family: var(--dsw-font-title-heavy);
+  --dsw-font-markdown-h4: 600 16px/28px var(--dsw-font-title);
+  --dsw-font-markdown-h4-font-family: var(--dsw-font-title);
+  --dsw-font-xl-24: 600 24px/32px var(--dsw-font-title);
+  --dsw-font-xl-24-font-family: var(--dsw-font-title);
+  --dsw-font-l-20: 500 20px/28px var(--dsw-font-title);
+  --dsw-font-l-20-font-family: var(--dsw-font-title);
+  --dsw-font-m-18: 500 16px/28px var(--dsw-font-title);
+  --dsw-font-m-18-font-family: var(--dsw-font-title);
+}
+
+/* ---------------------------------------------------------------------------
+ * 二、深色模式（夜樱 · 深藏青）
+ * ------------------------------------------------------------------------- */
+body[data-ds-dark-theme] {
+  /* ---- 静态色板：中性（亮靛 · 深而明：底≈L4-5%，层级向扇面辉光靠） ---- */
+  --dsw-static-neutral-bluish-00: #ffffff;
+  --dsw-static-neutral-bluish-50: #ededfa;
+  --dsw-static-neutral-bluish-60: #e7e8f7;
+  --dsw-static-neutral-bluish-75: #e0e1f4;
+  --dsw-static-neutral-bluish-100: #d5d7f2;
+  --dsw-static-neutral-bluish-150: #c9ccee;
+  --dsw-static-neutral-bluish-200: #bcbfe8;
+  --dsw-static-neutral-bluish-300: #a2a7de;
+  --dsw-static-neutral-bluish-400: #878dd0;
+  --dsw-static-neutral-bluish-500: #6f75bd;
+  --dsw-static-neutral-bluish-550: #6268ae;
+  --dsw-static-neutral-bluish-600: #565c9e;
+  --dsw-static-neutral-bluish-700: #3f4580;
+  --dsw-static-neutral-bluish-750: #363c70;
+  --dsw-static-neutral-bluish-800: #2e345f;
+  --dsw-static-neutral-bluish-850: #282e57;
+  --dsw-static-neutral-bluish-875: #232950;
+  --dsw-static-neutral-bluish-900: #1e2449;
+  --dsw-static-neutral-bluish-950: #1a1f3e;
+  --dsw-static-neutral-bluish-1000: #151a34;
+
+  /* ---- 静态色板：冰蓝（扇面辉光 · 深色主色） ---- */
+  --dsw-static-deepseek-50: #223c5e;
+  --dsw-static-deepseek-100: #2a4870;
+  --dsw-static-deepseek-200: #355a8c;
+  --dsw-static-deepseek-300: #43709f;
+  --dsw-static-deepseek-400: #6090c8;
+  --dsw-static-deepseek-450: #6f9ed2;
+  --dsw-static-deepseek-500: #7fabe0;
+  --dsw-static-deepseek-600: #92bbeb;
+  --dsw-static-deepseek-700-delete: #3a5f8f;
+  --dsw-static-deepseek-800: #2e4c74;
+  --dsw-static-deepseek-900: #253e5e;
+
+  /* ---- 静态色板：靛紫（布料调 · 第二强调） ---- */
+  --dsw-static-blue-50: #262b54;
+  --dsw-static-blue-75: #2b315e;
+  --dsw-static-blue-100: #323a6e;
+  --dsw-static-blue-300: #454e8e;
+  --dsw-static-blue-400: #5f6cb4;
+  --dsw-static-blue-450: #6d7ac4;
+  --dsw-static-blue-500: #7c88d2;
+  --dsw-static-blue-600: #8e99dc;
+  --dsw-static-blue-800: #3d477e;
+  --dsw-static-blue-900: #2f3763;
+  --dsw-static-blue-950: #272e54;
+
+  /* ---- 静态色板：成功 ---- */
+  --dsw-static-green-100: #10382a;
+  --dsw-static-green-400: #3fd090;
+  --dsw-static-green-500: #34c489;
+  --dsw-static-green-900: #0f2e22;
+
+  /* ---- 语义：背景（深而明：底≈L2.7% 保证与冰蓝/金的高对比） ---- */
+  --dsw-alias-bg-base: #242a52;
+  --dsw-alias-bg-layer-1: #2b3160;
+  --dsw-alias-bg-layer-2: #333a6e;
+  --dsw-alias-bg-layer-3: #3d4480;
+  --dsw-alias-bg-overlay: #484f90;
+  --dsw-alias-bg-module-platform: #3d4480;
+  --dsw-alias-bg-multi-select: #333a6e;
+  --dsw-alias-bg-skeleton: rgba(236, 236, 250, 0.1);
+
+  /* ---- 语义：边框（亮紫光透明） ---- */
+  --dsw-alias-border-l1: rgba(200, 202, 244, 0.1);
+  --dsw-alias-border-l2: rgba(200, 202, 244, 0.18);
+  --dsw-alias-border-l2-darkmode-thin: rgba(200, 202, 244, 0.1);
+  --dsw-alias-border-l3: rgba(200, 202, 244, 0.26);
+  --dsw-alias-border-l4: rgba(200, 202, 244, 0.34);
+  --dsw-alias-border-inverted: rgba(255, 255, 255, 0.1);
+  --dsw-alias-border-inverted2: rgba(255, 255, 255, 0.1);
+
+  /* ---- 语义：品牌（金 · 亮点） ---- */
+  --dsw-alias-brand-primary: #c8b080;
+  --dsw-alias-brand-primary-invert: #181d3a;
+  --dsw-alias-brand-primary-new-colorprimary-new-color: #6f9ed2;
+  --dsw-alias-brand-text: #e5e6f8;
+
+  /* ---- 语义：文字（明亮紫白） ---- */
+  --dsw-alias-label-primary: #ececfa;
+  --dsw-alias-label-primary-bluish: #d8d9f4;
+  --dsw-alias-label-primary-dimmed: #c6c8ec;
+  --dsw-alias-label-primary-foreground: #101c33;
+  --dsw-alias-label-primary-inverted: #181d3a;
+  --dsw-alias-label-secondary: #aeb2de;
+  --dsw-alias-label-tertiary: #9ba0d4;
+  --dsw-alias-label-caption: #7f85bb;
+  --dsw-alias-label-dimmed: #6268ae;
+
+  /* ---- 语义：按钮（金主色 = 亮点；冰蓝做信息按钮） ---- */
+  --dsw-alias-button-primary-fill: #c8b080;
+  --dsw-alias-button-primary-hover: #d4bc90;
+  --dsw-alias-button-primary-dimmed: #333a6e;
+  --dsw-alias-button-info-fill: #6090c8;
+  --dsw-alias-button-info-hover: #6f9ed2;
+  --dsw-alias-button-contrast-fill: #ececfa;
+  --dsw-alias-button-elevated-fill: #41487e;
+  --dsw-alias-button-floating-fill: #4b5290;
+  --dsw-alias-button-floating-hover: #565d9e;
+  --dsw-alias-button-ghost-active-fill: #41487e;
+  --dsw-alias-button-ghost-active-hover: #4b5290;
+  --dsw-alias-button-ghost-active-border: #6f75bd;
+  --dsw-alias-button-tool-bar-fill: rgba(120, 140, 190, 0.5);
+  --dsw-alias-button-tool-bar-hover: rgba(120, 140, 190, 0.6);
+  --dsw-alias-button-tool-bar-fill-invisible: rgba(31, 31, 31, 0.36);
+
+  /* ---- 语义：交互（冰蓝光） ---- */
+  --dsw-alias-interactive-bg-hover: rgba(127, 171, 224, 0.14);
+  --dsw-alias-interactive-bg-active: rgba(127, 171, 224, 0.22);
+  --dsw-alias-interactive-bg-hover-accent: rgba(127, 171, 224, 0.32);
+  --dsw-alias-interactive-bg-hover-solid: #565d9e;
+  --dsw-alias-interactive-bg-hover-danger: rgba(224, 96, 96, 0.16);
+
+  /* ---- 语义：Markdown（靛光调） ---- */
+  --dsw-alias-markdown-inline-code: #333a6e;
+  --dsw-alias-markdown-code-block: #23294f;
+  --dsw-alias-markdown-code-block-banner: #2c3357;
+  --dsw-alias-markdown-code-segment-selected: #333a6e;
+  --dsw-alias-markdown-code-segment-unselected: #272d54;
+  --dsw-alias-markdown-citation: #2f3659;
+  --dsw-alias-markdown-tag: #343b68;
+  --dsw-alias-markdown-placeholder: #272d54;
+
+  /* ---- 语义：滚动条（靛光灰） ---- */
+  --dsw-alias-scrollbar-bg-l1: #454c84;
+  --dsw-alias-scrollbar-bg-l2: #50578f;
+  --dsw-alias-scrollbar-hover-l1: #5c63a0;
+  --dsw-alias-scrollbar-hover-l2: #6a71ae;
+
+  /* ---- 语义：状态（警示金调） ---- */
+  --dsw-alias-state-business-primary: #c8b080;
+  --dsw-alias-state-business-tertiary: #355a8c;
+  --dsw-alias-state-success-primary: #34c489;
+  --dsw-alias-state-success-secondary: #3fd090;
+  --dsw-alias-state-success-tertiary: #10382a;
+  --dsw-alias-state-warn-primary: #d8bd6a;
+  --dsw-alias-state-warn-secondary: #e2cd82;
+  --dsw-alias-state-warn-tertiary: #2e2713;
+  --dsw-alias-state-warn-label: #c8b070;
+  --dsw-alias-state-error-primary: #e85d5d;
+  --dsw-alias-state-error-secondary: #e06060;
+
+  /* ---- 语义：浮层 ---- */
+  --dsw-alias-toast-bg: #41487e;
+  --dsw-alias-tooltip-bg: #41487e;
+
+  /* ---- 组件（靛光调） ---- */
+  --dsw-specific-bubble: #333a68;
+  --dsw-specific-bubble-highlight: #3b4278;
+  --dsw-specific-input-major: #333a6e;
+  --dsw-specific-login-input: #272d54;
+  --dsw-specific-selector: #3d4480;
+  --dsw-specific-menu: #3d4480;
+  --dsw-specific-tip: #272d54;
+  --dsw-specific-sidebar-fill: #1f2547;
+  --dsw-specific-sidebar-nav-item-active: #333a6e;
+  --dsw-specific-sidebar-nav-item-active-accent: #c8c080;
+  --dsw-specific-sidebar-nav-item-hover: #2b3160;
+
+  /* ---- 思考渐变（靛光同调） ---- */
+  --dsw-linear-gradient-think: linear-gradient(180deg, #242a52 20.19%, rgba(36, 42, 82, 0) 100%);
+  --dsw-linear-think-select: linear-gradient(180deg, #333a6e 20.19%, rgba(51, 58, 110, 0) 100%);
+
+  /* ---- 标题字体（与浅色一致） ---- */
+  --dsw-font-title-heavy: "汉仪文黑-85W", "汉仪文黑-75W", "汉仪文黑-65W", "汉仪文黑-55W", "HYWenHei", "Source Han Sans SC", "Noto Sans SC", "Microsoft YaHei", "PingFang SC", sans-serif;
+  --dsw-font-title: "汉仪文黑-75W", "汉仪文黑-65W", "汉仪文黑-55W", "HYWenHei", "Source Han Sans SC", "Noto Sans SC", "Microsoft YaHei", "PingFang SC", sans-serif;
+
+  --dsw-font-markdown-h1: 700 24px/34px var(--dsw-font-title-heavy);
+  --dsw-font-markdown-h1-font-family: var(--dsw-font-title-heavy);
+  --dsw-font-markdown-h2: 700 22px/32px var(--dsw-font-title-heavy);
+  --dsw-font-markdown-h2-font-family: var(--dsw-font-title-heavy);
+  --dsw-font-markdown-h3: 700 20px/30px var(--dsw-font-title-heavy);
+  --dsw-font-markdown-h3-font-family: var(--dsw-font-title-heavy);
+  --dsw-font-markdown-h4: 600 16px/28px var(--dsw-font-title);
+  --dsw-font-markdown-h4-font-family: var(--dsw-font-title);
+  --dsw-font-xl-24: 600 24px/32px var(--dsw-font-title);
+  --dsw-font-xl-24-font-family: var(--dsw-font-title);
+  --dsw-font-l-20: 500 20px/28px var(--dsw-font-title);
+  --dsw-font-l-20-font-family: var(--dsw-font-title);
+  --dsw-font-m-18: 500 16px/28px var(--dsw-font-title);
+  --dsw-font-m-18-font-family: var(--dsw-font-title);
+}
+
+/* ---------------------------------------------------------------------------
+ * 三、界面标题字体（直接选择器）
+ * ---------------------------------------------------------------------------
+ * dsh 的大多数 UI 标题（侧栏品牌名、会话标题、面板标题、设置分区标题等）
+ * 是硬编码的 font-size/font-weight 且不写 font-family —— 它们继承正文字体，
+ * 所以仅靠上面的令牌覆盖无法改变。这里直接对标题元素设置 font-family。
+ *
+ * 选择器按 CSS Module 命名约定（类名中含 _title / _heading / _brand /
+ * _wordmark / _crumbCurrent）做包含匹配，与构建哈希无关，升级后依然生效；
+ * 用包含匹配是为了兼容元素同时挂多个类（class="x_title y_row"）的情况；
+ * 只改 font-family，字号/字重/颜色保持组件原样。
+ */
+[class*="_title"],
+[class*="_heading"],
+[class*="_brand"],
+[class*="_wordmark"],
+[class*="_crumbCurrent"] {
+  font-family: var(--dsw-font-title);
+}
+
+/* 会话标题面包屑容器（含当前会话标题文字） */
+[class*="_crumbs"] {
+  font-family: var(--dsw-font-title);
+}
+
+/* 会话标题：增大一号字体（14px→15px）并延长显示区域（max-width 220px→480px）。
+   [class$="_crumb"] 命中非当前面包屑（单类名），[class*="_crumbCurrent"]
+   命中当前会话标题（多类名，class 以 _crumbCurrent 结尾）；
+   二者都不会误伤 _crumbs/_crumbSeg/_crumbSep 容器。
+   所有规则统一加 body 前缀提升特异性 —— 会话等懒加载插件在皮肤之后注入
+   <style>，同等特异性下会覆盖皮肤，必须用更高特异性压制。 */
+body [class$="_crumb"],
+body [class*="_crumbCurrent"] {
+  font-size: 15px;
+  line-height: 21px;
+  max-width: 480px;
+}
+
+/* 20px/18px 级大标题用更粗的 75W 字重栈，观感更接近原神 UI 标题 */
+.jLrgrW_title,
+.rtSEdW_title,
+.pbvGtq_heading {
+  font-family: var(--dsw-font-title-heavy);
+}
+
+/* 语义化标题元素兜底：h1–h6 永远是标题（低特异性，仅胜过继承；
+   Markdown 内标题由 --dsw-font-markdown-h1..h4 令牌控制） */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--dsw-font-title-heavy);
+}
+
+/* ---------------------------------------------------------------------------
+ * 四、全局点缀（结构不变，仅颜色/视觉）
+ * ------------------------------------------------------------------------- */
+
+/* 页面底色：氛围渐变 —— 浅色为「冰白→淡靛」，深色为「藏青→靛青」
+   （仅露边处可见，面板仍由令牌控制） */
+body {
+  background: linear-gradient(180deg, #f8fbfd 0%, #f0f4fa 50%, #e9f0f8 100%);
+}
+body[data-ds-dark-theme] {
+  background: linear-gradient(180deg, #2e3466 0%, #242a52 45%, #1e2449 100%);
+}
+
+/* 大标题渐变文字：青 → 冰蓝（仅 Markdown h1；侧栏品牌曾因 background-clip
+   在按钮容器上不生效而文字隐形，故不纳入；@supports 兜底保证可读性） */
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  /* 浅色 H1：青 → 冰蓝，加深一档 */
+  body h1 {
+    background-image: linear-gradient(100deg, #2f6b7d 0%, #42679c 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  /* 深色 H2：冰蓝 → 淡金 渐变 */
+  body[data-ds-dark-theme] h2 {
+    background-image: linear-gradient(100deg, #7fabe0 0%, #d8c68e 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+/* Markdown 标题配色补充 */
+/* 浅色 H2：比 H1 更深的实色（深藏青墨） */
+body h2 {
+  color: #20404f;
+}
+
+/* 深色 H1：金色实色（覆盖渐变块的透明文字与背景） */
+body[data-ds-dark-theme] h1 {
+  color: #c8b080;
+  background-image: none;
+  -webkit-background-clip: initial;
+  background-clip: initial;
+}
+
+/* 装饰渐变细线：侧栏品牌区下方（原神菜单式装饰，纯 CSS，不改布局） */
+body [class*="_logoRow"] {
+  position: relative;
+}
+body [class*="_logoRow"]::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(56, 128, 144, 0.5) 25%, rgba(120, 174, 217, 0.5) 75%, transparent 100%);
+  pointer-events: none;
+}
+body[data-ds-dark-theme] [class*="_logoRow"]::after {
+  background: linear-gradient(90deg, transparent 0%, rgba(127, 171, 224, 0.4) 18%, rgba(200, 192, 128, 0.8) 50%, rgba(127, 171, 224, 0.4) 82%, transparent 100%);
+}
+
+/* 用户气泡：青 → 冰蓝 渐变（base 规则用 background 简写，皮肤以更高
+   特异性的 background-image 覆盖，仅影响用户气泡） */
+body [class$="_bubble"] {
+  background-image: linear-gradient(180deg, #e7f3f6 0%, #d9ecf2 100%);
+}
+body[data-ds-dark-theme] [class$="_bubble"] {
+  background-image: linear-gradient(180deg, #454d8a 0%, #3d4478 45%, #383e70 100%);
+}
+
+/* 顶栏（会话标题栏）：左右渐变 —— 左侧保持中间过渡色，
+   浅色右侧到主区中间色 #f5f9fb；深色右侧到更浅亮的冰蓝 #46599c */
+body .wSkVaW_header {
+  background: linear-gradient(90deg, #e8f1f4 0%, #f5f9fb 100%);
+}
+body[data-ds-dark-theme] .wSkVaW_header {
+  background: linear-gradient(90deg, #2a4288 0%, #22284d 100%);
+}
+
+/* 选区：神里青 */
+::selection {
+  background: rgba(56, 128, 144, 0.26);
+  color: inherit;
+}
+body[data-ds-dark-theme] ::selection {
+  background: rgba(127, 171, 224, 0.35);
+  color: inherit;
+}
+
+/* 深色模式：面包屑分隔符 → 金（整体深而明中的金点缀） */
+body[data-ds-dark-theme] [class$="_crumbSep"] {
+  color: #c8b070;
+}
+
+/* 深色模式：键盘焦点 → 金（可访问性 + 金亮点） */
+body[data-ds-dark-theme] :focus-visible {
+  outline-color: #c8b080;
+}
+
+/* 深色模式：滚动条悬停 → 金 */
+body[data-ds-dark-theme] ::-webkit-scrollbar-thumb:hover {
+  background: #c8b080;
+}
+
+/* 深色模式：用户提问徽标（金底）文字加深保证可读 */
+body[data-ds-dark-theme] .Mbwy4a_badge {
+  color: #101c33;
+}
+
+/* ── 水印 ──────────────────────────────────────────────
+ * 浅色 = 纹章（青，稍深）；深色 = 扇（冰蓝-金，明快）。
+ * z-index 需高于底部输入区（composer seat z-index:7）；低于浮层/弹窗。
+ * 发布版默认注释（版权规避）；启用时取消下方规则两端的注释标记，
+ * build-client.ps1 会在 lib/ 存在水印图时自动替换占位符并内联。
+ */
+/*
+body::after {
+  content: "";
+  position: fixed;
+  right: 20px;
+  bottom: 18px;
+  width: 450px;
+  height: 215px;
+  background: url("data:image/png;base64,__CREST_DATA_URI__") no-repeat center / contain;
+  opacity: 0.10;
+  filter: saturate(1.1) brightness(0.82);
+  pointer-events: none;
+  z-index: 8;
+  -webkit-mask-image:
+    linear-gradient(90deg, transparent 0%, transparent 25%, #000 40%, #000 100%),
+    linear-gradient(180deg, transparent 0%, #000 18%, #000 82%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(90deg, transparent 0%, transparent 25%, #000 40%, #000 100%),
+    linear-gradient(180deg, transparent 0%, #000 18%, #000 82%, transparent 100%);
+  mask-composite: intersect;
+}
+body[data-ds-dark-theme]::after {
+  background-image: url("data:image/png;base64,__FAN_DATA_URI__");
+  opacity: 0.19;
+  filter: saturate(1.9) brightness(1.5) contrast(1.12);
+}
+*/
+

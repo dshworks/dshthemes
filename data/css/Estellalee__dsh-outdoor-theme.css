@@ -1,0 +1,400 @@
+/* Estellalee/dsh-outdoor-theme — outdoor-tokens.css
+   fetched 2026-08-19 from https://raw.githubusercontent.com/Estellalee/dsh-outdoor-theme/main/outdoor-tokens.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* ============================================================
+   DSH 户外皮肤 · 山野向导（Trail Guide）
+   ------------------------------------------------------------
+   重要：DSH 的设计令牌全部定义在 <body> / <body[data-ds-dark-theme]> 上，
+   所以覆盖选择器必须命中同一元素且优先级更高：
+     - 亮色「清晨草甸」:  html body[data-outdoor] { ... }   (0,1,2) > body (0,0,1)
+     - 暗色「暮色森林」:  html body[data-outdoor][data-ds-dark-theme] { ... }
+   皮肤开关：body 带 data-outdoor 属性才生效（设置面板「皮肤」行控制）。
+   写在 :root 上会被 body 的定义完全遮蔽（踩过的坑，勿回退）。
+   ============================================================ */
+
+/* ==================== 亮色 · 清晨草甸 ==================== */
+html body[data-outdoor] {
+  /* ---- 背景层级 ---- */
+  --dsw-alias-bg-base: #F1F4EC;                 /* 主背景：带绿意的石灰白 */
+  --dsw-alias-bg-layer-1: #F6F8F1;
+  --dsw-alias-bg-layer-2: #F9FBF5;
+  --dsw-alias-bg-layer-3: #FCFDF9;
+  --dsw-alias-bg-module-platform: #F7F9F3;
+  --dsw-alias-bg-multi-select: #E9EFE2;
+  --dsw-alias-bg-overlay: #FFFFFF;
+  --dsw-alias-bg-skeleton: rgba(0, 0, 0, 0.04);
+  --dsw-alias-bg-mask-drop: rgba(255, 255, 255, 0.9);
+
+  /* ---- 边框 ---- */
+  --dsw-alias-border-l1: #E3E9DD;
+  --dsw-alias-border-l2: #D8E0D2;
+  --dsw-alias-border-l2-darkmode-thin: #D8E0D2;
+  --dsw-alias-border-l3: #C9D4C2;
+  --dsw-alias-border-l4: #BAC8B2;
+  --dsw-alias-border-inverted: rgba(0, 0, 0, 0);
+  --dsw-alias-border-inverted2: rgba(0, 0, 0, 0);
+  --dsw-alias-line-secondary: #DCE5D5;
+  --dsw-alias-separator-primary: #E0E8DA;
+
+  /* ---- 文字 ---- */
+  --dsw-alias-label-primary: #1F2E24;
+  --dsw-alias-label-primary-bluish: #223227;
+  --dsw-alias-label-primary-dimmed: #39493D;
+  --dsw-alias-label-primary-foreground: #FFFFFF;
+  --dsw-alias-label-primary-inverted: #FFFFFF;
+  --dsw-alias-label-secondary: #4E5F52;
+  --dsw-alias-label-tertiary: #73826F;
+  --dsw-alias-label-caption: #5E6E5F;
+  --dsw-alias-label-dimmed: #8A9786;
+
+  /* ---- 按钮：信号橙为唯一主色 ---- */
+  --dsw-alias-button-primary-fill: #E05E2B;
+  --dsw-alias-button-primary-hover: #C9501F;
+  --dsw-alias-button-primary-dimmed: rgba(224, 94, 43, 0.12);
+  --dsw-alias-button-contrast-fill: #1F2E24;
+  --dsw-alias-button-elevated-fill: #FFFFFF;
+  --dsw-alias-button-floating-fill: #FFFFFF;
+  --dsw-alias-button-floating-hover: #EEF3E8;
+  --dsw-alias-button-info-fill: #EAF0E3;
+  --dsw-alias-button-info-hover: #DFE9D8;
+  --dsw-alias-button-ghost-active-fill: #EAF0E3;
+  --dsw-alias-button-ghost-active-hover: #E2EADB;
+  --dsw-alias-button-ghost-active-border: #C9D4C2;
+  --dsw-alias-button-tool-bar-fill: rgba(255, 255, 255, 0.6);
+  --dsw-alias-button-tool-bar-fill-invisible: rgba(255, 255, 255, 0);
+  --dsw-alias-button-tool-bar-hover: #E2EADB;
+
+  /* ---- 交互 ---- */
+  --dsw-alias-interactive-bg-active: #DCE6D4;
+  --dsw-alias-interactive-bg-hover: #E2EADB;
+  --dsw-alias-interactive-bg-hover-accent: #F5C9AE;
+  --dsw-alias-interactive-bg-hover-danger: #F6E3DC;
+  --dsw-alias-interactive-bg-hover-solid: #E05E2B;
+
+  /* ---- 状态 ---- */
+  --dsw-alias-state-business-primary: #E05E2B;
+  --dsw-alias-state-business-tertiary: #EAF0E3;
+  --dsw-alias-state-success-primary: #4E8A57;
+  --dsw-alias-state-success-secondary: #E3F0E2;
+  --dsw-alias-state-success-tertiary: #D4EAD2;
+  --dsw-alias-state-error-primary: #C05548;
+  --dsw-alias-state-error-secondary: #F6E3DC;
+  --dsw-alias-state-warn-primary: #B98A2E;
+  --dsw-alias-state-warn-label: #8A641C;
+  --dsw-alias-state-warn-secondary: #F4EAD2;
+  --dsw-alias-state-warn-tertiary: #EAD9AC;
+
+  /* ---- 特定表面 ---- */
+  --dsw-specific-sidebar-fill: #EAEFE5;
+  --dsw-specific-sidebar-nav-item-active: #DDE6D3;
+  --dsw-specific-sidebar-nav-item-active-accent: #E05E2B;
+  --dsw-specific-sidebar-nav-item-hover: #E3EADB;
+  --dsw-specific-bubble: #FFFFFF;
+  --dsw-specific-bubble-highlight: #EAF0E3;
+  --dsw-specific-input-major: #FFFFFF;
+  --dsw-specific-login-input: #FFFFFF;
+  --dsw-specific-menu: #FFFFFF;
+  --dsw-specific-selector: #FFFFFF;
+  --dsw-specific-tip: #EAF0E3;
+
+  /* ---- Markdown / 代码 ---- */
+  --dsw-alias-markdown-code-block: #F4F6F1;
+  --dsw-alias-markdown-code-block-banner: #EAF0E3;
+  --dsw-alias-markdown-inline-code: #EAF0E3;
+  --dsw-alias-markdown-citation: #E3EADB;
+  --dsw-alias-markdown-placeholder: #8A9786;
+  --dsw-alias-markdown-tag: #EAF0E3;
+  --dsw-alias-markdown-code-segment-selected: #DDE6D3;
+  --dsw-alias-markdown-code-segment-unselected: rgba(0, 0, 0, 0);
+
+  /* ---- 滚动条 / 提示 ---- */
+  --dsw-alias-scrollbar-bg-l1: #EFF3EA;
+  --dsw-alias-scrollbar-bg-l2: #E4EAE0;
+  --dsw-alias-scrollbar-hover-l1: #D9E2D2;
+  --dsw-alias-scrollbar-hover-l2: #CBD7C6;
+  --dsw-alias-tooltip-bg: #1F2E24;
+  --dsw-alias-toast-bg: #1F2E24;
+
+  /* ---- 品牌 ---- */
+  --dsw-alias-brand-primary: #E05E2B;
+  --dsw-alias-brand-primary-invert: #FFFFFF;
+  --dsw-alias-brand-text: #1F2E24;
+
+  /* ---- 静态色（组件直接引用） ---- */
+  --dsw-static-deepseek-50: #FBF3EC;
+  --dsw-static-deepseek-100: #F6E3D3;
+  --dsw-static-deepseek-200: #F5C9AE;
+  --dsw-static-deepseek-300: #F0A97E;
+  --dsw-static-deepseek-400: #E87B45;
+  --dsw-static-deepseek-450: #E26833;
+  --dsw-static-deepseek-500: #E05E2B;
+  --dsw-static-deepseek-600: #C9501F;
+  --dsw-static-deepseek-800: #8F3A12;
+  --dsw-static-deepseek-900: #6E2C0D;
+  --dsw-static-neutral-bluish-400: #E05E2B;     /* 选中态描边 → 信号橙 */
+  --dsw-static-blue-450: #3E7C6E;               /* 链接 → 溪流青绿 */
+  --dsw-static-blue-500: #38705F;
+
+  /* ---- 字体 ---- */
+  --dsw-font-family: "Avenir Next", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+  --dsw-font-markdown-code-block-small: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, monospace;
+}
+
+/* ==================== 暗色 · 暮色森林 ==================== */
+html body[data-outdoor][data-ds-dark-theme] {
+  /* ---- 背景层级 ---- */
+  --dsw-alias-bg-base: #111A15;                 /* 主背景：带绿意的松墨黑 */
+  --dsw-alias-bg-layer-1: #141E18;
+  --dsw-alias-bg-layer-2: #18231C;
+  --dsw-alias-bg-layer-3: #1B2820;
+  --dsw-alias-bg-module-platform: #18231C;
+  --dsw-alias-bg-multi-select: #1E2B22;
+  --dsw-alias-bg-overlay: #101813;
+  --dsw-alias-bg-skeleton: rgba(255, 255, 255, 0.08);
+  --dsw-alias-bg-mask-drop: rgba(39, 39, 48, 0.7);
+
+  /* ---- 边框 ---- */
+  --dsw-alias-border-l1: #22302A;
+  --dsw-alias-border-l2: #29392F;
+  --dsw-alias-border-l2-darkmode-thin: #29392F;
+  --dsw-alias-border-l3: #32453A;
+  --dsw-alias-border-l4: #3B5045;
+  --dsw-alias-border-inverted: rgba(255, 255, 255, 0.06);
+  --dsw-alias-border-inverted2: rgba(255, 255, 255, 0.08);
+  --dsw-alias-line-secondary: #2A3A2F;
+  --dsw-alias-separator-primary: #26362C;
+
+  /* ---- 文字 ---- */
+  --dsw-alias-label-primary: #E6EDE2;
+  --dsw-alias-label-primary-bluish: #DFE8DD;
+  --dsw-alias-label-primary-dimmed: #C3D1BF;
+  --dsw-alias-label-primary-foreground: #1B2A20;
+  --dsw-alias-label-primary-inverted: #FFFFFF;
+  --dsw-alias-label-secondary: #A8BAA4;
+  --dsw-alias-label-tertiary: #7E9380;
+  --dsw-alias-label-caption: #8FA38F;
+  --dsw-alias-label-dimmed: #6E8271;
+
+  /* ---- 按钮：信号橙头灯 ---- */
+  --dsw-alias-button-primary-fill: #E86A33;
+  --dsw-alias-button-primary-hover: #F07A43;
+  --dsw-alias-button-primary-dimmed: rgba(232, 106, 51, 0.16);
+  --dsw-alias-button-contrast-fill: #E6EDE2;
+  --dsw-alias-button-elevated-fill: #1E2B22;
+  --dsw-alias-button-floating-fill: #1E2B22;
+  --dsw-alias-button-floating-hover: #26382C;
+  --dsw-alias-button-info-fill: #23342A;
+  --dsw-alias-button-info-hover: #2B4033;
+  --dsw-alias-button-ghost-active-fill: #223129;
+  --dsw-alias-button-ghost-active-hover: #2A3A2F;
+  --dsw-alias-button-ghost-active-border: #32453A;
+  --dsw-alias-button-tool-bar-fill: rgba(255, 255, 255, 0.04);
+  --dsw-alias-button-tool-bar-fill-invisible: rgba(255, 255, 255, 0);
+  --dsw-alias-button-tool-bar-hover: #223129;
+
+  /* ---- 交互 ---- */
+  --dsw-alias-interactive-bg-active: #1B2820;
+  --dsw-alias-interactive-bg-hover: #223129;
+  --dsw-alias-interactive-bg-hover-accent: #F0B99A;
+  --dsw-alias-interactive-bg-hover-danger: #3A2722;
+  --dsw-alias-interactive-bg-hover-solid: #E86A33;
+
+  /* ---- 状态 ---- */
+  --dsw-alias-state-business-primary: #E86A33;
+  --dsw-alias-state-business-tertiary: #2A3D30;
+  --dsw-alias-state-success-primary: #7FAF86;
+  --dsw-alias-state-success-secondary: #22382B;
+  --dsw-alias-state-success-tertiary: #1E3126;
+  --dsw-alias-state-error-primary: #D97A68;
+  --dsw-alias-state-error-secondary: #3A2722;
+  --dsw-alias-state-warn-primary: #E0A94E;
+  --dsw-alias-state-warn-label: #F0C87E;
+  --dsw-alias-state-warn-secondary: #3A3423;
+  --dsw-alias-state-warn-tertiary: #4A3F24;
+
+  /* ---- 特定表面 ---- */
+  --dsw-specific-sidebar-fill: #152019;
+  --dsw-specific-sidebar-nav-item-active: #1E2B22;
+  --dsw-specific-sidebar-nav-item-active-accent: #E86A33;
+  --dsw-specific-sidebar-nav-item-hover: #1C2920;
+  --dsw-specific-bubble: #1D2C23;
+  --dsw-specific-bubble-highlight: #213128;
+  --dsw-specific-input-major: #1C2A21;
+  --dsw-specific-login-input: #1C2A21;
+  --dsw-specific-menu: #1B2820;
+  --dsw-specific-selector: #1B2820;
+  --dsw-specific-tip: #213128;
+
+  /* ---- Markdown / 代码 ---- */
+  --dsw-alias-markdown-code-block: #0E1611;
+  --dsw-alias-markdown-code-block-banner: #16231B;
+  --dsw-alias-markdown-inline-code: #1D2C23;
+  --dsw-alias-markdown-citation: #1E2B22;
+  --dsw-alias-markdown-placeholder: #6E8271;
+  --dsw-alias-markdown-tag: #1E2B22;
+  --dsw-alias-markdown-code-segment-selected: #1B2820;
+  --dsw-alias-markdown-code-segment-unselected: rgba(255, 255, 255, 0);
+
+  /* ---- 滚动条 / 提示 ---- */
+  --dsw-alias-scrollbar-bg-l1: #1B2720;
+  --dsw-alias-scrollbar-bg-l2: #1A261E;
+  --dsw-alias-scrollbar-hover-l1: #26362C;
+  --dsw-alias-scrollbar-hover-l2: #2C3D31;
+  --dsw-alias-tooltip-bg: #1B2820;
+  --dsw-alias-toast-bg: #1B2820;
+
+  /* ---- 品牌 ---- */
+  --dsw-alias-brand-primary: #E86A33;
+  --dsw-alias-brand-primary-invert: #FFFFFF;
+  --dsw-alias-brand-text: #E6EDE2;
+
+  /* ---- 静态色 ---- */
+  --dsw-static-deepseek-50: #2A1B12;
+  --dsw-static-deepseek-100: #3A2718;
+  --dsw-static-deepseek-200: #F0B99A;
+  --dsw-static-deepseek-300: #E9966A;
+  --dsw-static-deepseek-400: #E87B45;
+  --dsw-static-deepseek-450: #E26833;
+  --dsw-static-deepseek-500: #E86A33;
+  --dsw-static-deepseek-600: #D65E28;
+  --dsw-static-deepseek-800: #8F3A12;
+  --dsw-static-deepseek-900: #6E2C0D;
+  --dsw-static-neutral-bluish-400: #E86A33;
+  --dsw-static-blue-450: #7FB5A8;
+  --dsw-static-blue-500: #6FA08F;
+
+  /* ---- 字体 ---- */
+  --dsw-font-family: "Avenir Next", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+  --dsw-font-markdown-code-block-small: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, monospace;
+}
+
+
+/* ============================================================
+   主页背景：山野地平线（仅空对话时作为欢迎背景）
+   一旦有消息内容（存在 [data-chat-anchor-key] 行）即隐藏，
+   避免与内容叠加影响阅读。
+   ============================================================ */
+html body[data-outdoor] .wSkVaW_root[data-phase="hero"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1600' height='900' viewBox='0 0 1600 900' preserveAspectRatio='xMidYMax slice'%3E%3Cdefs%3E%3ClinearGradient id='s' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23F1F4EC' stop-opacity='0'/%3E%3Cstop offset='0.55' stop-color='%23E3EAD9' stop-opacity='0.5'/%3E%3Cstop offset='1' stop-color='%23CDD9BE' stop-opacity='0.82'/%3E%3C/linearGradient%3E%3ClinearGradient id='b' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23B4C4A6'/%3E%3Cstop offset='1' stop-color='%2398AC87'/%3E%3C/linearGradient%3E%3ClinearGradient id='f' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%239FB18C'/%3E%3Cstop offset='1' stop-color='%237E9468'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1600' height='900' fill='url("https://raw.githubusercontent.com/Estellalee/dsh-outdoor-theme/main/%23s")'/%3E%3Cpath d='M0 660 L220 470 L430 600 L680 400 L950 630 L1230 440 L1480 590 L1600 510 L1600 900 L0 900 Z' fill='url("https://raw.githubusercontent.com/Estellalee/dsh-outdoor-theme/main/%23b")' opacity='0.4'/%3E%3Cpath d='M0 800 L280 660 L560 790 L860 620 L1160 770 L1420 650 L1600 750 L1600 900 L0 900 Z' fill='url("https://raw.githubusercontent.com/Estellalee/dsh-outdoor-theme/main/%23f")' opacity='0.55'/%3E%3Cg fill='none' stroke='%237C8F6E' stroke-opacity='0.1'%3E%3Cpath d='M-20 720c160-26 300 20 480-8s360-14 560-4 340 12 580 4'/%3E%3Cpath d='M-20 840c160-22 300 16 480-6s360-12 560-4 340 10 580 4'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+}
+html body[data-outdoor][data-ds-dark-theme] .wSkVaW_root[data-phase="hero"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1600' height='900' viewBox='0 0 1600 900' preserveAspectRatio='xMidYMax slice'%3E%3Cdefs%3E%3ClinearGradient id='s' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23111A15' stop-opacity='0'/%3E%3Cstop offset='0.6' stop-color='%2316241C' stop-opacity='0.62'/%3E%3Cstop offset='1' stop-color='%231B2A20' stop-opacity='0.92'/%3E%3C/linearGradient%3E%3ClinearGradient id='b' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23223129'/%3E%3Cstop offset='1' stop-color='%231A271F'/%3E%3C/linearGradient%3E%3ClinearGradient id='f' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%231B2820'/%3E%3Cstop offset='1' stop-color='%2314201A'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1600' height='900' fill='url("https://raw.githubusercontent.com/Estellalee/dsh-outdoor-theme/main/%23s")'/%3E%3Cpath d='M0 660 L220 470 L430 600 L680 400 L950 630 L1230 440 L1480 590 L1600 510 L1600 900 L0 900 Z' fill='url("https://raw.githubusercontent.com/Estellalee/dsh-outdoor-theme/main/%23b")' opacity='0.5'/%3E%3Cpath d='M0 800 L280 660 L560 790 L860 620 L1160 770 L1420 650 L1600 750 L1600 900 L0 900 Z' fill='url("https://raw.githubusercontent.com/Estellalee/dsh-outdoor-theme/main/%23f")' opacity='0.7'/%3E%3Cg fill='none' stroke='%237FAF86' stroke-opacity='0.08'%3E%3Cpath d='M-20 720c160-26 300 20 480-8s360-14 560-4 340 12 580 4'/%3E%3Cpath d='M-20 840c160-22 300 16 480-6s360-12 560-4 340 10 580 4'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+}
+
+
+/* ============================================================
+   空对话欢迎文案：山野向导的问候（仅空对话时可见，hero 标题下方）
+   ============================================================ */
+html body[data-outdoor] .pXSMma_headline::after {
+  content: "🏔 准备好了吗？说点什么，开始这趟旅程。";
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 13px;
+  line-height: 22px;
+  margin-top: 8px;
+  white-space: nowrap;
+}
+
+/* 暗色模式（星空营地）专属欢迎语 */
+html body[data-outdoor][data-ds-dark-theme] .pXSMma_headline::after {
+  content: "星垂平野，人语山间。候你一言。";
+}
+
+
+/* ============================================================
+   设计落地（1/5）：暗色空态背景 · 星空营地
+   ============================================================ */
+html body[data-outdoor][data-ds-dark-theme] .wSkVaW_root[data-phase="hero"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1600' height='900' viewBox='0 0 1600 900' preserveAspectRatio='xMidYMax slice'%3E%3Cdefs%3E%3ClinearGradient id='s' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23101B16'/%3E%3Cstop offset='0.55' stop-color='%23152019'/%3E%3Cstop offset='1' stop-color='%231B2A20'/%3E%3C/linearGradient%3E%3ClinearGradient id='m' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23223129'/%3E%3Cstop offset='1' stop-color='%23182520'/%3E%3C/linearGradient%3E%3ClinearGradient id='m2' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%231B2820'/%3E%3Cstop offset='1' stop-color='%2314201A'/%3E%3C/linearGradient%3E%3CradialGradient id='fire' cx='50%' cy='50%' r='50%'%3E%3Cstop offset='0' stop-color='%23FFB86A' stop-opacity='0.9'/%3E%3Cstop offset='1' stop-color='%23FFB86A' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='1600' height='900' fill='url("https://raw.githubusercontent.com/Estellalee/dsh-outdoor-theme/main/%23s")'/%3E%3Cg fill='%23E8EFE6'%3E%3Ccircle cx='150' cy='90' r='2' opacity='0.9'/%3E%3Ccircle cx='320' cy='150' r='1.4' opacity='0.7'/%3E%3Ccircle cx='480' cy='70' r='2.2' opacity='0.95'/%3E%3Ccircle cx='660' cy='130' r='1.4' opacity='0.6'/%3E%3Ccircle cx='860' cy='80' r='2' opacity='0.9'/%3E%3Ccircle cx='1060' cy='160' r='1.4' opacity='0.7'/%3E%3Ccircle cx='1240' cy='60' r='2.4' opacity='0.95'/%3E%3Ccircle cx='1440' cy='140' r='1.4' opacity='0.6'/%3E%3Ccircle cx='220' cy='200' r='1.4' opacity='0.7'/%3E%3Ccircle cx='760' cy='190' r='1.8' opacity='0.85'/%3E%3Ccircle cx='1350' cy='220' r='1.4' opacity='0.7'/%3E%3C/g%3E%3Cpath d='M0 640 L220 470 L430 600 L680 400 L950 630 L1230 440 L1480 590 L1600 510 L1600 900 L0 900 Z' fill='url("https://raw.githubusercontent.com/Estellalee/dsh-outdoor-theme/main/%23m")' opacity='0.55'/%3E%3Cpath d='M0 800 L280 660 L560 790 L860 620 L1160 770 L1420 650 L1600 750 L1600 900 L0 900 Z' fill='url("https://raw.githubusercontent.com/Estellalee/dsh-outdoor-theme/main/%23m2")' opacity='0.75'/%3E%3Cellipse cx='800' cy='845' rx='150' ry='42' fill='url("https://raw.githubusercontent.com/Estellalee/dsh-outdoor-theme/main/%23fire")' opacity='0.5'/%3E%3Ccircle cx='800' cy='835' r='12' fill='%23FFB86A' opacity='0.75'/%3E%3C/svg%3E");
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+}
+
+/* ============================================================
+   设计落地（2/5）：消息气泡差异化
+   用户气泡：主色淡染 + 左侧竖条（像路标便签）；AI 保持卡片式。
+   ============================================================ */
+html body[data-outdoor] .gdEzaW_bubble {
+  background: color-mix(in srgb, var(--dsw-alias-state-business-primary) 13%, var(--dsw-specific-bubble));
+  border-left: 3px solid var(--dsw-alias-state-business-primary);
+  border-bottom-right-radius: 6px;
+}
+
+/* ============================================================
+   设计落地（3/5）：侧边栏 · 当前位置（加强版）
+   选中会话：主题色背景 + 左侧竖线 + 标题加粗主色 + 位置圆点。
+   用 [aria-selected="true"] 属性选择器（不受类名哈希影响）。
+   ============================================================ */
+html body[data-outdoor] .YDXeBa_sessionRow[aria-selected="true"] {
+  position: relative;
+  background: color-mix(in srgb, var(--dsw-alias-state-business-primary) 18%, var(--dsw-specific-sidebar-fill));
+  border-radius: 8px;
+}
+html body[data-outdoor] .YDXeBa_sessionRow[aria-selected="true"]::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 4px;
+  border-radius: 2px;
+  background: var(--dsw-alias-state-business-primary);
+}
+html body[data-outdoor] .YDXeBa_sessionRow[aria-selected="true"] .YDXeBa_title {
+  color: var(--dsw-alias-state-business-primary);
+  font-weight: 600;
+}
+html body[data-outdoor] .YDXeBa_sessionRow[aria-selected="true"] .YDXeBa_dot > * {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--dsw-alias-state-business-primary) 30%, transparent);
+  border-radius: 50%;
+}
+
+/* ============================================================
+   设计落地（4/5）：输入框聚焦 · 主题色边框 + 微光
+   ============================================================ */
+html body[data-outdoor] .uV2eYG_card:focus-within {
+  border-color: var(--dsw-alias-state-business-primary);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--dsw-alias-state-business-primary) 20%, transparent), var(--dsw-shadow-lv2);
+}
+
+/* ============================================================
+   设计落地（5/5）：山顶水印 + 主题色滚动条
+   ============================================================ */
+/* 山顶水印：有内容的对话区右下角，极淡山形 */
+html body[data-outdoor] .wSkVaW_root[data-phase="active"]::after {
+  content: "";
+  position: absolute;
+  right: 22px;
+  bottom: 90px;
+  width: 96px;
+  height: 64px;
+  color: var(--dsw-alias-label-tertiary);
+  opacity: 0.14;
+  pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='80' viewBox='0 0 120 80' fill='none'%3E%3Cpath d='M14 66 L44 26 L64 50 L82 20 L106 66' stroke='currentColor' stroke-width='2.5' stroke-linejoin='round' stroke-linecap='round'/%3E%3Ccircle cx='104' cy='14' r='5' fill='currentColor'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+/* 主题色滚动条：thumb 用主色淡染 */
+html body[data-outdoor] {
+  --dsw-alias-scrollbar-bg-l1: color-mix(in srgb, var(--dsw-alias-state-business-primary) 10%, transparent);
+  --dsw-alias-scrollbar-bg-l2: color-mix(in srgb, var(--dsw-alias-state-business-primary) 16%, transparent);
+  --dsw-alias-scrollbar-hover-l1: color-mix(in srgb, var(--dsw-alias-state-business-primary) 30%, transparent);
+  --dsw-alias-scrollbar-hover-l2: color-mix(in srgb, var(--dsw-alias-state-business-primary) 42%, transparent);
+}
+
+/* ============================================================
+   细节：状态点 · 进行中呼吸（running/ongoing 状态点脉冲）
+   ============================================================ */
+html body[data-outdoor] [data-state="ongoing"],
+html body[data-outdoor] [data-state="running"] {
+  animation: dshStateDotPulse 1.2s ease-in-out infinite;
+}
+@keyframes dshStateDotPulse { 50% { opacity: 0.35; } }
+

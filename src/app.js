@@ -85,12 +85,22 @@
   const pool = window.__HERO__ || [];
   if (heroLink && pool.length > 1) {
     const frame = $(".mini", heroLink);
+    const shotEl = $("[data-hero-shot]", heroLink);
+    const source = $("[data-hero-source]");
     const label = $("[data-hero-label]");
     let i = 0, timer = null, paused = false;
+    // The next few pictures are decoded before their turn, so a swap is a swap
+    // and not a flash of the frame underneath.
+    const warm = (n) => { for (let k = 1; k <= 3; k++) { const u = pool[(n + k) % pool.length]?.shot; if (u) new Image().src = u; } };
     const paint = (t) => {
       const s = t.sig;
       frame.style.cssText = `--c-bg:${s.bg};--c-surface:${s.surface};--c-text:${s.text};--c-muted:${s.muted};--c-brand:${s.brand};--c-border:${s.border}`;
       frame.classList.toggle("is-light", Boolean(t.light));
+      if (shotEl) {
+        if (t.shot) { shotEl.src = t.shot; shotEl.alt = `the dsh shell wearing ${t.name}`; shotEl.hidden = false; }
+        else shotEl.hidden = true;
+      }
+      if (source) source.textContent = t.shot ? "its CSS on the real shell ↗" : "painted from its stylesheet ↗";
       heroLink.href = t.url;
       heroLink.dataset.slug = t.slug;
       if (label) {
@@ -108,7 +118,7 @@
         }, 30);
       }
     };
-    const step = () => { i = (i + 1) % pool.length; paint(pool[i]); };
+    const step = () => { i = (i + 1) % pool.length; paint(pool[i]); warm(i); };
     const arm = () => { clearInterval(timer); if (!reduced) timer = setInterval(() => { if (!paused && !document.hidden) step(); }, 3200); };
     heroLink.addEventListener("pointerenter", () => { paused = true; });
     heroLink.addEventListener("pointerleave", () => { paused = false; });
@@ -226,6 +236,18 @@
     });
   }
 
+  // ---- screenshots from repositories, which are whatever shape their author
+  // took. Cover crops a tall one to a meaningless band, so anything close to
+  // square or taller is fitted whole instead. -------------------------------
+  const fitShot = (img) => {
+    if (!img.naturalWidth || !img.naturalHeight) return;
+    img.classList.toggle("is-tall", img.naturalHeight / img.naturalWidth > 0.78);
+  };
+  for (const img of $$("img.shot")) {
+    if (img.complete) fitShot(img);
+    else img.addEventListener("load", () => fitShot(img), { once: true });
+  }
+
   // ---- theme page: scheme + view tabs + frame ------------------------------------
   const stage = $(".stage");
   if (stage) {
@@ -251,12 +273,14 @@
         }
       }
     };
-    // the shell is a desktop layout: below ~900px render it at 1000px and scale
+    // The shell is a desktop layout. It is always laid out at 1440x900 inside
+    // the frame and scaled to the stage, so a narrow stage shows a smaller dsh
+    // rather than a squeezed one. 1440x900 is the stage's own 16/10, so the
+    // scaled frame lands exactly on its edges.
     if (frame && body) {
       const fit = () => {
         const w = body.clientWidth;
-        if (w < 900) { frame.classList.add("is-scaled"); frame.style.transform = `scale(${w / 1000})`; }
-        else { frame.classList.remove("is-scaled"); frame.style.transform = ""; }
+        if (w) frame.style.transform = `scale(${w / 1440})`;
       };
       fit();
       new ResizeObserver(fit).observe(body);

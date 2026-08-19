@@ -1,0 +1,299 @@
+/* wanzhiwei5/dsh-skin-amis — lib/client.js
+   fetched 2026-08-19 from https://raw.githubusercontent.com/wanzhiwei5/dsh-skin-amis/main/lib/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/* ========== 基础：粉白配色 + 爱弥斯赛博氛围 ========== */
+body[data-dsh-amis]{
+  --dsw-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --ds-font-family-code: 'SF Mono', 'JetBrains Mono', 'Fira Code', Consolas,
+    'Liberation Mono', Menlo, Courier, 'PingFang SC', 'Microsoft YaHei';
+  color: #4a3a44;
+  box-sizing: border-box;
+  background-color: #fff1f5;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+/* 深色模式：赛博霓虹粉紫 */
+body[data-dsh-amis][data-ds-dark-theme]{
+  color: #f5e6ee;
+  background-color: #170d1a;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+/* ========== 品牌色：爱弥斯粉 ========== */
+body[data-dsh-amis]{
+  --dsw-static-pink-50: #fdf2f8;
+  --dsw-static-pink-100: #fce7f3;
+  --dsw-static-pink-200: #fbcfe8;
+  --dsw-static-pink-300: #f9a8d4;
+  --dsw-static-pink-400: #f472b6;
+  --dsw-static-pink-500: #ec4899;
+  --dsw-static-pink-600: #db2777;
+  --dsw-static-pink-700: #be185d;
+  --dsw-static-pink-800: #9d174d;
+  --dsw-static-pink-900: #831843;
+  --dsw-static-pink-950: #500724;
+  /* 霓虹青点缀（机甲能量） */
+  --dsw-static-cyan-300: #67e8f9;
+  --dsw-static-cyan-400: #22d3ee;
+  --dsw-static-cyan-500: #06b6d4;
+}
+body[data-dsh-amis][data-ds-dark-theme]{
+  --dsw-static-pink-50: #1f0a14;
+  --dsw-static-pink-100: #2a0f1a;
+  --dsw-static-pink-200: #3d1525;
+  --dsw-static-pink-300: #5c1f36;
+  --dsw-static-pink-400: #8b2e52;
+  --dsw-static-pink-500: #ec4899;
+  --dsw-static-pink-600: #f472b6;
+  --dsw-static-pink-700: #f9a8d4;
+  --dsw-static-pink-800: #fbcfe8;
+  --dsw-static-pink-900: #fce7f3;
+  --dsw-static-pink-950: #fdf2f8;
+}
+
+/* ========== 语义 alias 映射（浅色） ========== */
+body[data-dsh-amis]{
+  --dsw-alias-brand-primary: var(--dsw-static-pink-500);
+  --dsw-alias-brand-primary-invert: #fff;
+  --dsw-alias-brand-text: var(--dsw-static-pink-600);
+  --dsw-alias-bg-base: #fff7fa;
+  --dsw-alias-bg-layer-1: rgba(255,255,255,.72);
+  --dsw-alias-bg-layer-2: rgba(255,255,255,.85);
+  --dsw-alias-bg-layer-3: #ffffff;
+  --dsw-alias-bg-overlay: rgba(255,244,248,.9);
+  --dsw-alias-bg-module-platform: rgba(255,255,255,.65);
+  --dsw-alias-bg-mask-1: rgba(253,242,248,.8);
+  --dsw-alias-bg-mask-2: rgba(252,231,243,.7);
+  --dsw-alias-bg-mask-3: rgba(251,207,232,.6);
+  --dsw-alias-bg-mask-drop: rgba(236,72,153,.12);
+  --dsw-alias-bg-mask-photo: rgba(236,72,153,.08);
+  --dsw-alias-bg-multi-select: rgba(244,114,182,.14);
+  --dsw-alias-bg-skeleton: rgba(244,114,182,.12);
+  --dsw-alias-border-l1: rgba(244,114,182,.14);
+  --dsw-alias-border-l2: rgba(244,114,182,.22);
+  --dsw-alias-border-l3: rgba(244,114,182,.3);
+  --dsw-alias-border-l4: rgba(236,72,153,.45);
+  --dsw-alias-border-inverted: #9d174d;
+  --dsw-alias-border-inverted2: #be185d;
+  --dsw-alias-label-primary: #4a3a44;
+  --dsw-alias-label-primary-foreground: #fff;
+  --dsw-alias-label-primary-inverted: #fff7fa;
+  --dsw-alias-label-primary-bluish: #5c3a4a;
+  --dsw-alias-label-primary-dimmed: #6b5560;
+  --dsw-alias-label-secondary: #8a7080;
+  --dsw-alias-label-tertiary: #a88f9c;
+  --dsw-alias-label-caption: #b39aa6;
+  --dsw-alias-label-dimmed: #c4aab6;
+  --dsw-alias-interactive-bg-hover: rgba(244,114,182,.1);
+  --dsw-alias-interactive-bg-active: rgba(244,114,182,.18);
+  --dsw-alias-interactive-bg-hover-accent: rgba(236,72,153,.12);
+  --dsw-alias-interactive-bg-hover-danger: rgba(239,68,68,.1);
+  --dsw-alias-interactive-bg-hover-solid: var(--dsw-static-pink-500);
+  --dsw-alias-button-primary-fill: var(--dsw-static-pink-500);
+  --dsw-alias-button-primary-hover: var(--dsw-static-pink-600);
+  --dsw-alias-button-primary-dimmed: rgba(236,72,153,.25);
+  --dsw-alias-button-contrast-fill: #fff;
+  --dsw-alias-button-elevated-fill: rgba(255,255,255,.8);
+  --dsw-alias-button-floating-fill: rgba(255,255,255,.75);
+  --dsw-alias-button-floating-hover: rgba(255,255,255,.9);
+  --dsw-alias-button-ghost-active-fill: rgba(244,114,182,.14);
+  --dsw-alias-button-ghost-active-hover: rgba(244,114,182,.2);
+  --dsw-alias-button-ghost-active-border: rgba(244,114,182,.3);
+  --dsw-alias-button-info-fill: rgba(147,197,253,.18);
+  --dsw-alias-button-info-hover: rgba(147,197,253,.26);
+  --dsw-alias-button-tool-bar-fill: rgba(255,255,255,.5);
+  --dsw-alias-button-tool-bar-fill-invisible: transparent;
+  --dsw-alias-button-tool-bar-hover: rgba(244,114,182,.1);
+  --dsw-alias-scrollbar-bg-l1: rgba(236,72,153,.18);
+  --dsw-alias-scrollbar-bg-l2: rgba(236,72,153,.26);
+  --dsw-alias-scrollbar-hover-l1: rgba(236,72,153,.32);
+  --dsw-alias-scrollbar-hover-l2: rgba(236,72,153,.42);
+  --dsw-alias-state-success-primary: #10b981;
+  --dsw-alias-state-success-secondary: rgba(16,185,129,.12);
+  --dsw-alias-state-success-tertiary: rgba(16,185,129,.2);
+  --dsw-alias-state-error-primary: #ef4444;
+  --dsw-alias-state-error-secondary: rgba(239,68,68,.12);
+  --dsw-alias-state-warn-primary: #f59e0b;
+  --dsw-alias-state-warn-secondary: rgba(245,158,11,.12);
+  --dsw-alias-state-warn-tertiary: rgba(245,158,11,.2);
+  --dsw-alias-state-warn-label: #b45309;
+  --dsw-alias-state-business-primary: var(--dsw-static-pink-500);
+  --dsw-alias-state-business-tertiary: rgba(236,72,153,.15);
+  --dsw-alias-toast-bg: rgba(255,255,255,.92);
+  --dsw-alias-tooltip-bg: rgba(74,58,68,.92);
+  --dsw-alias-markdown-inline-code: rgba(244,114,182,.12);
+  --dsw-alias-markdown-code-block: rgba(255,255,255,.6);
+  --dsw-alias-markdown-code-block-banner: rgba(244,114,182,.08);
+  --dsw-alias-markdown-tag: rgba(244,114,182,.12);
+  --dsw-alias-markdown-placeholder: rgba(74,58,68,.35);
+  --dsw-alias-markdown-citation: rgba(244,114,182,.1);
+  --dsw-alias-markdown-code-segment-selected: rgba(244,114,182,.16);
+  --dsw-alias-markdown-code-segment-unselected: rgba(74,58,68,.06);
+  --dsw-alias-specific-bubble: rgba(244,114,182,.08);
+  --dsw-alias-specific-bubble-highlight: rgba(244,114,182,.16);
+}
+
+/* ========== 语义 alias 映射（深色） ========== */
+body[data-dsh-amis][data-ds-dark-theme]{
+  --dsw-alias-brand-primary: var(--dsw-static-pink-500);
+  --dsw-alias-brand-primary-invert: #170d1a;
+  --dsw-alias-brand-text: var(--dsw-static-pink-400);
+  --dsw-alias-bg-base: #170d1a;
+  --dsw-alias-bg-layer-1: rgba(38,20,44,.72);
+  --dsw-alias-bg-layer-2: rgba(45,24,52,.85);
+  --dsw-alias-bg-layer-3: #2a1830;
+  --dsw-alias-bg-overlay: rgba(30,16,36,.9);
+  --dsw-alias-bg-module-platform: rgba(38,20,44,.65);
+  --dsw-alias-bg-mask-1: rgba(31,15,36,.8);
+  --dsw-alias-bg-mask-2: rgba(39,20,45,.7);
+  --dsw-alias-bg-mask-3: rgba(46,24,53,.6);
+  --dsw-alias-bg-mask-drop: rgba(236,72,153,.16);
+  --dsw-alias-bg-mask-photo: rgba(236,72,153,.1);
+  --dsw-alias-bg-multi-select: rgba(244,114,182,.16);
+  --dsw-alias-bg-skeleton: rgba(244,114,182,.14);
+  --dsw-alias-border-l1: rgba(244,114,182,.16);
+  --dsw-alias-border-l2: rgba(244,114,182,.26);
+  --dsw-alias-border-l3: rgba(244,114,182,.36);
+  --dsw-alias-border-l4: rgba(236,72,153,.5);
+  --dsw-alias-border-inverted: #fbcfe8;
+  --dsw-alias-border-inverted2: #f9a8d4;
+  --dsw-alias-label-primary: #f5e6ee;
+  --dsw-alias-label-primary-foreground: #170d1a;
+  --dsw-alias-label-primary-inverted: #170d1a;
+  --dsw-alias-label-primary-bluish: #e8d3de;
+  --dsw-alias-label-primary-dimmed: #d3b6c4;
+  --dsw-alias-label-secondary: #b392a4;
+  --dsw-alias-label-tertiary: #96788a;
+  --dsw-alias-label-caption: #7d6174;
+  --dsw-alias-label-dimmed: #6b5162;
+  --dsw-alias-interactive-bg-hover: rgba(244,114,182,.12);
+  --dsw-alias-interactive-bg-active: rgba(244,114,182,.2);
+  --dsw-alias-interactive-bg-hover-accent: rgba(236,72,153,.16);
+  --dsw-alias-interactive-bg-hover-danger: rgba(239,68,68,.14);
+  --dsw-alias-interactive-bg-hover-solid: var(--dsw-static-pink-500);
+  --dsw-alias-button-primary-fill: var(--dsw-static-pink-500);
+  --dsw-alias-button-primary-hover: var(--dsw-static-pink-400);
+  --dsw-alias-button-primary-dimmed: rgba(236,72,153,.3);
+  --dsw-alias-button-contrast-fill: #2a1830;
+  --dsw-alias-button-elevated-fill: rgba(45,24,52,.8);
+  --dsw-alias-button-floating-fill: rgba(38,20,44,.75);
+  --dsw-alias-button-floating-hover: rgba(45,24,52,.9);
+  --dsw-alias-button-ghost-active-fill: rgba(244,114,182,.16);
+  --dsw-alias-button-ghost-active-hover: rgba(244,114,182,.22);
+  --dsw-alias-button-ghost-active-border: rgba(244,114,182,.34);
+  --dsw-alias-button-info-fill: rgba(34,211,238,.12);
+  --dsw-alias-button-info-hover: rgba(34,211,238,.2);
+  --dsw-alias-button-tool-bar-fill: rgba(38,20,44,.5);
+  --dsw-alias-button-tool-bar-fill-invisible: transparent;
+  --dsw-alias-button-tool-bar-hover: rgba(244,114,182,.12);
+  --dsw-alias-scrollbar-bg-l1: rgba(236,72,153,.22);
+  --dsw-alias-scrollbar-bg-l2: rgba(236,72,153,.3);
+  --dsw-alias-scrollbar-hover-l1: rgba(236,72,153,.38);
+  --dsw-alias-scrollbar-hover-l2: rgba(236,72,153,.48);
+  --dsw-alias-state-success-primary: #34d399;
+  --dsw-alias-state-success-secondary: rgba(52,211,153,.14);
+  --dsw-alias-state-success-tertiary: rgba(52,211,153,.22);
+  --dsw-alias-state-error-primary: #f87171;
+  --dsw-alias-state-error-secondary: rgba(248,113,113,.14);
+  --dsw-alias-state-warn-primary: #fbbf24;
+  --dsw-alias-state-warn-secondary: rgba(251,191,36,.14);
+  --dsw-alias-state-warn-tertiary: rgba(251,191,36,.22);
+  --dsw-alias-state-warn-label: #fcd34d;
+  --dsw-alias-state-business-primary: var(--dsw-static-pink-400);
+  --dsw-alias-state-business-tertiary: rgba(236,72,153,.18);
+  --dsw-alias-toast-bg: rgba(45,24,52,.92);
+  --dsw-alias-tooltip-bg: rgba(245,230,238,.92);
+  --dsw-alias-markdown-inline-code: rgba(244,114,182,.16);
+  --dsw-alias-markdown-code-block: rgba(30,16,36,.6);
+  --dsw-alias-markdown-code-block-banner: rgba(244,114,182,.1);
+  --dsw-alias-markdown-tag: rgba(244,114,182,.14);
+  --dsw-alias-markdown-placeholder: rgba(245,230,238,.35);
+  --dsw-alias-markdown-citation: rgba(244,114,182,.12);
+  --dsw-alias-markdown-code-segment-selected: rgba(244,114,182,.18);
+  --dsw-alias-markdown-code-segment-unselected: rgba(245,230,238,.06);
+  --dsw-alias-specific-bubble: rgba(244,114,182,.1);
+  --dsw-alias-specific-bubble-highlight: rgba(244,114,182,.2);
+}
+
+/* ========== 毛玻璃面板 ========== */
+/* 注意：#root 是全局容器，包含所有 fixed 弹窗（设置面板等）。
+   backdrop-filter 会创建 containing block 把弹窗困在容器内，
+   所以 #root 上不能用 backdrop-filter，只保留半透明背景。 */
+body[data-dsh-amis] [id=root]{
+  background: rgba(255,255,255,.55) !important;
+}
+body[data-dsh-amis][data-ds-dark-theme] [id=root]{
+  background: rgba(26,13,30,.55) !important;
+}
+
+/* ========== 主框架/侧栏透明化（露出背景图） ========== */
+/* 注意：不能在这些容器上使用 backdrop-filter——它会成为 fixed 弹窗
+   （设置面板等）的 containing block，导致弹窗被压缩到容器宽度。
+   毛玻璃只保留在输入卡片上（不包含弹窗的叶级容器）。 */
+body[data-dsh-amis] [id=root] div[class*="_frame"],
+body[data-dsh-amis] [id=root] div[class*="_frame"] div[class*="_sidebarCol"]{
+  background: transparent !important;
+}
+body[data-dsh-amis] [id=root] div[class*="_frame"] div[class*="_sidebarCol"]{
+  background: rgba(255,255,255,.35) !important;
+}
+body[data-dsh-amis][data-ds-dark-theme] [id=root] div[class*="_frame"] div[class*="_sidebarCol"]{
+  background: rgba(23,13,26,.4) !important;
+}
+/* 中央栏 / 侧栏根容器透明化（后代选择器，适配任意层级） */
+body[data-dsh-amis] [id=root] div[class*="_centerCol"] div[class*="_root"],
+body[data-dsh-amis] [id=root] div[class*="_sidebarCol"] div[class*="_root"]{
+  background: transparent !important;
+}
+body[data-dsh-amis] [id=root] div[class*="_sidebarCol"] div[class*="_root"]{
+  background: rgba(255,255,255,.3) !important;
+}
+body[data-dsh-amis][data-ds-dark-theme] [id=root] div[class*="_sidebarCol"] div[class*="_root"]{
+  background: rgba(23,13,26,.35) !important;
+}
+/* 输入卡片半透明毛玻璃（叶级容器，安全使用 backdrop-filter） */
+body[data-dsh-amis] [id=root] div[class*="_card"]{
+  background: rgba(255,255,255,.55) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(244,114,182,.18) !important;
+}
+body[data-dsh-amis][data-ds-dark-theme] [id=root] div[class*="_card"]{
+  background: rgba(30,16,36,.55) !important;
+  border-color: rgba(244,114,182,.22) !important;
+}
+
+/* ========== 圆角与悬浮光晕 ========== */
+body[data-dsh-amis] [id=root]{
+  border-radius: 18px;
+  border: 1px solid rgba(244,114,182,.2);
+  box-shadow: 0 8px 40px rgba(236,72,153,.12);
+}
+body[data-dsh-amis][data-ds-dark-theme] [id=root]{
+  border-color: rgba(244,114,182,.24);
+  box-shadow: 0 8px 40px rgba(236,72,153,.18);
+}
+body[data-dsh-amis] button:hover{
+  transition: box-shadow .2s var(--ds-ease-in-out);
+}
+body[data-dsh-amis] button:hover:not(:disabled){
+  box-shadow: 0 0 0 3px rgba(244,114,182,.18);
+}
+body[data-dsh-amis][data-ds-dark-theme] button:hover:not(:disabled){
+  box-shadow: 0 0 0 3px rgba(244,114,182,.22);
+}
+
+/* ========== 霓虹发光装饰 ========== */
+body[data-dsh-amis] [data-pane]{
+  border-radius: 14px;
+}
+body[data-dsh-amis] ::selection{
+  background: rgba(244,114,182,.3);
+}
+body[data-dsh-amis][data-ds-dark-theme] ::selection{
+  background: rgba(236,72,153,.4);
+}

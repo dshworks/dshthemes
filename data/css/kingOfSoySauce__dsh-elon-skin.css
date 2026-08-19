@@ -1,0 +1,648 @@
+/* kingOfSoySauce/dsh-elon-skin — src/client/skin.css
+   fetched 2026-08-19 from https://raw.githubusercontent.com/kingOfSoySauce/dsh-elon-skin/main/src/client/skin.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+.musk-skin-backdrop {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--musk-page, transparent);
+  opacity: 0;
+  transition: opacity 220ms ease, background-color 180ms linear;
+}
+
+body[data-musk-skin="on"] .musk-skin-backdrop {
+  opacity: 1;
+}
+
+.musk-skin-backdrop video,
+.musk-skin-backdrop img {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  display: block;
+  width: min(42vw, 720px);
+  height: 100vh;
+  object-fit: cover;
+  object-position: 50% 42%;
+  opacity: var(--musk-portrait-opacity, 0.45);
+  transform: translateY(-50%);
+  filter: none;
+  mask-image: linear-gradient(90deg, transparent 0%, rgb(0 0 0 / 20%) 10%, black 30%, black 100%);
+  transition: filter 180ms linear;
+}
+
+.musk-skin-backdrop img {
+  display: none;
+}
+
+.musk-skin-backdrop[data-media="sequence"] video,
+.musk-skin-backdrop[data-media="sequence"] .musk-skin-poster {
+  display: none;
+}
+
+.musk-skin-backdrop[data-media="sequence"] .musk-skin-sequence-frame {
+  display: block;
+  opacity: var(--musk-portrait-opacity, 0.82);
+}
+
+.musk-skin-backdrop[data-media="video"] .musk-skin-sequence-frame,
+.musk-skin-backdrop[data-media="video"] .musk-skin-poster {
+  display: none;
+}
+
+.musk-skin-backdrop[data-media="poster"] video,
+.musk-skin-backdrop[data-media="poster"] .musk-skin-sequence-frame {
+  display: none;
+}
+
+.musk-skin-backdrop[data-media="poster"] .musk-skin-poster {
+  display: block;
+}
+
+.musk-skin-backdrop[data-media="color"] video,
+.musk-skin-backdrop[data-media="color"] img {
+  display: none;
+}
+
+.musk-skin-backdrop::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background: linear-gradient(90deg, var(--musk-page, transparent) 0 28%, transparent 57% 100%);
+}
+
+body[data-musk-skin="on"] {
+  --dsw-alias-bg-base: var(--musk-bg-base) !important;
+  --dsw-alias-bg-layer-1: var(--musk-layer-1) !important;
+  --dsw-alias-bg-layer-2: var(--musk-layer-2) !important;
+  --dsw-alias-bg-layer-3: var(--musk-layer-3) !important;
+  --dsw-specific-sidebar-fill: var(--musk-sidebar) !important;
+  --dsw-alias-label-primary: var(--musk-ink) !important;
+  --dsw-alias-label-primary-dimmed: var(--musk-ink) !important;
+  --dsw-alias-label-secondary: var(--musk-secondary) !important;
+  --dsw-alias-label-tertiary: var(--musk-tertiary) !important;
+  --dsw-alias-label-caption: var(--musk-tertiary) !important;
+  --dsw-alias-border-l1: var(--musk-border) !important;
+  --dsw-alias-border-l2-darkmode-thin: var(--musk-border) !important;
+  --dsw-alias-border-l2: var(--musk-border) !important;
+  --dsw-alias-border-l3: var(--musk-border) !important;
+  --dsw-alias-button-primary-fill: var(--musk-accent) !important;
+  --dsw-alias-button-primary-hover: var(--musk-accent-hover) !important;
+  --dsw-alias-button-info-fill: var(--musk-accent) !important;
+  --dsw-alias-button-info-hover: var(--musk-accent-hover) !important;
+  --dsw-alias-state-business-primary: var(--musk-accent) !important;
+  --dsw-alias-interactive-bg-hover: var(--musk-hover) !important;
+  --dsw-alias-interactive-bg-active: var(--musk-hover) !important;
+  --dsw-alias-button-elevated-fill: var(--musk-layer-1) !important;
+  --dsw-alias-button-floating-fill: var(--musk-layer-2) !important;
+  --dsw-alias-button-floating-hover: var(--musk-layer-3) !important;
+  --dsw-alias-interactive-bg-hover-solid: var(--musk-layer-2) !important;
+  --dsw-specific-bubble: var(--musk-layer-2) !important;
+  --dsw-specific-input-major: var(--musk-layer-1) !important;
+  --dsw-specific-menu: var(--musk-layer-3) !important;
+  --dsw-specific-selector: var(--musk-layer-2) !important;
+  --dsw-alias-markdown-citation: var(--musk-layer-2) !important;
+  --dsw-alias-markdown-code-block-banner: var(--musk-layer-1) !important;
+  --dsw-alias-markdown-code-block: var(--musk-layer-1) !important;
+  --dsw-alias-markdown-code-segment-selected: var(--musk-layer-2) !important;
+  --dsw-alias-markdown-code-segment-unselected: var(--musk-layer-1) !important;
+  --dsw-alias-markdown-inline-code: var(--musk-layer-2) !important;
+  --dsw-alias-markdown-placeholder: var(--musk-layer-1) !important;
+  --dsw-alias-markdown-tag: var(--musk-layer-2) !important;
+  background: var(--musk-page) !important;
+}
+
+body[data-musk-skin="on"]:is(
+  [data-musk-stage="0"],
+  [data-musk-stage="1"],
+  [data-musk-stage="2"],
+  [data-musk-stage="3"]
+) {
+  --dsw-alias-brand-primary-new-colorprimary-new-color: rgb(65 118 230) !important;
+  --dsw-alias-brand-primary: rgb(15 17 21) !important;
+  --dsw-alias-brand-text: rgb(15 17 21) !important;
+  --dsw-alias-button-primary-fill: rgb(15 17 21) !important;
+  --dsw-alias-button-primary-hover: rgb(53 54 56) !important;
+  --dsw-alias-button-info-fill: rgb(65 118 230) !important;
+  --dsw-alias-button-info-hover: rgb(103 158 254) !important;
+  --dsw-alias-state-business-primary: rgb(65 118 230) !important;
+  --dsw-alias-label-primary-inverted: rgb(249 250 251) !important;
+  --dsw-alias-button-elevated-fill: rgb(255 255 255) !important;
+  --dsw-alias-button-floating-fill: rgb(255 255 255) !important;
+  --dsw-alias-button-floating-hover: rgb(241 243 245) !important;
+  --dsw-alias-interactive-bg-hover-solid: rgb(241 243 245) !important;
+  --dsw-specific-bubble: rgb(237 243 254) !important;
+  --dsw-specific-input-major: rgb(255 255 255) !important;
+  --dsw-specific-menu: rgb(255 255 255) !important;
+  --dsw-specific-selector: rgb(245 246 247) !important;
+}
+
+body[data-musk-skin="on"][data-musk-stage="5"] {
+  --dsw-alias-brand-primary-new-colorprimary-new-color: __SKIN_ACCENT__ !important;
+  --dsw-alias-brand-primary: __SKIN_ACCENT__ !important;
+  --dsw-alias-brand-text: __SKIN_ACCENT_HIGHLIGHT__ !important;
+  --dsw-alias-button-info-fill: __SKIN_ACCENT__ !important;
+  --dsw-alias-button-info-hover: __SKIN_ACCENT_HIGHLIGHT__ !important;
+  --dsw-alias-state-business-primary: __SKIN_ACCENT__ !important;
+  --dsw-alias-bg-module-platform: var(--musk-layer-3) !important;
+  --dsw-specific-sidebar-nav-item-active: var(--musk-layer-3) !important;
+  --dsw-specific-sidebar-nav-item-hover: var(--musk-hover) !important;
+}
+
+/* The low-intensity skin is light by default, but it must not turn a dark
+   Harness document into a light surface. Keep the skin's portrait progression
+   while switching the shared UI layers back to a readable charcoal palette. */
+body[data-musk-skin="on"][data-ds-dark-theme]:is(
+  [data-musk-stage="0"],
+  [data-musk-stage="1"],
+  [data-musk-stage="2"],
+  [data-musk-stage="3"]
+) {
+  --musk-page: rgb(17 17 17) !important;
+  --musk-bg-base: rgb(17 17 17 / 42%) !important;
+  --musk-layer-1: rgb(30 27 25 / 94%) !important;
+  --musk-layer-2: rgb(41 35 30 / 96%) !important;
+  --musk-layer-3: rgb(41 35 30 / 99%) !important;
+  --musk-sidebar: rgb(23 20 18 / 96%) !important;
+  --musk-ink: rgb(244 241 232) !important;
+  --musk-secondary: rgb(184 180 169) !important;
+  --musk-tertiary: rgb(137 134 126) !important;
+  --musk-border: rgb(244 241 232 / 15%) !important;
+  --musk-hover: rgb(244 241 232 / 9%) !important;
+  --dsw-alias-brand-primary: var(--musk-accent) !important;
+  --dsw-alias-brand-text: var(--musk-accent) !important;
+  --dsw-alias-button-primary-fill: var(--musk-accent) !important;
+  --dsw-alias-button-primary-hover: var(--musk-accent-hover) !important;
+  --dsw-alias-button-info-fill: var(--musk-accent) !important;
+  --dsw-alias-button-info-hover: var(--musk-accent-hover) !important;
+  --dsw-alias-state-business-primary: var(--musk-accent) !important;
+  --dsw-alias-button-elevated-fill: var(--musk-layer-1) !important;
+  --dsw-alias-button-floating-fill: var(--musk-layer-2) !important;
+  --dsw-alias-button-floating-hover: var(--musk-layer-3) !important;
+  --dsw-alias-interactive-bg-hover-solid: var(--musk-layer-2) !important;
+  --dsw-specific-bubble: var(--musk-layer-2) !important;
+  --dsw-specific-input-major: var(--musk-layer-1) !important;
+  --dsw-specific-menu: var(--musk-layer-3) !important;
+  --dsw-specific-selector: var(--musk-layer-2) !important;
+  background: var(--musk-page) !important;
+}
+
+body[data-musk-skin="on"][data-ds-dark-theme]:is(
+  [data-musk-stage="0"],
+  [data-musk-stage="1"],
+  [data-musk-stage="2"],
+  [data-musk-stage="3"]
+) .musk-skin-backdrop {
+  background: var(--musk-page) !important;
+}
+
+body[data-musk-skin="on"][data-ds-dark-theme]:is(
+  [data-musk-stage="0"],
+  [data-musk-stage="1"],
+  [data-musk-stage="2"],
+  [data-musk-stage="3"]
+) .musk-skin-backdrop::after {
+  background: linear-gradient(90deg, var(--musk-page) 0 28%, transparent 57% 100%);
+}
+
+/* The host renders the running-turn label as a clipped blue text gradient.
+   Retarget only that gradient's color tokens in the custom dark skin; keep
+   the host's text clipping and shimmer behavior, and leave light mode alone. */
+body[data-musk-skin="on"][data-musk-stage="5"] [class*="_turnStatus"] {
+  --dsw-static-deepseek-500: __SKIN_ACCENT__ !important;
+  --dsw-static-deepseek-200: __SKIN_ACCENT_HIGHLIGHT__ !important;
+}
+
+body[data-musk-skin="on"][data-musk-stage="5"] [class*="_turnStatusClock"] {
+  color: __SKIN_ACCENT__ !important;
+  -webkit-text-fill-color: __SKIN_ACCENT__ !important;
+}
+
+/* Preserve the wordmark badge contrast in the low-intensity shell. */
+body[data-musk-skin="on"]:is(
+  [data-musk-stage="0"],
+  [data-musk-stage="1"],
+  [data-musk-stage="2"],
+  [data-musk-stage="3"]
+) button[aria-label="新建会话"] svg[viewBox="0 0 182 24"] > rect[width="52"] {
+  fill: rgb(15 17 21) !important;
+}
+
+body[data-musk-skin="on"]:is(
+  [data-musk-stage="0"],
+  [data-musk-stage="1"],
+  [data-musk-stage="2"],
+  [data-musk-stage="3"]
+) button[aria-label="新建会话"] svg[viewBox="0 0 182 24"] > g[clip-path*="badge"] path {
+  fill: rgb(249 250 251) !important;
+}
+
+body[data-musk-skin="on"][data-musk-stage="5"] button[aria-label="新建会话"] svg[viewBox="0 0 182 24"] > rect[width="52"] {
+  fill: __SKIN_ACCENT__ !important;
+}
+
+body[data-musk-skin="on"][data-musk-stage="5"] button[aria-label="新建会话"] svg[viewBox="0 0 182 24"] > g[clip-path*="badge"] path {
+  fill: #171816 !important;
+}
+
+body[data-musk-skin="on"][data-musk-stage="5"] [aria-label^="选择模型"] > span:nth-of-type(2) {
+  color: __SKIN_ACCENT_HIGHLIGHT__ !important;
+}
+
+body[data-musk-skin="on"][data-musk-stage="5"] [class*="heroGlow"] ellipse {
+  fill: __SKIN_ACCENT__ !important;
+  fill-opacity: 0.16 !important;
+}
+
+body[data-musk-skin="on"][data-musk-stage="5"] span[class*="_previewBadge"] {
+  color: #171816 !important;
+  background: __SKIN_ACCENT__ !important;
+}
+
+body[data-musk-skin="on"][data-musk-stage="5"] button[aria-label="发送消息"] {
+  color: #171816 !important;
+}
+
+body[data-musk-skin="on"][data-musk-stage="5"] button[aria-label="发送消息"]:disabled {
+  opacity: 0.62;
+}
+
+body[data-musk-skin="on"]:is(
+  [data-musk-stage="0"],
+  [data-musk-stage="1"],
+  [data-musk-stage="2"],
+  [data-musk-stage="3"]
+) button[aria-label="发送消息"] {
+  color: #fff !important;
+}
+
+body[data-musk-skin="on"]:is(
+  [data-musk-stage="0"],
+  [data-musk-stage="1"],
+  [data-musk-stage="2"],
+  [data-musk-stage="3"]
+) button[aria-label="发送消息"]:disabled {
+  color: rgb(255 255 255 / 92%) !important;
+  background: rgb(65 118 230 / 42%) !important;
+  opacity: 1;
+}
+
+body[data-musk-skin="on"] > #root {
+  position: relative;
+  z-index: 1;
+  background: transparent !important;
+}
+
+body[data-musk-skin="on"] button,
+body[data-musk-skin="on"] input,
+body[data-musk-skin="on"] textarea {
+  transition: color 160ms linear, background-color 160ms linear, border-color 160ms linear;
+}
+
+/* The composer card has a native theme-mode fill, so keep its surface and
+   readable ink aligned with the active Musk palette. */
+body[data-musk-skin="on"]:is(
+  [data-musk-stage="0"],
+  [data-musk-stage="1"],
+  [data-musk-stage="2"],
+  [data-musk-stage="3"]
+) [data-composer-card="true"] {
+  border-color: var(--musk-border) !important;
+  color: var(--musk-ink) !important;
+  background: var(--musk-layer-1) !important;
+  box-shadow: 0 8px 28px rgb(20 22 20 / 8%);
+}
+
+body[data-musk-skin="on"]:is(
+  [data-musk-stage="0"],
+  [data-musk-stage="1"],
+  [data-musk-stage="2"],
+  [data-musk-stage="3"]
+) [data-composer-card="true"] :is(textarea, button, [data-input-mirror="true"]) {
+  color: var(--musk-ink) !important;
+  caret-color: var(--musk-accent) !important;
+}
+
+body[data-musk-skin="on"]:is(
+  [data-musk-stage="0"],
+  [data-musk-stage="1"],
+  [data-musk-stage="2"],
+  [data-musk-stage="3"]
+) [data-composer-card="true"] textarea::placeholder {
+  color: var(--musk-tertiary) !important;
+  opacity: 1;
+}
+
+.musk-effort-control {
+  --musk-control-accent: var(--dsw-alias-brand-primary-new-colorprimary-new-color, #4176e6);
+  --musk-control-rail: var(--dsw-alias-border-l3, rgb(0 0 0 / 16%));
+  position: relative;
+  display: flex;
+  width: 124px;
+  height: 28px;
+  align-items: center;
+  margin: 0 3px;
+  overflow: visible;
+}
+
+body[data-musk-skin="on"] .musk-effort-control {
+  --musk-control-accent: var(--musk-secondary);
+  --musk-control-rail: color-mix(in srgb, var(--musk-secondary) 28%, transparent);
+}
+
+.musk-effort-control__ticks {
+  position: absolute;
+  z-index: 0;
+  inset: 0 10px;
+  pointer-events: none;
+}
+
+.musk-effort-control__ticks::before {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: 1px;
+  content: "";
+  background: var(--musk-control-rail);
+  transform: translateY(-50%);
+}
+
+.musk-effort-control__tooltip {
+  position: absolute;
+  z-index: 4;
+  bottom: calc(100% + 7px);
+  left: calc(10px + (100% - 20px) * var(--musk-slider-ratio));
+  min-width: max-content;
+  padding: 5px 8px;
+  border: 1px solid var(--musk-border, rgb(0 0 0 / 12%));
+  border-radius: 7px;
+  color: var(--musk-ink, #171816);
+  background: var(--musk-layer-1, #fff);
+  box-shadow: 0 5px 16px rgb(0 0 0 / 16%);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 16px;
+  letter-spacing: 0.01em;
+  pointer-events: none;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.musk-effort-control__tooltip::after {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  content: "";
+  background: inherit;
+  transform: translate(-50%, -4px) rotate(45deg);
+}
+
+.musk-effort-control__tick {
+  position: absolute;
+  top: 50%;
+  width: 1px;
+  height: 7px;
+  background: var(--musk-control-accent);
+  opacity: 0.42;
+  transform: translate(-50%, -50%);
+}
+
+.musk-effort-control__range {
+  position: relative;
+  z-index: 1;
+  width: calc(100% - 7px);
+  height: 28px;
+  margin: 0 3.5px;
+  cursor: ew-resize;
+  appearance: none;
+  background: transparent;
+  touch-action: pan-y;
+}
+
+.musk-effort-control__range:disabled {
+  cursor: progress;
+  opacity: 0.58;
+}
+
+.musk-effort-control__range::-webkit-slider-runnable-track {
+  height: 1px;
+  border-radius: 1px;
+  background: transparent;
+}
+
+.musk-effort-control__range::-webkit-slider-thumb {
+  width: 13px;
+  height: 13px;
+  margin-top: -6px;
+  border: 1.5px solid color-mix(in srgb, var(--musk-control-accent) 72%, transparent);
+  border-radius: 50%;
+  appearance: none;
+  background: radial-gradient(circle, var(--musk-control-accent) 0 2px, color-mix(in srgb, var(--musk-control-accent) 22%, var(--dsw-alias-bg-layer-1, #fff)) 2.5px);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 14%);
+}
+
+body[data-musk-skin="on"] .musk-effort-control__range::-webkit-slider-thumb {
+  width: 13px;
+  height: 13px;
+  margin-top: -6px;
+  border-color: color-mix(in srgb, var(--musk-control-accent) 72%, transparent);
+  background: radial-gradient(circle, var(--musk-control-accent) 0 2px, color-mix(in srgb, var(--musk-control-accent) 22%, var(--musk-layer-1)) 2.5px);
+}
+
+.musk-effort-control__range::-moz-range-track {
+  height: 1px;
+  background: transparent;
+}
+
+.musk-effort-control__range::-moz-range-progress {
+  height: 1px;
+  background: transparent;
+}
+
+.musk-effort-control__range::-moz-range-thumb {
+  width: 11px;
+  height: 11px;
+  border: 1.5px solid color-mix(in srgb, var(--musk-control-accent) 72%, transparent);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--musk-control-accent) 24%, var(--dsw-alias-bg-layer-1, #fff));
+}
+
+.musk-effort-control__range:focus-visible {
+  outline: none;
+}
+
+.musk-effort-control[data-state="error"] {
+  --musk-control-accent: var(--dsw-alias-state-error-primary, #e43c3c);
+}
+
+.musk-appearance-choice {
+  box-sizing: border-box;
+  border: 1px solid var(--dsw-alias-border-l2);
+  flex: 180px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  padding: 20px 32px;
+  border-radius: 16px;
+  font: inherit;
+  color: var(--dsw-alias-label-primary);
+  cursor: pointer;
+  background: transparent;
+  font-size: 14px;
+  line-height: 22px;
+  display: flex;
+}
+
+[class*="_8HJdBW_cubeRow"]:has(.musk-appearance-choice) {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.musk-appearance-choice:hover:not([aria-pressed="true"]) {
+  background: var(--dsw-alias-interactive-bg-hover);
+}
+
+.musk-appearance-choice[aria-pressed="true"] {
+  border-color: var(--dsw-static-neutral-bluish-400);
+  background: var(--dsw-alias-bg-module-platform);
+}
+
+.musk-appearance-choice__icon {
+  display: block;
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  color: currentColor;
+  font-size: 16px;
+  line-height: 16px;
+}
+
+.musk-appearance-choice__label {
+  display: block;
+}
+
+/* Keep the host's three theme cubes untouched. These rules only style the
+   fourth button that is appended to the host cube row. */
+.musk-appearance-choice:disabled {
+  cursor: progress;
+  opacity: 0.7;
+}
+
+.musk-appearance-binding {
+  box-sizing: border-box;
+  display: flex;
+  width: 100%;
+  min-height: 28px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 4px 0 0;
+  color: var(--dsw-alias-label-primary);
+  font: inherit;
+  font-size: 14px;
+  line-height: 22px;
+  cursor: pointer;
+}
+
+.musk-appearance-binding__label {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.musk-appearance-binding__copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.musk-appearance-binding__description {
+  display: block;
+  overflow: hidden;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 12px;
+  line-height: 18px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.musk-appearance-binding__input {
+  position: relative;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 20px;
+  margin: 0;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 999px;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background: var(--dsw-alias-interactive-bg-hover, var(--dsw-alias-bg-module-platform));
+}
+
+.musk-appearance-binding__input::before {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  content: "";
+  background: var(--dsw-alias-label-primary);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 18%);
+  transition: transform 160ms ease, background-color 160ms ease;
+}
+
+.musk-appearance-binding__input:checked {
+  border-color: var(--dsw-static-neutral-bluish-400);
+  background: var(--dsw-static-neutral-bluish-400);
+}
+
+.musk-appearance-binding__input:checked::before {
+  background: var(--dsw-alias-bg-layer-1, #fff);
+  transform: translateX(16px);
+}
+
+.musk-appearance-binding__input:focus-visible {
+  box-shadow: 0 0 0 2px var(--dsw-alias-interactive-bg-hover);
+}
+
+.musk-appearance-binding__input:disabled {
+  cursor: progress;
+  opacity: 0.7;
+}
+
+@media (max-width: 760px) {
+  .musk-effort-control {
+    width: 92px;
+  }
+
+  .musk-skin-backdrop video,
+  .musk-skin-backdrop img {
+    right: -18vw;
+    width: 92vw;
+    opacity: calc(var(--musk-portrait-opacity, 0.45) * 0.72);
+  }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .musk-skin-backdrop,
+  .musk-skin-backdrop video,
+  .musk-skin-backdrop img,
+  body[data-musk-skin="on"] button,
+  body[data-musk-skin="on"] input,
+  body[data-musk-skin="on"] textarea {
+    transition: none;
+  }
+}
+

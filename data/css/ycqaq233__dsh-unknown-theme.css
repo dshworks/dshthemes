@@ -1,0 +1,92 @@
+/* ycqaq233/dsh-unknown-theme — lib/client.js
+   fetched 2026-08-19 from https://raw.githubusercontent.com/ycqaq233/dsh-unknown-theme/main/lib/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/* 会话主区：官网渐隐渐变（流体 canvas 挂载于其上的 z-index:-1 层） */
+        [data-phase="hero"], [data-phase="active"] {
+          background: var(--ds-ds-bg, linear-gradient(180deg, rgba(34,68,110,0.55) 0%, rgba(34,68,110,0.45) 10%, rgba(20,35,60,0.3) 30%, rgba(13,20,32,0.2) 55%, rgba(27,47,78,0.5) 100%)) !important;
+          position: relative;
+          isolation: isolate;
+        }
+        /* composerSeat：背景透明，直接显示流体背景（DSH 原背景是 bg-base 不透明色块） */
+        [data-phase="active"] [class$="_composerSeat"] {
+          background: transparent !important;
+        }
+        /* 粒子画布定位基准 */
+        [class$="_scrollBody"] {
+          position: relative;
+        }
+        /* 侧栏 / 详情列：融入主题渐变（不透明，避免浮层穿帮） */
+        /* 侧栏/详情列：半透明渐变（透出背后模糊的流体 = 毛玻璃感）。
+           注意：不能加 backdrop-filter——它会创建 containing block，把
+           fixed 定位的浮层（设置面板等）困在侧栏列内。 */
+        [data-slot="sidebar"] > div, [data-slot="details"] > div {
+          background: var(--ds-sidebar-grad, linear-gradient(180deg, rgba(251,252,254,0.3) 0%, rgba(237,242,250,0.3) 34%, rgba(245,246,248,0.3) 100%)) !important;
+        }
+        /* 官网质感玻璃（harness hero 终端卡片同款）：
+           bg-black/20 深色 tint + backdrop-blur-xl(24px) 磨砂 + 1px 白 8% 描边。
+           不搬左上角三个圆点，只搬质感：无折射层、无高光、无外阴影 */
+        [data-composer-card],
+        [class$="_userStack"] [class$="_bubble"],
+        .hHd-Xa_newSession,
+        .nL4_yW_sessionLogButton {
+          position: relative !important;
+          background: var(--lg-bg, rgba(0,0,0,.2)) !important;
+          border: 1px solid var(--lg-border, rgba(255,255,255,.08)) !important;
+          -webkit-backdrop-filter: blur(24px) !important;
+          backdrop-filter: blur(24px) !important;
+          box-shadow: none !important;
+        }
+        /* hover：tint 加深一点作为反馈 */
+        .hHd-Xa_newSession:hover,
+        .nL4_yW_sessionLogButton:hover:not(:disabled) {
+          background: var(--lg-bg-hover, rgba(0,0,0,.3)) !important;
+        }
+        /* 聚光灯圆环（官网 ds-cursor-ring 同款） */
+        .ds-ring {
+          position: fixed;
+          left: 0;
+          top: 0;
+          width: 64px;
+          height: 64px;
+          margin: -32px 0 0 -32px;
+          border-radius: 50%;
+          background: var(--ds-ring-color, #fff);
+          mix-blend-mode: difference;
+          pointer-events: none;
+          z-index: 9999;
+          opacity: 0;
+          transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+          will-change: transform, opacity;
+        }
+        .ds-ring[data-on="1"] {
+          opacity: 1;
+        }
+        /* 流体 canvas：z-index -1 位于背景之上内容之下；blur 毛玻璃柔化条纹 */
+        .ds-fluid-canvas {
+          position: fixed;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          z-index: -1;
+          pointer-events: none;
+          filter: blur(9px) saturate(1.15);
+        }
+        /* 官网网格 canvas：位于流体之上、内容之下；底部渐隐（官方 mask 风格） */
+        .ds-grid-canvas {
+          position: fixed;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          z-index: -1;
+          pointer-events: none;
+          -webkit-mask-image: linear-gradient(rgba(0,0,0,1) 0%, rgba(0,0,0,.9) 20%, rgba(0,0,0,.4) 55%, rgba(0,0,0,0) 100%);
+          mask-image: linear-gradient(rgba(0,0,0,1) 0%, rgba(0,0,0,.9) 20%, rgba(0,0,0,.4) 55%, rgba(0,0,0,0) 100%);
+        }
+        /* frame 背景透明：让全屏流体 canvas 透出（侧栏/详情/会话区背后都是它） */
+        [class$="_frame"] {
+          background: transparent !important;
+        }
+        /* 侧栏列容器（sidebarCol）不透明背景（--dsw-specific-sidebar-fill）会盖住流体，改为透明 */
+        [class$="_sidebarCol"] {
+          background: transparent !important;
+        }

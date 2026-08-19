@@ -1,0 +1,40 @@
+/* RayYeung1989/claude-parchment-theme — lib/client.js
+   fetched 2026-08-19 from https://raw.githubusercontent.com/RayYeung1989/claude-parchment-theme/main/lib/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/* ===== Claude Parchment Theme ===== */
+      body {
+        --dsw-font-markdown-h1-font-weight: 500;
+        --dsw-font-markdown-h2-font-weight: 500;
+        --dsw-font-markdown-h3-font-weight: 500;
+        --dsw-font-markdown-h4-font-weight: 500;
+        --dsw-font-xl-24-font-weight: 500;
+        --dsw-font-l-20-font-weight: 500;
+        --dsw-font-markdown-base-font-weight: 400;
+        --dsw-font-markdown-base-strong-font-weight: 500;
+        --dsw-font-markdown-base-italic-font-weight: 400;
+        --dsw-font-markdown-base-strong-italic-font-weight: 500;
+        /* ---- 代码字体：等宽专属 ---- */
+        --ds-font-family-code: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+      }
+      /* 基础 CSS 在暗色块重复声明了全部静态色（特异性更高），必须在此再覆盖一次 */
+      body[data-ds-dark-theme] {
+      /* 用户消息气泡：无 font-family，从父级继承 —— 显式改为衬线 */
+      [class$="_bubble"] {
+      }
+      /* 引用标签 chip：硬编码半透明蓝 → 暖陶土 */
+      [class$="_chip"] {
+        background: rgba(201, 100, 66, .22) !important;
+      }
+      /* 选区：Terracotta 暖色印记 */
+      ::selection {
+        background: rgba(201, 100, 66, .28);
+      }
+      /* 焦点环：系统唯一冷色（Focus Blue），仅用于可达性 */
+      :focus-visible {
+        outline: 2px solid #3898ec;
+        outline-offset: 1px;
+      }
+      html, body {
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
