@@ -3,6 +3,7 @@
 // we derived). Plain HTML, one stylesheet, one script. Every theme gets a real
 // URL. Nothing here is fetched at request time.
 
+import { createHash } from "node:crypto";
 import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -38,6 +39,18 @@ const SHELVES = {
   runtime: { slug: "runtime", label: "Runtime", one: "runtime", blurb: "the theme engine itself" },
 };
 const shelfBySlug = Object.fromEntries(Object.entries(SHELVES).map(([k, v]) => [v.slug, k]));
+
+const fingerprint = (text) => createHash("sha256").update(text).digest("hex").slice(0, 8);
+const ASSETS = (() => {
+  const css = readFileSync(join(SRC, "styles.css"), "utf8");
+  const js = readFileSync(join(SRC, "app.js"), "utf8");
+  const chrome = readFileSync(join(SRC, "chrome.css"), "utf8");
+  return {
+    css: `/assets/site.${fingerprint(css)}.css`,
+    js: `/assets/app.${fingerprint(js)}.js`,
+    chrome: `/assets/chrome.${fingerprint(chrome)}.css`,
+  };
+})();
 
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -241,7 +254,7 @@ function layout({ title, description, body, path = "/", current = "/", head = ""
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap">
-<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="${ASSETS.css}">
 <script>(function(){try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t;}catch(e){}})();</script>
 ${head}
 </head>
@@ -250,7 +263,7 @@ ${SPRITE}
 ${sitebar(current)}
 ${body}
 ${footer()}
-<script src="/assets/app.js" defer></script>
+<script src="${ASSETS.js}" defer></script>
 </body>
 </html>`;
 }
@@ -489,9 +502,15 @@ mkdirSync(join(DIST, "about"), { recursive: true });
 
 const write = (p, s) => { mkdirSync(dirname(join(DIST, p)), { recursive: true }); writeFileSync(join(DIST, p), s); };
 
-write("assets/site.css", readFileSync(join(SRC, "styles.css"), "utf8").replace("/*SPRINGS*/", springCss()));
-write("assets/app.js", readFileSync(join(SRC, "app.js"), "utf8"));
-write("assets/chrome.css", readFileSync(join(SRC, "chrome.css"), "utf8"));
+// Fingerprinted, because the stylesheet has no version in its name and the
+// pages that reference it are cached too. Deploying a CSS fix and having
+// returning readers keep the old file for an hour is not a fix.
+const siteCss = readFileSync(join(SRC, "styles.css"), "utf8").replace("/*SPRINGS*/", springCss());
+const appJs = readFileSync(join(SRC, "app.js"), "utf8");
+const chromeCss = readFileSync(join(SRC, "chrome.css"), "utf8");
+write(ASSETS.css.slice(1), siteCss);
+write(ASSETS.js.slice(1), appJs);
+write(ASSETS.chrome.slice(1), chromeCss);
 cpSync(join(SRC, "vendor"), join(DIST, "vendor"), { recursive: true });
 // The stylesheets we render, frozen at enrich time and served from our own
 // origin. A live view that fetched raw.githubusercontent at read time went
@@ -501,7 +520,7 @@ if (existsSync(join(ROOT, "data", "css"))) cpSync(join(ROOT, "data", "css"), joi
 if (existsSync(join(ROOT, "data", "shots"))) cpSync(join(ROOT, "data", "shots"), join(DIST, "shot"), { recursive: true });
 write("favicon.svg", readFileSync(join(SRC, "favicon.svg"), "utf8"));
 write("robots.txt", `User-agent: *\nAllow: /\nSitemap: ${SITE}/sitemap.xml\n`);
-write("_headers", `/assets/*\n  Cache-Control: public, max-age=3600\n/vendor/*\n  Cache-Control: public, max-age=86400\n/theme-css/*\n  Cache-Control: public, max-age=86400\n/shot/*\n  Cache-Control: public, max-age=86400\n/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n`);
+write("_headers", `/assets/*\n  Cache-Control: public, max-age=31536000, immutable\n/vendor/*\n  Cache-Control: public, max-age=86400\n/theme-css/*\n  Cache-Control: public, max-age=86400\n/shot/*\n  Cache-Control: public, max-age=86400\n/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n`);
 
 const sortedFresh = [...themes].sort((a, b) => (b.pushedAt || "").localeCompare(a.pushedAt || "") || a.name.localeCompare(b.name));
 write("index.html", galleryPage({ list: sortedFresh, hero: heroHtml, path: "/", current: "/", title: "dshthemes — every DeepSeek Harness theme, in its own colours", description: `${stats.total} community themes for DeepSeek Harness (dsh), each painted from its own stylesheet, ${stats.live} live on the rc.6 shell, one line to wear any of them.` }));
@@ -538,14 +557,14 @@ write("404.html", layout({ title: "Not here — dshthemes", description: "No suc
 
 // preview: mock shell + slug -> {name, css, install} map
 const previewData = Object.fromEntries(themes.filter((t) => t.hasLive).map((t) => [t.slug, { name: t.name, css: t.renderUrl, install: t.install }]));
-write("preview/index.html", readFileSync(join(SRC, "preview.head.html"), "utf8") + readFileSync(join(SRC, "preview.tail.html"), "utf8").replace("/*PREVIEW_DATA*/{}", JSON.stringify(previewData)));
+write("preview/index.html", readFileSync(join(SRC, "preview.head.html"), "utf8").replace("/assets/chrome.css", ASSETS.chrome) + readFileSync(join(SRC, "preview.tail.html"), "utf8").replace("/*PREVIEW_DATA*/{}", JSON.stringify(previewData)));
 
 // og.html: the social card, rendered to src/og.png by scripts/og.mjs (needs a
 // browser); the build copies whatever og.png exists. Not linked from the site.
 const ogPool = heroPool.slice(0, 7);
 write("og.html", `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>og</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap">
-<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="${ASSETS.css}">
 <style>
 html,body{margin:0;background:#000;color:#e8e8e8;width:1200px;height:630px;overflow:hidden}
 :root{color-scheme:only dark}
