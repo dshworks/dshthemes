@@ -1,0 +1,94 @@
+/* Dahuangb/dsh-Landscape-painting-themed-interface — dsh-shanshui-skin/lib/client.js
+   fetched 2026-08-20 from https://raw.githubusercontent.com/Dahuangb/dsh-Landscape-painting-themed-interface/main/dsh-shanshui-skin/lib/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/* 山水画皮肤：所有装饰由 body[data-shanshui] 门控 —— 只有山水画主题激活时才生效，
+   切回内置外观或其它主题包时自动退场，不干扰它们的背景 */
+.dsh-shanshui-veil{display:none}
+body[data-shanshui] .dsh-shanshui-veil{display:block;position:fixed;inset:-10%;z-index:15;pointer-events:none;animation:dsh-shanshui-drift 90s ease-in-out infinite alternate}
+body[data-shanshui][data-ds-dark-theme] .dsh-shanshui-veil{
+@keyframes dsh-shanshui-drift{from{transform:translateX(-1.5%)}to{transform:translateX(1.5%)}}
+@media (prefers-reduced-motion:reduce){body[data-shanshui] .dsh-shanshui-veil{animation:none}}
+
+/* bg-base 是「远山+纸纹+纸色」的合成值；这些小件必须回到纸面，避免把山画进输入框/卡片 */
+body[data-shanshui] [class*="editor"]{background:var(--dsw-alias-bg-layer-1) !important}
+body[data-shanshui] [class*="inspectButton"]{background:var(--dsw-alias-bg-layer-1) !important}
+body[data-shanshui] [class*="objectiveInput"]{background:var(--dsw-alias-bg-layer-1) !important}
+body[data-shanshui] [class*="panelImage"]{background:var(--dsw-alias-bg-layer-1) !important}
+body[data-shanshui] [class*="business"]{background:var(--dsw-alias-bg-layer-1) !important}
+body[data-shanshui] [class*="bannerWrap"]{background-color:var(--dsw-alias-markdown-code-block-banner) !important}
+
+/* 题跋式的衬线标题（markdown 标题 + 设置分区）：宋体为骨、楷体为题 */
+body[data-shanshui] [class*="markdown"] h1,body[data-shanshui] [class*="markdown"] h2,body[data-shanshui] [class*="markdown"] h3,
+.dsh-shanshui-title{font-family:'Noto Serif SC','Source Han Serif SC','Songti SC','STSong',KaiTi,'Kaiti SC',serif}
+
+/* —— 博物馆设计语言：题跋气泡 ——
+   用户气泡 = 白宣纸底 + 1px 墨灰描边 + 卷轴折角（左上/右下微圆角）+ 左上朱砂小印，
+   不加投影（贴上去的纸，不是浮起来的卡片） */
+body[data-shanshui] [class*="bubble"]{
+	background:var(--dsw-alias-bg-layer-1) !important;
+	border:1px solid var(--dsw-alias-border-l2);
+	border-radius:6px 16px 16px 6px !important;
+	box-shadow:none !important;
+	padding:10px 14px !important;
+}
+body[data-shanshui] [class*="bubble"]::before{
+	content:"";display:inline-block;width:7px;height:7px;margin-right:8px;
+	background:var(--dsw-alias-state-error-primary);border-radius:1px;
+	vertical-align:2px;flex:none;
+}
+body[data-shanshui] [class*="bubble-highlight"]::before{content:none}
+
+/* —— 立轴式侧栏：右侧 1px 暗朱红分割线（装裱天地杆的提示） */
+body[data-shanshui] [class*="sidebarCol"]{border-right:1px solid rgba(139,42,42,0.35) !important}
+
+/* —— 左半边 · 山水适配 ——
+   侧栏整体：宋骨楷题；会话/文件夹标题疏排；分区题引小楷；
+   选中态 = 石青罩染 + 左侧朱砂落笔短线；悬停 = 淡朱砂落笔线；
+   新建会话 = 墨黑底纸白楷体（装裱标签）；品牌行下加一道纸框线 */
+body[data-shanshui] [class$="sidebarCol"]{
+	font-family:'Noto Serif SC','Source Han Serif SC','Songti SC','STSong',KaiTi,'Kaiti SC',serif;
+	/* 装裱距线：画心内缘一圈极淡的墨线 */
+	box-shadow:inset 1px 1px 0 0 rgba(45,43,38,0.06), inset -1px -1px 0 0 rgba(45,43,38,0.06);
+}
+body[data-shanshui] [class$="sidebarCol"] [class$="sessionRow"] [class$="title"],
+body[data-shanshui] [class$="sidebarCol"] [class$="folder"] [class$="title"],
+body[data-shanshui] [class$="sidebarCol"] [class$="projectText"]{
+	font-family:'Noto Serif SC','Source Han Serif SC','Songti SC','STSong',KaiTi,'Kaiti SC',serif;
+	letter-spacing:0.02em;
+}
+body[data-shanshui] [class$="sidebarCol"] [class$="sectionLabel"]{
+	font-family:KaiTi,'Kaiti SC','Noto Serif SC','Source Han Serif SC','Songti SC',serif;
+	letter-spacing:0.1em;
+	opacity:0.85;
+}
+body[data-shanshui] [class$="sidebarCol"] [class$="selected"]{
+	background:var(--dsw-specific-sidebar-nav-item-active) !important;
+	box-shadow:inset 2px 0 0 var(--dsw-alias-state-error-primary) !important;
+}
+body[data-shanshui] [class$="sidebarCol"] [class$="sessionRow"]:hover{
+	box-shadow:inset 2px 0 0 rgba(176,40,28,0.32);
+}
+body[data-shanshui] [class$="sidebarCol"] [class$="newSession"]{
+	background:var(--dsw-alias-button-contrast-fill) !important;
+	color:var(--dsw-alias-label-primary-inverted) !important;
+	border-color:transparent !important;
+	font-family:'Noto Serif SC','Source Han Serif SC','Songti SC','STSong',KaiTi,'Kaiti SC',serif;
+	letter-spacing:0.08em;
+	border-radius:10px;
+}
+body[data-shanshui] [class$="sidebarCol"] [class$="renameInput"]{
+	background:var(--dsw-alias-bg-layer-1);
+	border:1px solid var(--dsw-alias-border-l2);
+	border-radius:6px;
+	padding:2px 6px;
+}
+body[data-shanshui] [class$="sidebarCol"] [class$="logoRow"]{
+	border-bottom:1px solid var(--dsw-alias-border-l1);
+}
+
+/* —— 中央会话标题（题引）：衬线小楷 */
+body[data-shanshui] [class*="sessionHeader"] [class*="title"],body[data-shanshui] [class*="title"][class*="session"],
+body[data-shanshui] [class$="titleRow"] [class$="title"],body[data-shanshui] [class$="titleCluster"] [class$="title"]{
+	font-family:'Noto Serif SC','Source Han Serif SC','Songti SC','STSong',KaiTi,'Kaiti SC',serif;
+	letter-spacing:0.04em;
+}

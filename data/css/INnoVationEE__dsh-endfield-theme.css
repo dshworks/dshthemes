@@ -1,0 +1,750 @@
+/* INnoVationEE/dsh-endfield-theme — endfield.css
+   fetched 2026-08-20 from https://raw.githubusercontent.com/INnoVationEE/dsh-endfield-theme/main/endfield.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* ============================================================================
+ * DEEPSEEK HARNESS — "FIELD TERMINAL" INDUSTRIAL TERMINAL THEME
+ * ----------------------------------------------------------------------------
+ * Design reference: grad-research-workbench (v4 Endfield-inspired design system)
+ *   https://github.com/rison114514/grad-research-workbench
+ *
+ * Visual language: lemon yellow #FFF44F + pure-black hard edges with zero radius +
+ *                  layered hard shadows + yellow line accents + clipped corners +
+ *                  industrial grayscale + contour/grid textures + five-color top stripe
+ *
+ * Implementation: loaded after index.css from the web shell's dist output. Redefines
+ * all --dsw-static-* / --dsw-alias-* tokens (for both light and dark themes) following
+ * the structure of design-platform.css, then adds structural styles and fonts. The
+ * cascade applies naturally without modifying any component bundle.
+ * ========================================================================== */
+
+/* ── 0. Fonts (bundled with the theme under /assets/fonts/) ───────────────── */
+
+@font-face { font-family: "HarmonyOS Sans SC"; src: url("https://raw.githubusercontent.com/INnoVationEE/dsh-endfield-theme/main/fonts/HarmonyOS_Sans_SC_Regular.3848ad.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "HarmonyOS Sans SC"; src: url("https://raw.githubusercontent.com/INnoVationEE/dsh-endfield-theme/main/fonts/HarmonyOS_Sans_SC_Medium.fa43c4.woff2") format("woff2"); font-weight: 500; font-display: swap; }
+@font-face { font-family: "HarmonyOS Sans SC"; src: url("https://raw.githubusercontent.com/INnoVationEE/dsh-endfield-theme/main/fonts/HarmonyOS_Sans_SC_Bold.50b93a.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "HarmonyOS Sans SC"; src: url("https://raw.githubusercontent.com/INnoVationEE/dsh-endfield-theme/main/fonts/HarmonyOS_Sans_SC_Black.e135b0.woff2") format("woff2"); font-weight: 900; font-display: swap; }
+@font-face { font-family: "Novecento Wide"; src: url("https://raw.githubusercontent.com/INnoVationEE/dsh-endfield-theme/main/fonts/Novecentosanswide-Medium.748604.woff2") format("woff2"); font-weight: 500; font-display: swap; }
+@font-face { font-family: "Novecento Wide"; src: url("https://raw.githubusercontent.com/INnoVationEE/dsh-endfield-theme/main/fonts/Novecentosanswide-DemiBold.089c2d.woff2") format("woff2"); font-weight: 600; font-display: swap; }
+@font-face { font-family: "Novecento Wide"; src: url("https://raw.githubusercontent.com/INnoVationEE/dsh-endfield-theme/main/fonts/Novecentosanswide-Bold.7ac6f1.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Gilroy"; src: url("https://raw.githubusercontent.com/INnoVationEE/dsh-endfield-theme/main/fonts/Gilroy-Light.9981d6.woff2") format("woff2"); font-weight: 300; font-display: swap; }
+@font-face { font-family: "Gilroy"; src: url("https://raw.githubusercontent.com/INnoVationEE/dsh-endfield-theme/main/fonts/Gilroy-Medium.376b06.woff2") format("woff2"); font-weight: 500; font-display: swap; }
+@font-face { font-family: "Space Grotesk"; src: url("https://raw.githubusercontent.com/INnoVationEE/dsh-endfield-theme/main/fonts/SpaceGrotesk.edd157.woff2") format("woff2"); font-weight: 400 700; font-display: swap; }
+@font-face { font-family: "Roboto Endfield"; src: url("https://raw.githubusercontent.com/INnoVationEE/dsh-endfield-theme/main/fonts/Roboto-Regular.978751.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+
+:root {
+  --dsw-font-family: 'HarmonyOS Sans SC', 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Helvetica, Arial, sans-serif;
+  --ds-font-family-code: 'Space Grotesk', 'SF Mono', 'JetBrains Mono',
+    'Fira Code', ui-monospace, Menlo, Consolas, 'Liberation Mono',
+    'PingFang SC', 'Microsoft YaHei', monospace;
+}
+
+body {
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Global hard edges: zero radius (an industrial-terminal signature; rounded elements
+   such as scrollbar thumbs and avatars are restored individually below). */
+* { border-radius: 0 !important; }
+
+::-webkit-scrollbar-thumb { border-radius: 0 !important; }
+[class*="avatar"] { border-radius: 50% !important; }
+
+::selection { background: rgba(255, 244, 79, 0.45); color: #0a0b0d; }
+:focus-visible { outline-color: #fff44f; }
+input, textarea, [contenteditable="true"] { caret-color: #fff44f; }
+
+/* ============================================================================
+ * Dark Theme (Terminal Bay) — Static Scale
+ * ========================================================================== */
+
+body[data-ds-dark-theme] {
+  --dsw-static-neutral-bluish-1000: rgb(6, 7, 8);
+  --dsw-static-neutral-bluish-950: rgb(9, 11, 13);
+  --dsw-static-neutral-bluish-900: rgb(13, 15, 17);
+  --dsw-static-neutral-bluish-875: rgb(16, 19, 22);
+  --dsw-static-neutral-bluish-850: rgb(19, 22, 26);
+  --dsw-static-neutral-bluish-800: rgb(23, 26, 30);
+  --dsw-static-neutral-bluish-750: rgb(29, 33, 38);
+  --dsw-static-neutral-bluish-700: rgb(38, 43, 49);
+  --dsw-static-neutral-bluish-600: rgb(51, 57, 63);
+  --dsw-static-neutral-bluish-550: rgb(61, 68, 75);
+  --dsw-static-neutral-bluish-500: rgb(76, 84, 92);
+  --dsw-static-neutral-bluish-400: rgb(95, 103, 112);
+  --dsw-static-neutral-bluish-300: rgb(127, 136, 145);
+  --dsw-static-neutral-bluish-200: rgb(169, 176, 183);
+  --dsw-static-neutral-bluish-150: rgb(194, 200, 205);
+  --dsw-static-neutral-bluish-100: rgb(221, 225, 228);
+  --dsw-static-neutral-bluish-75: rgb(238, 240, 242);
+  --dsw-static-neutral-bluish-60: rgb(242, 243, 244);
+  --dsw-static-neutral-bluish-50: rgb(247, 248, 249);
+  --dsw-static-neutral-bluish-00: rgb(255, 255, 255);
+
+  /* Brand blue -> lemon-yellow family #FFF44F */
+  --dsw-static-deepseek-50: rgb(255, 254, 236);
+  --dsw-static-deepseek-100: rgb(255, 253, 205);
+  --dsw-static-deepseek-200: rgb(255, 250, 150);
+  --dsw-static-deepseek-300: rgb(255, 247, 100);
+  --dsw-static-deepseek-400: rgb(255, 246, 70);
+  --dsw-static-deepseek-450: rgb(255, 244, 79);
+  --dsw-static-deepseek-500: rgb(255, 244, 79);
+  --dsw-static-deepseek-600: rgb(230, 217, 0);
+  --dsw-static-deepseek-700-delete: rgb(201, 186, 0);
+  --dsw-static-deepseek-800: rgb(156, 143, 0);
+  --dsw-static-deepseek-900: rgb(107, 97, 0);
+
+  --dsw-static-amber-100: rgb(255, 243, 224);
+  --dsw-static-amber-400: rgb(255, 187, 74);
+  --dsw-static-amber-500: rgb(245, 166, 35);
+  --dsw-static-amber-600: rgb(217, 138, 18);
+  --dsw-static-amber-900: rgb(63, 42, 10);
+
+  --dsw-static-red-50: rgb(255, 240, 238);
+  --dsw-static-red-100: rgb(255, 222, 219);
+  --dsw-static-red-400: rgb(255, 111, 105);
+  --dsw-static-red-500: rgb(255, 98, 93);
+  --dsw-static-red-600: rgb(235, 72, 64);
+  --dsw-static-red-900: rgb(96, 22, 18);
+
+  --dsw-static-green-100: rgb(230, 252, 219);
+  --dsw-static-green-400: rgb(150, 242, 110);
+  --dsw-static-green-500: rgb(142, 239, 91);
+  --dsw-static-green-600: rgb(104, 213, 58);
+  --dsw-static-green-900: rgb(26, 60, 14);
+
+  --dsw-static-neutral-50: rgb(246, 246, 246);
+  --dsw-static-neutral-100: rgb(238, 238, 238);
+  --dsw-static-neutral-150: rgb(230, 230, 230);
+  --dsw-static-neutral-200: rgb(220, 220, 220);
+  --dsw-static-neutral-250: rgb(208, 208, 208);
+  --dsw-static-neutral-300: rgb(196, 196, 196);
+  --dsw-static-neutral-400: rgb(156, 156, 156);
+  --dsw-static-neutral-500: rgb(124, 124, 124);
+  --dsw-static-neutral-550: rgb(102, 102, 102);
+  --dsw-static-neutral-600: rgb(92, 92, 92);
+  --dsw-static-neutral-700: rgb(72, 72, 72);
+  --dsw-static-neutral-800: rgb(52, 52, 52);
+  --dsw-static-neutral-850: rgb(40, 40, 40);
+  --dsw-static-neutral-900: rgb(22, 22, 22);
+}
+
+/* ============================================================================
+ * Dark Theme (Terminal Bay) — Semantic Aliases
+ * ========================================================================== */
+
+body[data-ds-dark-theme] {
+  --dsw-alias-bg-base: rgb(13, 15, 17);
+  --dsw-alias-bg-layer-1: rgb(17, 20, 24);
+  --dsw-alias-bg-layer-2: rgb(21, 25, 29);
+  --dsw-alias-bg-layer-3: rgb(26, 30, 35);
+  --dsw-alias-bg-mask-1: rgba(0, 0, 0, 0.55);
+  --dsw-alias-bg-mask-2: rgba(0, 0, 0, 0.25);
+  --dsw-alias-bg-mask-3: rgba(0, 0, 0, 0.55);
+  --dsw-alias-bg-mask-photo: rgba(0, 0, 0, 0.85);
+  --dsw-alias-bg-mask-drop: rgba(9, 11, 13, 0.7);
+  --dsw-alias-bg-module-platform: rgb(29, 33, 38);
+  --dsw-alias-bg-multi-select: rgb(21, 25, 29);
+  --dsw-alias-bg-overlay: rgb(38, 43, 49);
+  --dsw-alias-bg-skeleton: rgba(255, 255, 255, 0.06);
+
+  --dsw-alias-border-inverted2: rgba(255, 255, 255, 0.09);
+  --dsw-alias-border-inverted: rgba(255, 255, 255, 0.07);
+  --dsw-alias-border-l1: rgba(255, 255, 255, 0.07);
+  --dsw-alias-border-l2-darkmode-thin: rgba(255, 255, 255, 0.06);
+  --dsw-alias-border-l2: rgba(255, 255, 255, 0.12);
+  --dsw-alias-border-l3: rgba(255, 255, 255, 0.18);
+  --dsw-alias-border-l4: rgba(255, 255, 255, 0.26);
+
+  --dsw-alias-brand-primary-invert: rgb(10, 11, 13);
+  --dsw-alias-brand-primary-new-colorprimary-new-color: rgb(255, 244, 79);
+  --dsw-alias-brand-primary: rgb(255, 244, 79);
+  --dsw-alias-brand-text: rgb(246, 247, 243);
+
+  --dsw-alias-button-contrast-fill: rgb(246, 247, 243);
+  --dsw-alias-button-elevated-fill: rgb(26, 30, 35);
+  --dsw-alias-button-floating-fill: rgb(29, 33, 38);
+  --dsw-alias-button-floating-hover: rgb(36, 41, 47);
+  --dsw-alias-button-ghost-active-border: rgba(255, 244, 79, 0.55);
+  --dsw-alias-button-ghost-active-fill: rgba(255, 244, 79, 0.12);
+  --dsw-alias-button-ghost-active-hover: rgba(255, 244, 79, 0.2);
+  --dsw-alias-button-info-fill: rgb(255, 244, 79);
+  --dsw-alias-button-info-hover: rgb(230, 217, 0);
+  --dsw-alias-button-primary-dimmed: rgba(255, 244, 79, 0.18);
+  --dsw-alias-button-primary-fill: var(--dsw-alias-brand-primary);
+  --dsw-alias-button-primary-hover: rgb(230, 217, 0);
+  --dsw-alias-button-tool-bar-fill-invisible: rgba(255, 255, 255, 0.06);
+  --dsw-alias-button-tool-bar-fill: rgba(255, 255, 255, 0.09);
+  --dsw-alias-button-tool-bar-hover: rgba(255, 255, 255, 0.14);
+
+  --dsw-alias-interactive-bg-active: rgba(255, 244, 79, 0.16);
+  --dsw-alias-interactive-bg-hover-accent: rgba(255, 244, 79, 0.1);
+  --dsw-alias-interactive-bg-hover-danger: rgba(255, 98, 93, 0.16);
+  --dsw-alias-interactive-bg-hover-solid: rgb(31, 36, 41);
+  --dsw-alias-interactive-bg-hover: rgba(255, 255, 255, 0.06);
+
+  --dsw-alias-label-caption: rgb(111, 118, 126);
+  --dsw-alias-label-dimmed: rgb(74, 81, 89);
+  --dsw-alias-label-primary-bluish: rgb(246, 247, 243);
+  --dsw-alias-label-primary-dimmed: rgb(250, 251, 247);
+  --dsw-alias-label-primary-foreground: rgb(10, 11, 13);
+  --dsw-alias-label-primary-inverted: rgb(238, 240, 238);
+  --dsw-alias-label-primary: rgb(246, 247, 243);
+  --dsw-alias-label-secondary: rgb(155, 159, 165);
+  --dsw-alias-label-tertiary: rgb(111, 118, 126);
+
+  --dsw-alias-markdown-citation: rgb(23, 26, 30);
+  --dsw-alias-markdown-code-block-banner: rgb(16, 19, 22);
+  --dsw-alias-markdown-code-block: rgb(11, 13, 15);
+  --dsw-alias-markdown-code-segment-selected: rgb(23, 26, 30);
+  --dsw-alias-markdown-code-segment-unselected: rgb(11, 13, 15);
+  --dsw-alias-markdown-inline-code: rgb(19, 22, 26);
+  --dsw-alias-markdown-placeholder: rgb(16, 19, 22);
+  --dsw-alias-markdown-tag: rgb(19, 22, 26);
+
+  /* Scrollbar: yellow-and-black industrial strip */
+  --dsw-alias-scrollbar-bg-l1: rgb(38, 43, 49);
+  --dsw-alias-scrollbar-bg-l2: rgb(51, 57, 63);
+  --dsw-alias-scrollbar-hover-l1: rgb(255, 244, 79);
+  --dsw-alias-scrollbar-hover-l2: rgb(255, 244, 79);
+
+  --dsw-alias-state-business-primary: rgb(255, 244, 79);
+  --dsw-alias-state-business-tertiary: rgba(255, 244, 79, 0.14);
+  --dsw-alias-state-error-primary: rgb(255, 98, 93);
+  --dsw-alias-state-error-secondary: rgb(255, 111, 105);
+  --dsw-alias-state-success-primary: rgb(142, 239, 91);
+  --dsw-alias-state-success-secondary: rgb(150, 242, 110);
+  --dsw-alias-state-success-tertiary: rgb(26, 60, 14);
+  --dsw-alias-state-warn-label: rgb(217, 138, 18);
+  --dsw-alias-state-warn-primary: rgb(245, 166, 35);
+  --dsw-alias-state-warn-secondary: rgb(255, 187, 74);
+  --dsw-alias-state-warn-tertiary: rgb(63, 42, 10);
+
+  --dsw-alias-toast-bg: rgb(29, 33, 38);
+  --dsw-alias-tooltip-bg: rgb(38, 43, 49);
+
+  /* Bubbles: dark panel for the assistant, yellow-tinted panel for the user */
+  --dsw-specific-bubble-highlight: rgba(255, 244, 79, 0.15);
+  --dsw-specific-bubble: rgb(26, 30, 35);
+  --dsw-specific-input-major: rgb(13, 15, 17);
+  --dsw-specific-login-input: rgb(11, 13, 15);
+  --dsw-specific-menu: var(--dsw-alias-bg-layer-3);
+  --dsw-specific-selector: rgb(23, 26, 30);
+  --dsw-specific-sidebar-fill: linear-gradient(180deg, rgb(15, 18, 21) 0%, rgb(9, 11, 13) 100%);
+  --dsw-specific-sidebar-nav-item-active-accent: rgb(255, 244, 79);
+  --dsw-specific-sidebar-nav-item-active: rgba(255, 244, 79, 0.2);
+  --dsw-specific-sidebar-nav-item-hover: rgba(255, 255, 255, 0.05);
+  --dsw-specific-tip: rgb(17, 20, 24);
+
+  /* Theme-private variables used by structural styles */
+  --ef-code-bg: rgb(19, 22, 26);
+  --ef-code-fg: rgb(255, 244, 79);
+  --ef-grid-line: rgba(255, 255, 255, 0.03);
+  --ef-glow: rgba(255, 244, 79, 0.06);
+  --ef-vignette: rgba(0, 0, 0, 0.24);
+  --ef-bg-page: rgb(9, 11, 13);
+}
+
+/* ============================================================================
+ * Light Theme (Paper Workbench) — Static Scale
+ * ========================================================================== */
+
+body:not([data-ds-dark-theme]) {
+  --dsw-static-neutral-bluish-1000: rgb(10, 11, 13);
+  --dsw-static-neutral-bluish-950: rgb(26, 28, 31);
+  --dsw-static-neutral-bluish-900: rgb(45, 48, 52);
+  --dsw-static-neutral-bluish-875: rgb(58, 61, 66);
+  --dsw-static-neutral-bluish-850: rgb(72, 75, 80);
+  --dsw-static-neutral-bluish-800: rgb(92, 96, 102);
+  --dsw-static-neutral-bluish-750: rgb(116, 120, 127);
+  --dsw-static-neutral-bluish-700: rgb(140, 145, 152);
+  --dsw-static-neutral-bluish-600: rgb(165, 170, 176);
+  --dsw-static-neutral-bluish-550: rgb(182, 186, 192);
+  --dsw-static-neutral-bluish-500: rgb(199, 203, 208);
+  --dsw-static-neutral-bluish-400: rgb(213, 216, 220);
+  --dsw-static-neutral-bluish-300: rgb(226, 228, 231);
+  --dsw-static-neutral-bluish-200: rgb(236, 238, 240);
+  --dsw-static-neutral-bluish-150: rgb(243, 244, 246);
+  --dsw-static-neutral-bluish-100: rgb(248, 249, 250);
+  --dsw-static-neutral-bluish-75: rgb(251, 251, 252);
+  --dsw-static-neutral-bluish-60: rgb(252, 252, 253);
+  --dsw-static-neutral-bluish-50: rgb(253, 253, 254);
+  --dsw-static-neutral-bluish-00: rgb(255, 255, 255);
+
+  --dsw-static-deepseek-50: rgb(255, 254, 236);
+  --dsw-static-deepseek-100: rgb(255, 252, 204);
+  --dsw-static-deepseek-200: rgb(255, 248, 153);
+  --dsw-static-deepseek-300: rgb(255, 244, 102);
+  --dsw-static-deepseek-400: rgb(255, 242, 64);
+  --dsw-static-deepseek-450: rgb(247, 236, 40);
+  --dsw-static-deepseek-500: rgb(230, 217, 0);
+  --dsw-static-deepseek-600: rgb(210, 198, 0);
+  --dsw-static-deepseek-700-delete: rgb(179, 168, 0);
+  --dsw-static-deepseek-800: rgb(138, 129, 0);
+  --dsw-static-deepseek-900: rgb(94, 88, 0);
+
+  --dsw-static-amber-100: rgb(255, 244, 224);
+  --dsw-static-amber-400: rgb(238, 166, 44);
+  --dsw-static-amber-500: rgb(217, 138, 18);
+  --dsw-static-amber-600: rgb(186, 120, 16);
+  --dsw-static-amber-900: rgb(63, 42, 10);
+
+  --dsw-static-red-50: rgb(255, 240, 238);
+  --dsw-static-red-100: rgb(255, 224, 220);
+  --dsw-static-red-400: rgb(235, 86, 72);
+  --dsw-static-red-500: rgb(219, 63, 49);
+  --dsw-static-red-600: rgb(196, 51, 38);
+  --dsw-static-red-900: rgb(96, 22, 18);
+
+  --dsw-static-green-100: rgb(234, 250, 224);
+  --dsw-static-green-400: rgb(124, 215, 80);
+  --dsw-static-green-500: rgb(96, 188, 55);
+  --dsw-static-green-600: rgb(80, 160, 45);
+  --dsw-static-green-900: rgb(26, 60, 14);
+
+  --dsw-static-neutral-50: rgb(250, 250, 250);
+  --dsw-static-neutral-100: rgb(245, 245, 245);
+  --dsw-static-neutral-150: rgb(237, 237, 237);
+  --dsw-static-neutral-200: rgb(229, 229, 229);
+  --dsw-static-neutral-250: rgb(220, 220, 220);
+  --dsw-static-neutral-300: rgb(212, 212, 212);
+  --dsw-static-neutral-400: rgb(162, 164, 166);
+  --dsw-static-neutral-500: rgb(127, 130, 135);
+  --dsw-static-neutral-550: rgb(101, 103, 107);
+  --dsw-static-neutral-600: rgb(84, 85, 87);
+  --dsw-static-neutral-700: rgb(60, 60, 61);
+  --dsw-static-neutral-800: rgb(41, 41, 41);
+  --dsw-static-neutral-850: rgb(33, 33, 35);
+  --dsw-static-neutral-900: rgb(15, 15, 15);
+}
+
+/* ============================================================================
+ * Light Theme (Paper Workbench) — Semantic Aliases
+ * ========================================================================== */
+
+body:not([data-ds-dark-theme]) {
+  --dsw-alias-bg-base: rgb(243, 243, 240);
+  --dsw-alias-bg-layer-1: rgb(248, 248, 245);
+  --dsw-alias-bg-layer-2: rgb(251, 251, 248);
+  --dsw-alias-bg-layer-3: rgb(255, 255, 255);
+  --dsw-alias-bg-mask-1: rgba(10, 11, 13, 0.35);
+  --dsw-alias-bg-mask-2: rgba(10, 11, 13, 0.12);
+  --dsw-alias-bg-mask-3: rgba(10, 11, 13, 0.45);
+  --dsw-alias-bg-mask-photo: rgba(10, 11, 13, 0.8);
+  --dsw-alias-bg-mask-drop: rgba(255, 255, 255, 0.7);
+  --dsw-alias-bg-module-platform: rgb(239, 239, 236);
+  --dsw-alias-bg-multi-select: rgb(239, 239, 236);
+  --dsw-alias-bg-overlay: rgb(255, 255, 255);
+  --dsw-alias-bg-skeleton: rgba(10, 11, 13, 0.05);
+
+  --dsw-alias-border-inverted2: rgba(10, 11, 13, 0.1);
+  --dsw-alias-border-inverted: rgba(10, 11, 13, 0.08);
+  --dsw-alias-border-l1: rgba(10, 11, 13, 0.08);
+  --dsw-alias-border-l2-darkmode-thin: rgba(10, 11, 13, 0.1);
+  --dsw-alias-border-l2: rgba(10, 11, 13, 0.14);
+  --dsw-alias-border-l3: rgba(10, 11, 13, 0.2);
+  --dsw-alias-border-l4: rgba(10, 11, 13, 0.28);
+
+  --dsw-alias-brand-primary-invert: rgb(10, 11, 13);
+  --dsw-alias-brand-primary-new-colorprimary-new-color: rgb(201, 186, 0);
+  --dsw-alias-brand-primary: rgb(201, 186, 0);
+  --dsw-alias-brand-text: rgb(10, 11, 13);
+
+  --dsw-alias-button-contrast-fill: rgb(38, 40, 44);
+  --dsw-alias-button-elevated-fill: rgb(255, 255, 255);
+  --dsw-alias-button-floating-fill: rgb(255, 255, 255);
+  --dsw-alias-button-floating-hover: rgb(243, 243, 240);
+  --dsw-alias-button-ghost-active-border: rgba(201, 186, 0, 0.5);
+  --dsw-alias-button-ghost-active-fill: rgba(255, 244, 79, 0.35);
+  --dsw-alias-button-ghost-active-hover: rgba(255, 244, 79, 0.5);
+  --dsw-alias-button-info-fill: rgb(255, 244, 79);
+  --dsw-alias-button-info-hover: rgb(230, 217, 0);
+  --dsw-alias-button-primary-dimmed: rgba(255, 244, 79, 0.5);
+  --dsw-alias-button-primary-fill: rgb(255, 244, 79);
+  --dsw-alias-button-primary-hover: rgb(230, 217, 0);
+  --dsw-alias-button-tool-bar-fill-invisible: rgba(10, 11, 13, 0.06);
+  --dsw-alias-button-tool-bar-fill: rgba(10, 11, 13, 0.09);
+  --dsw-alias-button-tool-bar-hover: rgba(10, 11, 13, 0.14);
+
+  --dsw-alias-interactive-bg-active: rgba(201, 186, 0, 0.14);
+  --dsw-alias-interactive-bg-hover-accent: rgba(255, 244, 79, 0.5);
+  --dsw-alias-interactive-bg-hover-danger: rgba(219, 63, 49, 0.06);
+  --dsw-alias-interactive-bg-hover-solid: rgb(235, 235, 231);
+  --dsw-alias-interactive-bg-hover: rgba(10, 11, 13, 0.05);
+
+  --dsw-alias-label-caption: rgb(118, 124, 132);
+  --dsw-alias-label-dimmed: rgb(190, 193, 197);
+  --dsw-alias-label-primary-bluish: rgb(10, 11, 13);
+  --dsw-alias-label-primary-dimmed: rgb(10, 11, 13);
+  --dsw-alias-label-primary-foreground: rgb(10, 11, 13);
+  --dsw-alias-label-primary-inverted: rgb(255, 255, 255);
+  --dsw-alias-label-primary: rgb(10, 11, 13);
+  --dsw-alias-label-secondary: rgb(85, 91, 97);
+  --dsw-alias-label-tertiary: rgb(118, 124, 132);
+
+  --dsw-alias-markdown-citation: rgb(240, 240, 236);
+  --dsw-alias-markdown-code-block-banner: rgb(245, 245, 242);
+  --dsw-alias-markdown-code-block: rgb(240, 240, 236);
+  --dsw-alias-markdown-code-segment-selected: rgb(255, 255, 255);
+  --dsw-alias-markdown-code-segment-unselected: rgb(245, 245, 242);
+  --dsw-alias-markdown-inline-code: rgb(240, 240, 236);
+  --dsw-alias-markdown-placeholder: rgb(243, 243, 240);
+  --dsw-alias-markdown-tag: rgb(243, 243, 240);
+
+  --dsw-alias-scrollbar-bg-l1: rgb(213, 216, 220);
+  --dsw-alias-scrollbar-bg-l2: rgb(199, 203, 208);
+  --dsw-alias-scrollbar-hover-l1: rgb(201, 186, 0);
+  --dsw-alias-scrollbar-hover-l2: rgb(201, 186, 0);
+
+  --dsw-alias-state-business-primary: rgb(201, 186, 0);
+  --dsw-alias-state-business-tertiary: rgb(255, 250, 204);
+  --dsw-alias-state-error-primary: rgb(219, 63, 49);
+  --dsw-alias-state-error-secondary: rgb(235, 86, 72);
+  --dsw-alias-state-success-primary: rgb(96, 188, 55);
+  --dsw-alias-state-success-secondary: rgb(124, 215, 80);
+  --dsw-alias-state-success-tertiary: rgb(234, 250, 224);
+  --dsw-alias-state-warn-label: rgb(186, 120, 16);
+  --dsw-alias-state-warn-primary: rgb(217, 138, 18);
+  --dsw-alias-state-warn-secondary: rgb(238, 166, 44);
+  --dsw-alias-state-warn-tertiary: rgb(255, 244, 224);
+
+  --dsw-alias-toast-bg: rgb(45, 48, 52);
+  --dsw-alias-tooltip-bg: rgb(45, 48, 52);
+
+  --dsw-specific-bubble-highlight: rgb(255, 244, 79);
+  --dsw-specific-bubble: rgb(233, 233, 229);
+  --dsw-specific-input-major: rgb(255, 255, 255);
+  --dsw-specific-login-input: rgb(247, 247, 244);
+  --dsw-specific-menu: var(--dsw-alias-bg-layer-3);
+  --dsw-specific-selector: rgb(239, 239, 236);
+  --dsw-specific-sidebar-fill: rgb(236, 236, 232);
+  --dsw-specific-sidebar-nav-item-active-accent: rgb(201, 186, 0);
+  --dsw-specific-sidebar-nav-item-active: rgba(201, 186, 0, 0.16);
+  --dsw-specific-sidebar-nav-item-hover: rgba(10, 11, 13, 0.04);
+  --dsw-specific-tip: rgb(243, 243, 240);
+
+  --ef-code-bg: rgb(240, 240, 236);
+  --ef-code-fg: rgb(138, 129, 0);
+  --ef-grid-line: rgba(10, 11, 13, 0.035);
+  --ef-glow: rgba(201, 186, 0, 0.05);
+  --ef-vignette: rgba(10, 11, 13, 0.14);
+  --ef-bg-page: rgb(243, 243, 240);
+}
+
+/* ============================================================================
+ * Structural Styles — Field Terminal Industrial Atmosphere
+ * ========================================================================== */
+
+html { background: var(--ef-bg-page); }
+
+/* ── Five-color top stripe: yellow -> black -> purple -> blue -> green ───── */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  z-index: 2147483000;
+  pointer-events: none;
+  background: linear-gradient(90deg,
+    #fff44f 0 20%, #0a0b0d 20% 40%, #8f6bf0 40% 60%, #4a86f0 60% 80%, #3ecf72 80% 100%);
+}
+
+/* ── Full-screen atmosphere overlay: vignette + upper-left ambient yellow glow */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  pointer-events: none;
+  background:
+    radial-gradient(58% 42% at 12% -6%, var(--ef-glow), transparent 62%),
+    radial-gradient(130% 105% at 50% 42%, transparent 58%, var(--ef-vignette) 100%);
+}
+
+/* ── App root frame: fine grid + yellow ambient glow + contour texture
+       (multiply blend) ───────────────────────────────────────────────────── */
+#root > div {
+  background-image:
+    radial-gradient(ellipse at 62% 22%, var(--ef-glow), transparent 42%),
+    linear-gradient(var(--ef-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--ef-grid-line) 1px, transparent 1px),
+    url("https://raw.githubusercontent.com/INnoVationEE/dsh-endfield-theme/main/endfield-texture.png");
+  background-size: auto, 42px 42px, 42px 42px, cover;
+  background-position: 0 0, 0 0, 0 0, 50% 0;
+  background-repeat: repeat, repeat, repeat, no-repeat;
+  background-blend-mode: normal, normal, normal, multiply;
+}
+
+/* In the light theme, omit the texture and use a flat panel; multiply muddies
+   light backgrounds. */
+body:not([data-ds-dark-theme]) #root > div {
+  background-image:
+    radial-gradient(ellipse at 62% 22%, var(--ef-glow), transparent 42%),
+    linear-gradient(var(--ef-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--ef-grid-line) 1px, transparent 1px);
+  background-size: auto, 42px 42px, 42px 42px;
+  background-blend-mode: normal, normal, normal;
+}
+
+/* ── Sidebar: yellow brand strip on top + hard yellow edge on the right
+       (based on the reference repository's sidebar signature) ───────────── */
+#root > div > div:first-child {
+  border-top: 4px solid #fff44f;
+  box-shadow:
+    5px 0 0 #fff44f,
+    7px 0 0 #050607,
+    20px 0 40px rgba(0, 0, 0, 0.45);
+}
+
+body:not([data-ds-dark-theme]) #root > div > div:first-child {
+  border-top: 4px solid #fff44f;
+  box-shadow:
+    5px 0 0 #fff44f,
+    7px 0 0 rgba(10, 11, 13, 0.8),
+    20px 0 40px rgba(10, 11, 13, 0.2);
+}
+
+/* ── Buttons: uppercase technical labels + hard shadows + yellow hover offset */
+button {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    2px 3px 0 #050607,
+    0 6px 14px rgba(0, 0, 0, 0.25);
+}
+
+button:hover {
+  box-shadow:
+    3px 3px 0 #050607,
+    4px 4px 0 rgba(255, 244, 79, 0.3),
+    0 8px 16px rgba(0, 0, 0, 0.3);
+  transform: translate(-1px, -1px);
+}
+
+/* ── View-switch tabs (Conversation / Trajectory): widen and center labels ──
+   The container is the tablist in the ConversationRoot header (rendered only
+   when multiple views are registered). Tab buttons originally fit their text
+   only (about 26px wide); this widens them and centers their labels. */
+[class*="wSkVaW_tabs"][role="tablist"] {
+  gap: 16px;
+}
+
+[class*="wSkVaW_tabs"][role="tablist"] > [role="tab"] {
+  min-width: 104px;
+  text-align: center;
+  justify-content: center;
+  padding-left: 12px;
+  padding-right: 12px;
+  box-shadow: none;
+}
+
+[class*="wSkVaW_tabs"][role="tablist"] > [role="tab"]:hover {
+  box-shadow: none;
+  transform: none;
+}
+
+/* ── Conversation bubbles: yellow left rule + clipped corner ─────────────── */
+[class*="bubble"] {
+  border-left: 3px solid #fff44f;
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+}
+
+body:not([data-ds-dark-theme]) [class*="bubble"] {
+  border-left-color: #c9ba00;
+}
+
+/* ── Overlays/dialogs: double hard shadows ───────────────────────────────── */
+[role="dialog"],
+[role="menu"],
+[role="listbox"] {
+  box-shadow:
+    6px 6px 0 rgba(0, 0, 0, 0.55),
+    8px 8px 0 rgba(255, 244, 79, 0.22),
+    0 24px 48px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* ── Markdown: yellow heading accents (based on the .markdown styles) ───── */
+h1, h2, h3 { font-weight: 900; letter-spacing: -0.02em; }
+
+h1 { border-bottom: 3px solid #fff44f; padding-bottom: 6px; }
+h2 { border-left: 3px solid #fff44f; padding-left: 9px; }
+h3 { border-left: 3px solid #d9cd00; padding-left: 8px; }
+
+hr {
+  border: 0;
+  border-top: 2px dashed #d9cd00;
+}
+
+blockquote {
+  margin: 8px 0;
+  padding: 7px 14px;
+  border-left: 4px solid #fff44f;
+  background: rgba(255, 244, 79, 0.08);
+}
+
+:not(pre) > code {
+  background: var(--ef-code-bg);
+  color: var(--ef-code-fg);
+}
+
+pre {
+  border-left: 3px solid #fff44f;
+}
+
+/* ── Scrollbar: yellow-and-black industrial strip (based on the reference
+       repository's scrollbar) ───────────────────────────────────────────── */
+body { --dsh-scrollbar-width: 7px; }
+
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #090a0c;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #fff44f;
+  border: 2px solid #090a0c;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ffe93f;
+}
+
+::-webkit-scrollbar-corner {
+  background: #090a0c;
+}
+
+body:not([data-ds-dark-theme]) ::-webkit-scrollbar-track {
+  background: #e4e4e0;
+}
+
+body:not([data-ds-dark-theme]) ::-webkit-scrollbar-thumb {
+  border-color: #e4e4e0;
+}
+
+/* Firefox uses the standard-property path, matching the mutually exclusive
+   feature gate in dist/scrollbar.css. */
+@supports not selector(::-webkit-scrollbar) {
+  body,
+  body * {
+    scrollbar-width: thin;
+    scrollbar-color: #fff44f #090a0c;
+  }
+}
+
+/* ── Input focus: yellow outline (the brand-primary token already controls the
+       border; this provides a fallback glow) ─────────────────────────────── */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 1px solid rgba(255, 244, 79, 0.5);
+  outline-offset: -1px;
+}
+
+/* ============================================================================
+ * Art Assets (GPT-generated and bundled with the theme under /assets/)
+ * ========================================================================== */
+
+/* ── Top-left logo (image version, injected by theme-assets.js) ──────────── */
+#ds-brand-logo {
+  display: block;
+  height: 46px;
+  width: auto;
+  object-fit: contain;
+  image-rendering: auto;
+}
+
+.ds-brand-tag {
+  font: 600 12px/1 'Novecento Wide', 'Bahnschrift', 'Avenir Next', Arial, sans-serif;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #fff44f;
+  margin-left: 10px;
+  white-space: nowrap;
+}
+
+body:not([data-ds-dark-theme]) .ds-brand-tag {
+  color: #c9ba00;
+}
+
+/* ── Sidebar: panel texture (card-bg) + brand-area texture (title-bg) ────── */
+#root [class*="hHd-Xa_root"] {
+  background-image: url("https://raw.githubusercontent.com/INnoVationEE/dsh-endfield-theme/main/card-bg.jpg");
+  background-size: 260px auto;
+  background-repeat: repeat-y;
+  background-position: right top;
+  background-blend-mode: multiply;
+}
+
+#root [class*="logoRow"] {
+  position: relative;
+  background-image: url("https://raw.githubusercontent.com/INnoVationEE/dsh-endfield-theme/main/title-bg.png");
+  background-size: 220px auto;
+  background-repeat: no-repeat;
+  background-position: 14px 50%;
+}
+
+/* Right side of the brand area: yellow triangular star accent (triangles) */
+#root [class*="logoRow"]::after {
+  content: "";
+  position: absolute;
+  right: 40px;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  transform: translateY(-50%);
+  background: url("https://raw.githubusercontent.com/INnoVationEE/dsh-endfield-theme/main/triangles.png") center / contain no-repeat;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+/* ── Upper-right of the main frame: subdued circular targeting-ring pattern */
+#root > div::before {
+  content: "";
+  position: absolute;
+  right: -120px;
+  top: -120px;
+  width: 440px;
+  height: 440px;
+  pointer-events: none;
+  opacity: 0.12;
+  background: url("https://raw.githubusercontent.com/INnoVationEE/dsh-endfield-theme/main/ring.png") center / contain no-repeat;
+}
+
+/* ── Lower-right of the main frame: subdued technical line decoration (deco) */
+#root > div::after {
+  content: "";
+  position: absolute;
+  right: 22px;
+  bottom: 16px;
+  width: 190px;
+  height: 86px;
+  pointer-events: none;
+  opacity: 0.16;
+  background: url("https://raw.githubusercontent.com/INnoVationEE/dsh-endfield-theme/main/deco.png") center / contain no-repeat;
+  filter: grayscale(1);
+}
+
+body:not([data-ds-dark-theme]) #root > div::after {
+  opacity: 0.3;
+}
+
+/* ── "New Session" button: dedicated button texture + yellow left rule ─── */
+#root [class*="newSession"] {
+  background-image: url("https://raw.githubusercontent.com/INnoVationEE/dsh-endfield-theme/main/btn-texture.png");
+  background-repeat: repeat;
+  background-position: right center;
+  background-size: 40px 40px;
+  background-blend-mode: soft-light;
+  border-left: 3px solid #fff44f;
+}
+
+body:not([data-ds-dark-theme]) #root [class*="newSession"] {
+  border-left-color: #c9ba00;
+}
+

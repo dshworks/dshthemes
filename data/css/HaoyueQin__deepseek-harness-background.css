@@ -1,0 +1,50 @@
+/* HaoyueQin/deepseek-harness-background — src/client/background-css.ts
+   fetched 2026-08-20 from https://raw.githubusercontent.com/HaoyueQin/deepseek-harness-background/main/src/client/background-css.ts
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+.dsh-bg-layer {
+    position: fixed; inset: 0; z-index: -2; overflow: hidden; pointer-events: none;
+  }
+  .dsh-bg-layer .dsh-bg-image {
+    width: 100%; height: 100%; display: block; border: 0; background: transparent;
+    object-fit: var(--bg-object-fit, cover);
+    opacity: var(--bg-opacity, 1);
+    filter: blur(var(--bg-wallpaper-blur, 0px));
+    /* Blur thins the edges; scale the image up to hide the fringe. */
+    transform: scale(var(--bg-wallpaper-scale, 1));
+    transform-origin: center;
+  }
+  /* Scrim is theme-aware: a WHITE veil in the light scheme (it lifts the art
+     toward the near-white surface so dark text keeps contrast) and a BLACK veil
+     in the dark scheme (it dims the art so light text keeps contrast). */
+  .dsh-bg-scrim {
+    position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    background: rgba(255, 255, 255, var(--bg-scrim, 0.25));
+  }
+  body[data-ds-dark-theme] .dsh-bg-scrim {
+    background: rgba(0, 0, 0, var(--bg-scrim, 0.25));
+  }
+
+  /* Active: make the app frame + sidebar background transparent so all columns
+     share the same wallpaper + scrim backdrop. */
+  body[data-dsh-bg] {
+    --dsw-alias-bg-base: transparent;
+    --dsw-specific-sidebar-fill: transparent;
+  }
+
+  /* Frosted glass over the opaque conversation surfaces (composer + bubbles).
+     The surface translucency is driven by --dsw-specific-input-major /
+     --dsw-specific-bubble, which the painter writes (theme-aware) so that a
+     fully-opaque panel restores the official surfaces. The blur here comes
+     from --bg-glass-blur; a faint top-weighted specular sheen makes the
+     translucent surfaces read as wet glass. */
+  body[data-dsh-bg] [data-composer-card],
+  body[data-dsh-bg] [class*="_bubble"] {
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.05) 38%, rgba(255, 255, 255, 0.02));
+    -webkit-backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.6)) brightness(var(--bg-glass-brightness, 1.04)) contrast(1.01);
+    backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.6)) brightness(var(--bg-glass-brightness, 1.04)) contrast(1.01);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, var(--bg-glass-highlight, 0.32)),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.08),
+      inset 0 0 0 0.5px rgba(255, 255, 255, 0.08),
+      0 12px 40px rgba(0, 0, 0, var(--bg-glass-shadow, 0.12));
+  }

@@ -1,0 +1,246 @@
+/* Entity-Him/dsh-skin-prts — lib/client.js
+   fetched 2026-08-20 from https://raw.githubusercontent.com/Entity-Him/dsh-skin-prts/main/lib/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/* ==== 1. 设计 token ==== */
+body[data-dsh-prts]{
+  --prts-bg-0:#E4E0D6; --prts-bg-1:#EFECE2; --prts-bg-2:#E9E5DA; --prts-bg-3:#E2DECD; --prts-bg-4:#DAD5C4;
+  --prts-brand-deep:#33261F; --prts-brand-brown:#4A342F; --prts-brand-rust:#6E4E45;
+  --prts-text-1:#282D2D; --prts-text-2:#3F4744; --prts-text-3:#5D6A64; --prts-text-4:#7C8981;
+  --prts-accent-cyan:#2BB7B8; --prts-accent-cyan-hi:#45D0D1; --prts-accent-cyan-dark:#1E8A8B; --prts-accent-blue:#4A7FB0;
+  --prts-status-success:#2E9E92; --prts-status-warning:#C9501A; --prts-status-error:#B8282E; --prts-status-neutral:#8A959D;
+  --prts-border:#B8B4A4; --prts-border-dim:#CFCBB9; --prts-border-light:#A6A292; --prts-border-brand:#8A6A5E; --prts-border-cyan:#2BB7B8; --prts-border-focus:#1E8A8B;
+  --prts-panel-bg:rgba(224,220,206,.88); --prts-panel-solid:#E2DECD;
+  --prts-shadow:5px 6px 0 rgba(60,55,40,.16); --prts-shadow-lg:7px 8px 0 rgba(60,55,40,.18);
+  --prts-sidebar-fill:rgba(239,236,226,.92);
+  color-scheme:light;
+}
+body[data-dsh-prts][data-ds-dark-theme]{
+  --prts-bg-0:#07080A; --prts-bg-1:#0C0F12; --prts-bg-2:#111519; --prts-bg-3:#181D22; --prts-bg-4:#242629;
+  --prts-brand-deep:#211516; --prts-brand-brown:#3A211F; --prts-brand-rust:#5A302B;
+  --prts-text-1:#F2F1EC; --prts-text-2:#C5C9CC; --prts-text-3:#858D94; --prts-text-4:#555E66;
+  --prts-accent-cyan:#11AFCF; --prts-accent-cyan-hi:#1DE1E9; --prts-accent-cyan-dark:#0A7F9B; --prts-accent-blue:#6CA9D9;
+  --prts-status-success:#61D9D0; --prts-status-warning:#FF5A19; --prts-status-error:#D82432; --prts-status-neutral:#8A959D;
+  --prts-border:#3A4142; --prts-border-dim:#20272C; --prts-border-light:#73797A; --prts-border-brand:#4A2927; --prts-border-cyan:#17B7CF; --prts-border-focus:#9CEFE0;
+  --prts-panel-bg:rgba(25,27,29,.82); --prts-panel-solid:#242629;
+  --prts-shadow:5px 6px 0 rgba(0,0,0,.28); --prts-shadow-lg:7px 8px 0 rgba(0,0,0,.28);
+  --prts-sidebar-fill:rgba(12,15,18,.88);
+  --prts-glow-cyan:#11AFCF40; --prts-glow-blue:#6CA9D933; --prts-glow-error:#D8243240; --prts-scanline:#9CEFE02A;
+  color-scheme:dark;
+}
+
+/* ==== 2. 背景字标（PRTS 发光字，z-index 0 压在面板下）==== */
+[data-prts-mark]{
+  position:fixed; left:0; top:0; width:100%; height:100%;
+  display:flex; align-items:center; justify-content:center;
+  pointer-events:none; z-index:0; overflow:hidden;
+}
+[data-prts-mark] .prts-mark-text{
+  font-family:"DIN Next","Bahnschrift","Roboto Condensed","Noto Sans SC",sans-serif;
+  font-size:min(26vw,340px); font-weight:800; letter-spacing:.42em;
+  color:var(--prts-text-1);
+  opacity:.06; line-height:1; user-select:none; white-space:nowrap;
+  text-shadow:0 0 24px var(--prts-accent-cyan),0 0 60px var(--prts-accent-cyan);
+}
+
+/* ==== 3. 基础表面 ==== */
+body[data-dsh-prts]{ background-color:var(--prts-bg-0); color:var(--prts-text-1); }
+body[data-dsh-prts] .app, body[data-dsh-prts] [class*='main']{ background-color:transparent; }
+
+/* ==== 4. dsh token 映射 ==== */
+body[data-dsh-prts]{
+  --dsw-alias-bg-base:var(--prts-bg-0);
+  --dsw-alias-bg-layer-1:var(--prts-bg-1);
+  --dsw-alias-bg-layer-2:var(--prts-panel-bg);
+  --dsw-alias-bg-layer-3:var(--prts-bg-3);
+  --dsw-alias-bg-overlay:var(--prts-bg-4);
+  --dsw-alias-bg-module-platform:var(--prts-panel-solid);
+  --dsw-alias-border-l1:var(--prts-border-dim);
+  --dsw-alias-border-l2-darkmode-thin:var(--prts-border);
+  --dsw-alias-border-l2:var(--prts-border);
+  --dsw-alias-border-l3:var(--prts-border-light);
+  --dsw-alias-border-l4:var(--prts-border-cyan);
+  --dsw-alias-brand-primary:var(--prts-accent-cyan);
+  --dsw-alias-brand-text:var(--prts-text-1);
+  --dsw-alias-button-elevated-fill:var(--prts-panel-bg);
+  --dsw-alias-button-floating-fill:var(--prts-bg-4);
+  --dsw-alias-button-floating-hover:var(--prts-brand-brown);
+  --dsw-alias-button-info-fill:var(--prts-accent-cyan-dark);
+  --dsw-alias-button-info-hover:var(--prts-accent-cyan);
+  --dsw-alias-interactive-bg-active:color-mix(in srgb,var(--prts-accent-cyan) 22%,transparent);
+  --dsw-alias-interactive-bg-hover:color-mix(in srgb,var(--prts-border-light) 16%,transparent);
+  --dsw-alias-interactive-bg-hover-solid:var(--prts-brand-brown);
+  --dsw-alias-label-primary:var(--prts-text-1);
+  --dsw-alias-label-primary-bluish:var(--prts-text-2);
+  --dsw-alias-label-secondary:var(--prts-text-2);
+  --dsw-alias-label-tertiary:var(--prts-text-3);
+  --dsw-alias-label-caption:var(--prts-text-4);
+  --dsw-alias-label-dimmed:var(--prts-text-4);
+  --dsw-alias-label-primary-inverted:var(--prts-bg-1);
+  --dsw-alias-label-secondary-inverted:var(--prts-text-2);
+  --dsw-alias-label-tertiary-inverted:var(--prts-text-3);
+  --dsw-alias-label-caption-inverted:var(--prts-text-4);
+  --dsw-alias-label-primary-foreground:var(--prts-bg-0);
+  --dsw-alias-state-business-primary:var(--prts-accent-cyan);
+  --dsw-alias-state-business-tertiary:var(--prts-bg-3);
+  --dsw-alias-state-danger:var(--prts-status-error);
+  --dsw-alias-state-success:var(--prts-status-success);
+  --dsw-alias-state-warning:var(--prts-status-warning);
+  --dsw-alias-state-info:var(--prts-accent-blue);
+  --dsw-shadow-lv2:var(--prts-shadow);
+  --dsw-specific-bubble:var(--prts-panel-bg);
+  --dsw-specific-input-major:var(--prts-panel-solid);
+  --dsw-specific-menu:var(--prts-panel-solid);
+  --dsw-specific-selector:var(--prts-panel-solid);
+  --dsw-specific-tip:var(--prts-panel-solid);
+  --dsw-specific-sidebar-fill:var(--prts-sidebar-fill);
+  --dsw-specific-sidebar-nav-item-active:var(--prts-brand-brown);
+  --dsw-specific-sidebar-nav-item-active-accent:var(--prts-accent-cyan-hi);
+  --dsw-specific-sidebar-nav-item-hover:color-mix(in srgb,var(--prts-brand-rust) 30%,transparent);
+}
+
+/* ==== 5. 侧栏 ==== */
+body[data-dsh-prts] [data-pane='sidebar']{
+  background:var(--prts-sidebar-fill);
+  border-right:2px solid var(--prts-border-brand);
+}
+/* Logo 区：冷白几何字标 + 暗红棕菱形框 */
+body[data-dsh-prts] [data-pane='sidebar'] [class*='logo'],
+body[data-dsh-prts] [data-pane='sidebar'] [data-slot='sidebar.brand']{
+  color:var(--prts-text-1);
+  letter-spacing:.08em; font-weight:700;
+}
+/* 新建会话按钮：直角 + 2px 描边 + 硬阴影 */
+body[data-dsh-prts] button[class*='newSession']{
+  border-radius:0;
+  border:2px solid var(--prts-border-light);
+  background:var(--prts-panel-bg);
+  box-shadow:var(--prts-shadow);
+  color:var(--prts-text-1);
+}
+body[data-dsh-prts] button[class*='newSession']:hover{ border-color:var(--prts-accent-cyan); }
+/* 会话项：hover 暗红棕淡底 */
+body[data-dsh-prts] [data-pane='sidebar'] [role='treeitem']{
+  border-radius:0;
+  color:var(--prts-text-2);
+}
+/* 激活项：暗红棕底板 + 4px 青左竖线 + 右上 9px 斜切 */
+body[data-dsh-prts] [data-pane='sidebar'] [role='treeitem'][data-active],
+body[data-dsh-prts] [data-pane='sidebar'] [role='treeitem'][aria-current],
+body[data-dsh-prts] [data-pane='sidebar'] [role='treeitem'][class*='active']{
+  background:var(--prts-brand-brown);
+  color:var(--prts-text-1);
+  border-left:4px solid var(--prts-accent-cyan);
+  clip-path:polygon(0 0,calc(100% - 9px) 0,100% 9px,100% 100%,0 100%);
+}
+/* 侧栏设置入口按钮 */
+body[data-dsh-prts] [data-slot='sidebar.settings'] button{
+  border-radius:0;
+  border:2px solid var(--prts-border);
+  background:var(--prts-panel-bg);
+  box-shadow:var(--prts-shadow);
+}
+
+/* ==== 6. 输入壳 ==== */
+body[data-dsh-prts] [data-composer-card]{
+  border-radius:0;
+  border:2px solid var(--prts-border);
+  background:var(--prts-panel-bg);
+  box-shadow:var(--prts-shadow-lg);
+}
+/* 底部横色条：夜间橙 / 迷城白灰 */
+body[data-dsh-prts] [data-composer-card]::after{
+  content:''; position:absolute; left:0; bottom:0; height:6px; width:100%;
+  background:var(--prts-border);
+}
+body[data-dsh-prts][data-ds-dark-theme] [data-composer-card]::after{ background:var(--prts-status-warning); }
+/* 上缘扫描线：空闲近不可见；active 对话时 2.8s 从左扫过 */
+body[data-dsh-prts][data-ds-dark-theme] [data-composer-card]::before{
+  content:''; position:absolute; left:0; top:-1px; height:2px; width:100%;
+  background:linear-gradient(90deg,transparent,var(--prts-scanline),transparent);
+  background-size:240px 100%; background-repeat:no-repeat;
+}
+body[data-dsh-prts][data-ds-dark-theme] [data-composer-seat][data-phase='active'] [data-composer-card]::before{
+  animation:prts-scan 2.8s linear infinite;
+}
+@keyframes prts-scan{
+  0%{ background-position:-240px 0; opacity:.5; }
+  45%{ opacity:1; }
+  100%{ background-position:calc(100% + 240px) 0; opacity:.5; }
+}
+/* 模型/思考选择器：4px 圆角（非胶囊）*/
+body[data-dsh-prts] [data-composer-card] [class*='selector'],
+body[data-dsh-prts] [data-slot='conversation.composer.dock'] [class*='pill'],
+body[data-dsh-prts] [data-slot='conversation.composer.dock'] button{
+  border-radius:4px !important;
+  border:2px solid var(--prts-border) !important;
+  background:var(--prts-panel-solid) !important;
+  box-shadow:var(--prts-shadow) !important;
+}
+/* 发送按钮：青实底直角 */
+body[data-dsh-prts] [data-composer-card] button[class*='send'],
+body[data-dsh-prts] [data-slot='conversation.composer.dock'] button[data-phase='active']{
+  border-radius:0 !important;
+  border:2px solid var(--prts-accent-cyan) !important;
+  background:color-mix(in srgb,var(--prts-accent-cyan) 82%,transparent) !important;
+  color:var(--prts-text-1) !important;
+  box-shadow:var(--prts-shadow) !important;
+}
+/* 输入区 */
+body[data-dsh-prts] [data-input-mirror],
+body[data-dsh-prts] [data-composer-card] textarea{ color:var(--prts-text-1); caret-color:var(--prts-accent-cyan); }
+
+/* ==== 7. 消息 ==== */
+/* 用户气泡：操作员指令卡——直角 + 右上斜切 + 暗红棕结构边 */
+body[data-dsh-prts] [class*='userRow'] [class*='bubble']{
+  border-radius:0;
+  border:2px solid var(--prts-border-brand);
+  background:var(--prts-panel-solid);
+  box-shadow:var(--prts-shadow);
+  clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,0 100%);
+  color:var(--prts-text-1);
+}
+/* 助手正文：轻量终端面板——直角 + 左 2px 青状态线 + 嵌套菱形身份标 */
+body[data-dsh-prts] [data-chat-flow-kind='assistant-step'] > * > * > * > div[class*='markdown']{
+  border-radius:0;
+  border-left:2px solid var(--prts-accent-cyan);
+  background:var(--prts-panel-bg);
+  box-shadow:var(--prts-shadow);
+  padding:12px 16px;
+}
+/* 嵌套菱形身份标 ◇（助手消息前）*/
+body[data-dsh-prts] [data-chat-flow-kind='assistant-step'] > * > * > * > div[class*='markdown']::before{
+  content:''; display:block; width:14px; height:14px; margin-bottom:10px;
+  border:2px solid var(--prts-accent-cyan);
+  transform:rotate(45deg);
+  box-shadow:inset 0 0 0 2px var(--prts-panel-bg),inset 0 0 0 4px var(--prts-accent-cyan);
+}
+/* 思考块：COGNITIVE TRACE 状态日志——左 2px 电子蓝线 */
+body[data-dsh-prts] [data-variant='think']{
+  border-radius:0;
+  border-left:2px solid var(--prts-accent-blue);
+  background:color-mix(in srgb,var(--prts-accent-blue) 7%,var(--prts-panel-solid));
+}
+body[data-dsh-prts] [data-variant='think'] [class*='header']{
+  font-family:"DIN Next","Bahnschrift","Roboto Condensed","Noto Sans SC",sans-serif;
+  font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--prts-accent-blue);
+}
+/* 消息流容器背景 */
+body[data-dsh-prts] [class*='scrollBody'], body[data-dsh-prts] [data-conversation-scroll]{ background:transparent; }
+
+/* ==== 8. 弹窗/菜单：直角 ==== */
+body[data-dsh-prts] [class*='popover'], body[data-dsh-prts] [class*='menu'],
+body[data-dsh-prts] [class*='dialog'], body[data-dsh-prts] [role='menu']{
+  border-radius:0;
+  border:2px solid var(--prts-border-light);
+  background:var(--prts-panel-solid);
+  box-shadow:var(--prts-shadow-lg);
+}
+
+/* ==== 9. 滚动条 / 选区 / 焦点 ==== */
+body[data-dsh-prts] ::-webkit-scrollbar{ width:10px; height:10px; }
+body[data-dsh-prts] ::-webkit-scrollbar-thumb{ background:var(--prts-border); border:2px solid transparent; background-clip:padding-box; border-radius:0; }
+body[data-dsh-prts] ::-webkit-scrollbar-thumb:hover{ background:var(--prts-border-light); border:2px solid transparent; background-clip:padding-box; }
+body[data-dsh-prts] ::-webkit-scrollbar-track{ background:transparent; }
+body[data-dsh-prts] ::selection{ background:var(--prts-accent-cyan); color:var(--prts-bg-0); }
+body[data-dsh-prts] :focus-visible{ outline:2px solid var(--prts-accent-cyan); outline-offset:1px; }
