@@ -1,0 +1,76 @@
+/* ToBeWin/DSH-Skin-Studio — client/client.js
+   fetched 2026-08-21 from https://raw.githubusercontent.com/ToBeWin/DSH-Skin-Studio/main/client/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+body { background-color: var(--dsw-alias-bg-base); background-image: var(--tobewin-skin-background, none); background-attachment: fixed; background-position: center; background-repeat: no-repeat; background-size: cover; }
+        .tobewin-skin-wallpaper { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; background-color: var(--tobewin-wallpaper-base, var(--dsw-alias-bg-base)); background-repeat: no-repeat; }
+        html[data-tobewin-skin-wallpaper="true"] body { background-image: none; background-color: transparent; }
+        html[data-tobewin-skin-wallpaper="true"] body > :not(.tobewin-skin-wallpaper) { position: relative; z-index: 1; }
+        .tobewin-skin-studio { display: flex; flex-direction: column; gap: 14px; padding: 4px 0 8px; }
+        .tobewin-skin-studio-heading { display: flex; flex-direction: column; gap: 4px; }
+        .tobewin-skin-studio-title { color: var(--dsw-alias-label-primary); font-size: 15px; font-weight: 600; line-height: 22px; }
+        .tobewin-skin-studio-subtitle, .tobewin-skin-studio-note { margin: 0; color: var(--dsw-alias-label-secondary); font-size: 13px; line-height: 19px; }
+        .tobewin-skin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(172px, 1fr)); gap: 10px; }
+        .tobewin-skin-card { position: relative; display: flex; min-width: 0; flex-direction: column; gap: 10px; border: 1px solid var(--dsw-alias-border-l1); border-radius: 14px; padding: 10px; color: var(--dsw-alias-label-primary); background: var(--dsw-alias-bg-layer-1); box-shadow: 0 1px 1px rgba(13, 25, 41, .04); text-align: left; cursor: pointer; transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease; }
+        .tobewin-skin-card:hover { transform: translateY(-2px); border-color: var(--dsw-alias-brand-primary); box-shadow: 0 8px 20px rgba(13, 25, 41, .12); }
+        .tobewin-skin-card:focus-visible { outline: 2px solid var(--dsw-alias-brand-primary); outline-offset: 2px; }
+        .tobewin-skin-card[aria-pressed="true"] { border-color: var(--dsw-alias-brand-primary); box-shadow: 0 0 0 2px color-mix(in srgb, var(--dsw-alias-brand-primary) 24%, transparent); }
+        .tobewin-skin-preview { position: relative; height: 74px; overflow: hidden; border-radius: 9px; background: var(--preview-base); }
+        .tobewin-skin-preview::before { position: absolute; width: 116px; height: 116px; top: -52px; right: -22px; border-radius: 50%; background: var(--preview-glow); content: ''; filter: blur(3px); opacity: .86; }
+        .tobewin-skin-preview::after { position: absolute; left: 12px; right: 34px; bottom: 13px; height: 10px; border-radius: 8px; background: rgba(255, 255, 255, .75); box-shadow: 0 -18px 0 -3px rgba(255, 255, 255, .46), 0 -36px 0 -5px rgba(255, 255, 255, .30); content: ''; }
+        .tobewin-skin-card-copy { display: flex; min-width: 0; flex-direction: column; gap: 2px; }
+        .tobewin-skin-card-name { overflow: hidden; color: var(--dsw-alias-label-primary); font-size: 13px; font-weight: 600; line-height: 19px; text-overflow: ellipsis; white-space: nowrap; }
+        .tobewin-skin-card-detail { min-height: 34px; color: var(--dsw-alias-label-secondary); font-size: 12px; line-height: 17px; }
+        .tobewin-skin-active { position: absolute; top: 16px; right: 16px; border-radius: 999px; padding: 2px 7px; color: #fff; background: var(--dsw-alias-brand-primary); font-size: 11px; font-weight: 600; line-height: 16px; }
+        .tobewin-skin-default { border-style: dashed; }
+        .tobewin-skin-canvas { display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--dsw-alias-border-l1); border-radius: 14px; padding: 14px; background: var(--dsw-alias-bg-layer-1); container-type: inline-size; }
+        .tobewin-skin-canvas-header { display: flex; flex-direction: column; gap: 3px; }
+        .tobewin-skin-canvas-title { color: var(--dsw-alias-label-primary); font-size: 14px; font-weight: 600; line-height: 20px; }
+        .tobewin-skin-canvas-subtitle { margin: 0; color: var(--dsw-alias-label-secondary); font-size: 12px; line-height: 18px; }
+        .tobewin-skin-canvas-guidance { margin: 1px 0 0; color: var(--dsw-alias-label-tertiary); font-size: 11px; line-height: 16px; }
+        .tobewin-skin-canvas-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(300px, 1fr); gap: 14px; align-items: start; }
+        .tobewin-skin-canvas-image { position: relative; display: flex; width: 100%; max-width: 520px; min-width: 0; aspect-ratio: 16 / 9; min-height: 142px; overflow: hidden; align-items: flex-end; justify-self: start; box-sizing: border-box; border: 1px dashed var(--dsw-alias-border-l2); border-radius: 11px; padding: 10px; background: var(--canvas-background); isolation: isolate; }
+        .tobewin-skin-canvas-image-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+        .tobewin-skin-canvas-image-photo { object-position: var(--canvas-image-focus, center); transform: scale(var(--canvas-image-scale, 1)); transform-origin: var(--canvas-image-focus, center); transition: transform .16s ease, object-position .16s ease; }
+        .tobewin-skin-canvas-image::before { position: absolute; inset: 0; z-index: 1; background: linear-gradient(145deg, var(--canvas-image-overlay), transparent 63%); content: ''; }
+        .tobewin-skin-canvas-image-label { position: relative; z-index: 2; border-radius: 7px; padding: 4px 7px; color: var(--dsw-alias-label-primary); background: color-mix(in srgb, var(--dsw-alias-bg-overlay) 84%, transparent); font-size: 12px; line-height: 17px; backdrop-filter: blur(8px); }
+        .tobewin-skin-canvas-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; align-content: start; }
+        .tobewin-skin-field { display: flex; min-width: 0; flex-direction: column; gap: 5px; color: var(--dsw-alias-label-secondary); font-size: 12px; line-height: 17px; }
+        .tobewin-skin-field-control { display: flex; min-height: 34px; align-items: center; gap: 7px; border: 1px solid var(--dsw-alias-border-l1); border-radius: 8px; padding: 4px 7px; color: var(--dsw-alias-label-primary); background: var(--dsw-alias-bg-overlay); }
+        .tobewin-skin-field-control input[type="color"] { width: 24px; height: 24px; border: 0; border-radius: 5px; padding: 0; background: transparent; cursor: pointer; }
+        .tobewin-skin-field-control code { overflow: hidden; color: var(--dsw-alias-label-secondary); font-family: var(--ds-font-family-code, ui-monospace, monospace); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+        .tobewin-skin-mode { display: flex; overflow: hidden; border: 1px solid var(--dsw-alias-border-l1); border-radius: 8px; background: var(--dsw-alias-bg-overlay); }
+        .tobewin-skin-mode button { flex: 1; min-height: 34px; border: 0; color: var(--dsw-alias-label-secondary); background: transparent; font: inherit; font-size: 12px; cursor: pointer; }
+        .tobewin-skin-mode button[aria-pressed="true"] { color: #fff; background: var(--dsw-alias-state-business-primary); }
+        .tobewin-skin-strength { grid-column: 1 / -1; }
+        .tobewin-skin-range { display: flex; min-height: 34px; align-items: center; gap: 9px; border: 1px solid var(--dsw-alias-border-l1); border-radius: 8px; padding: 0 9px; background: var(--dsw-alias-bg-overlay); }
+        .tobewin-skin-range input { width: 100%; accent-color: var(--dsw-alias-brand-primary); }
+        .tobewin-skin-range output { min-width: 32px; color: var(--dsw-alias-label-secondary); font-family: var(--ds-font-family-code, ui-monospace, monospace); font-size: 11px; text-align: right; }
+        .tobewin-skin-strength-hint { margin: -2px 0 0; color: var(--dsw-alias-label-secondary); font-size: 11px; line-height: 16px; }
+        .tobewin-skin-crop-controls { display: flex; flex-direction: column; gap: 7px; }
+        .tobewin-skin-crop-control { display: grid; grid-template-columns: 58px minmax(0, 1fr) 34px; align-items: center; gap: 8px; color: var(--dsw-alias-label-secondary); font-size: 11px; }
+        .tobewin-skin-crop-control input { width: 100%; accent-color: var(--dsw-alias-brand-primary); }
+        .tobewin-skin-crop-control output { color: var(--dsw-alias-label-secondary); font-family: var(--ds-font-family-code, ui-monospace, monospace); font-size: 11px; text-align: right; }
+        .tobewin-skin-crop-modal { width: min(720px, 100%); }
+        .tobewin-skin-crop-modal-content { max-height: min(76vh, 760px); overflow: auto; }
+        .tobewin-skin-crop-stage { display: grid; min-height: 254px; place-items: center; overflow: hidden; box-sizing: border-box; border: 1px solid var(--dsw-alias-border-l2); border-radius: 12px; padding: 12px; background: var(--canvas-background); }
+        .tobewin-skin-crop-source { position: relative; width: auto; height: min(52vh, 420px); max-width: 100%; aspect-ratio: var(--source-aspect, 16 / 9); overflow: hidden; box-sizing: border-box; border-radius: 8px; background: var(--dsw-alias-bg-base); touch-action: none; user-select: none; }
+        .tobewin-skin-crop-source-photo { display: block; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+        .tobewin-skin-crop-frame { position: absolute; z-index: 2; box-sizing: border-box; border: 2px solid #fff; border-radius: 4px; box-shadow: 0 0 0 9999px rgba(7, 12, 22, .58), inset 0 0 0 1px color-mix(in srgb, var(--dsw-alias-brand-primary) 80%, transparent); cursor: move; }
+        .tobewin-skin-crop-frame::before, .tobewin-skin-crop-frame::after { position: absolute; top: 0; bottom: 0; width: 1px; background: rgba(255, 255, 255, .48); content: ''; pointer-events: none; }
+        .tobewin-skin-crop-frame::before { left: 33.333%; }
+        .tobewin-skin-crop-frame::after { right: 33.333%; }
+        .tobewin-skin-crop-handle { position: absolute; z-index: 3; width: 13px; height: 13px; box-sizing: border-box; border: 2px solid #fff; border-radius: 50%; background: var(--dsw-alias-brand-primary); box-shadow: 0 1px 4px rgba(0, 0, 0, .36); }
+        .tobewin-skin-crop-handle[data-crop-handle="nw"] { top: -7px; left: -7px; cursor: nwse-resize; }
+        .tobewin-skin-crop-handle[data-crop-handle="ne"] { top: -7px; right: -7px; cursor: nesw-resize; }
+        .tobewin-skin-crop-handle[data-crop-handle="sw"] { bottom: -7px; left: -7px; cursor: nesw-resize; }
+        .tobewin-skin-crop-handle[data-crop-handle="se"] { right: -7px; bottom: -7px; cursor: nwse-resize; }
+        .tobewin-skin-crop-stage-hint { margin: 0; color: var(--dsw-alias-label-secondary); font-size: 12px; line-height: 18px; }
+        .tobewin-skin-crop-modal-controls { display: flex; flex-direction: column; gap: 10px; }
+        .tobewin-skin-canvas-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+        .tobewin-skin-file-input { display: none; }
+        .tobewin-skin-action-danger { color: var(--dsw-alias-state-error-primary); }
+        .tobewin-skin-canvas-status { margin: 0; color: var(--dsw-alias-state-success-primary); font-size: 12px; line-height: 17px; }
+        .tobewin-skin-canvas-notice { margin: 0; color: var(--dsw-alias-state-warn-primary); font-size: 12px; line-height: 17px; }
+        .tobewin-skin-canvas-error { color: var(--dsw-alias-state-error-primary); }
+        @container (max-width: 760px) { .tobewin-skin-canvas-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 560px) { .tobewin-skin-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

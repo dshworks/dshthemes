@@ -42,11 +42,33 @@ const token = process.env.GITHUB_TOKEN || (() => {
 })();
 const ghHeaders = token ? { Authorization: `Bearer ${token}`, "User-Agent": "dshthemes-enrich" } : { "User-Agent": "dshthemes-enrich" };
 
-function gql(query) {
-  const out = execFileSync("gh", ["api", "graphql", "-f", `query=${query}`, "--jq", "."], {
-    encoding: "utf8", maxBuffer: 16 * 1024 * 1024,
-  });
-  return JSON.parse(out);
+// Two different failures wear the same non-zero exit here, and only one of
+// them is an answer.
+//
+// A GraphQL *partial* error — "Could not resolve to a Repository" for three
+// slugs in a batch of eighty — still prints a complete data payload, and the
+// caller salvages it. A transport failure prints nothing:
+// `Post "https://api.github.com/graphql": net/http: TLS handshake timeout`.
+// That one used to propagate straight out of an 80-repo batch and kill the
+// run, losing every batch already fetched — it happened twice in a row on
+// 2026-08-21 and cost two full passes over 393 themes.
+//
+// A timed-out request is a question that was never asked, so ask it again.
+function gql(query, attempt = 0) {
+  try {
+    return JSON.parse(execFileSync("gh", ["api", "graphql", "-f", `query=${query}`, "--jq", "."], {
+      encoding: "utf8", maxBuffer: 16 * 1024 * 1024,
+    }));
+  } catch (err) {
+    // Anything with a JSON body is GitHub answering; hand it to the caller,
+    // which knows how to read a partial result.
+    if (String(err.stdout || "").includes("{")) throw err;
+    if (attempt >= 3) throw err;
+    const wait = 2000 * (attempt + 1);
+    console.error(`enrich: graphql retry ${attempt + 1}/3 in ${wait}ms — ${String(err.stderr || err).trim().slice(0, 120)}`);
+    execFileSync("sleep", [String(wait / 1000)]);
+    return gql(query, attempt + 1);
+  }
 }
 
 // ---- stars / pushedAt / license / homepage, batched -----------------------

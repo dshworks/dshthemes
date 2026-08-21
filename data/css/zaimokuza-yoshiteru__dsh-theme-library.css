@@ -1,0 +1,108 @@
+/* zaimokuza-yoshiteru/dsh-theme-library — src/client/styles.ts
+   fetched 2026-08-21 from https://raw.githubusercontent.com/zaimokuza-yoshiteru/dsh-theme-library/main/src/client/styles.ts
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+body[data-dsh-wallpaper-active] {
+  isolation: isolate;
+  background: #020305;
+}
+
+canvas[data-dsh-wallpaper-canvas] {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: #020305;
+}
+
+body[data-dsh-wallpaper-intro] {
+  overflow: hidden;
+}
+
+canvas[data-dsh-wallpaper-intro] {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483646;
+  width: 100%;
+  height: 100%;
+  pointer-events: auto;
+  touch-action: none;
+  cursor: progress;
+  opacity: 1;
+}
+
+.dsh-wallpaper-library-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--dsw-alias-border-l2);
+}
+
+.dsh-wallpaper-library-copy {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-right: 32px;
+}
+
+.dsh-wallpaper-library-title {
+  color: var(--dsw-alias-label-primary);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+}
+
+.dsh-wallpaper-library-description {
+  color: var(--dsw-alias-label-tertiary);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+}
+
+.dsh-wallpaper-library-select-wrap {
+  position: relative;
+  flex: none;
+}
+
+.dsh-wallpaper-library-select {
+  box-sizing: border-box;
+  min-width: 170px;
+  height: 36px;
+  padding: 0 38px 0 14px;
+  appearance: none;
+  border: 1px solid transparent;
+  border-radius: 18px;
+  outline: none;
+  background: var(--dsw-alias-bg-module-platform);
+  color: var(--dsw-alias-label-primary);
+  font: inherit;
+  font-size: 14px;
+  line-height: 22px;
+  cursor: pointer;
+}
+
+.dsh-wallpaper-library-select:hover:not(:disabled) {
+  background: var(--dsw-alias-interactive-bg-hover);
+}
+
+.dsh-wallpaper-library-select:focus-visible {
+  border-color: var(--dsw-alias-brand-primary);
+}
+
+.dsh-wallpaper-library-select:disabled {
+  cursor: default;
+  opacity: 0.65;
+}
+
+.dsh-wallpaper-library-chevron {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  transform: translateY(-58%);
+  color: var(--dsw-alias-label-secondary);
+  pointer-events: none;
+}

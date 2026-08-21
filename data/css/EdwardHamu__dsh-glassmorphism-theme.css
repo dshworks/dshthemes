@@ -1,0 +1,1338 @@
+/* EdwardHamu/dsh-glassmorphism-theme — lib/client.js
+   fetched 2026-08-21 from https://raw.githubusercontent.com/EdwardHamu/dsh-glassmorphism-theme/main/lib/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+:root {
+  --md-sys-shape-corner-none: 0px;
+  --md-sys-shape-corner-extra-small: 4px;
+  --md-sys-shape-corner-small: 8px;
+  --md-sys-shape-corner-medium: 12px;
+  --md-sys-shape-corner-large: 16px;
+  --md-sys-shape-corner-extra-large: 28px;
+  --md-sys-shape-corner-full: 9999px;
+
+  --md-sys-spacing-1: 4px;
+  --md-sys-spacing-2: 8px;
+  --md-sys-spacing-3: 12px;
+  --md-sys-spacing-4: 16px;
+  --md-sys-spacing-5: 20px;
+  --md-sys-spacing-6: 24px;
+  --md-sys-spacing-8: 32px;
+
+  --md-sys-motion-duration-short: 120ms;
+  --md-sys-motion-duration-medium: 200ms;
+  --md-sys-motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  --md-sys-state-hover-opacity: 0.08;
+  --md-sys-state-focus-opacity: 0.12;
+  --md-sys-state-pressed-opacity: 0.12;
+
+  --dsh-material3-wallpaper-overlay: 0.24;
+  --dsh-material3-glass-blur: 10px;
+  --dsh-material3-glass-saturation: 115%;
+}
+
+/* Light MD3 color roles and the bridge into DSH's semantic aliases. */
+body:not([data-ds-dark-theme]) {
+  color-scheme: light;
+  --md-sys-color-primary: #6750a4;
+  --md-sys-color-on-primary: #ffffff;
+  --md-sys-color-primary-container: #eaddff;
+  --md-sys-color-on-primary-container: #21005d;
+  --md-sys-color-secondary: #625b71;
+  --md-sys-color-on-secondary: #ffffff;
+  --md-sys-color-secondary-container: #e8def8;
+  --md-sys-color-on-secondary-container: #1d192b;
+  --md-sys-color-tertiary: #7d5260;
+  --md-sys-color-on-tertiary: #ffffff;
+  --md-sys-color-tertiary-container: #ffd8e4;
+  --md-sys-color-on-tertiary-container: #31111d;
+  --md-sys-color-error: #ba1a1a;
+  --md-sys-color-on-error: #ffffff;
+  --md-sys-color-error-container: #ffdad6;
+  --md-sys-color-on-error-container: #410002;
+  --md-sys-color-success: #386a20;
+  --md-sys-color-on-success: #ffffff;
+  --md-sys-color-success-container: #b7f397;
+  --md-sys-color-on-success-container: #072100;
+  --md-sys-color-warning: #725c00;
+  --md-sys-color-on-warning: #ffffff;
+  --md-sys-color-warning-container: #ffdf92;
+  --md-sys-color-on-warning-container: #231b00;
+  --md-sys-color-surface: #fffbfe;
+  --md-sys-color-surface-dim: #ded8e1;
+  --md-sys-color-surface-bright: #fffbfe;
+  --md-sys-color-surface-container-lowest: #ffffff;
+  --md-sys-color-surface-container-low: #f7f2fa;
+  --md-sys-color-surface-container: #f3edf7;
+  --md-sys-color-surface-container-high: #ece6f0;
+  --md-sys-color-surface-container-highest: #e6e0e9;
+  --md-sys-color-on-surface: #1c1b1f;
+  --md-sys-color-on-surface-variant: #49454f;
+  --md-sys-color-outline: #79747e;
+  --md-sys-color-outline-variant: #cac4d0;
+  --md-sys-color-inverse-surface: #313033;
+  --md-sys-color-inverse-on-surface: #f4eff4;
+  --md-sys-color-inverse-primary: #d0bcff;
+
+  --md-sys-elevation-level1: 0 1px 2px rgb(28 27 31 / 0.12);
+  --md-sys-elevation-level2: 0 2px 6px rgb(28 27 31 / 0.14);
+  --md-sys-elevation-level3: 0 4px 12px rgb(28 27 31 / 0.16);
+
+  --dsh-material3-glass-sidebar: transparent;
+  --dsh-material3-glass-surface: transparent;
+  --dsh-material3-glass-composer: transparent;
+  --dsh-material3-glass-border: rgb(255 255 255 / 0.58);
+  --dsh-material3-wallpaper-overlay-color: 255 251 254;
+  --dsh-material3-menu-glass-background: rgba(255, 251, 254, 0.18);
+
+  --dsw-alias-bg-base: var(--md-sys-color-surface);
+  --dsw-alias-bg-layer-1: var(--md-sys-color-surface-container-low);
+  --dsw-alias-bg-layer-2: var(--md-sys-color-surface-container);
+  --dsw-alias-bg-layer-3: var(--md-sys-color-surface-container-high);
+  --dsw-alias-bg-module-platform: var(--md-sys-color-surface-container);
+  --dsw-alias-bg-multi-select: var(--md-sys-color-secondary-container);
+  --dsw-alias-bg-overlay: var(--md-sys-color-surface-container-highest);
+  --dsw-alias-bg-skeleton: color-mix(in srgb, var(--md-sys-color-on-surface) 8%, transparent);
+  --dsw-alias-bg-mask-1: rgb(28 27 31 / 0.24);
+  --dsw-alias-bg-mask-2: rgb(28 27 31 / 0.12);
+  --dsw-alias-bg-mask-3: rgb(28 27 31 / 0.48);
+  --dsw-alias-bg-mask-drop: rgb(255 255 255 / 0.72);
+  --dsw-alias-bg-mask-photo: rgb(0 0 0 / 0.88);
+  --dsw-alias-border-inverted: var(--md-sys-color-outline-variant);
+  --dsw-alias-border-inverted2: var(--md-sys-color-outline);
+  --dsw-alias-border-l1: var(--md-sys-color-outline-variant);
+  --dsw-alias-border-l2: var(--md-sys-color-outline-variant);
+  --dsw-alias-border-l2-darkmode-thin: var(--md-sys-color-outline-variant);
+  --dsw-alias-border-l3: var(--md-sys-color-outline);
+  --dsw-alias-border-l4: var(--md-sys-color-outline);
+  --dsw-alias-brand-primary: var(--md-sys-color-primary);
+  --dsw-alias-brand-primary-invert: var(--md-sys-color-on-primary);
+  --dsw-alias-brand-primary-new-colorprimary-new-color: var(--md-sys-color-primary);
+  --dsw-alias-brand-text: var(--md-sys-color-primary);
+  --dsw-alias-label-primary: var(--md-sys-color-on-surface);
+  --dsw-alias-label-primary-bluish: var(--md-sys-color-on-surface);
+  --dsw-alias-label-primary-dimmed: var(--md-sys-color-on-surface-variant);
+  --dsw-alias-label-primary-foreground: var(--md-sys-color-on-primary);
+  --dsw-alias-label-primary-inverted: var(--md-sys-color-inverse-on-surface);
+  --dsw-alias-label-secondary: var(--md-sys-color-on-surface-variant);
+  --dsw-alias-label-tertiary: var(--md-sys-color-outline);
+  --dsw-alias-label-caption: var(--md-sys-color-outline);
+  --dsw-alias-label-dimmed: var(--md-sys-color-outline);
+  --dsw-alias-interactive-bg-hover: color-mix(in srgb, var(--md-sys-color-primary) 8%, transparent);
+  --dsw-alias-interactive-bg-hover-accent: color-mix(in srgb, var(--md-sys-color-primary) 12%, transparent);
+  --dsw-alias-interactive-bg-hover-danger: color-mix(in srgb, var(--md-sys-color-error) 8%, transparent);
+  --dsw-alias-interactive-bg-hover-solid: var(--md-sys-color-surface-container-high);
+  --dsw-alias-interactive-bg-active: color-mix(in srgb, var(--md-sys-color-primary) 12%, transparent);
+  --dsw-alias-button-primary-fill: var(--md-sys-color-primary);
+  --dsw-alias-button-primary-hover: var(--md-sys-color-primary);
+  --dsw-alias-button-primary-dimmed: var(--md-sys-color-surface-container);
+  --dsw-alias-button-contrast-fill: var(--md-sys-color-primary);
+  --dsw-alias-button-elevated-fill: var(--md-sys-color-surface-container-low);
+  --dsw-alias-button-floating-fill: var(--md-sys-color-primary-container);
+  --dsw-alias-button-floating-hover: var(--md-sys-color-primary-container);
+  --dsw-alias-button-ghost-active-border: var(--md-sys-color-outline);
+  --dsw-alias-button-ghost-active-fill: var(--md-sys-color-secondary-container);
+  --dsw-alias-button-ghost-active-hover: var(--md-sys-color-secondary-container);
+  --dsw-alias-button-info-fill: var(--md-sys-color-primary);
+  --dsw-alias-button-info-hover: var(--md-sys-color-primary);
+  --dsw-alias-button-tool-bar-fill: var(--md-sys-color-surface-container-high);
+  --dsw-alias-button-tool-bar-fill-invisible: transparent;
+  --dsw-alias-button-tool-bar-hover: var(--md-sys-color-surface-container-highest);
+  --dsw-alias-state-business-primary: var(--md-sys-color-primary);
+  --dsw-alias-state-business-tertiary: var(--md-sys-color-primary-container);
+  --dsw-alias-state-error-primary: var(--md-sys-color-error);
+  --dsw-alias-state-error-secondary: var(--md-sys-color-error-container);
+  --dsw-alias-state-success-primary: var(--md-sys-color-success);
+  --dsw-alias-state-success-secondary: var(--md-sys-color-success-container);
+  --dsw-alias-state-success-tertiary: var(--md-sys-color-on-success-container);
+  --dsw-alias-state-warn-primary: var(--md-sys-color-warning);
+  --dsw-alias-state-warn-secondary: var(--md-sys-color-warning-container);
+  --dsw-alias-state-warn-tertiary: var(--md-sys-color-on-warning-container);
+  --dsw-alias-state-warn-label: var(--md-sys-color-on-warning-container);
+  --dsw-alias-toast-bg: var(--md-sys-color-inverse-surface);
+  --dsw-alias-tooltip-bg: var(--md-sys-color-inverse-surface);
+  --dsw-alias-markdown-citation: var(--md-sys-color-primary-container);
+  --dsw-alias-markdown-code-block: var(--md-sys-color-surface-container);
+  --dsw-alias-markdown-code-block-banner: var(--md-sys-color-surface-container-high);
+  --dsw-alias-markdown-code-segment-selected: var(--md-sys-color-secondary-container);
+  --dsw-alias-markdown-code-segment-unselected: var(--md-sys-color-surface-container-high);
+  --dsw-alias-markdown-inline-code: var(--md-sys-color-surface-container-high);
+  --dsw-alias-markdown-placeholder: var(--md-sys-color-surface-container-high);
+  --dsw-alias-markdown-tag: var(--md-sys-color-surface-container-high);
+  --dsw-alias-scrollbar-bg-l1: var(--md-sys-color-outline-variant);
+  --dsw-alias-scrollbar-bg-l2: var(--md-sys-color-outline-variant);
+  --dsw-alias-scrollbar-hover-l1: var(--md-sys-color-outline);
+  --dsw-alias-scrollbar-hover-l2: var(--md-sys-color-outline);
+  --dsw-specific-bubble: var(--md-sys-color-primary-container);
+  --dsw-specific-bubble-highlight: var(--md-sys-color-secondary-container);
+  --dsw-specific-input-major: var(--md-sys-color-surface-container-high);
+  --dsw-specific-login-input: var(--md-sys-color-surface-container-high);
+  --dsw-specific-menu: var(--md-sys-color-surface-container);
+  --dsw-specific-selector: var(--md-sys-color-surface-container-high);
+  --dsw-specific-sidebar-fill: var(--md-sys-color-surface-container-low);
+  --dsw-specific-sidebar-nav-item-active: var(--md-sys-color-secondary-container);
+  --dsw-specific-sidebar-nav-item-active-accent: var(--md-sys-color-primary);
+  --dsw-specific-sidebar-nav-item-hover: var(--md-sys-color-surface-container-high);
+  --dsw-specific-tip: var(--md-sys-color-secondary-container);
+  --dsw-shadow-lv1: var(--md-sys-elevation-level1);
+  --dsw-shadow-lv2: var(--md-sys-elevation-level2);
+  --dsw-shadow-lv3: var(--md-sys-elevation-level3);
+}
+
+/* Dark MD3 color roles. DSH toggles this attribute for Dark and System modes. */
+body[data-ds-dark-theme] {
+  color-scheme: dark;
+  --md-sys-color-primary: #d0bcff;
+  --md-sys-color-on-primary: #381e72;
+  --md-sys-color-primary-container: #4f378b;
+  --md-sys-color-on-primary-container: #eaddff;
+  --md-sys-color-secondary: #ccc2dc;
+  --md-sys-color-on-secondary: #332d41;
+  --md-sys-color-secondary-container: #4a4458;
+  --md-sys-color-on-secondary-container: #e8def8;
+  --md-sys-color-tertiary: #efb8c8;
+  --md-sys-color-on-tertiary: #492532;
+  --md-sys-color-tertiary-container: #633b48;
+  --md-sys-color-on-tertiary-container: #ffd8e4;
+  --md-sys-color-error: #ffb4ab;
+  --md-sys-color-on-error: #690005;
+  --md-sys-color-error-container: #93000a;
+  --md-sys-color-on-error-container: #ffdad6;
+  --md-sys-color-success: #9bd67f;
+  --md-sys-color-on-success: #103800;
+  --md-sys-color-success-container: #235107;
+  --md-sys-color-on-success-container: #b7f397;
+  --md-sys-color-warning: #f4c94d;
+  --md-sys-color-on-warning: #3b2f00;
+  --md-sys-color-warning-container: #584700;
+  --md-sys-color-on-warning-container: #ffdf92;
+  --md-sys-color-surface: #141218;
+  --md-sys-color-surface-dim: #141218;
+  --md-sys-color-surface-bright: #3b383e;
+  --md-sys-color-surface-container-lowest: #0f0d13;
+  --md-sys-color-surface-container-low: #1d1b20;
+  --md-sys-color-surface-container: #211f26;
+  --md-sys-color-surface-container-high: #2b2930;
+  --md-sys-color-surface-container-highest: #36343b;
+  --md-sys-color-on-surface: #e6e1e5;
+  --md-sys-color-on-surface-variant: #cac4d0;
+  --md-sys-color-outline: #938f99;
+  --md-sys-color-outline-variant: #49454f;
+  --md-sys-color-inverse-surface: #e6e1e5;
+  --md-sys-color-inverse-on-surface: #313033;
+  --md-sys-color-inverse-primary: #6750a4;
+
+  --md-sys-elevation-level1: 0 1px 2px rgb(0 0 0 / 0.22);
+  --md-sys-elevation-level2: 0 2px 6px rgb(0 0 0 / 0.26);
+  --md-sys-elevation-level3: 0 4px 12px rgb(0 0 0 / 0.3);
+  --dsh-material3-glass-sidebar: transparent;
+  --dsh-material3-glass-surface: transparent;
+  --dsh-material3-glass-composer: transparent;
+  --dsh-material3-glass-border: rgb(255 255 255 / 0.14);
+  --dsh-material3-wallpaper-overlay-color: 20 18 24;
+  --dsh-material3-menu-glass-background: rgba(20, 18, 24, 0.18);
+  --dsw-alias-bg-mask-1: rgb(0 0 0 / 0.36);
+  --dsw-alias-bg-mask-2: rgb(0 0 0 / 0.2);
+  --dsw-alias-bg-mask-3: rgb(0 0 0 / 0.56);
+  --dsw-alias-bg-mask-drop: rgb(20 18 24 / 0.72);
+}
+
+/* Focus indication, state transitions, and form controls. */
+::selection {
+  color: var(--md-sys-color-on-primary-container);
+  background: var(--md-sys-color-primary-container);
+}
+
+:where(button, input, textarea, select, [role="button"], [role="menuitem"], [role="option"]):focus-visible {
+  outline: 2px solid var(--md-sys-color-primary) !important;
+  outline-offset: 2px;
+}
+
+button,
+[role="button"] {
+  transition: background-color var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard), color var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard), border-color var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard), box-shadow var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--md-sys-color-primary);
+}
+
+input:not([type="checkbox"]):not([type="radio"]),
+textarea:not(.uV2eYG_input),
+select {
+  color: var(--md-sys-color-on-surface);
+  background: var(--md-sys-color-surface-container-high);
+  border: 1px solid var(--md-sys-color-outline);
+  border-radius: var(--md-sys-shape-corner-small);
+}
+
+input:not([type="checkbox"]):not([type="radio"]):focus,
+textarea:not(.uV2eYG_input):focus,
+select:focus {
+  border-color: var(--md-sys-color-primary);
+  outline: 1px solid var(--md-sys-color-primary);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--md-sys-color-on-surface-variant);
+  opacity: 1;
+}
+
+* {
+  scrollbar-color: var(--md-sys-color-outline-variant) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--md-sys-color-outline-variant);
+  border: 3px solid transparent;
+  border-radius: var(--md-sys-shape-corner-full);
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--md-sys-color-outline);
+}
+
+/* The host scrolls inside its application frame. Keep the frame tied to the
+ * live browser viewport so resizing cannot create a document-level overflow. */
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+}
+
+html,
+body {
+  overflow: hidden;
+}
+
+.pI_x6G_frame {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  max-width: 100%;
+  max-height: 100%;
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.pI_x6G_sidebarCol,
+.pI_x6G_centerCol,
+.wSkVaW_root,
+.ydkMvW_root {
+  min-width: 0;
+  min-height: 0;
+}
+
+/* Keep composer metadata clear of the viewport edge and device safe areas. */
+.wSkVaW_composerStack {
+  padding-bottom: max(8px, env(safe-area-inset-bottom));
+}
+
+/* Primary navigation and session hierarchy. */
+.pI_x6G_frame,
+.wSkVaW_root,
+.ydkMvW_root {
+  background: var(--md-sys-color-surface) !important;
+}
+
+.pI_x6G_sidebarCol,
+.hHd-Xa_root {
+  background: var(--md-sys-color-surface-container-low) !important;
+  border-color: transparent !important;
+}
+
+/* The host draws the sidebar separator with border-right rather than its
+ * inherited border color. Keep that physical edge transparent as well. */
+.pI_x6G_sidebarCol {
+  border-right-color: transparent !important;
+}
+
+.pI_x6G_handle[data-side="sidebar"] {
+  border-right-color: transparent !important;
+}
+
+.hHd-Xa_root.hHd-Xa_quietBars {
+  border-right-color: transparent !important;
+}
+
+.Md3f7G_column[data-chat-flow] {
+  box-sizing: border-box;
+  min-width: 0;
+  padding-inline: 8px;
+}
+
+.hHd-Xa_newSession {
+  min-height: 40px;
+  color: var(--md-sys-color-on-primary) !important;
+  background: color-mix(in srgb, var(--md-sys-color-primary) 68%, transparent) !important;
+  border: 0 !important;
+  border-radius: var(--md-sys-shape-corner-full) !important;
+  box-shadow: none !important;
+}
+
+.hHd-Xa_newSession:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--md-sys-color-primary) 80%, transparent) !important;
+}
+
+.hHd-Xa_iconButton,
+.qDHVXG_iconButton,
+.qDHVXG_searchButton,
+.YDXeBa_iconButton,
+.VOzbGW_close,
+.ydkMvW_close,
+.dsp_1_pinBtn {
+  min-width: 40px;
+  min-height: 40px;
+  border-radius: var(--md-sys-shape-corner-full) !important;
+}
+
+.hHd-Xa_iconButton:hover:not(:disabled),
+.qDHVXG_iconButton:hover:not(:disabled),
+.qDHVXG_searchButton:hover:not(:disabled),
+.YDXeBa_iconButton:hover:not(:disabled),
+.VOzbGW_close:hover:not(:disabled),
+.ydkMvW_close:hover:not(:disabled),
+.dsp_1_pinBtn:hover:not(:disabled) {
+  background: var(--dsw-alias-interactive-bg-hover) !important;
+}
+
+.YDXeBa_projectRow,
+.YDXeBa_sessionRow {
+  min-height: 44px;
+  border-radius: var(--md-sys-shape-corner-large) !important;
+  padding-inline: var(--md-sys-spacing-3) !important;
+}
+
+.YDXeBa_projectRow:hover,
+.YDXeBa_sessionRow:hover {
+  background: var(--dsw-alias-interactive-bg-hover) !important;
+}
+
+/* The host uses this paint layer as a fade-out at the end of the sidebar list.
+ * Hide it immediately while the runtime cleanup removes the generated node. */
+.qDHVXG_fade {
+  display: none !important;
+}
+
+.YDXeBa_selected,
+.YDXeBa_sessionRow[aria-selected="true"],
+.YDXeBa_projectRow[aria-selected="true"] {
+  color: var(--md-sys-color-on-secondary-container) !important;
+  background: color-mix(in srgb, var(--md-sys-color-secondary-container) 30%, transparent) !important;
+}
+
+.YDXeBa_selected .YDXeBa_time,
+.YDXeBa_sessionRow[aria-selected="true"] .YDXeBa_time,
+.YDXeBa_projectRow[aria-selected="true"] .YDXeBa_time {
+  color: var(--md-sys-color-on-secondary-container) !important;
+}
+
+/* Conversation, composer, messages, and task surfaces. */
+.uV2eYG_card {
+  background: var(--md-sys-color-surface-container-high) !important;
+  border: 1px solid var(--md-sys-color-outline-variant) !important;
+  border-radius: var(--md-sys-shape-corner-extra-large) !important;
+  box-shadow: none !important;
+}
+
+.uV2eYG_card:focus-within {
+  border-color: var(--md-sys-color-primary) !important;
+  box-shadow: 0 0 0 1px var(--md-sys-color-primary) !important;
+}
+
+.uV2eYG_input {
+  color: var(--md-sys-color-on-surface) !important;
+  caret-color: var(--md-sys-color-primary);
+}
+
+.uV2eYG_primary {
+  color: var(--md-sys-color-on-primary) !important;
+  background: var(--md-sys-color-primary) !important;
+  border-radius: var(--md-sys-shape-corner-full) !important;
+}
+
+.uV2eYG_primary:disabled {
+  color: color-mix(in srgb, var(--md-sys-color-on-surface) 38%, transparent) !important;
+  background: color-mix(in srgb, var(--md-sys-color-on-surface) 12%, transparent) !important;
+}
+
+/* Keep the unused context-meter arc visually subordinate to its active fill. */
+.JObwrW_track {
+  stroke: var(--md-sys-color-outline-variant) !important;
+}
+
+.gdEzaW_bubble,
+.oRe1gG_bubble {
+  color: var(--md-sys-color-on-primary-container) !important;
+  background: color-mix(in srgb, var(--md-sys-color-primary-container) 30%, transparent) !important;
+  border-radius: 20px 20px var(--md-sys-shape-corner-extra-small) 20px !important;
+}
+
+/* Keep message code surfaces translucent without reducing text, syntax, or
+ * control opacity. The code-block component consumes these local variables
+ * for its body, sticky banner wrapper, and banner content. */
+.Md3f7G_column[data-chat-flow] .md-code-block {
+  --dsw-alias-markdown-code-block: color-mix(in srgb, var(--md-sys-color-surface-container) 30%, transparent);
+  --dsw-alias-bg-base: color-mix(in srgb, var(--md-sys-color-surface) 30%, transparent);
+  --dsl-code-block-banner-background-color: color-mix(in srgb, var(--md-sys-color-surface-container-high) 30%, transparent);
+}
+
+.bqrRRG_card,
+.lXshSW_card,
+.LVzXQa_card,
+.Mbwy4a_card,
+.YyYd_a_card,
+.XJ7liG_frame,
+.Nqubda_panel,
+.Nqubda_row,
+.cvtE3a_business,
+.gNWCoW_business,
+.DBuyfa_runHeader {
+  background: var(--md-sys-color-surface-container-low) !important;
+  border-color: var(--md-sys-color-outline-variant) !important;
+  border-radius: var(--md-sys-shape-corner-medium) !important;
+  box-shadow: none !important;
+}
+
+/* Menus, dialogs, settings, cards, and common DSH primitive buttons. */
+[role="dialog"] {
+  color: var(--md-sys-color-on-surface);
+  background: var(--md-sys-color-surface-container-high) !important;
+  border: 0;
+  border-radius: var(--md-sys-shape-corner-extra-large) !important;
+  box-shadow: var(--md-sys-elevation-level3) !important;
+}
+
+[role="menu"],
+[role="listbox"] {
+  color: var(--md-sys-color-on-surface);
+  background: var(--md-sys-color-surface-container) !important;
+  border: 1px solid var(--md-sys-color-outline-variant) !important;
+  border-radius: var(--md-sys-shape-corner-medium) !important;
+  box-shadow: var(--md-sys-elevation-level2) !important;
+}
+
+[role="menuitem"],
+[role="option"] {
+  border-radius: var(--md-sys-shape-corner-small);
+}
+
+[role="menuitem"]:hover:not([aria-disabled="true"]),
+[role="option"]:hover:not([aria-disabled="true"]),
+[role="option"][aria-selected="true"] {
+  background: var(--dsw-alias-interactive-bg-hover) !important;
+}
+
+[role="tooltip"] {
+  color: var(--md-sys-color-inverse-on-surface) !important;
+  background: var(--md-sys-color-inverse-surface) !important;
+  border-radius: var(--md-sys-shape-corner-small) !important;
+  box-shadow: var(--md-sys-elevation-level1) !important;
+}
+
+.VOzbGW_panel {
+  background: var(--md-sys-color-surface-container-high) !important;
+  border-radius: var(--md-sys-shape-corner-extra-large) !important;
+  box-shadow: var(--md-sys-elevation-level3) !important;
+}
+
+.VOzbGW_overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+}
+
+.VOzbGW_nav {
+  background: var(--md-sys-color-surface-container) !important;
+}
+
+.VOzbGW_header,
+.VOzbGW_nav {
+  border-color: var(--md-sys-color-outline-variant) !important;
+}
+
+.VOzbGW_navCell {
+  min-height: 44px;
+  border-radius: var(--md-sys-shape-corner-full) !important;
+}
+
+.VOzbGW_navCell:hover:not(.VOzbGW_active) {
+  background: var(--dsw-alias-interactive-bg-hover) !important;
+}
+
+.VOzbGW_navCell.VOzbGW_active {
+  color: var(--md-sys-color-on-secondary-container) !important;
+  background: var(--md-sys-color-secondary-container) !important;
+}
+
+._8HJdBW_cubeRow {
+  gap: var(--md-sys-spacing-1) !important;
+  padding: var(--md-sys-spacing-1) !important;
+  background: var(--md-sys-color-surface-container) !important;
+  border-radius: var(--md-sys-shape-corner-full) !important;
+}
+
+._8HJdBW_themeCube {
+  min-height: 40px;
+  border-radius: var(--md-sys-shape-corner-full) !important;
+}
+
+._8HJdBW_themeCube[aria-pressed="true"],
+._8HJdBW_selected {
+  color: var(--md-sys-color-on-secondary-container) !important;
+  background: var(--md-sys-color-secondary-container) !important;
+}
+
+[class*="_button_"] {
+  min-height: 40px;
+  border-radius: var(--md-sys-shape-corner-full) !important;
+}
+
+[class*="_button_"][class*="_primary_"],
+[class*="_button_"][class*="_filled_"] {
+  color: var(--md-sys-color-on-primary) !important;
+  background: var(--md-sys-color-primary) !important;
+}
+
+[class*="_button_"][class*="_tonal_"] {
+  color: var(--md-sys-color-on-secondary-container) !important;
+  background: var(--md-sys-color-secondary-container) !important;
+}
+
+[class*="_button_"][class*="_outline_"] {
+  color: var(--md-sys-color-primary) !important;
+  background: transparent !important;
+  border: 1px solid var(--md-sys-color-outline) !important;
+}
+
+[class*="_button_"][class*="_text_"] {
+  color: var(--md-sys-color-primary) !important;
+  background: transparent !important;
+}
+
+[class*="_button_"]:hover:not(:disabled),
+[class*="_button_"]:focus-visible:not(:disabled) {
+  box-shadow: inset 0 0 0 999px color-mix(in srgb, currentColor 8%, transparent);
+}
+
+/* Compact layouts preserve the core responsive grid while reducing framing. */
+@media (width <= 760px) {
+  .VOzbGW_overlay {
+    inset: 0 !important;
+  }
+
+  .VOzbGW_panel {
+    width: min(100%, calc(100vw - 24px)) !important;
+    min-width: 0 !important;
+    max-width: calc(100vw - 24px) !important;
+    height: min(100%, calc(100vh - 24px)) !important;
+    max-height: calc(100vh - 24px) !important;
+    flex: 0 0 calc(100vw - 24px) !important;
+  }
+
+  .uV2eYG_card {
+    border-radius: 24px !important;
+  }
+
+  .YDXeBa_projectRow,
+  .YDXeBa_sessionRow {
+    min-height: 48px;
+  }
+}
+
+/* Keep compact composer controls as a single non-overlapping touch row. */
+@media (width <= 520px) {
+  .uV2eYG_card {
+    gap: var(--md-sys-spacing-2) !important;
+  }
+
+  .uV2eYG_row {
+    align-items: center;
+    gap: var(--md-sys-spacing-1) !important;
+    min-height: 44px;
+  }
+
+  .uV2eYG_tools,
+  .uV2eYG_modes {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    gap: var(--md-sys-spacing-1) !important;
+  }
+
+  .uV2eYG_trailing {
+    flex: 1 1 0 !important;
+    width: auto !important;
+    min-width: 0 !important;
+    gap: var(--md-sys-spacing-1) !important;
+  }
+
+  .uV2eYG_add,
+  .uV2eYG_primary,
+  .Sh0Q9G_trigger,
+  ._7KE1Ra_trigger {
+    min-width: 44px;
+    min-height: 44px;
+    height: 44px;
+  }
+
+  .uV2eYG_add,
+  .uV2eYG_primary {
+    width: 44px;
+  }
+
+  .Sh0Q9G_trigger {
+    width: 44px;
+    max-width: 44px;
+    padding-inline: 8px;
+  }
+
+  .Sh0Q9G_triggerLabel {
+    display: none;
+  }
+
+  ._7KE1Ra_root {
+    flex: 1 1 0 !important;
+    width: auto !important;
+    min-width: 0 !important;
+  }
+
+  ._7KE1Ra_trigger {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  ._7KE1Ra_triggerLabel {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+@media (width <= 360px) {
+  ._7KE1Ra_triggerEffort {
+    display: none;
+  }
+}
+
+/*
+ * The wallpaper is a single fixed paint layer. High-level surfaces and the
+ * viewport-bound chat background below sample it, keeping backdrop-filter out
+ * of scroll-heavy message rows and full-content-height message columns.
+ */
+[data-dsh-material3-wallpaper-layer] {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  width: 100dvw;
+  height: 100dvh;
+  pointer-events: none;
+  overflow: hidden;
+  background-color: var(--md-sys-color-surface);
+  background-image: var(--dsh-material3-wallpaper-image, none);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+[data-dsh-material3-wallpaper-layer]::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  background: rgb(var(--dsh-material3-wallpaper-overlay-color) / var(--dsh-material3-wallpaper-overlay));
+}
+
+body[data-dsh-material3-wallpaper="on"] {
+  background: transparent !important;
+}
+
+body[data-dsh-material3-wallpaper="on"] #root {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+  background: transparent !important;
+}
+
+body[data-dsh-material3-wallpaper="on"] .VOzbGW_overlay {
+  position: fixed !important;
+  inset: 0 !important;
+}
+
+body[data-dsh-material3-wallpaper="on"] .pI_x6G_frame,
+body[data-dsh-material3-wallpaper="on"] .pI_x6G_centerCol,
+body[data-dsh-material3-wallpaper="on"] .wSkVaW_root,
+body[data-dsh-material3-wallpaper="on"] .wSkVaW_scrollBody,
+body[data-dsh-material3-wallpaper="on"] .wSkVaW_composerSeat,
+body[data-dsh-material3-wallpaper="on"] .pI_x6G_detailsCol,
+body[data-dsh-material3-wallpaper="on"] .ydkMvW_root,
+body[data-dsh-material3-wallpaper="on"] .ydkMvW_body {
+  background: transparent !important;
+}
+
+body[data-dsh-material3-wallpaper="on"] .wSkVaW_header:not(.wSkVaW_headerHidden) {
+  border-color: var(--dsh-material3-glass-border) !important;
+  background: var(--dsh-material3-glass-surface) !important;
+  -webkit-backdrop-filter: blur(var(--dsh-material3-glass-blur)) saturate(var(--dsh-material3-glass-saturation));
+  backdrop-filter: blur(var(--dsh-material3-glass-blur)) saturate(var(--dsh-material3-glass-saturation));
+}
+
+body[data-dsh-material3-wallpaper="on"] .uV2eYG_card {
+  position: relative;
+  isolation: isolate;
+  border-color: var(--dsh-material3-glass-border) !important;
+  background: transparent !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+body[data-dsh-material3-wallpaper="on"] .uV2eYG_card::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  content: '';
+  pointer-events: none;
+  border-radius: inherit;
+  background: transparent;
+  -webkit-backdrop-filter: blur(var(--dsh-material3-glass-blur)) saturate(var(--dsh-material3-glass-saturation));
+  backdrop-filter: blur(var(--dsh-material3-glass-blur)) saturate(var(--dsh-material3-glass-saturation));
+}
+
+/* A filtered ancestor captures the host's fixed settings overlay. Keep the
+ * sidebar filter on a paint-only pseudo-element so the overlay stays viewport-bound. */
+body[data-dsh-material3-wallpaper="on"] .pI_x6G_sidebarCol {
+  position: relative;
+  background: transparent !important;
+  border-right-color: transparent !important;
+  box-shadow: none;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+body[data-dsh-material3-wallpaper="on"] .pI_x6G_sidebarCol::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  content: '';
+  pointer-events: none;
+  background: transparent;
+  -webkit-backdrop-filter: blur(var(--dsh-material3-glass-blur)) saturate(var(--dsh-material3-glass-saturation));
+  backdrop-filter: blur(var(--dsh-material3-glass-blur)) saturate(var(--dsh-material3-glass-saturation));
+}
+
+body[data-dsh-material3-wallpaper="on"] .hHd-Xa_root {
+  background: transparent !important;
+}
+
+body[data-dsh-material3-wallpaper="on"] .wSkVaW_header:not(.wSkVaW_headerHidden) {
+  background: transparent !important;
+  box-shadow: inset 0 -1px 0 var(--dsh-material3-glass-border);
+}
+
+body[data-dsh-material3-wallpaper="on"] .uV2eYG_card {
+  background: transparent !important;
+  box-shadow: 0 12px 36px rgb(0 0 0 / 0.16) !important;
+}
+
+body[data-dsh-material3-wallpaper="on"] .VOzbGW_panel {
+  background: var(--dsh-material3-glass-surface) !important;
+  border: 1px solid var(--dsh-material3-glass-border) !important;
+  -webkit-backdrop-filter: blur(var(--dsh-material3-glass-blur)) saturate(var(--dsh-material3-glass-saturation));
+  backdrop-filter: blur(var(--dsh-material3-glass-blur)) saturate(var(--dsh-material3-glass-saturation));
+}
+
+/* Menus and popup surfaces may render through a body-level portal or use a
+ * component-specific class instead of a semantic role. Keep their geometry
+ * and positioning untouched while making the painted surface translucent. */
+body[data-dsh-material3-wallpaper="on"] [role="menu"],
+body[data-dsh-material3-wallpaper="on"] [role="listbox"],
+body[data-dsh-material3-wallpaper="on"] [role="tooltip"],
+body[data-dsh-material3-wallpaper="on"] [class*="_portal_"],
+body[data-dsh-material3-wallpaper="on"] .h8S2Va_menu,
+body[data-dsh-material3-wallpaper="on"] .QsffPG_menu,
+body[data-dsh-material3-wallpaper="on"] .mufS8W_card,
+body[data-dsh-material3-wallpaper="on"] .JObwrW_panel,
+body[data-dsh-material3-wallpaper="on"] .Nqubda_panel,
+body[data-dsh-material3-wallpaper="on"] .SKV_addMenu,
+body[data-dsh-material3-wallpaper="on"] ._list_19372_8,
+body[data-dsh-material3-wallpaper="on"] ._submenu_19372_9 {
+  background: var(--dsh-material3-menu-glass-background) !important;
+  border-color: var(--dsh-material3-glass-border) !important;
+  box-shadow: var(--md-sys-elevation-level2) !important;
+  -webkit-backdrop-filter: blur(var(--dsh-material3-glass-blur)) saturate(var(--dsh-material3-glass-saturation));
+  backdrop-filter: blur(var(--dsh-material3-glass-blur)) saturate(var(--dsh-material3-glass-saturation));
+}
+
+/* Command and model menus render inside an already-filtered composer card.
+ * Direct backdrop-filter on a fully-transparent menu body produces no visible
+ * blur. Use isolation and a pseudo-element glass layer with a low-alpha
+ * backing color to make the blur visible while preserving menu positioning. */
+body[data-dsh-material3-wallpaper="on"] ._3e4SsG_menu,
+body[data-dsh-material3-wallpaper="on"] ._7KE1Ra_menu {
+  isolation: isolate;
+  background: transparent !important;
+  border-color: var(--dsh-material3-glass-border) !important;
+  box-shadow: var(--md-sys-elevation-level2) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+body[data-dsh-material3-wallpaper="on"] ._3e4SsG_menu::before,
+body[data-dsh-material3-wallpaper="on"] ._7KE1Ra_menu::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  content: '';
+  pointer-events: none;
+  border-radius: inherit;
+  background: var(--dsh-material3-menu-glass-background);
+  -webkit-backdrop-filter: blur(var(--dsh-material3-glass-blur)) saturate(var(--dsh-material3-glass-saturation));
+  backdrop-filter: blur(var(--dsh-material3-glass-blur)) saturate(var(--dsh-material3-glass-saturation));
+}
+
+body[data-dsh-material3-wallpaper="on"] .Md3f7G_column[data-chat-flow] {
+  background: transparent !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+body[data-dsh-material3-wallpaper="on"] .wSkVaW_scrollBody[data-dsh-material3-chat-glass-host] {
+  position: relative;
+  z-index: 0;
+  isolation: isolate;
+}
+
+body[data-dsh-material3-wallpaper="on"] [data-dsh-material3-chat-glass-layer] {
+  position: fixed;
+  z-index: -1;
+  inset: auto;
+  pointer-events: none;
+  background: transparent;
+  -webkit-backdrop-filter: blur(var(--dsh-material3-glass-blur)) saturate(var(--dsh-material3-glass-saturation));
+  backdrop-filter: blur(var(--dsh-material3-glass-blur)) saturate(var(--dsh-material3-glass-saturation));
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  body[data-dsh-material3-wallpaper="on"] .pI_x6G_sidebarCol {
+    background: transparent !important;
+  }
+
+  body[data-dsh-material3-wallpaper="on"] .pI_x6G_sidebarCol::before {
+    content: none;
+  }
+
+  body[data-dsh-material3-wallpaper="on"] .wSkVaW_header:not(.wSkVaW_headerHidden),
+  body[data-dsh-material3-wallpaper="on"] .uV2eYG_card,
+  body[data-dsh-material3-wallpaper="on"] .VOzbGW_panel,
+  body[data-dsh-material3-wallpaper="on"] [role="menu"],
+  body[data-dsh-material3-wallpaper="on"] [role="listbox"],
+  body[data-dsh-material3-wallpaper="on"] [role="tooltip"],
+  body[data-dsh-material3-wallpaper="on"] [class*="_portal_"],
+  body[data-dsh-material3-wallpaper="on"] .h8S2Va_menu,
+  body[data-dsh-material3-wallpaper="on"] .QsffPG_menu,
+  body[data-dsh-material3-wallpaper="on"] .mufS8W_card,
+  body[data-dsh-material3-wallpaper="on"] .JObwrW_panel,
+  body[data-dsh-material3-wallpaper="on"] .Nqubda_panel,
+  body[data-dsh-material3-wallpaper="on"] .SKV_addMenu,
+  body[data-dsh-material3-wallpaper="on"] ._list_19372_8,
+  body[data-dsh-material3-wallpaper="on"] ._submenu_19372_9,
+  body[data-dsh-material3-wallpaper="on"] .uV2eYG_card::before,
+  body[data-dsh-material3-wallpaper="on"] ._3e4SsG_menu::before,
+  body[data-dsh-material3-wallpaper="on"] ._7KE1Ra_menu::before,
+  body[data-dsh-material3-wallpaper="on"] [data-dsh-material3-chat-glass-layer] {
+    background: transparent !important;
+  }
+
+  body[data-dsh-material3-wallpaper="on"] .uV2eYG_card::before,
+  body[data-dsh-material3-wallpaper="on"] ._3e4SsG_menu::before,
+  body[data-dsh-material3-wallpaper="on"] ._7KE1Ra_menu::before {
+    content: none;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  body[data-dsh-material3-wallpaper="on"] .pI_x6G_sidebarCol::before,
+  body[data-dsh-material3-wallpaper="on"] .wSkVaW_header:not(.wSkVaW_headerHidden),
+  body[data-dsh-material3-wallpaper="on"] .uV2eYG_card,
+  body[data-dsh-material3-wallpaper="on"] .VOzbGW_panel,
+  body[data-dsh-material3-wallpaper="on"] [role="menu"],
+  body[data-dsh-material3-wallpaper="on"] [role="listbox"],
+  body[data-dsh-material3-wallpaper="on"] [role="tooltip"],
+  body[data-dsh-material3-wallpaper="on"] [class*="_portal_"],
+  body[data-dsh-material3-wallpaper="on"] .h8S2Va_menu,
+  body[data-dsh-material3-wallpaper="on"] .QsffPG_menu,
+  body[data-dsh-material3-wallpaper="on"] .mufS8W_card,
+  body[data-dsh-material3-wallpaper="on"] .JObwrW_panel,
+  body[data-dsh-material3-wallpaper="on"] .Nqubda_panel,
+  body[data-dsh-material3-wallpaper="on"] .SKV_addMenu,
+  body[data-dsh-material3-wallpaper="on"] ._list_19372_8,
+  body[data-dsh-material3-wallpaper="on"] ._submenu_19372_9,
+  body[data-dsh-material3-wallpaper="on"] .uV2eYG_card::before,
+  body[data-dsh-material3-wallpaper="on"] ._3e4SsG_menu::before,
+  body[data-dsh-material3-wallpaper="on"] ._7KE1Ra_menu::before,
+  body[data-dsh-material3-wallpaper="on"] [data-dsh-material3-chat-glass-layer] {
+    -webkit-backdrop-filter: blur(10px) saturate(115%);
+    backdrop-filter: blur(10px) saturate(115%);
+  }
+
+  body[data-dsh-material3-wallpaper="on"] .pI_x6G_sidebarCol::before {
+    background: transparent;
+  }
+
+  body[data-dsh-material3-wallpaper="on"] .wSkVaW_header:not(.wSkVaW_headerHidden),
+  body[data-dsh-material3-wallpaper="on"] .uV2eYG_card,
+  body[data-dsh-material3-wallpaper="on"] .VOzbGW_panel,
+  body[data-dsh-material3-wallpaper="on"] [role="menu"],
+  body[data-dsh-material3-wallpaper="on"] [role="listbox"],
+  body[data-dsh-material3-wallpaper="on"] [role="tooltip"],
+  body[data-dsh-material3-wallpaper="on"] [class*="_portal_"],
+  body[data-dsh-material3-wallpaper="on"] .h8S2Va_menu,
+  body[data-dsh-material3-wallpaper="on"] .QsffPG_menu,
+  body[data-dsh-material3-wallpaper="on"] .mufS8W_card,
+  body[data-dsh-material3-wallpaper="on"] .JObwrW_panel,
+  body[data-dsh-material3-wallpaper="on"] .Nqubda_panel,
+  body[data-dsh-material3-wallpaper="on"] .SKV_addMenu,
+  body[data-dsh-material3-wallpaper="on"] ._list_19372_8,
+  body[data-dsh-material3-wallpaper="on"] ._submenu_19372_9,
+  body[data-dsh-material3-wallpaper="on"] [data-dsh-material3-chat-glass-layer] {
+    background-color: transparent !important;
+  }
+}
+
+/* Custom wallpaper controls live in the host settings dialog. */
+#dsh-m3-wallpaper-panel {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  padding: 8px 24px 32px;
+  color: var(--md-sys-color-on-surface);
+}
+
+#dsh-m3-wallpaper-panel[hidden] {
+  display: none;
+}
+
+#dsh-m3-wallpaper-panel > * {
+  flex: 0 0 auto;
+}
+
+.dsh-m3-wallpaper-heading,
+.dsh-m3-wallpaper-preview,
+.dsh-m3-wallpaper-row,
+.dsh-m3-wallpaper-field,
+.dsh-m3-wallpaper-actions,
+.dsh-m3-wallpaper-selects {
+  display: flex;
+  align-items: center;
+}
+
+.dsh-m3-wallpaper-heading {
+  justify-content: space-between;
+  gap: 20px;
+  padding: 4px 0 12px;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.dsh-m3-wallpaper-headingText {
+  min-width: 0;
+}
+
+.dsh-m3-wallpaper-title {
+  margin: 0;
+  color: var(--md-sys-color-on-surface);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.dsh-m3-wallpaper-subtitle,
+.dsh-m3-wallpaper-status,
+.dsh-m3-wallpaper-caption {
+  color: var(--md-sys-color-on-surface-variant);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.dsh-m3-wallpaper-subtitle {
+  margin: 6px 0 0;
+}
+
+.dsh-m3-wallpaper-toggle {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  color: var(--md-sys-color-on-surface);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.dsh-m3-wallpaper-toggle input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}
+
+.dsh-m3-wallpaper-preview {
+  position: relative;
+  min-height: 150px;
+  overflow: hidden;
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-sys-shape-corner-large);
+  background: var(--md-sys-color-surface-container-low);
+  isolation: isolate;
+}
+
+.dsh-m3-wallpaper-previewImage {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.dsh-m3-wallpaper-preview::after {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  content: '';
+  background: linear-gradient(135deg, rgb(103 80 164 / 0.18), transparent 55%);
+}
+
+.dsh-m3-wallpaper-previewContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 3px;
+  width: 100%;
+  min-height: 150px;
+  padding: 16px;
+  background: linear-gradient(0deg, rgb(0 0 0 / 0.42), transparent 65%);
+}
+
+.dsh-m3-wallpaper-previewLabel {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  text-shadow: 0 1px 3px rgb(0 0 0 / 0.35);
+}
+
+.dsh-m3-wallpaper-row {
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 48px;
+  padding: 10px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--md-sys-color-outline-variant) 68%, transparent);
+}
+
+.dsh-m3-wallpaper-rowText,
+.dsh-m3-wallpaper-fieldText {
+  min-width: 0;
+}
+
+.dsh-m3-wallpaper-label {
+  color: var(--md-sys-color-on-surface);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.dsh-m3-wallpaper-caption {
+  margin-top: 3px;
+}
+
+.dsh-m3-wallpaper-actions {
+  flex: 0 0 auto;
+  gap: 8px;
+}
+
+.dsh-m3-wallpaper-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 40px;
+  padding: 0 14px;
+  color: var(--md-sys-color-primary);
+  background: transparent;
+  border: 1px solid var(--md-sys-color-outline);
+  border-radius: var(--md-sys-shape-corner-full);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.dsh-m3-wallpaper-button:hover {
+  background: var(--dsw-alias-interactive-bg-hover);
+}
+
+.dsh-m3-wallpaper-button[data-action="clear"] {
+  color: var(--md-sys-color-error);
+}
+
+.dsh-m3-wallpaper-button svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+}
+
+.dsh-m3-wallpaper-fileInput {
+  display: none !important;
+}
+
+.dsh-m3-wallpaper-field {
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+}
+
+.dsh-m3-wallpaper-fieldControl {
+  display: flex;
+  flex: 1 1 auto;
+  justify-content: flex-end;
+  gap: 8px;
+  min-width: 0;
+}
+
+.dsh-m3-wallpaper-url {
+  box-sizing: border-box;
+  min-width: 0;
+  width: min(100%, 320px);
+  min-height: 40px;
+  padding: 0 12px;
+  color: var(--md-sys-color-on-surface) !important;
+  background: var(--md-sys-color-surface-container-high) !important;
+  border: 1px solid var(--md-sys-color-outline) !important;
+  border-radius: var(--md-sys-shape-corner-small) !important;
+  font: inherit;
+  font-size: 13px;
+}
+
+.dsh-m3-wallpaper-selects {
+  align-items: stretch;
+  gap: 12px;
+}
+
+.dsh-m3-wallpaper-selectField {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.dsh-m3-wallpaper-selectField select {
+  min-height: 40px;
+  min-width: 0;
+  padding: 0 10px;
+  color: var(--md-sys-color-on-surface) !important;
+  background: var(--md-sys-color-surface-container-high) !important;
+  border: 1px solid var(--md-sys-color-outline) !important;
+  border-radius: var(--md-sys-shape-corner-small) !important;
+  font: inherit;
+  font-size: 13px;
+}
+
+.dsh-m3-wallpaper-range {
+  width: min(100%, 220px);
+  accent-color: var(--md-sys-color-primary);
+}
+
+.dsh-m3-wallpaper-rangeValue {
+  min-width: 42px;
+  color: var(--md-sys-color-on-surface-variant);
+  font-size: 13px;
+  text-align: right;
+}
+
+.dsh-m3-wallpaper-status {
+  min-height: 20px;
+  margin: 0;
+}
+
+.dsh-m3-wallpaper-status[data-tone="error"] {
+  color: var(--md-sys-color-error);
+}
+
+.dsh-m3-wallpaper-status[data-tone="success"] {
+  color: var(--md-sys-color-success);
+}
+
+@media (width <= 760px) {
+  #dsh-m3-wallpaper-panel {
+    padding-inline: 16px;
+  }
+
+  .dsh-m3-wallpaper-heading,
+  .dsh-m3-wallpaper-row,
+  .dsh-m3-wallpaper-field,
+  .dsh-m3-wallpaper-selects {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .dsh-m3-wallpaper-toggle,
+  .dsh-m3-wallpaper-actions,
+  .dsh-m3-wallpaper-fieldControl {
+    justify-content: flex-start;
+  }
+
+  .dsh-m3-wallpaper-fieldControl {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .dsh-m3-wallpaper-actions {
+    align-items: stretch;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .dsh-m3-wallpaper-actions .dsh-m3-wallpaper-button,
+  .dsh-m3-wallpaper-fieldControl .dsh-m3-wallpaper-button {
+    width: 100%;
+  }
+
+  .dsh-m3-wallpaper-url {
+    width: 100%;
+  }
+
+  .dsh-m3-wallpaper-range {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
