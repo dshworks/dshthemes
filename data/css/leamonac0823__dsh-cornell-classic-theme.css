@@ -1,0 +1,59 @@
+/* leamonac0823/dsh-cornell-classic-theme — lib/client.js
+   fetched 2026-08-24 from https://raw.githubusercontent.com/leamonac0823/dsh-cornell-classic-theme/main/lib/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+:root, body {
+  --cornell-paper: #fff; --cornell-accent: #5b8ff9; --cornell-soft: #eef2ff;
+  --cornell-rule: #b8d2ff; --cornell-ink: #243247; --cornell-muted: #667085;
+  --dsw-alias-bg-base: #fff; --dsw-alias-bg-layer-1: #fff; --dsw-alias-bg-layer-2: #fff;
+  --dsw-alias-bg-overlay: #fff; --dsw-alias-border-l1: #b8d2ff; --dsw-alias-border-l2: #b8d2ff;
+  --dsw-alias-brand-primary: #5b8ff9; --dsw-alias-label-primary: #243247;
+  --dsw-alias-label-secondary: #667085; --dsw-specific-sidebar-fill: #fff;
+}
+html, body { background: var(--cornell-paper) !important; color: var(--cornell-ink); }
+[class*='sidebarCol'] { border-right: 1px solid rgba(217, 99, 99, .35); }
+.dsh-cornell-paper { background-color: #fff; background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 31px, rgba(184,210,255,.52) 31px, rgba(184,210,255,.52) 32px); }
+button[aria-current='true'], [aria-selected='true'], [data-state='active'] { background: var(--cornell-soft) !important; color: var(--cornell-ink) !important; }
+[role='dialog'], [role='menu'] { border-color: var(--cornell-rule) !important; }
+
+/* One compact workspace panel; normal grid child, never an overlay. */
+.dsh-cornell-workspace { grid-column: 2; grid-row: 1; display: flex; flex-direction: column; min-width: 0; height: 100%; box-sizing: border-box; overflow: hidden; background: linear-gradient(150deg, rgba(255,255,255,.80), rgba(244,249,255,.61)); border-right: 1px solid rgba(184,210,255,.66); color: var(--cornell-ink); box-shadow: 10px 0 26px rgba(53,92,147,.08); backdrop-filter: blur(16px) saturate(1.08); -webkit-backdrop-filter: blur(16px) saturate(1.08); }
+.dsh-cornell-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0; padding: 15px 16px 10px; border-bottom: 1px solid rgba(184,210,255,.62); background: linear-gradient(90deg, rgba(238,242,255,.88), rgba(255,255,255,.20)); color: var(--cornell-accent); font-size: 11px; font-weight: 750; letter-spacing: .15em; }
+.dsh-cornell-note-count { padding: 2px 6px; border: 1px solid rgba(184,210,255,.68); border-radius: 999px; background: rgba(255,255,255,.55); color: #5275ad; font-size: 10px; font-weight: 650; letter-spacing: 0; white-space: nowrap; }
+.dsh-cornell-heading-actions { display: inline-flex; gap: 4px; }
+.dsh-cornell-heading-button { padding: 2px 5px; border: 1px solid rgba(184,210,255,.75); border-radius: 4px; background: rgba(255,255,255,.74); color: #5275ad; font: inherit; font-size: 10px; letter-spacing: 0; cursor: pointer; }
+.dsh-cornell-workspace.is-collapsed { overflow: hidden; }
+.dsh-cornell-workspace.is-collapsed > :not(:first-child) { display: none; }
+.dsh-cornell-workspace.is-collapsed .dsh-cornell-heading { height: 100%; min-height: 0; box-sizing: border-box; justify-content: center; padding: 10px 4px; }
+.dsh-cornell-workspace.is-collapsed .dsh-cornell-brief-title { display: none; }
+.dsh-cornell-workspace.is-collapsed .dsh-cornell-heading-actions { display: block; }
+.dsh-cornell-workspace.is-collapsed .dsh-cornell-heading-button { padding: 7px 5px; writing-mode: vertical-rl; }
+.dsh-cornell-group { padding: 13px 16px; border-bottom: 1px solid rgba(184,210,255,.24); }
+.dsh-cornell-group:last-child { border-bottom: 0; }
+.dsh-cornell-label { display: flex; align-items: center; min-height: 18px; margin: 0 0 8px; padding-left: 8px; border-left: 3px solid var(--cornell-accent); color: #416baf; font-size: 11.5px; font-weight: 750; letter-spacing: .04em; line-height: 1; }
+.dsh-cornell-value { color: var(--cornell-ink); font-size: 13px; line-height: 1.58; overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; word-break: break-word; }
+.dsh-cornell-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.dsh-cornell-tag { padding: 3px 8px; border: 1px solid rgba(184,210,255,.72); border-radius: 999px; background: rgba(255,255,255,.72); color: #4d6f9d; font-size: 11px; line-height: 1.35; }
+.dsh-cornell-tag.dsh-cornell-status-success { border-color: rgba(69,157,109,.36); background: #edf9f1; color: #28784f; }
+.dsh-cornell-tag.dsh-cornell-status-pending { border-color: rgba(207,139,43,.40); background: #fff7e8; color: #a76510; }
+.dsh-cornell-tag.dsh-cornell-status-neutral { border-color: rgba(102,112,133,.30); background: #f5f6f8; color: #5e697a; }
+.dsh-cornell-divider { height: 6px; background: linear-gradient(90deg, rgba(238,242,255,.9), rgba(255,255,255,.35)); border-top: 1px solid rgba(184,210,255,.25); border-bottom: 1px solid rgba(184,210,255,.25); }
+.dsh-cornell-note { flex: 1 1 180px; min-height: 0; margin: 10px 12px 14px; padding: 8px; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; border: 1px solid rgba(222,193,87,.60); border-radius: 10px; background: linear-gradient(145deg, rgba(255,254,245,.92), rgba(255,249,215,.67)); box-shadow: 0 5px 16px rgba(140,111,25,.10), inset 0 1px rgba(255,255,255,.78); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.dsh-cornell-note::-webkit-scrollbar { width: 7px; }
+.dsh-cornell-note::-webkit-scrollbar-thumb { border: 2px solid rgba(255,248,207,.76); border-radius: 999px; background: rgba(165,131,35,.42); }
+.dsh-cornell-todo-list { display: flex; flex-direction: column; gap: 5px; }
+.dsh-cornell-todo-completed-toggle { display: flex; align-items: center; justify-content: space-between; width: 100%; margin-top: 7px; padding: 7px 5px 3px; border: 0; border-top: 1px solid rgba(184,151,48,.24); background: transparent; color: #80641a; font: inherit; font-size: 11px; cursor: pointer; }
+.dsh-cornell-todo-completed-toggle::after { content: "›"; font-size: 16px; line-height: 1; transform: rotate(90deg); transition: transform .16s ease; }
+.dsh-cornell-todo-completed-toggle[aria-expanded='true']::after { transform: rotate(-90deg); }
+.dsh-cornell-todo-completed-list { display: flex; flex-direction: column; gap: 5px; padding: 0 0 2px; }
+.dsh-cornell-todo { display: flex; align-items: flex-start; gap: 7px; min-width: 0; padding: 6px 7px; border: 1px solid rgba(210,183,80,.18); border-radius: 7px; background: rgba(255,255,255,.33); transition: background .14s ease, border-color .14s ease; }
+.dsh-cornell-todo:focus-within { border-color: rgba(186,147,38,.46); background: rgba(255,255,255,.62); }
+.dsh-cornell-todo-check { flex: 0 0 auto; margin: 6px 0 0; accent-color: #9b7b1c; cursor: pointer; }
+.dsh-cornell-todo-input { flex: 1; min-width: 0; min-height: 28px; padding: 2px 0; resize: none; overflow: hidden; border: 0; outline: 0; background: transparent; color: #51431c; font: inherit; font-size: 13px; line-height: 1.5; }
+.dsh-cornell-todo-input::placeholder { color: rgba(113,91,31,.58); }
+.dsh-cornell-todo.is-complete .dsh-cornell-todo-input { color: rgba(81,67,28,.54); text-decoration: line-through; }
+.dsh-cornell-todo-remove { flex: 0 0 auto; width: 18px; height: 18px; margin-top: 4px; padding: 0; border: 0; border-radius: 50%; background: transparent; color: rgba(128,100,26,.55); font-size: 15px; line-height: 1; cursor: pointer; }
+.dsh-cornell-todo-remove:hover { background: rgba(255,255,255,.55); color: #9a6814; }
+.dsh-cornell-todo-add { position: sticky; bottom: -8px; width: 100%; margin-top: 9px; padding: 8px; border: 1px dashed rgba(184,151,48,.48); border-radius: 7px; background: rgba(255,252,229,.93); color: #80641a; box-shadow: 0 -7px 10px rgba(255,250,221,.80); font: inherit; font-size: 11px; cursor: pointer; }
+.dsh-cornell-toggle { display: inline-flex; align-items: center; height: 26px; margin-left: 8px; padding: 0 9px; border: 1px solid rgba(184,210,255,.75); border-radius: 6px; background: #fff; color: var(--cornell-ink); font-size: 12px; cursor: pointer; white-space: nowrap; }
+.dsh-cornell-toggle.dsh-cornell-on { background: var(--cornell-accent); border-color: var(--cornell-accent); color: #fff; }
+@media (max-width: 1100px) { .dsh-cornell-workspace { display: none; } }
