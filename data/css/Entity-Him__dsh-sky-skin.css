@@ -1,0 +1,389 @@
+/* Entity-Him/dsh-sky-skin — lib/client.js
+   fetched 2026-08-25 from https://raw.githubusercontent.com/Entity-Him/dsh-sky-skin/main/lib/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/* ==== 根作用域 + 令牌(亮) ==== */
+body[data-dsh-sky]{ color-scheme:light;
+body[data-dsh-sky][data-ds-dark-theme]{
+  color:#e9eefb; color-scheme:dark;
+
+/* ==== 背景:遇境(亮=晚霞双剪影 / 暗=星盘光之子) ==== */
+body[data-dsh-sky]{
+  background-attachment:fixed; background-size:cover;
+  background-position:center 62%; background-repeat:no-repeat;
+}
+body[data-dsh-sky][data-ds-dark-theme]{
+  background-position:center 58%;
+}
+/* 聊天激活:背景压暗提可读性 */
+body[data-dsh-sky][data-sky-chat-active][data-ds-dark-theme]{
+}
+body[data-dsh-sky][data-sky-chat-active]:not([data-ds-dark-theme]){
+}
+
+/* ==== 金色光尘层(暗色,星盘四周光尘) ==== */
+[data-skin-chrome='gold-dust']{
+  position:fixed; inset:-6%; z-index:0; pointer-events:none; contain:strict;
+  width:112%; height:112%;
+  object-fit:cover; object-position:center;
+  mix-blend-mode:screen; opacity:0;
+  filter:saturate(1.05) brightness(1.02);
+  transition:opacity 900ms ease;
+}
+body[data-dsh-sky][data-ds-dark-theme] [data-skin-chrome='gold-dust']{ opacity:.34; }
+body[data-dsh-sky][data-ds-dark-theme][data-sky-chat-active] [data-skin-chrome='gold-dust']{ opacity:.18; }
+body[data-dsh-sky][data-sky-low-power] [data-skin-chrome='gold-dust']{ filter:none; }
+
+/* ==== 主表面透明,透出背景 ==== */
+body[data-dsh-sky] [id='root']{ position:relative; background:transparent; }
+body[data-dsh-sky] .app, body[data-dsh-sky] [class*='main'],
+body[data-dsh-sky] [class*='scrollBody'], body[data-dsh-sky] [data-conversation-scroll]{
+  background-color:transparent; background-image:none;
+}
+
+/* ==== 侧栏:遇境夜蓝玻璃 + 金边(暗)/ 晚霞奶油 + 金边(亮) ==== */
+body[data-dsh-sky] :is([data-pane='sidebar'],[class*='sidebarCol']){
+  --dsw-alias-border-l1:rgba(196,138,60,.2);
+  --dsw-alias-border-l2:rgba(196,138,60,.3);
+  --dsw-alias-button-elevated-fill:rgba(255,249,242,.78);
+  --dsw-alias-interactive-bg-hover:rgba(217,142,43,.1);
+  --dsw-alias-interactive-bg-active:rgba(217,142,43,.2);
+  position:relative; z-index:auto; border-right:0;
+  box-shadow:8px 0 30px rgba(140,84,28,.16), inset -1px 0 rgba(217,142,43,.55), inset -3px 0 rgba(242,193,78,.3);
+}
+body[data-dsh-sky][data-ds-dark-theme] :is([data-pane='sidebar'],[class*='sidebarCol']){
+  --dsw-alias-label-primary:#e9eefb;
+  --dsw-alias-label-secondary:#a9b7d8;
+  --dsw-alias-label-tertiary:#7c8cb0;
+  --dsw-alias-label-caption:#7c8cb0;
+  box-shadow:8px 0 30px rgba(0,0,0,.34), inset -1px 0 rgba(242,193,78,.5), inset -3px 0 rgba(242,193,78,.24);
+}
+body[data-dsh-sky] :is([data-pane='sidebar'],[class*='sidebarCol']) > div{
+  position:relative; overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 12%, rgba(217,142,43,.16), transparent 32%),
+    linear-gradient(180deg, rgba(255,249,242,.97), rgba(255,236,214,.96));
+  box-shadow:inset -8px 0 18px rgba(140,84,28,.07);
+}
+body[data-dsh-sky][data-ds-dark-theme] :is([data-pane='sidebar'],[class*='sidebarCol']) > div{
+  background:
+    radial-gradient(circle at 50% 12%, rgba(242,193,78,.12), transparent 32%),
+    linear-gradient(180deg, rgba(13,21,46,.97), rgba(6,10,26,.96));
+  box-shadow:inset -8px 0 18px rgba(0,0,0,.3);
+}
+
+/* ==== 角饰:四条金线 ==== */
+[data-skin-chrome='sidebar-corners']{
+  position:absolute; inset:0; z-index:4; pointer-events:none;
+  --sky-frame-x:1.35px; --sky-frame-y:1.25px;
+}
+[data-skin-chrome='sidebar-corners']::before,
+[data-skin-chrome='sidebar-corners']::after{
+  content:''; position:absolute; pointer-events:none;
+  background:linear-gradient(90deg, rgba(242,193,78,0), rgba(242,193,78,.9) 18%, rgba(255,157,92,.9) 82%, rgba(242,193,78,0));
+}
+[data-skin-chrome='sidebar-corners']::before{ left:62px; right:62px; top:0; height:var(--sky-frame-y); }
+[data-skin-chrome='sidebar-corners']::after{ left:62px; right:62px; bottom:0; height:var(--sky-frame-y); }
+[data-skin-chrome='sidebar-corners'] > span[data-skin-corner]{
+  position:absolute; width:62px; height:62px; pointer-events:none; opacity:.92;
+  background:
+    linear-gradient(90deg, rgba(242,193,78,.9), transparent) top left / 62px 1.35px no-repeat,
+    linear-gradient(180deg, rgba(242,193,78,.9), transparent) top left / 1.35px 62px no-repeat;
+}
+[data-skin-chrome='sidebar-corners'] > span[data-skin-corner='top-left']{ top:0; left:0; }
+[data-skin-chrome='sidebar-corners'] > span[data-skin-corner='top-right']{ top:0; right:0; transform:scaleX(-1); }
+[data-skin-chrome='sidebar-corners'] > span[data-skin-corner='bottom-left']{ bottom:0; left:0; transform:scaleY(-1); }
+[data-skin-chrome='sidebar-corners'] > span[data-skin-corner='bottom-right']{ bottom:0; right:0; transform:scale(-1); }
+
+/* ==== 星盘 mascot:圆形贴片(取遇境星盘中心) ==== */
+[data-skin-chrome='sidebar-mascot']{
+  position:absolute; left:50%; bottom:calc(var(--sky-swag-height,72px) + 92px);
+  transform:translateX(-50%) translateZ(0); z-index:1;
+  width:var(--sky-mascot-width, 132px); max-height:38%;
+  aspect-ratio:1/1; object-fit:cover; object-position:center 42%;
+  border-radius:50%;
+  border:2px solid rgba(242,193,78,.55);
+  box-shadow:0 0 26px rgba(242,193,78,.3), inset 0 0 18px rgba(242,193,78,.22);
+  filter:saturate(1.05) brightness(1.03);
+  opacity:.94;
+}
+body[data-dsh-sky][data-ds-dark-theme] [data-skin-chrome='sidebar-mascot']{
+  box-shadow:0 0 30px rgba(242,193,78,.38), inset 0 0 20px rgba(242,193,78,.3);
+}
+
+/* ==== 品牌行 logoRow:金边铭牌 ==== */
+body[data-dsh-sky] [class*='logoRow']{
+  min-height:60px; margin:8px 8px 0; padding:8px 10px 10px;
+  border:1px solid rgba(217,142,43,.6); border-radius:10px;
+  background:linear-gradient(135deg, rgba(242,193,78,.16), transparent 46%), linear-gradient(180deg, rgba(255,249,242,.98), rgba(255,238,216,.96));
+  box-shadow:inset 0 0 0 2px rgba(255,249,242,.9), inset 0 0 0 3px rgba(217,142,43,.18), 0 7px 16px rgba(140,84,28,.22);
+}
+body[data-dsh-sky][data-ds-dark-theme] [class*='logoRow']{
+  background:linear-gradient(135deg, rgba(242,193,78,.14), transparent 46%), linear-gradient(180deg, rgba(16,25,52,.98), rgba(6,10,26,.98));
+  box-shadow:inset 0 0 0 2px rgba(6,10,26,.9), inset 0 0 0 3px rgba(242,193,78,.22), 0 7px 16px rgba(0,0,0,.3);
+}
+body[data-dsh-sky] button[class*='brand']{ }
+body[data-dsh-sky][data-ds-dark-theme] button[class*='brand']{ }
+
+/* ==== 新会话按钮:烛金渐变 ==== */
+body[data-dsh-sky] button[class*='newSession']{
+  box-sizing:border-box; min-height:54px; margin:6px 8px 8px;
+  border:1px solid rgba(217,142,43,.55); border-radius:14px;
+  color:#fff8ee; font-weight:600;
+  box-shadow:0 7px 16px rgba(217,142,43,.32), inset 0 1px 0 rgba(255,255,255,.32);
+  transition:filter 150ms ease, transform 150ms ease;
+}
+body[data-dsh-sky] button[class*='newSession']:hover{ filter:brightness(1.07); transform:translateY(-1px); }
+body[data-dsh-sky] button[class*='newSession'] svg{ color:#fff8ee; stroke-width:1.9; }
+
+/* ==== 搜索/标题区 ==== */
+body[data-dsh-sky] [class*='sectionHeader']{ }
+body[data-dsh-sky] [class*='sectionHeader'] [class*='sectionLabel']{ font-size:15px; font-weight:600; }
+body[data-dsh-sky][data-ds-dark-theme] [class*='sectionHeader'],
+body[data-dsh-sky][data-ds-dark-theme] [class*='sectionHeader'] [class*='sectionLabel']{ }
+body[data-dsh-sky] :is([data-pane='sidebar'],[class*='sidebarCol']) [class*='search'] [class*='searchInput']{ }
+body[data-dsh-sky][data-ds-dark-theme] :is([data-pane='sidebar'],[class*='sidebarCol']) [class*='search'] [class*='searchInput']{ color:#e9eefb; }
+body[data-dsh-sky] [class*='searchInput']::placeholder{ }
+body[data-dsh-sky] :is([data-pane='sidebar'],[class*='sidebarCol']) :is([class*='searchButton'],[class*='clearButton']){ }
+body[data-dsh-sky][data-ds-dark-theme] :is([data-pane='sidebar'],[class*='sidebarCol']) :is([class*='searchButton'],[class*='clearButton']){ }
+
+/* ==== 工作区与会话树 ==== */
+body[data-dsh-sky] [data-pane='sidebar'] [role='treeitem']{
+  border-radius:10px; color:var(--dsw-alias-label-secondary);
+}
+body[data-dsh-sky] [data-pane='sidebar'] [role='treeitem'][data-active],
+body[data-dsh-sky] [data-pane='sidebar'] [role='treeitem'][aria-current],
+body[data-dsh-sky] [data-pane='sidebar'] [role='treeitem'][class*='active']{
+  color:#4a3016; box-shadow:inset 0 1px 0 rgba(255,255,255,.42);
+}
+body[data-dsh-sky][data-ds-dark-theme] [data-pane='sidebar'] [role='treeitem'][data-active],
+body[data-dsh-sky][data-ds-dark-theme] [data-pane='sidebar'] [role='treeitem'][aria-current]{
+  background:linear-gradient(90deg, rgba(242,193,78,.38), rgba(40,56,100,.5)); color:#ffe9bd;
+}
+body[data-dsh-sky] [data-pane='sidebar'] [role='treeitem'] [class*='title']{ color:inherit; }
+
+/* ==== 侧栏 rail 态:统一圆钮 ==== */
+body[data-dsh-sky][data-sky-sidebar-size='rail'] [class*='logoRow'],
+body[data-dsh-sky][data-sky-sidebar-size='rail'] button[class*='newSession'],
+body[data-dsh-sky][data-sky-sidebar-size='rail'] [data-slot='sidebar.settings'] button{
+  --sky-rail-size:36px;
+  min-height:var(--sky-rail-size); width:var(--sky-rail-size);
+  border-radius:50%; border:1px solid rgba(242,193,78,.75); color:#f0d9a8;
+  background:linear-gradient(145deg, rgba(217,142,43,.5), rgba(201,150,46,.66));
+  box-shadow:inset 0 0 0 2px rgba(255,249,242,.55), 0 3px 9px rgba(140,84,28,.26);
+}
+body[data-dsh-sky][data-sky-sidebar-size='rail'] button[class*='newSession']{ padding:0; }
+
+/* ==== 会话头 ==== */
+body[data-dsh-sky] :is([data-pane='conversation'],[class*='centerCol']) header[class*='header']{ background:linear-gradient(180deg, rgba(255,247,236,.86), rgba(255,236,214,.22)); border-bottom:1px solid rgba(217,142,43,.22);
+}
+body[data-dsh-sky][data-ds-dark-theme] :is([data-pane='conversation'],[class*='centerCol']) header[class*='header']{
+  color:#e9eefb; background:linear-gradient(180deg, rgba(13,21,46,.9), rgba(7,12,29,.25));
+}
+body[data-dsh-sky] :is([data-pane='conversation'],[class*='centerCol']) header[class*='header'] :is([class*='counter'],[class*='caption'],[class*='meta']){ }
+body[data-dsh-sky] :is([data-pane='conversation'],[class*='centerCol']) button[class*='tab']{ }
+body[data-dsh-sky] :is([data-pane='conversation'],[class*='centerCol']) button[class*='tab']:hover{ }
+body[data-dsh-sky] :is([data-pane='conversation'],[class*='centerCol']) button[class*='tabActive']{ }
+body[data-dsh-sky][data-ds-dark-theme] :is([data-pane='conversation'],[class*='centerCol']) button[class*='tab']{ color:#a9b7d8; }
+body[data-dsh-sky][data-ds-dark-theme] :is([data-pane='conversation'],[class*='centerCol']) button[class*='tab']:hover{ color:#e9eefb; }
+body[data-dsh-sky][data-ds-dark-theme] :is([data-pane='conversation'],[class*='centerCol']) button[class*='tabActive']{ }
+body[data-dsh-sky] :is([data-pane='conversation'],[class*='centerCol']) button:focus-visible{ border-radius:6px; outline:1px solid rgba(217,142,43,.85); outline-offset:2px; box-shadow:0 0 0 2px rgba(255,255,255,.5); }
+
+/* ==== 对话框(输入区):烛金玻璃 + 描边画框 ==== */
+[data-composer-card]{
+  isolation:isolate; overflow:visible; min-height:0;
+  border:0; border-radius:28px;
+  background:var(--dsw-specific-input-major);
+  box-shadow:var(--sky-composer-shadow);
+}
+body[data-dsh-sky]{ --sky-composer-shadow:0 14px 40px rgba(150,96,38,.2), 0 2px 8px rgba(150,96,38,.12); }
+body[data-dsh-sky][data-ds-dark-theme]{ --sky-composer-shadow:0 16px 44px rgba(0,0,0,.5), 0 0 34px rgba(242,193,78,.08); }
+[data-phase='hero'] [data-composer-card]{
+  border-radius:clamp(26px,2vw,30px);
+  background:
+    linear-gradient(180deg, rgba(255,252,246,.62), rgba(255,244,230,.44)),
+    rgba(255,246,234,.2);
+  box-shadow:0 18px 52px rgba(150,96,38,.18), inset 0 1px rgba(255,255,255,.78);
+  backdrop-filter:blur(2.5px) saturate(.95);
+}
+body[data-dsh-sky][data-ds-dark-theme] [data-phase='hero'] [data-composer-card]{
+  background:
+    linear-gradient(180deg, rgba(20,30,62,.6), rgba(10,17,38,.52)),
+    rgba(8,14,32,.22);
+  backdrop-filter:blur(3px) saturate(.9);
+}
+body[data-dsh-sky][data-ds-dark-theme] [data-phase='active'] [data-composer-card]{
+  background:linear-gradient(180deg, rgba(20,30,62,.93), rgba(13,21,46,.9));
+}
+/* 画框:烛金描边镂空 */
+[data-composer-card]::before{
+  content:''; position:absolute; box-sizing:border-box;
+  inset:-14px -10px -12px; z-index:1; pointer-events:none;
+  border-radius:34px;
+  background:
+    linear-gradient(180deg, rgba(242,193,78,.5), rgba(217,142,43,.3)) border-box;
+  -webkit-mask:linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0);
+          mask:linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude;
+  filter:drop-shadow(0 9px 16px rgba(140,84,28,.2));
+}
+[data-composer-card] > *{ position:relative; z-index:2; }
+/* 输入框 */
+[data-composer-card] textarea, [data-input-mirror]{ color:var(--dsw-alias-label-primary); }
+[data-composer-card] textarea::placeholder, [data-composer-card] [data-placeholder]{ }
+body[data-dsh-sky][data-ds-dark-theme] [data-composer-card] textarea::placeholder,
+body[data-dsh-sky][data-ds-dark-theme] [data-composer-card] [data-placeholder]{ color:#7c8cb0; }
+[data-phase='hero'] [data-composer-card] [data-input-mirror]{ min-height:clamp(72px,9vh,118px); }
+/* 发送按钮:烛光圆钮 */
+body[data-dsh-sky] [data-composer-card] button[class*='send'],
+body[data-dsh-sky] [data-slot='conversation.composer.dock'] button[data-phase='active']{
+  width:44px; height:44px; border:1px solid rgba(201,150,46,.75); border-radius:50%;
+  color:#fff8ee;
+  box-shadow:0 4px 14px rgba(217,142,43,.4), 0 0 18px rgba(242,193,78,.35), inset 0 0 0 3px rgba(255,255,255,.16);
+  transition:transform 140ms, box-shadow 140ms;
+}
+body[data-dsh-sky] [data-composer-card] button[class*='send']:hover{ transform:translateY(-1px); }
+/* 附件/模式圆钮 */
+body[data-dsh-sky] [data-composer-card] [class*='selector'],
+body[data-dsh-sky] [data-slot='conversation.composer.dock'] [class*='pill'],
+body[data-dsh-sky] [data-slot='conversation.composer.dock'] button{
+  border-radius:12px !important; border:1px solid rgba(217,142,43,.34) !important;
+  background:rgba(255,248,240,.72) !important;
+  transition:transform 140ms, background-color 140ms, box-shadow 140ms !important;
+}
+body[data-dsh-sky][data-ds-dark-theme] [data-composer-card] [class*='selector'],
+body[data-dsh-sky][data-ds-dark-theme] [data-slot='conversation.composer.dock'] [class*='pill'],
+body[data-dsh-sky][data-ds-dark-theme] [data-slot='conversation.composer.dock'] button{
+  background:rgba(24,36,74,.72) !important; color:#d7e0f7 !important;
+}
+body[data-dsh-sky] [data-composer-card] button:hover:not(:disabled){ transform:translateY(-1px); }
+
+/* ==== 消息 ==== */
+body[data-dsh-sky] [class*='userRow'] [class*='bubble']{
+  border-radius:20px 20px 6px 20px; border:1.5px solid rgba(217,142,43,.32);
+  box-shadow:0 6px 18px rgba(140,84,28,.16), inset 0 1px 0 rgba(255,255,255,.42);
+}
+body[data-dsh-sky][data-ds-dark-theme] [class*='userRow'] [class*='bubble']{
+  background:linear-gradient(135deg, rgba(146,100,38,.42), rgba(52,62,104,.5)); color:#ffe9bd; border-color:rgba(242,193,78,.42);
+}
+body[data-dsh-sky] [data-chat-flow-kind='assistant-step'] > * > * > * > div[class*='markdown']{
+  border-radius:18px; border:1px solid rgba(217,142,43,.24); background:var(--dsw-specific-bubble);
+  box-shadow:0 4px 14px rgba(140,84,28,.1), inset 0 1px 0 rgba(255,255,255,.5); padding:12px 16px;
+}
+body[data-dsh-sky] [data-variant='think']{
+  border-radius:14px;
+  background:color-mix(in srgb, #d9a441 10%, var(--dsw-specific-bubble));
+}
+/* 思考/运行:烛光扫过 */
+body[data-dsh-sky] [data-variant='think'][data-state='running'] [class*='row']::after{
+  content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  background:linear-gradient(90deg, transparent, rgba(242,193,78,.34), transparent);
+  animation:sky-reasoning-sweep 2.8s linear infinite;
+}
+@keyframes sky-reasoning-sweep{ 0%{ transform:translateX(-100%);} 100%{ transform:translateX(100%);} }
+
+/* ==== 弹窗/菜单 ==== */
+body[data-dsh-sky] [role='dialog'], body[data-dsh-sky] [role='menu'],
+body[data-dsh-sky] [class*='popover'], body[data-dsh-sky] [class*='dialog']{
+  border-radius:16px; border:1px solid rgba(217,142,43,.44); background:var(--dsw-specific-menu);
+  box-shadow:0 18px 44px rgba(140,84,28,.24), inset 0 1px 0 rgba(255,255,255,.5);
+}
+body[data-dsh-sky][data-ds-dark-theme] [role='dialog'], body[data-dsh-sky][data-ds-dark-theme] [role='menu'],
+body[data-dsh-sky][data-ds-dark-theme] [class*='popover'], body[data-dsh-sky][data-ds-dark-theme] [class*='dialog']{
+  border-color:rgba(242,193,78,.5); --dsw-alias-label-primary:#e9eefb; --dsw-alias-label-secondary:#a9b7d8;
+}
+
+/* ==== 滚动条/选区/焦点 ==== */
+body[data-dsh-sky] ::-webkit-scrollbar{ width:10px; height:10px; }
+body[data-dsh-sky] ::-webkit-scrollbar-thumb{ border:2px solid transparent; background-clip:padding-box; border-radius:8px; }
+body[data-dsh-sky] ::-webkit-scrollbar-thumb:hover{ border:2px solid transparent; background-clip:padding-box; }
+body[data-dsh-sky] ::-webkit-scrollbar-track{ background:transparent; }
+body[data-dsh-sky] ::selection{ color:#fff8ee; }
+body[data-dsh-sky] :focus-visible{ outline-offset:1px; }
+
+/* ==== 顶部/底部 trim ==== */
+[data-skin-chrome='top-trim']{
+  position:fixed; inset:0 0 auto 0; translate:var(--sky-sidebar-width,280px) 0;
+  z-index:20; height:54px; overflow:hidden; pointer-events:none; contain:paint;
+  opacity:.5;
+  background:linear-gradient(180deg, rgba(242,193,78,.24), transparent);
+}
+[data-skin-chrome='bottom-trim']{
+  position:fixed; inset:auto 0 0 0; translate:var(--sky-sidebar-width,280px) 0;
+  transform:translateY(0); z-index:19; height:48px; pointer-events:none;
+  background:linear-gradient(0deg, rgba(242,193,78,.2), transparent);
+  contain:paint; transition:transform 520ms cubic-bezier(.22,.78,.2,1);
+}
+body[data-dsh-sky][data-sky-conversation-active] [data-skin-chrome='bottom-trim']{ transform:translateY(100%); }
+
+/* ==== 遇境六门拱廊(hero 态) ==== */
+[data-skin-chrome='gate-arcade']{
+  position:fixed; left:50%; bottom:clamp(26px,4.2vh,54px);
+  translate:calc(var(--sky-sidebar-width,280px) / 2) 0;
+  transform:translateX(-50%);
+  z-index:3; display:flex; align-items:flex-end; gap:clamp(10px,1.6vw,26px);
+  pointer-events:none; contain:strict;
+  transition:opacity 620ms ease, transform 620ms cubic-bezier(.22,.78,.2,1), translate 620ms cubic-bezier(.22,.78,.2,1);
+}
+body[data-dsh-sky][data-sky-chat-active] [data-skin-chrome='gate-arcade']{
+  opacity:0; transform:translateX(-50%) translateY(46px);
+}
+body[data-dsh-sky][data-sky-cordis-panel-open] [data-skin-chrome='gate-arcade'],
+body[data-dsh-sky][data-sky-better-sidebar-open] [data-skin-chrome='gate-arcade']{
+  opacity:0;
+}
+[data-skin-chrome='gate']{
+  position:relative; width:clamp(42px,5vw,66px); aspect-ratio:1/1.78;
+  border:1.5px solid rgba(242,193,78,.68); border-bottom:0;
+  border-radius:50% 50% 0 0 / 62% 62% 0 0;
+  background:
+    radial-gradient(120% 62% at 50% 0%, rgba(255,233,176,.5), rgba(242,193,78,.14) 46%, transparent 72%);
+  box-shadow:0 0 26px rgba(242,193,78,.28), inset 0 16px 30px -14px rgba(255,233,176,.6);
+  opacity:.9;
+}
+[data-skin-chrome='gate']::after{
+  content:''; position:absolute; left:50%; bottom:-5px; width:5px; height:5px;
+  transform:translateX(-50%); border-radius:50%;
+  box-shadow:0 0 12px 3px rgba(242,193,78,.75);
+}
+body[data-dsh-sky][data-ds-dark-theme] [data-skin-chrome='gate']{
+  border-color:rgba(242,193,78,.78);
+  box-shadow:0 0 30px rgba(242,193,78,.36), inset 0 16px 32px -14px rgba(255,233,176,.66);
+}
+/* 拱廊金线地面 */
+[data-skin-chrome='gate-arcade']::before{
+  content:''; position:absolute; left:-28px; right:-28px; bottom:-7px; height:1.5px;
+  background:linear-gradient(90deg, transparent, rgba(242,193,78,.7) 22%, rgba(255,233,176,.9) 50%, rgba(242,193,78,.7) 78%, transparent);
+}
+
+/* ==== 星盘光环(hero 态,环绕对话框) ==== */
+[data-skin-chrome='arena-ring']{
+  position:fixed; left:50%; top:50%; z-index:1; pointer-events:none; contain:strict;
+  width:min(56vw, 720px); height:min(56vw, 720px); max-width:80vh; max-height:80vh;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:
+    repeating-conic-gradient(from 0deg, rgba(242,193,78,0) 0deg 11deg, rgba(242,193,78,.85) 11deg 13.4deg, rgba(242,193,78,0) 13.4deg 60deg),
+    radial-gradient(closest-side, transparent 88%, rgba(242,193,78,.28) 94%, rgba(242,193,78,0) 100%);
+  -webkit-mask:radial-gradient(closest-side, transparent 88%, #000 94%, transparent 100%);
+          mask:radial-gradient(closest-side, transparent 88%, #000 94%, transparent 100%);
+  opacity:.5;
+  animation:sky-ring-spin 96s linear infinite;
+  transition:opacity 700ms ease;
+}
+body[data-dsh-sky][data-ds-dark-theme] [data-skin-chrome='arena-ring']{ opacity:.62; }
+body[data-dsh-sky][data-sky-chat-active] [data-skin-chrome='arena-ring']{ opacity:0; }
+@keyframes sky-ring-spin{ to{ transform:translate(-50%,-50%) rotate(360deg); } }
+body[data-dsh-sky][data-sky-low-power] [data-skin-chrome='arena-ring']{ animation:none; }
+
+/* ==== 响应式 ==== */
+@media (max-width:1080px){
+  [data-skin-chrome='arena-ring']{ opacity:.36; }
+  body[data-dsh-sky][data-ds-dark-theme] [data-skin-chrome='arena-ring']{ opacity:.44; }
+}
+@media (max-width:700px){
+  [data-skin-chrome='gate']{ width:clamp(30px,7.5vw,44px); }
+  [data-skin-chrome='gate-arcade']{ gap:clamp(6px,2.2vw,12px); }
+}
+
+
+body { --sky-sidebar-width: 280px; --sky-swag-height: 72px; --sky-mascot-width: 132px; }

@@ -1,0 +1,238 @@
+/* jer67107-cyber/dsh-skin-chengzi — skin.css
+   fetched 2026-08-25 from https://raw.githubusercontent.com/jer67107-cyber/dsh-skin-chengzi/main/skin.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* 橙子 · 深海蓝调 — skin.css（L1 token 重映射 + 少量 L2 语义）
+ * 选择器由皮肤中心加载器强制限定到 html[data-dsh-skin="chengzi"]，
+ * 此处按官方契约写普通选择器即可。
+ * 浅色 = 清爽淡蓝白；深色 = 深海海军蓝 + 冰蓝文字（主场景）。 */
+
+/* ---------- 基础色（防 FOUC 底色） ---------- */
+:root {
+  color: #14233f;
+  background-color: #f4f7fc;
+}
+
+body[data-ds-dark-theme] {
+  color: #dbe7f7;
+  background-color: #0a1220;
+}
+
+/* ---------- 浅色：L1 语义 token ---------- */
+:root {
+  --dsw-alias-bg-base: #f4f7fc;
+  --dsw-alias-bg-layer-1: #ecf1f9;
+  --dsw-alias-bg-layer-2: #e3eaf6;
+  --dsw-alias-bg-layer-3: #d8e2f2;
+  --dsw-alias-bg-mask-1: rgba(20, 35, 63, 0.4);
+  --dsw-alias-bg-mask-2: rgba(20, 35, 63, 0.2);
+  --dsw-alias-bg-mask-3: rgba(20, 35, 63, 0.55);
+  --dsw-alias-bg-mask-photo: rgba(10, 20, 40, 0.9);
+  --dsw-alias-bg-mask-drop: rgba(255, 255, 255, 0.72);
+  --dsw-alias-bg-module-platform: #e7edf8;
+  --dsw-alias-bg-multi-select: #d6e2f5;
+  --dsw-alias-bg-overlay: #f7fafe;
+  --dsw-alias-bg-skeleton: rgba(20, 35, 63, 0.06);
+  --dsw-alias-border-inverted: rgba(255, 255, 255, 0.65);
+  --dsw-alias-border-inverted2: rgba(255, 255, 255, 0.8);
+  --dsw-alias-border-l1: rgba(31, 95, 191, 0.1);
+  --dsw-alias-border-l2: rgba(31, 95, 191, 0.16);
+  --dsw-alias-border-l2-darkmode-thin: rgba(31, 95, 191, 0.1);
+  --dsw-alias-border-l3: rgba(31, 95, 191, 0.22);
+  --dsw-alias-border-l4: rgba(31, 95, 191, 0.3);
+  --dsw-alias-brand-primary: #1f5fbf;
+  --dsw-alias-brand-primary-invert: #ffffff;
+  --dsw-alias-brand-primary-new-colorprimary-new-color: #1f5fbf;
+  --dsw-alias-brand-text: #173e7a;
+  --dsw-alias-button-contrast-fill: #173e7a;
+  --dsw-alias-button-elevated-fill: #ffffff;
+  --dsw-alias-button-floating-fill: #ffffff;
+  --dsw-alias-button-floating-hover: #e8eef9;
+  --dsw-alias-button-ghost-active-border: #8fb0e2;
+  --dsw-alias-button-ghost-active-fill: #d6e2f5;
+  --dsw-alias-button-ghost-active-hover: #c3d6f2;
+  --dsw-alias-button-info-fill: #1f5fbf;
+  --dsw-alias-button-info-hover: #2a6fd4;
+  --dsw-alias-button-primary-dimmed: #d6e2f5;
+  --dsw-alias-button-primary-fill: #1f5fbf;
+  --dsw-alias-button-primary-hover: #2a6fd4;
+  --dsw-alias-button-tool-bar-fill: rgba(31, 95, 191, 0.5);
+  --dsw-alias-button-tool-bar-fill-invisible: rgba(31, 95, 191, 0.36);
+  --dsw-alias-button-tool-bar-hover: rgba(31, 95, 191, 0.6);
+  --dsw-alias-interactive-bg-active: rgba(31, 95, 191, 0.14);
+  --dsw-alias-interactive-bg-hover: rgba(31, 95, 191, 0.08);
+  --dsw-alias-interactive-bg-hover-accent: rgba(31, 95, 191, 0.18);
+  --dsw-alias-interactive-bg-hover-danger: rgba(200, 59, 59, 0.06);
+  --dsw-alias-interactive-bg-hover-solid: #dde7f7;
+  --dsw-alias-label-caption: #7c8fb3;
+  --dsw-alias-label-dimmed: #94a5c4;
+  --dsw-alias-label-primary: #14233f;
+  --dsw-alias-label-primary-bluish: #1f5fbf;
+  --dsw-alias-label-primary-dimmed: #3a4f77;
+  --dsw-alias-label-primary-foreground: #ffffff;
+  --dsw-alias-label-primary-inverted: #ffffff;
+  --dsw-alias-label-secondary: #3a4f77;
+  --dsw-alias-label-tertiary: #64789f;
+  --dsw-alias-markdown-citation: #e7eef9;
+  --dsw-alias-markdown-code-block: #eaf0fa;
+  --dsw-alias-markdown-code-block-banner: #e6edf9;
+  --dsw-alias-markdown-code-segment-selected: #ffffff;
+  --dsw-alias-markdown-code-segment-unselected: #e6edf9;
+  --dsw-alias-markdown-inline-code: #e3ecf9;
+  --dsw-alias-markdown-placeholder: #eef3fc;
+  --dsw-alias-markdown-tag: #e7eef9;
+  --dsw-alias-scrollbar-bg-l1: #ccd8ec;
+  --dsw-alias-scrollbar-bg-l2: #ccd8ec;
+  --dsw-alias-scrollbar-hover-l1: #8fb0e2;
+  --dsw-alias-scrollbar-hover-l2: #8fb0e2;
+  --dsw-alias-state-business-primary: #1f5fbf;
+  --dsw-alias-state-business-tertiary: #d6e2f5;
+  --dsw-alias-state-error-primary: #c83b3b;
+  --dsw-alias-state-error-secondary: #d96868;
+  --dsw-alias-state-success-primary: #1e8e5a;
+  --dsw-alias-state-success-secondary: #4fae7c;
+  --dsw-alias-state-success-tertiary: #ddf0e6;
+  --dsw-alias-state-warn-label: #a87c1f;
+  --dsw-alias-state-warn-primary: #b0791f;
+  --dsw-alias-state-warn-secondary: #cf9b3f;
+  --dsw-alias-state-warn-tertiary: #f7eed9;
+  --dsw-alias-toast-bg: #173e7a;
+  --dsw-alias-tooltip-bg: #14233f;
+  --dsw-alias-tooltip-fg: #eef4fd;
+  --dsw-specific-bubble: #dce6f6;
+  --dsw-specific-bubble-highlight: #c3d6f2;
+  --dsw-specific-input-major: #f7fafd;
+  --dsw-specific-login-input: #f7fafd;
+  --dsw-specific-menu: #f3f7fd;
+  --dsw-specific-selector: #e3ecf9;
+  --dsw-specific-sidebar-fill: #eef3fb;
+  --dsw-specific-sidebar-nav-item-active: #d6e2f5;
+  --dsw-specific-sidebar-nav-item-active-accent: #8fb0e2;
+  --dsw-specific-sidebar-nav-item-hover: #e3ecf9;
+  --dsw-specific-tip: #f0f5fc;
+}
+
+/* ---------- 深色（深海主场景）：L1 语义 token ---------- */
+body[data-ds-dark-theme] {
+  --dsw-alias-bg-base: #0a1220;
+  --dsw-alias-bg-layer-1: #0f1a2e;
+  --dsw-alias-bg-layer-2: #142238;
+  --dsw-alias-bg-layer-3: #192a44;
+  --dsw-alias-bg-mask-1: rgba(4, 8, 16, 0.55);
+  --dsw-alias-bg-mask-2: rgba(4, 8, 16, 0.3);
+  --dsw-alias-bg-mask-3: rgba(4, 8, 16, 0.6);
+  --dsw-alias-bg-mask-photo: rgba(4, 8, 16, 0.9);
+  --dsw-alias-bg-mask-drop: rgba(30, 42, 68, 0.7);
+  --dsw-alias-bg-module-platform: #142238;
+  --dsw-alias-bg-multi-select: #1c3052;
+  --dsw-alias-bg-overlay: #101c30;
+  --dsw-alias-bg-skeleton: rgba(219, 231, 247, 0.08);
+  --dsw-alias-border-inverted: rgba(255, 255, 255, 0.65);
+  --dsw-alias-border-inverted2: rgba(255, 255, 255, 0.9);
+  --dsw-alias-border-l1: rgba(120, 170, 255, 0.08);
+  --dsw-alias-border-l2: rgba(120, 170, 255, 0.14);
+  --dsw-alias-border-l2-darkmode-thin: rgba(120, 170, 255, 0.08);
+  --dsw-alias-border-l3: rgba(120, 170, 255, 0.2);
+  --dsw-alias-border-l4: rgba(120, 170, 255, 0.28);
+  --dsw-alias-brand-primary: #4d8fe6;
+  --dsw-alias-brand-primary-invert: #0a1220;
+  --dsw-alias-brand-primary-new-colorprimary-new-color: #4d8fe6;
+  --dsw-alias-brand-text: #bcd4f5;
+  --dsw-alias-button-contrast-fill: #0d1830;
+  --dsw-alias-button-elevated-fill: #142238;
+  --dsw-alias-button-floating-fill: #101c30;
+  --dsw-alias-button-floating-hover: #192a44;
+  --dsw-alias-button-ghost-active-border: #6a9ce0;
+  --dsw-alias-button-ghost-active-fill: #1c3052;
+  --dsw-alias-button-ghost-active-hover: #22385e;
+  --dsw-alias-button-info-fill: #2f6fd0;
+  --dsw-alias-button-info-hover: #3f7fe0;
+  --dsw-alias-button-primary-dimmed: #1c3052;
+  --dsw-alias-button-primary-fill: #2f6fd0;
+  --dsw-alias-button-primary-hover: #3f7fe0;
+  --dsw-alias-button-tool-bar-fill: rgba(77, 143, 230, 0.5);
+  --dsw-alias-button-tool-bar-fill-invisible: rgba(77, 143, 230, 0.36);
+  --dsw-alias-button-tool-bar-hover: rgba(77, 143, 230, 0.6);
+  --dsw-alias-interactive-bg-active: rgba(120, 170, 255, 0.18);
+  --dsw-alias-interactive-bg-hover: rgba(120, 170, 255, 0.1);
+  --dsw-alias-interactive-bg-hover-accent: rgba(120, 170, 255, 0.24);
+  --dsw-alias-interactive-bg-hover-danger: rgba(224, 96, 96, 0.15);
+  --dsw-alias-interactive-bg-hover-solid: #1a2b47;
+  --dsw-alias-label-caption: #5d7aa8;
+  --dsw-alias-label-dimmed: #47608c;
+  --dsw-alias-label-primary: #dbe7f7;
+  --dsw-alias-label-primary-bluish: #7fb2f0;
+  --dsw-alias-label-primary-dimmed: #9db4d8;
+  --dsw-alias-label-primary-foreground: #0a1220;
+  --dsw-alias-label-primary-inverted: #0a1220;
+  --dsw-alias-label-secondary: #9db4d8;
+  --dsw-alias-label-tertiary: #6e88b4;
+  --dsw-alias-markdown-citation: #12203a;
+  --dsw-alias-markdown-code-block: #0d1728;
+  --dsw-alias-markdown-code-block-banner: #101e34;
+  --dsw-alias-markdown-code-segment-selected: #1c3052;
+  --dsw-alias-markdown-code-segment-unselected: #101c30;
+  --dsw-alias-markdown-inline-code: #13203a;
+  --dsw-alias-markdown-placeholder: #101c30;
+  --dsw-alias-markdown-tag: #13203a;
+  --dsw-alias-scrollbar-bg-l1: #22375c;
+  --dsw-alias-scrollbar-bg-l2: #22375c;
+  --dsw-alias-scrollbar-hover-l1: #3f6db0;
+  --dsw-alias-scrollbar-hover-l2: #3f6db0;
+  --dsw-alias-state-business-primary: #4d8fe6;
+  --dsw-alias-state-business-tertiary: #1c3052;
+  --dsw-alias-state-error-primary: #e06060;
+  --dsw-alias-state-error-secondary: #d96868;
+  --dsw-alias-state-success-primary: #43b077;
+  --dsw-alias-state-success-secondary: #4fae7c;
+  --dsw-alias-state-success-tertiary: #17322a;
+  --dsw-alias-state-warn-label: #d9a44f;
+  --dsw-alias-state-warn-primary: #d9a44f;
+  --dsw-alias-state-warn-secondary: #d9a44f;
+  --dsw-alias-state-warn-tertiary: #3a2f14;
+  --dsw-alias-toast-bg: #1c3052;
+  --dsw-alias-tooltip-bg: #1a2c4a;
+  --dsw-alias-tooltip-fg: #dbe7f7;
+  --dsw-specific-bubble: #162640;
+  --dsw-specific-bubble-highlight: #1c3052;
+  --dsw-specific-input-major: #101c30;
+  --dsw-specific-login-input: #101c30;
+  --dsw-specific-menu: #101c30;
+  --dsw-specific-selector: #142238;
+  --dsw-specific-sidebar-fill: #0e192c;
+  --dsw-specific-sidebar-nav-item-active: #1c3052;
+  --dsw-specific-sidebar-nav-item-active-accent: #3f6db0;
+  --dsw-specific-sidebar-nav-item-hover: #142238;
+  --dsw-specific-tip: #101c30;
+}
+
+/* ---------- 滚动条（跟随 token） ---------- */
+:root {
+  --dsh-scrollbar-thumb: var(--dsw-alias-scrollbar-bg-l2);
+  --dsh-scrollbar-thumb-hover: var(--dsw-alias-scrollbar-hover-l2);
+}
+
+/* ---------- 选中文本与焦点 ---------- */
+::selection {
+  color: #ffffff;
+  background: #1f5fbf;
+}
+
+body[data-ds-dark-theme] ::selection {
+  color: #0a1220;
+  background: #4d8fe6;
+}
+
+body[data-ds-dark-theme] :focus-visible {
+  outline-color: var(--dsw-alias-state-business-primary);
+}
+
+/* ---------- L2 语义：对话框玻璃感 ---------- */
+[data-dsh-part="dialog"] {
+  backdrop-filter: blur(14px);
+  border-color: rgba(31, 95, 191, 0.4);
+}
+
+body[data-ds-dark-theme] [data-dsh-part="dialog"] {
+  border-color: rgba(120, 170, 255, 0.24);
+}
+

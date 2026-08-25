@@ -1,0 +1,19 @@
+/* Slymaster/dsh-theme-lab — src/client/index.ts
+   fetched 2026-08-25 from https://raw.githubusercontent.com/Slymaster/dsh-theme-lab/main/src/client/index.ts
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+.dsh-theme-lab-row{border-bottom:1px solid var(--dsw-alias-border-l2);display:flex;flex-direction:column;gap:10px;padding:16px 0}
+.dsh-theme-lab-title{color:var(--dsw-alias-label-primary);font-size:14px;line-height:22px}
+.dsh-theme-lab-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.dsh-theme-lab-choice{appearance:none;border:1px solid var(--dsw-alias-border-l2);border-radius:14px;background:transparent;color:var(--dsw-alias-label-primary);cursor:pointer;font:inherit;min-height:88px;padding:14px 16px;text-align:left;transition:background .16s ease,border-color .16s ease,box-shadow .16s ease}
+.dsh-theme-lab-choice:hover{background:var(--dsw-alias-interactive-bg-hover)}
+.dsh-theme-lab-choice:focus-visible{outline:2px solid var(--dsw-alias-state-business-primary);outline-offset:2px}
+.dsh-theme-lab-choice[data-selected='true']{background:var(--dsw-alias-bg-module-platform);border-color:var(--dsw-alias-state-business-primary);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--dsw-alias-state-business-primary) 45%,transparent)}
+.dsh-theme-lab-choice-name{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;line-height:20px}
+.dsh-theme-lab-swatch{width:12px;height:12px;flex:0 0 12px;border-radius:999px;background:var(--dsh-theme-lab-swatch);box-shadow:0 0 0 1px var(--dsw-alias-border-l2),0 0 12px color-mix(in srgb,var(--dsw-alias-state-business-primary) 30%,transparent)}
+.dsh-theme-lab-choice-description{display:block;color:var(--dsw-alias-label-secondary);font-size:12px;line-height:18px;margin-top:4px}
+body[data-dsh-theme-lab] [data-phase='hero']{isolation:isolate;position:relative}
+body[data-dsh-theme-lab] [data-phase='hero']::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(90deg,rgba(3,4,8,.97) 0%,rgba(3,4,8,.64) 35%,rgba(3,4,8,.25) 60%,rgba(3,4,8,.82) 100%),linear-gradient(0deg,rgba(3,4,8,.94) 0%,rgba(3,4,8,.08) 48%,rgba(3,4,8,.76) 100%),var(--dsh-theme-lab-hero-image);background-position:center,center,var(--dsh-theme-lab-hero-position);background-repeat:no-repeat;background-size:cover;opacity:var(--dsh-theme-lab-hero-opacity)}
+body[data-dsh-theme-lab] [data-phase='hero']>*{position:relative;z-index:1}
+@media (max-width:900px){.dsh-theme-lab-choices{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:680px){.dsh-theme-lab-choices{grid-template-columns:1fr}body[data-dsh-theme-lab] [data-phase='hero']::before{background-position:center,center,var(--dsh-theme-lab-hero-mobile-position);opacity:var(--dsh-theme-lab-hero-mobile-opacity)}}
+@media (prefers-reduced-motion:reduce){.dsh-theme-lab-choice{transition:none}}
