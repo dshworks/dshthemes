@@ -27,7 +27,7 @@ const LOCAL = join(ROOT, "../plugins/data/sponsors.json");
 // it is what the very first build produced.
 const EMPTY = {
   updated: null,
-  price: { amount: 490, currency: "USD", period: "year", said: "$490 a year" },
+  price: { amount: 29, currency: "USD", period: "month", said: "$29 a month" },
   checkout: null,
   terms: "https://dsh.works/sponsor",
   contact: "sponsor@dsh.works",

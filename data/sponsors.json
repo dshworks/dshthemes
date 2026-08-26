@@ -1,11 +1,22 @@
 {
-  "_comment": "Seat inventory for the four sponsor seats. ONE seat is sold once and renders on BOTH dsh.works and dshthemes.com, so this file is the single home for it — dshthemes fetches it from here at build time (scripts/sponsors.mjs) and caches it. Hand-edited; there is no CMS and there does not need to be. A seat is sold for one year and the dates are printed on the site, so an expired seat is visible rather than quietly renewed. `checkout` is the Stripe Payment Link for one seat-year; while it is null every seat links to `terms` instead of a checkout that does not exist. `terms` MUST be absolute — dshthemes.com renders the same value and has no /sponsor page. NOTHING in this file may reference a plugin slug, a theme, a tag, or any registry field: a seat buys the box, and the box is not part of the dataset.",
-  "updated": "2026-08-19",
+  "_comment": "Seat inventory for the four sponsor seats. ONE seat is sold once and renders on BOTH dsh.works and dshthemes.com, so this file is the single home for it — dshthemes fetches it from here at build time (scripts/sponsors.mjs) and caches it. Hand-edited; there is no CMS and there does not need to be. A seat is sold for a term and the dates are printed on the site, so an expired seat is visible rather than quietly renewed. `checkout` is the Stripe Payment Link for one seat term; while it is null every seat links to `terms` instead of a checkout that does not exist. `terms` MUST be absolute — dshthemes.com renders the same value and has no /sponsor page. `price` stays the single headline figure because dshthemes' loader validates on `price.said`; a seat may override it with its own `price`, which is how the annual seat is priced differently from the three monthly ones. `sale.until` is a real deadline printed on the page: when it passes, edit this file. NOTHING in this file may reference a plugin slug, a theme, a tag, or any registry field: a seat buys the box, and the box is not part of the dataset.",
+  "updated": "2026-08-26",
   "price": {
-    "amount": 490,
+    "amount": 29,
     "currency": "USD",
-    "period": "year",
-    "said": "$490 a year"
+    "period": "month",
+    "said": "$29 a month"
+  },
+  "sale": {
+    "until": "2026-08-31",
+    "said": "intro pricing, until 31 August",
+    "why": "The board is new and the projects behind it ship every week. Early seats are cheap because they are early, not because the space is worth less.",
+    "was": {
+      "amount": 490,
+      "currency": "USD",
+      "period": "year",
+      "said": "$490 a year"
+    }
   },
   "checkout": null,
   "terms": "https://dsh.works/sponsor",
@@ -25,7 +36,14 @@
     },
     {
       "n": 4,
-      "sponsor": null
+      "sponsor": null,
+      "price": {
+        "amount": 229,
+        "currency": "USD",
+        "period": "year",
+        "said": "$229 a year"
+      },
+      "note": "the annual seat"
     }
   ]
 }

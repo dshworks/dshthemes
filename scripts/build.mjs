@@ -217,22 +217,30 @@ const seatCells = (t) => seatPad(t).split("").map((c) => `<b class="cell">${c ==
 function seatsBand(sp) {
   const open = sp.seats.filter((s) => !s.sponsor).length;
   const buy = sp.checkout || sp.terms;
+  // A seat may carry its own price. Three of the four are monthly and the
+  // fourth is annual, so reading `sp.price` for every row would quietly
+  // misprice one seat on a page that is not the one selling it — the seat is
+  // sold once and rendered on both sites, so both must say the same number.
+  const priceOf = (s) => s.price ?? sp.price;
   const rows = sp.seats.map((s) => {
     const n = String(s.n).padStart(2, "0");
     const field = s.sponsor
       ? `<a class="bcells" href="${esc(s.sponsor.url)}" rel="sponsored nofollow noopener" target="_blank" title="${esc(s.sponsor.name)}">${seatCells(s.sponsor.name.toUpperCase())}</a>`
-      : `<a class="bcells" href="${esc(buy)}" aria-label="Seat ${s.n} is open — ${esc(sp.price.said)}">${seatCells("[+]")}</a>`;
+      : `<a class="bcells" href="${esc(buy)}" aria-label="Seat ${s.n} is open — ${esc(priceOf(s).said)}">${seatCells("[+]")}</a>`;
     const stat = s.sponsor
       ? `<span class="tag-sponsor">Sponsor</span>`
-      : `<a class="tag-open" href="${esc(buy)}">Open <i>${esc(sp.price.said)}</i></a>`;
+      : `<a class="tag-open" href="${esc(buy)}">Open <i>${esc(priceOf(s).said)}</i></a>`;
     return `<li class="brow${s.sponsor ? " is-taken" : ""}" data-seat="${s.n}"${s.sponsor ? "" : ' data-open'}>` +
       `<span class="bseat">${n}</span>${field}<span class="bstat">${stat}</span>` +
       (s.sponsor?.line ? `<p class="bline">${esc(s.sponsor.line)}</p>` : "") + `</li>`;
   }).join("");
   const said = open === sp.seats.length ? `All ${sp.seats.length} open`
     : open === 0 ? "Sold out" : `${open} of ${sp.seats.length} open`;
+  // Only while it is true. A lapsed offer left on a page is worse than no offer.
+  const live = sp.sale && Date.now() <= Date.parse(sp.sale.until) + 86400000;
+  const saleSaid = live ? ` · <b>intro until ${esc(sp.sale.until.slice(8))} ${["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][Number(sp.sale.until.slice(5,7)) - 1]}</b>` : "";
   return `<section class="board" aria-labelledby="seats-h" data-board>
-<div class="board-head"><h2 id="seats-h">Sponsor board</h2><span class="board-sub">${said} · ${esc(sp.price.said)} · <a href="${esc(sp.terms)}">what a seat buys</a></span></div>
+<div class="board-head"><h2 id="seats-h">Sponsor board</h2><span class="board-sub">${said} · from ${esc(sp.price.said)}${saleSaid} · <a href="${esc(sp.terms)}">what a seat buys</a></span></div>
 <div class="board-cols" aria-hidden="true"><span>Seat</span><span>Sponsor</span><span>Status</span></div>
 <ul class="board-rows">${rows}</ul>
 <p class="board-foot">Advertising. <strong>A seat buys the board and nothing else</strong> — no place in the registry, no shelf, no rank in the gallery, no screenshot, and no say in which themes are listed or how they are painted. Every card here is painted from the theme's own stylesheet by a script in a public repo, and no sponsor has ever been able to change a colour in one. That is the whole product: if a seat could bend it, there would be nothing left worth sponsoring.</p>
