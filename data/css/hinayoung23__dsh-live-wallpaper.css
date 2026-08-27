@@ -1,5 +1,5 @@
 /* hinayoung23/dsh-live-wallpaper — client.js
-   fetched 2026-08-19 from https://raw.githubusercontent.com/hinayoung23/dsh-live-wallpaper/main/client.js
+   fetched 2026-08-27 from https://raw.githubusercontent.com/hinayoung23/dsh-live-wallpaper/main/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 html {
         --dwp-surface: .64;
@@ -91,6 +91,7 @@ html {
       }
       #dsh-live-wallpaper-layer .dwp-content,
       #dsh-live-wallpaper-layer .dwp-scene,
+      #dsh-live-wallpaper-layer canvas,
       #dsh-live-wallpaper-layer video,
       #dsh-live-wallpaper-layer img,
       #dsh-live-wallpaper-layer iframe {
@@ -371,7 +372,7 @@ html {
       }
       .field { display: grid; gap: 7px; margin-top: 9px; }
       .field > span, .range-head { color: #c7d2e5; font-size: 12px; }
-      input[type="url"], input[type="text"], select {
+      input[type="url"], input[type="text"], input[type="password"], select {
         min-width: 0;
         height: 36px;
         border: 1px solid rgba(255,255,255,.13);
@@ -381,7 +382,7 @@ html {
         background: rgba(255,255,255,.055);
         padding: 0 10px;
       }
-      input[type="url"]:focus, input[type="text"]:focus, select:focus { border-color: #4fd1c5; box-shadow: 0 0 0 2px rgba(79,209,197,.14); }
+      input[type="url"]:focus, input[type="text"]:focus, input[type="password"]:focus, select:focus { border-color: #4fd1c5; box-shadow: 0 0 0 2px rgba(79,209,197,.14); }
       .source-row input { flex: 1; }
       .source-row select { width: 88px; }
       .primary, .secondary, .file-button {
@@ -395,6 +396,7 @@ html {
       }
       .primary { border: 0; color: #06111c; background: #64e0c8; font-weight: 700; }
       .primary:hover { background: #81ead5; }
+      button:disabled { cursor: wait; opacity: .58; }
       .secondary, .file-button { border: 1px solid rgba(255,255,255,.13); background: rgba(255,255,255,.055); }
       .secondary:hover, .file-button:hover { background: rgba(255,255,255,.09); }
       .file-button input { display: none; }
@@ -404,15 +406,24 @@ html {
       .control-row { justify-content: space-between; margin-top: 11px; }
       .control-row select { width: 132px; }
       .resource-links { display: flex; flex-wrap: wrap; gap: 7px; }
-      .resource-links a {
+      .resource-links a, .resource-links button {
+        appearance: none;
+        font: inherit;
         color: #bfe9ff;
         text-decoration: none;
         border: 1px solid rgba(125,211,252,.18);
         border-radius: 999px;
         padding: 5px 9px;
         background: rgba(56,189,248,.07);
+        cursor: pointer;
       }
-      .resource-links a:hover { background: rgba(56,189,248,.14); }
+      .resource-links a:hover, .resource-links button:hover { background: rgba(56,189,248,.14); }
+      .shader-settings { margin-top: 9px; border: 1px solid rgba(255,255,255,.09); border-radius: 11px; padding: 8px 10px; }
+      .shader-settings summary { color: #b9c6db; cursor: pointer; font-size: 11px; }
+      .shader-key-row { display: flex; gap: 7px; margin-top: 9px; }
+      .shader-key-row input { flex: 1; min-width: 0; }
+      .credential-status { margin: 7px 0 0; color: #8796af; font-size: 11px; }
+      .hint code { color: #c8f1ff; }
       .hint { font-size: 11px; color: #8796af; }
       .status { min-height: 19px; margin-top: 9px; color: #9ee7d8; font-size: 12px; }
       .status[data-kind="error"] { color: #fca5a5; }

@@ -1,13 +1,347 @@
-/* EachSheep/dsh-valley-pixel-skin — src/compat/dsh-0.1.0-rc.6.css
-   fetched 2026-08-19 from https://raw.githubusercontent.com/EachSheep/dsh-valley-pixel-skin/main/src/compat/dsh-0.1.0-rc.6.css
+/* EachSheep/dsh-valley-pixel-skin — patches.css
+   fetched 2026-08-27 from https://raw.githubusercontent.com/EachSheep/dsh-valley-pixel-skin/main/patches.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* valley-spring: v2 static chrome; the skin-center owns activation and cleanup. */
+body {
+  --valley-font-scale: 1;
+  --valley-backdrop-blur: 7px;
+  --valley-titlebar-height: 48px;
+}
+
+[data-dsh-skin-layer="background"] img {
+  image-rendering: pixelated;
+}
+
+[data-dsh-skin-layer="top"] {
+  box-sizing: border-box;
+  height: var(--valley-titlebar-height);
+  color: #fff1c9;
+  background:
+    linear-gradient(90deg, transparent 0 15%, #ffffff0c 15% 15.5%, transparent 15.5% 67%, #00000012 67% 67.5%, transparent 67.5%),
+    repeating-linear-gradient(0deg, #754020 0 9px, #66351b 9px 11px, #7e4724 11px 19px);
+  border-bottom: 4px solid #2f170d;
+  box-shadow: inset 0 3px #a66b37, inset 0 -3px #4a2413;
+  font-family: "SFMono-Regular", Menlo, Monaco, Consolas, "PingFang SC", monospace;
+  font-size: 17px;
+  font-weight: 900;
+  letter-spacing: .04em;
+  text-shadow: 2px 2px 0 #2d160d;
+}
+
+[data-dsh-skin-layer="top"]::before,
+[data-dsh-skin-layer="top"]::after {
+  position: absolute;
+  top: 13px;
+}
+
+[data-dsh-skin-layer="top"]::before {
+  left: 28px;
+  content: "DEEPSEEK HARNESS · SPRING 01 ☀";
+}
+
+[data-dsh-skin-layer="top"]::after {
+  right: 28px;
+  color: #b9e583;
+  content: "READY";
+}
+
+@media (max-width: 840px) {
+  [data-dsh-skin-layer="top"] { font-size: 14px; }
+  [data-dsh-skin-layer="top"]::before { left: 12px; content: "DEEPSEEK HARNESS"; }
+  [data-dsh-skin-layer="top"]::after { right: 12px; }
+}
+
+body #root {
+  position: relative;
+  z-index: 2;
+  box-sizing: border-box;
+  height: calc(100vh - var(--valley-titlebar-height));
+  margin-top: var(--valley-titlebar-height);
+  color: var(--valley-ink);
+  background: transparent;
+}
+
+/*
+ * Every light/dark work surface owns a complete local token palette. This
+ * prevents settings and third-party views from inheriting a white-on-light
+ * palette from a parent theme, without patching their individual labels.
+ */
+body :is(
+  [data-pane="conversation"],
+  [data-pane="details"],
+  [data-dsh-ssh-view],
+  [data-dsh-taskboard-view],
+  [role="dialog"],
+  [role="menu"],
+  [role="listbox"]
+) {
+  color-scheme: light;
+  --dsw-alias-label-primary: var(--valley-surface-label-primary);
+  --dsw-alias-label-primary-bluish: var(--valley-surface-label-primary);
+  --dsw-alias-label-secondary: var(--valley-surface-label-secondary);
+  --dsw-alias-label-tertiary: var(--valley-surface-label-tertiary);
+  --dsw-alias-label-dimmed: var(--valley-surface-label-dimmed);
+  --dsw-alias-label-quaternary: var(--valley-surface-label-dimmed);
+  --dsw-alias-label-caption: var(--valley-surface-label-caption);
+  --dsw-alias-bg-layer-1: var(--valley-surface-bg-1);
+  --dsw-alias-bg-layer-2: var(--valley-surface-bg-2);
+  --dsw-alias-bg-layer-3: var(--valley-surface-bg-3);
+  --dsw-alias-bg-module-platform: var(--valley-surface-bg-2);
+  --dsw-alias-fill-tsp-secondary: #6f4a2d14;
+  --dsw-alias-border-l1: #6f4a2d33;
+  --dsw-alias-border-l2: #6f4a2d66;
+  --dsw-alias-border-l3: #6f4a2d99;
+  --dsw-alias-brand-primary: var(--valley-green);
+  --dsw-alias-state-error-primary: var(--valley-red);
+  --dsw-alias-interactive-bg-hover-danger: #a847341c;
+  color: var(--valley-surface-label-primary);
+}
+
+body[data-dsh-skin-center] {
+  --dsw-alias-button-primary-fill: var(--valley-green-dark);
+  --dsw-alias-button-primary-hover: #24461f;
+  --dsw-alias-label-primary-foreground: #fff3cc;
+}
+
+body[data-ds-dark-theme] :is(
+  [data-pane="conversation"],
+  [data-pane="details"],
+  [data-dsh-ssh-view],
+  [data-dsh-taskboard-view],
+  [role="dialog"],
+  [role="menu"],
+  [role="listbox"]
+) {
+  color-scheme: dark;
+}
+
+/*
+ * WebKit can replace the inherited text colour of disabled native controls.
+ * Keep disabled text inside semantic surfaces on the same palette; individual
+ * plugins may still express state with opacity, weight, borders, and badges.
+ */
+body :is(
+  [data-pane="conversation"],
+  [data-pane="details"],
+  [data-dsh-ssh-view],
+  [data-dsh-taskboard-view],
+  [role="dialog"],
+  [role="menu"],
+  [role="listbox"]
+) :is(button, input, select, textarea):disabled {
+  color: var(--dsw-alias-label-primary);
+  -webkit-text-fill-color: currentColor;
+}
+
+body [data-pane="sidebar"] {
+  position: relative;
+  color: #fff0c5;
+  background:
+    linear-gradient(90deg, #1f100a55, transparent 8%, transparent 92%, #1f100a66),
+    repeating-linear-gradient(0deg, #75401f 0 28px, #4d2817 28px 32px, #69361d 32px 59px, #8a4b25 59px 62px);
+  border-right: 5px solid #2f170d;
+  box-shadow: inset -3px 0 #9a5a2c, 5px 0 #2b170d40;
+  --dsw-alias-label-primary: #fff0c5;
+  --dsw-alias-label-primary-bluish: #fff0c5;
+  --dsw-alias-label-secondary: #e8cf9d;
+  --dsw-alias-label-tertiary: #d2b784;
+}
+
+body [data-pane="sidebar"]::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 18% 9%, #bd784038 0 2px, transparent 3px 100%),
+    radial-gradient(ellipse at 76% 34%, #32180e38 0 3px, transparent 4px 100%),
+    linear-gradient(90deg, transparent 0 5%, #ffffff0a 5% 6%, transparent 6% 82%, #00000014 82% 83%, transparent 83%);
+  background-size: 83px 67px, 119px 91px, 100% 100%;
+  pointer-events: none;
+}
+
+body [data-pane="sidebar"]::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 82px;
+  background:
+    radial-gradient(ellipse at 8% 100%, #376d2f 0 12px, transparent 13px),
+    radial-gradient(ellipse at 24% 100%, #5b933d 0 17px, transparent 18px),
+    radial-gradient(ellipse at 54% 100%, #3f7b31 0 15px, transparent 16px),
+    radial-gradient(ellipse at 86% 100%, #6aa348 0 18px, transparent 19px),
+    linear-gradient(transparent 58%, #315b2a 59% 100%);
+  border-top: 3px solid #2f170d;
+  pointer-events: none;
+}
+
+body [data-pane="sidebar"] > * {
+  position: relative;
+  z-index: 1;
+}
+
+body [data-pane="sidebar"] a,
+body [data-pane="sidebar"] button {
+  color: #fff0c5;
+}
+
+body [data-pane="sidebar"] [aria-current="true"],
+body [data-pane="sidebar"] [aria-selected="true"] {
+  color: #382116;
+}
+
+body [data-pane="conversation"] {
+  color: var(--valley-ink);
+  background: #fff0c9b8;
+  box-shadow: inset 0 0 0 1px #fff8e188;
+  backdrop-filter: blur(var(--valley-backdrop-blur)) saturate(.84);
+}
+
+body [data-dsh-ssh-view],
+body [data-dsh-taskboard-view] {
+  color: var(--valley-surface-label-primary);
+  background: var(--valley-surface-bg-1);
+}
+
+body [data-pane="details"] {
+  color: var(--valley-surface-label-primary);
+  background: var(--valley-surface-bg-1);
+  border-left: 3px solid var(--valley-line);
+  box-shadow: inset 2px 0 #e5c484;
+  backdrop-filter: blur(var(--valley-backdrop-blur));
+}
+
+body [role="dialog"],
+body [role="menu"],
+body [role="listbox"] {
+  color: var(--valley-surface-label-primary);
+  background: var(--valley-surface-bg-1);
+  border: 3px solid var(--valley-line);
+  border-radius: 8px;
+  box-shadow: var(--valley-soft-shadow), inset 0 0 0 2px #efd191;
+  backdrop-filter: none;
+}
+
+body[data-ds-dark-theme] [data-pane="sidebar"] {
+  color: #fff1c9;
+  filter: brightness(.78);
+}
+
+body[data-ds-dark-theme] [data-pane="conversation"],
+body[data-ds-dark-theme] [data-pane="details"],
+body[data-ds-dark-theme] [role="dialog"],
+body[data-ds-dark-theme] [role="menu"],
+body[data-ds-dark-theme] [role="listbox"] {
+  color: var(--valley-surface-label-primary);
+  background: var(--valley-surface-bg-1);
+}
+
+
+body [role="tablist"] {
+  overflow: hidden;
+  background: #f9e8b9;
+  border: 2px solid var(--valley-line);
+  border-radius: 7px;
+  box-shadow: inset 0 2px #fff7dc;
+}
+
+body [role="tab"] {
+  color: #72583d;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  font-weight: 720;
+}
+
+body [role="tab"][aria-selected="true"] {
+  color: var(--valley-ink);
+  background: #f1c65f;
+  box-shadow: inset 0 -3px #a86623;
+}
+
+body [aria-disabled="true"],
+body :disabled {
+  cursor: default;
+  filter: grayscale(.25);
+  opacity: .55;
+}
+
+body [data-testid="todo-panel"] {
+  overflow: hidden;
+  color: #344b2c;
+  background: #fff6d9f2;
+  border: 1px solid #a88455;
+  border-left: 5px solid var(--valley-green);
+  border-radius: 7px;
+  box-shadow: 0 3px 10px #2b170d22;
+}
+
+body [data-testid="todo-panel"] button {
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  font-weight: 650;
+  text-shadow: none;
+}
+
+body [data-testid="todo-panel"] button:hover:not(:disabled) {
+  color: #315b2a;
+  background: #e9f1ce;
+}
+
+body textarea,
+body input,
+body select {
+  font-family: var(--dsw-font-family);
+  text-shadow: none;
+  -webkit-text-stroke: 0 transparent;
+}
+
+body [data-composer-card] {
+  --dsw-alias-label-primary: #342216;
+  --dsw-alias-label-primary-bluish: #342216;
+  --dsw-alias-label-secondary: #654e38;
+  --dsw-alias-label-tertiary: #725c45;
+  --dsw-alias-label-dimmed: #8b765d;
+  --dsw-alias-label-caption: #765f47;
+  color-scheme: light;
+}
+
+body [data-pane="conversation"] textarea {
+  color: #342216;
+  background: transparent;
+  border-color: #8c6841;
+  font-size: 16px;
+  font-weight: 520;
+  text-shadow: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+body a {
+  color: #356b57;
+  font-weight: 720;
+}
+
+
 /*
  * DSH 0.1.0-rc.6 adapter.
  * This is the only file allowed to depend on current DOM labels or CSS-module
  * local names. Delete this layer with compatibility=tokens-only, or replace
  * this file after an upstream UI change.
  */
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body[data-dsh-skin-center]
+  [role="dialog"] button[class*="_buttonPrimary"] {
+  color: var(--dsw-alias-label-primary-foreground);
+  -webkit-text-fill-color: currentColor;
+}
+
+body
   [data-pane="sidebar"] [class*="_brand"] {
   --dsw-alias-label-primary-inverted: #32180e;
   color: #fff0c5;
@@ -16,7 +350,7 @@ body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
   box-shadow: none;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   [data-pane="sidebar"] [class$="_newSession"] {
   color: #fff;
   background: linear-gradient(#b85b3f, #8e3427);
@@ -27,13 +361,13 @@ body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
   font-weight: 900;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   [data-pane="sidebar"] [class$="_newSession"]:hover:not(:disabled) {
   background: linear-gradient(#c96c4b, #9f4030);
   transform: translateY(-1px);
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   [data-pane="conversation"] [class$="_headlineText"] {
   display: inline-block;
   padding: 8px 16px;
@@ -47,7 +381,7 @@ body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
   text-shadow: 1px 1px 0 #fff8e0;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   [data-pane="conversation"] button[class$="_sessionLogButton"] {
   color: #4a321f;
   background: linear-gradient(#fff4d3, #f0c96f);
@@ -57,21 +391,21 @@ body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
   font-weight: 800;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   [data-pane="conversation"] button[class$="_sessionLogButton"]:hover:not(:disabled) {
   background: #f6dda1;
   transform: translateY(-1px);
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   [data-pane="conversation"] button[class$="_sessionLogButton"]:active:not(:disabled) {
   box-shadow: 0 1px 0 #4a2a18;
   transform: translateY(2px);
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   [data-pane="conversation"] button[class$="_file"],
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   [data-pane="conversation"] button[class$="_fileLink"] {
   color: #3d6a51;
   background: #fff7da;
@@ -82,7 +416,7 @@ body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
   font-weight: 700;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   .aionui-root [role="treeitem"] {
   background: transparent;
   border: 0;
@@ -90,18 +424,18 @@ body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
   box-shadow: none;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   .aionui-root [role="treeitem"]:hover {
   background: #f1e2b5;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   button[aria-label="Copy"],
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   button[aria-label="Good response"],
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   button[aria-label="Bad response"],
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   button[aria-label="Branch into a new conversation"] {
   color: #6d492e;
   background: #ffffffb8;
@@ -111,13 +445,13 @@ body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
   opacity: .78;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   button[aria-label="Copy"]:hover:not(:disabled),
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   button[aria-label="Good response"]:hover:not(:disabled),
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   button[aria-label="Bad response"]:hover:not(:disabled),
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   button[aria-label="Branch into a new conversation"]:hover:not(:disabled) {
   color: #315b2a;
   background: #f5d78d;
@@ -125,7 +459,7 @@ body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
   opacity: 1;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   [data-pane="sidebar"] button[aria-label="Search sessions"] {
   color: #3f6f3a;
   background: #edf3d0;
@@ -134,7 +468,7 @@ body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
   box-shadow: none;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   [data-pane="sidebar"] button[aria-label="View options"] {
   color: #5e4529;
   background: #f6dda1;
@@ -143,7 +477,7 @@ body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
   box-shadow: none;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   [data-pane="sidebar"] button[aria-label="Add workspace"] {
   color: #fff;
   background: #5d8d43;
@@ -152,11 +486,11 @@ body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
   box-shadow: 0 2px 0 #274821;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   button[aria-label^="Workspace actions"],
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   button[aria-label^="Session actions"],
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   button[aria-label="Collapse sidebar"] {
   color: #6f5942;
   background: transparent;
@@ -165,9 +499,9 @@ body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
   box-shadow: none;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   button[aria-label^="Access mode"],
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   button[aria-label^="Select model"] {
   color: #4d3b2b;
   background: #fff7da;
@@ -179,17 +513,17 @@ body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
   text-shadow: none;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   button[aria-label^="Access mode"][aria-label*="Workspace Write"] {
   border-left-color: #a9641f;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   button[aria-label^="Access mode"][aria-label*="Full access"] {
   border-left-color: #a95038;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   button[aria-label="Send message"] {
   position: relative;
   color: #fff;
@@ -199,7 +533,7 @@ body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
   box-shadow: inset 2px 2px #badb80, 0 3px 0 #294821;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   button[aria-label="Send message"]::before {
   content: "";
   position: absolute;
@@ -213,7 +547,7 @@ body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
   transform: rotate(-18deg);
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   button[aria-label="Send message"]::after {
   content: "";
   position: absolute;
@@ -226,9 +560,9 @@ body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
   border-radius: 12px 12px 0 0;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   input[aria-label="Search trajectory"],
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   .aionui-root input[aria-label="按文件名搜索"] {
   color: #4a2a18;
   background: #fff8dd;
@@ -238,26 +572,26 @@ body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
   box-shadow: none;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   [data-pane="conversation"] [class$="_header"]:has(nav[aria-label="Session hierarchy"]) {
   background: #f5e4b8f5;
   border-bottom: 1px solid #c29a59;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   [data-testid="todo-panel"] [class$="_title"] {
   color: #35512f;
   font-weight: 650;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   [data-testid="todo-panel"] [class$="_progress"] {
   color: #76644f;
   font-weight: 400;
 }
 
 /* Keep the fixed sidebar settings seat above the decorative ground strip. */
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   [data-pane="sidebar"] [class$="_footArea"] {
   position: relative;
   z-index: 3;
@@ -267,14 +601,14 @@ body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
   border-top: 2px solid #6d4529;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   [data-pane="sidebar"] [class$="_settingsArea"] {
   display: flex;
   min-height: 40px;
   align-items: center;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   [data-pane="sidebar"] [class$="_settingsArea"] button[aria-haspopup="dialog"] {
   position: relative;
   z-index: 1;
@@ -292,14 +626,14 @@ body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
   visibility: visible;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   [data-pane="sidebar"] [class$="_settingsArea"] button[aria-haspopup="dialog"]:hover:not(:disabled) {
   color: #315b2a;
   background: #edf3d0;
   border-color: #537d37;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   [data-pane="sidebar"] [class$="_settingsArea"] button[aria-haspopup="dialog"] svg {
   flex: none;
   width: 20px;
@@ -312,7 +646,7 @@ body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
 }
 
 /* Settings use a paper-and-ink hierarchy; icons are badges, not boxed rows. */
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   [role="dialog"][class$="_panel"] {
   height: min(800px, calc(100vh - var(--valley-titlebar-height) - 48px));
   transform: translateY(calc(var(--valley-titlebar-height) / 2));
@@ -382,24 +716,34 @@ body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
       -webkit-text-fill-color: #685538;
     }
   }
+
+  & [data-slot="settings.section"]:has(input[type="search"]) {
+    & [role="group"] button[aria-pressed="true"],
+    & button[title^="dsh plugin --profile web add"] + button {
+      color: #fff3cc;
+      background: #315b2a;
+      border-color: #24461f;
+      -webkit-text-fill-color: #fff3cc;
+    }
+  }
 }
 
 /* Background explorer splitters must not pierce modal surfaces. */
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]:has([role="dialog"])
+body:has([role="dialog"])
   .aionui-explorer-handle,
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]:has([role="dialog"])
+body:has([role="dialog"])
   .aionui-preview-handle {
   visibility: hidden;
   pointer-events: none;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   [role="dialog"] [class$="_nav"] {
   background: var(--dsw-alias-bg-layer-2);
   border-right: 2px solid #d1a75e;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   [role="dialog"] button[class*="_navCell"] {
   position: relative;
   color: #65482f;
@@ -410,20 +754,20 @@ body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
   font-weight: 700;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   [role="dialog"] button[class*="_navCell"]:hover:not(:disabled) {
   color: #315b2a;
   background: #f1e0a9;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   [role="dialog"] button[class*="_navCell"][aria-current="true"] {
   color: var(--dsw-alias-label-primary);
   background: var(--dsw-alias-bg-layer-3);
   box-shadow: inset 4px 0 #a9641f;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   [role="dialog"] [class$="_navIcon"] {
   width: 18px;
   height: 18px;
@@ -434,13 +778,13 @@ body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
   box-shadow: inset 0 -2px #355e31;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   [role="dialog"] button[class*="_navCell"][aria-current="true"] [class$="_navIcon"] {
   background: #a9641f;
   box-shadow: inset 0 -2px #6f401d;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+body
   [role="dialog"] button[class$="_close"] {
   color: #6d492e;
   background: #f7e8bb;
@@ -448,7 +792,16 @@ body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
   box-shadow: none;
 }
 
-body[data-dsh-valley-spring][data-dsh-valley-spring-compat="dsh-0.1.0-rc.6"]
+/* Third-party modal overlays use bg-base for both the panel and its cards. */
+body
+  [class$="_overlay"] {
+  --dsw-alias-bg-base: var(--valley-surface-bg-1);
+  --dsw-alias-bg-mask-2: #2b1a0da8;
+  background: var(--dsw-alias-bg-mask-2);
+  backdrop-filter: blur(3px);
+}
+
+body
   [role="dialog"] button[class$="_close"]:hover:not(:disabled) {
   color: #fff;
   background: #a84734;

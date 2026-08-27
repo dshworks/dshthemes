@@ -1,5 +1,5 @@
 /* XHR666/dsh-mpkg-wallpaper — lib/client.js
-   fetched 2026-08-19 from https://raw.githubusercontent.com/XHR666/dsh-mpkg-wallpaper/main/lib/client.js
+   fetched 2026-08-27 from https://raw.githubusercontent.com/XHR666/dsh-mpkg-wallpaper/main/lib/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 html, body { background: transparent !important; }
 .mpw-bgWrap { display: none !important; }
@@ -8,6 +8,29 @@ html, body { background: transparent !important; }
 .hHd-Xa_root { background-color: var(--dsw-specific-sidebar-fill) !important; }
 .wSkVaW_root { background-color: var(--dsw-alias-bg-base) !important; }
 .ydkMvW_root { background-color: var(--dsw-alias-bg-base) !important; }
+
+
+
+/* 弹窗兜底：不透明（防透出/防字叠字） */
+.mpw_dialog {
+	background: var(--dsw-static-neutral-bluish-950) !important;
+}
+body:not([data-ds-dark-theme]) .mpw_dialog {
+	background: var(--dsw-static-neutral-bluish-00) !important;
+}
+/* 遮罩虚化：无条件（无壁纸也要模糊，否则字叠字）。
+   ①(修正) 只作用于插件自己的弹窗遮罩 .mpw_mask——原 [class*="mask"] 宽匹配会
+   命中 DSH 原生设置面板的 full-viewport overlay（渲染在 sidebarCol 内，类名含 mask），
+   backdrop-filter 使它成为 fixed 弹窗的包含块 → 设置被"困"在侧边栏宽度里无法居中
+   （用户实测：Termux X11 + Firefox 下设置被挤进侧边栏成窄长条）。 */
+/* ①(修正) 遮罩虚化作用于 DSH 弹窗遮罩（[class$="_mask"]，如 BInVoG_mask/fNh4Da_mask/
+   VOzbGW_mask——session 导出弹窗的遮罩） + 插件自己的 .mpw_mask。原收窄成 .mpw_mask
+   后 DSH 遮罩失去模糊 → session 导出弹窗遮罩效果变差（用户实测）。用 $= 结尾匹配
+   只命中真正的遮罩类，不会误伤设置 overlay（其类名中间含 mask 但不以 _mask 结尾）。 */
+[class$="_mask"], .mpw_mask {
+}
+/* 遮罩背景加深（防字叠字） */
+[class$="_mask"], .mpw_mask { background: rgba(0,0,0,0.55) !important; }
 
 
 
@@ -22,6 +45,27 @@ html, body {
 /* ①(加固) img/video 显示由 CSS 类控制（避免切换残留） */
 .mpw-bgWrap.mpw-img video { display: none !important; }
 .mpw-bgWrap.mpw-video img { display: none !important; }
+/* ①(新) 网页壁纸 iframe：全屏覆盖，与 img/video 互斥（类控制显示） */
+.mpw-bgWrap.mpw-web img,
+.mpw-bgWrap.mpw-web video { display: none !important; }
+.mpw-bgWrap iframe.mpw-webFrame {
+	position: absolute; inset: 0; width: 100%; height: 100%; border: 0;
+	background: transparent; display: none;
+}
+.mpw-bgWrap.mpw-web iframe.mpw-webFrame { display: block; }
+/* ①(新) 场景图层合成 canvas：全屏覆盖，与 img/video/iframe 互斥 */
+.mpw-bgWrap.mpw-scene img,
+.mpw-bgWrap.mpw-scene video,
+.mpw-bgWrap.mpw-scene iframe.mpw-webFrame { display: none !important; }
+.mpw-bgWrap canvas.mpw-bgCanvas {
+	position: absolute; inset: 0; width: 100%; height: 100%; display: none;
+}
+.mpw-bgWrap.mpw-scene canvas.mpw-bgCanvas { display: block; }
+/* ①(修正) Edge 视频 canvas 渲染路径：showVideoEdge 给 wrap 加 mpw-video 类 + 清空
+   canvas 内联 display（=回退到 CSS）——但原 CSS 只有 .mpw-scene 才 display:block，
+   Edge 走视频路径时 canvas 被 CSS display:none 藏住 → 壁纸空白（用户实测：Edge
+   转码/原生都空白，Firefox/Via 走原生 video 正常）。补 .mpw-video 时 canvas 显示。 */
+.mpw-bgWrap.mpw-video canvas.mpw-bgCanvas { display: block; }
 .mpw-bgWrap img,
 .mpw-bgWrap video {
 	width: 100%; height: 100%; object-fit: cover;
@@ -29,7 +73,7 @@ html, body {
 	   （原 scale 在前导致 zoom>100 时平移被放大、zoom<100 时平移不够，
 	   用户反馈"只能渲染整个屏幕的位置"）。transform 列表从左到右复合，
 	   translate() scale() = 先缩放后平移（平移是原始像素）。 */
-	transform: translate(var(--mpw-lensX, 0), var(--mpw-lensY, 0)) scale(var(--mpw-zoom, 1));
+	transform: translate(var(--mpw-lensX, 0), var(--mpw-lensY, 0)) scale(var(--mpw-zoom, 1)) scaleX(var(--mpw-flip-x, 1)) scaleY(var(--mpw-flip-y, 1));
 	transform-origin: center center;
 }
 .mpw-bgWrap.mpw-sharp {
@@ -38,12 +82,6 @@ html, body {
 }
 .pI_x6G_frame {
 	background-color: transparent !important;
-}
-/* 侧边栏根（半透明，不设 backdrop-filter）。
-   ③(新) 取色统一：unify 开时用主题静态色 panel%（与聊天区 bg-base 同色系同厚度，
-   不再用 sidebar-fill 导致侧边栏与聊天区颜色不同、背景被"分裂"） */
-.pI_x6G_sidebarCol,
-.hHd-Xa_root {
 }
 	border-color: color-mix(in srgb, var(--dsw-alias-border-l2) 65%, transparent) !important;
 }
@@ -91,6 +129,23 @@ body:not([data-ds-dark-theme]) .wSkVaW_header {
 
 
 
+.wSkVaW_header button,
+.wSkVaW_header [class*="button"],
+.wSkVaW_header [class*="logo"],
+.wSkVaW_header [class*="mode"],
+.wSkVaW_header [class*="badge"],
+.wSkVaW_header [class*="segmented"] {
+	background: transparent !important;
+	box-shadow: none !important;
+}
+.wSkVaW_header button:hover,
+.wSkVaW_header [class*="button"]:hover,
+.wSkVaW_header [class*="segmented"] button:hover {
+	background: color-mix(in srgb, var(--dsw-alias-interactive-bg-hover) 70%, transparent) !important;
+}
+
+
+
 .wSkVaW_header {
 	background-color: var(--dsw-static-neutral-bluish-00) !important;
 	backdrop-filter: none !important;
@@ -117,9 +172,11 @@ body[data-ds-dark-theme] .wSkVaW_header {
 
 
 
-/* ── 对话框虚化（通用居中窗口 + 聊天输入框；设置面板由 settingsBlur 单独覆盖） ── */
-[role="dialog"],
-[role="alertdialog"],
+/* ── 对话框虚化（overlay 内的居中窗口 + 聊天输入框；设置面板由 settingsBlur 单独覆盖） ──
+   ①(修正) 只作用于 overlay（遮罩层）内的对话框——真正的居中弹窗；
+   非 overlay 的小弹窗（上下文占用面板等）保持 A 块实体背景（用户实测小弹窗被磨砂成透明） */
+[class*="overlay"] [role="dialog"],
+[class*="overlay"] [role="alertdialog"],
 [data-composer-card] {
 }
 /* 磨砂玻璃原理：半透明背景 + backdrop blur 缺一不可。
@@ -127,12 +184,12 @@ body[data-ds-dark-theme] .wSkVaW_header {
    半透明但无 blur 会透出清晰聊天文字 → 设置界面污染（旧 bug）。
    80% 半透明 + blur：背后文字变糊影不可读，模糊的壁纸色调明显透出
    （90% 时磨砂感几乎不可见，用户实测仍像纯白）。 */
-[role="dialog"],
-[role="alertdialog"] {
+[class*="overlay"] [role="dialog"],
+[class*="overlay"] [role="alertdialog"] {
 	background-color: color-mix(in srgb, var(--dsw-static-neutral-bluish-00) 80%, transparent) !important;
 }
-body[data-ds-dark-theme] [role="dialog"],
-body[data-ds-dark-theme] [role="alertdialog"] {
+body[data-ds-dark-theme] [class*="overlay"] [role="dialog"],
+body[data-ds-dark-theme] [class*="overlay"] [role="alertdialog"] {
 	background-color: color-mix(in srgb, var(--dsw-static-neutral-bluish-950) 80%, transparent) !important;
 }
 [role="dialog"] [class*="card"] {
@@ -197,33 +254,6 @@ body:not([data-ds-dark-theme]) .mpw_dialog {
 
 
 
-/* ── 5 处未虚化区域：背景透明透出（模糊的）壁纸 ── */
-/* 区域1: 左上角品牌+新会话按钮（半透明，与侧边栏一致）。
-   ③(修正) unify 开时随 sessionFollow（开=跟随不透明度条；关=面板不透明度） */
-button[class*="newSession"] {
-	border-color: color-mix(in srgb, var(--dsw-alias-border-l2) 65%, transparent) !important;
-}
-/* 区域4: 标题栏下方 1px 横线（header::after）去掉 */
-.wSkVaW_header:after { display: none !important; }
-
-/* 区域3: Cordis 面板（设置上方状态条，无 role=dialog）补虚化 + 半透明。
-   ③(新) unify 开 → 与聊天区同色系（static 色），backdrop-filter 取消（整屏磨砂接管） */
-[data-cordis-panel] {
-}
-} border-right-color: transparent !important; }
-[data-sidebar-collapsed] [class*="sidebarCol"] { border-right-color: transparent !important; }
-/* 区域5b: 收起后 rail 内部面（logoRow/newSession/footArea）透出模糊壁纸：
-   同样不加 backdrop-filter（root 是弹层祖先，会困住 fixed 弹层） */
-[data-sidebar-collapsed] [class*="root"] {
-	background-color: transparent !important;
-}
-/* ②(重做) 遮罩虚化独立（maskBlur/maskAmount）：设置/弹层打开时全屏背景遮罩的虚化，
-   与对话框虚化、弹层虚化分开控制。匹配所有 [class*="mask"]。 */
-[class*="mask"] {
-}
-
-
-
 /* Deep diving 背景方框（开关：开）→ 方框 + 虚化 + 蓝字 */
 [data-variant="think"] { background: var(--dsw-alias-bg-base) !important; }
 [role="status"] {
@@ -249,8 +279,123 @@ button[class*="newSession"] {
 
 
 
+/* ── Aqua 实验模式：自适应文字色 + 蓝色清理（可开关，默认关） ── */
+body[data-mpw-aqua] {
+	--dsw-alias-label-primary: var(--mpw-aqua-ink, inherit);
+	--dsw-alias-label-secondary: var(--mpw-aqua-ink-secondary, inherit);
+	--dsw-alias-label-tertiary: var(--mpw-aqua-ink-tertiary, inherit);
+	--dsw-alias-label-caption: var(--mpw-aqua-ink-tertiary, inherit);
+	--dsw-alias-label-dimmed: var(--mpw-aqua-ink-tertiary, inherit);
+	--dsw-alias-brand-primary: var(--mpw-aqua-ink, inherit);
+	--dsw-alias-brand-text: var(--mpw-aqua-ink, inherit);
+	--dsw-alias-state-business-primary: var(--mpw-aqua-ink-secondary, inherit);
+}
+/* ①(修正) 面板取色/统一雾时标题栏背景跟随 mask 色（用户实测只改侧边栏不改标题栏）。
+   ①(修正2) 标题栏是否刷 mask 色由 JS 打 data-mpw-aqua-header 门控：
+   纯 aquaInk（自适应文字色）时不刷——此时遮罩色=主题中性色（亮色主题=白），
+   会把标题栏刷成 62% 白 → session log/标准模式背后的「白框」（用户实测：
+   统一虚化 + 自适应文字色同时开出现）。 */
+body[data-mpw-aqua][data-mpw-aqua-header] .wSkVaW_header {
+	background-color: color-mix(in srgb, rgb(var(--mpw-aqua-rgb)) 62%, transparent) !important;
+	backdrop-filter: none !important;
+}
+body[data-mpw-aqua] .wSkVaW_header {
+	backdrop-filter: none !important;
+}
+/* ⑲(修正) Aqua 模式下弹层背景被 mask 色半透明化，必须配 backdrop blur 防文字叠压
+   （用户实测：加号/命令/权限/模型/上下文选择器透明但无模糊 → 文字叠在一起） */
+body[data-mpw-aqua] [role="menu"],
+body[data-mpw-aqua] [role="listbox"],
+body[data-mpw-aqua] [role="combobox"],
+body[data-mpw-aqua] [data-dsh-surface] {
+	backdrop-filter: blur(14px) !important;
+	-webkit-backdrop-filter: blur(14px) !important;
+}
+/* ⑲(修正) 发送键对比：背景用品牌色（ink 或自定义），图标反色 → 不再"只剩圆圈"
+   （用户实测默认 ink 下发送键背景变浅、箭头看不清） */
+body[data-mpw-aqua] [data-composer-card] [class*="primary"],
+body[data-mpw-aqua] [data-slot*="composer"] [class*="primary"] {
+	background-color: var(--dsw-alias-brand-primary, var(--mpw-aqua-ink)) !important;
+	color: var(--mpw-aqua-brand-contrast, var(--mpw-aqua-ink-contrast)) !important;
+}
+/* ⑲(修正) 本插件弹窗（冲突/下载/确认）文字保持主题对比色，不跟 ink
+   （用户实测：aquaInk 开时冲突弹窗文字与背景叠色看不清） */
+body[data-mpw-aqua] .mpw_dialog { color: var(--dsw-static-neutral-bluish-850) !important; }
+body[data-mpw-aqua] body[data-ds-dark-theme] .mpw_dialog { color: var(--dsw-static-neutral-bluish-100) !important; }
+body[data-mpw-aqua] .mpw_dialog .mpw_title,
+body[data-mpw-aqua] .mpw_dialog .mpw_label,
+body[data-mpw-aqua] .mpw_dialog .mpw_hint,
+body[data-mpw-aqua] .mpw_dialog .mpw_value { color: inherit !important; }
+/* ⑲(修正) 深底文字可读增强（aquaTextEnhance，独立开关）：之前只打 data-mpw-aqua-text
+   属性但 buildCss 没生成规则 → 功能无效（用户实测）。给聊天/内容文字加双色描边
+   （深色阴影 + 浅色高光），黑底/深色背景上也能看清。近似：无法精确只变经过
+   深色处的字，故全量加描边；默认关。 */
+body[data-mpw-aqua-text] .wSkVaW_scrollBody,
+body[data-mpw-aqua-text] [data-slot*="message"],
+body[data-mpw-aqua-text] [data-slot*="conversation"] [class*="message"] {
+	text-shadow: 0 1px 2px rgba(0,0,0,0.85), 0 -1px 1px rgba(255,255,255,0.18);
+}
+body[data-mpw-aqua-text] [role="dialog"],
+body[data-mpw-aqua-text] .mpw_dialog {
+	text-shadow: none !important;
+}
+
+
+
+/* ── 任务列表磨砂（实验，默认关）：todo 卡片纯模糊，无白色底条 ── */
+body[data-mpw-todo-blur] [data-tool="todo_write"] {
+	backdrop-filter: blur(16px) !important;
+	-webkit-backdrop-filter: blur(16px) !important;
+	background-color: transparent !important;
+}
+body[data-mpw-todo-blur] [data-tool="todo_write"] * {
+	background-color: transparent !important;
+}
+
+
+
+/* ── 液态玻璃（CSS 版）──
+   ①(修正) **侧边栏玻璃不能用 backdrop-filter**：sidebarCol 是 DSH 设置弹窗的祖先
+   （弹窗渲染在 sidebarCol > settingsArea 内），backdrop-filter 会创建 containing block
+   → 设置弹窗被"困"进侧边栏压缩成窄条（用户实测；与之前 Via 设置被压缩同根因）。
+   故 sidebarCol 的玻璃**只半透明 + 边缘高光**（无 blur），磨砂由壁纸层 blur 提供
+   （见 G/E 块）。输入框/标题栏不是设置弹窗祖先，可用 backdrop-filter。 */
+/* 通用玻璃材质（输入框/标题栏等）：半透明 + backdrop blur */
+body:not([data-ds-dark-theme]) [data-mpw-lg-css] {
+	background-color: color-mix(in srgb, #eef1f7 45%, transparent) !important;
+}
+body[data-ds-dark-theme] [data-mpw-lg-css] {
+	background-color: color-mix(in srgb, #10141f 45%, transparent) !important;
+}
+/* backdrop blur 仅用于**非侧边栏**目标（输入框/标题栏）；sidebarCol 排除 */
+body:not([data-ds-dark-theme]) [data-mpw-lg-css]:not([class*="sidebarCol"]):not([class*="wSkVaW_header"]) {
+}
+body[data-ds-dark-theme] [data-mpw-lg-css]:not([class*="sidebarCol"]):not([class*="wSkVaW_header"]) {
+}
+/* 玻璃边缘高光（液态玻璃感）：顶部一条细亮边 */
+[data-mpw-lg-css] { position: relative; }
+[data-mpw-lg-css]:before {
+	content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+	background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35) 25%, rgba(255,255,255,0.35) 75%, transparent);
+	pointer-events: none; z-index: 1;
+}
+
+
+
 /* ── 设置页 UI ── */
 .mpw_row { display: flex; flex-direction: column; gap: 10px; padding: 4px 0; max-width: 720px; }
+/* ①(修正) 壁纸引擎设置区（右侧）背景：半透明灰（像左侧设置栏），而不是白色区块 */
+.mpw_glassHost {
+	/* ①(修正) 不用 --dsw-specific-sidebar-fill：aquaTint（面板匹配壁纸色）会 override
+	   该 token（tinted 0.85）→ 本设置容器随 aquaTint 变色（用户实测「壁纸引擎背景
+	   右边设置区跟着面板颜色变」）。改用不受 aqua 影响的 static 色 + 半透明，既透出
+	   壁纸又不随 aquaTint 变。 */
+	background: color-mix(in srgb, var(--dsw-static-neutral-bluish-00) 62%, transparent) !important;
+	border-radius: 14px; padding: 10px 12px;
+}
+body[data-ds-dark-theme] .mpw_glassHost {
+	background: color-mix(in srgb, var(--dsw-static-neutral-bluish-950) 62%, transparent) !important;
+}
 .mpw_title { font-size: 16px; line-height: 24px; font-weight: 600; color: var(--dsw-alias-label-primary); }
 .mpw_desc { font-size: 13px; line-height: 20px; color: var(--dsw-alias-label-tertiary); margin: 0; }
 /* ⑤(重做) 分组排版：大分组标题用背景块区分（不再只是一条线，一眼分清分组） */
@@ -262,15 +407,93 @@ button[class*="newSession"] {
 	color: var(--dsw-alias-label-primary); letter-spacing: 0.02em;
 }
 .mpw_section:first-of-type { margin-top: 10px; }
+/* ⑳(修正) 取色盘色块（点开取色器的按钮） */
+.mpw_colorSwatch {
+	flex: none; width: 84px; height: 38px; box-sizing: border-box;
+	border: 1px solid var(--dsw-alias-border-l2); border-radius: 8px;
+	cursor: pointer; position: relative;
+}
+.mpw_colorSwatch::after {
+	content: ""; position: absolute; inset: 0; border-radius: 8px;
+	border: 1px solid rgba(0,0,0,.15); pointer-events: none;
+}
+/* ⑳(修正) 顶部 Tab 条：圆角导航栏 + 下划线平滑移动（indicator 平移）+ 内容真滑动 */
+ .mpw_tabBar {
+	display: flex; gap: 2px; align-items: center;
+	position: relative;
+	border-radius: 12px; padding: 4px 6px;
+	margin-bottom: 8px; position: sticky; top: 0; z-index: 5;
+	background: color-mix(in srgb, var(--dsw-alias-bg-layer-2) 65%, transparent);
+	border: 1px solid color-mix(in srgb, var(--dsw-alias-border-l2) 60%, transparent);
+	/* ①(修正) tab 增多后超出屏宽 → 最后一个被切。改横向滚动（隐藏滚动条但可滚），
+	   保证所有 tab 都能滑到；配合下一条的紧凑字号/间距尽量一屏放下。 */
+	overflow-x: auto; overflow-y: hidden;
+	scrollbar-width: none; /* 隐藏滚动条（Firefox） */
+}
+.mpw_tabBar::-webkit-scrollbar { display: none; } /* 隐藏滚动条（WebKit） */
+body[data-ds-dark-theme] .mpw_tabBar {
+	background: color-mix(in srgb, var(--dsw-alias-bg-layer-2) 45%, transparent);
+}
+.mpw_tab {
+	flex: none; font: inherit; color: var(--dsw-alias-label-secondary);
+	cursor: pointer; white-space: nowrap; background: 0 0; border: none;
+	/* ①(修正) 紧凑：字号 13→12、左右 padding 12→9，让更多 tab 一屏放下 */
+	padding: 6px 9px; font-size: 12px; border-radius: 8px;
+}
+.mpw_tab:hover { color: var(--dsw-alias-label-primary); background: color-mix(in srgb, var(--dsw-alias-interactive-bg-hover) 60%, transparent); }
+.mpw_tabActive {
+	color: var(--dsw-alias-brand-primary, #4f6ef7);
+	font-weight: 600;
+}
+/* ①(修正) tab 键盘聚焦（按字母/数字触发）：浏览器默认黄框太突兀，统一成品牌色细描边。
+   只对键盘触发（:focus-visible）生效，鼠标点击不显示。 */
+.mpw_tab:focus-visible {
+	outline: 2px solid var(--dsw-alias-brand-primary, #7aa2ff);
+	outline-offset: 1px;
+}
+/* ①(修正) 下划线改由激活 tab 自身 ::after 绘制（不再依赖绝对定位的 .mpw_tabIndicator）——
+   tab 栏横向滚动时指示条会错位；随 tab 的下划线始终对准，无需 JS 定位。 */
+.mpw_tab { position: relative; }
+.mpw_tabActive::after {
+	content: ""; position: absolute; left: 8px; right: 8px; bottom: 1px;
+	height: 2px; border-radius: 2px;
+	background: var(--dsw-alias-brand-primary, #4f6ef7);
+	pointer-events: none;
+}
+/* 内容区：外层固定裁剪（overflow hidden），内层 tabRow translateX 滑动（翻页效果）。
+   ⑳(修正) transform 必须加在内层——加在外层会连裁剪区一起左移，内容全空（用户实测）。 */
+.mpw_tabBody {
+	overflow: hidden; min-height: 60px;
+}
+.mpw_tabRow {
+	display: flex;
+	align-items: flex-start; /* ①(修正) 列高度=内容高度（flex stretch 会让 offsetHeight 返回最高列高度 → 高度自适应失效） */
+	transition: transform .24s cubic-bezier(.4,0,.2,1);
+	will-change: transform;
+}
 .mpw_field { display: flex; flex-direction: column; gap: 6px; padding: 8px 4px; border-top: 1px solid color-mix(in srgb, var(--dsw-alias-border-l2) 45%, transparent); }
 .mpw_label { font-size: 13px; line-height: 20px; font-weight: 500; color: var(--dsw-alias-label-secondary); }
 .mpw_inline { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .mpw_input {
-	flex: 1; min-width: 0; height: 34px; padding: 0 10px; box-sizing: border-box;
+	flex: 1; min-width: 0; height: 40px; padding: 0 12px; box-sizing: border-box;
 	border: 1px solid var(--dsw-alias-border-l2); border-radius: 10px;
 	background: var(--dsw-alias-bg-module-platform); color: var(--dsw-alias-label-primary);
 	font: inherit; font-size: 13px;
 }
+/* ⑳(新) 自定义下拉（替代原生 select） */
+.mpw_selectBtn { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+.mpw_selectMenu {
+	background: var(--dsw-alias-bg-module-platform, #1c2230);
+	border: 1px solid var(--dsw-alias-border-l2, #444b5c);
+	border-radius: 10px; padding: 4px; box-shadow: var(--dsw-shadow-lv3, 0 12px 40px rgba(0,0,0,.35));
+}
+.mpw_selectOpt {
+	display: block; width: 100%; box-sizing: border-box; text-align: left;
+	padding: 8px 10px; border: 0; border-radius: 8px; background: transparent;
+	color: var(--dsw-alias-label-primary); font: inherit; font-size: 13px; cursor: pointer;
+}
+.mpw_selectOpt:hover { background: color-mix(in srgb, var(--dsw-alias-interactive-bg-hover, #333a4a) 60%, transparent); }
+.mpw_selectOpt.mpw_on { background: color-mix(in srgb, var(--dsw-alias-brand-primary, #4f8cff) 20%, transparent); }
 .mpw_button {
 	flex: none; height: 34px; padding: 0 14px; border: 1px solid rgba(255,255,255,0.25); border-radius: 10px;
 	background: #3964fe !important; color: #ffffff !important;
@@ -282,6 +505,12 @@ button[class*="newSession"] {
 	align-self: flex-start; height: 32px; padding: 0 14px; border-radius: 10px;
 	border: 1px solid var(--dsw-alias-border-l2); background: transparent;
 	color: var(--dsw-alias-label-primary); font: inherit; font-size: 13px; cursor: pointer;
+}
+/* ④(新) 时段按钮：当前生效项高亮（自动/手动锁定） */
+.mpw_timeActive {
+	border-color: var(--dsw-alias-brand-600, var(--dsw-alias-interactive-active, #4f8cff)) !important;
+	color: var(--dsw-alias-brand-600, var(--dsw-alias-interactive-active, #4f8cff)) !important;
+	background: var(--dsw-alias-interactive-bg-hover);
 }
 .mpw_fileBtn:hover, .mpw_reset:hover { background: var(--dsw-alias-interactive-bg-hover); }
 .mpw_slider { flex: 1; min-width: 0; }
@@ -308,11 +537,48 @@ button[class*="newSession"] {
 	color: var(--dsw-alias-label-secondary); font: inherit; font-size: 12px; cursor: pointer;
 }
 .mpw_miniBtn:hover { background: var(--dsw-alias-interactive-bg-hover); color: var(--dsw-alias-label-primary); }
+/* ①(修正) 选中态：品牌色描边 + 淡品牌底（顺序/随机等按钮选中要有明确显示） */
+.mpw_miniBtn.mpw_on {
+	background: color-mix(in srgb, var(--dsw-alias-brand-primary, #4f8cff) 22%, transparent);
+	color: var(--dsw-alias-brand-primary, #4f8cff);
+	border-color: var(--dsw-alias-brand-primary, #4f8cff);
+}
 .mpw_hint { font-size: 12px; line-height: 18px; color: var(--dsw-alias-label-tertiary); margin: 0; }
+/* ①(新) 标题行：仓库链接（灰色、无下划线、hover 变深）+ 版本号 */
+.mpw_titleRow { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.mpw_repoLink {
+	font-size: 13px; font-weight: 500; color: var(--dsw-alias-label-secondary);
+	text-decoration: none; cursor: pointer; border: none; background: none;
+}
+.mpw_repoLink:hover { color: var(--dsw-alias-brand-primary, #4f6ef7); }
+.mpw_repoLink:visited { color: var(--dsw-alias-label-secondary); }
+.mpw_version { font-size: 12px; color: var(--dsw-alias-label-tertiary); font-variant-numeric: tabular-nums; }
+/* ①(新) 更新徽标：版本号旁红点提示有新版本（自动检测，点击弹更新确认） */
+.mpw_updBadge {
+	flex: none; font: inherit; font-size: 11px; line-height: 16px; cursor: pointer;
+	color: #ffd9a0; background: rgba(224,120,40,0.18); border: 1px solid rgba(224,120,40,0.5);
+	border-radius: 10px; padding: 0 8px;
+}
+.mpw_updBadge:hover { background: rgba(224,120,40,0.3); }
+/* ①(新) 取色盘预置色：elysia395 风格圆（加大、白边、阴影、hover 放大） */
+.mpw_presetSwatch {
+	flex: none; width: 30px; height: 30px; box-sizing: border-box;
+	border-radius: 50%; padding: 0;
+	border: 2px solid rgba(255, 255, 255, 0.75);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+	cursor: pointer; transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.mpw_presetSwatch:hover { transform: scale(1.12); }
+/* ①(新) 壁纸扫描结果预览缩略图 */
+.mpw_thumb { flex: none; width: 72px; height: 40px; border-radius: 6px; overflow: hidden; border: 1px solid var(--dsw-alias-border-l2); background: var(--dsw-alias-bg-layer-2); }
+.mpw_thumbImg { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* ①(新) 壁纸列表两列网格（一排两个） */
+.mpw_props.mpw_wallGrid { display: grid !important; grid-template-columns: 1fr 1fr; gap: 8px; align-items: start; }
+.mpw_wallGrid .mpw_wallProp { min-width: 0; }
 /* ④(新) 导入失败/错误提示：红色醒目，不再一闪而过看不清 */
 .mpw_hint.mpw_err { color: #ff6b6b; font-weight: 500; }
 .mpw_info { font-size: 12px; line-height: 18px; color: var(--dsw-alias-label-secondary); margin: 0; }
-.mpw_props { display: flex; flex-direction: column; gap: 6px; padding: 8px; border-radius: 8px; background: var(--dsw-alias-bg-module-platform); }
+.mpw_props { display: flex; flex-direction: column; gap: 6px; padding: 8px; border-radius: 8px; background: var(--dsw-alias-bg-module-platform); overflow-anchor: none; /* 防 Firefox 滚动锚定跳顶（目录/轮播列表滚动时内容高度变化把 scrollTop 锚走，松手后/滑到底再滑自动跳顶，用户实测；同轮播 3ea2d96 根因） */ }
 .mpw_prop { display: flex; flex-direction: column; gap: 4px; padding: 6px 0; }
 .mpw_propLabel { font-size: 12px; line-height: 18px; color: var(--dsw-alias-label-tertiary); }
 .mpw_propLabel b { color: var(--dsw-alias-label-secondary); font-weight: 500; }
@@ -333,6 +599,67 @@ button[class*="newSession"] {
 .mpw_switch.mpw_on { background: var(--dsw-alias-brand-primary, #3964fe); border-color: transparent; }
 .mpw_switch.mpw_on::after { left: 20px; background: #fff; }
 .mpw_switch:focus-visible { outline: 2px solid var(--dsw-alias-brand-primary, #7aa2ff); outline-offset: 2px; }
+/* ①(新) 新式开关（uiverse anand_4957 移植：红关/绿开 + 滑块动画） */
+.mpw_switch.mpw_new {
+	width: 56px; height: 32px; border-radius: 16px; border: 0; padding: 0;
+	background: #a72828; position: relative; cursor: pointer; outline: none;
+	box-shadow: inset 0 1px 1px 1px rgba(0,0,0,.5), 0 1px 0 0 rgba(255,255,255,.1);
+	transition: background-color .4s cubic-bezier(.65,0,.35,1);
+}
+.mpw_switch.mpw_new::after {
+	content: ""; position: absolute; top: 3px; left: 3px; width: 26px; height: 26px;
+	border-radius: 50%; background: #e8e3e3;
+	transition: transform .4s cubic-bezier(.68,-.6,.32,1.6);
+}
+.mpw_switch.mpw_new.mpw_on { background: #1fad3e; }
+.mpw_switch.mpw_new.mpw_on::after { transform: translateX(24px); }
+/* ①(新) 开关外置 ON/OFF：uiverse 原版 SVG 笔划字母（非文字），随状态变色+描边动画 */
+.mpw_switchWrap { display: inline-flex; align-items: center; gap: 8px; }
+.mpw_switchLetters,
+.mpw_switchLetter { transition: transform .4s cubic-bezier(.68,-.6,.32,1.6); }
+.mpw_switchLetters {
+	margin-left: 8px; overflow: visible; pointer-events: none;
+	width: 24px; height: 24px; flex: none;
+}
+.mpw_switchLetter:last-child { transform: translateX(14px); }
+.mpw_switchLetter-stroke {
+	stroke: #a72828;
+	transition: stroke .4s cubic-bezier(.65,0,.35,1), stroke-dashoffset .4s cubic-bezier(.68,-.6,.32,1.6), transform .4s cubic-bezier(.68,-.6,.32,1.6);
+}
+.mpw_switchLetter-stroke:nth-child(2) { transform-origin: 2px 2px; }
+.mpw_switchWrap.mpw_on .mpw_switchLetter-stroke { stroke: #1fad3e; }
+.mpw_switchWrap.mpw_on .mpw_switchLetter-stroke:nth-child(2) { stroke-dashoffset: 6; }
+.mpw_switchWrap.mpw_on .mpw_switchLetter-stroke:last-child { stroke-dashoffset: 4; }
+.mpw_switchWrap.mpw_on .mpw_switchLetter:first-child .mpw_switchLetter-stroke:nth-child(2) {
+	stroke-dashoffset: 0; transform: rotate(56.5deg);
+}
+.mpw_switchWrap.mpw_on .mpw_switchLetter:last-child { stroke-dashoffset: 0; transform: translateX(8px); }
+/* ①(新) 倍速 radio（uiverse gleydson_9898 液态滑块移植，6 档） */
+.mpw_liquidGroup {
+	position: relative; display: grid; grid-auto-flow: column; overflow: hidden;
+	background: color-mix(in srgb, var(--dsw-alias-bg-module-platform, #1c2230) 88%, #000);
+	padding: 6px; border-radius: 16px; border: 1px solid color-mix(in srgb, var(--dsw-alias-border-l2, #444b5c) 70%, #000);
+	margin-top: 4px;
+}
+.mpw_liquidGroup .mpw_liquidOpt {
+	position: relative; z-index: 2; padding: 10px 0; font-size: 13px; border: 0;
+	color: var(--dsw-alias-label-tertiary); background: transparent; cursor: pointer;
+	transition: color .35s ease;
+	/* ①(修正) 文字严格居中（选中滑块正中间） */
+	display: flex; align-items: center; justify-content: center; text-align: center;
+	line-height: 1;
+}
+.mpw_liquidGroup .mpw_liquidOpt:active { transform: scale(.97); }
+.mpw_liquidGroup .mpw_liquidOpt.mpw_on { color: #fff; font-weight: 700; }
+.mpw_liquidSlider {
+	position: absolute; inset: 6px; width: calc((100% - 12px) / 6); border-radius: 12px;
+	background: #333b4d; z-index: 1;
+	transition: transform .55s cubic-bezier(.22,.9,.25,1);
+}
+.mpw_liquidSlider::after {
+	content: ""; position: absolute; inset: 0; border-radius: inherit;
+	box-shadow: inset 0 1px 1px rgba(255,255,255,.08), inset 0 -1px 2px rgba(0,0,0,.6);
+}
 /* ⑥ 纯展示性条目 */
 .mpw_static { padding: 2px 0; }
 .mpw_important { border-left: 2px solid var(--dsw-alias-brand-primary, #3964fe); padding-left: 8px; }

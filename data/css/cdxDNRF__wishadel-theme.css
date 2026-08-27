@@ -1,5 +1,5 @@
 /* cdxDNRF/wishadel-theme — src/theme.css
-   fetched 2026-08-19 from https://raw.githubusercontent.com/cdxDNRF/wishadel-theme/main/src/theme.css
+   fetched 2026-08-27 from https://raw.githubusercontent.com/cdxDNRF/wishadel-theme/main/src/theme.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 body[data-dsh-wishadel] {
   --w-red: #f12b3e;
@@ -52,6 +52,10 @@ body[data-dsh-wishadel]:not([data-wishadel-sidebar-art]) [data-wishadel-pane="si
 
 body[data-dsh-wishadel] [data-wishadel-pane="sidebar"] {
   position: relative;
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+  flex-shrink: 0;
   background-color: #090a0d !important;
   background-image:
     linear-gradient(180deg, rgba(4,5,7,.14), rgba(4,5,7,.62) 48%, rgba(4,5,7,.96) 88%),
@@ -62,6 +66,28 @@ body[data-dsh-wishadel] [data-wishadel-pane="sidebar"] {
   background-size: cover, cover, contain !important;
   border-right: 1px solid var(--w-line-hot) !important;
   box-shadow: 12px 0 38px rgba(0,0,0,.34);
+}
+
+/* 历史栏目（侧栏会话列表）布局稳定性修复：
+   1. 会话列表容器启用内部滚动，不被裁剪（overflow-y: auto）；
+   2. 侧栏整体高度固定为视口，不撑开父容器，防止主区域重排；
+   3. 主对话区域高度独立，不受侧栏内容变化影响。 */
+body[data-dsh-wishadel] [data-wishadel-pane="sidebar"] [class*="_regionArea"] {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  min-height: 0 !important;
+  flex: 1 1 0 !important;
+}
+body[data-dsh-wishadel] [data-wishadel-pane="sidebar"] [class*="_regionArea"]::-webkit-scrollbar {
+  width: 4px;
+}
+body[data-dsh-wishadel] [data-wishadel-pane="sidebar"] [class*="_regionArea"]::-webkit-scrollbar-thumb {
+  background: rgba(241, 43, 62, 0.35);
+  border-radius: 2px;
+}
+body[data-dsh-wishadel] [data-wishadel-pane="conversation"] {
+  min-height: 0;
+  flex: 1 1 0;
 }
 
 body[data-dsh-wishadel] [data-wishadel-pane="sidebar"]::before {
@@ -173,6 +199,47 @@ body[data-dsh-wishadel] [class*="_composerStack"] [class*="_card"] {
   border-radius: 2px !important;
   box-shadow: 0 18px 46px rgba(0,0,0,.54), inset 0 1px rgba(255,255,255,.04) !important;
   backdrop-filter: blur(18px) saturate(.82);
+}
+
+/* DSH 新版 composer 使用「透明 textarea + backdrop 镜像文本」绘制装饰。
+   IME/逐键输入时镜像可能晚于受控 value 更新，导致实际输入存在但视觉为空白。
+   让真实 textarea 负责普通文字；镜像只保留命令、引用等 data-decoration 着色层。
+   该规则只匹配新版 data-input-* DOM 契约，不改变输入事件、选区或剪贴板行为。 */
+body[data-dsh-wishadel] [data-composer-card] [data-input-backdrop] + textarea[data-phase] {
+  z-index: 0;
+  color: var(--w-text) !important;
+  -webkit-text-fill-color: var(--w-text) !important;
+}
+body[data-dsh-wishadel] [data-composer-card] [data-input-backdrop] + textarea[data-phase]:disabled {
+  color: var(--dsw-alias-label-tertiary) !important;
+  -webkit-text-fill-color: var(--dsw-alias-label-tertiary) !important;
+}
+body[data-dsh-wishadel] [data-composer-card] [data-input-backdrop] {
+  z-index: 1;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+}
+body[data-dsh-wishadel] [data-composer-card] [data-input-backdrop] [data-decoration] {
+  -webkit-text-fill-color: currentColor !important;
+}
+
+/* rc.7+ 在 session open/summary 状态短暂不同步时会停留在 settling。宿主不仅隐藏
+   composer seat，还只在 active 阶段赋予 sticky 底部定位；若仅解除 visibility，输入框
+   会回到普通文档流并跳到会话顶部。settling 必须完整继承 active 阶段的底部吸附行为，
+   同时保留原输入机和 draft，不通过重建组件规避状态问题。 */
+body[data-dsh-wishadel] [data-wishadel-pane="conversation"] [class*="_root"][data-phase="settling"] {
+  overflow: hidden;
+}
+body[data-dsh-wishadel] [data-wishadel-pane="conversation"] [class*="_root"][data-phase="settling"] [class*="_viewArea"] {
+  flex: 1 0 auto;
+  min-height: auto;
+}
+body[data-dsh-wishadel] [data-wishadel-pane="conversation"] [data-phase="settling"] [data-composer-seat] {
+  visibility: visible !important;
+  position: sticky;
+  bottom: 0;
+  z-index: 7;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--dsw-alias-bg-base) 0%, transparent) 0px, var(--dsw-alias-bg-base) 36px);
 }
 
 body[data-dsh-wishadel] [data-composer-card]::before,
