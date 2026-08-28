@@ -1,0 +1,2300 @@
+/* fishfromsky/dsh-march7th-skin — src/client/skin.css
+   fetched 2026-08-28 from https://raw.githubusercontent.com/fishfromsky/dsh-march7th-skin/main/src/client/skin.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* ============================================================
+   三月七 · 皮肤样式
+   全部规则以 body[data-march7th-skin] 为前缀（插件拥有的门控属性）；
+   深色变体追加 [data-ds-dark-theme]（主题 presenter 管理）。
+   ============================================================ */
+
+/* ---------- 0. 皮肤自定义属性 ---------- */
+:root {
+  --m7-ice: #6fb7e8;
+  --m7-ice-deep: #4e9fdd;
+  --m7-pink: #ff8fab;
+  --m7-ink: #1c2b45;
+  --m7-glass: rgba(255, 255, 255, 0.55);
+  --m7-glass-strong: rgba(255, 255, 255, 0.78);
+  --m7-glass-dark: rgba(21, 33, 58, 0.66);
+  --m7-radius: 14px;
+  --m7-shadow: 0 8px 28px rgba(31, 80, 140, 0.10);
+  --m7-chat-composer-gap: 16px;
+  --m7-character-active-height: 64%;
+  --m7-character-active-width-cap: 62cqw;
+  --m7-character-active-outset: 8%;
+}
+
+/* 六边形冰晶纹理（SVG data URI，任意尺寸平铺） */
+:root {
+  --m7-crystal: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cpath d='M28 2 52 15v26L28 54 4 41V15Z' fill='none' stroke='%237fb8e8' stroke-opacity='0.18'/%3E%3Ccircle cx='28' cy='28' r='3' fill='%23ff8fab' fill-opacity='0.25'/%3E%3C/svg%3E");
+}
+
+/* ---------- 1. 全局底色：冰蓝天空 + 粉色余晖 ---------- */
+body[data-march7th-skin] {
+  background:
+    radial-gradient(1100px 500px at 85% -10%, rgba(111, 183, 232, 0.28), transparent 60%),
+    radial-gradient(900px 480px at -10% 110%, rgba(255, 143, 171, 0.16), transparent 55%),
+    var(--dsw-alias-bg-base);
+}
+
+/* ---------- 2. 聊天背景：星空夜景背景图 ---------- */
+body[data-march7th-skin] [data-conversation-scroll] {
+  background:
+    linear-gradient(180deg, rgba(248, 251, 254, 0.06), rgba(248, 251, 254, 0.24)),
+    url("https://raw.githubusercontent.com/fishfromsky/dsh-march7th-skin/main/src/client/skins/march7th/background.webp") center / cover no-repeat,
+    var(--dsw-alias-bg-base);
+}
+body[data-march7th-skin][data-ds-dark-theme] [data-conversation-scroll] {
+  background:
+    linear-gradient(180deg, rgba(14, 23, 38, 0.16), rgba(14, 23, 38, 0.40)),
+    url("https://raw.githubusercontent.com/fishfromsky/dsh-march7th-skin/main/src/client/skins/march7th/background.webp") center / cover no-repeat,
+    var(--dsw-alias-bg-base);
+}
+
+/* ---------- 2a. 主界面标题与上下文选择器 ---------- */
+/* HeroShell 没有公开 data 属性，但鱼形 Logo 使用稳定的原生 viewBox。
+   以它定位真实标题 DOM，可以保留宿主的动画、国际化文本和布局语义。 */
+body[data-march7th-skin] [data-phase='hero'] [data-composer-seat]
+  div:has(> span > svg[viewBox='0 0 23.16 17.04']) {
+  position: relative;
+  grid-template-columns: 48px auto auto;
+  column-gap: 12px;
+  min-height: 58px;
+  padding: 4px 34px 8px;
+  font-family:
+    'Microsoft YaHei UI', 'Microsoft YaHei', 'PingFang SC', system-ui,
+    sans-serif;
+  isolation: isolate;
+}
+
+/* 标题后方只放柔光，不放可点击覆盖层。 */
+body[data-march7th-skin] [data-phase='hero'] [data-composer-seat]
+  div:has(> span > svg[viewBox='0 0 23.16 17.04'])::before {
+  content: '';
+  position: absolute;
+  inset: -12px -34px -8px;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 245, 253, 0.78) 0%,
+    rgba(242, 217, 250, 0.34) 48%,
+    transparent 76%
+  );
+  filter: blur(8px);
+  pointer-events: none;
+}
+
+/* 鱼形 Logo 使用一枚半透明的樱花色徽章承托，避免在深色背景上发灰。 */
+body[data-march7th-skin] [data-phase='hero'] [data-composer-seat]
+  div:has(> span > svg[viewBox='0 0 23.16 17.04'])
+  > span:has(> svg[viewBox='0 0 23.16 17.04']) {
+  box-sizing: border-box;
+  width: 46px;
+  height: 46px;
+  border: 1px solid rgba(224, 93, 160, 0.38);
+  border-radius: 50%;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.92),
+    rgba(255, 217, 239, 0.72) 54%,
+    rgba(218, 214, 255, 0.74)
+  );
+  color: #df579d;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.96),
+    0 5px 16px rgba(164, 72, 133, 0.18);
+}
+body[data-march7th-skin] [data-phase='hero'] [data-composer-seat]
+  svg[viewBox='0 0 23.16 17.04'] {
+  width: 31px;
+  height: auto;
+  color: #df579d;
+  filter:
+    drop-shadow(0 1px 0 rgba(255, 255, 255, 0.92))
+    drop-shadow(0 2px 4px rgba(132, 62, 118, 0.20));
+}
+
+/* 标题采用页面现有的樱花粉到冰晶紫渐变，并用白色高光保证底图上可读。 */
+body[data-march7th-skin] [data-phase='hero'] [data-composer-seat]
+  span:has(> svg[viewBox='0 0 23.16 17.04']) + span {
+  background: linear-gradient(90deg, #cf438b 0%, #e85ca4 38%, #8b70d8 100%);
+  background-clip: text;
+  color: #a43c7a;
+  font-size: clamp(30px, 2.15vw, 42px);
+  line-height: 1.16;
+  font-weight: 800;
+  letter-spacing: 0.055em;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 1px rgba(255, 255, 255, 0.92));
+}
+
+/* “预览版”保留真实文本节点，改成与输入框金粉边相呼应的小徽章。 */
+body[data-march7th-skin] [data-phase='hero'] [data-composer-seat]
+  span:has(> svg[viewBox='0 0 23.16 17.04']) + span + span {
+  align-self: center;
+  margin: 0 0 0 -2px;
+  padding: 3px 11px 2px;
+  border: 1px solid rgba(212, 83, 150, 0.42);
+  border-radius: 999px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 252, 254, 0.90),
+    rgba(244, 225, 250, 0.84)
+  );
+  color: #a94378;
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.90);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.94),
+    0 4px 12px rgba(147, 72, 130, 0.13);
+}
+
+/* 工作区按钮是这一行唯一带 aria-label 的菜单按钮。以它定位整行，
+   再统一装饰工作区和模式两个真实 button；输入卡内部的模型选择不会命中。 */
+body[data-march7th-skin] [data-phase='hero'] [data-composer-seat]
+  div:has(> button[aria-label][aria-haspopup='menu']) {
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  margin-top: 6px;
+  padding-left: 0;
+}
+body[data-march7th-skin] [data-phase='hero'] [data-composer-seat]
+  div:has(> button[aria-label][aria-haspopup='menu'])
+  button[aria-haspopup='menu'] {
+  box-sizing: border-box;
+  min-height: 38px;
+  padding: 7px 14px;
+  border: 1px solid rgba(215, 91, 154, 0.34);
+  border-radius: 999px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 253, 255, 0.82),
+    rgba(250, 224, 241, 0.72) 54%,
+    rgba(230, 225, 255, 0.74)
+  );
+  color: #93416f;
+  font-family:
+    'Microsoft YaHei UI', 'Microsoft YaHei', 'PingFang SC', system-ui,
+    sans-serif;
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: 700;
+  letter-spacing: 0.015em;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.92);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.96),
+    0 5px 15px rgba(146, 69, 126, 0.14);
+  backdrop-filter: blur(10px) saturate(1.1);
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease;
+}
+body[data-march7th-skin] [data-phase='hero'] [data-composer-seat]
+  div:has(> button[aria-label][aria-haspopup='menu'])
+  button[aria-haspopup='menu'] svg {
+  color: #c4508b;
+}
+body[data-march7th-skin] [data-phase='hero'] [data-composer-seat]
+  div:has(> button[aria-label][aria-haspopup='menu'])
+  button[aria-haspopup='menu']:is(:hover, [aria-expanded='true']):not(:disabled) {
+  transform: translateY(-1px);
+  border-color: rgba(210, 73, 143, 0.58);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.94),
+    rgba(255, 211, 236, 0.88) 54%,
+    rgba(222, 216, 255, 0.88)
+  );
+  color: #812e62;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.98),
+    0 7px 18px rgba(148, 58, 117, 0.21);
+}
+body[data-march7th-skin] [data-phase='hero'] [data-composer-seat]
+  div:has(> button[aria-label][aria-haspopup='menu'])
+  button[aria-haspopup='menu']:focus-visible {
+  outline: 2px solid rgba(221, 79, 151, 0.66);
+  outline-offset: 2px;
+}
+
+/* 主界面的工作区、模式菜单由宿主 Portal 到 body，不能沿按钮父级选中。
+   仅在 hero 选择器处于展开状态时给当前 Portal 菜单换肤，避免影响设置页、
+   输入框以及对话页中的其他菜单。 */
+body[data-march7th-skin]:has(
+    [data-phase='hero'] [data-composer-seat]
+      button[aria-haspopup='menu'][aria-expanded='true']
+  ) > [role='menu'],
+body[data-march7th-skin]:has(
+    [data-phase='hero'] [data-composer-seat]
+      button[aria-haspopup='menu'][aria-expanded='true']
+  ) > [role='menu'] [role='menu'] {
+  --dsw-specific-menu: rgba(255, 248, 253, 0.95);
+  --dsw-alias-label-primary: #733358;
+  --dsw-alias-label-secondary: #87506e;
+  --dsw-alias-label-tertiary: #a26f8c;
+  --dsw-alias-label-caption: #9a748d;
+  --dsw-alias-border-l1: rgba(228, 119, 173, 0.42);
+  --dsw-alias-border-l2: rgba(222, 109, 166, 0.34);
+  --dsw-alias-interactive-bg-hover: rgba(247, 178, 216, 0.32);
+  --dsw-alias-interactive-bg-selected: rgba(238, 183, 222, 0.38);
+  min-width: min(300px, calc(100vw - 24px));
+  max-width: min(390px, calc(100vw - 24px));
+  padding: 8px;
+  border: 1px solid rgba(224, 105, 165, 0.44);
+  border-radius: 20px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 253, 255, 0.96),
+      rgba(255, 232, 246, 0.93) 54%,
+      rgba(235, 231, 255, 0.94)
+    );
+  color: #733358;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.98),
+    0 16px 40px rgba(116, 55, 105, 0.22),
+    0 0 0 3px rgba(255, 225, 242, 0.42);
+  backdrop-filter: blur(20px) saturate(1.2);
+}
+
+body[data-march7th-skin]:has(
+    [data-phase='hero'] [data-composer-seat]
+      button[aria-haspopup='menu'][aria-expanded='true']
+  ) > [role='menu'] button[role='menuitem'] {
+  min-height: 44px;
+  padding: 9px 11px;
+  border: 1px solid transparent;
+  border-radius: 13px;
+  color: #733358;
+  transition:
+    color 0.16s ease,
+    border-color 0.16s ease,
+    background 0.16s ease,
+    box-shadow 0.16s ease,
+    transform 0.16s ease;
+}
+
+body[data-march7th-skin]:has(
+    [data-phase='hero'] [data-composer-seat]
+      button[aria-haspopup='menu'][aria-expanded='true']
+  ) > [role='menu'] button[role='menuitem']:is(:hover, :focus-visible) {
+  border-color: rgba(226, 112, 170, 0.3);
+  background: linear-gradient(
+    100deg,
+    rgba(255, 223, 240, 0.72),
+    rgba(231, 226, 255, 0.64)
+  );
+  color: #963963;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    0 4px 12px rgba(159, 70, 126, 0.12);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+/* Menu 选中项会在按钮末尾渲染直属 check SVG。 */
+body[data-march7th-skin]:has(
+    [data-phase='hero'] [data-composer-seat]
+      button[aria-haspopup='menu'][aria-expanded='true']
+  ) > [role='menu'] button[role='menuitem']:has(> svg:last-child) {
+  border-color: rgba(215, 82, 149, 0.36);
+  background: linear-gradient(
+    100deg,
+    rgba(255, 211, 234, 0.78),
+    rgba(225, 218, 255, 0.7)
+  );
+  color: #8f315f;
+  box-shadow: inset 3px 0 0 #e45a9d;
+}
+
+body[data-march7th-skin]:has(
+    [data-phase='hero'] [data-composer-seat]
+      button[aria-haspopup='menu'][aria-expanded='true']
+  ) > [role='menu'] button[role='menuitem'] > svg:last-child {
+  color: #d84f91;
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.9));
+}
+
+/* 模式项的名称和说明由业务组件嵌套在 Menu label 内。 */
+body[data-march7th-skin]:has(
+    [data-phase='hero'] [data-composer-seat]
+      button[aria-haspopup='menu'][aria-expanded='true']
+  ) > [role='menu'] button[role='menuitem'] > span > span > span:first-child {
+  color: #733358;
+  font-weight: 750;
+}
+
+body[data-march7th-skin]:has(
+    [data-phase='hero'] [data-composer-seat]
+      button[aria-haspopup='menu'][aria-expanded='true']
+  ) > [role='menu'] button[role='menuitem'] > span > span > span + span {
+  color: #96768b;
+  line-height: 1.45;
+}
+
+body[data-march7th-skin]:has(
+    [data-phase='hero'] [data-composer-seat]
+      button[aria-haspopup='menu'][aria-expanded='true']
+  ) > [role='menu'] [role='separator'] {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(219, 102, 161, 0.34),
+    transparent
+  );
+}
+
+body[data-march7th-skin]:has(
+    [data-phase='hero'] [data-composer-seat]
+      button[aria-haspopup='menu'][aria-expanded='true']
+  ) > [role='menu'] ::-webkit-scrollbar {
+  width: 8px;
+}
+
+body[data-march7th-skin]:has(
+    [data-phase='hero'] [data-composer-seat]
+      button[aria-haspopup='menu'][aria-expanded='true']
+  ) > [role='menu'] ::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: linear-gradient(#ed8fbe, #b99be4) padding-box;
+}
+
+@media (max-width: 760px), (max-height: 700px) {
+  body[data-march7th-skin] [data-phase='hero'] [data-composer-seat]
+    div:has(> span > svg[viewBox='0 0 23.16 17.04']) {
+    grid-template-columns: 40px auto auto;
+    column-gap: 8px;
+    padding-inline: 12px;
+  }
+  body[data-march7th-skin] [data-phase='hero'] [data-composer-seat]
+    div:has(> span > svg[viewBox='0 0 23.16 17.04'])
+    > span:has(> svg[viewBox='0 0 23.16 17.04']) {
+    width: 40px;
+    height: 40px;
+  }
+  body[data-march7th-skin] [data-phase='hero'] [data-composer-seat]
+    span:has(> svg[viewBox='0 0 23.16 17.04']) + span {
+    font-size: clamp(24px, 7vw, 32px);
+  }
+  body[data-march7th-skin] [data-phase='hero'] [data-composer-seat]
+    div:has(> button[aria-label][aria-haspopup='menu']) {
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+}
+
+/* ---------- 2a. 对话页顶部 Header：樱花蕾丝画框 ---------- */
+/* conversation.session.header 是 ConversationRoot 在滚动区上方提供的稳定
+   插槽。header.webp 的完整画布为 1843 x 853，而有效装饰带位于画布中央
+   约 33% 的高度，因此用约 3 倍纵向背景尺寸把该带裁进原生 83px header；
+   标题、页签和 Session log 仍是宿主真实 DOM，不影响点击与键盘操作。 */
+body[data-march7th-skin] [data-phase='active']
+  > [data-slot='conversation.session.header']
+  > header:not([aria-hidden='true']) {
+  --dsw-alias-label-primary: #9f4778;
+  --dsw-alias-label-secondary: #ad668c;
+  --dsw-alias-label-tertiary: #b8779b;
+  --dsw-alias-label-caption: #bd82a2;
+  --dsw-alias-state-business-primary: #df5a9d;
+  --dsw-alias-border-l2: transparent;
+  background:
+    url("https://raw.githubusercontent.com/fishfromsky/dsh-march7th-skin/main/src/client/skins/march7th/header.webp")
+    center 48.8% / 100% 301.5% no-repeat,
+    linear-gradient(90deg, rgba(255, 247, 252, 0.90), rgba(242, 239, 255, 0.86));
+  padding-left: 56px;
+  border-bottom: 0;
+  box-shadow: 0 7px 20px rgba(126, 78, 145, 0.12);
+}
+
+/* header.webp 自带底部蕾丝和描边，关闭宿主原生的 1px 分隔线，避免两条
+   下边界叠在一起。 */
+body[data-march7th-skin] [data-phase='active']
+  > [data-slot='conversation.session.header']
+  > header:not([aria-hidden='true'])::after {
+  content: none;
+}
+
+/* 深色主题下该素材仍保持其本身的浅色画框，文字改用同一套深粉墨色，
+   不继承全局深色 header 的浅灰标签。 */
+body[data-march7th-skin][data-ds-dark-theme] [data-phase='active']
+  > [data-slot='conversation.session.header']
+  > header:not([aria-hidden='true']) {
+  --dsw-alias-label-primary: #8f3e6d;
+  --dsw-alias-label-secondary: #a35c83;
+  --dsw-alias-label-tertiary: #ad6d90;
+  --dsw-alias-label-caption: #b57a9a;
+  --dsw-alias-state-business-primary: #d94f94;
+}
+
+/* Header 字体层级：标题最醒目，模式/导出操作使用轻量胶囊，页签以粉色
+   高光区分当前视图。只依赖公开的 slot、nav 和 ARIA 结构，不绑定 CSS Module
+   生成的类名。 */
+body[data-march7th-skin] [data-phase='active']
+  > [data-slot='conversation.session.header']
+  > header:not([aria-hidden='true']) {
+  font-family:
+    'Microsoft YaHei UI', 'Microsoft YaHei', 'PingFang SC', system-ui,
+    sans-serif;
+}
+
+/* 会话标题：使用高对比度的实色深玫红。此前的透明渐变字会让白色 text-shadow
+   透过字面，在浅色花纹上看起来发白；实色填充可稳定保证可读性。 */
+body[data-march7th-skin] [data-phase='active']
+  > [data-slot='conversation.session.header']
+  > header:not([aria-hidden='true']) nav[aria-label] button,
+body[data-march7th-skin] [data-phase='active']
+  > [data-slot='conversation.session.header']
+  > header:not([aria-hidden='true']) nav[aria-label] > span {
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 700;
+  letter-spacing: 0.015em;
+  background: transparent;
+  color: #8f2e66;
+  -webkit-text-fill-color: #8f2e66;
+  -webkit-text-stroke: 0.15px rgba(103, 26, 74, 0.20);
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.92),
+    0 2px 5px rgba(128, 39, 89, 0.22);
+}
+
+/* Header 中真正可交互的会话级动作继续使用胶囊按钮。 */
+body[data-march7th-skin] [data-phase='active']
+  > [data-slot='conversation.session.header']
+  > header:not([aria-hidden='true'])
+  [data-slot='conversation.session.header.actions']
+  > :is(button, [role='button']) {
+  height: 26px;
+  padding: 2px 10px;
+  border: 1px solid rgba(222, 115, 169, 0.25);
+  border-radius: 13px;
+  background: rgba(255, 250, 253, 0.54);
+  color: #ad537f;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 20px;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.80);
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.72),
+    0 2px 7px rgba(142, 74, 123, 0.08);
+}
+
+/* “标准模式/创造模式”由宿主定义为当前会话的只读模式标签，并不是按钮；
+   去掉容易产生可点击错觉的胶囊底色，同时提高文字和图标辨识度。 */
+body[data-march7th-skin] [data-phase='active']
+  > [data-slot='conversation.session.header']
+  > header:not([aria-hidden='true'])
+  [data-slot='conversation.session.header.actions'] > span {
+  height: 24px;
+  padding: 0 2px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #a74778;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 24px;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.86);
+  box-shadow: none;
+  cursor: default;
+}
+body[data-march7th-skin] [data-phase='active']
+  > [data-slot='conversation.session.header']
+  > header:not([aria-hidden='true'])
+  [data-slot='conversation.session.header.actions'] > span svg {
+  color: #c6538a;
+  opacity: 0.88;
+}
+
+/* 右侧 Session log：与模式标签同色，但边框和底色略强，形成可操作感。 */
+body[data-march7th-skin] [data-phase='active']
+  > [data-slot='conversation.session.header']
+  > header:not([aria-hidden='true'])
+  [data-slot='conversation.session.header.utilities'] button {
+  border-color: rgba(207, 79, 145, 0.38);
+  background: rgba(255, 248, 252, 0.68);
+  color: #a63c74;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: 0.015em;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.82);
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.82),
+    0 3px 9px rgba(150, 66, 117, 0.11);
+}
+body[data-march7th-skin] [data-phase='active']
+  > [data-slot='conversation.session.header']
+  > header:not([aria-hidden='true'])
+  [data-slot='conversation.session.header.utilities'] button:hover:not(:disabled) {
+  border-color: rgba(207, 79, 145, 0.58);
+  background: rgba(255, 226, 241, 0.76);
+  color: #8f2f67;
+}
+
+/* 页签：未选中保持柔和玫紫，当前页签加粗并使用渐变高光下划线。 */
+body[data-march7th-skin] [data-phase='active']
+  > [data-slot='conversation.session.header']
+  > header:not([aria-hidden='true']) [role='tablist'] > [role='tab'] {
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #b66d96;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.78);
+}
+body[data-march7th-skin] [data-phase='active']
+  > [data-slot='conversation.session.header']
+  > header:not([aria-hidden='true'])
+  [role='tablist'] > [role='tab'][aria-selected='true'] {
+  color: #d5428c;
+  font-weight: 750;
+}
+body[data-march7th-skin] [data-phase='active']
+  > [data-slot='conversation.session.header']
+  > header:not([aria-hidden='true'])
+  [role='tablist'] > [role='tab'][aria-selected='true']::after {
+  bottom: 0;
+  height: 3px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #ff91ba, #d94894, #9d6ddd);
+  box-shadow: 0 1px 5px rgba(211, 70, 144, 0.34);
+}
+
+/* 消息节点：磨砂玻璃卡片（浅色） */
+body[data-march7th-skin] [data-chat-flow-key] {
+  background: var(--m7-glass);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-radius: var(--m7-radius);
+  box-shadow: var(--m7-shadow);
+  backdrop-filter: blur(6px);
+  transition: background 0.2s var(--ds-ease-in-out), box-shadow 0.2s var(--ds-ease-in-out);
+}
+body[data-march7th-skin] [data-chat-flow-key]:hover {
+  background: var(--m7-glass-strong);
+  box-shadow: 0 10px 32px rgba(31, 80, 140, 0.16);
+}
+/* Assistant 正文卡片的内容安全边距：文字、标题、代码块和底部操作按钮
+   不再紧贴玻璃卡片边界；工具条和用户气泡维持各自原生紧凑布局。 */
+body[data-march7th-skin] [data-chat-flow-kind='assistant-step'] {
+  padding: 16px 20px;
+}
+/* 消息节点：深色变体 */
+body[data-march7th-skin][data-ds-dark-theme] [data-chat-flow-key] {
+  background: var(--m7-glass-dark);
+  border-color: rgba(140, 190, 240, 0.14);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.30);
+}
+
+/* 用户输入内部已经有独立的消息气泡，不再套用占满整行的玻璃对话卡片。 */
+body[data-march7th-skin] [data-chat-flow-kind='user'],
+body[data-march7th-skin] [data-chat-flow-kind='steering'],
+body[data-march7th-skin][data-ds-dark-theme] [data-chat-flow-kind='user'],
+body[data-march7th-skin][data-ds-dark-theme] [data-chat-flow-kind='steering'],
+body[data-march7th-skin] [data-chat-flow-kind='user']:hover,
+body[data-march7th-skin] [data-chat-flow-kind='steering']:hover {
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+/* ---------- 3. 输入框：磨砂玻璃胶囊 + 粉色聚焦 ---------- */
+/* 去掉 active 阶段座位默认的「透明 → bg-base 36px」底部渐变遮罩，
+   让聊天背景和人物在输入卡片周围保持可见；输入卡片自身仍负责可读性。 */
+body[data-march7th-skin] [data-phase] [data-composer-seat],
+body[data-march7th-skin] [data-composer-seat] {
+  background: transparent;
+}
+
+/* 输入栈抬到人物之上（z-index 3 > 人物 0）：任何阶段（含 hero 居中输入框）
+   都不会被立绘遮挡，层级保持 对话框 > 人物 > 背景。 */
+body[data-march7th-skin] [data-composer-seat] > * {
+  position: relative;
+  z-index: 3;
+}
+
+/* 自定义输入卡片：input.webp 是 1985 x 792 的完整透明装饰画布。图片放在
+   原生控件下方，文本区、权限选择、模型选择和发送按钮仍使用 DSH 的真实
+   DOM，因此键盘、焦点、加载态和热更新行为不受影响。 */
+body[data-march7th-skin] [data-composer-card] {
+  --dsw-alias-label-primary: #1c2b45;
+  --dsw-alias-label-secondary: #52647e;
+  --dsw-alias-label-tertiary: #6b7d96;
+  --dsw-alias-label-caption: #6b7d96;
+  --dsw-alias-button-info-fill: #ff8fb5;
+  --dsw-alias-button-info-hover: #ff6f9f;
+  --dsw-specific-selector: #ffb2cc;
+  position: relative;
+  isolation: isolate;
+  box-sizing: border-box;
+  min-height: clamp(280px, 27vh, 520px);
+  padding:
+    clamp(72px, 8vh, 118px)
+    clamp(42px, 3.2vw, 76px)
+    clamp(34px, 3vh, 50px);
+  overflow: visible;
+  border: 0;
+  border-radius: clamp(28px, 2vw, 48px);
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+body[data-march7th-skin] [data-composer-card]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  background:
+    url("https://raw.githubusercontent.com/fishfromsky/dsh-march7th-skin/main/src/client/skins/march7th/input.webp")
+    center / 100% 100% no-repeat;
+  filter: drop-shadow(0 14px 30px rgba(112, 83, 165, 0.20));
+  pointer-events: none;
+}
+body[data-march7th-skin] [data-composer-card] > * {
+  position: relative;
+  z-index: 1;
+}
+/* 原生工具栏紧跟在 data-input-scroll 后面；自动上边距消化输入卡片的剩余
+   高度，让按钮行贴近画框下沿，而不是停在卡片中部并在下方留下大块空白。 */
+body[data-march7th-skin] [data-composer-card]
+  [data-input-scroll] + div {
+  margin-top: auto;
+  padding-bottom: 15px;
+}
+
+/* “+” 是工具栏中唯一一个 aria-haspopup=listbox 且只包含单个 SVG 的按钮；
+   这样不会误伤同一行中的权限或模型选择器。发送/停止按钮使用上方局部的
+   info-fill token，因此两种运行状态都会自动采用主题粉色。 */
+body[data-march7th-skin] [data-composer-card]
+  button[aria-haspopup='listbox']:has(> svg:only-child) {
+  background: linear-gradient(145deg, #ffc0d5, #ff8fb5);
+  color: #fff;
+  box-shadow:
+    0 5px 14px rgba(230, 91, 143, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+body[data-march7th-skin] [data-composer-card]
+  button[aria-haspopup='listbox']:has(> svg:only-child):hover:not(:disabled) {
+  background: linear-gradient(145deg, #ffafd0, #ff6f9f);
+}
+body[data-march7th-skin][data-ds-dark-theme] [data-composer-card] {
+  background: transparent;
+  border-color: transparent;
+}
+body[data-march7th-skin] [data-composer-card]:focus-within {
+  border-color: transparent;
+  box-shadow: none;
+}
+body[data-march7th-skin] [data-composer-card]:focus-within::before {
+  filter:
+    drop-shadow(0 0 9px rgba(255, 143, 171, 0.48))
+    drop-shadow(0 14px 30px rgba(112, 83, 165, 0.22));
+}
+/* 粉色光标 */
+body[data-march7th-skin] [data-composer-card] textarea {
+  caret-color: var(--m7-pink);
+  color: var(--m7-ink);
+}
+body[data-march7th-skin] [data-composer-card] textarea::placeholder {
+  color: rgba(82, 100, 126, 0.72);
+}
+
+/* 进入对话后缩短输入卡片，把更多垂直空间留给对话流；hero 主界面继续展示
+   接近素材原始构图比例的大输入框。 */
+body[data-march7th-skin] [data-phase='active'] [data-composer-card] {
+  min-height: clamp(210px, 19vh, 350px);
+  padding:
+    clamp(56px, 6vh, 88px)
+    clamp(38px, 3vw, 68px)
+    clamp(28px, 2.5vh, 40px);
+}
+
+@media (max-width: 900px), (max-height: 760px) {
+  body[data-march7th-skin] [data-composer-card],
+  body[data-march7th-skin] [data-phase='active'] [data-composer-card] {
+    min-height: 190px;
+    padding: 52px 30px 28px;
+    border-radius: 26px;
+  }
+}
+
+/* ---------- 3b. 主视觉区域左右下角的站姿人物 ---------- */
+/* 人物挂在不滚动的对话根容器（带 data-phase 且直接包含滚动区的元素）上：
+   根容器自身从不滚动，position: absolute + bottom: 0 把人物钉在页面底部，
+   无论聊天滚动条怎么滚人物都保持在页面上（此前挂在滚动区上会随内容滚动）。
+   container-type 放在根容器上，cqw 单位照常跟随列宽。 */
+body[data-march7th-skin] [data-phase]:has(> [data-conversation-scroll]) {
+  position: relative;
+  container-type: inline-size;
+}
+/* 人物：锚定左下/右下角，双脚始终贴住主视觉区域底部。
+   高度 = min(主视觉区域可见高度的 86.5%, 主视觉区域宽度的 85%)：
+   · 86.5% —— 常规桌面下由可见高度主导，人物顶部约留出 13.5%；
+   · 85cqw —— 窄屏下随聊天列宽缩小，避免使用固定像素高度。
+   伪元素比例必须与 1086 × 1448 的立绘画布一致；否则 background-size:
+   contain 会受过窄的元素宽度限制，导致人物只能显示到预期高度的一半左右。
+   z 轴：人物位于背景之上（z-index 0）、消息卡片（z-index 1）之下；
+   聊天输入框继续位于最高层（输入栈 z-index 3，active 阶段座位 z-index 7）。
+   最终层级为 输入框 > 聊天内容 > 人物 > 背景。 */
+body[data-march7th-skin] [data-phase]:has(> [data-conversation-scroll])::before,
+body[data-march7th-skin] [data-phase]:has(> [data-conversation-scroll])::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  z-index: 0;
+  height: min(86.5%, 85cqw);
+  aspect-ratio: 3 / 4;
+  background-repeat: no-repeat;
+  background-position: bottom center;
+  background-size: contain;
+  pointer-events: none; /* 不拦截任何鼠标事件 */
+  opacity: 0.95;
+  filter: drop-shadow(0 14px 26px rgba(8, 18, 36, 0.38));
+  transition:
+    height 0.28s var(--ds-ease-in-out),
+    transform 0.28s var(--ds-ease-in-out);
+}
+/* 左侧人物：左下角锚点；左缘略微外移，让手中记事本/衣摆产生自然裁切 */
+body[data-march7th-skin] [data-phase]:has(> [data-conversation-scroll])::before {
+  left: 0;
+  transform: translateX(-2.5%);
+  background-image: url("https://raw.githubusercontent.com/fishfromsky/dsh-march7th-skin/main/src/client/skins/march7th/character1_night.webp");
+}
+/* 右侧人物：右下角锚点；若原图朝向与构图不符，在 transform 里加回/去掉
+   scaleX(-1) 即可切换左右镜像方向。 */
+body[data-march7th-skin] [data-phase]:has(> [data-conversation-scroll])::after {
+  right: 0;
+  transform: translateX(2.5%);
+  background-image: url("https://raw.githubusercontent.com/fishfromsky/dsh-march7th-skin/main/src/client/skins/march7th/character2_night.webp");
+}
+/* 主界面（hero）沿用上面的 86.5% 大立绘；进入对话（active）后缩小并
+   向两侧退出，为居中的对话流留出稳定的阅读空间。 */
+body[data-march7th-skin]
+  [data-phase='active']:has(> [data-conversation-scroll])::before,
+body[data-march7th-skin]
+  [data-phase='active']:has(> [data-conversation-scroll])::after {
+  height: min(
+    var(--m7-character-active-height),
+    var(--m7-character-active-width-cap)
+  );
+}
+body[data-march7th-skin]
+  [data-phase='active']:has(> [data-conversation-scroll])::before {
+  transform: translateX(calc(-1 * var(--m7-character-active-outset)));
+}
+body[data-march7th-skin]
+  [data-phase='active']:has(> [data-conversation-scroll])::after {
+  transform: translateX(var(--m7-character-active-outset));
+}
+/* 轨迹视图使用 composer overlay 标记；该页面以信息密度为主，不展示人物立绘。 */
+body[data-march7th-skin]
+  [data-phase]:has([data-conversation-composer-overlay])::before,
+body[data-march7th-skin]
+  [data-phase]:has([data-conversation-composer-overlay])::after {
+  display: none;
+}
+
+/* ---------- 3c. Trajectory view: no composer, translucent ledger ---------- */
+/* The trajectory root publishes data-conversation-composer-overlay.  Hide the
+   sibling composer seat only while that root is mounted; the Conversation tab
+   and the hero page keep their normal input card. */
+body[data-march7th-skin] [data-phase='active']
+  > [data-conversation-scroll]:has([data-conversation-composer-overlay])
+  > [data-composer-seat] {
+  display: none;
+}
+
+/* Re-skin the entire trajectory subtree through its semantic colour tokens.
+   Descendant toolbar, timeline and table surfaces consume these variables, so
+   the palace artwork remains visible without making the ledger text faint. */
+body[data-march7th-skin]
+  [data-conversation-composer-overlay] {
+  --dsw-alias-bg-base: rgba(255, 252, 254, 0.50);
+  --dsw-alias-bg-layer-1: rgba(255, 249, 253, 0.72);
+  --dsw-alias-bg-layer-2: rgba(246, 242, 255, 0.66);
+  --dsw-alias-bg-layer-3: rgba(255, 235, 246, 0.68);
+  --dsw-alias-bg-overlay: rgba(244, 231, 249, 0.76);
+  --dsw-alias-bg-module-platform: rgba(255, 248, 252, 0.70);
+  --dsw-specific-sidebar-fill: rgba(253, 238, 248, 0.78);
+  --dsw-alias-border-l1: rgba(211, 105, 161, 0.18);
+  --dsw-alias-border-l2: rgba(197, 91, 151, 0.28);
+  --dsw-alias-border-l3: rgba(181, 79, 139, 0.36);
+  --dsw-alias-label-primary: #55243f;
+  --dsw-alias-label-secondary: #79516a;
+  --dsw-alias-label-tertiary: #95657e;
+  --dsw-alias-label-caption: #a97691;
+  --dsw-alias-state-business-primary: #d94f94;
+  --dsw-alias-interactive-bg-hover: rgba(232, 111, 171, 0.12);
+  --dsw-alias-interactive-bg-active: rgba(221, 83, 153, 0.18);
+  --dsh-composer-height: 0px !important;
+  background: rgba(255, 249, 253, 0.62);
+  backdrop-filter: blur(9px) saturate(1.08);
+}
+
+body[data-march7th-skin][data-ds-dark-theme]
+  [data-conversation-composer-overlay] {
+  --dsw-alias-bg-base: rgba(44, 31, 58, 0.52);
+  --dsw-alias-bg-layer-1: rgba(48, 34, 63, 0.70);
+  --dsw-alias-bg-layer-2: rgba(57, 41, 75, 0.66);
+  --dsw-alias-bg-layer-3: rgba(69, 44, 75, 0.68);
+  --dsw-alias-bg-overlay: rgba(64, 43, 78, 0.78);
+  --dsw-alias-bg-module-platform: rgba(53, 37, 68, 0.72);
+  --dsw-specific-sidebar-fill: rgba(69, 43, 70, 0.78);
+  --dsw-alias-label-primary: #fff1f8;
+  --dsw-alias-label-secondary: #ebc7da;
+  --dsw-alias-label-tertiary: #d8a9c3;
+  --dsw-alias-label-caption: #c995b1;
+  background: rgba(42, 29, 57, 0.60);
+}
+
+/* The native ledger reserves space for the floating composer.  On this page
+   the composer is intentionally absent, leaving only a small breathing room. */
+body[data-march7th-skin]
+  [data-conversation-composer-overlay] [data-trajectory-scroll] {
+  --dsh-trajectory-bottom-clearance: 16px;
+}
+
+/* Toolbar controls and the search field use a restrained sakura treatment.
+   Real buttons/inputs remain untouched in the DOM, preserving all behaviour. */
+body[data-march7th-skin]
+  [data-conversation-composer-overlay] [role='toolbar'] {
+  border-bottom-color: rgba(202, 96, 153, 0.30);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 248, 252, 0.76),
+    rgba(241, 238, 255, 0.68)
+  );
+  box-shadow: 0 3px 12px rgba(130, 75, 132, 0.08);
+}
+body[data-march7th-skin]
+  [data-conversation-composer-overlay] [role='toolbar'] button {
+  color: #9b5279;
+  font-family:
+    'Microsoft YaHei UI', 'Microsoft YaHei', 'PingFang SC', system-ui,
+    sans-serif;
+  font-weight: 600;
+}
+body[data-march7th-skin]
+  [data-conversation-composer-overlay]
+  [role='toolbar'] button:is(:hover, [aria-pressed='true']) {
+  color: #8f2f67;
+  background: rgba(225, 91, 157, 0.13);
+}
+body[data-march7th-skin]
+  [data-conversation-composer-overlay]
+  [role='toolbar'] :has(> input[type='search']) {
+  border-color: rgba(210, 111, 165, 0.34);
+  border-radius: 11px;
+  background: rgba(255, 252, 254, 0.68);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.78);
+}
+
+/* Titles inside the trajectory ledger use the same deep rose ink as the
+   session header, with a pale highlight so they stay legible on the artwork. */
+body[data-march7th-skin]
+  [data-conversation-composer-overlay]
+  :is(h1, h2, h3, h4, [role='heading'], th) {
+  color: #8f3268;
+  font-family:
+    'Microsoft YaHei UI', 'Microsoft YaHei', 'PingFang SC', system-ui,
+    sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.84);
+}
+/* 消息卡片抬到人物之上（z-index 1 > 0），避免立绘遮挡聊天文字；
+   聊天输入框（座位 z-index 7）继续位于最上层。 */
+body[data-march7th-skin] [data-chat-flow-key] {
+  position: relative;
+  z-index: 1;
+}
+
+/* active 阶段使用上下两个互不重叠的区域：会话内容独立滚动，输入框占据底部
+   布局空间。data-march7th-chat-scroll 由插件挂到 ChatView 自带的滚动元素上，
+   同时保留 data-conversation-scroll 供框架的跟随滚动与“回到底部”逻辑识别。 */
+body[data-march7th-skin] [data-phase='active']
+  > [data-conversation-scroll]:not([data-march7th-chat-scroll]) {
+  overflow: hidden;
+}
+
+/* Slot 包装器是 display: contents；下面两个选择器分别压缩 Session viewArea
+   和 ChatView root，使内部滚动区只使用输入框上方的剩余高度。 */
+body[data-march7th-skin] [data-phase='active']
+  > [data-conversation-scroll]:not([data-march7th-chat-scroll])
+  > [data-slot='conversation.session'] > * {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;
+}
+body[data-march7th-skin] [data-phase='active']
+  [data-slot='conversation.view'] > :has([data-chat-flow]) {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 0;
+  align-self: center;
+  width: min(
+    var(--dsh-chat-content-width),
+    calc(
+      100% - var(--dsh-composer-side-clearance)
+      - var(--dsh-composer-side-clearance) - 32px
+    )
+  );
+  min-height: 0;
+  overflow: hidden;
+  border-radius: 0 0 var(--m7-radius) var(--m7-radius);
+  /* clip-path 同时裁切带 backdrop-filter 的消息合成层，确保对话窗口的
+     左下角和右下角实际显示为圆角，而不是只设置一个不可见的边框半径。 */
+  clip-path: inset(
+    0 0 0 0 round
+    0 0 var(--m7-radius) var(--m7-radius)
+  );
+  /* backdrop-filter 与原生滚动条会进入独立合成层；增加蒙版后，圆角在
+     合成完成之后统一裁切，避免右下角被滚动条层重新绘制成直角。 */
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  mask-image: linear-gradient(white, white);
+}
+
+body[data-march7th-skin] [data-phase='active'] [data-march7th-chat-scroll] {
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+  padding-right: 0;
+  padding-left: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  /* 原生滚动条会作为独立层覆盖右下圆角；对话流仍可通过滚轮、触控板、
+     PageUp/PageDown 与回到底部按钮滚动，只隐藏这条视觉轨道。 */
+  scrollbar-width: none;
+  border-radius: 0 0 var(--m7-radius) var(--m7-radius);
+  clip-path: inset(
+    0 0 0 0 round
+    0 0 var(--m7-radius) var(--m7-radius)
+  );
+  contain: paint;
+  isolation: isolate;
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  mask-image: linear-gradient(white, white);
+  scroll-padding-bottom: 16px;
+  background: transparent;
+}
+
+/* 消息列铺满圆角窗口，由父级蒙版统一裁切底部两角。不能在右侧预留滚动条
+   空间，否则白色内容层会提前结束并在窗口底部形成一条可见的直角竖边。 */
+body[data-march7th-skin] [data-march7th-chat-scroll]
+  > [data-chat-flow] {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  margin-right: 0;
+  margin-left: 0;
+}
+
+body[data-march7th-skin] [data-march7th-chat-scroll]::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* 输入框恢复为普通底部布局项，不再 sticky 覆盖消息；座位高度变化时，flex
+   会自动压缩或扩展上方的消息滚动区。 */
+body[data-march7th-skin] [data-phase='active']
+  > [data-conversation-scroll]:not([data-march7th-chat-scroll])
+  > [data-composer-seat] {
+  position: relative;
+  bottom: auto;
+  flex: none;
+  margin-top: var(--m7-chat-composer-gap);
+}
+
+/* 新滚动区已在输入框上方，因此回到底部按钮只需保留自身的 16px 间距。 */
+body[data-march7th-skin] [data-march7th-chat-scroll]
+  > [data-chat-flow] + * {
+  bottom: 16px;
+}
+
+/* ---------- 4. 侧边栏：完整底纹 + 56px 折叠轨道 ---------- */
+/* The slot anchor itself is display: contents, so the image must be painted on
+   its first real child (the sidebar shell).  sidebar.webp is a 724 x 2171
+   full-panel texture and deliberately stretches with the resizable wide rail,
+   just like input.webp stretches with the composer card. */
+body[data-march7th-skin] [data-slot='sidebar'] > * {
+  --dsw-alias-label-primary: #d84f91;
+  --dsw-alias-label-primary-inverted: #fff9fd;
+  --dsw-alias-label-secondary: #b96896;
+  --dsw-alias-label-tertiary: #c784a8;
+  --dsw-alias-label-dimmed: #d6a8c0;
+  --dsw-alias-label-caption: #b96896;
+  --dsw-alias-brand-primary: #e45b9c;
+  --dsw-alias-brand-text: #d84f91;
+  /* Workspace rows use the business state for the active folder glyph. */
+  --dsw-alias-state-business-primary: #e45b9c;
+  --dsw-specific-sidebar-fill: rgba(250, 246, 255, 0.84);
+  --dsw-specific-sidebar-nav-item-active: rgba(255, 232, 244, 0.78);
+  --dsw-specific-sidebar-nav-item-hover: rgba(255, 255, 255, 0.58);
+  --dsh-scrollbar-thumb: rgba(229, 120, 174, 0.44);
+  --dsh-scrollbar-thumb-hover: rgba(211, 84, 149, 0.64);
+  position: relative;
+  background:
+    url("https://raw.githubusercontent.com/fishfromsky/dsh-march7th-skin/main/src/client/skins/march7th/sidebar.webp")
+    center / 100% 100% no-repeat;
+  color: var(--dsw-alias-label-primary);
+  box-shadow:
+    inset -1px 0 rgba(209, 124, 169, 0.24),
+    8px 0 24px rgba(93, 71, 133, 0.08);
+}
+
+/* Keep the pale artwork readable even while the application uses its dark
+   theme: this particular bitmap is a light skin, so the local sidebar ink
+   remains dark rather than inheriting the global dark-theme labels. */
+body[data-march7th-skin][data-ds-dark-theme]
+  [data-slot='sidebar'] > * {
+  --dsw-alias-label-primary: #d84f91;
+  --dsw-alias-label-primary-inverted: #fff9fd;
+  --dsw-alias-label-secondary: #b96896;
+  --dsw-alias-label-tertiary: #c784a8;
+  --dsw-alias-label-dimmed: #d6a8c0;
+  --dsw-alias-label-caption: #b96896;
+  --dsw-alias-brand-primary: #e45b9c;
+  --dsw-alias-brand-text: #d84f91;
+  --dsw-alias-state-business-primary: #e45b9c;
+}
+
+/* Use one coordinated sakura pink for both the wordmark and whale.  The
+   primitive uses currentColor throughout; its first SVG group is the whale,
+   so no asset fork or DOM replacement is required. */
+body[data-march7th-skin] [data-slot='sidebar']
+  > *:has(> :first-child > button + button)
+  > :first-child > button:first-child {
+  color: #ec5da1;
+  filter: drop-shadow(0 2px 5px rgba(212, 76, 145, 0.16));
+}
+body[data-march7th-skin] [data-slot='sidebar']
+  > *:has(> :first-child > button + button)
+  > :first-child > button:first-child svg > g:first-of-type {
+  color: #ec5da1;
+}
+
+/* Settings and workspace dialogs are DOM descendants of the sidebar even
+   though they render as viewport overlays.  Restore regular application ink
+   inside those surfaces so the pink sidebar palette does not leak into them. */
+body[data-march7th-skin] [data-slot='sidebar'] [role='dialog'] {
+  --dsw-alias-label-primary: #1c2b45;
+  --dsw-alias-label-secondary: #52647e;
+  --dsw-alias-label-tertiary: #6b7d96;
+  --dsw-alias-label-dimmed: #a3b6cc;
+  --dsw-alias-label-caption: #6b7d96;
+  --dsw-alias-brand-primary: #4e9fdd;
+  --dsw-alias-brand-text: #1f3a5f;
+}
+body[data-march7th-skin][data-ds-dark-theme]
+  [data-slot='sidebar'] [role='dialog'] {
+  --dsw-alias-label-primary: #e7f0fb;
+  --dsw-alias-label-secondary: #a9bed9;
+  --dsw-alias-label-tertiary: #8fa6c2;
+  --dsw-alias-label-dimmed: #5f7394;
+  --dsw-alias-label-caption: #8fa6c2;
+  --dsw-alias-brand-primary: #7cc0f0;
+  --dsw-alias-brand-text: #eaf4fe;
+}
+
+/* Expanded Settings trigger.  Its aria-haspopup/aria-expanded pair is unique
+   inside the sidebar, so this does not depend on a CSS-module class name. */
+body[data-march7th-skin] [data-slot='sidebar']
+  button[aria-haspopup='dialog'][aria-expanded] {
+  width: calc(100% + 8px);
+  height: 64px;
+  margin: 4px -4px 8px;
+  padding: 12px 30px;
+  border: 0;
+  border-radius: 18px;
+  background:
+    url("https://raw.githubusercontent.com/fishfromsky/dsh-march7th-skin/main/src/client/skins/march7th/settings.webp")
+    center / 100% 100% no-repeat;
+  color: #a64279;
+  font-weight: 600;
+  box-shadow: none;
+  filter: drop-shadow(0 7px 13px rgba(126, 78, 145, 0.16));
+}
+body[data-march7th-skin] [data-slot='sidebar']
+  button[aria-haspopup='dialog'][aria-expanded]:hover {
+  background:
+    url("https://raw.githubusercontent.com/fishfromsky/dsh-march7th-skin/main/src/client/skins/march7th/settings.webp")
+    center / 100% 100% no-repeat;
+  color: #8f3268;
+  filter:
+    brightness(1.035)
+    drop-shadow(0 8px 16px rgba(211, 84, 149, 0.22));
+}
+
+/* In the 56px rail keep the native compact Settings control.  The wide
+   artwork returns only after the sidebar has expanded again. */
+body[data-march7th-skin] [data-sidebar-collapsed]
+  [data-slot='sidebar'] button[aria-haspopup='dialog'][aria-expanded] {
+  width: 36px;
+  height: 36px;
+  margin: 8px 0 10px;
+  padding: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #cf5b93;
+  filter: none;
+}
+body[data-march7th-skin] [data-sidebar-collapsed]
+  [data-slot='sidebar'] button[aria-haspopup='dialog'][aria-expanded]:hover {
+  background: var(--dsw-specific-sidebar-nav-item-hover);
+  color: #b9447e;
+  filter: none;
+}
+
+/* Expanded New Session button.  Keep the host button and its real icon/text,
+   and use the transparent 2508 x 627 artwork only as its visual surface.  The
+   direct-child selector is stable because the sidebar shell owns exactly this
+   one button between its logo row and workspace region. */
+body[data-march7th-skin] [data-slot='sidebar']
+  > *:has(> :first-child > button + button) > button {
+  height: 64px;
+  padding: 12px 28px;
+  margin: 0 0 10px;
+  border: 0;
+  border-radius: 18px;
+  background:
+    url("https://raw.githubusercontent.com/fishfromsky/dsh-march7th-skin/main/src/client/skins/march7th/new-session.webp")
+    center / 100% 100% no-repeat;
+  color: #a64279;
+  font-weight: 600;
+  box-shadow: none;
+  filter: drop-shadow(0 7px 13px rgba(126, 78, 145, 0.16));
+}
+body[data-march7th-skin] [data-slot='sidebar']
+  > *:has(> :first-child > button + button) > button:hover {
+  background:
+    url("https://raw.githubusercontent.com/fishfromsky/dsh-march7th-skin/main/src/client/skins/march7th/new-session.webp")
+    center / 100% 100% no-repeat;
+  color: #8f3268;
+  filter:
+    brightness(1.035)
+    drop-shadow(0 8px 16px rgba(211, 84, 149, 0.22));
+}
+
+/* The layout exposes its real collapsed state on the frame.  Do not squeeze
+   the ornate 724px-wide artwork into the 56px rail: retain an expanded-width
+   rendering and crop its quiet centre strip instead.  The collapse animation
+   therefore reads as the full panel sliding behind the rail, not as a texture
+   being horizontally crushed. */
+body[data-march7th-skin] [data-sidebar-collapsed]
+  [data-slot='sidebar'] > * {
+  background-size: 280px 100%;
+  background-position: center;
+  box-shadow: inset -1px 0 rgba(209, 124, 169, 0.30);
+}
+
+/* The panel toggle remains a native button, but gains a high-contrast themed
+   surface so it stays obvious over both the full artwork and the cropped rail.
+   Keeping the host button also preserves its tooltip, keyboard focus and
+   collapse/expand behaviour. */
+body[data-march7th-skin] [data-slot='sidebar'] > *
+  > :first-child > button:last-of-type {
+  border: 1px solid rgba(225, 113, 170, 0.42);
+  background: rgba(255, 250, 253, 0.74);
+  color: #cf5b93;
+  box-shadow:
+    0 4px 12px rgba(127, 82, 139, 0.14),
+    inset 0 1px rgba(255, 255, 255, 0.82);
+}
+body[data-march7th-skin] [data-slot='sidebar'] > *
+  > :first-child > button:last-of-type:hover {
+  background: linear-gradient(145deg, #ffd3e2, #ff9fc1);
+  color: #fff;
+}
+body[data-march7th-skin] [data-sidebar-collapsed]
+  [data-slot='sidebar'] > * > :first-child > button:last-of-type {
+  background: rgba(255, 250, 253, 0.90);
+  box-shadow:
+    0 5px 15px rgba(127, 82, 139, 0.20),
+    inset 0 1px rgba(255, 255, 255, 0.90);
+}
+
+/* ---------- 4c. 弹出层：统一的粉白 / 淡紫玻璃主题 ---------- */
+
+/* 输入框中的「模型 / 推理等级」菜单实际渲染在 composer 内部，并非 body Portal。 */
+body[data-march7th-skin] [data-composer-seat]
+  button[aria-haspopup='menu'][aria-expanded='true'] + [role='menu'] {
+  --dsw-specific-menu: rgba(255, 248, 253, 0.96);
+  --dsw-alias-label-primary: #713254;
+  --dsw-alias-label-secondary: #87506f;
+  --dsw-alias-label-tertiary: #a1708c;
+  --dsw-alias-label-caption: #99748b;
+  --dsw-alias-border-l1: rgba(224, 104, 164, 0.46);
+  --dsw-alias-border-l2: rgba(214, 115, 179, 0.34);
+  --dsw-alias-interactive-bg-hover: rgba(247, 178, 216, 0.34);
+  --dsw-alias-interactive-bg-selected: rgba(235, 181, 224, 0.42);
+  padding: 8px;
+  border: 1px solid rgba(224, 105, 165, 0.48);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 14% 8%, rgba(255, 255, 255, 0.96), transparent 38%),
+    linear-gradient(
+      145deg,
+      rgba(255, 252, 255, 0.97),
+      rgba(255, 230, 244, 0.94) 54%,
+      rgba(232, 226, 255, 0.95)
+    );
+  color: #713254;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.98),
+    0 16px 40px rgba(114, 55, 105, 0.24),
+    0 0 0 3px rgba(255, 225, 242, 0.42);
+  backdrop-filter: blur(22px) saturate(1.22);
+}
+
+body[data-march7th-skin] [data-composer-seat]
+  button[aria-haspopup='menu'][aria-expanded='true'] + [role='menu']
+  :is(button[role='menuitem'], button[role='menuitemradio']) {
+  min-height: 42px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  color: #713254;
+  transition:
+    color 0.16s ease,
+    border-color 0.16s ease,
+    background 0.16s ease,
+    box-shadow 0.16s ease,
+    transform 0.16s ease;
+}
+
+body[data-march7th-skin] [data-composer-seat]
+  button[aria-haspopup='menu'][aria-expanded='true'] + [role='menu']
+  :is(button[role='menuitem'], button[role='menuitemradio']):is(:hover, :focus-visible),
+body[data-march7th-skin] [data-composer-seat]
+  button[aria-haspopup='menu'][aria-expanded='true'] + [role='menu']
+  button[role='menuitemradio'][aria-checked='true'] {
+  border-color: rgba(221, 94, 157, 0.34);
+  background: linear-gradient(
+    100deg,
+    rgba(255, 215, 236, 0.82),
+    rgba(228, 220, 255, 0.74)
+  );
+  color: #8f315f;
+  box-shadow:
+    inset 3px 0 0 #e45a9d,
+    inset 0 1px rgba(255, 255, 255, 0.88),
+    0 4px 12px rgba(159, 70, 126, 0.12);
+  outline: none;
+}
+
+body[data-march7th-skin] [data-composer-seat]
+  button[aria-haspopup='menu'][aria-expanded='true'] + [role='menu']
+  :is([role='group'], [role='menuitem'], [role='menuitemradio']) svg {
+  color: #cc528c;
+}
+
+body[data-march7th-skin] [data-composer-seat]
+  button[aria-haspopup='menu'][aria-expanded='true'] + [role='menu']
+  [role='separator'] {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(219, 102, 161, 0.34),
+    transparent
+  );
+}
+
+/* Permission has no aria-expanded hook; its open menu is the access-mode
+   trigger's adjacent sibling. The sidebar view menu is a body Portal and is
+   uniquely identified by its two non-interactive label rows. */
+body[data-march7th-skin] [data-composer-seat]
+  button[aria-label^='\8BBF\95EE\6A21\5F0F'] + [role='menu'],
+body[data-march7th-skin] [data-composer-seat]
+  button[aria-label^='Access mode'] + [role='menu'],
+body[data-march7th-skin] > [role='menu']:has(
+  > [role='presentation'] > [role='presentation']
+) {
+  --dsw-specific-menu: rgba(255, 248, 253, 0.96);
+  --dsw-alias-label-primary: #713254;
+  --dsw-alias-label-secondary: #87506f;
+  --dsw-alias-label-tertiary: #a1708c;
+  --dsw-alias-label-caption: #99748b;
+  --dsw-alias-border-l1: rgba(224, 104, 164, 0.46);
+  --dsw-alias-border-l2: rgba(214, 115, 179, 0.34);
+  --dsw-alias-interactive-bg-hover: rgba(247, 178, 216, 0.34);
+  --dsw-alias-interactive-bg-selected: rgba(235, 181, 224, 0.42);
+  padding: 8px;
+  border: 1px solid rgba(224, 105, 165, 0.52);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 14% 8%, rgba(255, 255, 255, 0.98), transparent 38%),
+    linear-gradient(
+      145deg,
+      rgba(255, 252, 255, 0.97),
+      rgba(255, 230, 244, 0.95) 54%,
+      rgba(232, 226, 255, 0.96)
+    );
+  color: #713254;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.98),
+    0 16px 40px rgba(114, 55, 105, 0.24),
+    0 0 0 3px rgba(255, 225, 242, 0.42);
+  backdrop-filter: blur(22px) saturate(1.22);
+}
+
+body[data-march7th-skin] [data-composer-seat]
+  button[aria-label^='\8BBF\95EE\6A21\5F0F'] + [role='menu'],
+body[data-march7th-skin] [data-composer-seat]
+  button[aria-label^='Access mode'] + [role='menu'] {
+  min-width: 250px;
+}
+
+body[data-march7th-skin] > [role='menu']:has(
+  > [role='presentation'] > [role='presentation']
+) {
+  min-width: 246px;
+}
+
+:is(
+  body[data-march7th-skin] [data-composer-seat]
+    button[aria-label^='\8BBF\95EE\6A21\5F0F'] + [role='menu'],
+  body[data-march7th-skin] [data-composer-seat]
+    button[aria-label^='Access mode'] + [role='menu'],
+  body[data-march7th-skin] > [role='menu']:has(
+    > [role='presentation'] > [role='presentation']
+  )
+) button[role='menuitem'] {
+  min-height: 42px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  color: #713254;
+  transition:
+    color 0.16s ease,
+    border-color 0.16s ease,
+    background 0.16s ease,
+    box-shadow 0.16s ease,
+    transform 0.16s ease;
+}
+
+:is(
+  body[data-march7th-skin] [data-composer-seat]
+    button[aria-label^='\8BBF\95EE\6A21\5F0F'] + [role='menu'],
+  body[data-march7th-skin] [data-composer-seat]
+    button[aria-label^='Access mode'] + [role='menu'],
+  body[data-march7th-skin] > [role='menu']:has(
+    > [role='presentation'] > [role='presentation']
+  )
+) button[role='menuitem']:is(:hover, :focus-visible),
+:is(
+  body[data-march7th-skin] [data-composer-seat]
+    button[aria-label^='\8BBF\95EE\6A21\5F0F'] + [role='menu'],
+  body[data-march7th-skin] [data-composer-seat]
+    button[aria-label^='Access mode'] + [role='menu'],
+  body[data-march7th-skin] > [role='menu']:has(
+    > [role='presentation'] > [role='presentation']
+  )
+) button[role='menuitem']:has(> svg:last-child) {
+  border-color: rgba(221, 94, 157, 0.34);
+  background: linear-gradient(
+    100deg,
+    rgba(255, 215, 236, 0.82),
+    rgba(228, 220, 255, 0.74)
+  );
+  color: #8f315f;
+  box-shadow:
+    inset 3px 0 0 #e45a9d,
+    inset 0 1px rgba(255, 255, 255, 0.88),
+    0 4px 12px rgba(159, 70, 126, 0.12);
+  outline: none;
+}
+
+:is(
+  body[data-march7th-skin] [data-composer-seat]
+    button[aria-label^='访问模式'] + [role='menu'],
+  body[data-march7th-skin] [data-composer-seat]
+    button[aria-label^='Access mode'] + [role='menu'],
+  body[data-march7th-skin] > [role='menu']:has(
+    > [role='presentation'] > [role='presentation']
+  )
+) button[role='menuitem'] svg {
+  color: #cc528c;
+}
+
+body[data-march7th-skin] > [role='menu']:has(
+  > [role='presentation'] > [role='presentation']
+) > [role='presentation'] > [role='presentation'] {
+  padding: 8px 10px 4px;
+  color: #ad6b90;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+}
+
+body[data-march7th-skin] > [role='menu']:has(
+  > [role='presentation'] > [role='presentation']
+) [role='separator'] {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(219, 102, 161, 0.38),
+    transparent
+  );
+}
+
+/* 设置中心：只命中 sidebar Portal 中带导航栏的 modal dialog。 */
+body[data-march7th-skin] [data-slot='sidebar']
+  [role='dialog'][aria-modal='true']:has(> nav) {
+  --dsw-alias-bg-base: rgba(255, 248, 253, 0.96);
+  --dsw-alias-bg-elevated: rgba(255, 252, 255, 0.92);
+  --dsw-alias-label-primary: #6f3153;
+  --dsw-alias-label-secondary: #87506f;
+  --dsw-alias-label-tertiary: #9f718c;
+  --dsw-alias-label-caption: #977188;
+  --dsw-alias-border-l1: rgba(222, 102, 161, 0.46);
+  --dsw-alias-border-l2: rgba(213, 116, 179, 0.34);
+  --dsw-alias-brand-primary: #dc5596;
+  --dsw-alias-brand-text: #8f315f;
+  border: 1px solid rgba(224, 105, 165, 0.48);
+  background:
+    radial-gradient(circle at 10% 8%, rgba(255, 255, 255, 0.98), transparent 34%),
+    radial-gradient(circle at 92% 14%, rgba(222, 217, 255, 0.58), transparent 38%),
+    linear-gradient(
+      145deg,
+      rgba(255, 252, 255, 0.97),
+      rgba(255, 232, 246, 0.95) 56%,
+      rgba(235, 230, 255, 0.96)
+    );
+  color: #6f3153;
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.98),
+    0 28px 80px rgba(73, 45, 92, 0.34),
+    0 0 0 4px rgba(255, 221, 240, 0.32);
+  backdrop-filter: blur(24px) saturate(1.18);
+}
+
+body[data-march7th-skin] [data-slot='sidebar']
+  [role='dialog'][aria-modal='true']:has(> nav) > nav {
+  border-right: 1px solid rgba(218, 105, 163, 0.28);
+  background:
+    linear-gradient(180deg, rgba(255, 238, 248, 0.78), rgba(239, 230, 255, 0.68));
+  box-shadow: inset -1px 0 rgba(255, 255, 255, 0.72);
+}
+
+body[data-march7th-skin] [data-slot='sidebar']
+  [role='dialog'][aria-modal='true']:has(> nav) > nav button {
+  border: 1px solid transparent;
+  border-radius: 13px;
+  color: #824061;
+  transition:
+    color 0.16s ease,
+    border-color 0.16s ease,
+    background 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+body[data-march7th-skin] [data-slot='sidebar']
+  [role='dialog'][aria-modal='true']:has(> nav) > nav button:is(:hover, :focus-visible),
+body[data-march7th-skin] [data-slot='sidebar']
+  [role='dialog'][aria-modal='true']:has(> nav) > nav button[aria-current='true'] {
+  border-color: rgba(220, 92, 157, 0.32);
+  background: linear-gradient(100deg, rgba(255, 214, 235, 0.82), rgba(230, 222, 255, 0.72));
+  color: #943663;
+  box-shadow:
+    inset 3px 0 #df5798,
+    inset 0 1px rgba(255, 255, 255, 0.92),
+    0 5px 14px rgba(150, 67, 120, 0.12);
+  outline: none;
+}
+
+body[data-march7th-skin] [data-slot='sidebar']
+  [role='dialog'][aria-modal='true']:has(> nav) > nav + div {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+body[data-march7th-skin] [data-slot='sidebar']
+  [role='dialog'][aria-modal='true']:has(> nav)
+  :is(button[aria-haspopup], input, select, textarea, [role='radio']) {
+  border-color: rgba(217, 108, 162, 0.34);
+  background: rgba(255, 252, 255, 0.66);
+  color: #713254;
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.88);
+}
+
+body[data-march7th-skin] [data-slot='sidebar']
+  [role='dialog'][aria-modal='true']:has(> nav) input[type='range'] {
+  accent-color: #dd5798;
+}
+
+/* 会话管理：插件提供稳定的 drawer 标识，避免影响其他右侧面板。 */
+body[data-march7th-skin] [data-dsh-drawer-backdrop] {
+  background: rgba(69, 45, 83, 0.34);
+  backdrop-filter: blur(5px) saturate(0.92);
+}
+
+body[data-march7th-skin] [data-dsh-drawer] {
+  --dsw-alias-bg-base: rgba(255, 248, 253, 0.97);
+  --dsw-alias-label-primary: #6f3153;
+  --dsw-alias-label-secondary: #87506f;
+  --dsw-alias-label-tertiary: #9f718c;
+  --dsw-alias-border-l1: rgba(222, 102, 161, 0.44);
+  border-left: 1px solid rgba(223, 104, 164, 0.48);
+  background:
+    radial-gradient(circle at 92% 5%, rgba(226, 219, 255, 0.62), transparent 34%),
+    linear-gradient(160deg, rgba(255, 252, 255, 0.98), rgba(255, 232, 246, 0.96) 58%, rgba(237, 231, 255, 0.96));
+  color: #6f3153;
+  box-shadow:
+    -24px 0 64px rgba(64, 43, 79, 0.28),
+    inset 1px 0 rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(24px) saturate(1.16);
+}
+
+body[data-march7th-skin] [data-dsh-drawer] .dsh-drawer__header {
+  border-bottom-color: rgba(218, 105, 163, 0.28);
+  background: rgba(255, 245, 251, 0.42);
+  box-shadow: inset 0 -1px rgba(255, 255, 255, 0.76);
+}
+
+body[data-march7th-skin] [data-dsh-drawer]
+  :is(.dsh-drawer__title, .dsh-delete-session__group-title, .dsh-delete-session__title) {
+  color: #87395f;
+  font-weight: 750;
+}
+
+body[data-march7th-skin] [data-dsh-drawer] .dsh-delete-session__group {
+  border-top-color: rgba(216, 112, 164, 0.24);
+}
+
+body[data-march7th-skin] [data-dsh-drawer] .dsh-delete-session__row {
+  border-color: rgba(218, 112, 166, 0.32);
+  background: linear-gradient(110deg, rgba(255, 254, 255, 0.72), rgba(242, 232, 255, 0.56));
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.9),
+    0 5px 14px rgba(143, 65, 116, 0.08);
+}
+
+body[data-march7th-skin] [data-dsh-drawer] .dsh-delete-session__row:hover {
+  border-color: rgba(218, 83, 151, 0.46);
+  background: linear-gradient(110deg, rgba(255, 226, 241, 0.82), rgba(232, 224, 255, 0.72));
+}
+
+body[data-march7th-skin] [data-dsh-drawer] button {
+  border-color: rgba(215, 105, 161, 0.34);
+  color: #7d3b5d;
+}
+
+body[data-march7th-skin] [data-dsh-drawer] button:is(:hover, :focus-visible) {
+  border-color: rgba(218, 79, 149, 0.48);
+  background: rgba(255, 221, 239, 0.72);
+  color: #9b3567;
+  outline: none;
+}
+
+body[data-march7th-skin] [data-dsh-drawer] .dsh-delete-session__more-menu {
+  border-color: rgba(221, 103, 162, 0.42);
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgba(255, 252, 255, 0.98), rgba(240, 231, 255, 0.96));
+  box-shadow: 0 14px 34px rgba(102, 54, 98, 0.22);
+  backdrop-filter: blur(18px);
+}
+
+/* Slash command palette: the source marker is part of ui-input-trigger's
+   public DOM contract, so this targets the command suggestions without
+   changing other listboxes such as attachments or popup-select commands. */
+body[data-march7th-skin] [data-composer-card]
+  [role='listbox']:has([role='presentation'][data-source='command']) {
+  --dsw-alias-label-primary: #6f3153;
+  --dsw-alias-label-secondary: #87506f;
+  --dsw-alias-label-tertiary: #9b7189;
+  --dsw-alias-label-dimmed: #c39aaf;
+  --dsh-scrollbar-thumb: rgba(221, 105, 164, 0.38);
+  --dsh-scrollbar-thumb-hover: rgba(208, 78, 145, 0.58);
+  padding: 10px;
+  border: 1px solid rgba(224, 105, 165, 0.48);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 8% 0%, rgba(255, 255, 255, 0.98), transparent 38%),
+    radial-gradient(circle at 94% 100%, rgba(220, 216, 255, 0.56), transparent 42%),
+    linear-gradient(145deg, rgba(255, 252, 255, 0.975), rgba(255, 232, 246, 0.955) 58%, rgba(239, 233, 255, 0.96));
+  color: #6f3153;
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.98),
+    0 22px 58px rgba(91, 49, 103, 0.28),
+    0 0 0 4px rgba(255, 221, 240, 0.28);
+  backdrop-filter: blur(24px) saturate(1.16);
+}
+
+body[data-march7th-skin] [data-composer-card]
+  [role='listbox']:has([role='presentation'][data-source='command'])
+  [role='presentation'][data-source='command'] {
+  padding: 8px 12px 10px;
+  color: #a6507e;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 700;
+  letter-spacing: 0.035em;
+}
+
+body[data-march7th-skin] [data-composer-card]
+  [role='listbox']:has([role='presentation'][data-source='command'])
+  button[role='option'] {
+  min-height: 46px;
+  padding: 10px 14px;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  background: transparent;
+  color: #6f3153;
+  transition:
+    color 0.16s ease,
+    border-color 0.16s ease,
+    background 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+body[data-march7th-skin] [data-composer-card]
+  [role='listbox']:has([role='presentation'][data-source='command'])
+  button[role='option'] > span:nth-last-child(2):not([aria-hidden]) {
+  color: #743252;
+  font-weight: 650;
+}
+
+body[data-march7th-skin] [data-composer-card]
+  [role='listbox']:has([role='presentation'][data-source='command'])
+  button[role='option'] > span:first-child:not([aria-hidden]) + span:last-child,
+body[data-march7th-skin] [data-composer-card]
+  [role='listbox']:has([role='presentation'][data-source='command'])
+  button[role='option'] > span[aria-hidden] + span + span:last-child {
+  color: #967089;
+}
+
+body[data-march7th-skin] [data-composer-card]
+  [role='listbox']:has([role='presentation'][data-source='command'])
+  button[role='option']:is(:hover, :focus-visible, [aria-selected='true']) {
+  border-color: rgba(220, 92, 157, 0.34);
+  background: linear-gradient(100deg, rgba(255, 211, 235, 0.82), rgba(227, 221, 255, 0.74));
+  color: #8f315f;
+  box-shadow:
+    inset 3px 0 #df5798,
+    inset 0 1px rgba(255, 255, 255, 0.9),
+    0 6px 16px rgba(146, 65, 117, 0.12);
+  outline: none;
+}
+
+body[data-march7th-skin] [data-composer-card]
+  [role='listbox']:has([role='presentation'][data-source='command'])
+  button[role='option']:is(:hover, :focus-visible, [aria-selected='true'])
+  > span:nth-last-child(2):not([aria-hidden]) {
+  color: #8f315f;
+}
+
+body[data-march7th-skin] [data-composer-card]
+  [role='listbox']:has([role='presentation'][data-source='command'])
+  button[role='option']:is(:hover, :focus-visible, [aria-selected='true'])
+  > span:first-child:not([aria-hidden]) + span:last-child,
+body[data-march7th-skin] [data-composer-card]
+  [role='listbox']:has([role='presentation'][data-source='command'])
+  button[role='option']:is(:hover, :focus-visible, [aria-selected='true'])
+  > span[aria-hidden] + span + span:last-child {
+  color: #875a75;
+}
+
+/* ---------- 4d. 深色主题：午夜星空 + 冰晶蓝 + 樱花粉 ----------
+   浅色素材（侧栏、页头和输入画框）保留原画；所有真正的应用表面使用统一的
+   午夜蓝紫层级。这样不会把深色模式做成简单的灰黑反相，也避免设置中心和
+   Portal 菜单继续沿用上面的浅粉玻璃硬编码。 */
+body[data-march7th-skin][data-ds-dark-theme] {
+  --m7-night-0: #0b1020;
+  --m7-night-1: #11182b;
+  --m7-night-2: #171f36;
+  --m7-night-3: #202a46;
+  --m7-night-overlay: #293553;
+  --m7-night-ink: #f7f2ff;
+  --m7-night-secondary: #c9c2dc;
+  --m7-night-muted: #9f98b8;
+  --m7-night-pink: #ff8fbd;
+  --m7-night-pink-strong: #ea6da8;
+  --m7-night-ice: #8dd7ff;
+  --m7-night-lavender: #bca7ff;
+  color-scheme: dark;
+  background:
+    radial-gradient(960px 520px at 86% -12%, rgba(111, 167, 255, 0.16), transparent 62%),
+    radial-gradient(820px 520px at -8% 108%, rgba(255, 111, 173, 0.12), transparent 58%),
+    var(--m7-night-0);
+}
+
+body[data-march7th-skin][data-ds-dark-theme] [data-conversation-scroll] {
+  background:
+    radial-gradient(900px 460px at 82% 4%, rgba(110, 123, 211, 0.08), transparent 62%),
+    linear-gradient(180deg, rgba(7, 11, 25, 0.22), rgba(9, 13, 29, 0.52)),
+    url("https://raw.githubusercontent.com/fishfromsky/dsh-march7th-skin/main/src/client/skins/march7th/background.webp") center / cover no-repeat,
+    var(--m7-night-0);
+}
+
+body[data-march7th-skin][data-ds-dark-theme] [data-chat-flow-key] {
+  background: linear-gradient(145deg, rgba(19, 27, 48, 0.82), rgba(31, 37, 65, 0.72));
+  border-color: rgba(166, 193, 236, 0.16);
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.035),
+    0 12px 34px rgba(3, 6, 17, 0.34);
+  backdrop-filter: blur(12px) saturate(1.08);
+}
+
+body[data-march7th-skin][data-ds-dark-theme] [data-chat-flow-key]:hover {
+  background: linear-gradient(145deg, rgba(23, 33, 57, 0.9), rgba(37, 43, 74, 0.82));
+  border-color: rgba(141, 215, 255, 0.24);
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.05),
+    0 14px 38px rgba(3, 6, 17, 0.4);
+}
+
+body[data-march7th-skin][data-ds-dark-theme] [data-composer-card]
+  [role='listbox']:has([role='presentation'][data-source='command']) {
+  --dsw-alias-label-primary: var(--m7-night-ink);
+  --dsw-alias-label-secondary: var(--m7-night-secondary);
+  --dsw-alias-label-tertiary: var(--m7-night-muted);
+  --dsw-alias-label-dimmed: #716b8a;
+  --dsh-scrollbar-thumb: rgba(115, 126, 170, 0.46);
+  --dsh-scrollbar-thumb-hover: rgba(151, 162, 205, 0.62);
+  border-color: rgba(188, 167, 255, 0.32);
+  background:
+    radial-gradient(circle at 10% 0%, rgba(141, 215, 255, 0.1), transparent 38%),
+    radial-gradient(circle at 94% 100%, rgba(255, 111, 173, 0.1), transparent 42%),
+    linear-gradient(145deg, rgba(16, 23, 42, 0.985), rgba(28, 31, 56, 0.975));
+  color: var(--m7-night-ink);
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.055),
+    0 22px 58px rgba(2, 5, 15, 0.54),
+    0 0 0 4px rgba(103, 91, 170, 0.12);
+  backdrop-filter: blur(26px) saturate(1.12);
+}
+
+body[data-march7th-skin][data-ds-dark-theme] [data-composer-card]
+  [role='listbox']:has([role='presentation'][data-source='command'])
+  [role='presentation'][data-source='command'] {
+  color: #d69bbb;
+}
+
+body[data-march7th-skin][data-ds-dark-theme] [data-composer-card]
+  [role='listbox']:has([role='presentation'][data-source='command'])
+  button[role='option'] {
+  border-color: transparent;
+  background: transparent;
+  color: var(--m7-night-secondary);
+  box-shadow: none;
+}
+
+body[data-march7th-skin][data-ds-dark-theme] [data-composer-card]
+  [role='listbox']:has([role='presentation'][data-source='command'])
+  button[role='option'] > span:nth-last-child(2):not([aria-hidden]) {
+  color: #f7eafa;
+}
+
+body[data-march7th-skin][data-ds-dark-theme] [data-composer-card]
+  [role='listbox']:has([role='presentation'][data-source='command'])
+  button[role='option'] > span:first-child:not([aria-hidden]) + span:last-child,
+body[data-march7th-skin][data-ds-dark-theme] [data-composer-card]
+  [role='listbox']:has([role='presentation'][data-source='command'])
+  button[role='option'] > span[aria-hidden] + span + span:last-child {
+  color: var(--m7-night-muted);
+}
+
+body[data-march7th-skin][data-ds-dark-theme] [data-composer-card]
+  [role='listbox']:has([role='presentation'][data-source='command'])
+  button[role='option']:is(:hover, :focus-visible, [aria-selected='true']) {
+  border-color: rgba(255, 143, 189, 0.3);
+  background: linear-gradient(100deg, rgba(255, 111, 173, 0.17), rgba(148, 125, 235, 0.15));
+  color: #ffe2ef;
+  box-shadow:
+    inset 3px 0 var(--m7-night-pink-strong),
+    inset 0 1px rgba(255, 255, 255, 0.045),
+    0 6px 18px rgba(2, 5, 15, 0.22);
+}
+
+body[data-march7th-skin][data-ds-dark-theme] [data-composer-card]
+  [role='listbox']:has([role='presentation'][data-source='command'])
+  button[role='option']:is(:hover, :focus-visible, [aria-selected='true'])
+  > span:nth-last-child(2):not([aria-hidden]) {
+  color: #ffe7f2;
+}
+
+body[data-march7th-skin][data-ds-dark-theme] [data-composer-card]
+  [role='listbox']:has([role='presentation'][data-source='command'])
+  button[role='option']:is(:hover, :focus-visible, [aria-selected='true'])
+  > span:first-child:not([aria-hidden]) + span:last-child,
+body[data-march7th-skin][data-ds-dark-theme] [data-composer-card]
+  [role='listbox']:has([role='presentation'][data-source='command'])
+  button[role='option']:is(:hover, :focus-visible, [aria-selected='true'])
+  > span[aria-hidden] + span + span:last-child {
+  color: #c9c2dc;
+}
+
+/* Trajectory 页自身的 token 已是深色，但后置的工具栏规则仍为浅色；在这里
+   完成闭环，保证搜索框、标题和已选按钮都属于同一夜色层级。 */
+body[data-march7th-skin][data-ds-dark-theme]
+  [data-conversation-composer-overlay] {
+  --dsw-alias-bg-base: rgba(11, 16, 32, 0.66);
+  --dsw-alias-bg-layer-1: rgba(17, 24, 43, 0.78);
+  --dsw-alias-bg-layer-2: rgba(23, 31, 54, 0.76);
+  --dsw-alias-bg-layer-3: rgba(32, 42, 70, 0.78);
+  --dsw-alias-bg-overlay: rgba(41, 53, 83, 0.84);
+  --dsw-alias-bg-module-platform: rgba(28, 37, 63, 0.8);
+  --dsw-specific-sidebar-fill: rgba(20, 27, 48, 0.84);
+  --dsw-alias-border-l1: rgba(164, 190, 235, 0.14);
+  --dsw-alias-border-l2: rgba(180, 198, 239, 0.22);
+  --dsw-alias-border-l3: rgba(195, 207, 242, 0.3);
+  --dsw-alias-label-primary: var(--m7-night-ink);
+  --dsw-alias-label-secondary: var(--m7-night-secondary);
+  --dsw-alias-label-tertiary: var(--m7-night-muted);
+  --dsw-alias-label-caption: #aaa2c1;
+  --dsw-alias-state-business-primary: var(--m7-night-pink);
+  background: rgba(10, 15, 31, 0.68);
+  backdrop-filter: blur(12px) saturate(1.06);
+}
+
+body[data-march7th-skin][data-ds-dark-theme]
+  [data-conversation-composer-overlay] [role='toolbar'] {
+  border-bottom-color: rgba(255, 143, 189, 0.18);
+  background: linear-gradient(90deg, rgba(17, 24, 43, 0.82), rgba(28, 31, 57, 0.76));
+  box-shadow: 0 5px 18px rgba(2, 5, 15, 0.22);
+}
+
+body[data-march7th-skin][data-ds-dark-theme]
+  [data-conversation-composer-overlay] [role='toolbar'] button {
+  color: var(--m7-night-secondary);
+}
+
+body[data-march7th-skin][data-ds-dark-theme]
+  [data-conversation-composer-overlay]
+  [role='toolbar'] button:is(:hover, [aria-pressed='true']) {
+  color: #ffe2ef;
+  background: rgba(255, 143, 189, 0.14);
+}
+
+body[data-march7th-skin][data-ds-dark-theme]
+  [data-conversation-composer-overlay]
+  [role='toolbar'] :has(> input[type='search']) {
+  border-color: rgba(180, 198, 239, 0.22);
+  background: rgba(13, 19, 36, 0.74);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.04);
+}
+
+body[data-march7th-skin][data-ds-dark-theme]
+  [data-conversation-composer-overlay]
+  :is(h1, h2, h3, h4, [role='heading'], th) {
+  color: #f7eafa;
+  text-shadow: 0 1px 10px rgba(188, 167, 255, 0.12);
+}
+
+/* 深色弹出菜单。覆盖 hero、composer、设置中心 Portal 与侧栏视图菜单，
+   并让嵌套菜单继承相同表面，避免出现一层深、一层浅的断裂。 */
+:is(
+  body[data-march7th-skin][data-ds-dark-theme]:has(
+    [data-phase='hero'] [data-composer-seat]
+      button[aria-haspopup='menu'][aria-expanded='true']
+  ) > [role='menu'],
+  body[data-march7th-skin][data-ds-dark-theme]:has(
+    [data-slot='sidebar'] [role='dialog'][aria-modal='true']:has(> nav)
+  ) > [role='menu'],
+  body[data-march7th-skin][data-ds-dark-theme] [data-composer-seat]
+    button[aria-haspopup='menu'][aria-expanded='true'] + [role='menu'],
+  body[data-march7th-skin][data-ds-dark-theme] [data-composer-seat]
+    button[aria-label^='\8BBF\95EE\6A21\5F0F'] + [role='menu'],
+  body[data-march7th-skin][data-ds-dark-theme] [data-composer-seat]
+    button[aria-label^='Access mode'] + [role='menu'],
+  body[data-march7th-skin][data-ds-dark-theme] > [role='menu']:has(
+    > [role='presentation'] > [role='presentation']
+  )
+) {
+  --dsw-specific-menu: rgba(18, 24, 44, 0.96);
+  --dsw-alias-label-primary: var(--m7-night-ink);
+  --dsw-alias-label-secondary: var(--m7-night-secondary);
+  --dsw-alias-label-tertiary: var(--m7-night-muted);
+  --dsw-alias-label-caption: #aaa2c1;
+  --dsw-alias-border-l1: rgba(164, 190, 235, 0.18);
+  --dsw-alias-border-l2: rgba(180, 198, 239, 0.24);
+  --dsw-alias-interactive-bg-hover: rgba(141, 215, 255, 0.1);
+  --dsw-alias-interactive-bg-selected: rgba(255, 143, 189, 0.16);
+  border-color: rgba(188, 167, 255, 0.3);
+  background:
+    radial-gradient(circle at 12% 4%, rgba(141, 215, 255, 0.1), transparent 38%),
+    radial-gradient(circle at 92% 100%, rgba(255, 111, 173, 0.09), transparent 42%),
+    linear-gradient(145deg, rgba(16, 23, 42, 0.98), rgba(28, 31, 56, 0.97));
+  color: var(--m7-night-ink);
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.055),
+    0 18px 46px rgba(2, 5, 15, 0.52),
+    0 0 0 3px rgba(116, 105, 183, 0.1);
+  backdrop-filter: blur(24px) saturate(1.14);
+}
+
+body[data-march7th-skin][data-ds-dark-theme]:has(
+  [data-phase='hero'] [data-composer-seat]
+    button[aria-haspopup='menu'][aria-expanded='true']
+) > [role='menu'] [role='menu'] {
+  --dsw-specific-menu: rgba(18, 24, 44, 0.97);
+  border-color: rgba(188, 167, 255, 0.28);
+  background: linear-gradient(145deg, rgba(16, 23, 42, 0.98), rgba(28, 31, 56, 0.97));
+  color: var(--m7-night-ink);
+  box-shadow: 0 18px 46px rgba(2, 5, 15, 0.52);
+}
+
+:is(
+  body[data-march7th-skin][data-ds-dark-theme]:has(
+    [data-phase='hero'] [data-composer-seat]
+      button[aria-haspopup='menu'][aria-expanded='true']
+  ) > [role='menu'],
+  body[data-march7th-skin][data-ds-dark-theme]:has(
+    [data-slot='sidebar'] [role='dialog'][aria-modal='true']:has(> nav)
+  ) > [role='menu'],
+  body[data-march7th-skin][data-ds-dark-theme] [data-composer-seat]
+    button[aria-haspopup='menu'][aria-expanded='true'] + [role='menu'],
+  body[data-march7th-skin][data-ds-dark-theme] [data-composer-seat]
+    button[aria-label^='\8BBF\95EE\6A21\5F0F'] + [role='menu'],
+  body[data-march7th-skin][data-ds-dark-theme] [data-composer-seat]
+    button[aria-label^='Access mode'] + [role='menu'],
+  body[data-march7th-skin][data-ds-dark-theme] > [role='menu']:has(
+    > [role='presentation'] > [role='presentation']
+  )
+) :is(button[role='menuitem'], button[role='menuitemradio']) {
+  border-color: transparent;
+  background: transparent;
+  color: var(--m7-night-secondary);
+  box-shadow: none;
+}
+
+:is(
+  body[data-march7th-skin][data-ds-dark-theme]:has(
+    [data-phase='hero'] [data-composer-seat]
+      button[aria-haspopup='menu'][aria-expanded='true']
+  ) > [role='menu'],
+  body[data-march7th-skin][data-ds-dark-theme]:has(
+    [data-slot='sidebar'] [role='dialog'][aria-modal='true']:has(> nav)
+  ) > [role='menu'],
+  body[data-march7th-skin][data-ds-dark-theme] [data-composer-seat]
+    button[aria-haspopup='menu'][aria-expanded='true'] + [role='menu'],
+  body[data-march7th-skin][data-ds-dark-theme] [data-composer-seat]
+    button[aria-label^='\8BBF\95EE\6A21\5F0F'] + [role='menu'],
+  body[data-march7th-skin][data-ds-dark-theme] [data-composer-seat]
+    button[aria-label^='Access mode'] + [role='menu'],
+  body[data-march7th-skin][data-ds-dark-theme] > [role='menu']:has(
+    > [role='presentation'] > [role='presentation']
+  )
+) :is(
+  button[role='menuitem']:hover,
+  button[role='menuitem']:focus-visible,
+  button[role='menuitem']:has(> svg:last-child),
+  button[role='menuitemradio']:hover,
+  button[role='menuitemradio']:focus-visible,
+  button[role='menuitemradio'][aria-checked='true']
+) {
+  border-color: rgba(255, 143, 189, 0.28);
+  background: linear-gradient(100deg, rgba(255, 111, 173, 0.16), rgba(148, 125, 235, 0.14));
+  color: #ffe2ef;
+  box-shadow:
+    inset 3px 0 var(--m7-night-pink-strong),
+    inset 0 1px rgba(255, 255, 255, 0.045),
+    0 5px 16px rgba(2, 5, 15, 0.2);
+  transform: none;
+}
+
+:is(
+  body[data-march7th-skin][data-ds-dark-theme]:has(
+    [data-phase='hero'] [data-composer-seat]
+      button[aria-haspopup='menu'][aria-expanded='true']
+  ) > [role='menu'],
+  body[data-march7th-skin][data-ds-dark-theme]:has(
+    [data-slot='sidebar'] [role='dialog'][aria-modal='true']:has(> nav)
+  ) > [role='menu'],
+  body[data-march7th-skin][data-ds-dark-theme] [data-composer-seat]
+    button[aria-haspopup='menu'][aria-expanded='true'] + [role='menu'],
+  body[data-march7th-skin][data-ds-dark-theme] > [role='menu']:has(
+    > [role='presentation'] > [role='presentation']
+  )
+) button :is(span, svg) {
+  color: inherit;
+  filter: none;
+}
+
+:is(
+  body[data-march7th-skin][data-ds-dark-theme]:has(
+    [data-phase='hero'] [data-composer-seat]
+      button[aria-haspopup='menu'][aria-expanded='true']
+  ) > [role='menu'],
+  body[data-march7th-skin][data-ds-dark-theme]:has(
+    [data-slot='sidebar'] [role='dialog'][aria-modal='true']:has(> nav)
+  ) > [role='menu'],
+  body[data-march7th-skin][data-ds-dark-theme] [data-composer-seat]
+    button[aria-haspopup='menu'][aria-expanded='true'] + [role='menu'],
+  body[data-march7th-skin][data-ds-dark-theme] > [role='menu']:has(
+    > [role='presentation'] > [role='presentation']
+  )
+) [role='separator'] {
+  background: linear-gradient(90deg, transparent, rgba(188, 167, 255, 0.28), transparent);
+}
+
+/* 设置中心：背景遮罩降低画面干扰，面板通过相邻的蓝紫明度而非白色分隔线
+   建立层级；樱花粉只用于当前项和主要交互，避免整屏偏红。 */
+body[data-march7th-skin][data-ds-dark-theme] [data-slot='sidebar']
+  [role='presentation']:has(> [aria-hidden='true'] + [role='dialog'])
+  > [aria-hidden='true'] {
+  background: rgba(5, 8, 20, 0.72);
+  backdrop-filter: blur(10px) saturate(0.72);
+}
+
+body[data-march7th-skin][data-ds-dark-theme] [data-slot='sidebar']
+  [role='dialog'][aria-modal='true']:has(> nav) {
+  --dsw-alias-bg-base: rgba(11, 16, 32, 0.98);
+  --dsw-alias-bg-elevated: rgba(24, 31, 54, 0.96);
+  --dsw-alias-bg-layer-1: #11182b;
+  --dsw-alias-bg-layer-2: #171f36;
+  --dsw-alias-bg-layer-3: #202a46;
+  --dsw-alias-bg-overlay: #293553;
+  --dsw-alias-bg-module-platform: #202a46;
+  --dsw-alias-label-primary: var(--m7-night-ink);
+  --dsw-alias-label-secondary: var(--m7-night-secondary);
+  --dsw-alias-label-tertiary: var(--m7-night-muted);
+  --dsw-alias-label-dimmed: #716b8a;
+  --dsw-alias-label-caption: #aaa2c1;
+  --dsw-alias-border-l1: rgba(164, 190, 235, 0.14);
+  --dsw-alias-border-l2: rgba(180, 198, 239, 0.22);
+  --dsw-alias-brand-primary: var(--m7-night-pink);
+  --dsw-alias-brand-text: #ffd9e9;
+  --dsw-specific-sidebar-nav-item-active: rgba(255, 111, 173, 0.16);
+  --dsw-specific-sidebar-nav-item-hover: rgba(141, 215, 255, 0.09);
+  border-color: rgba(188, 167, 255, 0.34);
+  background:
+    radial-gradient(circle at 92% 8%, rgba(127, 111, 207, 0.16), transparent 38%),
+    radial-gradient(circle at 8% 92%, rgba(255, 111, 173, 0.08), transparent 34%),
+    linear-gradient(145deg, rgba(13, 19, 36, 0.99), rgba(24, 29, 52, 0.985));
+  color: var(--m7-night-ink);
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.055),
+    0 30px 90px rgba(2, 4, 14, 0.58),
+    0 0 0 4px rgba(96, 84, 158, 0.13);
+  backdrop-filter: blur(28px) saturate(1.08);
+}
+
+body[data-march7th-skin][data-ds-dark-theme] [data-slot='sidebar']
+  [role='dialog'][aria-modal='true']:has(> nav) > nav {
+  border-right-color: rgba(188, 167, 255, 0.16);
+  background:
+    radial-gradient(circle at 18% 4%, rgba(141, 215, 255, 0.075), transparent 32%),
+    linear-gradient(180deg, rgba(13, 20, 38, 0.94), rgba(18, 22, 42, 0.86));
+  box-shadow: inset -1px 0 rgba(255, 255, 255, 0.025);
+}
+
+body[data-march7th-skin][data-ds-dark-theme] [data-slot='sidebar']
+  [role='dialog'][aria-modal='true']:has(> nav) > nav button {
+  color: var(--m7-night-secondary);
+}
+
+body[data-march7th-skin][data-ds-dark-theme] [data-slot='sidebar']
+  [role='dialog'][aria-modal='true']:has(> nav) > nav button:is(:hover, :focus-visible) {
+  border-color: rgba(141, 215, 255, 0.16);
+  background: rgba(141, 215, 255, 0.075);
+  color: var(--m7-night-ink);
+  box-shadow: inset 3px 0 var(--m7-night-ice);
+}
+
+body[data-march7th-skin][data-ds-dark-theme] [data-slot='sidebar']
+  [role='dialog'][aria-modal='true']:has(> nav) > nav button[aria-current='true'] {
+  border-color: rgba(255, 143, 189, 0.28);
+  background: linear-gradient(100deg, rgba(255, 111, 173, 0.18), rgba(148, 125, 235, 0.15));
+  color: #ffe3ef;
+  box-shadow:
+    inset 3px 0 var(--m7-night-pink-strong),
+    inset 0 1px rgba(255, 255, 255, 0.04),
+    0 6px 18px rgba(3, 6, 17, 0.2);
+}
+
+body[data-march7th-skin][data-ds-dark-theme] [data-slot='sidebar']
+  [role='dialog'][aria-modal='true']:has(> nav) > nav + div {
+  background: rgba(9, 14, 29, 0.12);
+}
+
+body[data-march7th-skin][data-ds-dark-theme] [data-slot='sidebar']
+  [role='dialog'][aria-modal='true']:has(> nav)
+  :is(button[aria-haspopup], input, select, textarea, [role='radio'], button[aria-pressed]) {
+  border-color: rgba(180, 198, 239, 0.2);
+  background: rgba(18, 25, 45, 0.74);
+  color: var(--m7-night-ink);
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.045),
+    0 5px 16px rgba(2, 5, 15, 0.12);
+}
+
+body[data-march7th-skin][data-ds-dark-theme] [data-slot='sidebar']
+  [role='dialog'][aria-modal='true']:has(> nav)
+  :is(button[aria-haspopup], input, select, textarea, [role='radio'], button[aria-pressed]):is(:hover, :focus-visible) {
+  border-color: rgba(141, 215, 255, 0.34);
+  background: rgba(31, 41, 68, 0.82);
+}
+
+body[data-march7th-skin][data-ds-dark-theme] [data-slot='sidebar']
+  [role='dialog'][aria-modal='true']:has(> nav)
+  :is([role='radio'][aria-checked='true'], button[aria-pressed='true']) {
+  border-color: rgba(255, 143, 189, 0.5);
+  background:
+    radial-gradient(circle at 50% 0, rgba(188, 167, 255, 0.17), transparent 66%),
+    linear-gradient(145deg, rgba(38, 34, 65, 0.96), rgba(31, 39, 66, 0.96));
+  color: #ffe2ef;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 143, 189, 0.08),
+    inset 0 1px rgba(255, 255, 255, 0.055),
+    0 8px 22px rgba(2, 5, 15, 0.24);
+}
+
+body[data-march7th-skin][data-ds-dark-theme] [data-slot='sidebar']
+  [role='dialog'][aria-modal='true']:has(> nav) input[type='range'] {
+  accent-color: var(--m7-night-pink-strong);
+}
+
+/* 会话管理抽屉沿用设置中心的夜色表面，危险操作仍由宿主 error token 保持
+   红色语义，不把所有按钮都染成强调色。 */
+body[data-march7th-skin][data-ds-dark-theme] [data-dsh-drawer-backdrop] {
+  background: rgba(4, 7, 18, 0.66);
+  backdrop-filter: blur(8px) saturate(0.74);
+}
+
+body[data-march7th-skin][data-ds-dark-theme] [data-dsh-drawer] {
+  --dsw-alias-bg-base: rgba(11, 16, 32, 0.98);
+  --dsw-alias-bg-layer-1: #11182b;
+  --dsw-alias-bg-layer-2: #171f36;
+  --dsw-alias-bg-layer-3: #202a46;
+  --dsw-alias-label-primary: var(--m7-night-ink);
+  --dsw-alias-label-secondary: var(--m7-night-secondary);
+  --dsw-alias-label-tertiary: var(--m7-night-muted);
+  --dsw-alias-border-l1: rgba(164, 190, 235, 0.16);
+  border-left-color: rgba(188, 167, 255, 0.3);
+  background:
+    radial-gradient(circle at 92% 4%, rgba(127, 111, 207, 0.16), transparent 34%),
+    radial-gradient(circle at 6% 94%, rgba(255, 111, 173, 0.08), transparent 34%),
+    linear-gradient(160deg, rgba(13, 19, 36, 0.99), rgba(24, 29, 52, 0.985));
+  color: var(--m7-night-ink);
+  box-shadow:
+    -28px 0 72px rgba(2, 4, 14, 0.5),
+    inset 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+body[data-march7th-skin][data-ds-dark-theme] [data-dsh-drawer] .dsh-drawer__header {
+  border-bottom-color: rgba(188, 167, 255, 0.16);
+  background: rgba(13, 20, 38, 0.56);
+  box-shadow: inset 0 -1px rgba(255, 255, 255, 0.025);
+}
+
+body[data-march7th-skin][data-ds-dark-theme] [data-dsh-drawer]
+  :is(.dsh-drawer__title, .dsh-delete-session__group-title, .dsh-delete-session__title) {
+  color: #f7eafa;
+}
+
+body[data-march7th-skin][data-ds-dark-theme] [data-dsh-drawer] .dsh-delete-session__group {
+  border-top-color: rgba(180, 198, 239, 0.14);
+}
+
+body[data-march7th-skin][data-ds-dark-theme] [data-dsh-drawer] .dsh-delete-session__row {
+  border-color: rgba(180, 198, 239, 0.18);
+  background: linear-gradient(110deg, rgba(17, 24, 43, 0.82), rgba(31, 37, 64, 0.7));
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.035),
+    0 6px 18px rgba(2, 5, 15, 0.18);
+}
+
+body[data-march7th-skin][data-ds-dark-theme] [data-dsh-drawer] .dsh-delete-session__row:hover {
+  border-color: rgba(255, 143, 189, 0.3);
+  background: linear-gradient(110deg, rgba(45, 30, 58, 0.86), rgba(34, 40, 70, 0.82));
+}
+
+body[data-march7th-skin][data-ds-dark-theme] [data-dsh-drawer] button {
+  border-color: rgba(180, 198, 239, 0.2);
+  color: var(--m7-night-secondary);
+}
+
+body[data-march7th-skin][data-ds-dark-theme] [data-dsh-drawer] button:is(:hover, :focus-visible) {
+  border-color: rgba(255, 143, 189, 0.32);
+  background: rgba(255, 111, 173, 0.12);
+  color: #ffe2ef;
+}
+
+body[data-march7th-skin][data-ds-dark-theme] [data-dsh-drawer] .dsh-delete-session__more-menu {
+  border-color: rgba(188, 167, 255, 0.28);
+  background: linear-gradient(145deg, rgba(16, 23, 42, 0.98), rgba(28, 31, 56, 0.97));
+  box-shadow: 0 18px 44px rgba(2, 5, 15, 0.48);
+}
+
+/* ---------- 5. 滚动条：圆角冰蓝（WebKit 路径；标准属性路径由 token 层负责） ---------- */
+body[data-march7th-skin] ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+body[data-march7th-skin] ::-webkit-scrollbar-track {
+  background: transparent;
+}
+body[data-march7th-skin] ::-webkit-scrollbar-thumb {
+  background: var(--dsw-alias-scrollbar-bg-l1);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+body[data-march7th-skin] ::-webkit-scrollbar-thumb:hover {
+  background: var(--dsw-alias-scrollbar-hover-l1);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+/* ---------- 6. 选区 / 焦点 ---------- */
+body[data-march7th-skin] ::selection {
+  background: rgba(255, 143, 171, 0.30);
+}
+body[data-march7th-skin] :focus-visible {
+  outline-color: var(--m7-ice-deep);
+  outline-offset: 2px;
+}
+
+/* ---------- 7. 空状态（hero）装饰：一句来自三月七的话 ----------
+   居中放在中央安全区内（横向 31%~59%），避免与两侧立绘重叠。
+   挂在滚动区上：根容器的 ::after 已被右侧人物占用。 */
+body[data-march7th-skin] [data-phase='hero'] [data-conversation-scroll]::after {
+  content: '❄ 愿时光定格，回忆永存 —— 三月七';
+  position: fixed;
+  left: 50%;
+  bottom: 150px;
+  transform: translateX(-50%);
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: rgba(78, 159, 221, 0.55);
+  pointer-events: none;
+  user-select: none;
+}
+body[data-march7th-skin][data-ds-dark-theme] [data-phase='hero'] [data-conversation-scroll]::after {
+  color: rgba(124, 192, 240, 0.5);
+}
+
+/* ---------- 8. 动效：仅在用户不要求减少动效时启用 ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  body[data-march7th-skin] [data-phase='hero'] [data-conversation-scroll]::after {
+    animation: m7-float 6s ease-in-out infinite;
+  }
+}
+@keyframes m7-float {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, -6px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  body[data-march7th-skin] [data-chat-flow-key] {
+    transition: none;
+  }
+}
+

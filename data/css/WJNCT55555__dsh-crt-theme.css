@@ -1,0 +1,493 @@
+/* WJNCT55555/dsh-crt-theme — src/client/crt.css
+   fetched 2026-08-28 from https://raw.githubusercontent.com/WJNCT55555/dsh-crt-theme/main/src/client/crt.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+:root {
+  --crt-deepseek-blue: #ff641f;
+  --crt-signal-cyan: #69ddb1;
+  --crt-phosphor-ice: #f6dfbd;
+  --crt-alert-amber: #ff2b24;
+  --crt-instrument-amber: #ffb000;
+  --crt-instrument-orange: #ff641f;
+  --crt-meter-track: #422016;
+  --crt-meter-base: #170806;
+  --crt-meter-highlight: #ffd36a;
+  --crt-meter-edge: #ff641f;
+  --crt-critical-red: #ff2b24;
+  --crt-restricted-violet: #a948da;
+  --crt-ink: #030202;
+  --crt-gunmetal: #080505;
+  --crt-line: #811b12;
+  --crt-control-fill: #080505;
+  --crt-control-hover: #100807;
+  --crt-control-active: #180b07;
+  --crt-accent-bright: #ffd36a;
+  --crt-accent-hover: #ff641f;
+  --crt-muted-label: #9f7257;
+  --crt-input-fill: rgba(8, 5, 5, 0.94);
+  --crt-input-shadow: rgba(0, 0, 0, 0.32);
+  --crt-focus-ring: rgba(255, 176, 0, 0.25);
+  --crt-focus-glow: rgba(255, 100, 31, 0.24);
+  --crt-row-hover: rgba(255, 100, 31, 0.1);
+  --crt-row-selected: rgba(255, 176, 0, 0.13);
+  --crt-selection-foreground: #030202;
+  --crt-link-hover: #ffd36a;
+  --crt-scanline-color: rgba(255, 176, 0, 0.36);
+  --crt-grille-color: rgba(255, 176, 0, 0.018);
+  --crt-vignette-mid: rgba(0, 0, 0, 0.28);
+  --crt-vignette-edge: rgba(0, 0, 0, 0.72);
+  --crt-dialog-bg: #030202;
+  --crt-dialog-panel: #080505;
+  --crt-dialog-card: #180b07;
+  --crt-dialog-line: rgba(255, 100, 31, 0.44);
+  --crt-dialog-line-strong: rgba(255, 176, 0, 0.74);
+  --crt-dialog-muted: #d0b694;
+  --crt-dialog-faint: #9f7257;
+  --crt-dialog-meter-shadow: rgba(255, 100, 31, 0.4);
+  --crt-scanline-opacity: 0.075;
+  --crt-vignette-opacity: 0.62;
+}
+
+/* Unit-01 palette: violet structure, acid-green signal ink, and orange alerts. */
+html[data-dsh-crt-scheme='unit01'] {
+  --crt-deepseek-blue: #a948da;
+  --crt-signal-cyan: #76e7c7;
+  --crt-phosphor-ice: #e9e5d7;
+  --crt-alert-amber: #ff6a1f;
+  --crt-instrument-amber: #a7ed28;
+  --crt-instrument-orange: #a948da;
+  --crt-meter-track: #281a35;
+  --crt-meter-base: #100a18;
+  --crt-meter-highlight: #caff64;
+  --crt-meter-edge: #a948da;
+  --crt-critical-red: #ff6a1f;
+  --crt-restricted-violet: #a948da;
+  --crt-ink: #07050b;
+  --crt-gunmetal: #0e0916;
+  --crt-line: #5c2680;
+  --crt-control-fill: #0e0916;
+  --crt-control-hover: #171021;
+  --crt-control-active: #21152f;
+  --crt-accent-bright: #caff64;
+  --crt-accent-hover: #a948da;
+  --crt-muted-label: #9c8cac;
+  --crt-input-fill: rgba(14, 9, 22, 0.94);
+  --crt-input-shadow: rgba(7, 5, 11, 0.34);
+  --crt-focus-ring: rgba(167, 237, 40, 0.24);
+  --crt-focus-glow: rgba(167, 237, 40, 0.18);
+  --crt-row-hover: rgba(169, 72, 218, 0.11);
+  --crt-row-selected: rgba(167, 237, 40, 0.11);
+  --crt-selection-foreground: #07050b;
+  --crt-link-hover: #caff64;
+  --crt-scanline-color: rgba(167, 237, 40, 0.24);
+  --crt-grille-color: rgba(169, 72, 218, 0.024);
+  --crt-vignette-mid: rgba(7, 5, 11, 0.26);
+  --crt-vignette-edge: rgba(7, 5, 11, 0.7);
+  --crt-dialog-bg: #07050b;
+  --crt-dialog-panel: #0e0916;
+  --crt-dialog-card: #21152f;
+  --crt-dialog-line: rgba(169, 72, 218, 0.42);
+  --crt-dialog-line-strong: rgba(167, 237, 40, 0.7);
+  --crt-dialog-muted: #c3bac7;
+  --crt-dialog-faint: #9c8cac;
+  --crt-dialog-meter-shadow: rgba(167, 237, 40, 0.24);
+  --crt-scanline-opacity: 0.065;
+  --crt-vignette-opacity: 0.58;
+}
+
+html.dsh-crt-active,
+html.dsh-crt-active body {
+  background: var(--crt-ink) !important;
+}
+
+html.dsh-crt-active body {
+  color: var(--crt-phosphor-ice);
+  background-image: none;
+  font-family: "Orbitron", "Bahnschrift SemiCondensed", "Arial Narrow", "Cascadia Mono", "Microsoft YaHei UI", sans-serif;
+  font-stretch: condensed;
+  letter-spacing: 0.025em;
+}
+
+html.dsh-crt-active button,
+html.dsh-crt-active input,
+html.dsh-crt-active textarea,
+html.dsh-crt-active select,
+html.dsh-crt-active [role='tab'] {
+  box-sizing: border-box;
+  font-family: "Orbitron", "Bahnschrift SemiCondensed", "Arial Narrow", "Cascadia Mono", "Microsoft YaHei UI", sans-serif !important;
+  font-stretch: condensed;
+  letter-spacing: 0.02em;
+}
+
+html.dsh-crt-active input,
+html.dsh-crt-active textarea,
+html.dsh-crt-active select {
+  border-radius: 1px !important;
+}
+
+/* Primary shell controls use one small cut corner; DSH keeps their native dimensions. */
+html.dsh-crt-active button[class*='_newSession'] {
+  border-color: var(--crt-instrument-orange) !important;
+  border-radius: 0 !important;
+  clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 0 100%);
+}
+
+/* Branding and session rows are navigation text, never framed controls. */
+html.dsh-crt-active button[class*='_brand'],
+html.dsh-crt-active [role='treeitem'] {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-shadow: none;
+}
+
+html.dsh-crt-active button[class*='_brand']:hover,
+html.dsh-crt-active button[class*='_brand']:focus-visible {
+  color: var(--crt-instrument-amber) !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-shadow: none;
+}
+
+html.dsh-crt-active [role='treeitem']:hover,
+html.dsh-crt-active [role='treeitem'][aria-selected='true'] {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: linear-gradient(90deg, var(--crt-row-hover) 0 74%, transparent 100%) !important;
+  box-shadow: none !important;
+}
+
+html.dsh-crt-active [role='treeitem'][aria-selected='true'] {
+  background: linear-gradient(90deg, var(--crt-row-selected) 0 74%, transparent 100%) !important;
+  box-shadow: inset 2px 0 var(--crt-instrument-amber) !important;
+}
+
+/* Compact icon controls retain their component-owned dimensions and shape. */
+html.dsh-crt-active button[class*='_iconButton'],
+html.dsh-crt-active button[class*='_searchButton'],
+html.dsh-crt-active button[class*='_toggle'],
+html.dsh-crt-active button[class*='_add'],
+html.dsh-crt-active button[class*='_close'],
+html.dsh-crt-active button:has(> svg:only-child) {
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+html.dsh-crt-active button[class*='_iconButton']:hover:not(:disabled),
+html.dsh-crt-active button[class*='_searchButton']:hover:not(:disabled),
+html.dsh-crt-active button[class*='_toggle']:hover:not(:disabled),
+html.dsh-crt-active button[class*='_add']:hover:not(:disabled),
+html.dsh-crt-active button[class*='_close']:hover:not(:disabled),
+html.dsh-crt-active button:has(> svg:only-child):hover:not(:disabled) {
+  color: var(--crt-instrument-amber) !important;
+  border-color: transparent !important;
+  background: var(--crt-row-hover) !important;
+}
+
+/* Conversation views are state labels, not push buttons. */
+html.dsh-crt-active button[role='tab'] {
+  position: relative;
+  padding: 0 8px 11px !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--crt-muted-label) !important;
+  box-shadow: none !important;
+  font-weight: 600;
+  text-shadow: none;
+}
+
+html.dsh-crt-active button[role='tab']::before {
+  position: absolute;
+  bottom: 3px;
+  left: 0;
+  width: 3px;
+  height: 13px;
+  content: '';
+  background: transparent;
+}
+
+html.dsh-crt-active button[role='tab']::after {
+  right: 0;
+  bottom: 1px;
+  left: 0;
+  height: 2px;
+  background: transparent !important;
+}
+
+html.dsh-crt-active button[role='tab']:hover,
+html.dsh-crt-active button[role='tab']:focus-visible {
+  color: var(--crt-accent-bright) !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+html.dsh-crt-active button[role='tab'][aria-selected='true'] {
+  color: var(--crt-instrument-amber) !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-shadow: 0 0 4px color-mix(in srgb, var(--crt-instrument-amber) 62%, transparent);
+}
+
+html.dsh-crt-active button[role='tab'][aria-selected='true']::before,
+html.dsh-crt-active button[role='tab'][aria-selected='true']::after {
+  background: var(--crt-instrument-amber) !important;
+}
+
+html.dsh-crt-active input,
+html.dsh-crt-active textarea,
+html.dsh-crt-active select {
+  color: var(--crt-phosphor-ice) !important;
+  border-color: color-mix(in srgb, var(--crt-instrument-amber) 66%, transparent) !important;
+  background: var(--crt-input-fill) !important;
+  box-shadow: inset 0 0 16px var(--crt-input-shadow);
+}
+
+/* DSH paints composer glyphs in the backdrop below a transparent textarea. */
+html.dsh-crt-active [class*='_card']:has(textarea[class*='_input']) textarea[class*='_input'] {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  caret-color: var(--crt-instrument-amber) !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+html.dsh-crt-active [class*='_card']:has(textarea[class*='_input']) [class*='_backdrop'] {
+  color: var(--crt-phosphor-ice) !important;
+}
+
+html.dsh-crt-active [class*='_card']:has(textarea[class*='_input']) [class*='_hint'] {
+  color: var(--crt-muted-label) !important;
+}
+
+html.dsh-crt-active input::placeholder,
+html.dsh-crt-active textarea::placeholder {
+  color: var(--crt-muted-label) !important;
+  -webkit-text-fill-color: var(--crt-muted-label) !important;
+  opacity: 1;
+}
+
+html.dsh-crt-active input:focus,
+html.dsh-crt-active textarea:not([class*='_input']):focus,
+html.dsh-crt-active select:focus {
+  border-color: var(--crt-instrument-amber) !important;
+  box-shadow: inset 0 0 16px var(--crt-input-shadow), 0 0 0 1px var(--crt-focus-ring), 0 0 14px var(--crt-focus-glow) !important;
+}
+
+html.dsh-crt-active input[type='checkbox'],
+html.dsh-crt-active input[type='radio'] {
+  accent-color: var(--crt-instrument-amber);
+}
+
+/* The composer remains DSH's one input surface, rendered as a cut-corner instrument. */
+html.dsh-crt-active [class*='_card']:has(textarea[class*='_input']) {
+  border-color: var(--crt-instrument-orange) !important;
+  border-radius: 0 !important;
+  background: var(--crt-input-fill) !important;
+  clip-path: polygon(0 0, calc(100% - 11px) 0, 100% 11px, 100% 100%, 11px 100%, 0 calc(100% - 11px));
+  box-shadow: inset 0 0 18px var(--crt-input-shadow), 0 0 12px var(--crt-focus-glow) !important;
+}
+
+/* Task and completion tracks use the requested narrow diagonal CRT fill. */
+html.dsh-crt-active progress,
+html.dsh-crt-active [role='progressbar'] {
+  box-sizing: border-box;
+  min-height: 6px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 0 !important;
+  background: var(--crt-meter-track);
+  box-shadow: 0 0 5px var(--crt-focus-glow);
+}
+
+html.dsh-crt-active progress::-webkit-progress-bar {
+  background: var(--crt-meter-track);
+}
+
+html.dsh-crt-active progress::-webkit-progress-value {
+  background: repeating-linear-gradient(135deg, var(--crt-meter-highlight) 0 1px, var(--crt-meter-edge) 1px 2px, transparent 2px 3px);
+}
+
+html.dsh-crt-active [role='progressbar'] > * {
+  background: repeating-linear-gradient(135deg, var(--crt-meter-highlight) 0 1px, var(--crt-meter-edge) 1px 2px, transparent 2px 3px) !important;
+}
+
+/* Context occupancy keeps its semantic colors and resolves them into dense 3px cells. */
+html.dsh-crt-active span[class*='_root']:has(button[class*='_trigger'] svg circle) div[class*='_bar'] {
+  gap: 0 !important;
+  height: 9px !important;
+  border-radius: 0 !important;
+  background: repeating-linear-gradient(90deg, var(--crt-meter-track) 0 3px, transparent 3px 4px) !important;
+}
+
+html.dsh-crt-active span[class*='_root']:has(button[class*='_trigger'] svg circle) div[class*='_segment'] {
+  min-width: 0 !important;
+  border-radius: 0 !important;
+  background: repeating-linear-gradient(90deg, var(--meter-tint, var(--crt-instrument-amber)) 0 3px, transparent 3px 4px) !important;
+  box-shadow: 0 0 4px color-mix(in srgb, var(--meter-tint, var(--crt-instrument-amber)) 38%, transparent);
+}
+
+html.dsh-crt-active span[class*='_root']:has(button[class*='_trigger'] svg circle) circle[class*='_track'] {
+  stroke: var(--crt-line) !important;
+}
+
+html.dsh-crt-active span[class*='_root']:has(button[class*='_trigger'] svg circle) circle[class*='_fill'] {
+  stroke: var(--crt-instrument-amber) !important;
+}
+
+html.dsh-crt-active [role='dialog'] {
+  border-radius: 1px !important;
+  border: 2px solid var(--crt-instrument-amber) !important;
+  box-shadow: none !important;
+}
+
+html.dsh-crt-active ::selection {
+  color: var(--crt-selection-foreground);
+  background: var(--crt-instrument-amber);
+}
+
+html.dsh-crt-active a {
+  color: var(--crt-instrument-amber);
+  text-underline-offset: 0.18em;
+}
+
+html.dsh-crt-active a:hover {
+  color: var(--crt-link-hover);
+}
+
+/* The blank-session hero is the CRT boot screen, not a generic product card. */
+html.dsh-crt-active [data-phase='hero'] [class*='_headlineText'] {
+  color: var(--crt-instrument-amber) !important;
+  font-family: "Orbitron", "Bahnschrift SemiCondensed", "Arial Narrow", "Cascadia Mono", "Microsoft YaHei UI", sans-serif !important;
+  font-stretch: condensed;
+  font-weight: 700;
+  letter-spacing: 0.075em;
+  text-shadow: 0 0 5px color-mix(in srgb, var(--crt-instrument-amber) 58%, transparent);
+}
+
+html.dsh-crt-active [data-crt-whale-mark='true'] {
+  color: var(--crt-instrument-amber);
+  overflow: visible;
+  filter:
+    drop-shadow(0 0 2px color-mix(in srgb, var(--crt-instrument-orange) 48%, transparent))
+    drop-shadow(0 0 5px color-mix(in srgb, var(--crt-instrument-amber) 24%, transparent));
+}
+
+/* Physical display effects never catch input. */
+html.dsh-crt-active body::before,
+html.dsh-crt-active body::after {
+  position: fixed;
+  z-index: 2147483646;
+  inset: 0;
+  pointer-events: none;
+  content: '';
+}
+
+html.dsh-crt-active body::before {
+  opacity: var(--crt-scanline-opacity);
+  background: repeating-linear-gradient(to bottom, var(--crt-scanline-color) 0, var(--crt-scanline-color) 1px, transparent 1px, transparent 4px);
+  mix-blend-mode: screen;
+}
+
+html.dsh-crt-active body::after {
+  z-index: 2147483647;
+  opacity: var(--crt-vignette-opacity);
+  background:
+    radial-gradient(ellipse at center, transparent 43%, var(--crt-vignette-mid) 76%, var(--crt-vignette-edge) 100%),
+    repeating-linear-gradient(90deg, var(--crt-grille-color) 0 1px, transparent 1px 3px);
+}
+
+html.dsh-crt-active.dsh-crt-flicker body {
+  animation: dsh-crt-phosphor 7s steps(1, end) infinite;
+}
+
+/* dsh-achievements keeps its own semantic layout; only its visual tokens are bridged. */
+html.dsh-crt-active [role='dialog'] [class*='_section'] {
+  --retro-bg: var(--crt-dialog-bg);
+  --retro-panel: var(--crt-dialog-panel);
+  --retro-card: var(--crt-dialog-card);
+  --retro-line: var(--crt-dialog-line);
+  --retro-line-strong: var(--crt-dialog-line-strong);
+  --retro-emerald: var(--crt-instrument-amber);
+  --retro-emerald-dim: var(--crt-accent-bright);
+  --retro-emerald-deep: var(--crt-instrument-orange);
+  --retro-text: var(--crt-phosphor-ice);
+  --retro-muted: var(--crt-dialog-muted);
+  --retro-faint: var(--crt-dialog-faint);
+  --retro-amber: var(--crt-alert-amber);
+  --retro-glow: 0 0 4px color-mix(in srgb, var(--crt-instrument-amber) 28%, transparent);
+}
+
+html.dsh-crt-active [role='dialog'] [class*='_panel'] {
+  border-color: var(--crt-instrument-amber) !important;
+  background: color-mix(in srgb, var(--crt-dialog-bg) 96%, transparent) !important;
+  box-shadow: none !important;
+}
+
+html.dsh-crt-active [role='dialog'] [class*='_section'] [class*='_corner'] {
+  color: var(--crt-instrument-amber) !important;
+}
+
+html.dsh-crt-active [role='dialog'] [class*='_section'] [class*='_title'],
+html.dsh-crt-active [role='dialog'] [class*='_section'] [class*='_kicker'] {
+  color: var(--crt-instrument-amber) !important;
+  text-shadow: 0 0 9px color-mix(in srgb, var(--crt-instrument-amber) 42%, transparent);
+}
+
+html.dsh-crt-active [role='dialog'] [class*='_section'] [class*='_close']:hover {
+  color: var(--crt-alert-amber) !important;
+  border-color: var(--crt-alert-amber) !important;
+}
+
+html.dsh-crt-active [role='dialog'] [class*='_section']::-webkit-scrollbar-thumb {
+  border-color: var(--crt-instrument-amber);
+  background: color-mix(in srgb, var(--crt-instrument-orange) 62%, transparent);
+}
+
+html.dsh-crt-active [role='dialog'] [class*='_rarityBar'],
+html.dsh-crt-active [role='dialog'] [class*='_groupProgress'],
+html.dsh-crt-active [role='dialog'] [class*='_bar']:not([class*='_barFill']):not([class*='_barTicks']):not([class*='_barWrap']):not([class*='_barLabel']),
+html.dsh-crt-active [role='dialog'] [class*='_railMeter'],
+html.dsh-crt-active [role='dialog'] [class*='_hbarTrack'] {
+  border-color: transparent !important;
+  border-radius: 0 !important;
+  background: var(--crt-meter-track) !important;
+  box-shadow: 0 0 5px var(--crt-focus-glow);
+}
+
+html.dsh-crt-active [role='dialog'] [class*='_rarityBarSegment'],
+html.dsh-crt-active [role='dialog'] [class*='_groupProgress'] > div,
+html.dsh-crt-active [role='dialog'] [class*='_barFill'],
+html.dsh-crt-active [role='dialog'] [class*='_railMeter'] > span,
+html.dsh-crt-active [role='dialog'] [class*='_hbarFill'] {
+  background: repeating-linear-gradient(135deg, var(--crt-meter-highlight) 0 1px, var(--crt-meter-edge) 1px 2px, transparent 2px 3px) !important;
+  box-shadow: 0 0 5px var(--crt-dialog-meter-shadow) !important;
+}
+
+html.dsh-crt-active [role='dialog'] [class*='_barTicks'] i {
+  background: color-mix(in srgb, var(--crt-meter-base) 82%, transparent) !important;
+}
+
+@keyframes dsh-crt-phosphor {
+  0%, 88%, 100% { filter: brightness(1) contrast(1); }
+  89% { filter: brightness(1.018) contrast(1.008); }
+  90% { filter: brightness(0.992) contrast(1.004); }
+  91% { filter: brightness(1.01) contrast(1); }
+}
+
+@media (max-width: 720px) {
+  html.dsh-crt-active button[role='tab'] {
+    padding-inline: 6px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.dsh-crt-active.dsh-crt-flicker body {
+    animation: none;
+  }
+}
+

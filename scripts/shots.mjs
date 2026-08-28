@@ -119,7 +119,20 @@ async function worker() {
   while (queue.length) {
     const job = queue.shift();
     try {
-      await page.goto(job.url, { waitUntil: 'networkidle', timeout: 25000 });
+      // networkidle is the right target and the wrong failure mode. A theme
+      // whose sheet pulls fonts and background images off raw.githubusercontent
+      // -- 15 of them, in one case -- never reaches idle when that host is slow,
+      // and the whole render is thrown away for a picture that would have been
+      // fine without the webfont. Fall back to 'load' and let the settle below
+      // do its work: a shot missing a remote font still shows the theme, and
+      // the pixel-diff gate downstream still decides whether it is live.
+      try {
+        await page.goto(job.url, { waitUntil: 'networkidle', timeout: 25000 });
+      } catch (err) {
+        if (!/Timeout/i.test(err && err.message || '')) throw err;
+        console.error('SLOW ' + job.name + ' (never reached network idle; shooting on load)');
+        await page.goto(job.url, { waitUntil: 'load', timeout: 25000 });
+      }
       // The preview injects the sheet after fetching it; wait for the tag or
       // for the page to say it failed, then let fonts and images settle.
       await page.waitForFunction(

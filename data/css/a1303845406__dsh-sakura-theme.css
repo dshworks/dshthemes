@@ -1,0 +1,280 @@
+/* a1303845406/dsh-sakura-theme — src/theme.css
+   fetched 2026-08-28 from https://raw.githubusercontent.com/a1303845406/dsh-sakura-theme/main/src/theme.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+@font-face {
+  font-family: "Sakura WenKai";
+  src: url("https://raw.githubusercontent.com/a1303845406/dsh-sakura-theme/main/src/__SAKURA_FONT_DATA_URI__") format("woff");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 400;
+}
+
+:root {
+  --sakura-ui-font: "Sakura WenKai", "Microsoft YaHei UI", "PingFang SC", sans-serif;
+}
+
+body {
+  --sakura-canvas: #fff3f8;
+  --sakura-focus: #c62d68;
+  --sakura-focus-soft: rgba(240, 91, 145, 0.28);
+  --sakura-frame: url("https://raw.githubusercontent.com/a1303845406/dsh-sakura-theme/main/src/__DAY_FRAME_DATA_URI__");
+  position: relative;
+  isolation: isolate;
+  background-color: var(--sakura-canvas) !important;
+  background-image:
+    radial-gradient(circle at 76% 12%, rgba(168, 223, 255, 0.58), transparent 30%),
+    linear-gradient(145deg, rgba(255, 245, 249, 0.98), rgba(241, 225, 239, 0.92)) !important;
+  background-attachment: fixed !important;
+  font-family: var(--sakura-ui-font) !important;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: var(--sakura-ui-font) !important;
+}
+
+pre,
+code,
+kbd,
+samp {
+  font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace !important;
+}
+
+body[data-ds-dark-theme] {
+  --sakura-canvas: #0b0711;
+  --sakura-focus: #ff87b1;
+  --sakura-focus-soft: rgba(255, 120, 168, 0.30);
+  --sakura-frame: url("https://raw.githubusercontent.com/a1303845406/dsh-sakura-theme/main/src/__NIGHT_FRAME_DATA_URI__");
+  background-image:
+    radial-gradient(circle at 78% 12%, rgba(97, 89, 220, 0.28), transparent 30%),
+    radial-gradient(circle at 18% 86%, rgba(141, 43, 112, 0.16), transparent 34%),
+    linear-gradient(145deg, #0d0915, #151026 52%, #0b0812) !important;
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  pointer-events: none;
+  user-select: none;
+}
+
+body::before {
+  z-index: -2;
+  inset: -28vh -22vw;
+  background-image: url("https://raw.githubusercontent.com/a1303845406/dsh-sakura-theme/main/src/__PETAL_LAYER_DATA_URI__");
+  background-position: center;
+  background-repeat: repeat;
+  background-size: 860px 680px;
+  opacity: 0.88;
+  animation: sakura-petal-drift 34s linear infinite;
+  will-change: transform;
+}
+
+body[data-ds-dark-theme]::before {
+  opacity: 0.94;
+  filter: saturate(1.18) brightness(1.16) drop-shadow(0 0 5px rgba(255, 98, 163, 0.28));
+}
+
+body::after {
+  z-index: -1;
+  inset: 0;
+  background-image: var(--sakura-frame);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 1;
+  filter: saturate(1.12) contrast(1.08) brightness(0.98);
+}
+
+body[data-ds-dark-theme]::after {
+  opacity: 0.98;
+  filter: saturate(1.15) contrast(1.04) brightness(1.32);
+}
+
+button,
+[role="button"],
+input,
+select,
+textarea {
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    color 150ms ease,
+    transform 100ms ease;
+}
+
+button:not(:disabled):active,
+[role="button"]:not([aria-disabled="true"]):active {
+  transform: translateY(1px) scale(0.985);
+}
+
+button:focus-visible,
+[role="button"]:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--sakura-focus) !important;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px var(--sakura-focus-soft) !important;
+}
+
+button[aria-pressed="true"],
+[role="tab"][aria-selected="true"],
+[role="option"][aria-selected="true"] {
+  box-shadow: inset 0 0 0 1px rgba(240, 91, 145, 0.34);
+}
+
+.sakura-brand-mark {
+  display: block;
+  overflow: visible;
+  color: #e94583;
+  filter: drop-shadow(0 2px 3px rgba(173, 35, 91, 0.22));
+}
+
+.sakura-brand-mark path {
+  fill: currentColor;
+  stroke: rgba(255, 255, 255, 0.82);
+  stroke-width: 0.42;
+  stroke-linejoin: round;
+}
+
+.sakura-brand-mark circle {
+  fill: #ffd66f;
+  stroke: #fff7d6;
+  stroke-width: 0.5;
+}
+
+body[data-ds-dark-theme] .sakura-brand-mark {
+  color: #ff86b3;
+  filter: drop-shadow(0 0 7px rgba(255, 104, 165, 0.42));
+}
+
+.sakura-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.sakura-wordmark__name {
+  color: var(--dsw-alias-label-primary);
+  font-family: var(--sakura-ui-font);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.sakura-wordmark__badge {
+  color: #fff7fb;
+  background: linear-gradient(135deg, #db3e79, #f074a2);
+  border: 1px solid rgba(169, 31, 85, 0.24);
+  border-radius: 5px;
+  padding: 3px 5px 2px;
+  font-family: ui-rounded, "Arial Rounded MT Bold", sans-serif;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  box-shadow: 0 2px 6px rgba(173, 35, 91, 0.18);
+}
+
+button[data-sakura-send],
+button[data-sakura-new-session] {
+  position: relative;
+}
+
+button[data-sakura-send] > svg,
+button[data-sakura-new-session] > svg {
+  display: none !important;
+}
+
+button[data-sakura-send]::before,
+button[data-sakura-new-session]::before {
+  content: "";
+  display: block;
+  flex: none;
+  width: 19px;
+  height: 19px;
+  background: currentColor;
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+}
+
+button[data-sakura-send]::before {
+  width: 21px;
+  height: 21px;
+  mask-image: url("https://raw.githubusercontent.com/a1303845406/dsh-sakura-theme/main/src/__SAKURA_SEND_ICON_DATA_URI__");
+  -webkit-mask-image: url("https://raw.githubusercontent.com/a1303845406/dsh-sakura-theme/main/src/__SAKURA_SEND_ICON_DATA_URI__");
+  filter: drop-shadow(0 1px 1px rgba(107, 12, 51, 0.22));
+}
+
+button[data-sakura-new-session]::before {
+  mask-image: url("https://raw.githubusercontent.com/a1303845406/dsh-sakura-theme/main/src/__SAKURA_NEW_CHAT_ICON_DATA_URI__");
+  -webkit-mask-image: url("https://raw.githubusercontent.com/a1303845406/dsh-sakura-theme/main/src/__SAKURA_NEW_CHAT_ICON_DATA_URI__");
+}
+
+button[data-sakura-send]:not(:disabled):hover::before,
+button[data-sakura-new-session]:not(:disabled):hover::before {
+  animation: sakura-icon-bloom 420ms ease both;
+}
+
+@keyframes sakura-petal-drift {
+  0% {
+    transform: translate3d(8vw, -18vh, 0) rotate(-2deg);
+  }
+  50% {
+    transform: translate3d(-2vw, 2vh, 0) rotate(3deg);
+  }
+  100% {
+    transform: translate3d(-12vw, 22vh, 0) rotate(-1deg);
+  }
+}
+
+@keyframes sakura-icon-bloom {
+  0% {
+    transform: rotate(-8deg) scale(0.9);
+  }
+  65% {
+    transform: rotate(7deg) scale(1.12);
+  }
+  100% {
+    transform: rotate(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before {
+    animation: none;
+    transform: none;
+  }
+
+  button,
+  [role="button"],
+  input,
+  select,
+  textarea {
+    transition: none;
+  }
+
+  button[data-sakura-send]::before,
+  button[data-sakura-new-session]::before {
+    animation: none !important;
+  }
+}
+
+@media print {
+  body::before,
+  body::after {
+    display: none;
+  }
+}
+

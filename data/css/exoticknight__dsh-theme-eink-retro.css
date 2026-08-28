@@ -1,0 +1,1426 @@
+/* exoticknight/dsh-theme-eink-retro — src/theme.css
+   fetched 2026-08-28 from https://raw.githubusercontent.com/exoticknight/dsh-theme-eink-retro/main/src/theme.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* E‑Ink Retro has two layers:
+ * 1. both modes share neutral semantic tokens, crisp geometry and black/white
+ *    interaction states;
+ * 2. immersive mode swaps the status hues for an ink ramp and maps the
+ *    remaining decorative/data colors to gray.
+ * User-authored media is never filtered.
+ *
+ * Everything the theme adds lives under `html[data-dsh-theme-eink-retro]`, with
+ * one deliberate exception: the block below styles this plugin's own settings
+ * section, which must also look right while the theme is switched off. It is
+ * namespaced by the `eink-retro-settings` class instead. */
+
+.eink-retro-settings {
+  display: grid;
+  gap: 14px;
+  color: var(--dsw-alias-label-primary);
+}
+
+.eink-retro-settings h2,
+.eink-retro-settings p {
+  margin: 0;
+}
+
+.eink-retro-settings__intro,
+.eink-retro-settings__enabled-description,
+.eink-retro-settings__option-description,
+.eink-retro-settings__status {
+  color: var(--dsw-alias-label-secondary);
+  font-size: var(--eink-text-body, 13px);
+  line-height: 1.55;
+}
+
+.eink-retro-settings__enabled {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 48px;
+  cursor: pointer;
+}
+
+.eink-retro-settings__enabled-copy,
+.eink-retro-settings__enabled-title,
+.eink-retro-settings__enabled-description {
+  display: block;
+}
+
+.eink-retro-settings__enabled-copy {
+  min-width: 0;
+}
+
+.eink-retro-settings__enabled-title {
+  margin-bottom: 2px;
+  font-size: var(--eink-text-title, 14px);
+  font-weight: var(--eink-weight-strong, 650);
+}
+
+.eink-retro-settings__enabled-input,
+html[data-dsh-theme-eink-retro] .eink-retro-settings__enabled-input {
+  flex: 0 0 auto;
+  width: auto !important;
+  height: auto !important;
+  margin: 0;
+  padding: 0 !important;
+  appearance: auto !important;
+  accent-color: auto !important;
+  background: revert !important;
+  border: revert !important;
+  border-radius: revert !important;
+  box-shadow: none !important;
+  cursor: pointer;
+}
+
+/* The control keeps its native shape either way, but once the theme is on it
+ * must not be the one blue object left on screen. */
+html[data-dsh-theme-eink-retro] .eink-retro-settings__enabled-input {
+  accent-color: var(--eink-ink) !important;
+}
+
+html[data-dsh-theme-eink-retro] .eink-retro-settings__enabled-input:focus-visible {
+  outline: 1px solid var(--eink-ink) !important;
+  outline-offset: 2px;
+  border: revert !important;
+  box-shadow: none !important;
+}
+
+.eink-retro-settings__options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.eink-retro-settings__option {
+  min-height: 112px;
+  padding: 14px;
+  color: var(--dsw-alias-label-primary);
+  text-align: left;
+  background: var(--dsw-alias-bg-layer-1);
+  border: 1px solid var(--dsw-alias-border-l3);
+  border-radius: var(--eink-radius-surface, 2px);
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.eink-retro-settings__option:hover {
+  background: var(--dsw-alias-interactive-bg-hover-solid);
+}
+
+.eink-retro-settings__option[aria-checked="true"] {
+  color: var(--dsw-alias-brand-primary-invert);
+  background: var(--dsw-alias-brand-primary);
+  border-color: var(--dsw-alias-brand-primary);
+}
+
+.eink-retro-settings__option:focus-visible {
+  outline: 1px solid var(--dsw-alias-brand-primary);
+  outline-offset: 2px;
+}
+
+.eink-retro-settings__option-title,
+.eink-retro-settings__option-description {
+  display: block;
+}
+
+.eink-retro-settings__option-title {
+  margin-bottom: 8px;
+  font-size: var(--eink-text-title, 14px);
+  font-weight: var(--eink-weight-strong, 650);
+}
+
+.eink-retro-settings__option[aria-checked="true"] .eink-retro-settings__option-description {
+  color: inherit;
+  opacity: 0.78;
+}
+
+.eink-retro-settings__status {
+  padding: 10px 12px;
+  background: var(--dsw-alias-bg-layer-2);
+  border-left: 3px solid var(--dsw-alias-state-warn-primary);
+}
+
+@media (max-width: 760px) {
+  .eink-retro-settings__options {
+    grid-template-columns: 1fr;
+  }
+
+  .eink-retro-settings__option {
+    min-height: 0;
+  }
+}
+
+/* Design language tokens.
+ *
+ * Every color derives from the official DSH token layer this plugin installs,
+ * so light/dark and balanced/immersive stay in sync from a single source and
+ * the theme needs no dark-mode detector of its own. The literal fallbacks are
+ * the light values, which is also what a missing token layer should degrade
+ * to. The two rule colors are the only authored values: they are ink mixed
+ * into paper, so they follow the palette in both directions.
+ *
+ * Line hierarchy — pick by role, not by how heavy it should look:
+ *   --eink-rule         quiet separators and static surfaces: pane dividers,
+ *                       tables, code blocks, message bubbles, badges, hr
+ *   --eink-rule-strong  anything that can be operated or floats above the
+ *                       page: inputs, framed buttons, menus, dialogs, cards
+ *
+ * Elevation hierarchy — hard offset, never blurred:
+ *   --eink-shadow-1     attached popups: menus, listboxes, tooltips
+ *   --eink-shadow-2     floating layers: dialogs, elevated cards
+ *   (controls stay flat: a control is shaped by its fill or its frame;
+ *   ghost icon actions carry neither and rely on their label)
+ *
+ * Interaction hierarchy — never spend elevation on state:
+ *   hover                 changes fill or border color only
+ *   focus                 adds one complete inner frame; elevation is retained
+ *   selected session tab  keeps the host's bottom rule and adds label weight
+ *
+ * Weights are mid-steps on purpose. On a variable face they render as drawn;
+ * on a 400/700 system face the browser resolves both to the nearest real
+ * weight, which is why they are named by role rather than by number. */
+html[data-dsh-theme-eink-retro],
+html[data-dsh-theme-eink-retro] body {
+  --eink-paper: var(--dsw-alias-bg-base, #f4f4f4);
+  --eink-paper-bright: var(--dsw-alias-bg-layer-1, #ffffff);
+  --eink-paper-raised: var(--dsw-alias-bg-layer-2, #e8e8e8);
+  --eink-paper-inset: var(--dsw-alias-bg-layer-3, #d2d2d2);
+  --eink-ink: var(--dsw-alias-label-primary, #161616);
+  --eink-ink-2: var(--dsw-alias-label-secondary, #4a4a4a);
+  --eink-ink-3: var(--dsw-alias-label-tertiary, #6a6a6a);
+  --eink-selection-bg: var(--dsw-alias-brand-primary, #161616);
+  --eink-selection-fg: var(--dsw-alias-brand-primary-invert, #ffffff);
+  /* Mixed into the layer-1 surface rather than the base: DSH gives the window
+   * base a translucent fill in dark mode, and a rule that inherits that alpha
+   * lets whatever sits behind the window bleed through the line. */
+  --eink-rule: color-mix(in srgb, var(--eink-ink) 36%, var(--eink-paper-bright));
+  --eink-rule-strong: color-mix(in srgb, var(--eink-ink) 63%, var(--eink-paper-bright));
+  --eink-shadow-1: var(--dsw-shadow-lv1, 1px 1px 0 var(--eink-ink));
+  --eink-shadow-2: var(--dsw-shadow-lv2, 2px 2px 0 var(--eink-ink));
+  --eink-well: inset 1px 1px 0 color-mix(in srgb, var(--eink-ink) 14%, transparent);
+  --eink-focus-ring: inset 0 0 0 1px var(--eink-ink);
+  --eink-focus-ring-inverse: inset 0 0 0 1px var(--eink-selection-fg);
+  --eink-radius-tight: 1px;
+  --eink-radius-control: 2px;
+  --eink-radius-surface: 2px;
+  --eink-weight-medium: 550;
+  --eink-weight-strong: 650;
+  --eink-text-caption: 11px;
+  --eink-text-sm: 12px;
+  --eink-text-body: 13px;
+  --eink-text-title: 14px;
+  --eink-font-sans: "IBM Plex Sans SC", "Noto Sans SC", "Source Han Sans SC", -apple-system,
+    BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", "Microsoft YaHei UI", ui-sans-serif, sans-serif;
+  --eink-font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, "Sarasa Mono SC",
+    "Cascadia Mono", Consolas, monospace;
+}
+
+/* Compatibility bridge for DSH surfaces and plugins that still consume
+ * pre-semantic or unsuffixed token names. Values resolve through the current
+ * official token layer, so balanced/immersive and light/dark stay in sync. */
+html[data-dsh-theme-eink-retro],
+html[data-dsh-theme-eink-retro] body {
+  --dsw-alias-border: var(--dsw-alias-border-l3);
+  --dsw-alias-fill-primary: var(--dsw-alias-bg-layer-1);
+  --dsw-alias-text-primary: var(--dsw-alias-label-primary);
+  --dsw-alias-accent: var(--dsw-alias-brand-primary);
+  --dsw-alias-text-on-accent: var(--dsw-alias-brand-primary-invert);
+  --dsw-alias-button-info-label: var(--dsw-alias-brand-primary-invert);
+  --dsw-alias-danger: var(--dsw-alias-state-error-primary);
+  --dsw-alias-label-danger: var(--dsw-alias-state-error-primary);
+  --dsw-alias-label-error: var(--dsw-alias-state-error-primary);
+  --dsw-alias-label-on-danger: var(--dsw-alias-brand-primary-invert);
+  --dsw-alias-label-on-primary: var(--dsw-alias-brand-primary-invert);
+  --dsw-alias-label-quaternary: var(--dsw-alias-label-dimmed);
+  --dsw-alias-separator-primary: var(--dsw-alias-border-l2);
+  --dsw-alias-state-danger: var(--dsw-alias-state-error-primary);
+  --dsw-alias-state-warning-primary: var(--dsw-alias-state-warn-primary);
+  --dsw-alias-text-danger: var(--dsw-alias-state-error-primary);
+  --dsw-font-mono: var(--eink-font-mono);
+  --dsh-font-mono: var(--eink-font-mono);
+  --dsh-color-surface: var(--dsw-alias-bg-layer-3);
+  --dsh-color-border: var(--dsw-alias-border-l3);
+  --dsh-color-accent: var(--dsw-alias-brand-primary);
+  --dsh-color-text: var(--dsw-alias-label-primary);
+  --dsh-color-text-secondary: var(--dsw-alias-label-secondary);
+  --dsh-state-ongoing: var(--dsw-alias-state-warn-primary);
+}
+
+html[data-dsh-theme-eink-retro],
+html[data-dsh-theme-eink-retro] body,
+html[data-dsh-theme-eink-retro] #root {
+  background-color: var(--dsw-alias-bg-base);
+  background-image: none;
+}
+
+/* `accent-color` is inherited, so one declaration covers every native
+ * checkbox, radio, range and progress element in the app. Without it those
+ * controls keep the OS accent and are the only saturated color on screen. */
+html[data-dsh-theme-eink-retro] body {
+  color: var(--dsw-alias-label-primary);
+  font-family: var(--eink-font-sans);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  accent-color: var(--eink-ink);
+}
+
+html[data-dsh-theme-eink-retro] ::placeholder {
+  color: var(--eink-ink-3);
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-dsh-theme-eink-retro] *,
+  html[data-dsh-theme-eink-retro] *::before,
+  html[data-dsh-theme-eink-retro] *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* Shell regions. `data-dsh-surface` marks each region with a zero-size anchor
+ * rather than the column that paints it, so the column is addressed as the
+ * anchor's parent. That keeps the hook public and hash-free while still
+ * landing on the element that actually has a background. */
+html[data-dsh-theme-eink-retro] :where(
+  :has(> [data-dsh-surface="sidebar"]),
+  :has(> [data-dsh-surface="conversation"]),
+  :has(> [data-dsh-surface="details"])
+) {
+  background-color: var(--dsw-alias-bg-base);
+  background-image: none;
+  box-shadow: none;
+}
+
+html[data-dsh-theme-eink-retro] :has(> [data-dsh-surface="sidebar"]) {
+  background-color: var(--dsw-specific-sidebar-fill);
+  border-right: 1px solid var(--eink-rule);
+}
+
+/* Only a details pane that is actually on screen earns a divider, otherwise
+ * the rule lands on the right edge of the window. */
+html[data-dsh-theme-eink-retro]
+  :not([data-details-collapsed="true"])
+  > :has(> [data-dsh-surface="conversation"]) {
+  border-right: 1px solid var(--eink-rule);
+}
+
+/* The two side panes are one pair. Sourcing both from the sidebar fill keeps
+ * that relationship identical in light and dark; `--eink-paper-raised` reads
+ * as a lighter, detached slab in dark mode only. */
+html[data-dsh-theme-eink-retro] :has(> [data-dsh-surface="details"]) {
+  background-color: var(--dsw-specific-sidebar-fill);
+}
+
+html[data-dsh-theme-eink-retro] :where(button, input, textarea, select, [role="button"]) {
+  border-radius: var(--eink-radius-control) !important;
+}
+
+html[data-dsh-theme-eink-retro] :where(
+  article,
+  fieldset,
+  [role="alert"],
+  [role="dialog"],
+  [role="menu"],
+  [role="listbox"],
+  [role="tooltip"],
+  [role="treeitem"],
+  [class*="card" i],
+  [class*="panel" i],
+  [class*="modal" i],
+  [class*="column" i]
+) {
+  border-radius: var(--eink-radius-surface) !important;
+}
+
+/* Some DSH and marketplace controls draw their visible surface on a wrapper
+ * instead of the native input/card. Keep those shells in the same rectilinear
+ * system without flattening charts or user content. */
+html[data-dsh-theme-eink-retro] span[class*="tabSearch"],
+html[data-dsh-theme-eink-retro] div[class$="_bar"]:has(> [class$="_label"]),
+html[data-dsh-theme-eink-retro] div:has(> [class$="_sep"][aria-hidden="true"]) {
+  border-radius: var(--eink-radius-surface) !important;
+}
+
+html[data-dsh-theme-eink-retro] :where(button, [role="button"], [role="tab"]) {
+  box-shadow: none;
+}
+
+/* Links are ink, not chrome blue. Chrome-level links — nav items, icon
+ * actions, anything already drawn as a control — take the color only. Links
+ * inside prose additionally carry a rule, so they stay identifiable in a
+ * palette that has no hue left to spend on them.
+ *
+ * The whole selector sits inside `:where()` so it keeps the theme's baseline
+ * specificity: a link a component deliberately colors through two class names
+ * still wins, and a selected nav item keeps its inverted label. */
+html[data-dsh-theme-eink-retro] :where(
+  a:not([role="button"], [class*="button" i], [aria-current], [aria-selected="true"])
+) {
+  color: var(--eink-ink);
+}
+
+html[data-dsh-theme-eink-retro]
+  :where(p, li, dd, td, th, blockquote, h1, h2, h3, h4, h5, h6)
+  a:not([role="button"], :has(> img, > svg)) {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+html[data-dsh-theme-eink-retro]
+  :where(p, li, dd, td, th, blockquote, h1, h2, h3, h4, h5, h6)
+  a:not([role="button"], :has(> img, > svg)):hover {
+  text-decoration-thickness: 2px;
+}
+
+/* Disabled controls lose ink weight, not shape: the frame stays put, the
+ * label drops to tertiary ink, and the press offset never fires. */
+html[data-dsh-theme-eink-retro] :where(button, input, textarea, select):disabled,
+html[data-dsh-theme-eink-retro] :where([aria-disabled="true"]) {
+  color: var(--eink-ink-3);
+  border-color: var(--eink-rule);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+html[data-dsh-theme-eink-retro] :where(
+  [role="radio"][aria-checked="true"],
+  [role="checkbox"][aria-checked="true"],
+  [role="menuitemcheckbox"][aria-checked="true"],
+  [role="menuitemradio"][aria-checked="true"],
+  button[aria-pressed="true"],
+  [data-state="checked"],
+  [data-state="active"],
+  [data-active="true"]
+) {
+  color: var(--eink-selection-fg) !important;
+  background-color: var(--eink-selection-bg) !important;
+  border-color: var(--eink-selection-bg) !important;
+}
+
+html[data-dsh-theme-eink-retro] :where(
+  [role="radio"][aria-checked="true"],
+  [role="checkbox"][aria-checked="true"],
+  [role="menuitemcheckbox"][aria-checked="true"],
+  [role="menuitemradio"][aria-checked="true"],
+  button[aria-pressed="true"],
+  [data-state="checked"],
+  [data-state="active"],
+  [data-active="true"]
+) * {
+  color: inherit !important;
+}
+
+/* Question choices are long reading rows, so a full inverse fill gives the
+ * selected answer far more weight than the question itself. Keep the row on a
+ * quiet raised paper and spend the inverse treatment only on its compact
+ * number/check marker. `data-question-key` is the package's stable takeover
+ * boundary; the role structure distinguishes its option list without relying
+ * on generated CSS-module names or localized copy. */
+html[data-dsh-theme-eink-retro]
+  [data-question-key]
+  :where([role="radiogroup"], [role="group"])
+  > :where([role="radio"], [role="checkbox"])[aria-checked="true"] {
+  color: var(--eink-ink) !important;
+  background-color: var(--eink-paper-raised) !important;
+  border-color: var(--eink-rule-strong) !important;
+}
+
+html[data-dsh-theme-eink-retro]
+  [data-question-key]
+  :where([role="radiogroup"], [role="group"])
+  > :where([role="radio"], [role="checkbox"])[aria-checked="true"]
+  > :first-child {
+  color: var(--eink-selection-fg) !important;
+  background-color: var(--eink-selection-bg) !important;
+  border-radius: var(--eink-radius-control) !important;
+}
+
+html[data-dsh-theme-eink-retro]
+  [data-question-key]
+  :where([role="radiogroup"], [role="group"])
+  > :where([role="radio"], [role="checkbox"])[aria-checked="true"]
+  [class$="_description"] {
+  color: var(--eink-ink-2) !important;
+}
+
+/* A switch is a button wrapping a track, which in turn holds one absolutely
+ * positioned thumb. The button is only the hit target, so it stays blank and
+ * the track carries the state: an empty paper frame when off, filled with ink
+ * when on, with the thumb inverting against it.
+ *
+ * The offsets are authored against the track's padding box, which its own 1px
+ * border already insets — so a 10px thumb centres in a 30 × 16 track at 2px,
+ * not 3px, and rests 3px from either end across a 14px travel. Every rule is
+ * gated on that structure: a switch built some other way is left to DSH
+ * rather than styled from a guess about its shape. */
+html[data-dsh-theme-eink-retro] [role="switch"]:has(> :last-child > :only-child) {
+  box-sizing: border-box;
+  background-color: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+html[data-dsh-theme-eink-retro]
+  [role="switch"]:has(> :last-child > :only-child)
+  > :last-child {
+  box-sizing: border-box;
+  width: 30px !important;
+  height: 16px !important;
+  background-color: var(--eink-paper-bright) !important;
+  border: 1px solid var(--eink-ink) !important;
+  border-radius: var(--eink-radius-tight) !important;
+  box-shadow: none !important;
+}
+
+html[data-dsh-theme-eink-retro]
+  [role="switch"]:has(> :last-child > :only-child)
+  > :last-child
+  > :only-child {
+  box-sizing: border-box;
+  width: 10px !important;
+  height: 10px !important;
+  top: 2px !important;
+  left: 2px !important;
+  background-color: var(--eink-ink) !important;
+  border: 0 !important;
+  border-radius: var(--eink-radius-tight) !important;
+  box-shadow: none !important;
+}
+
+html[data-dsh-theme-eink-retro]
+  [role="switch"][aria-checked="true"]:has(> :last-child > :only-child)
+  > :last-child {
+  background-color: var(--eink-selection-bg) !important;
+  border-color: var(--eink-selection-bg) !important;
+}
+
+html[data-dsh-theme-eink-retro]
+  [role="switch"][aria-checked="true"]:has(> :last-child > :only-child)
+  > :last-child
+  > :only-child {
+  left: 16px !important;
+  background-color: var(--eink-selection-fg) !important;
+}
+
+/* Semantic destructive actions keep their warning color, but use the same
+ * flat outline treatment as the rest of the control system. */
+html[data-dsh-theme-eink-retro] button[class*="deleteButton" i] {
+  background-color: transparent !important;
+  border: 1px solid currentColor !important;
+  box-shadow: none !important;
+}
+
+html[data-dsh-theme-eink-retro] button[class*="deleteButton" i]:hover {
+  background-color: color-mix(in srgb, currentColor 8%, transparent) !important;
+}
+
+html[data-dsh-theme-eink-retro] :where([class*="badge" i], [class*="tag" i]):not(.lc-root *) {
+  border-radius: var(--eink-radius-tight) !important;
+  filter: none;
+}
+
+html[data-dsh-theme-eink-retro="immersive"] :where([class*="badge" i], [class*="tag" i]):not(.lc-root *) {
+  filter: grayscale(1);
+}
+
+/* Capability metadata is tertiary information, not an active control. Use a
+ * quiet outline instead of a low-contrast filled status color. */
+html[data-dsh-theme-eink-retro] [class*="badgeInvokable"] {
+  color: var(--eink-ink-2) !important;
+  background-color: transparent !important;
+  border-color: var(--eink-rule) !important;
+  padding: 2px 6px !important;
+  font-size: var(--eink-text-caption) !important;
+  font-weight: var(--eink-weight-medium) !important;
+  line-height: 1.3 !important;
+  filter: none !important;
+}
+
+/* StateDot owns a component-local blue fallback, so the inherited compatibility
+ * token above cannot retint its running matrix by itself. Restore the theme's
+ * muted status ink at the primitive's stable semantic hook, then give the
+ * pixel chase a slightly clearer head-to-tail contrast. The selected row still
+ * inverts the matrix through its own currentColor rule. A completed state stays
+ * still; only its quiet halo gains enough density to read at sidebar scale. */
+html[data-dsh-theme-eink-retro] svg[data-state="ongoing"][aria-hidden="true"][viewBox="0 0 10 10"] {
+  --dsh-state-ongoing: var(--eink-ink-2) !important;
+}
+
+html[data-dsh-theme-eink-retro] svg[data-state="ongoing"][aria-hidden="true"][viewBox="0 0 10 10"] > rect {
+  animation-name: eink-retro-state-dot-chase !important;
+}
+
+@keyframes eink-retro-state-dot-chase {
+  0%,
+  12.4% {
+    opacity: 1;
+  }
+
+  12.5%,
+  24.9% {
+    opacity: 0.58;
+  }
+
+  25%,
+  37.4% {
+    opacity: 0.3;
+  }
+
+  37.5%,
+  100% {
+    opacity: 0.1;
+  }
+}
+
+html[data-dsh-theme-eink-retro] span[data-state="done"][aria-hidden="true"]::before {
+  opacity: 0.16;
+}
+
+html[data-dsh-theme-eink-retro] :where(button:not(:disabled), [role="button"]:not([aria-disabled="true"]), [role="tab"]):active {
+  transform: translate(1px, 1px);
+}
+
+html[data-dsh-theme-eink-retro] :where(input, textarea, select, [contenteditable="true"]) {
+  background-color: var(--dsw-specific-input-major);
+  border-color: var(--eink-rule-strong);
+  box-shadow: var(--eink-well);
+  caret-color: var(--eink-ink);
+}
+
+/* In a question with predefined choices, the custom answer is one peer row.
+ * Its generated component puts the textarea inside a mirrored auto-grow field,
+ * so the row owns the complete frame and the native textarea stays transparent.
+ * Requiring a role option sibling keeps the standalone, block answer field on
+ * its native layout. */
+html[data-dsh-theme-eink-retro]
+  [data-question-key]
+  :where([role="radiogroup"], [role="group"]):has(> [role="radio"], > [role="checkbox"])
+  > :has(> :last-child > textarea) {
+  background-color: var(--eink-paper-bright) !important;
+  border: 1px solid var(--eink-rule-strong) !important;
+  border-radius: var(--eink-radius-control) !important;
+  box-shadow: none !important;
+}
+
+html[data-dsh-theme-eink-retro]
+  [data-question-key]
+  :where([role="radiogroup"], [role="group"]):has(> [role="radio"], > [role="checkbox"])
+  > :has(> :last-child > textarea):hover {
+  border-color: var(--eink-ink-2) !important;
+}
+
+html[data-dsh-theme-eink-retro]
+  [data-question-key]
+  :where([role="radiogroup"], [role="group"]):has(> [role="radio"], > [role="checkbox"])
+  > :has(> :last-child > textarea):focus-within {
+  border-color: var(--eink-ink) !important;
+  box-shadow: var(--eink-focus-ring) !important;
+}
+
+html[data-dsh-theme-eink-retro]
+  [data-question-key]
+  :where([role="radiogroup"], [role="group"]):has(> [role="radio"], > [role="checkbox"])
+  > :has(> :last-child > textarea)
+  textarea {
+  background-color: transparent !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+/* The composer keeps its visible text in a backdrop layer underneath a
+ * transparent textarea. Let the outer composer card own the surface and
+ * focus treatment; otherwise the backdrop is hidden and a second inset rule
+ * remains visible after the textarea loses focus. */
+html[data-dsh-theme-eink-retro] textarea[data-dsh-part="composer-input"] {
+  background-color: transparent !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Before a Workspace exists, DSH turns the resident composer into the picker
+ * trigger and draws a 22px dashed SVG-mask ring over its real border. The ring
+ * survives the card's rectilinear theme radius and reads like a drop zone.
+ * Keep the generous whole-card target, but express it as the same solid paper
+ * panel used everywhere else. The card keeps one border and no drop shadow so
+ * its lower edge cannot read as a stray rule; the border survives forced colors. */
+html[data-dsh-theme-eink-retro] [data-composer-card="true"]:has(
+  textarea[aria-haspopup="menu"][readonly]
+) {
+  background-color: var(--eink-paper-bright) !important;
+  border: 1px solid var(--eink-rule-strong) !important;
+  border-radius: var(--eink-radius-surface) !important;
+  box-shadow: none !important;
+}
+
+html[data-dsh-theme-eink-retro] [data-composer-card="true"]:has(
+  textarea[aria-haspopup="menu"][readonly]
+)::after {
+  content: none !important;
+  -webkit-mask: none !important;
+  mask: none !important;
+}
+
+html[data-dsh-theme-eink-retro] [data-composer-card="true"]:has(
+  textarea[aria-haspopup="menu"][readonly]
+):hover {
+  border-color: var(--eink-ink) !important;
+}
+
+/* The context meter is only 14px wide, so DSH's tertiary label and translucent
+ * border tokens collapse into one mid-gray ring after the e-ink token map. Use
+ * an explicit paper rule for the capacity track and primary ink for the used
+ * arc. The structural hook is language-independent and avoids hashed classes. */
+html[data-dsh-theme-eink-retro]
+  [data-composer-card="true"]
+  button[aria-haspopup="dialog"]:has(> svg > circle[stroke-dasharray])
+  circle:not([stroke-dasharray]) {
+  stroke: var(--eink-rule) !important;
+}
+
+html[data-dsh-theme-eink-retro]
+  [data-composer-card="true"]
+  button[aria-haspopup="dialog"]:has(> svg > circle[stroke-dasharray])
+  circle[stroke-dasharray] {
+  stroke: var(--eink-ink) !important;
+}
+
+/* DSH places a blue-gray fade on the composer seat itself. Retint that native
+ * layer instead of removing the useful separation between the message stream
+ * and composer. */
+html[data-dsh-theme-eink-retro] [data-dsh-part="scrollport"] > :has(
+  [data-composer-card="true"]
+)::before {
+  background-image: linear-gradient(
+    transparent 0,
+    color-mix(in srgb, var(--dsw-alias-bg-base) 94%, transparent) 36px
+  ) !important;
+}
+
+html[data-dsh-theme-eink-retro] [data-composer-card="true"]:has(
+  textarea[data-dsh-part="composer-input"]:focus-visible
+) {
+  border-color: var(--eink-ink) !important;
+  box-shadow: var(--eink-focus-ring) !important;
+}
+
+/* One focus frame for everything that can be reached by keyboard. Ink is by
+ * definition the highest-contrast value against paper, and `outline-offset`
+ * leaves the gap showing the ground the control sits on, so the frame stays
+ * visible on any surface. An added paper-colored halo would only be right on
+ * the one surface it was sampled from, so there is none. */
+html[data-dsh-theme-eink-retro] :where(
+  a,
+  button,
+  summary,
+  [role="button"],
+  [role="link"],
+  [role="tab"],
+  [role="menuitem"],
+  [role="menuitemcheckbox"],
+  [role="menuitemradio"],
+  [role="option"],
+  [role="treeitem"],
+  [role="switch"],
+  [role="checkbox"],
+  [role="radio"],
+  [tabindex]:not([tabindex="-1"])
+):focus-visible {
+  outline: 1px solid var(--eink-ink);
+  outline-offset: 2px;
+}
+
+/* A few DSH affordances are only identifiable by their accessible name, which
+ * is localized. Those rules match the name by substring across the locales we
+ * know and always pair it with a structural guard, so a similarly named
+ * control elsewhere in the app cannot pick the rule up. Adding a locale means
+ * extending the lists here — never dropping the structural half. */
+
+/* The workspace header clips an outward focus outline on its final icon
+ * action, leaving only a detached vertical stroke. Keep the keyboard focus
+ * frame inside that compact button instead. */
+html[data-dsh-theme-eink-retro] button[aria-label*="添加工作区"]:focus-visible,
+html[data-dsh-theme-eink-retro] button[aria-label*="Add workspace" i]:focus-visible {
+  outline: 0 !important;
+  box-shadow: var(--eink-focus-ring) !important;
+}
+
+/* The workspace search draws its visible shape on the wrapper, not the icon
+ * button or input. Give that wrapper the same compact geometry as adjacent
+ * actions, and let it own the expanded focus border. */
+/* The collapsed shell holds nothing but the icon button — the input is only
+ * mounted once it expands — so this rule cannot ask for one. Without it the
+ * shell keeps its 50% radius and reads as a circle among square actions. */
+html[data-dsh-theme-eink-retro] :has(> button[aria-label*="搜索会话"]),
+html[data-dsh-theme-eink-retro] :has(> button[aria-label*="Search" i]) {
+  border-radius: var(--eink-radius-control) !important;
+}
+
+html[data-dsh-theme-eink-retro] :has(> button[aria-label*="搜索会话"][aria-expanded="true"]):has(> input),
+html[data-dsh-theme-eink-retro] :has(> button[aria-label*="Search" i][aria-expanded="true"]):has(> input) {
+  background-color: var(--eink-paper-bright) !important;
+  border: 1px solid var(--eink-rule-strong) !important;
+  box-shadow: none !important;
+}
+
+html[data-dsh-theme-eink-retro] :has(> button[aria-label*="搜索会话"]) > input,
+html[data-dsh-theme-eink-retro] :has(> button[aria-label*="Search" i]) > input {
+  background-color: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+html[data-dsh-theme-eink-retro] :has(> button[aria-label*="搜索会话"]):has(> input:focus-visible),
+html[data-dsh-theme-eink-retro] :has(> button[aria-label*="Search" i]):has(> input:focus-visible) {
+  border-color: var(--eink-ink) !important;
+  box-shadow: var(--eink-focus-ring) !important;
+}
+
+/* Native form controls already own a visible border. Focus replaces the quiet
+ * inset well with one complete inner frame: no extra baseline, no elevation,
+ * and no layout shift from changing border width. */
+html[data-dsh-theme-eink-retro] :where(input, textarea, select, [contenteditable="true"]):focus-visible {
+  outline: 0 !important;
+  border-color: var(--eink-ink) !important;
+  box-shadow: var(--eink-focus-ring) !important;
+}
+
+html[data-dsh-theme-eink-retro] textarea[data-dsh-part="composer-input"]:focus-visible {
+  box-shadow: none !important;
+}
+
+/* The trajectory search already has a semantic wrapper with its search icon.
+ * Make that wrapper the only surface and the only focus owner. */
+html[data-dsh-theme-eink-retro] [role="toolbar"]:has(input[type="search"]) {
+  gap: 4px;
+}
+
+html[data-dsh-theme-eink-retro] [role="toolbar"]:has(input[type="search"]) button {
+  min-height: 24px;
+  padding: 2px 8px;
+  color: var(--eink-ink-2);
+  background-color: var(--eink-paper-bright);
+  border: 1px solid var(--eink-rule-strong);
+}
+
+html[data-dsh-theme-eink-retro] [role="toolbar"]:has(input[type="search"]) :has(
+  > input[type="search"]
+) {
+  min-height: 24px;
+  background-color: var(--eink-paper-bright) !important;
+  border: 1px solid var(--eink-rule-strong) !important;
+  border-radius: var(--eink-radius-control) !important;
+  box-shadow: none !important;
+}
+
+html[data-dsh-theme-eink-retro] [role="toolbar"]:has(input[type="search"]) input[type="search"] {
+  background-color: transparent !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+html[data-dsh-theme-eink-retro] [role="toolbar"]:has(input[type="search"]) :has(
+  > input[type="search"]:focus-visible
+) {
+  border-color: var(--eink-ink) !important;
+  box-shadow: var(--eink-focus-ring) !important;
+}
+
+/* Git Graph exposes a stable popover hook, but its search field draws three
+ * nested shapes: the floating listbox, a thick rounded search wrapper, and a
+ * second focused input frame. Keep the listbox as the elevated surface and let
+ * the search wrapper own exactly one control frame. */
+html[data-dsh-theme-eink-retro] [data-gitgraph-popover="true"] > :has(> input) {
+  background-color: var(--eink-paper-bright) !important;
+  border: 1px solid var(--eink-rule-strong) !important;
+  border-radius: var(--eink-radius-control) !important;
+  box-shadow: none !important;
+}
+
+html[data-dsh-theme-eink-retro] [data-gitgraph-popover="true"] > :has(> input) > input {
+  background-color: transparent !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+html[data-dsh-theme-eink-retro] [data-gitgraph-popover="true"] > :has(
+  > input:focus-visible
+) {
+  border-color: var(--eink-ink) !important;
+  box-shadow: var(--eink-focus-ring) !important;
+}
+
+html[data-dsh-theme-eink-retro] select option {
+  color: var(--eink-ink);
+  background-color: var(--eink-paper-bright);
+}
+
+html[data-dsh-theme-eink-retro] select option:checked {
+  color: var(--eink-selection-fg);
+  background-color: var(--eink-selection-bg);
+}
+
+html[data-dsh-theme-eink-retro] :where([role="dialog"], [data-dsh-part="dialog"]) {
+  background-color: var(--dsw-alias-bg-layer-1);
+  border: 1px solid var(--eink-rule-strong);
+  box-shadow: var(--eink-shadow-2);
+  backdrop-filter: none;
+  border-radius: var(--eink-radius-surface) !important;
+}
+
+/* Modal masks should separate layers without simulating frosted glass. */
+html[data-dsh-theme-eink-retro] [role="presentation"]:has(> [role="dialog"]) > :first-child {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background-color: color-mix(in srgb, var(--eink-ink) 18%, transparent) !important;
+}
+
+html[data-dsh-theme-eink-retro] :where([role="menu"], [role="listbox"]) {
+  background-color: var(--eink-paper-bright) !important;
+  background-image: none !important;
+  border: 1px solid var(--eink-rule-strong);
+  box-shadow: var(--eink-shadow-1);
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Trigger tooltips add no information once a menu/listbox is open and can sit
+ * on top of the floating surface after a pointer click. Suppress that stale
+ * hover layer while a richer popup is present. */
+html[data-dsh-theme-eink-retro]:has(:where([role="menu"], [role="listbox"])) [role="tooltip"] {
+  display: none !important;
+}
+
+/* Plugin settings are contributed by independent packages, so their card
+ * implementations do not always consume DSH's shared surface tokens. Normalize
+ * the semantic slot instead of coupling the theme to generated class names. */
+html[data-dsh-theme-eink-retro]
+  [data-dsh-surface="settings"]
+  [data-slot="settings.plugin.item"]
+  > :first-child {
+  color: var(--eink-ink) !important;
+  background-color: var(--eink-paper-inset) !important;
+  background-image: none !important;
+  border: 1px solid color-mix(in srgb, var(--eink-ink) 35%, transparent) !important;
+  box-shadow: none !important;
+}
+
+html[data-dsh-theme-eink-retro]
+  [data-dsh-surface="settings"]
+  [data-slot="settings.plugin.item"]
+  details
+  > summary
+  > :first-child
+  > :last-child {
+  color: var(--eink-ink-2) !important;
+}
+
+html[data-dsh-theme-eink-retro]
+  [data-dsh-surface="settings"]
+  [data-slot="settings.plugin.item"]
+  input[type="radio"] {
+  accent-color: var(--eink-ink) !important;
+}
+
+html[data-dsh-theme-eink-retro]
+  [data-dsh-surface="settings"]
+  [data-slot="settings.plugin.item"]
+  label:has(> input[type="radio"]:checked) {
+  background-color: var(--eink-paper-bright) !important;
+  border-color: var(--eink-ink) !important;
+  box-shadow: none !important;
+}
+
+html[data-dsh-theme-eink-retro]
+  [data-dsh-surface="settings"]
+  [data-slot="settings.plugin.item"]
+  button[type="submit"] {
+  color: var(--eink-selection-fg) !important;
+  background-color: var(--eink-selection-bg) !important;
+  border-color: var(--eink-selection-bg) !important;
+}
+
+/* An inverted tooltip already separates itself from paper. Border on the fill
+ * color keeps the box metrics without drawing a gray ring that is invisible
+ * on black in light mode and doubled in dark mode. */
+html[data-dsh-theme-eink-retro] [role="tooltip"] {
+  color: var(--eink-selection-fg) !important;
+  background-color: var(--eink-selection-bg) !important;
+  border: 1px solid var(--eink-selection-bg);
+  box-shadow: var(--eink-shadow-1);
+}
+
+/* User messages are a quiet paper card, not a chat-app pill. The surrounding
+ * message row carries stable semantic attributes even though the generated
+ * bubble class changes between DSH builds. */
+html[data-dsh-theme-eink-retro]
+  [data-dsh-part="message-row"][data-chat-flow-kind="user"]
+  [data-time-hover-root="true"]
+  > :first-child
+  > :last-child {
+  padding: 8px 12px !important;
+  background-color: var(--eink-paper-bright) !important;
+  border: 1px solid var(--eink-rule) !important;
+  border-radius: var(--eink-radius-surface) !important;
+  box-shadow: none !important;
+}
+
+/* Turn-tail editing is a compact form, not a second composer. Give the
+ * textarea one frame and keep both actions on the same control scale. The
+ * slot only carries a textarea while a message is being edited, so the
+ * structure identifies the state without reading its placeholder. */
+html[data-dsh-theme-eink-retro] [data-slot="conversation.chat.turnTail"] textarea {
+  border: 1px solid var(--eink-rule-strong) !important;
+  box-shadow: none !important;
+}
+
+html[data-dsh-theme-eink-retro]
+  [data-slot="conversation.chat.turnTail"]
+  :has(> textarea)
+  > :nth-child(2)
+  > button {
+  box-sizing: border-box;
+  min-height: 24px;
+  padding: 0 10px;
+  font-size: var(--eink-text-sm);
+  font-weight: var(--eink-weight-medium);
+  line-height: 22px;
+}
+
+html[data-dsh-theme-eink-retro]
+  [data-slot="conversation.chat.turnTail"]
+  :has(> textarea)
+  > :nth-child(2)
+  > button:first-child {
+  background-color: var(--eink-paper-bright) !important;
+}
+
+html[data-dsh-theme-eink-retro]
+  [data-slot="conversation.chat.turnTail"]
+  :has(> textarea)
+  > :nth-child(2)
+  > button:last-child {
+  border: 1px solid var(--eink-selection-bg) !important;
+}
+
+/* Approval requests are important without needing a warm warning wash. The
+ * labelled body gives us a stable hook for its surrounding native card. */
+html[data-dsh-theme-eink-retro] :has(> [aria-label*="审批详情"]),
+html[data-dsh-theme-eink-retro] :has(> [aria-label*="Approval details" i]) {
+  background-color: var(--eink-paper-bright) !important;
+  border-color: var(--eink-rule-strong) !important;
+}
+
+html[data-dsh-theme-eink-retro] :has(> [aria-label*="审批详情"]) > :first-child,
+html[data-dsh-theme-eink-retro] :has(> [aria-label*="Approval details" i]) > :first-child {
+  color: var(--eink-ink) !important;
+  background-color: var(--eink-paper-raised) !important;
+  border-bottom: 1px solid var(--eink-rule) !important;
+}
+
+html[data-dsh-theme-eink-retro] :has(> [aria-label*="审批详情"]) > :first-child > :first-child,
+html[data-dsh-theme-eink-retro] :has(> [aria-label*="Approval details" i]) > :first-child > :first-child {
+  color: var(--eink-ink) !important;
+  background-color: var(--eink-ink) !important;
+}
+
+/* DSH renders the active turn label with a continuous blue shimmer. Replace
+ * it with a two-frame local refresh: a short contrast drop, then settled ink.
+ * The live clock remains stable and continues to communicate progress. */
+html[data-dsh-theme-eink-retro] [data-chat-flow] > [role="status"] {
+  color: var(--eink-ink-2);
+  -webkit-text-fill-color: currentColor !important;
+  background-image: none !important;
+  background-clip: border-box !important;
+  animation: eink-retro-turn-status-refresh 2.4s steps(1, end) infinite !important;
+}
+
+@keyframes eink-retro-turn-status-refresh {
+  0%,
+  72%,
+  100% {
+    color: var(--eink-ink-2);
+  }
+
+  73%,
+  84% {
+    color: var(--eink-rule-strong);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-dsh-theme-eink-retro] [data-chat-flow] > [role="status"] {
+    color: var(--eink-ink-2) !important;
+    animation: none !important;
+  }
+}
+
+html[data-dsh-theme-eink-retro] :where(
+  [role="treeitem"][aria-selected="true"],
+  [aria-current="true"],
+  [aria-current="page"]
+) {
+  color: var(--eink-selection-fg) !important;
+  background-color: var(--eink-selection-bg) !important;
+  background-image: none !important;
+  border-color: var(--eink-selection-bg) !important;
+  box-shadow: none !important;
+}
+
+html[data-dsh-theme-eink-retro] :where(
+  [role="treeitem"][aria-selected="true"],
+  [aria-current="true"],
+  [aria-current="page"]
+) * {
+  color: inherit !important;
+}
+
+/* A selected/current control already owns the strongest ink fill. Drawing an
+ * offset ink outline around that fill reads as two nested selections. Keep the
+ * focus cue inside the selected surface, where inverse paper stays visible. */
+html[data-dsh-theme-eink-retro] :where(
+  [role="treeitem"][aria-selected="true"],
+  [aria-current="true"],
+  [aria-current="page"],
+  [aria-pressed="true"]
+):focus-visible {
+  outline: 0 !important;
+  box-shadow: var(--eink-focus-ring-inverse) !important;
+}
+
+/* Tabs are secondary navigation, not a row of outlined buttons. Their resting
+ * state is flat, hover spends only a quiet tonal fill, and the current view
+ * adds label weight. Keyboard focus temporarily inverts the same flat tab
+ * instead of wrapping it in a button-like outline. */
+html[data-dsh-theme-eink-retro] [role="tab"] {
+  background-color: transparent !important;
+  background-image: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+html[data-dsh-theme-eink-retro] [role="tab"]:hover {
+  background-color: var(--eink-paper-raised) !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+html[data-dsh-theme-eink-retro] [role="tab"]:focus:not(:focus-visible) {
+  outline: 0 !important;
+}
+
+html[data-dsh-theme-eink-retro] [role="tab"][aria-selected="true"] {
+  color: var(--eink-ink) !important;
+  background-color: var(--eink-paper-raised) !important;
+  background-image: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  font-weight: var(--eink-weight-strong) !important;
+}
+
+html[data-dsh-theme-eink-retro] [role="tab"][aria-selected="true"] * {
+  color: inherit !important;
+}
+
+html[data-dsh-theme-eink-retro] [role="tab"]:focus-visible {
+  color: var(--eink-selection-fg) !important;
+  background-color: var(--eink-selection-bg) !important;
+  outline: 0 !important;
+  box-shadow: var(--eink-focus-ring-inverse) !important;
+}
+
+html[data-dsh-theme-eink-retro] [role="tab"]:focus-visible * {
+  color: inherit !important;
+}
+
+/* The conversation header's public responsive hook identifies the tab set in
+ * the reference without localized labels or generated classes. It already
+ * paints one 2px selected indicator on the tab's ::after, so this group drops
+ * the generic tonal block and keeps that native line as its sole active cue. */
+html[data-dsh-theme-eink-retro]
+  [data-dsh-responsive-part="session-tablist"]
+  > [role="tab"] {
+  background-color: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+html[data-dsh-theme-eink-retro]
+  [data-dsh-responsive-part="session-tablist"]
+  > [role="tab"]:hover {
+  color: var(--eink-ink) !important;
+  background-color: transparent !important;
+  box-shadow: inset 0 -1px 0 var(--eink-rule-strong) !important;
+}
+
+html[data-dsh-theme-eink-retro]
+  [data-dsh-responsive-part="session-tablist"]
+  > [role="tab"][aria-selected="true"] {
+  color: var(--eink-ink) !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  font-weight: var(--eink-weight-strong) !important;
+}
+
+html[data-dsh-theme-eink-retro]
+  [data-dsh-responsive-part="session-tablist"]
+  > [role="tab"]:focus-visible {
+  color: var(--eink-ink) !important;
+  background-color: transparent !important;
+  box-shadow: var(--eink-focus-ring) !important;
+}
+
+html[data-dsh-theme-eink-retro] ::selection {
+  color: var(--eink-selection-fg);
+  background: var(--eink-selection-bg);
+}
+
+html[data-dsh-theme-eink-retro] hr {
+  height: 1px;
+  background: var(--eink-rule);
+  border: 0;
+}
+
+html[data-dsh-theme-eink-retro] :where(code, kbd, samp, pre) {
+  font-family: var(--eink-font-mono);
+}
+
+/* A key is a physical thing on paper: a keycap frame with the same hard
+ * offset the rest of the elevation scale uses. */
+html[data-dsh-theme-eink-retro] kbd {
+  padding: 1px 5px;
+  color: var(--eink-ink);
+  background-color: var(--eink-paper-bright);
+  border: 1px solid var(--eink-rule-strong);
+  border-radius: var(--eink-radius-tight);
+  box-shadow: var(--eink-shadow-1);
+  font-size: 0.9em;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+html[data-dsh-theme-eink-retro] :where(pre, [class*="code-block" i]) {
+  background-color: var(--dsw-alias-markdown-code-block);
+  border: 1px solid var(--eink-rule);
+  border-radius: var(--eink-radius-surface);
+  box-shadow: inset 2px 0 0 var(--eink-rule-strong);
+}
+
+html[data-dsh-theme-eink-retro] code:not(pre code) {
+  background-color: var(--dsw-alias-markdown-inline-code);
+  border: 1px solid var(--eink-rule);
+  border-radius: var(--eink-radius-control);
+}
+
+html[data-dsh-theme-eink-retro] blockquote {
+  border-left: 2px solid var(--eink-rule-strong);
+  background: transparent;
+  padding: 2px 0 2px 14px;
+}
+
+html[data-dsh-theme-eink-retro] blockquote > :first-child {
+  margin-top: 0 !important;
+}
+
+html[data-dsh-theme-eink-retro] blockquote > :last-child {
+  margin-bottom: 0 !important;
+}
+
+html[data-dsh-theme-eink-retro] table {
+  border-collapse: collapse;
+}
+
+html[data-dsh-theme-eink-retro] :where(th, td) {
+  border: 1px solid var(--eink-rule);
+  padding: 8px 12px !important;
+  vertical-align: top;
+}
+
+html[data-dsh-theme-eink-retro] th {
+  background: var(--eink-paper-raised);
+  font-weight: var(--eink-weight-strong);
+}
+
+/* DSH mounts composer menus inside the conversation scrollport. Their
+ * absolutely positioned listboxes must not contribute their popup height to
+ * the message stream, otherwise opening one changes the stream scrollHeight
+ * and makes its scrollbar/thumb jump. Keep gutter reservation local to the
+ * popup viewport: reserving it on the outer scrollport creates a second empty
+ * track beside views such as the trajectory table. */
+html[data-dsh-theme-eink-retro] [data-dsh-part="scrollport"] :has(> [role="listbox"]) {
+  contain: layout;
+}
+
+html[data-dsh-theme-eink-retro] [role="listbox"] > * {
+  scrollbar-gutter: stable;
+}
+
+/* The trajectory view already owns its vertical range in an inner table
+ * scroller. Keep the otherwise empty outer scrollport from acquiring a second
+ * scrollbar while a composer popup mounts or finishes unmounting. */
+html[data-dsh-theme-eink-retro] [data-dsh-part="scrollport"]:has(
+  section[aria-label*="Trajectory" i]
+),
+html[data-dsh-theme-eink-retro] [data-dsh-part="scrollport"]:has(
+  section[aria-label*="轨迹"]
+) {
+  overflow-y: hidden;
+}
+
+html[data-dsh-theme-eink-retro] * {
+  scrollbar-color: var(--dsw-alias-scrollbar-bg-l2) var(--dsw-alias-scrollbar-bg-l1);
+  scrollbar-width: thin;
+}
+
+html[data-dsh-theme-eink-retro] *::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+html[data-dsh-theme-eink-retro] *::-webkit-scrollbar-track,
+html[data-dsh-theme-eink-retro] *::-webkit-scrollbar-corner {
+  background: var(--dsw-alias-scrollbar-bg-l1);
+}
+
+html[data-dsh-theme-eink-retro] *::-webkit-scrollbar-thumb {
+  background: var(--dsw-alias-scrollbar-bg-l2);
+  border: 2px solid var(--dsw-alias-scrollbar-bg-l1);
+  border-radius: 0;
+}
+
+html[data-dsh-theme-eink-retro] *::-webkit-scrollbar-thumb:hover {
+  background: var(--dsw-alias-scrollbar-hover-l2);
+}
+
+html[data-dsh-theme-eink-retro] *::-webkit-scrollbar-thumb:active {
+  background: var(--dsw-alias-scrollbar-hover-l1);
+}
+
+/* Optional compatibility adapter: dsh-context v0.31.x. The data colors are
+ * preserved in balanced mode and mapped to luminance only in immersive mode. */
+html[data-dsh-theme-eink-retro="immersive"] .lc-root :is(
+  .lc-stacked-seg,
+  .lc-bar-stack > div,
+  .lc-bar-up > div,
+  .lc-bar-down > div,
+  .lc-turn,
+  .lc-chip i,
+  .lc-detail-row i,
+  .lc-node i,
+  .lc-br-cat-row i,
+  .lc-bar-fill,
+  .lc-event-icon,
+  .lc-kind
+) {
+  filter: grayscale(1) contrast(1.12);
+}
+
+html[data-dsh-theme-eink-retro] .lc-root :is(.lc-card, .lc-stat, .lc-br-cat, .lc-ts-card) {
+  border-radius: var(--eink-radius-surface);
+  box-shadow: none;
+}
+
+html[data-dsh-theme-eink-retro] .lc-root .lc-gran {
+  border-radius: var(--eink-radius-control) !important;
+}
+
+html[data-dsh-theme-eink-retro] .lc-root :is(.lc-gran-on, .lc-rich-seg-on) {
+  color: var(--eink-selection-fg);
+  background: var(--eink-selection-bg);
+}
+
+/* Skill Center is an app surface even though its panel is not exposed as a
+ * dialog. Replace the soft 60px float shadow with the shared hard elevation. */
+html[data-dsh-theme-eink-retro]
+  [data-dsh-plugin="skill-explorer"]
+  [data-dsh-part="card"] {
+  background-color: var(--eink-paper-bright) !important;
+  border: 1px solid var(--eink-rule-strong) !important;
+  box-shadow: var(--eink-shadow-2) !important;
+}
+
+/* The empty composer sits on a decorative glow with a hard-coded blue fill.
+ * It is marked aria-hidden, so it carries no meaning to retint around: the
+ * fill drops to a neutral wash and the composition DSH intended survives.
+ * Kept out of the immersive block on purpose — a saturated glow is off
+ * palette in balanced mode too. */
+html[data-dsh-theme-eink-retro]
+  [data-slot="conversation.composer"]
+  svg[aria-hidden="true"]
+  :is(ellipse, circle)[fill]:not([fill="none"]):not([fill="currentColor"]) {
+  fill: var(--eink-paper-raised);
+}
+
+/* Optional decorative adapters. User-authored images, attachments, previews,
+ * canvas content and media are intentionally never filtered. The pet is
+ * addressed through its wrapper so its own chrome — the close button and its
+ * tinted border — is covered along with the sprite. */
+html[data-dsh-theme-eink-retro="immersive"] img[src*="/api/skin-center/"],
+html[data-dsh-theme-eink-retro="immersive"] :has(> [style*="spritesheet"]) {
+  filter: grayscale(1) contrast(1.08);
+}
+
+/* Windows High Contrast replaces the palette wholesale, so the decorative
+ * layer only gets in its way: hard shadows and grayscale filters are dropped
+ * and the focus frame is redrawn in a system color. */
+@media (forced-colors: active) {
+  html[data-dsh-theme-eink-retro] *,
+  html[data-dsh-theme-eink-retro] *::before,
+  html[data-dsh-theme-eink-retro] *::after {
+    box-shadow: none !important;
+    filter: none !important;
+  }
+
+  html[data-dsh-theme-eink-retro] :where(
+    input,
+    textarea,
+    select,
+    [contenteditable="true"]
+  ):focus-visible {
+    outline: 2px solid CanvasText !important;
+    outline-offset: 0 !important;
+  }
+}
+
+/* Paper is the premise, so print is the one place the theme needs no
+ * translation. Backgrounds are dropped rather than trusted — browsers omit
+ * them by default, and an inverted selection would otherwise print as black
+ * on black — which is also why type collapses to a single ink. */
+@media print {
+  html[data-dsh-theme-eink-retro],
+  html[data-dsh-theme-eink-retro] body,
+  html[data-dsh-theme-eink-retro] #root {
+    background: #ffffff !important;
+  }
+
+  html[data-dsh-theme-eink-retro] *,
+  html[data-dsh-theme-eink-retro] *::before,
+  html[data-dsh-theme-eink-retro] *::after {
+    color: #000000 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    filter: none !important;
+  }
+
+  html[data-dsh-theme-eink-retro] :where(:has(> [data-dsh-surface="sidebar"]), [role="tooltip"]),
+  html[data-dsh-theme-eink-retro] [data-composer-card="true"] {
+    display: none !important;
+  }
+
+  html[data-dsh-theme-eink-retro] :where(pre, blockquote, table, tr, img) {
+    break-inside: avoid;
+  }
+}
+

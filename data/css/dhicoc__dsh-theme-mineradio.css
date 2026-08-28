@@ -1,5 +1,5 @@
 /* dhicoc/dsh-theme-mineradio — src/client/mineradio.module.css
-   fetched 2026-08-20 from https://raw.githubusercontent.com/dhicoc/dsh-theme-mineradio/main/src/client/mineradio.module.css
+   fetched 2026-08-28 from https://raw.githubusercontent.com/dhicoc/dsh-theme-mineradio/main/src/client/mineradio.module.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* ============================================================================
  * Mineradio theme layer — the cinematic private-visual-radio skin for the
@@ -28,15 +28,21 @@
    own base alphas and only scale by the same frost multiplier. ---------- */
 [data-dsh-aqua] {
   /* Mineradio panel glass — the player's own recipe: two radial highlights
-     (top-left white, top-right brand accent) over a 145° dark gradient. The
-     frost knob scales every stop's alpha (calc() inside the gradient stops). */
+     (top-left white, top-right brand accent) over a 145° gradient. The frost
+     knob scales every stop's alpha; past the mid point a WHITE veil adds mist
+     (--dsh-aqua-frost-white) so "frostier" lightens rather than darkens. */
   --dsh-aqua-glass-card-light:
-    radial-gradient(circle at 16% 0%, rgb(255 255 255 / calc(0.22 * var(--dsh-aqua-frost, 1))), transparent 34%),
-    radial-gradient(circle at 88% 8%, rgb(154 111 44 / calc(0.10 * var(--dsh-aqua-frost, 1))), transparent 36%),
-    linear-gradient(145deg, rgb(244 210 138 / calc(0.10 * var(--dsh-aqua-frost, 1))), rgb(250 246 238 / calc(0.58 * var(--dsh-aqua-frost, 1))) 42%, rgb(244 240 232 / calc(0.64 * var(--dsh-aqua-frost, 1))));
+    linear-gradient(rgba(255 255 255 / var(--dsh-aqua-frost-white, 0)), rgba(255 255 255 / var(--dsh-aqua-frost-white, 0))),
+    radial-gradient(circle at 16% 0%, rgb(255 255 255 / calc(0.38 * var(--dsh-aqua-frost, 1))), transparent 34%),
+    radial-gradient(circle at 88% 8%, rgb(154 111 44 / calc(0.16 * var(--dsh-aqua-frost, 1))), transparent 36%),
+    linear-gradient(145deg, rgb(244 210 138 / calc(0.16 * var(--dsh-aqua-frost, 1))), rgb(255 252 246 / calc(0.78 * var(--dsh-aqua-frost, 1))) 42%, rgb(250 246 238 / calc(0.82 * var(--dsh-aqua-frost, 1))));
   --dsh-aqua-glass-card-dark:
+    linear-gradient(rgba(255 255 255 / var(--dsh-aqua-frost-white, 0)), rgba(255 255 255 / var(--dsh-aqua-frost-white, 0))),
     radial-gradient(circle at 16% 0%, rgb(255 255 255 / calc(0.10 * var(--dsh-aqua-frost, 1))), transparent 34%),
     radial-gradient(circle at 88% 8%, rgb(0 245 212 / calc(0.12 * var(--dsh-aqua-frost, 1))), transparent 36%),
+    /* `--dsh-aqua-frost` itself is capped at 1.0 in the layer, so these deep
+       stops can never exceed their 0.70/0.66 base — no solid-black collapse.
+       Frost beyond 50 shows up as the white veil above instead of deeper ink. */
     linear-gradient(145deg, rgb(0 245 212 / calc(0.115 * var(--dsh-aqua-frost, 1))), rgb(12 13 18 / calc(0.70 * var(--dsh-aqua-frost, 1))) 42%, rgb(2 3 5 / calc(0.66 * var(--dsh-aqua-frost, 1))));
   /* Mineradio glass depth + Liquid-Glass specular rim: a crisp 1px inner
      edge, a bright catch-light, a faint thickness line, then the outer drop
@@ -44,12 +50,12 @@
      specular-parallax.ts, -1..1) so the rim brightens on the edge facing the
      cursor and dims on the far edge — Apple Liquid Glass's moving edge light. */
   --dsh-aqua-glass-shadow-light:
-    inset 0 0 0 1px rgb(255 255 255 / 0.20),
-    inset 0 1px 0 rgb(255 255 255 / calc(0.55 + 0.30 * (1 - var(--dsh-aqua-spec-y, 0)) / 2)),
-    inset 0 -1px 0 rgb(255 255 255 / calc(0.05 + 0.34 * (1 + var(--dsh-aqua-spec-y, 0)) / 2)),
-    inset 1px 0 0 rgb(255 255 255 / calc(0.04 + 0.14 * (1 - var(--dsh-aqua-spec-x, 0)) / 2)),
-    inset -1px 0 0 rgb(255 255 255 / calc(0.04 + 0.14 * (1 + var(--dsh-aqua-spec-x, 0)) / 2)),
-    0 22px 64px rgb(38 26 8 / 0.16);
+    inset 0 0 0 1px rgb(255 255 255 / 0.42),
+    inset 0 1px 0 rgb(255 255 255 / calc(0.70 + 0.22 * (1 - var(--dsh-aqua-spec-y, 0)) / 2)),
+    inset 0 -1px 0 rgb(154 111 44 / calc(0.10 + 0.16 * (1 + var(--dsh-aqua-spec-y, 0)) / 2)),
+    inset 1px 0 0 rgb(255 255 255 / calc(0.10 + 0.16 * (1 - var(--dsh-aqua-spec-x, 0)) / 2)),
+    inset -1px 0 0 rgb(154 111 44 / calc(0.06 + 0.10 * (1 + var(--dsh-aqua-spec-x, 0)) / 2)),
+    0 18px 44px rgb(38 26 8 / 0.12);
   --dsh-aqua-glass-shadow-dark:
     inset 0 0 0 1px rgb(255 255 255 / 0.13),
     inset 0 1px 0 rgb(255 255 255 / calc(0.22 + 0.20 * (1 - var(--dsh-aqua-spec-y, 0)) / 2)),
@@ -90,6 +96,15 @@
    it instead of sliding over the header and drifting. */
 [data-dsh-float] [class*='banner'] {
   position: static;
+}
+
+/* The sticky banner WRAPPER paints an OPAQUE `--dsw-alias-bg-base` (#08090B)
+   strip behind the code block's banner — read as a solid black slab against
+   the glass. The wrapper's only job was the sticky scroll backdrop, which
+   float mode already disables, so drop its fill and let the transparent
+   banner tint (and the fluid) show through. */
+[data-dsh-float] [class*='bannerWrap'] {
+  background-color: transparent;
 }
 
 [data-dsh-float] [data-phase='active'] [data-conversation-scroll] {
@@ -399,7 +414,7 @@
    noticeably frosted relative to the cards around it. */
 [data-dsh-float] [data-dsh-surface] {
   background: color-mix(in srgb, rgb(255 255 255) calc(62% * var(--dsh-aqua-surface-frost, 1)), transparent);
-  border: 1px solid rgba(154, 111, 44, 0.14);
+  border: 1px solid rgba(122, 86, 28, 0.26);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
   backdrop-filter: blur(var(--dsh-aqua-blur, 22px)) saturate(1.22) brightness(1.04);
 }
@@ -425,6 +440,45 @@
   border-radius: 8px;
 }
 
+/* Tooltips join the family: stock renders them as an opaque
+   --dsw-alias-tooltip-bg chip with static bluish-white ink, which floats
+   like a sticker over the glass. Same material as the menus, thinned for a
+   micro-surface (72% card fill, 12px blur), warm ink off the alias ladder.
+   The data-side transform is left untouched. */
+[data-dsh-float] [role='tooltip'] {
+  background: color-mix(in srgb, var(--dsh-aqua-glass-card-light) 72%, transparent);
+  border: 1px solid rgba(122, 86, 28, 0.28);
+  box-shadow: var(--dsh-aqua-glass-shadow-light);
+  color: var(--dsw-alias-label-primary);
+  padding: 4px 10px;
+  backdrop-filter: blur(12px) saturate(1.18) brightness(1.05);
+}
+
+[data-dsh-float] body[data-ds-dark-theme] [role='tooltip'] {
+  background: color-mix(in srgb, var(--dsh-aqua-glass-card-dark) 66%, transparent);
+  border-color: rgba(0, 245, 212, 0.20);
+  box-shadow: var(--dsh-aqua-glass-shadow-dark);
+}
+
+/* Session / workspace HoverCards (the 244px preview beside the rows):
+   stock paints them as a solid #2C2C2E slab (--dsw-hovercard-bg), which
+   reads as a sticker over the glass. Full menu-grade family material —
+   they are content cards, not micro-chips. Fixed positioning untouched.
+   (Class hash _card_1b2ny_13; the _root wrapper around the row stays
+   untouched — only the floating card is re-skinned.) */
+[data-dsh-float] [class*='_card_1b2ny_13'] {
+  background: var(--dsh-aqua-glass-card-light);
+  border: 1px solid rgba(122, 86, 28, 0.30);
+  box-shadow: var(--dsh-aqua-glass-shadow-light);
+  backdrop-filter: blur(var(--dsh-aqua-blur, 22px)) saturate(1.22) brightness(1.04);
+}
+
+[data-dsh-float] body[data-ds-dark-theme] [class*='_card_1b2ny_13'] {
+  background: var(--dsh-aqua-glass-card-dark);
+  border-color: rgba(0, 245, 212, 0.20);
+  box-shadow: var(--dsh-aqua-glass-shadow-dark);
+}
+
 /* Buttons (component roots carry the `button`-named class; icon circles
    carry `iconButton`; the sidebar search circle is its own family). */
 [data-dsh-float] button[class*='button'] {
@@ -440,7 +494,7 @@
    control reads as a brighter bead on the glass rather than a solid token. */
 [data-dsh-float] [data-dsh-add] {
   background: color-mix(in srgb, rgb(255 255 255) calc(40% * var(--dsh-aqua-frost, 1)), transparent);
-  border: 1px solid rgba(154, 111, 44, 0.15);
+  border: 1px solid rgba(122, 86, 28, 0.26);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(var(--dsh-aqua-blur, 22px)) saturate(1.22) brightness(1.04);
 }
@@ -463,8 +517,8 @@
    white, both with a backdrop blur so the fluid shimmers behind the text. */
 [data-dsh-float] [class*='bubble'] {
   border-radius: 14px;
-  border: 1px solid rgba(154, 111, 44, 0.12);
-  background: color-mix(in srgb, rgb(255 255 255) calc(42% * var(--dsh-aqua-frost, 1)), transparent);
+  border: 1px solid rgba(122, 86, 28, 0.22);
+  background: color-mix(in srgb, rgb(255 255 255) calc(62% * var(--dsh-aqua-frost, 1)), transparent);
   backdrop-filter: blur(var(--dsh-aqua-blur, 22px)) saturate(1.22) brightness(1.04);
 }
 
@@ -477,7 +531,7 @@
    text never fights the film; the backdrop blur still frosts the video. */
 html[data-dsh-float][data-dsh-aqua-wallpaper][data-dsh-aqua-media='video'] [class*='bubble'] {
   background: color-mix(in srgb, rgb(255 255 255) 70%, transparent);
-  border-color: rgba(154, 111, 44, 0.18);
+  border-color: rgba(122, 86, 28, 0.28);
 }
 
 html[data-dsh-float][data-dsh-aqua-wallpaper][data-dsh-aqua-media='video'] body[data-ds-dark-theme] [class*='bubble'] {
@@ -514,9 +568,22 @@ html[data-dsh-float][data-dsh-aqua-wallpaper][data-dsh-aqua-media='video'] body[
   position: relative;
   z-index: 8;
   background: var(--dsh-aqua-glass-card-light);
-  border: 1px solid rgba(154, 111, 44, 0.22);
+  border: 1px solid rgba(122, 86, 28, 0.34);
   box-shadow: var(--dsh-aqua-glass-shadow-light);
+}
+
+/* Frost lives on a ::before veil, not the card: backdrop-filter on the card
+   makes it a backdrop root for its absolute/fixed descendants (model /
+   access-mode / sub-agent menus), so those popups can only frost the card
+   itself and the chat text reads through sharp. Same trick as the sidebar. */
+[data-dsh-float] [data-composer-card]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
   backdrop-filter: blur(var(--dsh-aqua-blur, 22px)) saturate(1.22) brightness(1.04);
+  pointer-events: none;
+  z-index: -1;
 }
 
 [data-dsh-float] body[data-ds-dark-theme] [data-composer-card] {
@@ -532,15 +599,29 @@ html[data-dsh-float][data-dsh-aqua-wallpaper][data-dsh-aqua-media='video'] body[
    seam stays. The slab shrinks to its content width (max-content) so the
    glass hugs the composer exactly. */
 [data-dsh-aqua][data-dsh-float] [data-dsh-inputbar]:has([data-dsh-stats]) {
+  position: relative;
+  z-index: 8;
   width: calc(var(--dsh-chat-content-width) + 32px);
   max-width: none;
   margin: 0 auto 12px;
   padding: 0;
-  border: 1px solid rgba(154, 111, 44, 0.22);
+  border: 1px solid rgba(122, 86, 28, 0.34);
   border-radius: 24px;
   background: var(--dsh-aqua-glass-card-light);
   box-shadow: var(--dsh-aqua-glass-shadow-light);
+}
+
+/* Fused slab: same veil as the unfused card. z-index on the wrapper makes a
+   stacking context for the glow / veil (z -1) without isolation — isolation
+   would also become a backdrop root and clip popup frost to the bar. */
+[data-dsh-aqua][data-dsh-float] [data-dsh-inputbar]:has([data-dsh-stats])::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
   backdrop-filter: blur(var(--dsh-aqua-blur, 22px)) saturate(1.22) brightness(1.04);
+  pointer-events: none;
+  z-index: -1;
 }
 
 [data-dsh-float] body[data-ds-dark-theme] [data-dsh-inputbar]:has([data-dsh-stats]) {
@@ -557,6 +638,7 @@ html[data-dsh-float][data-dsh-aqua-wallpaper][data-dsh-aqua-media='video'] body[
   backdrop-filter: none;
 }
 
+[data-dsh-float] [data-dsh-inputbar]:has([data-dsh-stats]) [data-composer-card]::before,
 [data-dsh-float] [data-dsh-inputbar]:has([data-dsh-stats]) [data-composer-card]::after {
   display: none;
 }
@@ -574,7 +656,7 @@ html[data-dsh-float][data-dsh-aqua-wallpaper][data-dsh-aqua-media='video'] body[
   display: block;
   padding: 2px 16px;
   border: none;
-  border-top: 1px solid rgba(154, 111, 44, 0.15);
+  border-top: 1px solid rgba(122, 86, 28, 0.24);
   border-radius: 0;
   background: transparent;
   box-shadow: none;
@@ -588,6 +670,92 @@ html[data-dsh-float][data-dsh-aqua-wallpaper][data-dsh-aqua-media='video'] body[
 [data-dsh-float] [data-composer-card]::after {
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='none' rx='24' ry='24' stroke='black' stroke-width='2' stroke-dasharray='4 4'/%3E%3C/svg%3E");
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='none' rx='24' ry='24' stroke='black' stroke-width='2' stroke-dasharray='4 4'/%3E%3C/svg%3E");
+}
+
+/* On Air: a studio lamp on the composer rim while a turn is live. Slow
+   enough to read as a light, not a VU meter. Fused slab uses the inputbar
+   rim; unfused uses the card. No setting — it is the radio being on. */
+[data-dsh-aqua][data-dsh-float] [data-dsh-inputbar][data-dsh-on-air] [data-composer-card] {
+  animation: dsh-mineradio-on-air 3.6s ease-in-out infinite;
+}
+
+[data-dsh-aqua][data-dsh-float] [data-dsh-inputbar][data-dsh-on-air]:has([data-dsh-stats]) {
+  animation: dsh-mineradio-on-air 3.6s ease-in-out infinite;
+}
+
+[data-dsh-aqua][data-dsh-float] [data-dsh-inputbar][data-dsh-on-air]:has([data-dsh-stats]) [data-composer-card] {
+  animation: none;
+}
+
+@keyframes dsh-mineradio-on-air {
+  0%, 100% {
+    box-shadow:
+      var(--dsh-aqua-glass-shadow-dark, 0 22px 64px rgb(0 0 0 / 0.30)),
+      0 0 0 1px rgb(244 210 138 / 0.10),
+      0 0 18px rgb(244 210 138 / 0.08);
+  }
+  50% {
+    box-shadow:
+      var(--dsh-aqua-glass-shadow-dark, 0 22px 64px rgb(0 0 0 / 0.30)),
+      0 0 0 1px rgb(244 210 138 / 0.34),
+      0 0 28px rgb(244 210 138 / 0.22);
+  }
+}
+
+html:not(:has(body[data-ds-dark-theme])) [data-dsh-aqua][data-dsh-float] [data-dsh-inputbar][data-dsh-on-air] [data-composer-card],
+html:not(:has(body[data-ds-dark-theme])) [data-dsh-aqua][data-dsh-float] [data-dsh-inputbar][data-dsh-on-air]:has([data-dsh-stats]) {
+  animation-name: dsh-mineradio-on-air-light;
+}
+
+@keyframes dsh-mineradio-on-air-light {
+  0%, 100% {
+    box-shadow:
+      var(--dsh-aqua-glass-shadow-light, 0 18px 44px rgb(38 26 8 / 0.12)),
+      0 0 0 1px rgb(122 86 28 / 0.16),
+      0 0 16px rgb(154 111 44 / 0.10);
+  }
+  50% {
+    box-shadow:
+      var(--dsh-aqua-glass-shadow-light, 0 18px 44px rgb(38 26 8 / 0.12)),
+      0 0 0 1px rgb(122 86 28 / 0.40),
+      0 0 24px rgb(154 111 44 / 0.22);
+  }
+}
+
+/* Station dial: the brand row's frequency window. Each workspace tunes its
+   own hue; the window shows the live frequency (`FM 044`) and flickers
+   softly while the dial glides to another workspace's stop. */
+[data-dsh-aqua] [data-dsh-wordmark] {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+[data-dsh-aqua] [data-dsh-station-tuner] {
+  font: 600 10.5px/1 ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  letter-spacing: 0.08em;
+  color: rgb(244 210 138 / 0.78);
+  padding: 3px 7px 2px;
+  border: 1px solid rgb(244 210 138 / 0.22);
+  border-radius: 999px;
+  background: rgb(244 210 138 / 0.06);
+  text-shadow: 0 0 12px rgb(244 210 138 / 0.35);
+}
+
+html:not(:has(body[data-ds-dark-theme])) [data-dsh-aqua] [data-dsh-station-tuner] {
+  color: rgb(122 86 28 / 0.85);
+  border-color: rgb(122 86 28 / 0.30);
+  background: rgb(154 111 44 / 0.08);
+  text-shadow: none;
+}
+
+[data-dsh-aqua] [data-dsh-station-tuner][data-dsh-tuning] {
+  animation: dsh-mineradio-tuning 700ms steps(2, jump-none) infinite;
+}
+
+@keyframes dsh-mineradio-tuning {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
 }
 
 /* Block family (code / terminal / diff / read / web / search): the corner
@@ -608,7 +776,7 @@ html[data-dsh-float][data-dsh-aqua-wallpaper][data-dsh-aqua-media='video'] body[
 [data-dsh-float] header {
   margin: 12px 16px 0;
   padding: 10px 16px 8px;
-  border: 1px solid rgba(154, 111, 44, 0.22);
+  border: 1px solid rgba(122, 86, 28, 0.34);
   border-bottom-color: transparent;
   border-radius: 20px;
   background: var(--dsh-aqua-glass-card-light);
@@ -701,6 +869,15 @@ html[data-dsh-float][data-dsh-aqua-wallpaper][data-dsh-aqua-media='video'] body[
   transition: margin 150ms var(--ds-ease-in-out), border-radius 150ms var(--ds-ease-in-out), transform 0.1s ease-out;
 }
 
+/* Collapsed rail (dark): the 56px column amplifies the wide-pane teal catch-light
+   (radial at 88% 8%) into a hot green right edge that clashes with the warm chat;
+   flatten to a quieter veil and dim the specular rim so it reads as one family. */
+[data-dsh-float] body[data-ds-dark-theme] [data-dsh-frame][data-sidebar-collapsed] [class*='sidebarCol'] {
+  background: linear-gradient(168deg, rgb(0 245 212 / 0.045), rgb(12 13 18 / 0.72) 46%, rgb(2 3 5 / 0.68));
+  border-color: rgba(255, 255, 255, 0.10);
+  border-top-color: rgba(255, 255, 255, 0.22);
+}
+
 /* The sidebar root freezes at the expanded column width via an inline
    style (the collapse crossfade needs it) —release it so the content
    follows the glass panel's width instead of overflowing its right edge.
@@ -717,7 +894,7 @@ html[data-dsh-float][data-dsh-aqua-wallpaper][data-dsh-aqua-media='video'] body[
   margin: 8px 16px 12px;
   width: calc(100% - 32px);
   height: calc(100% - 20px);
-  border: 1px solid rgba(154, 111, 44, 0.22);
+  border: 1px solid rgba(122, 86, 28, 0.34);
   border-radius: 20px;
   background: var(--dsh-aqua-glass-card-light);
   box-shadow: var(--dsh-aqua-glass-shadow-light);
@@ -753,10 +930,10 @@ html[data-dsh-float][data-dsh-aqua-wallpaper][data-dsh-aqua-media='video'] body[
   max-width: none;
   margin: 0 auto;
   padding: 2px 16px;
-  border: 1px solid rgba(154, 111, 44, 0.22);
+  border: 1px solid rgba(122, 86, 28, 0.34);
   /* The ONLY seam cue: one hairline between the two pieces of the same
      glass slab (the composer card drops its bottom border when fused). */
-  border-top: 1px solid rgba(154, 111, 44, 0.15);
+  border-top: 1px solid rgba(122, 86, 28, 0.24);
   border-radius: 0 0 24px 24px;
   /* Continues the card's FLAT tone exactly, so the two read as one piece
      of glass with no tonal step at the seam. */
@@ -796,6 +973,15 @@ html[data-dsh-float][data-dsh-aqua-wallpaper][data-dsh-aqua-media='video'] body[
   position: relative;
   /* A stacking context per pane: the glow sits at z-index -1 INSIDE it. */
   isolation: isolate;
+}
+
+/* The inputbar hosts the composer dropdowns. isolation would clip their
+   backdrop-filter to the bar, so chat text stays sharp behind the menus.
+   z-index (not isolation) keeps the glow / veil at z-index -1 inside the
+   pane without becoming a backdrop root. */
+[data-dsh-aqua][data-dsh-aqua-spotlight] [data-dsh-inputbar][data-dsh-aqua-spot] {
+  isolation: auto;
+  z-index: 8;
 }
 
 /* The injected glow div must never affect layout: inert by default (compat
@@ -851,7 +1037,7 @@ html[data-dsh-float][data-dsh-aqua-wallpaper][data-dsh-aqua-media='video'] body[
    `body` hop out-ranks the compat generic glass (blur 12px on `panel`
    classes) and the raised-surface 14px radius rule. ---------- */
 [data-dsh-aqua] body [role='dialog'] {
-  border: 1px solid rgba(154, 111, 44, 0.22);
+  border: 1px solid rgba(122, 86, 28, 0.34);
   border-radius: 20px;
   background: var(--dsh-aqua-glass-card-light);
   box-shadow: var(--dsh-aqua-glass-shadow-light);
@@ -873,24 +1059,68 @@ html[data-dsh-float][data-dsh-aqua-wallpaper][data-dsh-aqua-media='video'] body[
 
 /* ---------- Hover light: buttons and menu cells answer with a soft blue ring. ---------- */
 [data-dsh-float] button[class*='button']:hover:not(:disabled),
-[data-dsh-float] [role='menuitem']:hover:not(:disabled) {
+[data-dsh-float] [role='menuitem']:hover:not(:disabled),
+[data-dsh-float] [role='option']:hover:not(:disabled) {
   box-shadow:
     0 0 12px rgba(244, 210, 138, 0.18),
     inset 0 0 0 1px rgba(255, 255, 255, 0.085);
 }
 
-/* Glass surfaces: menus and dialogs follow the site's frosted recipe
-   (standard `backdrop-filter` only —see the composer card note). */
-[data-dsh-float] [role='menu'] {
-  background: color-mix(in srgb, rgb(255 255 255) calc(62% * var(--dsh-aqua-frost, 1)), transparent);
+/* Composer / overflow menus: the SAME liquid-glass recipe as the panes
+   (family gradient + specular rim + blur knob). They sit over chat text, so
+   the readable frost comes from real backdrop blur (the composer veil above
+   lets them sample the transcript) — not a near-opaque flat slab. The slash
+   command picker is a listbox wearing the same `_menu` class, so it rides
+   along. */
+[data-dsh-float] [role='menu'],
+[data-dsh-float] [role='tree'][class*='menu'],
+[data-dsh-float] [role='listbox'][class*='menu'] {
+  background: var(--dsh-aqua-glass-card-light);
+  border: 1px solid rgba(122, 86, 28, 0.34);
+  box-shadow: var(--dsh-aqua-glass-shadow-light);
   backdrop-filter: blur(var(--dsh-aqua-blur, 22px)) saturate(1.22) brightness(1.04);
 }
 
 /* Dialogs keep their native token surface (bg-layer-2) and radius; no
    translucent override and no backdrop blur —the override made the panel
    muddy and the blur scrambled its fixed-position layout. */
-[data-dsh-float] body[data-ds-dark-theme] [role='menu'] {
-  background: color-mix(in srgb, rgb(28 32 42) calc(68% * var(--dsh-aqua-frost, 1)), transparent);
+[data-dsh-float] body[data-ds-dark-theme] [role='menu'],
+[data-dsh-float] body[data-ds-dark-theme] [role='tree'][class*='menu'],
+[data-dsh-float] body[data-ds-dark-theme] [role='listbox'][class*='menu'] {
+  background: var(--dsh-aqua-glass-card-dark);
+  border-color: rgba(0, 245, 212, 0.22);
+  box-shadow: var(--dsh-aqua-glass-shadow-dark);
+}
+
+/* Model-picker provider rows are sticky group titles. Stock fill is
+   --dsw-specific-menu (near-black 92%), so the label reads as a black
+   strip on the glass. Drop the plate; ink follows the theme ladder. Same
+   for the slash-command picker's group titles. */
+[data-dsh-float] [role='menu'] [class*='groupTitle'],
+[data-dsh-float] [role='listbox'][class*='menu'] [class*='groupTitle'] {
+  background: transparent;
+  color: var(--dsw-alias-label-secondary);
+}
+
+/* Todo / composer-dock tip cards: stock fill is --dsw-specific-tip (a flat
+   token, no blur). Same family glass as the panes. The todo card is the
+   _root that owns a collapse header (aria-expanded); the dock panel is
+   the _panel sitting in a _dock; the goal strip is the _bar in a _dock. */
+[data-dsh-float] [class*='_root']:has(> [class*='_body'] > button[class*='_header'][aria-expanded]),
+[data-dsh-float] [class*='_dock'] > [class*='_panel']:has(> [class*='_header']),
+[data-dsh-float] [class*='_dock'] > [class*='_bar'] {
+  background: var(--dsh-aqua-glass-card-light);
+  border-color: rgba(122, 86, 28, 0.34);
+  box-shadow: var(--dsh-aqua-glass-shadow-light);
+  backdrop-filter: blur(var(--dsh-aqua-blur, 22px)) saturate(1.22) brightness(1.04);
+}
+
+[data-dsh-float] body[data-ds-dark-theme] [class*='_root']:has(> [class*='_body'] > button[class*='_header'][aria-expanded]),
+[data-dsh-float] body[data-ds-dark-theme] [class*='_dock'] > [class*='_panel']:has(> [class*='_header']),
+[data-dsh-float] body[data-ds-dark-theme] [class*='_dock'] > [class*='_bar'] {
+  background: var(--dsh-aqua-glass-card-dark);
+  border-color: rgba(0, 245, 212, 0.22);
+  box-shadow: var(--dsh-aqua-glass-shadow-dark);
 }
 
 /* ---------- Page edge fades: 5px gradient blur bands pinned to the top and
@@ -938,6 +1168,53 @@ html[data-dsh-float][data-dsh-aqua-wallpaper][data-dsh-aqua-media='video'] body[
 
 [data-dsh-aqua] ::selection {
   background: rgba(154, 111, 44, 0.35);
+}
+
+/* ---------- Native <select> popups: the OS-drawn option list. The stock
+   inputs paint a TRANSLUCENT surface-token fill and the option rows
+   inherit the ink colour but no background — on Windows Chromium the
+   popup's self-drawn rows collapse that transparent background into a
+   pale slab, leaving the inherited light ink unreadable (light mode
+   invertedly so: dark ink over a dark plate). Give every option/optgroup
+   an OPAQUE plate plus a matching ink so the popup reads like the menu
+   surface family in both schemes. These are the only properties Windows
+   Chromium honours on the native popup; the hover/selected highlight
+   stays system-drawn. ---------- */
+[data-dsh-aqua] select option,
+[data-dsh-aqua] select optgroup {
+  background-color: #FFFFFF;
+  color: #2A241A;
+}
+
+[data-dsh-aqua] body[data-ds-dark-theme] select option,
+[data-dsh-aqua] body[data-ds-dark-theme] select optgroup {
+  background-color: #16181D;
+  color: #F2F0EA;
+}
+
+/* Settings model / API-protocol <select> triggers. Stock fill is
+   --dsw-alias-bg-layer-1 (a flat token). Same family glass as the panes;
+   keep the stock chevron image on the right. */
+[data-dsh-aqua] [role='dialog'] select {
+  background-color: transparent;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M3 4.5L6 7.5L9 4.5' stroke='%237A7468' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"),
+    var(--dsh-aqua-glass-card-light);
+  background-position: right 12px center, 0 0;
+  background-repeat: no-repeat, no-repeat;
+  background-size: 12px 12px, auto;
+  border-color: rgba(122, 86, 28, 0.34);
+  box-shadow: var(--dsh-aqua-glass-shadow-light);
+  backdrop-filter: blur(var(--dsh-aqua-blur, 22px)) saturate(1.22) brightness(1.04);
+  color: var(--dsw-alias-label-primary);
+}
+
+[data-dsh-aqua] body[data-ds-dark-theme] [role='dialog'] select {
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M3 4.5L6 7.5L9 4.5' stroke='%23CBC4B8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"),
+    var(--dsh-aqua-glass-card-dark);
+  border-color: rgba(0, 245, 212, 0.22);
+  box-shadow: var(--dsh-aqua-glass-shadow-dark);
 }
 
 /* ---------- Display typography: the serif face marks headings and the
@@ -1008,11 +1285,11 @@ html[data-dsh-float][data-dsh-aqua-wallpaper][data-dsh-aqua-media='video'] body[
    so these hero surfaces layer the dispersion after their blur. The fused-slab
    inner composer/stats keep backdrop-filter:none (their higher-specificity
    fused rules still win); the slab itself carries it. ---------- */
-[data-dsh-float][data-dsh-dispersion] [data-composer-card],
+[data-dsh-float][data-dsh-dispersion] [data-composer-card]::before,
 [data-dsh-float][data-dsh-dispersion] header,
 [data-dsh-float][data-dsh-dispersion] [data-dsh-trajectory],
 [data-dsh-float][data-dsh-dispersion] [data-dsh-stats],
-[data-dsh-float][data-dsh-dispersion] [data-dsh-inputbar]:has([data-dsh-stats]) {
+[data-dsh-float][data-dsh-dispersion] [data-dsh-inputbar]:has([data-dsh-stats])::before {
   backdrop-filter: blur(var(--dsh-aqua-blur, 22px)) url(#mineradio-glass-dispersion) saturate(1.22) brightness(1.04);
 }
 
@@ -1024,6 +1301,17 @@ html[data-dsh-float][data-dsh-aqua-wallpaper][data-dsh-aqua-media='video'] body[
    descendants and clip them. */
 [data-dsh-float][data-dsh-dispersion] [class*='sidebarCol']::before {
   backdrop-filter: blur(var(--dsh-aqua-blur, 22px)) url(#mineradio-glass-dispersion-tall) saturate(1.22) brightness(1.04);
+}
+
+/* The collapsed rail EXEMPTS itself from the dispersion: the displacement
+   map pulls its edge samples ±30px outside the pane, and on the 56px rail
+   that drags the brighter chat-side fluid under the right edge (a hot 7px
+   band) while the champagne edge tint screen-blends over the step — the
+   same narrow-column amplification the flattened rail gradient above
+   fixes. Plain frost keeps the rail in the glass family; the wide panes
+   (header/composer/expanded sidebar) keep their refraction. */
+[data-dsh-float][data-dsh-dispersion] [data-dsh-frame][data-sidebar-collapsed] [class*='sidebarCol']::before {
+  backdrop-filter: blur(var(--dsh-aqua-blur, 22px)) saturate(1.22) brightness(1.04);
 }
 
 /* ---------- Compatibility mode: stock layout, generic glass material.
@@ -1042,7 +1330,45 @@ html[data-dsh-float][data-dsh-aqua-wallpaper][data-dsh-aqua-media='video'] body[
 [data-dsh-compat] [class*='panel'],
 [data-dsh-compat] [class*='popover'],
 [data-dsh-compat] [class*='dropdown'] {
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(var(--dsh-aqua-blur, 22px));
+}
+
+/* ---------- dsh-better-sidebar (omdsh/DSH-better-sidebar) glass pantry ----------
+   The plugin is token-driven (`--dsw-alias-*`), so its panels already inherit the
+   translucent fill + champagne hairline; add the missing frosted backdrop-filter
+   and let the opaque workbench pane (which resolves to the opaque base token)
+   read through to the panel's frost instead of sitting as a solid slab. */
+[data-dsh-aqua] [data-dsh-panel-host] [class*='panel' i]:not([class*='Body' i]):not([class*='Resize' i]):not([class*='Tab' i]) {
+  background: var(--dsh-aqua-glass-card-light);
+  border-color: rgba(122, 86, 28, 0.34);
+  box-shadow: var(--dsh-aqua-glass-shadow-light);
+  backdrop-filter: blur(var(--dsh-aqua-blur, 22px)) saturate(1.22) brightness(1.04);
+}
+[data-dsh-aqua] body[data-ds-dark-theme] [data-dsh-panel-host] [class*='panel' i]:not([class*='Body' i]):not([class*='Resize' i]):not([class*='Tab' i]) {
+  background: var(--dsh-aqua-glass-card-dark);
+  border-color: rgba(0, 245, 212, 0.22);
+  box-shadow: var(--dsh-aqua-glass-shadow-dark);
+}
+/* Tab strip sits inside the already-frosted panel; its own layer-1 fill
+   reads as a second flat slab. Let the panel glass show through. */
+[data-dsh-aqua] [data-dsh-panel-host] [class*='tabBar'] {
+  background: transparent;
+}
+/* "_pane" is a prefix of "_panel", so exclude panel/content/tab to hit only the
+   opaque workbench pane (not the translucent panel shell or its children). */
+[data-dsh-aqua] [data-dsh-panel-host] [class*='_pane']:not([class*='panel']):not([class*='Content']):not([class*='Tab']) {
+  background: transparent;
+}
+/* Terminal wrap + xterm viewport paint an OPAQUE --dsw-alias-bg-base
+   (#08090B) slab — xterm even inlines it on .xterm-viewport. Drop both
+   fills so the panel frost shows through. allowTransparency is already
+   on; ANSI ink stays. */
+[data-dsh-aqua] [data-dsh-panel-host] [class*='terminalWrap'] {
+  background: transparent;
+}
+[data-dsh-aqua] [data-dsh-panel-host] [class*='xterm-viewport'],
+[data-dsh-aqua] [data-dsh-panel-host] [class*='xterm-screen'] {
+  background-color: transparent !important;
 }
 
 /* ---------- Reduced motion: keep the static look, drop every effect. ---------- */
@@ -1054,7 +1380,10 @@ html[data-dsh-float][data-dsh-aqua-wallpaper][data-dsh-aqua-media='video'] body[
   [data-dsh-float] [data-tool],
   [data-dsh-float] [role='dialog'],
   [data-dsh-aqua] [data-dsh-aqua-ambient],
-  [data-dsh-aqua] [data-aqua-critter] {
+  [data-dsh-aqua] [data-aqua-critter],
+  [data-dsh-aqua] [data-dsh-inputbar][data-dsh-on-air],
+  [data-dsh-aqua] [data-dsh-inputbar][data-dsh-on-air] [data-composer-card],
+  [data-dsh-aqua] [data-dsh-station-tuner][data-dsh-tuning] {
     animation: none;
   }
 
