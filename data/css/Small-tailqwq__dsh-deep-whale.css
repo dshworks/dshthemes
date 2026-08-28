@@ -1,5 +1,5 @@
 /* Small-tailqwq/dsh-deep-whale — maid-atelier/src/client/maid-atelier.module.css
-   fetched 2026-08-27 from https://raw.githubusercontent.com/Small-tailqwq/dsh-deep-whale/main/maid-atelier/src/client/maid-atelier.module.css
+   fetched 2026-08-28 from https://raw.githubusercontent.com/Small-tailqwq/dsh-deep-whale/main/maid-atelier/src/client/maid-atelier.module.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* Deep-sea maid atelier: a self-contained presentation layer over the stock
    web GUI. The generated palace and character layers are applied separately
@@ -276,11 +276,13 @@ html[data-dsh-whale-maid-model-exit='enabled'][data-dsh-whale-model='flash-visio
 
 /* The top curtain belongs to the main pane, not to the sidebar. Its two
    independently translated layers let the landing ornament leave upward
-   while the lace-free workspace band drops in from above. */
+   while the lace-free workspace band drops in from above. The decor stays
+   below the sidebar root's stacking context (z 2), so fixed overlays that
+   extension slots mount inside it (peak/cost alerts) are never covered. */
 body[data-dsh-maid-atelier] [data-skin-chrome='top-trim'] {
   position: absolute;
   inset: 0 0 auto 0;
-  z-index: 20;
+  z-index: 1;
   height: 76px;
   overflow: hidden;
   pointer-events: none;
@@ -339,12 +341,13 @@ body[data-dsh-maid-atelier] [data-skin-trim-layer='landing']::after {
 }
 
 /* The bottom band repeats at its native height while the center crest remains
-   an independent fixed-size layer inside the conversation column. */
+   an independent fixed-size layer inside the conversation column. Same z
+   rationale as the top curtain: below the sidebar root's z 2 context. */
 body[data-dsh-maid-atelier] [data-skin-chrome='bottom-trim'] {
   position: absolute;
   inset: auto 0 0 0;
   transform: translateY(0);
-  z-index: 20;
+  z-index: 1;
   height: 60px;
   pointer-events: none;
   background: var(--maid-bottom-trim-art) left bottom / auto 30px repeat-x;
@@ -3617,12 +3620,29 @@ body[data-dsh-maid-atelier][data-ds-dark-theme] :is([role='dialog'], [role='menu
 }
 
 /* Keep the settings surface above the composer while leaving the composer
-   visible as a dimmed, blurred background layer. */
+   visible as a dimmed, blurred background layer. The host tooltip reads
+   viewport coordinates into a fixed-position bubble mounted inside this
+   dialog. A backdrop filter on the dialog itself would turn the dialog into
+   that bubble's containing block, so paint the glass on an isolated backing
+   layer instead. */
 body[data-dsh-maid-atelier]
   [data-slot='sidebar.settings']
   [role='presentation']
   > [role='dialog'][aria-modal='true'] {
   --dsw-alias-bg-layer-2: rgba(235, 240, 250, 0.68);
+  isolation: isolate;
+  background: transparent;
+}
+
+body[data-dsh-maid-atelier]
+  [data-slot='sidebar.settings']
+  [role='presentation']
+  > [role='dialog'][aria-modal='true']::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
   background: var(--dsw-alias-bg-layer-2);
   backdrop-filter: blur(6px) saturate(0.9);
 }

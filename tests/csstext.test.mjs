@@ -53,15 +53,48 @@ test("the shell's own compiled class names count as reach", () => {
 });
 
 test("relative urls are resolved against the sheet's real home", () => {
+  // The second assertion here used to require `/img/x.jpg` to resolve to
+  // `.../src/client/img/x.jpg`, and that is what shipped: a leading slash was
+  // stripped and the rest treated as a repo path. It is the assertion that
+  // let 94 of 133 remote assets in the frozen stylesheets be 404s. A test can
+  // be the thing that is wrong.
   const css = "body { background: url(./bg.png); } .a { background: url('/img/x.jpg'); }";
   const out = absolutiseUrls(css, "https://raw.githubusercontent.com/o/r/main/src/client/skin.css");
   assert.match(out, /url\("https:\/\/raw\.githubusercontent\.com\/o\/r\/main\/src\/client\/bg\.png"\)/);
-  assert.match(out, /url\("https:\/\/raw\.githubusercontent\.com\/o\/r\/main\/src\/client\/img\/x\.jpg"\)/);
+  assert.match(out, /url\('\/img\/x\.jpg'\)/, "a root-absolute route must be left exactly as written");
 });
 
 test("absolute and data urls are left alone", () => {
   const css = "a { background: url(data:image/png;base64,AAA); } b { background: url(https://x.test/y.png); }";
   assert.equal(absolutiseUrls(css, "https://raw.githubusercontent.com/o/r/main/a.css"), css);
+});
+
+test("a root-absolute url is a runtime route, not a repo path", () => {
+  // `/skin-assets/bg.webp` is served by the plugin inside dsh. Resolving it
+  // against the repo produces a path that has never existed there -- which is
+  // how 94 of 133 remote assets in the frozen stylesheets came to be 404.
+  const css = "body { background: url('/skin-assets/bg.webp'); }";
+  assert.equal(absolutiseUrls(css, "https://raw.githubusercontent.com/o/r/main/skin.css"), css);
+});
+
+test("a percent-encoded fragment is still a fragment", () => {
+  // Some bundlers write `url(#n)` out as `url(%23n)`. The `#` guard never saw
+  // it, so an SVG filter reference became a repository path.
+  const css = "filter: url('%23n');";
+  assert.equal(absolutiseUrls(css, "https://raw.githubusercontent.com/o/r/main/lib/skin.css"), css);
+});
+
+test("a build-time token is not a path", () => {
+  const css = "src: url(__ARC_FONT_EXO__);";
+  assert.equal(absolutiseUrls(css, "https://raw.githubusercontent.com/o/r/main/src/skin.css"), css);
+});
+
+test("a relative url still resolves against the stylesheet", () => {
+  const css = "body { background: url('img/bg.png'); }";
+  assert.match(
+    absolutiseUrls(css, "https://raw.githubusercontent.com/o/r/main/src/skin.css"),
+    /url\("https:\/\/raw\.githubusercontent\.com\/o\/r\/main\/src\/img\/bg\.png"\)/,
+  );
 });
 
 // A WebGL theme keeps its shaders in template strings too, and `cond ? a : b;`

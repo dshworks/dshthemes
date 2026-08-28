@@ -1,5 +1,5 @@
 /* EdwardHamu/dsh-glassmorphism-theme — lib/client.js
-   fetched 2026-08-21 from https://raw.githubusercontent.com/EdwardHamu/dsh-glassmorphism-theme/main/lib/client.js
+   fetched 2026-08-28 from https://raw.githubusercontent.com/EdwardHamu/dsh-glassmorphism-theme/main/lib/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 :root {
   --md-sys-shape-corner-none: 0px;
@@ -479,11 +479,15 @@ body {
   border-radius: 20px 20px var(--md-sys-shape-corner-extra-small) 20px !important;
 }
 
-/* Keep message code surfaces translucent without reducing text, syntax, or
- * control opacity. The code-block component consumes these local variables
- * for its body, sticky banner wrapper, and banner content. */
-.Md3f7G_column[data-chat-flow] .md-code-block {
+/* Keep message code and terminal surfaces translucent without reducing text,
+ * syntax, or control opacity. Both components consume the markdown code-block
+ * token for their painted body. */
+.Md3f7G_column[data-chat-flow] .md-code-block,
+.Md3f7G_column[data-chat-flow] [data-terminal] {
   --dsw-alias-markdown-code-block: color-mix(in srgb, var(--md-sys-color-surface-container) 30%, transparent);
+}
+
+.Md3f7G_column[data-chat-flow] .md-code-block {
   --dsw-alias-bg-base: color-mix(in srgb, var(--md-sys-color-surface) 30%, transparent);
   --dsl-code-block-banner-background-color: color-mix(in srgb, var(--md-sys-color-surface-container-high) 30%, transparent);
 }

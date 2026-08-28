@@ -1,10 +1,10 @@
 /* Cinnamobot/dsh-nothing-skin — lib/client.js
-   fetched 2026-08-25 from https://raw.githubusercontent.com/Cinnamobot/dsh-nothing-skin/master/lib/client.js
+   fetched 2026-08-28 from https://raw.githubusercontent.com/Cinnamobot/dsh-nothing-skin/master/lib/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 html[data-ns="on"] body {
     --ndot-black: #000000;
-    --ndot-surface: #0d0d0d;
-    --ndot-surface-raised: #141414;
+    --ndot-surface: rgba(13, 13, 13, 0.85);
+    --ndot-surface-raised: rgba(20, 20, 20, 0.92);
     --ndot-border: #1c1c1c;
     --ndot-border-visible: #2a2a2a;
     --ndot-text-disabled: #555555;
@@ -19,8 +19,10 @@ html[data-ns="on"] body {
   html[data-ns="on"] body[data-ds-dark-theme],
   html[data-ns="on"] body[data-ds-theme="dark"] {
     --ndot-black: #000000;
-    --ndot-surface: #0d0d0d;
-    --ndot-surface-raised: #141414;
+    /* Translucent surface: lets the dot grid / wallpaper show through the
+       canvas layers the way dream-skin's rgba() layers did. */
+    --ndot-surface: rgba(13, 13, 13, 0.85);
+    --ndot-surface-raised: rgba(20, 20, 20, 0.92);
     --ndot-border: #1c1c1c;
     --ndot-border-visible: #2a2a2a;
     --ndot-text-disabled: #555555;
@@ -247,4 +249,31 @@ html[data-ns="on"] body {
     background: var(--ndot-surface-raised) !important;
     border: 1px solid var(--ndot-border-visible) !important;
     box-shadow: none !important;
+  }
+
+
+
+  html[data-ns="on"] .hHd-Xa_footerActions {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    gap: 2px !important;
+    width: 100% !important;
+  }
+  /* The DSH footer slot wrapper is display:contents, so its buttons are the
+     footer container's flex items. Drop contents and stack them vertically. */
+  html[data-ns="on"] div[data-slot="sidebar.footer.action"] {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    width: 100% !important;
+  }
+  html[data-ns="on"] div[data-slot="sidebar.footer.action"] > button,
+  html[data-ns="on"] div[data-slot="sidebar.footer.action"] > * {
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    justify-content: flex-start !important;
+    text-align: left !important;
   }
