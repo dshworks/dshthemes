@@ -1,5 +1,5 @@
 /* HaoyueQin/deepseek-harness-background — src/client/background-css.ts
-   fetched 2026-08-20 from https://raw.githubusercontent.com/HaoyueQin/deepseek-harness-background/main/src/client/background-css.ts
+   fetched 2026-08-28 from https://raw.githubusercontent.com/HaoyueQin/deepseek-harness-background/main/src/client/background-css.ts
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 .dsh-bg-layer {
     position: fixed; inset: 0; z-index: -2; overflow: hidden; pointer-events: none;
@@ -31,20 +31,163 @@
     --dsw-specific-sidebar-fill: transparent;
   }
 
-  /* Frosted glass over the opaque conversation surfaces (composer + bubbles).
-     The surface translucency is driven by --dsw-specific-input-major /
-     --dsw-specific-bubble, which the painter writes (theme-aware) so that a
-     fully-opaque panel restores the official surfaces. The blur here comes
-     from --bg-glass-blur; a faint top-weighted specular sheen makes the
-     translucent surfaces read as wet glass. */
-  body[data-dsh-bg] [data-composer-card],
-  body[data-dsh-bg] [class*="_bubble"] {
-    background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.05) 38%, rgba(255, 255, 255, 0.02));
-    -webkit-backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.6)) brightness(var(--bg-glass-brightness, 1.04)) contrast(1.01);
-    backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.6)) brightness(var(--bg-glass-brightness, 1.04)) contrast(1.01);
+  /* ---- Whitelisted frosted-glass sheet ---------------------------------
+     Fills come from the --dsw-* tokens the painter overrides on body ONLY for
+     this list's own surfaces (input/bubble/code/tip); this block adds the
+     shared wet-glass sheen + blur from --bg-glass-blur. Exposure is calibrated
+     per scheme (the painter writes --bg-glass-brightness / --bg-glass-sheen):
+     light glass slightly DIMS, dark glass keeps a slight lift. Gated on the
+     GLASS ATTR (wallpaper active AND panelOpacity < 1): maxing the panel
+     slider returns these surfaces to the exact official paints. */
+  body[data-dsh-bg-glass] [data-composer-card],
+  body[data-dsh-bg-glass] [class*="_bubble"]:not([role="tooltip"]),
+  body[data-dsh-bg-glass] .md-code-block,
+  body[data-dsh-bg-glass] [data-terminal],
+  body[data-dsh-bg-glass] [data-diff],
+  body[data-dsh-bg-glass] [data-read],
+  body[data-dsh-bg-glass] [data-search],
+  body[data-dsh-bg-glass] [data-web],
+  body[data-dsh-bg-glass] [class*="_ioCard"],
+  body[data-dsh-bg-glass] [class*="_instructionsCard"],
+  body[data-dsh-bg-glass] [class*="_markdown"] :not(pre) > code {
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, var(--bg-glass-sheen, 0.07)), rgba(255, 255, 255, var(--bg-glass-sheen-mid, 0.02)) 38%, rgba(255, 255, 255, 0.01));
+    -webkit-backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
+    backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, var(--bg-glass-highlight, 0.32)),
+      inset 0 1px 0 rgba(255, 255, 255, 0.32),
       inset 0 -1px 0 rgba(255, 255, 255, 0.08),
       inset 0 0 0 0.5px rgba(255, 255, 255, 0.08),
-      0 12px 40px rgba(0, 0, 0, var(--bg-glass-shadow, 0.12));
+      0 12px 40px rgba(0, 0, 0, 0.12);
+  }
+
+  /* The sticky code-block header officially occludes scrolled code with
+     bg-base (transparent under a wallpaper): refill it with the banner token
+     (itself translucent glass) so code stays hidden beneath the sticky bar. */
+  body[data-dsh-bg] .md-code-block [class*="_bannerWrap"] {
+    background-color: var(--dsw-alias-markdown-code-block-banner);
+  }
+
+  /* The sidebar build badge paints with the label-ink token — a TEXT token we
+     must not override globally — so it gets a theme-aware translucent ink. */
+  body[data-dsh-bg] [class*="_buildRevision"] {
+    background-color: rgba(15, 17, 21, 0.62);
+  }
+  body[data-ds-dark-theme][data-dsh-bg] [class*="_buildRevision"] {
+    background-color: rgba(249, 250, 251, 0.62);
+  }
+
+  /* The empty-state hero glow asset would wash out the wallpaper behind the
+     welcome message — dim it so the art stays visible. */
+  body[data-dsh-bg] [class*="_heroGlow"] {
+    opacity: 0.2;
+  }
+
+  /* ---- Whitelisted chrome buttons --------------------------------------
+     These three buttons' official fills ride button-* tokens shared with
+     unrelated surfaces, so instead of overriding the tokens they get explicit
+     paints — but the SAME glass recipe as the composer card and bubbles:
+     fill = the painter's --dsw-specific-input-major token (the identical
+     translucent white + theme curve), filter = the sheet's exact
+     blur/saturate/brightness chain (blur follows the glass-blur slider, no
+     caps), sheen = the shared sheen vars. Hover = the same white glass at the
+     boosted alpha var. Gated on data-dsh-bg-glass (off when the panel is
+     fully opaque). */
+  body[data-dsh-bg-glass] [class*="_newSession"]:not([class*="Label"]),
+  body[data-dsh-bg-glass] [data-composer-card] [class*="_add"],
+  body[data-dsh-bg-glass] [class*="_toBottom"]:not([class*="Slot"]) {
+    background-color: var(--dsw-specific-input-major);
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, var(--bg-glass-sheen, 0.07)), rgba(255, 255, 255, var(--bg-glass-sheen-mid, 0.02)) 38%, rgba(255, 255, 255, 0.01));
+    -webkit-backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
+    backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.32),
+      inset 0 0 0 0.5px rgba(255, 255, 255, 0.12),
+      0 4px 14px rgba(0, 0, 0, 0.08);
+  }
+  body[data-dsh-bg-glass] [class*="_newSession"]:not([class*="Label"]):hover,
+  body[data-dsh-bg-glass] [data-composer-card] [class*="_add"]:hover:not(:disabled),
+  body[data-dsh-bg-glass] [class*="_toBottom"]:not([class*="Slot"]):hover {
+    background-color: color-mix(in srgb, rgb(255 255 255) calc(var(--bg-glass-alpha-strong, 0.8) * 100%), transparent);
+  }
+  /* Collapsed rail renders the new-session control as a bare icon — keep the
+     official transparent paint (and its official translucent hover). */
+  body[data-dsh-bg-glass] [class*="_collapsed"] [class*="_newSession"],
+  body[data-dsh-bg-glass] [class*="_collapsed"] [class*="_newSession"]:hover {
+    background-color: transparent;
+    background-image: none;
+    box-shadow: none;
+  }
+
+  /* ---- Subagent lineage popover (title-bar expanded list) --------------
+     Its official fill rides the menu token shared with every dropdown; glass
+     THIS popover explicitly via its role="tree" + _menu combination so real
+     menus stay officially opaque and legible. Same unified recipe: the
+     composer fill token + the full shared filter chain (the official
+     elevation shadow stays). */
+  body[data-dsh-bg-glass] [role="tree"][class*="_menu"] {
+    background-color: var(--dsw-specific-input-major);
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, var(--bg-glass-sheen, 0.07)), rgba(255, 255, 255, var(--bg-glass-sheen-mid, 0.02)) 38%, rgba(255, 255, 255, 0.01));
+    -webkit-backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
+    backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
+  }
+
+  /* ---- Home hero "preview" badge (top-right superscript pill) ----------
+     Officially the state-business-tertiary pastel; re-emit the same hue as
+     glass but with the UNIFIED alpha curve (color-mix against the painter's
+     --bg-glass-alpha) and the shared blur chain, so it sits on the wallpaper
+     with exactly the glass strength of the composer card. */
+  body[data-dsh-bg-glass] [class*="_previewBadge"] {
+    background-color: color-mix(in srgb, rgb(228 237 253) calc(var(--bg-glass-alpha, 0.72) * 100%), transparent);
+    -webkit-backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
+    backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
+  }
+  body[data-ds-dark-theme][data-dsh-bg-glass] [class*="_previewBadge"] {
+    background-color: color-mix(in srgb, rgb(52 65 91) calc(var(--bg-glass-alpha, 0.72) * 100%), transparent);
+  }
+
+  /* ---- Composer dock family: task strips + takeover panels --------------
+     The agent task strips (TodoPanel, GoalBar, QueueDock — one dock column
+     above the composer) and the composer takeovers (approval, question,
+     plan review) paint with tokens the painter turns translucent
+     (--dsw-specific-tip / --dsw-specific-input-major) but their own styles
+     never blur anything: translucent-without-blur reads as bare
+     transparency, not frosted glass. Give each the shared sheen + filter
+     chain; their fills stay token-driven so the panel-opacity slider keeps
+     driving them. Anchors are the components' own stable data attributes
+     plus a structural child, so no generic class suffix is swept in. */
+  body[data-dsh-bg-glass] [data-testid="todo-panel"],
+  body[data-dsh-bg-glass] [data-goal-bar] > div,
+  body[data-dsh-bg-glass] [data-queue-dock] > div,
+  body[data-dsh-bg-glass] [data-approval-key] > div,
+  body[data-dsh-bg-glass] [data-question-key] > section,
+  body[data-dsh-bg-glass] [data-plan-review-key] > section {
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, var(--bg-glass-sheen, 0.07)), rgba(255, 255, 255, var(--bg-glass-sheen-mid, 0.02)) 38%, rgba(255, 255, 255, 0.01));
+    -webkit-backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
+    backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
+  }
+
+  /* ---- "Load earlier" history button (top of long conversations) --------
+     Its official fill is an opaque solid button token that is deliberately
+     NOT overridden, so unlike the tip family it needs an explicit glass
+     fill too — same recipe as the three chrome buttons above. */
+  body[data-dsh-bg-glass] [class*="_older"] button {
+    background-color: var(--dsw-specific-input-major);
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, var(--bg-glass-sheen, 0.07)), rgba(255, 255, 255, var(--bg-glass-sheen-mid, 0.02)) 38%, rgba(255, 255, 255, 0.01));
+    -webkit-backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
+    backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.32),
+      inset 0 0 0 0.5px rgba(255, 255, 255, 0.12),
+      0 4px 14px rgba(0, 0, 0, 0.08);
+  }
+  body[data-dsh-bg-glass] [class*="_older"] button:hover:not(:disabled) {
+    background-color: color-mix(in srgb, rgb(255 255 255) calc(var(--bg-glass-alpha-strong, 0.8) * 100%), transparent);
+  }
+
+  /* Sidebar build badge: translucent ink already, but it sat directly on
+     the wallpaper without frost. Join the shared blur chain under the same
+     gate (its theme-aware ink fills from the active block above). */
+  body[data-dsh-bg-glass] [class*="_buildRevision"] {
+    -webkit-backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
+    backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
   }

@@ -1,0 +1,319 @@
+/* keman-ai/dsh-skin-pack — packages/dsh-ai-work-slogan/src/client/aiwork.module.css
+   fetched 2026-08-28 from https://raw.githubusercontent.com/keman-ai/dsh-skin-pack/main/packages/dsh-ai-work-slogan/src/client/aiwork.module.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/**
+ * The AI Work Mode decoration layer.
+ *
+ * Every rule hangs under `body[data-dsh-ai-work]`: the client half stamps the attribute when the theme activates and removes it on switching away,
+ * so deactivating the skin invalidates every rule at once, leaving no residue.
+ *
+ * 🔴 The rule is "not active means the plugin does not exist", never "visible by default, hidden by skin rules".
+ * The plugin's JS can only stamp body once its bundle has run, while the harness UI is already rendered, so anything visible by default shows during that window.
+ * would flash into view.
+ */
+
+/* ==========================================================================
+ * The ground: one gradient, not a flat colour.
+ *
+ * The prototype's `.app` background is
+ *   radial-gradient(circle at 50% -12%, rgba(67,132,255,.18), transparent 30%),
+ *   linear-gradient(180deg,#071936 0%,#0a2a60 62%,#2f79ef 100%)
+ * — **brighter towards the bottom**, the reverse of a usual dark theme, with a pool of blue light at the top. Every panel is translucent glass floating on it
+ * (see the run of rgba values in tokens.ts).
+ *
+ * 🔴 **Which layer** it goes on was measured, not guessed.
+ *
+ * The first version painted it on the root container (`> div:first-of-type`) and the UI came out flat deep blue — probing showed why:
+ * the layer that actually fills the viewport and paints an opaque `bg-base` is `_frame` inside it, which covered the root's gradient entirely.
+ * So the gradient must be painted on `_frame` itself (a `background-image` is drawn above `background-color` and naturally covers it).
+ *
+ * Both rules are kept: `_frame` is the hit, and the root-container rule is the fallback if it is renamed (the result is then merely a different layer, not a black screen).
+ * ⚠️ `_frame` is a hashed CSS Module class and belongs to the degradation zone: after a host redesign the gradient reverts to flat `bg-base`,
+ * without an error and with the rest of the palette unaffected.
+ * ========================================================================== */
+body[data-dsh-ai-work] > div:first-of-type,
+body[data-dsh-ai-work] [class*='_frame'] {
+  background-image:
+    radial-gradient(circle at 50% -12%, rgba(67, 132, 255, 0.18), transparent 30%),
+    linear-gradient(180deg, #071936 0%, #0a2a60 62%, #2f79ef 100%);
+  background-attachment: fixed;
+}
+
+/*
+ * 🔴 Letting the middle column show the gradient.
+ *
+ * Found on the second round of measurement: with the gradient on `_frame` the UI was **still flat** — because
+ * ConversationRoot (the `[data-phase]` element) paints its own opaque `bg-base`, 1320×950, over the middle column.
+ * Only once it is transparent does the gradient truly show.
+ *
+ * The anchor is the semantic `[data-phase]` attribute rather than a hashed class: it is a public contract and far sturdier than `_1Onn0a_root`.
+ */
+body[data-dsh-ai-work] [data-phase] {
+  background: transparent;
+}
+
+/*
+ * Sidebar and right column: a divider only, **no frosting**.
+ *
+ * 🔴 This was `backdrop-filter: blur(14px)` and was removed after breaking twice:
+ *
+ *   1. On the sidebar container it **creates a containing block for fixed-position descendants** (the same behaviour
+ *      as `filter` and `transform`). The Settings button lives in the sidebar and opens a fixed modal — which then
+ *      stopped being positioned against the viewport, got pinned inside the sidebar's 280px box, and was squeezed into a vertical strip of text.
+ *   2. Moving it to a `::before` fixed the modal, but the sidebar's **non-direct children** (the brand row, the
+ *      bottom row) still fell beneath the blur and were smeared — rescuing them meant raising each one's layer, i.e. fighting the host's DOM.
+ *
+ * The grounds in tokens are already translucent rgba, so the gradient still shows through; only the blur is missing.
+ * Two hard-to-diagnose positioning and layering bugs are not worth a little frosting.
+ */
+body[data-dsh-ai-work] [class*='_sidebarCol'] {
+  border-right: 1px solid var(--dsw-alias-border-l2);
+}
+
+/* ==========================================================================
+ * The slogan on the empty screen.
+ *
+ * This prototype's hero visual is **not an image but a sentence** — an `<h1>` slogan with a subtitle beneath and
+ * four capability cards below. So this skin's hero differs entirely from the others: there is no cover to spread, and the job is to
+ * **replace the harness's heading with that slogan**.
+ *
+ * 🔴 The harness forbids third parties overriding built-in copy (`locale.register` throws on a duplicate name; addition only, never replacement),
+ * so this goes through a pseudo-element: the original is collapsed with `font-size: 0` and `::after` shows the slogan. The cost is that the Chinese slogan appears
+ * in **every language** — acceptable for a Chinese-slogan skin by design, but it belongs in the README.
+ *
+ * The anchors were measured from a DOM tree dumped with playwright:
+ *   .ZErCpa_headline > span.ZErCpa_headlineText   ← the host's own heading text
+ *   .ZErCpa_headline ~ .ZErCpa_body               ← the empty container below the heading, exactly right for the subtitle
+ * Both are hashed CSS Module classes and belong to the degradation zone: a redesign reverts the slogan to the host's own text, without an error.
+ * ========================================================================== */
+/*
+ * ⚠️ The selector must target `_headline` while excluding `_headlineText` — by substring the former also matches the
+ * latter (`ZErCpa_headlineText` contains `_headline`). Without the exclusion the status pill was painted once in the
+ * heading and again inside the slogan text, where the `font-size: 0` box squeezed it into a vertical strip.
+ */
+
+/*
+ * 🔴 Layout: mark → slogan → subtitle, **stacked vertically**.
+ *
+ * The harness's heading is a horizontal flex row (mark · text · preview badge), so the first version put a small icon
+ * beside the slogan — nothing like the prototype, where an 84px white square sits **centred directly above** it.
+ * Changing that row to a centred column is enough; not one DOM node has to move.
+ */
+body[data-dsh-ai-work] [data-phase='hero'] [class*='_headline']:not([class*='_headlineText']) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+/*
+ * Enlarging the white square to the prototype's scale.
+ *
+ * The host gives only 34px where 84px is wanted: `--mark-size` is read by the brand component (see Brand.tsx),
+ * so overriding it enlarges without fighting inline-style precedence. The hitbox around it carries its own 34px and is released too.
+ */
+body[data-dsh-ai-work] [data-phase='hero'] [class*='_fishHitbox'] {
+  --mark-size: clamp(56px, 5vw, 78px);
+  width: auto;
+  height: auto;
+}
+
+/*
+ * The slogan: the prototype uses clamp(34px, 4.2vw, 68px).
+ *
+ * ⚠️ The first version shrank it to clamp(22px,2.4vw,38px) for fear of pushing the composer down — and the result was
+ * type too small to carry the screen. Measurement showed over 600px of space above, easily enough for 54px,
+ * so the prototype's scale was restored with only the ceiling trimmed (the prototype is a full landing page; here a composer sits below).
+ */
+body[data-dsh-ai-work] [data-phase='hero'] [class*='_headlineText'] {
+  font-size: 0;
+}
+
+body[data-dsh-ai-work] [data-phase='hero'] [class*='_headlineText']::after {
+  content: '工作你不干，有的是 AI 干';
+  display: block;
+  font-size: clamp(32px, 3.6vw, 56px);
+  line-height: 1.04;
+  letter-spacing: -2px;
+  font-weight: 850;
+  white-space: nowrap;
+  color: var(--dsw-alias-label-primary);
+  text-shadow: 0 5px 24px rgba(0, 0, 0, 0.12);
+}
+
+/*
+ * The status pill at the top (the prototype's `.kicker`: a green dot plus "DeepSeek Harness · AI Work Mode").
+ * It hangs on the heading's `::before`, and in the column layout falls naturally above the white square.
+ */
+body[data-dsh-ai-work] [data-phase='hero'] [class*='_headline']:not([class*='_headlineText'])::before {
+  content: '● DeepSeek Harness · AI Work Mode';
+  align-self: center;
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.17);
+  background: rgba(255, 255, 255, 0.06);
+  color: #dbe7f7;
+  font-size: 10px;
+  letter-spacing: 0.02em;
+}
+
+/* The subtitle: the prototype's `.sub` paragraph listing what the agent handles. */
+body[data-dsh-ai-work] [data-phase='hero'] [class*='_headline']:not([class*='_headlineText']) ~ [class*='_body']::after {
+  content: '从深度调研、定时任务，到制作 PPT、处理文档表格、整理文件、调用工具与执行多步骤工作流，都交给 DeepSeek Harness。';
+  display: block;
+  max-width: 760px;
+  margin: 18px auto 0;
+  font-size: clamp(12px, 1.1vw, 15px);
+  line-height: 1.75;
+  color: #dce8f7;
+  text-align: center;
+}
+
+/*
+ * ⚠️ The two CTAs at the bottom of the prototype's hero and its four capability cards are **not implemented**.
+ * In the real product that space belongs to the composer and workspace picker: a CTA would duplicate Send, and four static cards would push the primary action
+ * pushed down, and none of them express any runtime state.
+ */
+
+/* The preview badge follows the slogan rather than staying at its original size. */
+body[data-dsh-ai-work] [data-phase='hero'] [class*='_previewBadge'] {
+  align-self: center;
+}
+
+/* ==========================================================================
+ * The component language: glass cards with white borders.
+ * Anchored on the harness's data-chat-flow-kind (the conversation node type, a public attribute we verified).
+ * ========================================================================== */
+
+/* User messages: 8% white glass with a 12px radius (the prototype's `.userbox`). */
+body[data-dsh-ai-work] [data-chat-flow-kind='user'] {
+  border-radius: 12px;
+}
+
+/* Context-injection rows: pushed back to background information, restored on hover. */
+body[data-dsh-ai-work] [data-chat-flow-kind='context'] {
+  opacity: 0.62;
+}
+
+body[data-dsh-ai-work] [data-chat-flow-kind='context']:hover {
+  opacity: 1;
+}
+
+/* A failed turn: a bright red stripe on the left — red is used for errors only in this skin. */
+body[data-dsh-ai-work] [data-chat-flow-kind='turn-error'] {
+  box-shadow: inset 3px 0 0 0 var(--dsw-alias-state-error-primary);
+  border-radius: 10px;
+  padding-left: 10px;
+}
+
+/*
+ * The permission card: amber glass.
+ *
+ * ⚠️ This anchor is unverified: triggering a permission prompt requires an operation that modifies a local file. The value comes from the node type in the harness source,
+ * `kind === 'approval'`. On a mismatch this rule simply does not apply, leaving the rest unaffected.
+ */
+body[data-dsh-ai-work] [data-chat-flow-kind='approval'] {
+  background: var(--dsw-alias-state-warn-tertiary);
+  border: 1px solid rgba(255, 209, 102, 0.28);
+  border-radius: 11px;
+  padding: 11px 12px;
+}
+
+/* The sidebar dot while a session runs: bright cyan, the most visible thing in all this blue. */
+body[data-dsh-ai-work] [data-state='ongoing'] {
+  color: var(--dsw-alias-state-business-primary);
+}
+
+/*
+ * The chat page: messages fade out naturally as they scroll towards the composer rather than being cut by a hard edge.
+ *
+ * 🔴 Scoped to `[data-phase='active']`; it **must not** apply to every phase the way earlier skins do.
+ * Those skins lay a full image behind the hero with the composer over it, where the fade makes no visible difference. Here the hero sits on
+ * a clear gradient, and smearing 86% deep blue over the composer cuts a straight dark band across the middle of it —
+ * which is exactly where that horizontal line in the test screenshot came from.
+ */
+body[data-dsh-ai-work] [data-phase='active'] [data-composer-seat] {
+  background: linear-gradient(180deg, rgba(7, 25, 54, 0) 0%, rgba(7, 25, 54, 0.86) 30%);
+}
+
+/* ==========================================================================
+ * The degradable zone — these prefix-match hashed CSS Module class names, so a redesign silently stops matching (the look falls back to default, without error).
+ * ========================================================================== */
+
+/*
+ * 🔴 New session is **deep blue on white**, not white on blue.
+ *
+ * The prototype's `.new`, `.cta.primary` and the top bar's launch button are all `background:#fff; color:#16386c`
+ * — on this blue gradient white is the only thing stronger than blue, and a blue primary button drowns straight into the background.
+ * `--dsw-alias-brand-primary` is already white in the tokens; the radius, weight and shadow are added here.
+ */
+/*
+ * 🔴 `:not([class*='_newSessionLabel'])` is not optional.
+ *
+ * The prefix match `[class*='_newSession']` hits **both the button and the text node inside it**
+ * (the harness class names are `_newSession` and `_newSessionLabel`), so the gradient and border are painted
+ * twice and a small box appears around the text. On dark skins the two layers are close enough to hide it; on light skins it is obviously a bug.
+ * We fell into the same trap once on `_headline` / `_headlineText`.
+ */
+body[data-dsh-ai-work] [class*='_newSession']:not([class*='_newSessionLabel']) {
+  background: var(--dsw-alias-brand-primary);
+  color: var(--dsw-alias-label-primary-foreground);
+  border-color: transparent;
+  border-radius: 10px;
+  font-weight: 800;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.14);
+}
+
+body[data-dsh-ai-work] [class*='_newSession']:not([class*='_newSessionLabel']):hover {
+  background: var(--dsw-alias-button-primary-hover);
+}
+
+body[data-dsh-ai-work] [class*='_newSession']:not([class*='_newSessionLabel']) svg {
+  color: inherit;
+}
+
+/*
+ * Selected session: a 10% white ground with a white stripe on the left (the prototype's `.session.active`:
+ * `box-shadow: inset 2px 0 #fff`). An inset shadow rather than a border, so the box width does not change and rows stay aligned.
+ */
+body[data-dsh-ai-work] [class*='_sessionRow'][class*='_selected'] {
+  background: var(--dsw-specific-sidebar-nav-item-active);
+  box-shadow: inset 2px 0 0 0 #ffffff;
+  border-radius: 9px;
+}
+
+/* Group headings: small caps with wide tracking (the prototype's `.label` uses letter-spacing: 1.2px). */
+body[data-dsh-ai-work] [class*='_groupSection'] > :first-child {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 9px;
+  color: var(--dsw-alias-label-caption);
+}
+
+/*
+ * The details rail's card language: 6% white glass with an 11px radius (the prototype's `.card`).
+ *
+ * ⚠️ Not done: the five ONLINE rows under Harness Systems and the four Work Modes cards in the prototype's right column are pure decoration,
+ * with no matching projection in the harness, and they are not faked. Real state is carried by this skin's own status dock (see StatusDock);
+ * the official rail is only aligned visually — it holds the Input / Output of tool calls, the one thread you have when debugging.
+ */
+body[data-dsh-ai-work] [data-slot='details'] [class*='_section'] {
+  background: var(--dsw-alias-bg-layer-2);
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 11px;
+  padding: 12px;
+  margin-bottom: 9px;
+}
+
+body[data-dsh-ai-work] [data-slot='details'] [class*='_sectionLabel'] {
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dsw-alias-label-caption);
+  margin-bottom: 8px;
+}
+
+body[data-dsh-ai-work] [data-slot='details'] [class*='_header'] {
+  border-bottom: 1px solid var(--dsw-alias-border-l1);
+}
+
