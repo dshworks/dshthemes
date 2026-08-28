@@ -8,10 +8,20 @@
 # re-checked whenever its stylesheet changes. The runner's own Chrome is enough
 # (playwright-core, channel: chrome), so no browser download.
 name: refresh
+#
+# Also runs on a push to main, because it did not and that was a gap rather
+# than a decision: the sibling site (dshworks/plugins) has deployed on push
+# since it shipped, so a change landed here by hand sat undeployed for up to
+# 24 hours with nothing saying so. A push run only builds and deploys -- the
+# steps that read the outside world and commit back to main are gated to the
+# scheduled and dispatched runs, so a push cannot start a refresh it did not
+# ask for, and the bot's own data commit cannot loop back into another run.
 on:
   schedule:
     - cron: "17 3 * * *"
   workflow_dispatch:
+  push:
+    branches: [main]
 jobs:
   refresh:
     runs-on: ubuntu-latest
@@ -24,16 +34,21 @@ jobs:
           node-version: 22
       - run: npm ci
       - run: node scripts/registry.mjs
+        if: github.event_name != 'push'
       - run: node scripts/enrich.mjs
+        if: github.event_name != 'push'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: npm test
       - run: node scripts/build.mjs
       - name: shoot what changed
+        if: github.event_name != 'push'
         run: node scripts/shots.mjs
       - name: rebuild with the new shots
+        if: github.event_name != 'push'
         run: node scripts/build.mjs
       - name: commit data
+        if: github.event_name != 'push'
         run: |
           git config user.name "dshthemes-bot"
           git config user.email "dshthemes-bot@users.noreply.github.com"
