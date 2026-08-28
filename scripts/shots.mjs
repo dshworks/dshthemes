@@ -176,7 +176,13 @@ for (const scheme of ["dark", "light"]) {
 }
 
 const shots = { ...previous.shots };
-let kept = 0, same = 0, missing = 0;
+// `same` counts observations, `dropped` counts state changes, and only the
+// second is news. A re-shoot of 162 themes reported "50 identical to the stock
+// shell (live claim dropped)" when the live count moved by one -- the other 49
+// had matched stock on their previous run too and were already recorded that
+// way. A tally that reads as an event when it is a restatement is the same
+// species of wrong as a chart corrected by its caption.
+let kept = 0, same = 0, dropped = 0, missing = 0;
 for (const t of targets) {
   const name = t.repo.replace(/[^a-zA-Z0-9._-]+/g, "__");
   const png = join(staging, `${name}.png`);
@@ -184,6 +190,7 @@ for (const t of targets) {
   const hash = await pixelHash(png);
   if (hash === stock[t.scheme]) {
     same++;
+    if (previous.shots[t.repo] && previous.shots[t.repo].same !== true) dropped++;
     shots[t.repo] = { same: true, scheme: t.scheme, sheet: t.render.file, fetchedAt: enrich.repos[t.repo].fetchedAt, shot: today };
     const stale = join(OUT_DIR, `${name}.webp`);
     if (existsSync(stale)) rmSync(stale);
@@ -205,7 +212,7 @@ writeFileSync(OUT_JSON, `${JSON.stringify({ updated: today, stock, shell: SHELL,
 rmSync(staging, { recursive: true, force: true });
 
 const bytes = Object.values(shots).reduce((n, s) => n + (s.bytes || 0), 0);
-console.error(`shots: ${kept} kept, ${same} identical to the stock shell (live claim dropped), ${missing} failed to render`);
+console.error(`shots: ${kept} kept, ${same} identical to the stock shell (${dropped} newly, the rest already recorded that way), ${missing} failed to render`);
 console.error(`shots: ${Object.values(shots).filter((s) => s.file).length} pictures, ${(bytes / 1e6).toFixed(1)} MB total`);
 
 // Raw pixels, not the PNG bytes: two encodes of the same frame differ.
