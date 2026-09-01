@@ -1,0 +1,680 @@
+/* taoser258/dsh-client-ui-skin-qingxiao — lib/client.js
+   fetched 2026-09-01 from https://raw.githubusercontent.com/taoser258/dsh-client-ui-skin-qingxiao/main/lib/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/* ── 清宵调色板根变量 ─────────────────────────────── */
+body[data-dsh-qingxiao] {
+	--qx-ice: #8FC7EA;
+	--qx-cyan: #56C8C0;
+	--qx-cyan-bright: #7FE0D6;
+	--qx-jade: #2E9E98;
+	--qx-gold: #D9B66A;
+	--qx-gold-bright: #E8CD8F;
+	--qx-moon: #F4F9FC;
+	--qx-night: #0B1E2E;
+	--qx-cyan-rgb: 86, 200, 192;
+	--qx-gold-rgb: 217, 182, 106;
+	--qx-panel-alpha: 0.78;
+	--qx-content-width: 780px;
+	--qx-font-scale: 1;
+	--qx-particle-speed: 1;
+}
+body[data-dsh-qingxiao]:not([data-ds-dark-theme]) {
+	--qx-text: #16303F;
+	--qx-text-soft: rgba(22, 48, 63, 0.72);
+	--qx-text-faint: rgba(22, 48, 63, 0.5);
+	--qx-panel-rgb: 248, 252, 254;
+	--qx-panel-border: rgba(86, 168, 200, 0.38);
+	--qx-panel-border-strong: rgba(46, 158, 152, 0.55);
+	--qx-sink: rgba(22, 48, 63, 0.06);
+	--qx-accent-strong: #1F7E86;
+}
+body[data-dsh-qingxiao][data-ds-dark-theme] {
+	--qx-text: #D9EDF5;
+	--qx-text-soft: rgba(217, 237, 245, 0.72);
+	--qx-text-faint: rgba(217, 237, 245, 0.48);
+	--qx-panel-rgb: 10, 26, 40;
+	--qx-panel-border: rgba(127, 224, 214, 0.22);
+	--qx-panel-border-strong: rgba(127, 224, 214, 0.45);
+	--qx-sink: rgba(217, 237, 245, 0.07);
+	--qx-accent-strong: #7FE0D6;
+}
+
+/* ── 玻璃化覆盖：把 DSH 各层不透明背景改为半透明玻璃，让背景画卷透出来 ──
+   真实 DSH 的 frame、会话区(_root)、详情区等都用 var(--dsw-alias-bg-base) 等
+   不透明 token 作为背景，会把 body 上的画卷完全盖住。这里按主题面板色重写成
+   半透明玻璃，画卷经三列与面板透出。 */
+body[data-dsh-qingxiao] {
+	/* 可读性平衡：面板调到足够实，正文落在可读的底色上；画卷仍从边缘与
+	   半透明处透出，不至于盖过文字。 */
+	--dsw-alias-bg-base: rgba(var(--qx-panel-rgb), calc(var(--qx-panel-alpha) * 0.55));
+	--dsw-alias-bg-layer-1: rgba(var(--qx-panel-rgb), calc(var(--qx-panel-alpha) * 0.70));
+	--dsw-specific-sidebar-fill: rgba(var(--qx-panel-rgb), calc(var(--qx-panel-alpha) * 0.78));
+	/* 主按钮：DSH 默认 --dsw-alias-button-primary-fill 是 #0f1115（近黑），
+	   会让“允许一次/确认”等对话框主按钮变成黑底。这里改用清宵青碧，
+	   与皮肤配色统一，也避免黑底突兀。文本仍走皮肤深色，够清晰。 */
+	--dsw-alias-button-primary-fill: #2E9E98;
+	--dsw-alias-button-primary-hover: #26837E;
+}
+body[data-dsh-qingxiao] [id=root] {
+	background: transparent;
+}
+/* 兜底：应用外壳 frame 强制透明，让画卷透出。
+   注意：绝不能用 [class$='_root'] 这类宽泛选择器——dsh-better-sidebar 的
+   侧边栏根类名以 _root 结尾，鼠标悬停时插件会摘掉其 quietBars 修饰类，
+   使根类名恰好以 _root 结尾而命中此规则，导致侧边栏在悬停时被强制变透明
+   （背景画卷透更多、颜色变绿变透）。只保留 frame 即可。 */
+body[data-dsh-qingxiao] [id=root] [class*='frame'] {
+	background: transparent !important;
+}
+
+/* ── 文字对比增强： stronger ink, soft halo keeps glyphs crisp over art ── */
+body[data-dsh-qingxiao][data-qx-contrast='on']:not([data-ds-dark-theme]) {
+	--qx-text: #0C2230;
+	--qx-text-soft: rgba(12, 34, 48, 0.85);
+	--qx-text-faint: rgba(12, 34, 48, 0.62);
+}
+body[data-dsh-qingxiao][data-qx-contrast='on'][data-ds-dark-theme] {
+	--qx-text: #EAF6FB;
+	--qx-text-soft: rgba(234, 246, 251, 0.85);
+	--qx-text-faint: rgba(234, 246, 251, 0.6);
+}
+body[data-dsh-qingxiao][data-qx-contrast='on'] [id=root] :is(p, li, h1, h2, h3, h4, h5, h6, td, th, blockquote) {
+	text-shadow: 0 1px 2px rgba(var(--qx-panel-rgb), 0.55);
+}
+
+/* ── 根画布： inherit themed ink everywhere ── */
+body[data-dsh-qingxiao] {
+	color-scheme: light;
+}
+body[data-dsh-qingxiao][data-ds-dark-theme] {
+	color-scheme: dark;
+}
+body[data-dsh-qingxiao] [id=root] {
+	color: var(--qx-text);
+}
+body[data-dsh-qingxiao] [id=root] :is(h1, h2, h3, h4, h5, h6, p, li) {
+	color: var(--qx-text);
+}
+body[data-dsh-qingxiao] [id=root] ::selection {
+	background: rgba(var(--qx-cyan-rgb), 0.35);
+	color: var(--qx-text);
+}
+body[data-dsh-qingxiao] [id=root] a {
+	color: var(--qx-accent-strong);
+	text-decoration-color: rgba(var(--qx-cyan-rgb), 0.55);
+	text-underline-offset: 3px;
+}
+body[data-dsh-qingxiao] [id=root] a:hover {
+	color: var(--qx-cyan-bright);
+}
+
+/* ── 玻璃列布局： sidebar / chat column / details turn translucent so
+      the art shows through while text stays on solid-enough ground ── */
+body[data-dsh-qingxiao] [id=root] > * {
+	background: transparent;
+}
+body[data-dsh-qingxiao] [data-pane='sidebar'],
+body[data-dsh-qingxiao] [class*='sidebarCol'] {
+	background: rgba(var(--qx-panel-rgb), var(--qx-panel-alpha)) !important;
+	border-right: 1px solid var(--qx-panel-border) !important;
+}
+/* 面板磨砂玻璃（panelBlur）：绝对不能把 backdrop-filter 直接放在容器上——
+   那会让容器成为 position:fixed 后代（设置对话框等 portal）的“包含块”，
+   把弹窗困在侧边栏里塌缩成竖排。安全做法：把 backdrop-filter 放到各容器
+   的 ::after 伪元素上，且用 z-index:-1 垫在半透明面板之下、正文之上；
+   ::after 不包含任何 portal，所以不困浮层，正文也保持清晰，只有底下的
+   画卷被磨砂。 */
+body[data-dsh-qingxiao][data-qx-blur='on'] :is([data-pane='sidebar'], [class*='sidebarCol'], [class*='_centerCol'], [class*='detailsCol']) {
+	position: relative;
+}
+body[data-dsh-qingxiao][data-qx-blur='on'] :is([data-pane='sidebar'], [class*='sidebarCol'], [class*='_centerCol'], [class*='detailsCol'])::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	pointer-events: none;
+	backdrop-filter: blur(5px) saturate(1.1);
+	-webkit-backdrop-filter: blur(5px) saturate(1.1);
+}
+body[data-dsh-qingxiao] [class*='_centerCol'],
+body[data-dsh-qingxiao] [class*='detailsCol'] {
+	background: rgba(var(--qx-panel-rgb), calc(var(--qx-panel-alpha) * 0.72));
+}
+body[data-dsh-qingxiao] [class*='_centerCol'] > * {
+	max-width: var(--qx-content-width);
+	/* 说明：设置等弹窗“逐字竖排/挤在左边”的真正元凶是上方容器的
+	   backdrop-filter（它把弹窗 portal 困在侧边栏里），而不是本条的
+	   margin:auto。保留 max-width 限宽即可。 */
+}
+/* ── 对话区宽度 + 正文字号缩放：接到真正的对话内容上 ──
+   旧选择器只作用于 centerCol 的直接子元素，没命中更深的对话内容，所以
+   拖这两个滑块没反应。对话内容在 [data-slot='conversation'] > *（滚动的
+   wSkVaW_root），正文用 [data-conversation-scroll] 定位。 */
+body[data-dsh-qingxiao] [data-slot='conversation'] > * {
+	max-width: var(--qx-content-width);
+	margin-left: auto;
+	margin-right: auto;
+	width: 100%;
+	/* 居中显示。之前浮层跑到中间是 zoom 改了 position:fixed 坐标所致，
+	   此处已去掉 zoom，浮层会正确锚定在标注旁。 */
+	background: transparent !important;
+}
+/* 正文字号缩放：不能对对话正文用 zoom（会错位 position:fixed 浮层），
+   改为覆盖 DSH 的 markdown 字号令牌（乘以 --qx-font-scale），只作用于
+   对话滚动区，正文随之缩放、浮层不受影响。 */
+body[data-dsh-qingxiao] [data-slot='conversation'] [data-conversation-scroll] {
+	--dsw-font-markdown-base: calc(16px * var(--qx-font-scale)) / calc(28px * var(--qx-font-scale)) -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	--dsw-font-markdown-base-strong: 600 calc(16px * var(--qx-font-scale)) / calc(28px * var(--qx-font-scale)) -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	--dsw-font-markdown-h1: 700 calc(24px * var(--qx-font-scale)) / calc(34px * var(--qx-font-scale)) -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	--dsw-font-markdown-h2: 700 calc(22px * var(--qx-font-scale)) / calc(32px * var(--qx-font-scale)) -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	--dsw-font-markdown-h3: 700 calc(20px * var(--qx-font-scale)) / calc(30px * var(--qx-font-scale)) -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	--dsw-font-markdown-table: calc(15px * var(--qx-font-scale)) / calc(25px * var(--qx-font-scale)) -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	--dsw-font-markdown-table-head: 500 calc(15px * var(--qx-font-scale)) / calc(25px * var(--qx-font-scale)) -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	--dsw-font-markdown-code: calc(14px * var(--qx-font-scale)) / calc(22px * var(--qx-font-scale)) "SF Mono", "JetBrains Mono", "Fira Code", Consolas, "Liberation Mono", Menlo, Courier, "PingFang SC", "Microsoft YaHei";
+}
+body[data-dsh-qingxiao] [class*='_composerSeat'] {
+	font-size: calc(1rem * var(--qx-font-scale));
+}
+
+/* ── 侧边栏 ── */
+body[data-dsh-qingxiao] [data-pane='sidebar'] *,
+body[data-dsh-qingxiao] [class*='sidebarCol'] * {
+	border-color: transparent;
+}
+body[data-dsh-qingxiao] :is([data-pane='sidebar'], [class*='sidebarCol']) button {
+	background: transparent !important;
+	border: 1px solid transparent !important;
+	border-radius: 10px;
+}
+body[data-dsh-qingxiao] :is([data-pane='sidebar'], [class*='sidebarCol']) button:hover {
+	background: rgba(var(--qx-cyan-rgb), 0.14) !important;
+	border-color: rgba(var(--qx-cyan-rgb), 0.35) !important;
+}
+body[data-dsh-qingxiao] :is([data-pane='sidebar'], [class*='sidebarCol']) [aria-selected='true'],
+body[data-dsh-qingxiao] :is([data-pane='sidebar'], [class*='sidebarCol']) [aria-current='true'],
+body[data-dsh-qingxiao] :is([data-pane='sidebar'], [class*='sidebarCol']) .active,
+body[data-dsh-qingxiao] :is([data-pane='sidebar'], [class*='sidebarCol']) [class*='active'] {
+	background: rgba(var(--qx-cyan-rgb), 0.16) !important;
+	box-shadow: inset 3px 0 0 0 var(--qx-cyan);
+	color: var(--qx-accent-strong) !important;
+}
+body[data-dsh-qingxiao][data-qx-gold='on'] :is([data-pane='sidebar'], [class*='sidebarCol']) [aria-selected='true'],
+body[data-dsh-qingxiao][data-qx-gold='on'] :is([data-pane='sidebar'], [class*='sidebarCol']) [aria-current='true'] {
+	box-shadow: inset 3px 0 0 0 var(--qx-gold);
+}
+/* sidebar 云纹底饰（可开关的 charms）
+   注意：只画在 sidebarCol::before 上会被 bsh 侧边栏子面板（hHd-Xa_root）
+   的不透明背景盖住，所以同时在子面板自身底部画一层，才真正看得见。 */
+body[data-dsh-qingxiao][data-qx-charms='on'] :is([data-pane='sidebar'], [class*='sidebarCol'])::before {
+	content: "";
+	position: absolute;
+	inset: auto 0 0 0;
+	height: 120px;
+	pointer-events: none;
+	background:
+		radial-gradient(120% 90% at 50% 128%, rgba(var(--qx-cyan-rgb), 0.18), transparent 62%),
+		radial-gradient(60% 40% at 18% 118%, rgba(var(--qx-gold-rgb), 0.16), transparent 70%);
+}
+body[data-dsh-qingxiao][data-qx-charms='on'] [data-dsh-sidebar-root] {
+	position: relative;
+}
+body[data-dsh-qingxiao][data-qx-charms='on'] [data-dsh-sidebar-root]::after {
+	content: "";
+	position: absolute;
+	inset: auto 0 0 0;
+	height: 96px;
+	pointer-events: none;
+	z-index: 0;
+	background:
+		radial-gradient(120% 90% at 50% 128%, rgba(var(--qx-cyan-rgb), 0.16), transparent 62%),
+		radial-gradient(60% 40% at 18% 118%, rgba(var(--qx-gold-rgb), 0.14), transparent 70%);
+}
+body[data-dsh-qingxiao] :is([data-pane='sidebar'], [class*='sidebarCol']) {
+	position: relative;
+}
+
+/* ── 按键： ice-jade glass keys with a gold kiss on hover ── */
+body[data-dsh-qingxiao] [id=root] button {
+	color: var(--qx-text);
+	border-radius: 10px;
+	transition: background-color 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+body[data-dsh-qingxiao] [id=root] button:hover {
+	background: rgba(var(--qx-cyan-rgb), 0.15);
+	box-shadow: 0 0 0 1px rgba(var(--qx-cyan-rgb), 0.4), 0 0 12px rgba(var(--qx-cyan-rgb), 0.22);
+	color: var(--qx-accent-strong);
+}
+body[data-dsh-qingxiao] [id=root] button:active {
+	transform: translateY(1px);
+}
+body[data-dsh-qingxiao] [id=root] button:focus-visible {
+	outline: none;
+	box-shadow: 0 0 0 2px rgba(var(--qx-gold-rgb), 0.65);
+}
+body[data-dsh-qingxiao] [id=root] button:disabled {
+	opacity: 0.38;
+	box-shadow: none;
+}
+body[data-dsh-qingxiao][data-qx-gold='on'] [id=root] button[class*='primary'],
+body[data-dsh-qingxiao][data-qx-gold='on'] [id=root] button[type='submit'] {
+	background: linear-gradient(135deg, rgba(var(--qx-cyan-rgb), 0.28), rgba(var(--qx-gold-rgb), 0.26));
+	box-shadow: inset 0 0 0 1px rgba(var(--qx-gold-rgb), 0.5);
+}
+
+/* ── 输入控件 ── */
+body[data-dsh-qingxiao] [id=root] :is(input, textarea, select) {
+	background: rgba(var(--qx-panel-rgb), calc(var(--qx-panel-alpha) * 0.8)) !important;
+	color: var(--qx-text) !important;
+	border: 1px solid var(--qx-panel-border) !important;
+	border-radius: 10px;
+	caret-color: var(--qx-cyan);
+	transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+body[data-dsh-qingxiao] [id=root] :is(input, textarea, select)::placeholder {
+	color: var(--qx-text-faint);
+}
+body[data-dsh-qingxiao] [id=root] :is(input, textarea, select):focus {
+	outline: none !important;
+	border-color: rgba(var(--qx-cyan-rgb), 0.65) !important;
+	box-shadow: 0 0 0 1px rgba(var(--qx-cyan-rgb), 0.4), 0 0 14px rgba(var(--qx-cyan-rgb), 0.18);
+}
+body[data-dsh-qingxiao] [id=root] [class*='_composerSeat'] {
+	border: 1px solid var(--qx-panel-border);
+	border-radius: 14px;
+	box-shadow: 0 4px 22px rgba(11, 30, 46, 0.12);
+}
+body[data-dsh-qingxiao] [id=root] [class*='_composerSeat']:focus-within {
+	border-color: rgba(var(--qx-gold-rgb), 0.55);
+	box-shadow: 0 0 0 1px rgba(var(--qx-gold-rgb), 0.35), 0 0 18px rgba(var(--qx-cyan-rgb), 0.2);
+}
+
+/* ── 代码块： always on deep-night glass so highlighting stays readable ── */
+body[data-dsh-qingxiao] [id=root] pre {
+	background: rgba(10, 26, 40, 0.92) !important;
+	border: 1px solid rgba(127, 224, 214, 0.2);
+	border-radius: 12px;
+	color: #D9EDF5;
+}
+body[data-dsh-qingxiao] [id=root] pre,
+body[data-dsh-qingxiao] [id=root] pre * {
+	color: #D9EDF5;
+	text-shadow: none;
+}
+body[data-dsh-qingxiao] [id=root] :not(pre) > code {
+	background: rgba(var(--qx-cyan-rgb), 0.14);
+	border: 1px solid rgba(var(--qx-cyan-rgb), 0.25);
+	border-radius: 6px;
+	color: var(--qx-accent-strong);
+	padding: 1px 5px;
+}
+
+/* ── 表格与分隔线 ── */
+body[data-dsh-qingxiao] [id=root] :is(th, td) {
+	border-color: var(--qx-panel-border) !important;
+}
+body[data-dsh-qingxiao] [id=root] th {
+	background: rgba(var(--qx-cyan-rgb), 0.1);
+}
+body[data-dsh-qingxiao] [id=root] hr {
+	border: none;
+	border-top: 1px solid var(--qx-panel-border);
+	background: linear-gradient(90deg, transparent, rgba(var(--qx-cyan-rgb), 0.45), transparent);
+	height: 1px;
+}
+body[data-dsh-qingxiao] [id=root] :is(blockquote) {
+	border-left: 3px solid var(--qx-gold);
+	background: rgba(var(--qx-cyan-rgb), 0.08);
+	color: var(--qx-text-soft);
+}
+
+/* ── 滚动条 ── */
+body[data-dsh-qingxiao] ::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+body[data-dsh-qingxiao] ::-webkit-scrollbar-track {
+	background: transparent;
+}
+body[data-dsh-qingxiao] ::-webkit-scrollbar-thumb {
+	background: rgba(var(--qx-cyan-rgb), 0.35);
+	border-radius: 8px;
+}
+body[data-dsh-qingxiao] ::-webkit-scrollbar-thumb:hover {
+	background: rgba(var(--qx-cyan-rgb), 0.6);
+}
+
+/* ── 顶栏鎏金细线（可开关 trim） ── */
+body[data-dsh-qingxiao][data-qx-gold='on'] [data-skin-chrome='top-trim'] {
+	display: block;
+}
+[data-skin-chrome='top-trim'] {
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 2px;
+	z-index: 2147483000;
+	pointer-events: none;
+	background: linear-gradient(90deg, transparent 4%, rgba(var(--qx-cyan-rgb), 0.65) 30%, rgba(var(--qx-gold-rgb), 0.85) 50%, rgba(var(--qx-cyan-rgb), 0.65) 70%, transparent 96%);
+	opacity: 0.8;
+}
+
+/* ── 剑气流光粒子 ── */
+body[data-dsh-qingxiao] [data-skin-chrome='particle-field'] {
+	position: fixed;
+	inset: 0;
+	overflow: hidden;
+	pointer-events: none;
+	z-index: 0;
+}
+body[data-dsh-qingxiao] [data-skin-chrome='particle-field'] span {
+	position: absolute;
+	bottom: -48px;
+	border-radius: 999px;
+	background: linear-gradient(to top, rgba(var(--qx-cyan-rgb), 0), var(--qx-cyan-bright));
+	box-shadow: 0 0 8px 1px rgba(var(--qx-cyan-rgb), 0.6);
+	opacity: 0;
+	animation: qx-rise calc(22s * var(--qx-particle-speed)) linear infinite;
+}
+body[data-dsh-qingxiao][data-ds-dark-theme] [data-skin-chrome='particle-field'] span {
+	background: linear-gradient(to top, rgba(var(--qx-cyan-rgb), 0), var(--qx-cyan-bright));
+	box-shadow: 0 0 8px 1px rgba(var(--qx-cyan-rgb), 0.65);
+}
+body[data-dsh-qingxiao] [data-skin-chrome='particle-field'] span:nth-child(4n+1) {
+	background: linear-gradient(to top, rgba(var(--qx-gold-rgb), 0), var(--qx-gold-bright));
+	box-shadow: 0 0 6px 1px rgba(var(--qx-gold-rgb), 0.45);
+}
+@keyframes qx-rise {
+	0% {
+		transform: translate3d(0, 0, 0);
+		opacity: 0;
+	}
+	8% {
+		opacity: 0.85;
+	}
+	85% {
+		opacity: 0.4;
+	}
+	100% {
+		transform: translate3d(var(--qx-sway, 40px), -110vh, 0);
+		opacity: 0;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	body[data-dsh-qingxiao] [data-skin-chrome='particle-field'] {
+		display: none;
+	}
+}
+
+/* ── 亮暗形态切换时的剑光扫幕 ── */
+body[data-dsh-qingxiao] [data-skin-chrome='form-veil'] {
+	position: fixed;
+	inset: -10%;
+	z-index: 2147483100;
+	pointer-events: none;
+	background: linear-gradient(115deg, transparent 30%, rgba(127, 224, 214, 0.28) 46%, rgba(232, 205, 143, 0.2) 52%, transparent 68%);
+	animation: qx-veil 0.9s ease forwards;
+}
+@keyframes qx-veil {
+	from {
+		transform: translateX(-70%);
+		opacity: 1;
+	}
+	to {
+		transform: translateX(70%);
+		opacity: 0;
+	}
+}
+
+/* ── 设置面板（调色盘） ── */
+body[data-dsh-qingxiao] [data-skin-chrome='palette-toggle'] {
+	position: fixed;
+	z-index: 2147483200;
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+	border: 1px solid rgba(var(--qx-gold-rgb), 0.55);
+	background: rgba(var(--qx-panel-rgb), 0.88);
+	color: var(--qx-accent-strong);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	cursor: grab;
+	touch-action: none;
+	user-select: none;
+	-webkit-user-select: none;
+	box-shadow: 0 2px 14px rgba(11, 30, 46, 0.25);
+	transition: box-shadow 0.18s ease;
+}
+body[data-dsh-qingxiao] [data-skin-chrome='palette-toggle']:active {
+	cursor: grabbing;
+}
+body[data-dsh-qingxiao] [data-skin-chrome='palette-toggle']:hover {
+	box-shadow: 0 0 0 1px rgba(var(--qx-cyan-rgb), 0.5), 0 0 16px rgba(var(--qx-cyan-rgb), 0.35);
+}
+body[data-dsh-qingxiao] [data-skin-chrome='palette-panel'] {
+	position: fixed;
+	z-index: 2147483200;
+	width: 304px;
+	max-height: calc(100vh - 130px);
+	display: flex;
+	flex-direction: column;
+	border-radius: 14px;
+	border: 1px solid var(--qx-panel-border-strong);
+	background: rgba(var(--qx-panel-rgb), 0.94);
+	color: var(--qx-text);
+	box-shadow: 0 10px 34px rgba(11, 30, 46, 0.3);
+	overflow: hidden;
+}
+body[data-dsh-qingxiao] [data-skin-chrome='palette-panel'][data-qx-collapsed='true'] {
+	display: none;
+}
+body[data-dsh-qingxiao] [data-skin-chrome='palette-panel'] .pp-header {
+	padding: 10px 14px;
+	cursor: pointer;
+	user-select: none;
+	border-bottom: 1px solid var(--qx-panel-border);
+	background: linear-gradient(135deg, rgba(var(--qx-cyan-rgb), 0.16), rgba(var(--qx-gold-rgb), 0.14));
+	font-family: "Kaiti SC", "STKaiti", "KaiTi", "Noto Serif SC", serif;
+	font-size: 15px;
+	letter-spacing: 1px;
+	color: var(--qx-text);
+}
+body[data-dsh-qingxiao] [data-skin-chrome='palette-panel'] .pp-body {
+	padding: 8px 14px 12px;
+	overflow-y: auto;
+	/* 让正文区占满可用高度并可滚动：否则内容一多，页脚会叠到滑块上，
+	   导致流光数量/速度等滑块拖不动。 */
+	flex: 1 1 auto;
+	min-height: 0;
+}
+body[data-dsh-qingxiao] [data-skin-chrome='palette-panel'] .pp-footer {
+	flex: none;
+}
+body[data-dsh-qingxiao] [data-skin-chrome='palette-panel'] .pp-section {
+	margin: 10px 0 2px;
+	font-size: 11px;
+	letter-spacing: 2px;
+	color: var(--qx-text-faint);
+	border-bottom: 1px dashed var(--qx-panel-border);
+	padding-bottom: 3px;
+}
+body[data-dsh-qingxiao] [data-skin-chrome='palette-panel'] .pp-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	padding: 6px 0;
+	font-size: 13px;
+}
+body[data-dsh-qingxiao] [data-skin-chrome='palette-panel'] .pp-row label {
+	cursor: pointer;
+	color: var(--qx-text-soft);
+}
+body[data-dsh-qingxiao] [data-skin-chrome='palette-panel'] .pp-toggle {
+	width: 40px;
+	height: 20px;
+	border-radius: 999px;
+	border: 1px solid var(--qx-panel-border-strong);
+	background: var(--qx-sink);
+	position: relative;
+	cursor: pointer;
+	padding: 0;
+	flex-shrink: 0;
+	transition: background 0.18s ease;
+}
+body[data-dsh-qingxiao] [data-skin-chrome='palette-panel'] .pp-toggle::after {
+	content: "";
+	position: absolute;
+	top: 2px;
+	left: 2px;
+	width: 14px;
+	height: 14px;
+	border-radius: 50%;
+	background: var(--qx-text-faint);
+	transition: left 0.18s ease, background 0.18s ease;
+}
+body[data-dsh-qingxiao] [data-skin-chrome='palette-panel'] .pp-toggle[data-on='true'] {
+	background: rgba(var(--qx-cyan-rgb), 0.35);
+	border-color: rgba(var(--qx-cyan-rgb), 0.7);
+}
+body[data-dsh-qingxiao] [data-skin-chrome='palette-panel'] .pp-toggle[data-on='true']::after {
+	left: 22px;
+	background: var(--qx-cyan-bright);
+	box-shadow: 0 0 6px rgba(var(--qx-cyan-rgb), 0.8);
+}
+body[data-dsh-qingxiao] [data-skin-chrome='palette-panel'] .pp-slider-wrap {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+body[data-dsh-qingxiao] [data-skin-chrome='palette-panel'] .pp-slider-wrap input[type='range'] {
+	flex: 1;
+	accent-color: var(--qx-cyan);
+	height: auto;
+	border: none !important;
+	background: transparent !important;
+	box-shadow: none !important;
+	padding: 0;
+}
+body[data-dsh-qingxiao] [data-skin-chrome='palette-panel'] .pp-val {
+	width: 44px;
+	text-align: right;
+	font-size: 11px;
+	color: var(--qx-text-faint);
+	flex-shrink: 0;
+	font-variant-numeric: tabular-nums;
+}
+body[data-dsh-qingxiao] [data-skin-chrome='palette-panel'] .pp-btn {
+	border: 1px solid var(--qx-panel-border-strong);
+	background: rgba(var(--qx-cyan-rgb), 0.12);
+	color: var(--qx-text);
+	border-radius: 8px;
+	padding: 4px 10px;
+	font-size: 12px;
+	cursor: pointer;
+}
+body[data-dsh-qingxiao] [data-skin-chrome='palette-panel'] .pp-btn:hover {
+	background: rgba(var(--qx-cyan-rgb), 0.24);
+	box-shadow: 0 0 8px rgba(var(--qx-cyan-rgb), 0.3);
+}
+body[data-dsh-qingxiao] [data-skin-chrome='palette-panel'] .pp-btn.pp-danger {
+	border-color: rgba(var(--qx-gold-rgb), 0.6);
+	background: rgba(var(--qx-gold-rgb), 0.14);
+}
+body[data-dsh-qingxiao] [data-skin-chrome='palette-panel'] .pp-btn.pp-danger:hover {
+	background: rgba(var(--qx-gold-rgb), 0.28);
+}
+body[data-dsh-qingxiao] [data-skin-chrome='palette-panel'] .pp-note {
+	font-size: 11px;
+	color: var(--qx-text-faint);
+	line-height: 1.5;
+	padding: 2px 0 4px;
+}
+body[data-dsh-qingxiao] [data-skin-chrome='palette-panel'] .pp-status {
+	font-size: 11px;
+	color: var(--qx-accent-strong);
+	min-height: 15px;
+	padding: 2px 0;
+}
+body[data-dsh-qingxiao] [data-skin-chrome='palette-panel'] .pp-footer {
+	padding: 6px 14px 10px;
+	font-size: 10px;
+	color: var(--qx-text-faint);
+	border-top: 1px dashed var(--qx-panel-border);
+	letter-spacing: 1px;
+}
+body[data-dsh-qingxiao] [data-skin-chrome='palette-panel'] input[type='file'] {
+	display: none;
+}
+
+/* ── 新会话 · 清宵迎宾页 ── */
+body[data-dsh-qingxiao] [data-skin-chrome='qingxiao-hero'] {
+	position: fixed;
+	left: calc(50vw + var(--qx-sidebar-width, 280px) / 2);
+	transform: translateX(-50%);
+	top: 12vh;
+	z-index: 26;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 5px;
+	text-align: center;
+	pointer-events: none;
+	font-family: "Kaiti SC", "STKaiti", "KaiTi", "Noto Serif SC", serif;
+	opacity: 0;
+	transition: opacity 0.5s ease;
+}
+body[data-dsh-qingxiao] [data-skin-chrome='qingxiao-hero'][data-on='true'] {
+	opacity: 1;
+}
+body[data-dsh-qingxiao] [data-skin-chrome='qingxiao-hero'] .qx-hero-icon {
+	margin-bottom: 4px;
+	filter: drop-shadow(0 4px 14px rgba(86, 168, 200, 0.5));
+}
+body[data-dsh-qingxiao] [data-skin-chrome='qingxiao-hero'] .qx-hero-name {
+	font-size: 46px;
+	font-weight: 700;
+	letter-spacing: 14px;
+	line-height: 1.1;
+	text-indent: 14px;
+	background: linear-gradient(180deg, #A9D9F2 0%, #56C8C0 55%, #2E9E98 100%);
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+	text-shadow: 0 8px 36px rgba(86, 168, 200, 0.35);
+}
+body[data-dsh-qingxiao] [data-skin-chrome='qingxiao-hero'] .qx-hero-title {
+	font-size: 15px;
+	letter-spacing: 5px;
+	color: var(--qx-accent-strong);
+}
+body[data-dsh-qingxiao] [data-skin-chrome='qingxiao-hero'] .qx-hero-trim {
+	height: 2px;
+	width: 180px;
+	margin: 4px 0;
+	background: linear-gradient(90deg, transparent, rgba(var(--qx-gold-rgb), 0.8), transparent);
+}
+body[data-dsh-qingxiao] [data-skin-chrome='qingxiao-hero'] .qx-hero-quote {
+	font-size: 17px;
+	letter-spacing: 3px;
+	font-style: italic;
+	color: var(--qx-text-soft);
+	text-shadow: 0 2px 12px rgba(var(--qx-panel-rgb), 0.6);
+}
+body[data-dsh-qingxiao] [data-skin-chrome='qingxiao-hero'] .qx-hero-tags {
+	display: flex;
+	gap: 10px;
+	margin-top: 4px;
+}
+body[data-dsh-qingxiao] [data-skin-chrome='qingxiao-hero'] .qx-hero-tag {
+	font-size: 11px;
+	letter-spacing: 2px;
+	padding: 3px 12px;
+	border-radius: 999px;
+	border: 1px solid rgba(var(--qx-cyan-rgb), 0.4);
+	color: var(--qx-accent-strong);
+	background: rgba(var(--qx-panel-rgb), 0.5);
+}

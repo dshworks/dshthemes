@@ -1,0 +1,211 @@
+/* iasiv5/skins — lib/client.js
+   fetched 2026-09-01 from https://raw.githubusercontent.com/iasiv5/skins/main/lib/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+.dsh-skins-switcher-btn{box-sizing:border-box;display:flex;align-items:center;gap:8px;width:calc(100% + 4px);height:42px;margin:4px -2px;padding:0 10px 0 8px;border:0;border-radius:12px;background:transparent;color:var(--dsw-alias-label-primary);font:inherit;font-size:14px;line-height:22px;cursor:pointer;overflow:hidden}
+
+.dsh-skins-switcher-wrap.rail .dsh-skins-switcher-btn{width:36px;height:36px;margin:8px 0 10px;padding:0;justify-content:center;border-radius:50%;gap:0}
+
+.dsh-skins-pop{position:fixed;z-index:60;box-sizing:border-box;display:flex;flex-direction:column;gap:8px;width:min(360px,calc(100vw - 24px));max-height:calc(100vh - 24px);padding:14px;border:1px solid var(--dsw-alias-border-l2);border-radius:14px;background:var(--dsw-alias-bg-overlay);color:var(--dsw-alias-label-primary);box-shadow:var(--dsw-shadow-lv3,0 8px 24px rgba(0,0,0,.14));overflow-y:auto}
+
+.dsh-skins-theme-card{box-sizing:border-box;display:flex;flex:1;min-width:0;height:72px;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px 5px;border:1px solid var(--dsw-alias-border-l2);border-radius:12px;background:transparent;color:var(--dsw-alias-label-primary);font:inherit;font-size:12px;cursor:pointer}
+
+.dsh-skins-pop-card{box-sizing:border-box;display:flex;flex-direction:column;gap:2px;align-items:flex-start;text-align:left;width:100%;padding:10px 12px;border:1px solid var(--dsw-alias-border-l2);border-radius:12px;background:0 0;color:var(--dsw-alias-label-primary);font:inherit;cursor:pointer}
+
+.dsh-skins-update-row{box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:4px;padding:12px 4px 0;border-top:1px solid var(--dsw-alias-border-l2);font-size:12px;line-height:17px}
+
+.dsh-skins-update-row-muted{display:block;min-width:0;color:var(--dsw-alias-label-secondary,#5f6368);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.dsh-skins-update-copy{display:flex;min-width:0;flex:1;flex-direction:column;align-items:flex-start;gap:2px;color:var(--dsw-alias-label-secondary)}
+
+.dsh-skins-update-actions button,.dsh-skins-update-error>button{height:30px;padding:0 10px;border:1px solid var(--dsw-alias-border-l2);border-radius:8px;background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-primary);font:inherit;cursor:pointer}
+
+.dsh-skins-update-spinner{width:16px;height:16px;border:2px solid var(--dsw-alias-border-l2);border-top-color:var(--dsw-alias-brand-primary);border-radius:50%;animation:dsh-skins-spin .8s linear infinite}
+
+
+  /* ---------- ③ 配色 · 亮色 ---------- */
+  body[data-dsh-openbmc-skin] {
+    /* 品牌主色（按钮/高亮/选中/链接） */
+    --dsw-alias-brand-primary: #0083b0;
+    --dsw-alias-brand-primary-invert: #ffffff;
+    --dsw-alias-brand-text: #007197;
+
+    /* 表面/背景（低不透明度 → 背景画透光；overlay 浮层保持较实） */
+    --dsw-alias-bg-base: rgba(247, 250, 252, 0.55);
+    --dsw-alias-bg-overlay: rgba(250, 252, 253, 0.82);
+    --dsw-alias-bg-module-platform: rgba(240, 246, 250, 0.55);
+    --dsw-alias-bg-layer-1: rgba(255, 255, 255, 0.48);
+    --dsw-alias-bg-layer-2: rgba(255, 255, 255, 0.56);
+    --dsw-alias-bg-layer-3: rgba(255, 255, 255, 0.62);
+
+    /* 侧栏列 + 顶栏标题行（冰白透纱，与背景画同调） */
+    --dsw-specific-sidebar-fill: rgba(238, 246, 251, 0.60);
+    --dsw-specific-sidebar-nav-item-hover: rgba(231, 241, 248, 0.90);
+    --dsw-specific-sidebar-nav-item-active: rgba(220, 235, 245, 0.90);
+    --dsw-specific-sidebar-nav-item-active-accent: #9cc8e0;
+
+    /* 输入/菜单/选择器/提示 同系冰蓝 */
+    --dsw-specific-input-major: rgba(255, 255, 255, 0.60);
+    --dsw-specific-login-input: rgba(255, 255, 255, 0.60);
+    --dsw-specific-menu: rgba(242, 247, 251, 0.94);
+    --dsw-specific-selector: rgba(227, 239, 247, 0.85);
+    --dsw-specific-tip: rgba(240, 246, 250, 0.90);
+
+    /* 文字层级 */
+    --dsw-alias-label-primary: #16262e;
+    --dsw-alias-label-secondary: #3f5a66;
+    --dsw-alias-label-dimmed: #6b838e;
+
+    /* 交互态（品牌蓝） */
+    --dsw-alias-interactive-bg-hover: rgba(0, 138, 191, 0.08);
+    --dsw-alias-interactive-bg-active: rgba(0, 138, 191, 0.14);
+    --dsw-alias-interactive-bg-hover-accent: rgba(140, 206, 63, 0.14); /* 绿点缀 */
+  }
+
+  /* ---------- ③ 配色 · 暗色（跟随系统明暗） ---------- */
+  body[data-dsh-openbmc-skin][data-ds-dark-theme] {
+    --dsw-alias-brand-primary: #3ec1e8;
+    --dsw-alias-brand-primary-invert: #06222e;
+    --dsw-alias-brand-text: #5ec8e8;
+
+    --dsw-alias-bg-base: rgba(12, 26, 38, 0.55);
+    --dsw-alias-bg-overlay: rgba(10, 22, 32, 0.88);
+    --dsw-alias-bg-module-platform: rgba(22, 48, 67, 0.60);
+    --dsw-alias-bg-layer-1: rgba(18, 38, 53, 0.55);
+    --dsw-alias-bg-layer-2: rgba(22, 48, 67, 0.60);
+    --dsw-alias-bg-layer-3: rgba(26, 58, 80, 0.64);
+
+    /* 侧栏列 + 顶栏标题行：深冰蓝海军（与画面同色相，拒绝纯黑） */
+    --dsw-specific-sidebar-fill: rgba(13, 30, 44, 0.72);
+    --dsw-specific-sidebar-nav-item-hover: rgba(18, 41, 58, 0.90);
+    --dsw-specific-sidebar-nav-item-active: rgba(20, 47, 68, 0.90);
+    --dsw-specific-sidebar-nav-item-active-accent: #29526f;
+
+    /* 输入/菜单/选择器/提示 同系深冰蓝 */
+    --dsw-specific-input-major: rgba(18, 42, 60, 0.65);
+    --dsw-specific-login-input: rgba(18, 42, 60, 0.65);
+    --dsw-specific-menu: rgba(14, 33, 48, 0.94);
+    --dsw-specific-selector: rgba(16, 40, 64, 0.85);
+    --dsw-specific-tip: rgba(12, 30, 44, 0.92);
+
+    /* 用户气泡：深冰蓝（替换此前的中性暗块） */
+    --dsw-specific-bubble: rgba(20, 41, 60, 0.90);
+    --dsw-specific-bubble-highlight: rgba(29, 61, 85, 0.90);
+
+    --dsw-alias-label-primary: #dde9ee;
+    --dsw-alias-label-secondary: #9fb4bd;
+    --dsw-alias-label-dimmed: #69818c;
+
+    --dsw-alias-interactive-bg-hover: rgba(62, 193, 232, 0.10);
+    --dsw-alias-interactive-bg-active: rgba(62, 193, 232, 0.16);
+    --dsw-alias-interactive-bg-hover-accent: rgba(165, 212, 64, 0.16);
+  }
+
+  /* ---------- ④ 字体：系统 UI + 等宽代码 ---------- */
+  body[data-dsh-openbmc-skin] {
+    --dsw-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+  "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    --ds-font-family-code: "JetBrains Mono", ui-monospace, "SF Mono", "Cascadia Code",
+  Menlo, Consolas, monospace;
+  }
+
+  /* ---------- ⑥ 会话气泡装饰：品牌描边 + 流式呼吸光条 ---------- */
+  /* 用户气泡填充换品牌蓝 tint（token 层，随版本稳定） */
+  body[data-dsh-openbmc-skin] {
+    --dsw-specific-bubble: rgba(0, 138, 191, 0.10);
+    --dsw-specific-bubble-highlight: rgba(0, 138, 191, 0.18);
+  }
+  body[data-dsh-openbmc-skin][data-ds-dark-theme] {
+    /* 暗色气泡填充由 ③ 暗色块的深冰蓝接管（rgba(20,41,60,.90)），此处不再重定义 */
+  }
+  /* 用户气泡描边 + 轻投影（哈希类 gdEzaW_bubble 随 conversation 插件版本构建，
+   * 版本升级若失效仅影响描边装饰，token 填充仍然生效） */
+  body[data-dsh-openbmc-skin] .gdEzaW_bubble {
+    border: 1px solid rgba(0, 131, 176, 0.38);
+    box-shadow: 0 1px 4px rgba(0, 131, 176, 0.10);
+  }
+  body[data-dsh-openbmc-skin][data-ds-dark-theme] .gdEzaW_bubble {
+    border-color: rgba(62, 193, 232, 0.38);
+    box-shadow: 0 1px 6px rgba(62, 193, 232, 0.10);
+  }
+  /* 助手消息流式输出中：左侧品牌色呼吸光条（box-shadow 不产生布局位移） */
+  body[data-dsh-openbmc-skin] [data-streaming] {
+    border-radius: 4px;
+    box-shadow: inset 3px 0 0 0 var(--dsw-alias-brand-primary);
+  }
+  @keyframes obmc-stream-pulse {
+    from { box-shadow: inset 3px 0 0 0 var(--dsw-alias-brand-primary); }
+    to { box-shadow: inset 3px 0 0 0 rgba(62, 193, 232, 0.20); }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    body[data-dsh-openbmc-skin] [data-streaming] {
+  animation: obmc-stream-pulse 1.6s ease-in-out infinite alternate;
+    }
+  }
+  /* ---------- ⑦ 根容器清底 + 滚动条同系（防御 + 细节，鲸吟同款） ---------- */
+  body[data-dsh-openbmc-skin] [id="root"] { background: 0 0; }
+  body[data-dsh-openbmc-skin] {
+    --dsh-scrollbar-thumb: var(--dsw-alias-scrollbar-bg-l2);
+    --dsh-scrollbar-thumb-hover: var(--dsw-alias-scrollbar-hover-l2);
+  }
+  /* 注意：不要用类名选择器定位侧栏元素 —— 插件样式经 CSS modules 哈希，
+   * 类名不可预测；一律通过 token 或 data-* 属性作用。 */
+
+
+body[data-dsh-uefi-harness] {
+  --dsw-alias-brand-primary: #6553d8;
+  --dsw-alias-brand-primary-invert: #ffffff;
+  --dsw-alias-brand-text: #5846c2;
+  --dsw-alias-bg-base: rgba(248, 247, 255, 0.55);
+  --dsw-alias-bg-overlay: rgba(252, 251, 255, 0.82);
+  --dsw-alias-bg-module-platform: rgba(241, 238, 255, 0.55);
+  --dsw-alias-bg-layer-1: rgba(255, 255, 255, 0.48);
+  --dsw-alias-bg-layer-2: rgba(247, 245, 255, 0.56);
+  --dsw-alias-bg-layer-3: rgba(241, 238, 255, 0.62);
+  --dsw-specific-sidebar-fill: rgba(238, 235, 255, 0.60);
+  --dsw-specific-sidebar-nav-item-hover: rgba(101, 83, 216, 0.09);
+  --dsw-specific-sidebar-nav-item-active: rgba(101, 83, 216, 0.15);
+  --dsw-specific-sidebar-nav-item-active-accent: #8b7cff;
+  --dsw-specific-input-major: rgba(255, 255, 255, 0.62);
+  --dsw-specific-menu: rgba(248, 247, 255, 0.94);
+  --dsw-specific-selector: rgba(232, 228, 255, 0.78);
+  --dsw-specific-tip: rgba(244, 242, 255, 0.88);
+  --dsw-alias-label-primary: #211c36;
+  --dsw-alias-label-secondary: #554d74;
+  --dsw-alias-label-dimmed: #81799e;
+  --dsw-alias-interactive-bg-hover: rgba(101, 83, 216, 0.09);
+  --dsw-alias-interactive-bg-active: rgba(101, 83, 216, 0.15);
+  --dsw-specific-bubble: rgba(101, 83, 216, 0.11);
+  --dsw-specific-bubble-highlight: rgba(101, 83, 216, 0.18);
+  --dsw-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
+}
+body[data-dsh-uefi-harness][data-ds-dark-theme] {
+  --dsw-alias-brand-primary: #a99cff;
+  --dsw-alias-brand-primary-invert: #1b143a;
+  --dsw-alias-brand-text: #b7acff;
+  --dsw-alias-bg-base: rgba(23, 18, 45, 0.55);
+  --dsw-alias-bg-overlay: rgba(27, 21, 54, 0.88);
+  --dsw-alias-bg-module-platform: rgba(39, 31, 73, 0.60);
+  --dsw-alias-bg-layer-1: rgba(31, 25, 59, 0.55);
+  --dsw-alias-bg-layer-2: rgba(39, 31, 73, 0.60);
+  --dsw-alias-bg-layer-3: rgba(48, 38, 88, 0.64);
+  --dsw-specific-sidebar-fill: rgba(25, 20, 48, 0.72);
+  --dsw-specific-sidebar-nav-item-hover: rgba(169, 156, 255, 0.10);
+  --dsw-specific-sidebar-nav-item-active: rgba(169, 156, 255, 0.17);
+  --dsw-specific-sidebar-nav-item-active-accent: #6657a8;
+  --dsw-specific-input-major: rgba(42, 34, 78, 0.55);
+  --dsw-specific-menu: rgba(28, 22, 55, 0.94);
+  --dsw-specific-selector: rgba(51, 40, 96, 0.78);
+  --dsw-specific-tip: rgba(34, 27, 65, 0.90);
+  --dsw-alias-label-primary: #f0edff;
+  --dsw-alias-label-secondary: #b9b1d6;
+  --dsw-alias-label-dimmed: #827a9f;
+  --dsw-alias-interactive-bg-hover: rgba(169, 156, 255, 0.11);
+  --dsw-alias-interactive-bg-active: rgba(169, 156, 255, 0.18);
+  --dsw-specific-bubble: rgba(60, 48, 108, 0.90);
+  --dsw-specific-bubble-highlight: rgba(78, 63, 138, 0.92);
+}
+body[data-dsh-uefi-harness] [id="root"] { background: transparent; }
+body[data-dsh-uefi-harness] [data-streaming] {
+  border-radius: 4px;
+  box-shadow: inset 3px 0 0 var(--dsw-alias-brand-primary);
+}
