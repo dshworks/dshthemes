@@ -117,17 +117,39 @@ themes.sort((a, b) => a.name.localeCompare(b.name));
 const bySlug = new Map(themes.map((t) => [t.slug, t]));
 if (bySlug.size !== themes.length) throw new Error("slug collision");
 
+// `painted` and `unpainted` are disjoint from `live`, because the hero copy
+// used to say "142 render, THE REST are painted from their tokens" and 71
+// themes are neither. Their colours live in JavaScript, or the sheet we found
+// changed nothing on the shell. A card for one of them shows no swatch, which
+// the reader can see; the sentence above it said otherwise, which they cannot.
+const versions = {};
+for (const t of registry.themes) {
+  const v = t.verifiedAgainst || "unrecorded";
+  versions[v] = (versions[v] ?? 0) + 1;
+}
+const versionRows = Object.entries(versions).sort((a, b) => b[1] - a[1]);
+
 const stats = {
   total: themes.length,
   shots: themes.filter((t) => t.hasShot).length,
   live: themes.filter((t) => t.hasLive).length,
   signatures: themes.filter((t) => t.palette).length,
+  painted: themes.filter((t) => t.palette && !t.hasLive).length,
+  unpainted: themes.filter((t) => !t.palette && !t.hasLive).length,
   fromTokens: themes.filter((t) => t.palette && t.palette.source === "tokens").length,
   verified: themes.filter((t) => t.status === "verified").length,
   shelves: Object.fromEntries(Object.keys(SHELVES).map((k) => [k, themes.filter((t) => t.shelf === k).length])),
   updated: registry.updated,
   enriched: enrich.updated,
-  verifiedAgainst: registry.themes[0]?.verifiedAgainst || "0.1.0-rc.6",
+  // One row must not speak for the shelf. This was
+  // `registry.themes[0].verifiedAgainst` -- the alphabetically first theme --
+  // published as though all 489 had been checked against it. They were checked
+  // against four different dsh versions and the commonest is not that one.
+  // Every theme page already prints its own; this is the honest summary.
+  versions: versionRows,
+  versionCommon: versionRows[0]?.[0] ?? "0.1.0-rc.6",
+  versionCommonN: versionRows[0]?.[1] ?? 0,
+  versionNewest: Object.keys(versions).filter((v) => v !== "unrecorded").sort().pop() ?? "0.1.0-rc.6",
 };
 
 // ---------------------------------------------------------------------------
@@ -174,7 +196,12 @@ function swatches(sig) {
 function cardVisual(t) {
   if (t.shot?.file) return `<img class="shot" src="/shot/${esc(t.shot.file)}" alt="the dsh shell wearing ${esc(t.name)}" width="1200" height="750" loading="lazy" decoding="async">`;
   if (t.hasShot) return `<img class="shot" src="${esc(t.preview)}" alt="${esc(t.name)} screenshot" loading="lazy" decoding="async">`;
-  return mini(t.signature, { note: t.signature ? null : "no stylesheet read" });
+  // "no stylesheet read" was the label on all 71 blanks, and it was true of
+  // 22 of them. The other 49 had a sheet read and no colour come out of it --
+  // a client.js carrying one token, a test spec, a CSS module with no
+  // `--dsw-*` in it. Saying we never looked is a different, wrong claim about
+  // the theme, and it is the only thing the card says about it.
+  return mini(t.signature, { note: t.signature ? null : (t.css ? "no colour in the file we read" : "no stylesheet found") });
 }
 
 function card(t) {
@@ -356,7 +383,7 @@ const heroHtml = `<section class="hero">
 <div class="hero-copy">
 <p class="eyebrow">DeepSeek Harness · community themes · not a store</p>
 <h1>Every dsh theme,<br><b>in its own colours.</b></h1>
-<p class="lede">A theme is a stylesheet, so we read each one. ${stats.live} of them go on a real copy of the dsh shell and get photographed there. The rest are painted from the <code>--dsw-*</code> tokens they declare, and say so. Nothing is invented, and every card links the file it came from.</p>
+<p class="lede">A theme is a stylesheet, so we read each one. ${stats.live} of them go on a real copy of the dsh shell and get photographed there. ${stats.painted} more are painted from the <code>--dsw-*</code> tokens they declare, and say so. ${stats.unpainted} show no colour at all — their palette is in JavaScript, or the sheet changed nothing we could see — and those say so too. Nothing is invented, and every card links the file it came from.</p>
 <div class="hero-actions"><a class="btn primary" href="#gallery">Browse ${stats.total} themes ${ICONS.arrow}</a><button type="button" class="btn" data-surprise>${ICONS.shuffle} Surprise me</button></div>
 <div class="stats"><span><b data-count="${stats.total}">${stats.total}</b>themes</span><span><b data-count="${stats.live}">${stats.live}</b>on the real shell</span><span><b data-count="${stats.signatures}">${stats.signatures}</b>colour signatures</span></div>
 </div>
@@ -473,7 +500,8 @@ const aboutBody = `<main class="wrap prose">
 <h2>Motion</h2>
 <p>The springs (chips, the copy button, the fanning decks) are Motion-style springs — stiffness 600 / damping 25 for snaps, 180 / 20 / mass 0.8 for the fan — sampled into CSS <code>linear()</code> at build time, after <a href="https://amicro.vercel.app/" rel="noopener">Amicro</a>'s vocabulary. No animation runtime ships. Everything stops under <code>prefers-reduced-motion</code>.</p>
 <h2>Data</h2>
-<p><a href="/themes.json">/themes.json</a> is the site's projection: registry rows plus stars, last push, the stylesheet read and the signature. <a href="/llms.txt">/llms.txt</a> is the map for agents. Registry ${esc(stats.updated)}, colours read ${esc(stats.enriched)}, verified against dsh ${esc(stats.verifiedAgainst)}.</p>
+<p><a href="/themes.json">/themes.json</a> is the site's projection: registry rows plus stars, last push, the stylesheet read and the signature. <a href="/llms.txt">/llms.txt</a> is the map for agents. Registry ${esc(stats.updated)}, colours read ${esc(stats.enriched)}.</p>
+<p>The rows were not all checked against the same dsh. ${stats.versions.map(([v, n]) => `${n} against <code>${esc(v)}</code>`).join(", ")} — commonest <code>${esc(stats.versionCommon)}</code>, newest <code>${esc(stats.versionNewest)}</code>. Each theme's page prints the one its own row carries; a single version here would have been the alphabetically first theme speaking for all ${stats.total}.</p>
 <p>Not affiliated with DeepSeek. Source: <a href="https://github.com/dshworks/dshthemes" rel="noopener">dshworks/dshthemes</a>.</p>
 </main>`;
 
