@@ -1,0 +1,72 @@
+/* Waldsatte/dsh-theme-taojian — client.js
+   fetched 2026-09-02 from https://raw.githubusercontent.com/Waldsatte/dsh-theme-taojian/main/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+html, body, body.dsh-taojian {
+      }
+
+      body {
+      }
+
+      body, body * {
+        font-family: inherit;
+      }
+      body, [class*="_root"], [class*="_label"], [class*="_title"],
+      [class*="_body"], [class*="_input"], textarea, button, input {
+      }
+      pre, code, kbd, samp, tt, [class*="code"], [data-terminal] {
+      }
+
+      ::selection {
+      }
+      body[data-ds-dark-theme] ::selection {
+        color: #fcfcfc;
+      }
+
+      /* Icons on paper: ink, never cream-on-cream, never extra stroke. */
+      body:not([data-ds-dark-theme]) [class*="_folder"],
+      body:not([data-ds-dark-theme]) [class*="_iconButton"],
+      body:not([data-ds-dark-theme]) [class*="_slot"] {
+      }
+
+      /* New session: ghost row, not a cold white pill. */
+      html body.dsh-taojian [class*="newSession"] {
+        background: transparent !important;
+        border: 0 !important;
+        border-radius: 12px !important;
+        box-shadow: none !important;
+      }
+      html body.dsh-taojian [class*="newSession"]:hover {
+        background: rgba(29, 27, 22, 0.06) !important;
+      }
+      html body.dsh-taojian [class*="newSession"] svg {
+      }
+
+      /* Workspace / session rows: soft pill. */
+      [class*="_sessionRow"], [class*="_projectRow"] {
+        border-radius: 12px !important;
+      }
+      [class*="_sessionRow"][class*="selected"],
+      [class*="_sessionRow"][data-selected="true"] {
+        background: rgba(29, 27, 22, 0.08) !important;
+      }
+
+      /* Header preset chip: quiet, not accent-filled. */
+      [class$="_label"]:has([class$="_icon"]) {
+        background: rgba(29, 27, 22, 0.06) !important;
+        border: 0 !important;
+        border-radius: 8px !important;
+        max-width: 180px !important;
+        flex: 0 0 auto !important;
+      }
+
+      /* Wordmark badge: ink plate so native light letters read. */
+      html body.dsh-taojian [class*="brand"] svg rect,
+      html body.dsh-taojian [class*="brandName"] svg rect {
+        stroke: none !important;
+      }
+
+      /* Focus / links use clay; primary send stays ink. */
+      a { }
+      :focus-visible {
+        outline-offset: 2px;
+      }
