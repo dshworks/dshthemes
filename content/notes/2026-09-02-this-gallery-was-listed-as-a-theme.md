@@ -84,3 +84,9 @@ date, because they are about what the projects are, not about the day we
 looked. And the 362 listed rows whose receipt is an install path rather than a
 restyle path are unchanged by any of this; today's rule governs new rows, and
 re-proving the old ones is the next job, not a footnote to this one.
+
+*Later the same morning:* the first sweep to run after this change brought two
+rows in through the plugins registry's routing lane, `dsh-theme-prts` on a
+stylesheet declaration and `dsh-client-background` on a declaration written
+from `src/client/background.ts` — a receipt the prover could not have produced
+the day before. 480.
