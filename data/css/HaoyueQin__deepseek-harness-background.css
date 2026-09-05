@@ -1,5 +1,5 @@
 /* HaoyueQin/deepseek-harness-background — src/client/background-css.ts
-   fetched 2026-08-28 from https://raw.githubusercontent.com/HaoyueQin/deepseek-harness-background/main/src/client/background-css.ts
+   fetched 2026-09-05 from https://raw.githubusercontent.com/HaoyueQin/deepseek-harness-background/main/src/client/background-css.ts
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 .dsh-bg-layer {
     position: fixed; inset: 0; z-index: -2; overflow: hidden; pointer-events: none;
@@ -41,6 +41,9 @@
      slider returns these surfaces to the exact official paints. */
   body[data-dsh-bg-glass] [data-composer-card],
   body[data-dsh-bg-glass] [class*="_bubble"]:not([role="tooltip"]),
+  /* The read_image toolview (dsh >= 0.1.2-rc.1 ToolRow) collapses its result
+     into an image body card; glass it like the other content blocks. */
+  body[data-dsh-bg-glass] [class*="_imageBody"],
   body[data-dsh-bg-glass] .md-code-block,
   body[data-dsh-bg-glass] [data-terminal],
   body[data-dsh-bg-glass] [data-diff],
@@ -188,6 +191,25 @@
      the wallpaper without frost. Join the shared blur chain under the same
      gate (its theme-aware ink fills from the active block above). */
   body[data-dsh-bg-glass] [class*="_buildRevision"] {
+    -webkit-backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
+    backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
+  }
+
+  /* ---- Official turn rail (dsh >= 0.1.2, TurnNavigator) -----------------
+     The enhance mode borrows the kernel's rail untouched, so its hover
+     preview card keeps the OFFICIAL opaque fill (bg-layer-1, not mediated
+     by any overridden token) — the "悬浮反馈形态不透明" complaint. Glass it
+     explicitly with the same explicit-fill recipe as the chrome buttons
+     (fill = the painter's composer token + shared blur/sheen). Anchors are
+     structural, never class names: the kernel's module-CSS class hashes are
+     not a stable contract, but nav[style*="--turn-natural-height"] (its
+     inline rail metrics) and the preview's role="tooltip" are. No edge
+     dissolve on the marks column: the first and last tick dashes straddle
+     the marks box edges by 1px, so a fade zone sized off the box height
+     swallows them instead of the band. */
+  body[data-dsh-bg-glass] nav[style*="--turn-natural-height"] [role="tooltip"] {
+    background-color: var(--dsw-specific-input-major);
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, var(--bg-glass-sheen, 0.07)), rgba(255, 255, 255, var(--bg-glass-sheen-mid, 0.02)) 38%, rgba(255, 255, 255, 0.01));
     -webkit-backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
     backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
   }

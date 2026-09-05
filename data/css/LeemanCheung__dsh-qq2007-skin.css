@@ -1,5 +1,5 @@
 /* LeemanCheung/dsh-qq2007-skin — src/skin.css
-   fetched 2026-08-28 from https://raw.githubusercontent.com/LeemanCheung/dsh-qq2007-skin/main/src/skin.css
+   fetched 2026-09-05 from https://raw.githubusercontent.com/LeemanCheung/dsh-qq2007-skin/main/src/skin.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* Scoped visual layer: inactive installs do not alter the stock DSH UI. */
 html:has(body[data-dsh-qq2007-active="true"]) {
@@ -23,6 +23,16 @@ body[data-dsh-qq2007-active="true"] {
 body[data-dsh-qq2007-active="true"] ::selection {
   color: #fff;
   background: #1269bb;
+}
+
+/* DSH 0.1.2 tooltips use white fixed text; keep their background dark enough
+   even when this light skin is active. */
+body[data-dsh-qq2007-active="true"] [role="tooltip"] {
+  color: #fff !important;
+  background: #16466f !important;
+  border: 1px solid #082f50;
+  box-shadow: inset 1px 1px rgba(255,255,255,.18), 0 2px 5px rgba(7,35,60,.28) !important;
+  text-shadow: none !important;
 }
 
 /* Always-visible, decorative application chrome. It does not imitate native controls. */

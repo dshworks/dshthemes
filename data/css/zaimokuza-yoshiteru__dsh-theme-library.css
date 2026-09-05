@@ -1,12 +1,13 @@
 /* zaimokuza-yoshiteru/dsh-theme-library — src/client/styles.ts
-   fetched 2026-08-28 from https://raw.githubusercontent.com/zaimokuza-yoshiteru/dsh-theme-library/main/src/client/styles.ts
+   fetched 2026-09-05 from https://raw.githubusercontent.com/zaimokuza-yoshiteru/dsh-theme-library/main/src/client/styles.ts
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 body[data-dsh-wallpaper-active] {
   isolation: isolate;
   background: #020305;
 }
 
-canvas[data-dsh-wallpaper-canvas] {
+canvas[data-dsh-wallpaper-canvas],
+video[data-dsh-wallpaper-video] {
   position: fixed;
   inset: 0;
   z-index: -1;
@@ -14,6 +15,12 @@ canvas[data-dsh-wallpaper-canvas] {
   height: 100%;
   pointer-events: none;
   background: #020305;
+  opacity: var(--dsh-wallpaper-opacity, 1);
+  transition: opacity 120ms linear;
+}
+
+video[data-dsh-wallpaper-video] {
+  object-fit: cover;
 }
 
 body[data-dsh-wallpaper-intro] {
@@ -38,6 +45,10 @@ canvas[data-dsh-wallpaper-intro] {
   gap: 8px;
   padding: 16px 0;
   border-bottom: 1px solid var(--dsw-alias-border-l2);
+}
+
+.dsh-wallpaper-library-controls .dsh-wallpaper-library-row:last-child {
+  border-bottom: 0;
 }
 
 .dsh-wallpaper-library-copy {
@@ -105,4 +116,29 @@ canvas[data-dsh-wallpaper-intro] {
   transform: translateY(-58%);
   color: var(--dsw-alias-label-secondary);
   pointer-events: none;
+}
+
+.dsh-wallpaper-opacity-control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 230px;
+}
+
+.dsh-wallpaper-opacity-range {
+  width: 176px;
+  accent-color: var(--dsw-alias-brand-primary);
+  cursor: pointer;
+}
+
+.dsh-wallpaper-opacity-range:disabled {
+  cursor: default;
+  opacity: 0.65;
+}
+
+.dsh-wallpaper-opacity-value {
+  min-width: 38px;
+  color: var(--dsw-alias-label-secondary);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
 }

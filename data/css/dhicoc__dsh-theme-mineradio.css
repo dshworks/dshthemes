@@ -1,5 +1,5 @@
 /* dhicoc/dsh-theme-mineradio — src/client/mineradio.module.css
-   fetched 2026-08-28 from https://raw.githubusercontent.com/dhicoc/dsh-theme-mineradio/main/src/client/mineradio.module.css
+   fetched 2026-09-05 from https://raw.githubusercontent.com/dhicoc/dsh-theme-mineradio/main/src/client/mineradio.module.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* ============================================================================
  * Mineradio theme layer — the cinematic private-visual-radio skin for the
@@ -464,16 +464,17 @@
    stock paints them as a solid #2C2C2E slab (--dsw-hovercard-bg), which
    reads as a sticker over the glass. Full menu-grade family material —
    they are content cards, not micro-chips. Fixed positioning untouched.
-   (Class hash _card_1b2ny_13; the _root wrapper around the row stays
-   untouched — only the floating card is re-skinned.) */
-[data-dsh-float] [class*='_card_1b2ny_13'] {
+   The card is portaled onto `body` (HoverCard.createPortal); hashed
+   `_card_1b2ny_13` dies on the next primitives rebuild, so match the
+   body-child `_card` seam instead of a CSS-module hash. */
+[data-dsh-float] body > [class*='_card'] {
   background: var(--dsh-aqua-glass-card-light);
   border: 1px solid rgba(122, 86, 28, 0.30);
   box-shadow: var(--dsh-aqua-glass-shadow-light);
   backdrop-filter: blur(var(--dsh-aqua-blur, 22px)) saturate(1.22) brightness(1.04);
 }
 
-[data-dsh-float] body[data-ds-dark-theme] [class*='_card_1b2ny_13'] {
+[data-dsh-float] body[data-ds-dark-theme] > [class*='_card'] {
   background: var(--dsh-aqua-glass-card-dark);
   border-color: rgba(0, 245, 212, 0.20);
   box-shadow: var(--dsh-aqua-glass-shadow-dark);
@@ -1050,6 +1051,48 @@ html:not(:has(body[data-ds-dark-theme])) [data-dsh-aqua] [data-dsh-station-tuner
   box-shadow: var(--dsh-aqua-glass-shadow-dark);
 }
 
+/* ---------- rc.2 (Tauri desktop) settings overlay: the settings surface is
+   no longer a role=dialog — it mounts as a full-viewport shell overlay slot
+   (the dsh-tauri-ui settings root carries `data-slot-sidebar="dsh-tauri-ui"`).
+   Same glass recipe as the panes, minus the raised border/radius/shadow since
+   it spans the frame edge to edge. NOTE: the selector avoids dotted attribute
+   values (e.g. `data-slot="shell.overlay"`) — the build's CSS-module pass
+   would treat the dot as a class. ---------- */
+[data-dsh-aqua] body [data-slot-sidebar='dsh-tauri-ui'] {
+  background: var(--dsh-aqua-glass-card-light);
+  backdrop-filter: blur(var(--dsh-aqua-blur, 22px)) saturate(1.22) brightness(1.04);
+}
+
+[data-dsh-aqua] body[data-ds-dark-theme] [data-slot-sidebar='dsh-tauri-ui'] {
+  background: var(--dsh-aqua-glass-card-dark);
+}
+
+/* ---------- rc.2 (Tauri desktop) archived-session toolbar: the dsh-tauri
+   session plugin paints the toolbar an opaque --dsw-alias-bg-base slab
+   (#08090B), hiding the settings glass underneath. Clear it so the glass
+   reads through; the search / sort-select controls drop to the standard
+   layer-3 fill with token ink. [class*] selectors keep the CSS-module pass
+   from hashing the host plugin's class names. ---------- */
+[data-dsh-aqua] [class*='dsh-tauri-session-toolbar'] {
+  background: transparent;
+  border-color: var(--dsw-alias-border-l2);
+}
+[data-dsh-aqua] [class*='dsh-tauri-session-toolbar'] [class*='dsh-tauri-session-search'],
+[data-dsh-aqua] [class*='dsh-tauri-session-toolbar'] [class*='dsh-tauri-session-menu-select'] {
+  background: var(--dsw-alias-bg-layer-3);
+  border: 1px solid var(--dsw-alias-border-l2);
+  color: var(--dsw-alias-label-primary);
+}
+[data-dsh-aqua] [class*='dsh-tauri-session-toolbar'] [class*='dsh-tauri-session-search'] input,
+[data-dsh-aqua] [class*='dsh-tauri-session-toolbar'] [class*='dsh-tauri-session-search'] input::placeholder {
+  color: var(--dsw-alias-label-primary);
+  opacity: 1;
+}
+[data-dsh-aqua] [class*='dsh-tauri-session-toolbar'] [class*='dsh-tauri-session-menu-select'] span,
+[data-dsh-aqua] [class*='dsh-tauri-session-toolbar'] [class*='dsh-tauri-session-menu-select'] svg {
+  color: var(--dsw-alias-label-secondary);
+}
+
 /* ---------- Sidebar: the selected session gets an accent bar and a soft halo. ---------- */
 [data-dsh-float] [role='treeitem'][aria-selected='true'] {
   box-shadow:
@@ -1070,11 +1113,17 @@ html:not(:has(body[data-ds-dark-theme])) [data-dsh-aqua] [data-dsh-station-tuner
    (family gradient + specular rim + blur knob). They sit over chat text, so
    the readable frost comes from real backdrop blur (the composer veil above
    lets them sample the transcript) — not a near-opaque flat slab. The slash
-   command picker is a listbox wearing the same `_menu` class, so it rides
-   along. */
+   command picker used to be a listbox wearing `_menu`; current DSH puts
+   `role=listbox` on the inner `_viewport` and the shell is
+   `data-trigger-menu` with stock `--dsw-specific-menu`. Match the stable
+   attribute so the plate itself is family glass. */
 [data-dsh-float] [role='menu'],
 [data-dsh-float] [role='tree'][class*='menu'],
-[data-dsh-float] [role='listbox'][class*='menu'] {
+[data-dsh-float] [role='listbox'][class*='menu'],
+[data-dsh-float] [data-trigger-menu],
+[data-dsh-float] [class*='_root']:has(> button[aria-expanded]) > ul[class*='_menu'],
+[data-dsh-float] [class*='_card']:has(> [role='listbox']),
+[data-dsh-float] [data-cordis-panel] {
   background: var(--dsh-aqua-glass-card-light);
   border: 1px solid rgba(122, 86, 28, 0.34);
   box-shadow: var(--dsh-aqua-glass-shadow-light);
@@ -1086,7 +1135,11 @@ html:not(:has(body[data-ds-dark-theme])) [data-dsh-aqua] [data-dsh-station-tuner
    muddy and the blur scrambled its fixed-position layout. */
 [data-dsh-float] body[data-ds-dark-theme] [role='menu'],
 [data-dsh-float] body[data-ds-dark-theme] [role='tree'][class*='menu'],
-[data-dsh-float] body[data-ds-dark-theme] [role='listbox'][class*='menu'] {
+[data-dsh-float] body[data-ds-dark-theme] [role='listbox'][class*='menu'],
+[data-dsh-float] body[data-ds-dark-theme] [data-trigger-menu],
+[data-dsh-float] body[data-ds-dark-theme] [class*='_root']:has(> button[aria-expanded]) > ul[class*='_menu'],
+[data-dsh-float] body[data-ds-dark-theme] [class*='_card']:has(> [role='listbox']),
+[data-dsh-float] body[data-ds-dark-theme] [data-cordis-panel] {
   background: var(--dsh-aqua-glass-card-dark);
   border-color: rgba(0, 245, 212, 0.22);
   box-shadow: var(--dsh-aqua-glass-shadow-dark);
@@ -1097,7 +1150,8 @@ html:not(:has(body[data-ds-dark-theme])) [data-dsh-aqua] [data-dsh-station-tuner
    strip on the glass. Drop the plate; ink follows the theme ladder. Same
    for the slash-command picker's group titles. */
 [data-dsh-float] [role='menu'] [class*='groupTitle'],
-[data-dsh-float] [role='listbox'][class*='menu'] [class*='groupTitle'] {
+[data-dsh-float] [role='listbox'][class*='menu'] [class*='groupTitle'],
+[data-dsh-float] [data-trigger-menu] [class*='groupTitle'] {
   background: transparent;
   color: var(--dsw-alias-label-secondary);
 }
@@ -1121,6 +1175,37 @@ html:not(:has(body[data-ds-dark-theme])) [data-dsh-aqua] [data-dsh-station-tuner
   background: var(--dsh-aqua-glass-card-dark);
   border-color: rgba(0, 245, 212, 0.22);
   box-shadow: var(--dsh-aqua-glass-shadow-dark);
+}
+
+/* Queue-message tag (composer QueueDock). Stock panel fill is the same
+   --dsw-specific-tip slab as the todo/goal strips, but the seam is the
+   stable `data-queue-dock` attribute — hashed `_dock/_panel` classes do
+   not match the older composer-dock selector. One item is the row itself;
+   many items collapse to a count header. Both sit in `.panel`. Kill the
+   stock 1px border-l1 ::after plate so the family hairline/specular rim
+   is the only edge. */
+[data-dsh-float] [data-queue-dock] > [class*='_panel'] {
+  background: var(--dsh-aqua-glass-card-light);
+  border-color: rgba(122, 86, 28, 0.34);
+  box-shadow: var(--dsh-aqua-glass-shadow-light);
+  backdrop-filter: blur(var(--dsh-aqua-blur, 22px)) saturate(1.22) brightness(1.04);
+}
+
+[data-dsh-float] [data-queue-dock] > [class*='_panel']::after {
+  border-color: transparent;
+}
+
+[data-dsh-float] body[data-ds-dark-theme] [data-queue-dock] > [class*='_panel'] {
+  background: var(--dsh-aqua-glass-card-dark);
+  border-color: rgba(0, 245, 212, 0.22);
+  box-shadow: var(--dsh-aqua-glass-shadow-dark);
+}
+
+/* Goal-bar inline editor: stock fill is opaque --dsw-alias-bg-base on top
+   of the already-glassed `_bar`. Drop the slab so the family glass reads
+   through; keep the token hairline. */
+[data-dsh-float] [data-goal-bar] [class*='objectiveInput'] {
+  background: transparent;
 }
 
 /* ---------- Page edge fades: 5px gradient blur bands pinned to the top and
@@ -1195,7 +1280,8 @@ html:not(:has(body[data-ds-dark-theme])) [data-dsh-aqua] [data-dsh-station-tuner
 /* Settings model / API-protocol <select> triggers. Stock fill is
    --dsw-alias-bg-layer-1 (a flat token). Same family glass as the panes;
    keep the stock chevron image on the right. */
-[data-dsh-aqua] [role='dialog'] select {
+[data-dsh-aqua] [role='dialog'] select,
+[data-dsh-aqua] [data-slot-sidebar='dsh-tauri-ui'] select {
   background-color: transparent;
   background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M3 4.5L6 7.5L9 4.5' stroke='%237A7468' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"),
@@ -1209,7 +1295,8 @@ html:not(:has(body[data-ds-dark-theme])) [data-dsh-aqua] [data-dsh-station-tuner
   color: var(--dsw-alias-label-primary);
 }
 
-[data-dsh-aqua] body[data-ds-dark-theme] [role='dialog'] select {
+[data-dsh-aqua] body[data-ds-dark-theme] [role='dialog'] select,
+[data-dsh-aqua] body[data-ds-dark-theme] [data-slot-sidebar='dsh-tauri-ui'] select {
   background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M3 4.5L6 7.5L9 4.5' stroke='%23CBC4B8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"),
     var(--dsh-aqua-glass-card-dark);

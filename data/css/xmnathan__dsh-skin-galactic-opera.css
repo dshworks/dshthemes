@@ -1,5 +1,5 @@
 /* xmnathan/dsh-skin-galactic-opera — lib/client.js
-   fetched 2026-08-28 from https://raw.githubusercontent.com/xmnathan/dsh-skin-galactic-opera/main/lib/client.js
+   fetched 2026-09-05 from https://raw.githubusercontent.com/xmnathan/dsh-skin-galactic-opera/main/lib/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 body.dsh-skin-galactic-opera {
   --dsh-skin-cyan: #7de3ff;
@@ -37,6 +37,7 @@ body.dsh-skin-galactic-opera {
     radial-gradient(circle at 62% 83%, rgba(255, 71, 120, 0.20), transparent 34rem),
     radial-gradient(circle at 32% 74%, rgba(102, 255, 199, 0.10), transparent 28rem),
     linear-gradient(180deg, #02030a 0%, #03040b 44%, #080b1c 100%) !important;
+  scrollbar-color: rgba(125, 227, 255, 0.42) rgba(5, 7, 17, 0.40);
 }
 
 body.dsh-skin-galactic-opera::before,
@@ -97,36 +98,43 @@ body.dsh-skin-galactic-opera #root::before {
   will-change: transform;
 }
 
-body.dsh-skin-galactic-opera.dsh-skin-input-active::before,
-body.dsh-skin-galactic-opera.dsh-skin-input-active::after,
-body.dsh-skin-galactic-opera.dsh-skin-input-active #root::before {
+body.dsh-skin-galactic-opera.dsh-skin-galactic-opera-input-active::before,
+body.dsh-skin-galactic-opera.dsh-skin-galactic-opera-input-active::after,
+body.dsh-skin-galactic-opera.dsh-skin-galactic-opera-input-active #root::before {
   animation-play-state: paused !important;
 }
 
-body.dsh-skin-galactic-opera.dsh-skin-input-active::before {
+body.dsh-skin-galactic-opera.dsh-skin-galactic-opera-input-active::before {
   opacity: 0.28;
 }
 
-body.dsh-skin-galactic-opera.dsh-skin-input-active::after {
+body.dsh-skin-galactic-opera.dsh-skin-galactic-opera-input-active::after {
   opacity: 0.12;
 }
 
-body.dsh-skin-galactic-opera.dsh-skin-input-active #root::before {
+body.dsh-skin-galactic-opera.dsh-skin-galactic-opera-input-active #root::before {
   opacity: 0.10;
   transform: none;
   will-change: auto;
 }
 
-body.dsh-skin-galactic-opera.dsh-skin-input-active .dsh-skin-galactic-opera-decor {
-  opacity: 0.28;
-}
-
-body.dsh-skin-galactic-opera.dsh-skin-input-active :is(.dsh-skin-nebula-core, .dsh-skin-energy, .dsh-skin-comet, .dsh-skin-starfighter, .dsh-skin-mission-crawl, .dsh-skin-scanner, .dsh-skin-scanner::after, .dsh-skin-route-map, .dsh-skin-satellite, .dsh-skin-satellite-orbit, .dsh-skin-satellite-orbit-front) {
+body.dsh-skin-galactic-opera.dsh-skin-galactic-opera-input-active :is(.dsh-skin-energy, .dsh-skin-comet, .dsh-skin-starfighter, .dsh-skin-mission-crawl, .dsh-skin-scanner, .dsh-skin-route-map),
+body.dsh-skin-galactic-opera.dsh-skin-galactic-opera-input-active .dsh-skin-scanner::after {
   animation-play-state: paused !important;
 }
 
-body.dsh-skin-galactic-opera.dsh-skin-input-active :is(.dsh-skin-nebula-core, .dsh-skin-energy, .dsh-skin-comet, .dsh-skin-starfighter, .dsh-skin-mission-crawl) {
-  opacity: 0.08 !important;
+body.dsh-skin-galactic-opera.dsh-skin-galactic-opera-input-active :is(.dsh-skin-energy, .dsh-skin-comet, .dsh-skin-starfighter, .dsh-skin-mission-crawl) {
+  opacity: 0.16 !important;
+}
+
+body.dsh-skin-galactic-opera.dsh-skin-galactic-opera-page-hidden::before,
+body.dsh-skin-galactic-opera.dsh-skin-galactic-opera-page-hidden::after,
+body.dsh-skin-galactic-opera.dsh-skin-galactic-opera-page-hidden #root::before,
+body.dsh-skin-galactic-opera.dsh-skin-galactic-opera-page-hidden .dsh-skin-galactic-opera-decor::before,
+body.dsh-skin-galactic-opera.dsh-skin-galactic-opera-page-hidden .dsh-skin-galactic-opera-decor *,
+body.dsh-skin-galactic-opera.dsh-skin-galactic-opera-page-hidden .dsh-skin-galactic-opera-decor *::before,
+body.dsh-skin-galactic-opera.dsh-skin-galactic-opera-page-hidden .dsh-skin-galactic-opera-decor *::after {
+  animation-play-state: paused !important;
 }
 
 body.dsh-skin-galactic-opera #root > *,
@@ -153,6 +161,7 @@ body.dsh-skin-galactic-opera [class*="Sidebar"] {
     0 0 40px rgba(125, 227, 255, 0.12) !important;
 }
 
+body.dsh-skin-galactic-opera .dsh-skin-galactic-opera-decor-host,
 body.dsh-skin-galactic-opera .dsh-skin-galactic-opera-decor {
   position: fixed;
   inset: -2vmax;
@@ -162,21 +171,50 @@ body.dsh-skin-galactic-opera .dsh-skin-galactic-opera-decor {
   mix-blend-mode: screen;
 }
 
+body.dsh-skin-galactic-opera .dsh-skin-galactic-opera-decor-host {
+  display: block;
+  width: auto;
+  height: auto;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
 body.dsh-skin-galactic-opera .dsh-skin-galactic-opera-decor::before {
   content: "";
   position: absolute;
-  inset: -12vmax;
+  left: 48%;
+  top: 50%;
+  width: 140vmax;
+  height: 140vmax;
   opacity: 0;
   pointer-events: none;
   background:
     repeating-conic-gradient(from 0deg at 50% 50%, transparent 0deg 5deg, rgba(125,227,255,0.72) 5.4deg 6deg, transparent 6.4deg 12deg),
     radial-gradient(circle at 50% 50%, rgba(255,255,255,0.82), transparent 8vmin, rgba(255,207,92,0.26) 12vmin, transparent 36vmin);
-  transform: scale(0.5);
+  transform: translate(-50%, -50%) scale(0.5);
   filter: blur(0.2px);
 }
 
-body.dsh-skin-galactic-opera.dsh-skin-hyperspace .dsh-skin-galactic-opera-decor::before {
-  animation: dsh-skin-hyperspace-burst 880ms cubic-bezier(.16,.8,.25,1) both;
+body.dsh-skin-galactic-opera.dsh-skin-galactic-opera-hyperspace .dsh-skin-galactic-opera-decor::before {
+  animation: dsh-skin-galactic-opera-hyperspace-burst 880ms cubic-bezier(.16,.8,.25,1) both;
+}
+
+body.dsh-skin-galactic-opera .dsh-skin-galactic-opera-decor,
+body.dsh-skin-galactic-opera .dsh-skin-galactic-opera-decor *,
+body.dsh-skin-galactic-opera .dsh-skin-galactic-opera-decor *::before,
+body.dsh-skin-galactic-opera .dsh-skin-galactic-opera-decor *::after {
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  line-height: 1;
+  text-decoration: none;
+  background-clip: border-box;
 }
 
 body.dsh-skin-galactic-opera .dsh-skin-galactic-opera-decor span {
@@ -253,7 +291,32 @@ body.dsh-skin-galactic-opera .dsh-skin-nebula-core {
     0 0 112px rgba(255,71,120,0.10);
   filter: blur(0.55px) saturate(1.22);
   mix-blend-mode: screen;
-  animation: dsh-skin-blackhole-breathe 7.2s ease-in-out infinite;
+  animation: dsh-skin-blackhole-breathe 9.6s ease-in-out infinite;
+}
+
+body.dsh-skin-galactic-opera .dsh-skin-nebula-core::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+  mix-blend-mode: screen;
+  inset: -22%;
+  opacity: 0;
+  background:
+    radial-gradient(circle at 50% 14%, rgba(255,255,255,0.72) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 80% 44%, rgba(125,227,255,0.58) 0 1.1px, transparent 2px),
+    radial-gradient(circle at 24% 66%, rgba(255,207,92,0.48) 0 1px, transparent 1.8px);
+  -webkit-mask-image: radial-gradient(circle, transparent 0 16%, #000 24% 68%, transparent 82%);
+  mask-image: radial-gradient(circle, transparent 0 16%, #000 24% 68%, transparent 82%);
+  animation: dsh-skin-blackhole-infall 9.8s cubic-bezier(.42,0,.18,1) infinite;
+}
+
+body.dsh-skin-galactic-opera.dsh-skin-galactic-opera-hyperspace .dsh-skin-nebula-core {
+  animation: dsh-skin-blackhole-warp-pull 880ms cubic-bezier(.16,.8,.25,1) both;
+}
+
+body.dsh-skin-galactic-opera.dsh-skin-galactic-opera-hyperspace .dsh-skin-nebula-core::after {
+  animation: dsh-skin-blackhole-infall-burst 880ms cubic-bezier(.16,.8,.25,1) both;
 }
 
 body.dsh-skin-galactic-opera .dsh-skin-orb {
@@ -404,7 +467,7 @@ body.dsh-skin-galactic-opera .dsh-skin-scanner-target {
   transition: opacity 120ms ease-out, transform 120ms ease-out, box-shadow 120ms ease-out;
 }
 
-body.dsh-skin-galactic-opera .dsh-skin-scanner-target[data-lit="true"] {
+body.dsh-skin-galactic-opera .dsh-skin-scanner-target[data-ping="true"] {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1.18);
   box-shadow:
@@ -412,7 +475,7 @@ body.dsh-skin-galactic-opera .dsh-skin-scanner-target[data-lit="true"] {
     0 0 14px rgba(255,207,92,0.96),
     0 0 30px rgba(125,227,255,0.68),
     0 0 54px rgba(255,71,120,0.28);
-  animation: dsh-skin-scanner-target-ping 260ms ease-out both;
+  animation: dsh-skin-scanner-target-double-ping 640ms ease-out both;
 }
 
 body.dsh-skin-galactic-opera .dsh-skin-route-map {
@@ -540,6 +603,34 @@ body.dsh-skin-galactic-opera .dsh-skin-mission-crawl::before {
   text-shadow: 0 0 14px rgba(255,207,92,0.46);
 }
 
+body.dsh-skin-galactic-opera :is(.dsh-skin-twinkle, .dsh-skin-nebula-core, .dsh-skin-orb, .dsh-skin-scanner, .dsh-skin-scanner-target, .dsh-skin-pulse),
+body.dsh-skin-galactic-opera .dsh-skin-nebula-core::after,
+body.dsh-skin-galactic-opera .dsh-skin-satellite::before,
+body.dsh-skin-galactic-opera .dsh-skin-satellite-orbit::before,
+body.dsh-skin-galactic-opera .dsh-skin-satellite-orbit-front::before,
+body.dsh-skin-galactic-opera #dsh-skin-galactic-opera-decor :is(.dsh-skin-twinkle, .dsh-skin-nebula-core, .dsh-skin-orb, .dsh-skin-scanner, .dsh-skin-scanner-target, .dsh-skin-pulse),
+body.dsh-skin-galactic-opera #dsh-skin-galactic-opera-decor .dsh-skin-nebula-core::after,
+body.dsh-skin-galactic-opera #dsh-skin-galactic-opera-decor .dsh-skin-satellite::before,
+body.dsh-skin-galactic-opera #dsh-skin-galactic-opera-decor .dsh-skin-satellite-orbit::before,
+body.dsh-skin-galactic-opera #dsh-skin-galactic-opera-decor .dsh-skin-satellite-orbit-front::before {
+  border-radius: 50% !important;
+  border-top-left-radius: 50% !important;
+  border-top-right-radius: 50% !important;
+  border-bottom-right-radius: 50% !important;
+  border-bottom-left-radius: 50% !important;
+}
+
+body.dsh-skin-galactic-opera :is(.dsh-skin-energy, .dsh-skin-comet),
+body.dsh-skin-galactic-opera .dsh-skin-scanner::after,
+body.dsh-skin-galactic-opera #dsh-skin-galactic-opera-decor :is(.dsh-skin-energy, .dsh-skin-comet),
+body.dsh-skin-galactic-opera #dsh-skin-galactic-opera-decor .dsh-skin-scanner::after {
+  border-radius: 999px !important;
+  border-top-left-radius: 999px !important;
+  border-top-right-radius: 999px !important;
+  border-bottom-right-radius: 999px !important;
+  border-bottom-left-radius: 999px !important;
+}
+
 body.dsh-skin-galactic-opera .dsh-skin-pulse {
   position: fixed;
   left: var(--dsh-skin-pulse-x);
@@ -604,9 +695,9 @@ body.dsh-skin-galactic-opera :is(pre, code, textarea, input, select, [class*="me
     inset 0 0 20px rgba(255, 207, 92, 0.035) !important;
 }
 
-body.dsh-skin-galactic-opera.dsh-skin-input-active :is(textarea, input, [contenteditable="true"]):hover,
-body.dsh-skin-galactic-opera.dsh-skin-input-active :is(textarea, input, [contenteditable="true"]):focus,
-body.dsh-skin-galactic-opera.dsh-skin-input-active :is(textarea, input, [contenteditable="true"]):focus-within {
+body.dsh-skin-galactic-opera.dsh-skin-galactic-opera-input-active :is(textarea, input, [contenteditable]:not([contenteditable="false"])):hover,
+body.dsh-skin-galactic-opera.dsh-skin-galactic-opera-input-active :is(textarea, input, [contenteditable]:not([contenteditable="false"])):focus,
+body.dsh-skin-galactic-opera.dsh-skin-galactic-opera-input-active :is(textarea, input, [contenteditable]:not([contenteditable="false"])):focus-within {
   outline: none !important;
   box-shadow: none !important;
 }
@@ -616,12 +707,9 @@ body.dsh-skin-galactic-opera ::selection {
   background: rgba(255, 207, 92, 0.86);
 }
 
-body.dsh-skin-galactic-opera * {
-  scrollbar-color: rgba(125, 227, 255, 0.42) rgba(5, 7, 17, 0.40);
-}
-
 body.dsh-skin-galactic-opera .dsh-skin-telemetry-source-hidden {
   opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 body.dsh-skin-galactic-opera .dsh-skin-telemetry-panel[hidden] {
@@ -638,25 +726,23 @@ body.dsh-skin-galactic-opera .dsh-skin-telemetry-panel {
   gap: 4px;
   width: min(260px, 36vw);
   max-height: none;
-  overflow: visible;
+  overflow: hidden;
   padding: 19px 12px 12px;
-  border: 1px solid rgba(125,227,255,0.48);
-  border-left-color: rgba(255,207,92,0.62);
-  border-bottom-color: rgba(255,71,120,0.36);
+  border: 0;
   clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 13px), calc(100% - 13px) 100%, 0 100%, 0 14px);
   color: rgba(248,251,255,0.92);
-  background:
-    linear-gradient(135deg, rgba(255,207,92,0.20) 0 10px, transparent 11px),
-    linear-gradient(315deg, rgba(125,227,255,0.18) 0 12px, transparent 13px),
-    linear-gradient(180deg, rgba(6,10,26,0.92), rgba(10,17,42,0.84));
-  box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,0.07),
-    inset 0 0 24px rgba(125,227,255,0.09),
-    0 0 28px rgba(125,227,255,0.22),
-    0 0 52px rgba(255,71,120,0.10);
-  backdrop-filter: blur(12px) saturate(1.35);
-  -webkit-backdrop-filter: blur(12px) saturate(1.35);
+  background: transparent;
+  box-shadow: none;
   pointer-events: none;
+}
+
+body.dsh-skin-galactic-opera.dsh-skin-galactic-opera-input-active .dsh-skin-telemetry-panel {
+  clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 13px), calc(100% - 13px) 100%, 0 100%, 0 14px);
+}
+
+body.dsh-skin-galactic-opera.dsh-skin-galactic-opera-input-active .dsh-skin-telemetry-panel::after {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 body.dsh-skin-galactic-opera .dsh-skin-telemetry-panel[data-collapsed="true"] {
@@ -679,6 +765,7 @@ body.dsh-skin-galactic-opera .dsh-skin-telemetry-panel[data-collapsed="true"] .d
 body.dsh-skin-galactic-opera .dsh-skin-telemetry-panel::before {
   content: "TELEMETRY";
   position: absolute;
+  z-index: 1;
   left: 14px;
   top: 5px;
   color: rgba(255,207,92,0.82);
@@ -690,12 +777,24 @@ body.dsh-skin-galactic-opera .dsh-skin-telemetry-panel::before {
 body.dsh-skin-galactic-opera .dsh-skin-telemetry-panel::after {
   content: "";
   position: absolute;
-  inset: 4px;
-  border: 1px solid rgba(125,227,255,0.16);
-  clip-path: polygon(11px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 11px);
+  z-index: 0;
+  inset: 0;
+  border: 1px solid rgba(125,227,255,0.48);
+  border-left-color: rgba(255,207,92,0.62);
+  border-bottom-color: rgba(255,71,120,0.36);
+  clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 13px), calc(100% - 13px) 100%, 0 100%, 0 14px);
   background:
     repeating-linear-gradient(90deg, transparent 0 18px, rgba(125,227,255,0.045) 19px, transparent 20px 36px),
-    linear-gradient(90deg, rgba(125,227,255,0.10), transparent 30%, rgba(255,71,120,0.06));
+    linear-gradient(90deg, rgba(125,227,255,0.10), transparent 30%, rgba(255,71,120,0.06)),
+    linear-gradient(315deg, rgba(125,227,255,0.18) 0 12px, transparent 13px),
+    linear-gradient(180deg, rgba(6,10,26,0.92), rgba(10,17,42,0.84));
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.07),
+    inset 0 0 24px rgba(125,227,255,0.09),
+    0 0 28px rgba(125,227,255,0.22),
+    0 0 52px rgba(255,71,120,0.10);
+  backdrop-filter: blur(12px) saturate(1.35);
+  -webkit-backdrop-filter: blur(12px) saturate(1.35);
   pointer-events: none;
 }
 
@@ -839,8 +938,29 @@ body.dsh-skin-galactic-opera .dsh-skin-telemetry-value-full {
 }
 
 @keyframes dsh-skin-blackhole-breathe {
-  0%, 100% { opacity: 0.18; transform: translate(-50%, -50%) scale(0.96) rotate(0deg); filter: blur(0.65px) saturate(1.08); }
-  50% { opacity: 0.30; transform: translate(-50%, -50%) scale(1.05) rotate(7deg); filter: blur(0.45px) saturate(1.36); }
+  0%, 100% { opacity: 0.18; transform: translate(-50%, -50%) scale(0.97) rotate(0deg); }
+  50% { opacity: 0.28; transform: translate(-50%, -50%) scale(1.03) rotate(5deg); }
+}
+
+@keyframes dsh-skin-blackhole-infall {
+  0% { opacity: 0; transform: rotate(-16deg) scale(1.12); }
+  18% { opacity: 0.22; }
+  64% { opacity: 0.12; transform: rotate(20deg) scale(0.78); }
+  100% { opacity: 0; transform: rotate(32deg) scale(0.60); }
+}
+
+@keyframes dsh-skin-blackhole-warp-pull {
+  0% { opacity: 0.24; transform: translate(-50%, -50%) scale(1) rotate(0deg); filter: blur(0.55px) saturate(1.22); }
+  16% { opacity: 0.34; transform: translate(-50%, -50%) scale(0.88) rotate(-8deg); filter: blur(0.42px) saturate(1.55) brightness(1.12); }
+  46% { opacity: 0.40; transform: translate(-50%, -50%) scale(1.12) rotate(12deg); filter: blur(0.38px) saturate(1.62) brightness(1.18); }
+  100% { opacity: 0.24; transform: translate(-50%, -50%) scale(1.02) rotate(0deg); filter: blur(0.55px) saturate(1.22); }
+}
+
+@keyframes dsh-skin-blackhole-infall-burst {
+  0% { opacity: 0; transform: rotate(-24deg) scale(1.42); }
+  18% { opacity: 0.62; transform: rotate(10deg) scale(0.72); }
+  42% { opacity: 0.48; transform: rotate(26deg) scale(0.50); }
+  100% { opacity: 0; transform: rotate(58deg) scale(0.34); }
 }
 
 @keyframes dsh-skin-orb-hover {
@@ -865,9 +985,11 @@ body.dsh-skin-galactic-opera .dsh-skin-telemetry-value-full {
   50% { opacity: 1; transform: rotate(7deg) scaleX(1); }
 }
 
-@keyframes dsh-skin-scanner-target-ping {
-  0%, 100% { transform: translate(-50%, -50%) scale(0.86); opacity: 0.68; }
-  50% { transform: translate(-50%, -50%) scale(1.22); opacity: 1; }
+@keyframes dsh-skin-scanner-target-double-ping {
+  0%, 100% { transform: translate(-50%, -50%) scale(0.72); opacity: 0.04; }
+  12%, 42% { transform: translate(-50%, -50%) scale(1.24); opacity: 1; }
+  27%, 57% { transform: translate(-50%, -50%) scale(0.86); opacity: 0.34; }
+  72% { transform: translate(-50%, -50%) scale(1.12); opacity: 0.82; }
 }
 
 @keyframes dsh-skin-click-pulse {
@@ -876,10 +998,11 @@ body.dsh-skin-galactic-opera .dsh-skin-telemetry-value-full {
   100% { opacity: 0; width: 132px; height: 132px; filter: brightness(0.8); }
 }
 
-@keyframes dsh-skin-hyperspace-burst {
-  0% { opacity: 0; transform: scale(0.32) rotate(0deg); }
-  15% { opacity: 0.9; }
-  100% { opacity: 0; transform: scale(1.45) rotate(10deg); }
+@keyframes dsh-skin-galactic-opera-hyperspace-burst {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.82) rotate(-8deg); filter: blur(0.8px) brightness(0.82); }
+  12% { opacity: 0.88; transform: translate(-50%, -50%) scale(0.24) rotate(0deg); filter: blur(0.2px) brightness(1.52); }
+  28% { opacity: 0.9; transform: translate(-50%, -50%) scale(0.42) rotate(4deg); filter: blur(0.12px) brightness(1.36); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.5) rotate(12deg); filter: blur(0.4px) brightness(0.9); }
 }
 
 @keyframes dsh-skin-route-pulse {
@@ -945,4 +1068,18 @@ body.dsh-skin-galactic-opera .dsh-skin-telemetry-value-full {
   body.dsh-skin-galactic-opera .dsh-skin-galactic-opera-decor {
     transform: none;
   }
+}
+
+
+
+  position: absolute !important;
+  inset: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  z-index: auto !important;
+}
+
+.dsh-skin-pulse,
+.dsh-skin-scanner-target {
+  position: absolute !important;
 }
