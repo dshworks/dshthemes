@@ -1,0 +1,470 @@
+/* yangcanbin31-coder/dsh-skin-nazuna — src/client/nazuna.module.css
+   fetched 2026-09-09 from https://raw.githubusercontent.com/yangcanbin31-coder/dsh-skin-nazuna/main/src/client/nazuna.module.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* ============================================================
+   NAZUNA 鈥?褰诲涔嬫瓕 路 澶滆
+   Midnight-city skin for the DeepSeek Harness web GUI.
+   All rules scoped under body[data-dsh-nazuna].
+
+   Layering contract:
+     body[data-dsh-nazuna]   night body color
+     .backdrop               night gradient wash (z 0)
+     .bigFigure              LARGE Nazuna art UNDER #root (z 0)
+     .rightFigure            right-side 5_2 art UNDER #root (z 0)
+     .floorVeil / .edgeGlow  gradient veils (z 0), melt figure cut edges
+     [id='root']             transparent, z 1 (glass panels above all scene)
+     .statusCard             pinned top-right, z 30 (above panels)
+   ============================================================ */
+
+/* ---------- Root skin scope ---------- */
+body[data-dsh-nazuna] {
+  isolation: isolate;
+  background-image: none;
+}
+
+/* Host root: transparent so the big figure shows through glass panels */
+body[data-dsh-nazuna] [id='root'] {
+  position: relative;
+  z-index: 1;
+  background: transparent;
+}
+
+/* ============================================================
+   NIGHT THEME (single dark moonlight palette)
+   ============================================================ */
+body[data-dsh-nazuna] {
+  color: #eef1fb;
+  background-color: #0d0f24;
+
+  --dsw-static-deepseek-400: #8b9dd8 !important;
+  --dsw-static-deepseek-450: #6e7cff !important;
+  --dsw-static-deepseek-500: #7c8cf8 !important;
+  --dsw-static-deepseek-600: #5a67d8 !important;
+  --dsw-static-blue-300: #b6c2ff !important;
+  --dsw-static-blue-400: #8b9dd8 !important;
+  --dsw-static-blue-500: #7c8cf8 !important;
+
+  /* Glass surfaces: translucent so the figure glows through */
+  --dsw-alias-bg-base: rgba(13, 15, 36, 0.5) !important;
+  --dsw-alias-bg-layer-1: rgba(24, 27, 60, 0.62) !important;
+  --dsw-alias-bg-layer-2: rgba(30, 34, 72, 0.72) !important;
+  --dsw-alias-bg-layer-3: rgba(36, 41, 84, 0.82) !important;
+  --dsw-alias-bg-module-platform: rgba(22, 25, 54, 0.58) !important;
+  --dsw-alias-bg-overlay: rgba(13, 15, 32, 0.97) !important;
+  --dsw-alias-border-l1: rgba(148, 163, 233, 0.12) !important;
+  --dsw-alias-border-l2: rgba(148, 163, 233, 0.2) !important;
+  --dsw-alias-border-l3: rgba(148, 163, 233, 0.3) !important;
+
+  --dsw-alias-label-primary: #eef1fb !important;
+  --dsw-alias-label-secondary: #c3cbe8 !important;
+  --dsw-alias-label-tertiary: #9aa3c7 !important;
+  --dsw-alias-label-caption: #6b7499 !important;
+
+  --dsw-alias-brand-primary: #7c8cf8 !important;
+  --dsw-alias-brand-primary-invert: #ffffff !important;
+  --dsw-alias-brand-secondary: #8b9dd8 !important;
+
+  --dsw-alias-state-success-primary: #7dd3a8 !important;
+  --dsw-alias-state-warn-primary: #f5c77e !important;
+  --dsw-alias-state-error-primary: #f49bb0 !important;
+}
+
+/* ============================================================
+   LIGHT theme (moonlit porcelain) 鈥?applied when the host is NOT
+   in dark mode. Restores light glass + dark-on-light labels so the
+   skin follows the user's light/dark switch instead of staying
+   permanently night-colored.
+   ============================================================ */
+body[data-dsh-nazuna]:not([data-ds-dark-theme]) {
+  color: #23263d;
+  background-color: #e9edf9;
+
+  --dsw-static-deepseek-500: #5a67d8 !important;
+  --dsw-static-deepseek-600: #4752c4 !important;
+  --dsw-static-blue-500: #5a67d8 !important;
+
+  --dsw-alias-bg-base: rgba(233, 237, 249, 0.55) !important;
+  --dsw-alias-bg-layer-1: rgba(255, 255, 255, 0.6) !important;
+  --dsw-alias-bg-layer-2: rgba(255, 255, 255, 0.74) !important;
+  --dsw-alias-bg-layer-3: rgba(255, 255, 255, 0.85) !important;
+  --dsw-alias-bg-module-platform: rgba(255, 255, 255, 0.55) !important;
+  --dsw-alias-bg-overlay: rgba(250, 251, 255, 0.97) !important;
+  --dsw-alias-border-l1: rgba(90, 103, 200, 0.14) !important;
+  --dsw-alias-border-l2: rgba(90, 103, 200, 0.22) !important;
+  --dsw-alias-border-l3: rgba(90, 103, 200, 0.32) !important;
+
+  --dsw-alias-label-primary: #23263d !important;
+  --dsw-alias-label-secondary: #4a4f6e !important;
+  --dsw-alias-label-tertiary: #6b7299 !important;
+  --dsw-alias-label-caption: #9aa0c4 !important;
+
+  --dsw-alias-brand-primary: #4752c4 !important;
+  --dsw-alias-brand-primary-invert: #ffffff !important;
+  --dsw-alias-brand-secondary: #5a67d8 !important;
+}
+
+/* ============================================================
+   Backdrop 鈥?night gradient wash (z 0)
+   ============================================================ */
+body[data-dsh-nazuna] .backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(1200px 700px at 78% 8%, rgba(124, 140, 248, 0.18) 0%, transparent 55%),
+    linear-gradient(170deg, #141631 0%, #1c1f3d 46%, #0b0c1c 100%);
+}
+
+/* Light theme backdrop: porcelain-blue day wash */
+body[data-dsh-nazuna]:not([data-ds-dark-theme]) .backdrop {
+  background:
+    radial-gradient(1100px 600px at 80% 4%, rgba(255, 255, 255, 0.7) 0%, transparent 55%),
+    linear-gradient(170deg, #e9edf9 0%, #d5dbf2 46%, #b9c2ea 100%);
+}
+
+/* Light theme figures handled per-figure with scene-aware opacity.
+   !important so it beats the JS inline opacity (dark idle default). */
+body[data-dsh-nazuna]:not([data-ds-dark-theme]) .rightFigure {
+  opacity: 0.72 !important;
+  filter: none;
+}
+
+/* Light theme: no dark ground block on pale background 鈥?hide the veil
+   entirely so the figure simply sits on the light scene. */
+body[data-dsh-nazuna]:not([data-ds-dark-theme]) .floorVeil {
+  display: none;
+}
+
+/* ============================================================
+   Big figure 鈥?UNDER the root (z 0), seen through the glass.
+   Scene crossfade: idle 鈫?active gently recedes + blurs.
+   ============================================================ */
+body[data-dsh-nazuna] .bigFigure {
+  display: block;
+  transform-origin: left bottom;
+  transition:
+    opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 900ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Idle dark values come from the JS inline style (opacity .64). Scene and
+   theme rules below MUST use !important — a plain CSS rule loses to the
+   inline style and would be silently dead (that was the case before).
+   Scene changes modulate opacity + transform ONLY — never filter/blur, so
+   no blurred state can leak across themes. */
+body[data-dsh-nazuna][data-nazuna-scene='active'] .bigFigure {
+  opacity: 0.56 !important;
+  transform: translateY(10px) scale(1.015);
+}
+
+/* Light theme idle: figures read against pale wash */
+body[data-dsh-nazuna]:not([data-ds-dark-theme]) .bigFigure {
+  opacity: 0.6 !important;
+  filter: none;
+}
+
+body[data-dsh-nazuna]:not([data-ds-dark-theme])[data-nazuna-scene='active'] .bigFigure {
+  opacity: 0.52 !important;
+  transform: translateY(10px) scale(1.015);
+  filter: none !important;
+}
+
+/* ============================================================
+   Right figure (5_2) 鈥?UNDER the glass (z 0), melts into the scene.
+   ============================================================ */
+body[data-dsh-nazuna] .rightFigure {
+  display: block;
+  transform-origin: right bottom;
+  transition:
+    opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 900ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Idle dark opacity lives on the JS inline style (.76). Scene/theme
+   overrides below use !important (see big figure note above). */
+body[data-dsh-nazuna][data-nazuna-scene='active'] .rightFigure {
+  opacity: 0.68 !important;
+  transform: translateY(8px) scale(1.01);
+}
+
+body[data-dsh-nazuna]:not([data-ds-dark-theme])[data-nazuna-scene='active'] .rightFigure {
+  opacity: 0.64 !important;
+  transform: translateY(8px) scale(1.01);
+  filter: none !important;
+}
+
+/* ============================================================
+   Floor veil 鈥?a ground gradient rising from the very bottom of the
+   screen to meet the figure's feet, so the cut edge dissolves into
+   the scene instead of showing a seam. Dark theme only; light theme
+   hides it entirely.
+   z 0: same plane as the figures, BELOW the z-1 #root panels, so the
+   veil can tint the scene but can NEVER paint over the composer /
+   chat panels (a previous z-index: 2 made it a dark rectangle ON TOP
+   of the input box - do not raise it above #root again).
+   ============================================================ */
+body[data-dsh-nazuna] .floorVeil {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  width: min(18vw, 220px);
+  height: min(18vh, 150px);
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(110% 100% at 85% 100%, rgba(20, 24, 56, 0.4) 0%, rgba(13, 15, 36, 0) 62%),
+    linear-gradient(180deg, rgba(13, 15, 36, 0) 0%, rgba(13, 15, 36, 0.28) 55%, rgba(13, 15, 36, 0.45) 82%, rgba(13, 15, 36, 0.55) 100%);
+}
+
+/* ============================================================
+   Edge glow 鈥?soft violet bloom behind the right figure so its
+   silhouette lifts off the glass instead of looking pasted.
+   ============================================================ */
+body[data-dsh-nazuna] .edgeGlow {
+  position: fixed;
+  right: -20px;
+  bottom: 10px;
+  width: min(22vw, 320px);
+  height: min(30vh, 260px);
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(
+    62% 62% at 70% 72%,
+    rgba(124, 140, 248, 0.12) 0%,
+    rgba(124, 140, 248, 0.04) 45%,
+    rgba(13, 15, 36, 0) 70%
+  );
+}
+
+/* ============================================================
+   Vignette 鈥?readability wash (above panels, below top chrome)
+   ============================================================ */
+body[data-dsh-nazuna] .vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  background:
+    radial-gradient(1100px 500px at 82% 6%, rgba(238, 241, 251, 0.06) 0%, transparent 55%),
+    radial-gradient(1500px 1000px at 50% 115%, rgba(6, 8, 20, 0.55) 0%, transparent 74%);
+}
+
+/* ============================================================
+   Glass panels 鈥?frosted surfaces over the big figure
+   ============================================================ */
+body[data-dsh-nazuna] :is([data-pane='sidebar'], [data-slot='sidebar'] > :first-child) {
+  backdrop-filter: blur(11px) saturate(1.1);
+  -webkit-backdrop-filter: blur(11px) saturate(1.1);
+}
+
+body[data-dsh-nazuna] [data-conversation-scroll],
+body[data-dsh-nazuna] [data-chat-flow] {
+  backdrop-filter: blur(4px) saturate(1.05);
+  -webkit-backdrop-filter: blur(4px) saturate(1.05);
+}
+
+/* ============================================================
+   Skin chrome state via customization toggles
+   ============================================================ */
+body[data-dsh-nazuna][data-dsh-nazuna-background='hidden'] .backdrop,
+body[data-dsh-nazuna][data-dsh-nazuna-background='hidden'] .bigFigure,
+body[data-dsh-nazuna][data-dsh-nazuna-background='hidden'] .rightFigure,
+body[data-dsh-nazuna][data-dsh-nazuna-background='hidden'] .floorVeil,
+body[data-dsh-nazuna][data-dsh-nazuna-background='hidden'] .edgeGlow,
+body[data-dsh-nazuna][data-dsh-nazuna-background='hidden'] .vignette {
+  display: none;
+}
+
+/* ============================================================
+   Scrollbar tint
+   ============================================================ */
+body[data-dsh-nazuna] ::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 233, 0.35);
+  border-radius: 999px;
+}
+
+body[data-dsh-nazuna] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 233, 0.55);
+}
+
+/* ============================================================
+   鈶?Global visual pass 鈥?Nazuna night styling
+   ============================================================ */
+
+/* Softer unified corner radius for the moonlight look */
+body[data-dsh-nazuna] :where(
+  [data-chat-flow] [data-chat-flow-kind='assistant'] > div,
+  [data-chat-flow] [data-chat-flow-kind='user'] > div,
+  [data-role='input'] textarea,
+  [data-role='input'] div,
+  [data-role='tooltip'],
+  [data-role='menu'],
+  [role='dialog']
+) {
+  border-radius: 14px;
+}
+
+/* Inputs: hairline violet border, moonlit surface */
+body[data-dsh-nazuna] [data-role='input'] textarea,
+body[data-dsh-nazuna] textarea,
+body[data-dsh-nazuna] input[type='text'] {
+  caret-color: var(--nazuna-accent, #7c8cf8);
+}
+
+/* Focus ring tinted violet */
+body[data-dsh-nazuna] :focus-visible {
+  outline-color: rgba(124, 140, 248, 0.7);
+}
+
+/* Links & inline code accent */
+body[data-dsh-nazuna] a {
+  color: #8fa0ff;
+  text-decoration-color: rgba(143, 160, 255, 0.45);
+}
+
+/* Composer send / primary buttons take the violet accent */
+body[data-dsh-nazuna] button[data-variant='primary'],
+body[data-dsh-nazuna] [data-role='composer'] button[aria-label*='send' i],
+body[data-dsh-nazuna] [data-role='composer'] button[aria-label*='Send' i] {
+  background: linear-gradient(135deg, #5a67d8 0%, #7c8cf8 100%);
+  color: #fff;
+}
+
+/* Model/selection chips hover */
+body[data-dsh-nazuna] button:hover {
+  transition: background 160ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Light theme adjustments for the pass above */
+body[data-dsh-nazuna]:not([data-ds-dark-theme]) a {
+  color: #4752c4;
+  text-decoration-color: rgba(71, 82, 196, 0.4);
+}
+
+/* ============================================================
+   ③ Status character — Nazuna mini-card
+   Larger rounded portrait + bilingual status text + phase glow.
+   Pinned top-right, clear of the composer; pointer-free.
+   ============================================================ */
+body[data-dsh-nazuna] .statusCard {
+  position: fixed;
+  right: 16px;
+  top: 125px;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px 8px 8px;
+  border-radius: 20px;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(22, 25, 54, 0.82), rgba(13, 15, 36, 0.72));
+  border: 1px solid rgba(148, 163, 233, 0.28);
+  box-shadow:
+    0 10px 30px rgba(5, 8, 20, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(14px) saturate(1.15);
+  -webkit-backdrop-filter: blur(14px) saturate(1.15);
+}
+
+/* Portrait: larger, rounded-square, moonlit glow ring */
+body[data-dsh-nazuna] .statusPortrait {
+  width: 62px;
+  height: 62px;
+  object-fit: cover;
+  object-position: center 22%;
+  border-radius: 16px;
+  border: 2px solid rgba(148, 163, 233, 0.55);
+  box-shadow:
+    0 0 0 3px rgba(124, 140, 248, 0.18),
+    0 6px 16px rgba(5, 8, 20, 0.45);
+}
+
+/* Text column: zh title over en sub */
+body[data-dsh-nazuna] .statusText {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+body[data-dsh-nazuna] .statusTitle {
+  font: 700 15px/1.2 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  color: #eef1fb;
+  white-space: nowrap;
+}
+
+body[data-dsh-nazuna] .statusSub {
+  font: 500 11px/1.2 ui-monospace, 'SFMono-Regular', Consolas, monospace;
+  letter-spacing: 0.1em;
+  color: #8b96c4;
+}
+
+/* Status dot: bottom-right of the card, colored by phase */
+body[data-dsh-nazuna] .statusDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  background: #8b9dd8;
+  box-shadow: 0 0 10px rgba(139, 157, 216, 0.8);
+  transition: background 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* standby — violet idle */
+body[data-dsh-nazuna] .statusCard[data-nazuna-status='standby'] .statusDot {
+  background: #8b9dd8;
+  box-shadow: 0 0 10px rgba(139, 157, 216, 0.8);
+}
+
+/* syncing — cyan pulse */
+body[data-dsh-nazuna] .statusCard[data-nazuna-status='syncing'] .statusDot {
+  background: #45d9f4;
+  box-shadow: 0 0 12px rgba(69, 217, 244, 0.9);
+  animation: nazuna-pulse 1s ease-in-out infinite;
+}
+
+/* working — violet pulse */
+body[data-dsh-nazuna] .statusCard[data-nazuna-status='working'] .statusDot {
+  background: #7c8cf8;
+  box-shadow: 0 0 14px rgba(124, 140, 248, 1);
+  animation: nazuna-pulse 0.8s ease-in-out infinite;
+}
+
+/* done — green steady */
+body[data-dsh-nazuna] .statusCard[data-nazuna-status='done'] .statusDot {
+  background: #7dd3a8;
+  box-shadow: 0 0 12px rgba(125, 211, 168, 0.95);
+}
+
+@keyframes nazuna-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.4); }
+}
+
+/* Light theme card */
+body[data-dsh-nazuna]:not([data-ds-dark-theme]) .statusCard {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(235, 239, 252, 0.82));
+  border-color: rgba(90, 103, 200, 0.3);
+  box-shadow:
+    0 10px 28px rgba(60, 70, 140, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+body[data-dsh-nazuna]:not([data-ds-dark-theme]) .statusTitle {
+  color: #23263d;
+}
+
+body[data-dsh-nazuna]:not([data-ds-dark-theme]) .statusSub {
+  color: #6b7299;
+}
+
+body[data-dsh-nazuna]:not([data-ds-dark-theme]) .statusPortrait {
+  border-color: rgba(90, 103, 200, 0.55);
+  box-shadow:
+    0 0 0 3px rgba(90, 103, 200, 0.14),
+    0 6px 16px rgba(60, 70, 140, 0.22);
+}
+

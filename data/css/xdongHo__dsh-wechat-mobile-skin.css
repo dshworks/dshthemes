@@ -1,5 +1,5 @@
 /* xdongHo/dsh-wechat-mobile-skin — assets/skin.css
-   fetched 2026-09-01 from https://raw.githubusercontent.com/xdongHo/dsh-wechat-mobile-skin/main/assets/skin.css
+   fetched 2026-09-09 from https://raw.githubusercontent.com/xdongHo/dsh-wechat-mobile-skin/main/assets/skin.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* ============================================================
    DSH Mobile WeChat Skin (微信风格移动端皮肤)
@@ -24,7 +24,7 @@ html.dsh-wx body {
 /* ---------- view mode plumbing ---------- */
 /* list mode: hide the whole app behind the WeChat-style list overlay */
 html.dsh-wx.wx-mode-list #root { visibility: hidden; }
-html.dsh-wx.wx-mode-list #wxm-mobile-root { display: block !important; }
+html.dsh-wx.wx-mode-list #wxm-mobile-root { display: flex !important; }
 html.dsh-wx.wx-mode-list #wxm-chatbar { display: none !important; }
 
 /* chat mode: hide the list, show the chat chrome */
@@ -114,6 +114,30 @@ html.dsh-wx.wx-mode-chat #wxm-mobile-root { display: none; }
 }
 #wxm-new:active { background: rgba(0, 0, 0, 0.06); }
 
+/* toast */
+#wxm-toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 96px);
+  transform: translateX(-50%) translateY(8px);
+  z-index: 4000;
+  background: rgba(25, 25, 25, 0.9);
+  color: #ffffff;
+  font-size: 14px;
+  line-height: 1.45;
+  padding: 9px 16px;
+  border-radius: 8px;
+  max-width: 86vw;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+#wxm-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
 #wxm-searchbar {
   flex: none;
   padding: 8px 12px;
@@ -135,6 +159,7 @@ html.dsh-wx.wx-mode-chat #wxm-mobile-root { display: none; }
 
 #wxm-list {
   flex: 1;
+  min-height: 0; /* allow the flex item to shrink so overflow-y can engage */
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   background: #ededed;
@@ -161,6 +186,26 @@ html.dsh-wx.wx-mode-chat #wxm-mobile-root { display: none; }
   box-sizing: border-box;
 }
 .wxm-row:active { background: #e5e5e5; }
+/* "⋯" quick menu button on each row */
+.wxm-row-more {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  margin-left: 2px;
+  align-self: center;
+  border: none;
+  background: transparent;
+  color: #b2b2b2;
+  font-size: 18px;
+  line-height: 26px;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.wxm-row-more:active { background: rgba(0, 0, 0, 0.06); color: #191919; }
 .wxm-row + .wxm-row::before {
   content: "";
   position: absolute;
@@ -622,6 +667,54 @@ html.dsh-wx.wx-mode-chat #wxm-ball.has-data { display: flex; }
   padding: 16px;
   text-align: center;
   color: #b2b2b2;
+}
+
+/* ============================================================
+   Long-press → native session menu, repositioned for phones
+   ============================================================ */
+html.dsh-wx .wxm-row {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+/* the app's sidebar context-menu portal, centered like an action sheet */
+html.dsh-wx .wxm-native-menu {
+  position: fixed !important;
+  left: 50% !important;
+  top: 32vh !important;
+  transform: translateX(-50%) !important;
+  min-width: 210px !important;
+  max-width: 86vw !important;
+  max-height: 52vh !important;
+  overflow-y: auto !important;
+  background: #ffffff !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22) !important;
+  padding: 4px !important;
+}
+html.dsh-wx .wxm-native-menu [role="menuitem"],
+html.dsh-wx .wxm-native-menu button {
+  min-height: 44px !important;
+  display: flex !important;
+  align-items: center !important;
+  font-size: 16px !important;
+  color: #191919 !important;
+  padding: 0 16px !important;
+  border-radius: 8px !important;
+}
+
+/* the app's dialogs (rename / archive confirm / fork) centered as modals */
+html.dsh-wx .wxm-native-dialog {
+  position: fixed !important;
+  left: 50% !important;
+  top: 38% !important;
+  transform: translate(-50%, -50%) !important;
+  width: min(92vw, 360px) !important;
+  max-width: 92vw !important;
+}
+html.dsh-wx .wxm-native-dialog input,
+html.dsh-wx .wxm-native-dialog textarea {
+  font-size: 16px !important; /* prevent iOS focus zoom */
 }
 
 /* ============================================================

@@ -1,5 +1,5 @@
 /* lkdxzhxi/dsh-glass-ui-theme — src/client/glass.css
-   fetched 2026-09-01 from https://raw.githubusercontent.com/lkdxzhxi/dsh-glass-ui-theme/main/src/client/glass.css
+   fetched 2026-09-09 from https://raw.githubusercontent.com/lkdxzhxi/dsh-glass-ui-theme/main/src/client/glass.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /**
  * dsh-glass-ui — the liquid glass look.
@@ -599,6 +599,11 @@ body[data-ds-dark-theme].dsh-glass-on [role="dialog"][aria-labelledby]::before {
     inset 0 0 0 1px rgba(255, 255, 255, 0.10),
     inset 0 0 18px rgba(255, 255, 255, 0.06),
     0 0 28px rgba(255, 255, 255, 0.08);
+}
+
+/* fix for DSH 2.0.5: settings panel has overflow:hidden which clips ::before */
+body.dsh-glass-on [role="dialog"][aria-labelledby] {
+  overflow: visible !important;
 }
 
 /* --- model / effort selector (full-screen menu) --- */

@@ -1,0 +1,952 @@
+/* frank-fan-818/dsh-f1-skin — lib/client.js
+   fetched 2026-09-09 from https://raw.githubusercontent.com/frank-fan-818/dsh-f1-skin/master/lib/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+:root {
+  --f1-accent: var(--f1-accent-dark, #ffc800);
+  --f1-accent-text: var(--f1-accent-text-dark, #ffd84a);
+  --f1-success: var(--f1-success-dark, #00e701);
+  --f1-warning: var(--f1-warning-dark, #ffd400);
+  --f1-danger: var(--f1-danger-dark, #ff2e2e);
+  --f1-on-accent: var(--f1-on-accent-dark, #090c12);
+  --f1-photo-strength: 100%;
+  --f1-surface-strength: 78%;
+  --f1-blur: 14px;
+  --f1-cut: 9px;
+  --f1-font-display: 'Bahnschrift Condensed', 'Arial Narrow', ui-sans-serif, sans-serif;
+  --f1-font-body: 'Segoe UI Variable', Aptos, ui-sans-serif, sans-serif;
+  --f1-line: color-mix(in srgb, var(--f1-accent, #ffc800) 34%, transparent);
+  --f1-panel: var(--f1-panel-dark, #111722);
+  --f1-panel-2: var(--f1-panel-2-dark, #181f2a);
+  --f1-ink: #f5f7fa;
+  --f1-muted: #aeb5c0;
+  --f1-grid: rgba(255, 255, 255, .035);
+  --f1-grid-size: 44px;
+  --f1-card-radius: 8px;
+}
+
+html[data-f1-dark="false"] {
+  --f1-accent: var(--f1-accent-light, #9a7600);
+  --f1-accent-text: var(--f1-accent-text-light, #765a00);
+  --f1-success: var(--f1-success-light, #00853a);
+  --f1-warning: var(--f1-warning-light, #8a6200);
+  --f1-danger: var(--f1-danger-light, #bd1010);
+  --f1-on-accent: var(--f1-on-accent-light, #090c12);
+  --f1-panel: var(--f1-panel-light, #f5f6f8);
+  --f1-panel-2: var(--f1-panel-2-light, #ffffff);
+  --f1-ink: #15181e;
+  --f1-muted: #565d68;
+  --f1-grid: rgba(8, 12, 18, .035);
+}
+
+html, body { background: #090c12; }
+html[data-f1-dark="false"], html[data-f1-dark="false"] body { background: #e9ebee; }
+
+::selection { background: var(--f1-accent); color: var(--f1-on-accent, #090c12); }
+:focus-visible { outline: 2px solid var(--f1-accent); outline-offset: 2px; }
+
+/* A tiny engineering grid establishes identity without competing with photography. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .42;
+  background-image:
+    linear-gradient(var(--f1-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--f1-grid) 1px, transparent 1px);
+  background-size: var(--f1-grid-size) var(--f1-grid-size);
+  mask-image: linear-gradient(90deg, #000, transparent 32%, transparent 68%, #000);
+}
+
+/* Photo-first scene. It is independent from the application surfaces so legibility
+   is solved locally instead of dimming the entire photograph. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: var(--f1-photo-strength);
+  background:
+    linear-gradient(90deg, rgba(5, 8, 13, .22), transparent 22%, transparent 74%, rgba(5, 8, 13, .16)),
+    linear-gradient(180deg, rgba(5, 8, 13, .10), transparent 42%, rgba(5, 8, 13, .24)),
+    radial-gradient(85% 72% at 52% 42%, var(--f1-tint, transparent), transparent 72%),
+    var(--f1-cockpit, none) var(--f1-cockpit-position, center) / cover no-repeat;
+  filter: saturate(1.06) contrast(1.03);
+  transform: scale(1.002);
+  transition: opacity .24s ease, filter .24s ease;
+}
+
+html[data-f1-dark="false"] body::before {
+  background:
+    linear-gradient(90deg, rgba(242, 245, 248, .13), transparent 22%, transparent 74%, rgba(242, 245, 248, .10)),
+    linear-gradient(180deg, rgba(242, 245, 248, .07), transparent 46%, rgba(242, 245, 248, .17)),
+    radial-gradient(85% 72% at 52% 42%, var(--f1-tint, transparent), transparent 72%),
+    var(--f1-cockpit, none) var(--f1-cockpit-position, center) / cover no-repeat;
+  filter: saturate(.94) contrast(.98) brightness(1.03);
+}
+
+/* DSH 0.1.1-rc.2 layout anchors. Failure is graceful: only the photo becomes dimmer. */
+.pI_x6G_frame { background: transparent; z-index: 1; }
+.pI_x6G_frame > * { border-color: var(--f1-line); }
+.pI_x6G_centerCol { background: transparent; }
+
+/* Honest identity line: team and skin, never fabricated live telemetry. */
+.pI_x6G_frame::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  width: 280px;
+  height: 5px;
+  overflow: hidden;
+  color: transparent;
+  background: var(--f1-accent);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--f1-accent) 24%, transparent);
+  pointer-events: none;
+}
+
+/* Never apply filter/backdrop-filter to DSH layout ancestors: settings and
+   menus use fixed overlays mounted below them, and filters would trap those
+   overlays inside a new containing block. */
+.pI_x6G_sidebarCol,
+.hHd-Xa_root { background: transparent; }
+.pI_x6G_sidebarCol {
+  background: color-mix(in srgb, var(--f1-panel) 96%, transparent);
+  border-right-style: solid;
+  border-right-width: 1px;
+  border-right-color: color-mix(in srgb, var(--f1-accent) 28%, transparent);
+  box-shadow: 10px 0 34px rgba(0,0,0,.10);
+}
+
+/* DSH settings panel stays visually solid while retaining its native geometry
+   and fixed-overlay behavior. This prevents bright hero cards showing through. */
+.VOzbGW_panel {
+  background: color-mix(in srgb, var(--f1-panel) 98%, transparent);
+  box-shadow: 0 24px 70px rgba(0,0,0,.24);
+}
+
+/* Conversation stays open; only its working header and composer become material. */
+.wSkVaW_root { background: transparent; }
+.wSkVaW_header {
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--f1-panel) 97%, transparent),
+    color-mix(in srgb, var(--f1-panel) 96%, transparent));
+}
+.wSkVaW_header::after { background: var(--f1-line); }
+
+/* A compact team signature occupies the otherwise empty title-bar lane. It is
+   decorative only and stays clear of title actions and the Session log button. */
+.wSkVaW_titleCluster { position: relative; }
+
+.wSkVaW_titleCluster::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 180px;
+  width: 44px;
+  height: 26px;
+  pointer-events: none;
+  background: var(--f1-team-logo) center / contain no-repeat;
+  filter: brightness(0) saturate(0);
+  opacity: .42;
+  transform: translateY(-50%);
+}
+
+.wSkVaW_titleCluster::after {
+  content: "FORMULA ONE TEAM\A RACE CONTROL";
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  width: 150px;
+  padding-left: 11px;
+  border-left: 2px solid var(--f1-accent);
+  pointer-events: none;
+  color: var(--f1-text);
+  font: 750 9px/1.24 var(--f1-font-display);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  white-space: pre-line;
+  opacity: .64;
+  transform: translateY(-50%);
+}
+
+html[data-f1-dark="true"] .wSkVaW_titleCluster::before {
+  filter: brightness(0) invert(1) saturate(0);
+  opacity: .48;
+}
+
+html[data-f1-team="redbull"] .wSkVaW_titleCluster::after { content: "ORACLE RED BULL RACING\A RACE CONTROL"; }
+html[data-f1-team="ferrari"] .wSkVaW_titleCluster::after { content: "SCUDERIA FERRARI\A RACE CONTROL"; }
+html[data-f1-team="mclaren"] .wSkVaW_titleCluster::after { content: "McLAREN RACING\A RACE CONTROL"; }
+html[data-f1-team="mercedes"] .wSkVaW_titleCluster::after { content: "MERCEDES-AMG PETRONAS\A RACE CONTROL"; font-size: 8px; }
+
+/* The native workspace + preset controls sit directly over the hero photo.
+   Give that one functional row a compact local plate so the labels remain
+   readable over dark bodywork, bright asphalt, and every team composition. */
+.wSkVaW_heroWorkspaceRow {
+  width: fit-content;
+  max-width: calc(100% - 24px);
+  padding: 4px 10px;
+  border: 1px solid color-mix(in srgb, var(--f1-line) 76%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--f1-panel) 92%, transparent);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, .08);
+}
+
+html[data-f1-team="ferrari"] .wSkVaW_titleCluster::before {
+  width: 30px;
+  height: 30px;
+  right: 190px;
+  filter: none;
+  opacity: .48;
+}
+
+@media (max-width: 1080px) {
+  .wSkVaW_titleCluster::before,
+  .wSkVaW_titleCluster::after { display: none; }
+}
+
+/* Host-safe accents. These rules only paint; they never change the box model
+   of DSH components, so settings, tools, and action labels retain native size. */
+.hHd-Xa_newSession:hover,
+.hHd-Xa_iconButton:hover,
+.hHd-Xa_toggle:hover { box-shadow: inset 3px 0 0 var(--f1-accent); }
+
+.hHd-Xa_newSession {
+  border-color: color-mix(in srgb, var(--f1-accent) 42%, var(--dsw-alias-border-l1));
+  background: color-mix(in srgb, var(--f1-panel-2) 88%, transparent);
+  box-shadow: inset 0 2px 0 color-mix(in srgb, var(--f1-accent) 74%, transparent);
+}
+.YDXeBa_sessionRow.YDXeBa_selected {
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--f1-accent) 16%, var(--f1-panel-2)),
+    color-mix(in srgb, var(--f1-panel-2) 86%, transparent));
+  box-shadow: inset 3px 0 0 var(--f1-accent);
+}
+.YDXeBa_projectRow:hover,
+.VOzbGW_trigger:hover { box-shadow: inset 3px 0 0 color-mix(in srgb, var(--f1-accent) 72%, transparent); }
+
+.pXSMma_headline {
+  box-sizing: border-box;
+  width: fit-content;
+  margin-inline: auto;
+  padding: 10px 20px 11px 18px;
+  border-left: 5px solid var(--f1-accent);
+  border-radius: 2px 8px 8px 2px;
+  line-height: 1.18;
+  background: color-mix(in srgb, var(--f1-panel) 92%, transparent);
+  box-shadow: 0 10px 26px rgba(0,0,0,.10), inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+.Sxvs8a_root {
+  box-sizing: border-box;
+  padding: 18px 20px;
+  border: 0;
+  border-radius: 10px;
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--f1-panel) min(96%, calc(var(--f1-surface-strength) + 10%)), transparent),
+    color-mix(in srgb, var(--f1-panel) min(94%, calc(var(--f1-surface-strength) + 8%)), transparent));
+  box-shadow: 0 16px 40px rgba(0,0,0,.10);
+}
+.Sxvs8a_root :where(table, th, td) {
+  border-color: color-mix(in srgb, var(--dsw-alias-border-l2) 58%, transparent);
+}
+.Sxvs8a_root table th,
+.Sxvs8a_root table td { padding: 12px 14px; }
+
+.Sxvs8a_root table th:first-child,
+.Sxvs8a_root table td:first-child { padding-left: 14px; }
+
+.uV2eYG_card {
+  border-color: color-mix(in srgb, var(--f1-accent) 32%, var(--dsw-alias-border-l2));
+  background: color-mix(in srgb, var(--f1-panel-2) min(98%, calc(var(--f1-surface-strength) + 16%)), transparent);
+  box-shadow: 0 14px 38px rgba(0,0,0,.18), inset 3px 0 0 var(--f1-accent);
+}
+.uV2eYG_input { caret-color: var(--f1-accent); }
+
+.gdEzaW_bubble {
+  border-color: color-mix(in srgb, var(--f1-accent) 28%, transparent);
+  background: color-mix(in srgb, var(--f1-panel-2) min(98%, calc(var(--f1-surface-strength) + 14%)), transparent);
+  box-shadow: inset -3px 0 0 var(--f1-accent);
+}
+
+/* State color is an inset marker rather than padding/borders; fixed-height
+   shell/tool rows therefore keep every native label and action visible. */
+.QWLzlG_root,
+.o3BgMG_root,
+.CY-8Ka_root {
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--f1-panel-2) 94%, transparent);
+  box-shadow: 0 7px 18px rgba(0,0,0,.08);
+}
+.QWLzlG_row,
+.o3BgMG_row,
+.CY-8Ka_root {
+  box-sizing: border-box;
+  padding-inline: 12px 10px;
+}
+.QWLzlG_title,
+.o3BgMG_title,
+.CY-8Ka_title { color: var(--dsw-alias-label-primary); }
+.QWLzlG_summary,
+.o3BgMG_fileLink { color: var(--dsw-alias-label-secondary); }
+.QWLzlG_root[data-state="running"],
+.o3BgMG_root[data-state="running"],
+.CY-8Ka_root[data-state="running"] { box-shadow: inset 3px 0 0 var(--f1-warning), 0 7px 18px rgba(0,0,0,.08); }
+.QWLzlG_root[data-state="ok"],
+.o3BgMG_root[data-state="ok"],
+.CY-8Ka_root[data-state="ok"] { box-shadow: inset 3px 0 0 var(--f1-success), 0 7px 18px rgba(0,0,0,.08); }
+.QWLzlG_root[data-state="error"],
+.o3BgMG_root[data-state="error"],
+.CY-8Ka_root[data-state="error"] { box-shadow: inset 3px 0 0 var(--f1-danger), 0 7px 18px rgba(0,0,0,.08); }
+.QWLzlG_root[data-state="stopped"],
+.o3BgMG_root[data-state="stopped"],
+.CY-8Ka_root[data-state="stopped"] { box-shadow: inset 3px 0 0 var(--f1-muted), 0 7px 18px rgba(0,0,0,.08); }
+
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--f1-accent) 56%, var(--dsw-alias-scrollbar-hover-l2));
+}
+
+/* Team-specific sidebar identities. No generic chequered flags, dotted rails,
+   or simulated telemetry: every shape belongs to the selected team's language.
+   Never create a stacking context on sidebar ancestors because DSH mounts its
+   fixed settings overlay below this subtree. */
+
+.hHd-Xa_root { position: relative; }
+
+.hHd-Xa_root::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  z-index: 8;
+  width: 4px;
+  pointer-events: none;
+  background: var(--f1-accent);
+  box-shadow: 1px 0 0 color-mix(in srgb, var(--f1-accent) 24%, transparent);
+}
+
+.hHd-Xa_logoRow {
+  position: relative;
+  box-sizing: border-box;
+  height: 54px;
+  margin-top: 6px;
+  padding: 5px 10px 5px 6px;
+  overflow: visible;
+  border: 1px solid color-mix(in srgb, var(--f1-muted) 22%, var(--dsw-alias-border-l2));
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--f1-panel-2) 98%, transparent);
+  box-shadow: 0 7px 18px rgba(0,0,0,.08);
+}
+
+.hHd-Xa_logoRow > * { position: relative; z-index: 1; }
+.hHd-Xa_logoRow::before { display: none; }
+
+/* DSH removes the wide DeepSeek/HARNESS SVG when the navigation becomes a
+   56px rail. Preserve the requested HARNESS identity as a tiny vertical
+   scrutineering mark without adding a clickable layer or widening the host. */
+.hHd-Xa_root.hHd-Xa_collapsed .hHd-Xa_logoRow::after {
+  content: "HARNESS";
+  position: absolute;
+  z-index: 2;
+  top: 7px;
+  right: 3px;
+  writing-mode: vertical-rl;
+  font: 700 6px/1 "Arial Narrow", "Roboto Condensed", sans-serif;
+  letter-spacing: .08em;
+  color: var(--f1-text-2);
+  opacity: .88;
+  pointer-events: none;
+}
+
+/* The HARNESS wordmark is part of DSH's native brand-name SVG. Preserve the
+   complete 156px viewBox in every expanded team/theme state: no shrinking,
+   clipping, recolouring, or opacity inherited from decorative treatments. */
+.hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_brand.hHd-Xa_wide {
+  width: 202px;
+  min-width: 202px;
+  flex: 0 0 202px;
+  overflow: visible;
+}
+
+.hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_brandIdentity {
+  width: 188px;
+  min-width: 188px;
+  flex: 0 0 188px;
+  overflow: visible;
+}
+
+.hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_brandName {
+  display: inline-flex !important;
+  width: 156px !important;
+  min-width: 156px;
+  height: 24px;
+  flex: 0 0 156px;
+  overflow: visible !important;
+  visibility: visible !important;
+  color: var(--dsw-alias-label-primary) !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+.hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_brandName svg {
+  display: block !important;
+  width: 156px !important;
+  min-width: 156px;
+  max-width: none !important;
+  height: 24px !important;
+  overflow: visible !important;
+  visibility: visible !important;
+  color: inherit !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+/* DSH draws HARNESS as the final SVG group on a currentColor badge. Its
+   inverted-label token can follow a team accent, producing dark-on-dark text;
+   bind those letter paths to the actual panel surface instead. */
+.hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_brandName svg > rect + g path {
+  fill: var(--f1-panel-2) !important;
+}
+
+.hHd-Xa_newSession {
+  position: relative;
+  border-radius: 3px;
+  border-color: color-mix(in srgb, var(--f1-accent) 48%, var(--dsw-alias-border-l1));
+  background: color-mix(in srgb, var(--f1-panel-2) 96%, transparent);
+  box-shadow: inset 4px 0 0 var(--f1-accent), 0 7px 18px rgba(0,0,0,.08);
+}
+
+.hHd-Xa_newSession::after {
+  content: "PIT ENTRY";
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  color: var(--f1-accent-text);
+  font: 700 9px/1 var(--f1-font-display);
+  letter-spacing: .1em;
+  opacity: .78;
+}
+
+.hHd-Xa_regionArea {
+  position: relative;
+  margin-top: 4px;
+  overflow: hidden;
+  border-top: 1px solid color-mix(in srgb, var(--f1-accent) 24%, transparent);
+  background: color-mix(in srgb, var(--f1-panel) 82%, transparent);
+}
+
+.hHd-Xa_regionArea::before {
+  content: "";
+  position: absolute;
+  left: 24px;
+  bottom: 40px;
+  width: 82px;
+  height: 82px;
+  pointer-events: none;
+  user-select: none;
+  opacity: .15;
+  background: var(--f1-team-logo) center / contain no-repeat;
+  filter: brightness(0) saturate(0);
+}
+
+.hHd-Xa_regionArea::after {
+  content: "FORMULA ONE TEAM";
+  position: absolute;
+  right: 14px;
+  bottom: 62px;
+  left: 112px;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+  color: var(--f1-text);
+  font: 800 12px/1.18 var(--f1-font-display);
+  letter-spacing: .09em;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: pre-line;
+  opacity: .17;
+}
+
+html[data-f1-dark="true"] .hHd-Xa_regionArea::before {
+  filter: brightness(0) invert(1) saturate(0);
+  opacity: .18;
+}
+
+html[data-f1-dark="true"] .hHd-Xa_regionArea::after { opacity: .19; }
+
+.qDHVXG_root { position: relative; z-index: 1; }
+
+.qDHVXG_sectionHeader {
+  position: relative;
+  margin-bottom: 3px;
+  border-bottom: 1px solid color-mix(in srgb, var(--f1-accent) 26%, transparent);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--f1-accent) 11%, var(--f1-panel-2)), transparent 74%);
+}
+
+.qDHVXG_sectionLabel {
+  color: var(--f1-accent-text);
+  font-family: var(--f1-font-display);
+  font-weight: 700;
+  letter-spacing: .035em;
+}
+
+.YDXeBa_projectRow,
+.YDXeBa_sessionRow {
+  position: relative;
+  box-sizing: border-box;
+  border-radius: 3px;
+  transition: background-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+
+.YDXeBa_projectRow {
+  background: color-mix(in srgb, var(--f1-panel-2) 74%, transparent);
+  box-shadow: inset 2px 0 0 color-mix(in srgb, var(--f1-accent) 38%, transparent);
+}
+
+.YDXeBa_projectRow:hover,
+.YDXeBa_sessionRow:hover { transform: translateX(2px); }
+
+.YDXeBa_sessionRow::after {
+  content: "";
+  position: absolute;
+  right: 9px;
+  bottom: 0;
+  left: 9px;
+  height: 1px;
+  pointer-events: none;
+  background: color-mix(in srgb, var(--f1-accent) 26%, transparent);
+}
+
+.YDXeBa_sessionRow.YDXeBa_selected {
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--f1-accent) 18%, var(--f1-panel-2)),
+    color-mix(in srgb, var(--f1-panel-2) 91%, transparent));
+  box-shadow: inset 4px 0 0 var(--f1-accent), 0 5px 15px rgba(0,0,0,.08);
+}
+
+.YDXeBa_sessionRow.YDXeBa_selected::after {
+  height: 2px;
+  opacity: .9;
+  background: var(--f1-accent);
+}
+
+.hHd-Xa_footArea {
+  position: relative;
+  padding-top: 7px;
+  border-top: 1px solid color-mix(in srgb, var(--f1-accent) 30%, transparent);
+  background: color-mix(in srgb, var(--f1-panel-2) 96%, transparent);
+}
+
+.hHd-Xa_footArea::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: 12px;
+  width: 76px;
+  height: 3px;
+  background: var(--f1-accent);
+}
+
+.VOzbGW_trigger { position: relative; border-radius: 3px; }
+
+.VOzbGW_trigger::after {
+  content: "RACE CONTROL";
+  position: absolute;
+  right: 10px;
+  color: var(--f1-muted);
+  font: 600 9px/1 var(--f1-font-display);
+  letter-spacing: .1em;
+  opacity: .72;
+}
+
+/* Red Bull: energetic navy control tower, yellow datum, red attack wedge. */
+html[data-f1-team="redbull"] .pI_x6G_sidebarCol {
+  background: linear-gradient(150deg, rgba(255,200,0,.08) 0 16%, transparent 16%), color-mix(in srgb, #10182e 94%, transparent);
+}
+html[data-f1-team="redbull"] .hHd-Xa_root::before { background: linear-gradient(180deg, #ffc800 0 72%, #d90f0f 72%); }
+html[data-f1-team="redbull"] .hHd-Xa_logoRow { background: color-mix(in srgb, var(--f1-panel-2) 98%, transparent); }
+html[data-f1-team="redbull"] .hHd-Xa_regionArea::before {
+  left: 18px;
+  bottom: 44px;
+  width: 96px;
+  height: 58px;
+}
+html[data-f1-team="redbull"] .hHd-Xa_regionArea::after {
+  content: "ORACLE RED BULL\A RACING";
+  bottom: 54px;
+}
+
+/* Ferrari: disciplined Rosso Corsa field, gold coachline, shield emphasis. */
+html[data-f1-team="ferrari"] .pI_x6G_sidebarCol {
+  background: radial-gradient(circle at 88% 78%, rgba(255,242,0,.09), transparent 25%), color-mix(in srgb, #f7f2f0 94%, transparent);
+}
+html[data-f1-team="ferrari"] .hHd-Xa_root::before { background: #dc0000; box-shadow: 2px 0 0 rgba(255,242,0,.42); }
+html[data-f1-team="ferrari"] .hHd-Xa_logoRow { background: color-mix(in srgb, var(--f1-panel-2) 98%, transparent); }
+html[data-f1-team="ferrari"] .hHd-Xa_footArea::before { background: #dc0000; }
+html[data-f1-team="ferrari"] .hHd-Xa_regionArea::before {
+  left: 34px;
+  bottom: 30px;
+  width: 68px;
+  height: 92px;
+  filter: none;
+  opacity: .24;
+}
+html[data-f1-team="ferrari"] .hHd-Xa_regionArea::after {
+  content: "SCUDERIA\A FERRARI";
+  bottom: 56px;
+}
+
+/* McLaren: papaya speed surface with one clean black aerodynamic slice. */
+html[data-f1-team="mclaren"] .pI_x6G_sidebarCol {
+  background: linear-gradient(154deg, rgba(255,128,0,.11) 0 18%, transparent 18%), color-mix(in srgb, #f6f5f2 95%, transparent);
+}
+html[data-f1-team="mclaren"] .hHd-Xa_root::before { background: #ff8000; }
+html[data-f1-team="mclaren"] .hHd-Xa_logoRow { background: color-mix(in srgb, var(--f1-panel-2) 98%, transparent); }
+html[data-f1-team="mclaren"] .hHd-Xa_regionArea::before {
+  left: 22px;
+  bottom: 48px;
+  width: 88px;
+  height: 48px;
+}
+html[data-f1-team="mclaren"] .hHd-Xa_regionArea::after {
+  content: "McLAREN\A RACING";
+  bottom: 54px;
+}
+
+/* Mercedes: black/silver engineering plate with one PETRONAS datum. */
+html[data-f1-team="mercedes"] .pI_x6G_sidebarCol {
+  background: radial-gradient(circle at 90% 82%, rgba(0,210,190,.10), transparent 27%), color-mix(in srgb, #eef1f1 95%, transparent);
+}
+html[data-f1-team="mercedes"] .hHd-Xa_root::before { background: linear-gradient(180deg, #00d2be 0 76%, #777b80 76%); }
+html[data-f1-team="mercedes"] .hHd-Xa_logoRow { background: color-mix(in srgb, var(--f1-panel-2) 98%, transparent); }
+html[data-f1-team="mercedes"] .hHd-Xa_footArea::before { width: 108px; height: 2px; background: #00a89f; }
+html[data-f1-team="mercedes"] .hHd-Xa_regionArea::before {
+  left: 28px;
+  bottom: 36px;
+  width: 76px;
+  height: 76px;
+}
+html[data-f1-team="mercedes"] .hHd-Xa_regionArea::after {
+  content: "MERCEDES-AMG\A PETRONAS FORMULA ONE TEAM";
+  bottom: 51px;
+  left: 112px;
+  font-size: 10px;
+}
+
+html[data-f1-team="redbull"] .pI_x6G_frame::before { background: linear-gradient(90deg, #ffc800 0 62%, #d90f0f 62%); }
+html[data-f1-team="ferrari"] .pI_x6G_frame::before { background: linear-gradient(90deg, #dc0000 0 91%, #fff200 91%); }
+html[data-f1-team="mclaren"] .pI_x6G_frame::before { background: linear-gradient(90deg, #ff8000 0 84%, #17191f 84%); }
+html[data-f1-team="mercedes"] .pI_x6G_frame::before { background: linear-gradient(90deg, #17191d 0 68%, #00d2be 68% 92%, #b4b5b7 92%); }
+
+.hHd-Xa_root.hHd-Xa_collapsed .hHd-Xa_newSession::after,
+.hHd-Xa_root.hHd-Xa_collapsed .hHd-Xa_regionArea::before,
+.hHd-Xa_root.hHd-Xa_collapsed .hHd-Xa_regionArea::after,
+.hHd-Xa_root.hHd-Xa_collapsed .VOzbGW_trigger::after { display: none; }
+
+/* Native settings.section content: every rule is plugin-scoped. */
+.dsh-f1-settings {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  gap: 18px;
+  padding: 4px 0 28px;
+  color: var(--dsw-alias-label-primary);
+  font-family: var(--f1-font-body);
+}
+.dsh-f1-settings__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--dsw-alias-border-l1);
+}
+.dsh-f1-settings__eyebrow {
+  color: var(--f1-accent-text);
+  font: 700 11px/1.2 var(--f1-font-display);
+  letter-spacing: .14em;
+}
+.dsh-f1-settings__title {
+  margin: 5px 0 0;
+  color: var(--dsw-alias-label-primary);
+  font: 800 24px/1 var(--f1-font-display);
+  letter-spacing: .03em;
+}
+.dsh-f1-settings__description {
+  max-width: 620px;
+  margin: 7px 0 0;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 13px;
+  line-height: 20px;
+}
+.dsh-f1-settings__status {
+  flex: none;
+  padding: 6px 9px;
+  border: 1px solid color-mix(in srgb, var(--f1-accent) 36%, var(--dsw-alias-border-l1));
+  color: var(--dsw-alias-label-secondary);
+  font: 700 11px/1 var(--f1-font-display);
+  letter-spacing: .08em;
+}
+.dsh-f1-settings__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.dsh-f1-team-card {
+  --team-color: var(--team-color-dark);
+  min-width: 0;
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid var(--dsw-alias-border-l1);
+  border-radius: var(--f1-card-radius);
+  background: var(--dsw-alias-bg-layer-1);
+  color: var(--dsw-alias-label-primary);
+  text-align: left;
+  cursor: pointer;
+}
+html[data-f1-dark="false"] .dsh-f1-team-card { --team-color: var(--team-color-light); }
+.dsh-f1-team-card:hover,
+.dsh-f1-team-card:focus-visible { border-color: var(--team-color); }
+.dsh-f1-team-card[aria-pressed="true"] {
+  border-color: var(--team-color);
+  box-shadow: 0 0 0 1px var(--team-color), inset 0 -3px 0 var(--team-color);
+}
+.dsh-f1-team-card__image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 7;
+  background-position: var(--team-position, center);
+  background-size: cover;
+}
+.dsh-f1-team-card__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px 11px;
+}
+.dsh-f1-team-card__name {
+  display: block;
+  min-width: 0;
+  color: var(--dsw-alias-label-primary);
+  font: 750 13px/1.22 var(--f1-font-display);
+  letter-spacing: .015em;
+}
+.dsh-f1-team-card__mark {
+  width: 64px;
+  height: 28px;
+  border-radius: 3px;
+  background-color: #121722;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: calc(100% - 10px) calc(100% - 8px);
+  box-shadow: inset 3px 0 0 var(--team-color), 0 5px 12px rgba(0,0,0,.14);
+}
+.dsh-f1-settings__panel {
+  padding: 16px;
+  border: 1px solid var(--dsw-alias-border-l1);
+  border-radius: 8px;
+  background: var(--dsw-alias-bg-layer-1);
+}
+.dsh-f1-settings__panel-title {
+  margin: 0 0 3px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.dsh-f1-settings__panel-hint {
+  margin: 0 0 13px;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 12px;
+  line-height: 18px;
+}
+.dsh-f1-setting {
+  display: grid;
+  grid-template-columns: minmax(108px, 1fr) minmax(150px, 240px) 48px;
+  align-items: center;
+  gap: 14px;
+  min-height: 40px;
+  border-top: 1px solid var(--dsw-alias-border-l2);
+}
+.dsh-f1-setting:first-of-type { border-top: 0; }
+.dsh-f1-setting__label { font-size: 13px; }
+.dsh-f1-setting input[type="range"] { width: 100%; accent-color: var(--f1-accent); }
+.dsh-f1-setting input[type="checkbox"] { justify-self: end; accent-color: var(--f1-accent); }
+.dsh-f1-setting output {
+  color: var(--dsw-alias-label-secondary);
+  text-align: right;
+  font: 700 12px/1 var(--f1-font-display);
+}
+.dsh-f1-setting input[type="file"] {
+  width: 100%;
+  min-width: 0;
+  font-size: 11px;
+  color: var(--dsw-alias-label-secondary);
+}
+.dsh-f1-setting input[type="file"]::file-selector-button {
+  border: 1px solid color-mix(in srgb, var(--f1-accent) 42%, var(--dsw-alias-border-l1));
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--f1-panel-2) 96%, transparent);
+  color: var(--dsw-alias-label-primary);
+  font: 700 11px/1 var(--f1-font-display);
+  letter-spacing: .04em;
+  padding: 6px 9px;
+  margin-right: 8px;
+  cursor: pointer;
+}
+.dsh-f1-settings__wallpaper-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+.dsh-f1-settings__reset {
+  border: 1px solid color-mix(in srgb, var(--f1-accent) 46%, var(--dsw-alias-border-l1));
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--f1-panel-2) 96%, transparent);
+  color: var(--dsw-alias-label-primary);
+  font: 700 12px/1 var(--f1-font-display);
+  padding: 8px 14px;
+  cursor: pointer;
+}
+.dsh-f1-settings__reset:disabled { opacity: .45; cursor: default; }
+.dsh-f1-settings__msg { color: var(--f1-warning, #d97706); font-size: 12px; }
+.dsh-f1-settings__library {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--dsw-alias-border-l2);
+}
+.dsh-f1-settings__library-title {
+  margin: 0 0 10px;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 12px;
+  line-height: 18px;
+}
+.dsh-f1-settings__library-empty {
+  margin: 0;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 12px;
+}
+.dsh-f1-settings__library-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.dsh-f1-settings__wallpaper-tile {
+  width: 148px;
+  overflow: hidden;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 6px;
+  background: var(--dsw-alias-bg-layer-1);
+}
+.dsh-f1-settings__wallpaper-tile.is-active {
+  border-color: var(--f1-accent, #ffc800);
+  box-shadow: 0 0 0 1px var(--f1-accent, #ffc800);
+}
+.dsh-f1-settings__wallpaper-tile img {
+  display: block;
+  width: 100%;
+  height: 84px;
+  object-fit: cover;
+  background: #0b0e14;
+}
+.dsh-f1-settings__tile-meta {
+  padding: 4px 8px;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 11px;
+}
+.dsh-f1-settings__tile-actions {
+  display: flex;
+  gap: 6px;
+  padding: 0 8px 8px;
+}
+.dsh-f1-settings__tile-actions button {
+  flex: 1;
+  border: 1px solid color-mix(in srgb, var(--f1-accent) 42%, var(--dsw-alias-border-l1));
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--f1-panel-2) 96%, transparent);
+  color: var(--dsw-alias-label-primary);
+  font: 700 11px/1 var(--f1-font-display);
+  padding: 6px 4px;
+  cursor: pointer;
+}
+.dsh-f1-settings__tile-actions button.is-danger {
+  border-color: color-mix(in srgb, var(--f1-danger, #dc2626) 55%, var(--dsw-alias-border-l1));
+  color: var(--f1-danger, #dc2626);
+}
+.dsh-f1-settings__tile-actions button:disabled { opacity: .45; cursor: default; }
+
+html[data-f1-team="redbull"] {
+  --f1-grid-size: 44px;
+  --f1-card-radius: 3px 10px 3px 6px;
+}
+html[data-f1-team="ferrari"] {
+  --f1-grid-size: 52px;
+  --f1-card-radius: 3px;
+}
+html[data-f1-team="mclaren"] {
+  --f1-grid-size: 58px;
+  --f1-card-radius: 3px 12px;
+}
+html[data-f1-team="mercedes"] {
+  --f1-grid-size: 32px;
+  --f1-card-radius: 2px;
+}
+
+@media (max-width: 760px) {
+  body::before { background-position: var(--f1-cockpit-mobile-position, center); }
+  .pXSMma_headline { padding: 8px 15px 9px 14px; }
+  .Sxvs8a_root { padding: 14px 15px; }
+  .Sxvs8a_root table th,
+  .Sxvs8a_root table td { padding: 10px 11px; }
+  .Sxvs8a_root table th:first-child,
+  .Sxvs8a_root table td:first-child { padding-left: 11px; }
+  .dsh-f1-settings__grid { grid-template-columns: 1fr; }
+  .dsh-f1-settings__header { flex-direction: column; }
+  .dsh-f1-settings__status { align-self: flex-start; }
+  .dsh-f1-setting {
+    grid-template-columns: minmax(92px, 1fr) minmax(110px, 1.5fr) 42px;
+    gap: 9px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dsh-f1-settings__panel { padding: 12px; }
+  .dsh-f1-setting {
+    grid-template-columns: 1fr 44px;
+    padding-block: 8px;
+  }
+  .dsh-f1-setting input { grid-column: 1 / -1; grid-row: 2; }
+  .dsh-f1-setting output { grid-column: 2; grid-row: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before { transition: none !important; animation: none !important; }
+}
+
+html[data-f1-motion="off"] body::before,
+html[data-f1-motion="off"] body::after { animation: none !important; transition: none !important; }
+
+html[data-f1-motion="off"] .YDXeBa_sessionRow.YDXeBa_selected::after {
+  animation: none !important;
+}
+
+html[data-f1-motion="off"] :where(
+  .QWLzlG_root[data-state="running"],
+  .o3BgMG_root[data-state="running"],
+  .CY-8Ka_root[data-state="running"]
+),
+html[data-f1-motion="off"] :where(
+  .QWLzlG_root[data-state="running"],
+  .o3BgMG_root[data-state="running"],
+  .CY-8Ka_root[data-state="running"]
+)::before,
+html[data-f1-motion="off"] :where(
+  .QWLzlG_root[data-state="running"] .QWLzlG_row,
+  .o3BgMG_root[data-state="running"] .o3BgMG_row,
+  .CY-8Ka_root[data-state="running"]
+)::after { animation: none !important; transition: none !important; }

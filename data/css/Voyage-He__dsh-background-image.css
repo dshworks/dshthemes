@@ -1,5 +1,5 @@
 /* Voyage-He/dsh-background-image — lib/client.js
-   fetched 2026-09-01 from https://raw.githubusercontent.com/Voyage-He/dsh-background-image/main/lib/client.js
+   fetched 2026-09-09 from https://raw.githubusercontent.com/Voyage-He/dsh-background-image/main/lib/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 .bgimg-root{border:1px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-3);border-radius:10px;min-width:0;overflow:hidden}
 .bgimg-header{box-sizing:border-box;width:100%;min-height:52px;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;cursor:pointer;user-select:none;color:inherit;font:inherit;text-align:left}
@@ -49,6 +49,10 @@
 .uV2eYG_card{-webkit-backdrop-filter:blur(var(--bgimg-blur,0px)) saturate(var(--bgimg-saturation,1));backdrop-filter:blur(var(--bgimg-blur,0px)) saturate(var(--bgimg-saturation,1))}
 /* 连续性：图片只在 frame 绘制一次，对话区与详情列透明透出同一张图，消除侧栏/会话区/详情列的“多副本”断裂 */
 .wSkVaW_root{background:transparent !important}
+/* 与侧栏相同：玻璃放在伪元素上，避免模糊文字或改变 fixed 弹层的包含块。
+   原生 root、header 和 body 已定位，后两者按树序绘制在玻璃上方，无需新增层叠上下文。 */
+.wSkVaW_root::before{content:'';position:absolute;inset:0;pointer-events:none;background:var(--bgimg-conversation-light,transparent);-webkit-backdrop-filter:var(--bgimg-conversation-filter,none);backdrop-filter:var(--bgimg-conversation-filter,none)}
+body[data-ds-dark-theme] .wSkVaW_root::before{background:var(--bgimg-conversation-dark,transparent)}
 .ydkMvW_root{background:transparent !important}
 /* 对话区偏移：仅平移聊天内容——消息区（viewArea）与居中的输入卡片（composerHero），
    header 与底部渐变座面保持原位（滚动条挂在 scrollBody 上，同样不受影响）。
