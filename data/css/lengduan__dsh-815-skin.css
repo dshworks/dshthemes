@@ -1,5 +1,5 @@
 /* lengduan/dsh-815-skin — src/client/vj815.module.css
-   fetched 2026-09-05 from https://raw.githubusercontent.com/lengduan/dsh-815-skin/main/src/client/vj815.module.css
+   fetched 2026-09-13 from https://raw.githubusercontent.com/lengduan/dsh-815-skin/main/src/client/vj815.module.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* 1945-08-15 终战皮肤：史料照片底 + 可读玻璃层。 */
 
@@ -15,6 +15,12 @@ body[data-dsh-815] {
   --vj-paper: #f3ead4;
   --vj-glass: rgba(18, 20, 14, 0.72);
   --vj-shadow: 0 18px 48px rgba(0, 0, 0, 0.42);
+  /* 线性文件夹图标（Element UI Folder 风格的轮廓），供「在本地打开」分裂按钮
+     以 mask 描出，颜色跟随按钮文字色。 */
+  --vj-folder-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 17.5V6.5a2 2 0 0 1 2-2h3.1a2 2 0 0 1 1.6.8l1.15 1.53a2 2 0 0 0 1.6.8H18.5a2 2 0 0 1 2 2v7.87a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2Z'/%3E%3C/svg%3E");
+  /* 同一套描边语言的线性文件图标（右上折角的纸），供右栏 tab 的文件类型图标
+     以 mask 描出；目录类型仍走上面那枚文件夹。 */
+  --vj-file-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M13.6 3.2H7.2a2 2 0 0 0-2 2v13.6a2 2 0 0 0 2 2h9.6a2 2 0 0 0 2-2V8.4Z'/%3E%3Cpath d='M13.6 3.2v5.2h5.2'/%3E%3C/svg%3E");
 
   --dsw-alias-bg-base: transparent;
   --dsw-alias-bg-layer-1: rgba(28, 30, 22, 0.78);
@@ -25,6 +31,11 @@ body[data-dsh-815] {
   --dsw-alias-border-l2-darkmode-thin: rgba(196, 163, 90, 0.36);
   --dsw-alias-border-l2: rgba(196, 163, 90, 0.42);
   --dsw-alias-border-l3: rgba(196, 163, 90, 0.7);
+  /* l4 是宿主那档最细的描边（卡片 / 输入框 / 标签 / 分组线都在用），浅色主题下
+     是半透明黑 rgba(0,0,0,.16) —— 落在皮肤的暗底上只有 1.1~1.4:1，等于没有边框
+     （设置里的预设卡、插件卡、外观方块，右栏引导卡、轨迹单元格等都中招）。
+     这里补成同族的铜金细线：对 #24261c 约 2.6:1，细线可见又不抢眼。 */
+  --dsw-alias-border-l4: rgba(196, 163, 90, 0.5);
   --dsw-alias-brand-primary: #c4a35a;
   --dsw-alias-brand-text: #f4ead6;
   --dsw-alias-button-elevated-fill: rgba(52, 54, 40, 0.9);
@@ -299,6 +310,18 @@ body[data-dsh-815] [class*='markdown'] pre {
   border-radius: 10px;
 }
 
+/* 宽表格（渲染器给 ≥4 列的 wrapper 打的 md-table-wide 钩子）：宿主让 wrapper
+   breakout 到整个对话列宽，且非 hover/focus 时 overflow-x: hidden —— 皮肤给
+   正文/用户消息加了气泡边框后，breakout 会直接穿透边框，右侧被对话列裁掉，
+   看上去就是「表格溢出且滚不动」。这里把 breakout 收回气泡内（spare/lead
+   归零），并让横向滚动常驻（宿主默认只在 hover/focus 时开）。 */
+body[data-dsh-815] .md-table-wide {
+  --dsh-table-spare: 0px;
+  --dsh-table-lead: 0px;
+  overflow-x: auto;
+  padding-bottom: 0;
+}
+
 /* 行内 code 走宣纸底墨字，白底场景下也必须压成墨色。 */
 body[data-dsh-815]
   :is(
@@ -311,6 +334,58 @@ body[data-dsh-815]
   border-radius: 5px;
   color: #1c1a14;
   background: var(--vj-paper);
+}
+
+/* 文件查看区域（右栏的文档预览）正文是 ui-primitives 的 markdown：行内 code
+   的底取 --dsw-alias-markdown-inline-code，浅色主题下是近白 #fafafa，而字色
+   继承皮肤全局的奶油 label-primary #f4ead6 —— 只有 1.14:1，胶囊里的字基本
+   读不出来。对话区的行内 code 早就走过宣纸底墨字，这一处是漏网的：这里只
+   把浅底上的字压回墨色，底仍交给宿主。暗色主题下 code 底本身是深色
+   （static-neutral-800），奶油字正确，故排除。 */
+body[data-dsh-815]:not([data-ds-dark-theme])
+  :is([class*='rightbarCol'], [data-sidebar-right-float-host]) [class*='markdown'] :not(pre) > code {
+  color: #1c1a14;
+}
+
+/* 右栏的选中 tab（打开的文件名就在这颗胶囊上）：dockkit 的 .tabActive 文字取
+   label-primary，底取 --dsw-alias-markdown-tag，浅色主题下是近白 bluish-75
+   （实测 #f1f3f5），奶油字落上去只有 1.07:1，文件名等于看不见。这里只压字色。
+   必须限定在右栏/浮窗容器内：会话页头那排视图 tab（对话 / 轨迹 / 用量统计）
+   用的是另一套类名，选中态底是透明的（叠在暗色油画上），全局压墨色会把它们
+   直接抹掉（墨字落在深底上，1.1:1）。暗色主题下胶囊底是深色 bluish-850，
+   保留奶油字。 */
+body[data-dsh-815]:not([data-ds-dark-theme])
+  :is([class*='rightbarCol'], [data-sidebar-right-float-host]) [role='tab'][class*='tabActive'] {
+  color: #1c1a14;
+}
+
+/* 选中 tab 一 hover，底就从浅灰胶囊换成半透明的交互底（皮肤值
+   rgba(196,163,90,.14)，叠在油画上就是暗底），上面那层刚压好的墨字于是又沉
+   进底色里。hover 态把字换回奶油色；未选中的 tab 本来就是奶油灰字，不在其列。 */
+body[data-dsh-815]:not([data-ds-dark-theme])
+  :is([class*='rightbarCol'], [data-sidebar-right-float-host]) [role='tab'][class*='tabActive']:hover {
+  color: #f4ead6;
+}
+
+/* tab 上的文件类型图标是宿主下发的彩色实心方块（markdown 是 DeepSeek 蓝
+   #4176e6，文件夹是琥珀），在皮肤的线性描边视觉里像贴纸。按皮肤自绘的那套
+   描边图标用 mask 重画：文件走 --vj-file-icon，目录类型（class 里带 folder）
+   仍走 --vj-folder-icon。颜色走 currentColor，跟着 tab 文字色（选中墨色 /
+   未选中次要色）一起变；svg 内部的 path 藏掉，只留 mask 裁出的那层底色。 */
+body[data-dsh-815] [data-slot='sidebar.right.pane.tab.title'] svg[class*='titleIcon'] {
+  color: inherit;
+  background-color: currentColor;
+  -webkit-mask: var(--vj-file-icon) center / contain no-repeat;
+  mask: var(--vj-file-icon) center / contain no-repeat;
+}
+
+body[data-dsh-815] [data-slot='sidebar.right.pane.tab.title'] svg[class*='titleIcon'][class*='folder'] {
+  -webkit-mask-image: var(--vj-folder-icon);
+  mask-image: var(--vj-folder-icon);
+}
+
+body[data-dsh-815] [data-slot='sidebar.right.pane.tab.title'] svg[class*='titleIcon'] > * {
+  display: none;
 }
 
 body[data-dsh-815]
@@ -333,6 +408,86 @@ body[data-dsh-815] [class*='userRow'] [class*='bubble'] {
   color: #f4ead6;
   border: 1px solid rgba(196, 163, 90, 0.4);
   background: rgba(52, 48, 32, 0.92);
+}
+
+/* 宿主自带的浅色面不吃皮肤的暗色假设：非暗色主题下，下列容器的底色来自
+   主题（近白 / 浅灰），而皮肤把 label-primary 全局换成奶油色 #f4ead6，
+   浅底浅字几乎不可见。在这两类容器内把文字压回墨色。暗色主题下容器本身
+   是深底，皮肤浅字仍然正确，故用 :not() 排除，避免反向回归。 */
+
+/* ui-deliverables 的 present 文件卡：卡底 var(--dsw-static-neutral-50)，
+   文件名与「打开」走 label-primary，文件图标走 link。 */
+body[data-dsh-815]:not([data-ds-dark-theme]) [data-presented-file] {
+  --dsw-alias-label-primary: #1c1a14;
+  --dsw-alias-link: #6b4e16;
+}
+
+/* 但卡里的「打开 / 展开」分裂按钮底不是卡片底：它取皮肤全局的
+   button-floating-fill（深橄榄 rgba(58,60,44,.94)，浅底卡片上量到 #45463a），
+   上面那条 label-primary 覆盖顺手把按钮文字也压成墨色，深底墨字只有 1.8:1，
+   看着就是「文字融进按钮」。按钮分两段，文字单独拿回奶油色；
+   箭头段的 disabled 态仍交给宿主（label-dimmed），免得禁用与可用没区别。 */
+body[data-dsh-815]:not([data-ds-dark-theme]) [data-presented-file]
+  :is(button[class*='_open'], button[class*='_chevron']:not(:disabled)) {
+  color: #f4ead6;
+}
+
+/* ui-conversation 的 todo 面板：面板底是主题的浅色 var(--dsw-specific-tip)
+   （非暗色主题下量到 #f5f6f7），皮肤全局的 label-* 却是浅奶油。只压标题
+   不够——条目文字走 label-secondary（#c8c0a4，1.7:1）几乎看不见。这里把
+   面板内的文字层级整体压回墨色：标题 label-primary、条目 label-secondary、
+   计数 label-tertiary，pending 图标 label-caption 保持面板内最淡的一档。
+   层级依次 14.8:1 / 8.7:1 / 5.6:1 / 4.2:1。 */
+body[data-dsh-815]:not([data-ds-dark-theme]) [data-testid='todo-panel'] {
+  --dsw-alias-label-primary: #1c1a14;
+  --dsw-alias-label-secondary: #4a4638;
+  --dsw-alias-label-tertiary: #5a5443;
+  --dsw-alias-label-caption: #6a6454;
+}
+
+/* ui-conversation 的排队坞（QueueDock，`data-queue-dock`）：它挂在 composer
+   栈里、输入卡之外，拿不到 [data-composer-card] 那层墨色 token，于是面板底
+   照样是主题浅色 var(--dsw-specific-tip)（实测 #f5f6f7），而「N 条排队消息」
+   走 label-primary 奶油 #f4ead6（1.05:1）、前面那枚队列图标与右侧箭头走
+   label-tertiary #9e9780（2.6:1），整条几乎读不出来。与 todo 面板同法，
+   在坞内把文字层级压回墨色：标题 primary 约 15:1，前面那枚队列图标与右侧
+   箭头、状态字 tertiary 约 7:1（条目正文与文件名走 label-primary-dimmed，
+   浅色主题下本就是近黑，不用管）。暗色主题下面板本身深色，故排除。 */
+body[data-dsh-815]:not([data-ds-dark-theme]) [data-queue-dock] {
+  --dsw-alias-label-primary: #1c1a14;
+  --dsw-alias-label-secondary: #4a4638;
+  --dsw-alias-label-tertiary: #5a5443;
+  --dsw-alias-label-caption: #6a6454;
+}
+
+/* dsh-session-manager 的「会话管理」弹框（类名 sm-nativeDialog / sm-panelDialog，
+   不带 hash）：弹框底是插件自己写死的白 / #f5f5f5，文字却取宿主的 label-* 三个
+   token —— 皮肤把它们换成了奶油系，于是「全部 / 未归档 / 已归档」、会话标题、
+   行内「打开 / 归档 / 移动至工作区 / 迁移预设」以及行下方的元信息全落在白底上
+   （1.1~2.7:1）。这里在弹框内把文字层级压回墨色；行内按钮 hover 时插件会把字
+   换成 label-primary（仍是皮肤的奶油），一并压掉，落在它的 --dsw-alias-fill-l2
+   浅底上就是墨字。插件的危险色（state-error-primary，4.8:1）与它自己写死的近黑
+   标题不动。注意必须写成属性选择器：本表是 CSS Module，类选择器会被 hash 成
+   .xxxx_sm-nativeDialog，匹配不到插件的类。 */
+body[data-dsh-815]:not([data-ds-dark-theme])
+  :is([class*='sm-nativeDialog'], [class*='sm-panelDialog']) {
+  --dsw-alias-label-primary: #1c1a14;
+  --dsw-alias-label-secondary: #4a4638;
+  --dsw-alias-label-tertiary: #5a5443;
+  --dsw-alias-label-caption: #6a6454;
+}
+
+/* ui-goal 的目标条：条底是主题的浅色 var(--dsw-specific-tip)（非暗色主题下量到
+   #f5f6f7），而「进行中的目标」标签走 label-primary —— 皮肤在 body 上把它换成
+   奶油色 #f4ead6，对条底只有 1.1:1，标签整条融进条底看不见；目标正文走
+   label-primary-dimmed（浅色主题下是近黑）所以照常可见，看上去就只有标签失踪。
+   这里与 todo 面板同法，在条内把文字层级压回墨色：标签 primary、hover 态
+   secondary、图标 tertiary，对条底依次 16.1:1 / 8.7:1 / 7.0:1。暗色主题下条底
+   本身是深色，皮肤浅字仍然正确，故用 :not() 排除。 */
+body[data-dsh-815]:not([data-ds-dark-theme]) [data-goal-bar] {
+  --dsw-alias-label-primary: #1c1a14;
+  --dsw-alias-label-secondary: #4a4638;
+  --dsw-alias-label-tertiary: #5a5443;
 }
 
 body[data-dsh-815] [data-terminal] {
@@ -441,9 +596,105 @@ body[data-dsh-815] .dsh-rec-root .dsh-rec-nbtn:hover {
   background: #d4bc7a;
 }
 
+/* dsh-update-checker 的「检查更新」页把描边写死在**内联 style** 里（元素没有类名
+   可挂）：分组卡是 border: 1px solid rgba(128,128,128,.3)，行内按钮是 .5 —— 灰线
+   落在暗底上只有 1.5~2:1，卡片等于没有边。内联样式优先级最高，只能用
+   !important，并按 style 属性文本精确命中（只改 border-color，宽度/圆角/flex
+   等其余内联声明都不动）。插件若改写法，这两条会自然失效，届时按新值重写。 */
+body[data-dsh-815] [style*='rgba(128, 128, 128, 0.3)'] {
+  border-color: rgba(196, 163, 90, 0.5) !important;
+}
+
+body[data-dsh-815] [style*='rgba(128, 128, 128, 0.5)'] {
+  border-color: rgba(196, 163, 90, 0.7) !important;
+}
+
 /* Cordis 底栏面板写 background: var(--dsw-alias-bg-base)；全局透明会透出油画。 */
 body[data-dsh-815] [data-slot='sidebar.footer.action'] {
   --dsw-alias-bg-base: #24261c;
+}
+
+/* dsh-timer-agent 的侧栏入口是插件自绘 DOM（board.module.css 的 .entry，一条透明
+   导航行），插在宿主「新会话」与 mneme portal 的「记忆」按钮之间；后两者都是宿主
+   .newSession 观感（38px 高 / 12px 圆角 / 0.5px 铜边 / elevated 底 / 内容居中）。
+   插件自己不继承宿主类名，这里按它的标记属性覆盖成同款盒模型：注入式覆盖，
+   不改插件源码。收起态与宿主 .collapsed .newSession 同几何。 */
+body[data-dsh-815] [data-dsh-timeragent-entry] {
+  align-self: stretch;
+  width: auto;
+  flex: none;
+  justify-content: center;
+  gap: 6px;
+  height: 38px;
+  margin: 0 2px 8px;
+  padding: 8px 16px;
+  box-sizing: border-box;
+  border: 0.5px solid var(--dsw-alias-border-l3);
+  border-radius: 12px;
+  background: var(--dsw-alias-button-elevated-fill);
+  color: var(--dsw-alias-label-primary);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 22px;
+}
+
+body[data-dsh-815] [data-dsh-timeragent-entry]:hover {
+  background: var(--dsw-alias-button-floating-hover);
+}
+
+body[data-dsh-815] [data-dsh-timeragent-entry][data-active] {
+  background: var(--dsw-alias-interactive-bg-active);
+  font-weight: 600;
+}
+
+/* 收起态：折叠成 rail 的 36x36 图标按钮，与「新会话」同位置同间距。 */
+body[data-dsh-815] [class*='collapsed'] [data-dsh-timeragent-entry] {
+  align-self: flex-start;
+  width: 36px;
+  height: 36px;
+  margin: 0 0 12px;
+  padding: 0;
+  gap: 0;
+  border-color: transparent;
+  background: transparent;
+}
+
+body[data-dsh-815] [class*='collapsed'] [data-dsh-timeragent-entry]:hover {
+  background: var(--dsw-alias-interactive-bg-hover);
+}
+
+body[data-dsh-815] [class*='collapsed'] [data-dsh-timeragent-entry] [class*='entryLabel'] {
+  display: none;
+}
+
+body[data-dsh-815] [class*='collapsed'] [data-dsh-timeragent-entry] svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* mneme portal 的「记忆」按钮（`.mneme-topentry-native`，插在「新会话」与
+   「定时任务」之间）自带一条样式：底取 bg-layer-1（rgba(28,30,22,.78)，比兄弟
+   按钮暗一档）、边取 l2（比兄弟按钮淡）。它与宿主 .newSession 同特异性 —— 谁的
+   样式表后加载谁赢，mneme 更新后它排到后面，于是「记忆」的底就比左右两个暗。
+   这里由皮肤把这三条钉死成兄弟按钮的值（特异性高于插件），收起态对齐宿主
+   .collapsed .newSession；几何（38px / 12px / 图标位）仍由宿主的 .newSession 给。 */
+body[data-dsh-815] [class*='mneme-topentry-native'] {
+  border: 0.5px solid var(--dsw-alias-border-l3);
+  background: var(--dsw-alias-button-elevated-fill);
+  color: var(--dsw-alias-label-primary);
+}
+
+body[data-dsh-815] [class*='mneme-topentry-native']:hover {
+  background: var(--dsw-alias-button-floating-hover);
+}
+
+body[data-dsh-815] [class*='collapsed'] [class*='mneme-topentry-native'] {
+  border-color: transparent;
+  background: transparent;
+}
+
+body[data-dsh-815] [class*='collapsed'] [class*='mneme-topentry-native']:hover {
+  background: var(--dsw-alias-interactive-bg-hover);
 }
 
 body[data-dsh-815] [class*='titlebar'] > [class*='button']:first-of-type {
@@ -482,6 +733,44 @@ body[data-dsh-815] [class*='titlebar'] {
 
 body[data-dsh-815] [class*='titlebar'] [class*='button'] {
   color: #d4bc7a;
+}
+
+/* DSH 官方「在本地打开」分裂按钮（ui-open-in-app，挂在会话页头的
+   conversation.session.header.utilities 插槽）：宿主按已装应用下发真实 PNG 图标，
+   边框与分裂分隔线都取 --dsw-alias-border-l4，而皮肤没定义该 token（浅色主题下
+   是浅灰 hairline），于是边框和竖线在暗底上全都看不见。
+   这里把它按旁边的「对话管理 / 删除本对话」对齐：同款铜金边（l2）、同高 32px、
+   同 18px 圆角，并把两个分段的左右内边距各放宽 4px；宿主 PNG 换成统一的线性
+   文件夹图标（mask 跟随按钮文字色，hover/报错态一起变），分隔线取自 chevron
+   自身的 border-left，随边框一同显形。 */
+body[data-dsh-815] div:has(> button > img[src*='/open-in-app/icon']) {
+  --dsw-alias-border-l4: var(--dsw-alias-border-l2);
+  height: 32px;
+  border-radius: 18px;
+}
+
+body[data-dsh-815] div:has(> button > img[src*='/open-in-app/icon']) > button > img {
+  display: none;
+}
+
+/* 主段：官方 padding 5px 6px 5px 7px，左右各 +4。 */
+body[data-dsh-815] div:has(> button > img[src*='/open-in-app/icon']) > button:first-child {
+  padding: 5px 10px 5px 11px;
+}
+
+/* 箭头段：官方 padding 5px 6px 5px 4px，左右各 +4。 */
+body[data-dsh-815] div:has(> button > img[src*='/open-in-app/icon']) > button:last-child {
+  padding: 5px 10px 5px 8px;
+}
+
+body[data-dsh-815] div:has(> button > img[src*='/open-in-app/icon']) > button:first-child::before {
+  content: '';
+  flex: none;
+  width: 15px;
+  height: 15px;
+  background-color: currentColor;
+  -webkit-mask: var(--vj-folder-icon) center / contain no-repeat;
+  mask: var(--vj-folder-icon) center / contain no-repeat;
 }
 
 /* 右下角展签：右缘铜金竖线，主行画名奶油字，副行时间地点铜金小字。
@@ -524,6 +813,16 @@ body[data-dsh-815] [data-skin-chrome='caption-sub'] {
   body[data-dsh-815] [data-time-hover-root] :is([class*='timeStart'], [class*='timeEnd']) {
     opacity: 1;
   }
+}
+
+/* 对话区右侧的轮次导航轨（ui-chat TurnNavigator）：普通刻度取
+   --dsw-alias-border-l4，皮肤没定义这个 token，浅色主题回落成半透明黑
+   #00000029（实测刻度 rgba(0,0,0,.16) 再乘未加载态的 opacity .6），落在暗色
+   油画上等于没有，「时间线」只剩当前轮那一根。这里在刻度容器内把该 token 换成
+   皮肤的铜金：当前轮（label-primary 奶油）与预览态（label-tertiary）各有自己的
+   颜色，层级不变；未加载态仍由宿主的 opacity .6 压淡一档。 */
+body[data-dsh-815] [class*='markPosition'] {
+  --dsw-alias-border-l4: var(--vj-brass);
 }
 
 @media (prefers-reduced-motion: reduce) {

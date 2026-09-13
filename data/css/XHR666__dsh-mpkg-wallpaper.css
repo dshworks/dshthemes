@@ -1,5 +1,5 @@
 /* XHR666/dsh-mpkg-wallpaper — lib/client.js
-   fetched 2026-09-05 from https://raw.githubusercontent.com/XHR666/dsh-mpkg-wallpaper/main/lib/client.js
+   fetched 2026-09-13 from https://raw.githubusercontent.com/XHR666/dsh-mpkg-wallpaper/main/lib/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 body[data-mpw-theme] .pI_x6G_sidebarCol {
 	background-color: color-mix(in srgb, var(--mpw-theme-color) 30%, transparent) !important;
@@ -257,6 +257,36 @@ body:not([data-ds-dark-theme]) .mpw_dialog {
 
 
 
+/* ── 统一虚化 + 聊天区不跟随：侧边栏/标题栏背后叠加整屏虚化度（标题栏展开面板
+   出现时由 data-mpw-header-blur-off 摘除，防困住面板） ── */
+/* ②(2026-09-11 根治) 原实现在此给 sidebarCol/header 加 backdrop-filter —— 它会让栏成为
+   fixed 弹窗（如设置 VOzbGW_overlay）的 containing block → 设置面板 100%% 尺寸被算成栏宽、
+   被 flex 压缩进侧栏（诊断数据实锤：panel 宽 254 而非 800）。统一虚化的视觉效果本就由
+   "壁纸层 filter blur（--mpw-bg-blur）+ 表面半透明"提供，此处只保留半透明、去掉 backdrop。
+   :has() 兜底：任何 fixed overlay 出现时也强制清掉（防其它来源的 backdrop）。 */
+html body:not([data-mpw-sblur-off]):not([data-mpw-header-blur-off]).pI_x6G_sidebarCol,
+html body:not([data-mpw-sblur-off]):not([data-mpw-header-blur-off])[class*="sidebarCol"]:not([data-sidebar-right-panel]),
+html body:not([data-mpw-sblur-off]):not([data-mpw-header-blur-off]).wSkVaW_header {
+}
+html body:has([class*="_overlay"]), html body:has([class*="_modal"]), html body:has([class*="_portal"]) {
+	--mpw-overlay-open: 1;
+}
+/* 全局兜底：任何 fixed overlay/modal 打开时，栏与标题栏的 backdrop-filter 一律关闭
+   （backdrop-filter 会把栏变成 fixed 弹窗的 containing block → 弹窗尺寸被压缩进侧栏）。 */
+html body:has([class*="_overlay"]) .pI_x6G_sidebarCol,
+html body:has([class*="_overlay"]) [class*="sidebarCol"],
+html body:has([class*="_overlay"]) .wSkVaW_header,
+html body:has([class*="_modal"]) .pI_x6G_sidebarCol,
+html body:has([class*="_modal"]) [class*="sidebarCol"],
+html body:has([class*="_modal"]) .wSkVaW_header,
+html body:has([class*="_overlay"]) [data-mpw-rs],
+html body:has([class*="_modal"]) [data-mpw-rs] {
+	backdrop-filter: none !important;
+	-webkit-backdrop-filter: none !important;
+}
+
+
+
 [data-composer-card] {
 	background-color: var(--dsw-alias-bg-base) !important;
 	backdrop-filter: none !important;
@@ -440,6 +470,30 @@ body[data-ds-dark-theme] .mpw_glassHost {
 	background: color-mix(in srgb, var(--dsw-static-neutral-bluish-950) 62%, transparent) !important;
 }
 .mpw_title { font-size: 16px; line-height: 24px; font-weight: 600; color: var(--dsw-alias-label-primary); }
+/* ①(新) 活动进度条（转码/scene 提取）：设置面板顶部细条 */
+.mpw_busy {
+	display: flex; flex-direction: column; gap: 5px;
+	margin: 8px 0 2px; padding: 8px 12px;
+	border: 1px solid color-mix(in srgb, var(--dsw-alias-border-l2) 60%, transparent);
+	border-radius: 10px;
+	background: color-mix(in srgb, var(--dsw-alias-bg-layer-2) 45%, transparent);
+}
+.mpw_busyText { font-size: 12px; line-height: 16px; color: var(--dsw-alias-label-secondary); }
+.mpw_busyBar {
+	position: relative; height: 6px; border-radius: 3px; overflow: hidden;
+	background: color-mix(in srgb, var(--dsw-alias-interactive-bg-hover) 55%, transparent);
+}
+.mpw_busyFill {
+	height: 100%; border-radius: 3px;
+	background: var(--dsw-alias-brand-primary, #4f8cff);
+	transition: width .3s ease;
+}
+.mpw_busyIndet .mpw_busyFill { width: 30% !important; animation: mpwBusySlide 1.2s ease-in-out infinite; }
+@keyframes mpwBusySlide {
+	0% { transform: translateX(-100%); }
+	100% { transform: translateX(350%); }
+}
+.mpw_busyPct { align-self: flex-end; font-size: 11px; color: var(--dsw-alias-label-tertiary); font-variant-numeric: tabular-nums; }
 .mpw_desc { font-size: 13px; line-height: 20px; color: var(--dsw-alias-label-tertiary); margin: 0; }
 /* ⑤(重做) 分组排版：大分组标题用背景块区分（不再只是一条线，一眼分清分组） */
 .mpw_section {
@@ -615,6 +669,20 @@ body[data-ds-dark-theme] .mpw_tabBar {
 /* ①(新) 壁纸扫描结果预览缩略图 */
 .mpw_thumb { flex: none; width: 72px; height: 40px; border-radius: 6px; overflow: hidden; border: 1px solid var(--dsw-alias-border-l2); background: var(--dsw-alias-bg-layer-2); }
 .mpw_thumbImg { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* ①(修正) 问题3：扫描列表图片悬停不应被鼠标拖选（用户想选标题文本复制，
+   鼠标划过图片却选中了图片本身）→ 图片/缩略图禁选，标题文字保持可选。 */
+.mpw_thumbImg, .mpw_thumb video, .mpw_thumb {
+	-webkit-user-select: none; user-select: none;
+	-webkit-user-drag: none;
+	pointer-events: none; /* 图片不拦截鼠标，让事件落到行/标题上 */
+}
+.mpw_wallProp .mpw_propLabel,
+.mpw_wallProp b {
+	-webkit-user-select: text; user-select: text;
+}
+/* 扫描网格整体不禁选文本（标题可复制）；仅缩略图区域禁选 */
+.mpw_thumbWrap { -webkit-user-select: none; user-select: none; }
+.mpw_thumbWrap b, .mpw_thumbWrap .mpw_propLabel { -webkit-user-select: text; user-select: text; }
 /* ①(新) 壁纸列表两列网格（一排两个） */
 .mpw_props.mpw_wallGrid { display: grid !important; grid-template-columns: 1fr 1fr; gap: 8px; align-items: start; }
 .mpw_wallGrid .mpw_wallProp { min-width: 0; }

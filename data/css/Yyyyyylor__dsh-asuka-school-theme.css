@@ -1,0 +1,453 @@
+/* Yyyyyylor/dsh-asuka-school-theme — src/client/styles.ts
+   fetched 2026-09-13 from https://raw.githubusercontent.com/Yyyyyylor/dsh-asuka-school-theme/main/src/client/styles.ts
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/* Animate painted surfaces, not inherited tokens: token interpolation invalidates
+   every descendant on every frame, including code and glass backdrop layers. */
+body[data-asuka-school-theme]:not([data-asuka-school-reduce-motion='true']),
+body[data-asuka-school-theme]:not([data-asuka-school-reduce-motion='true']) :is(aside, [data-composer-card], [class*='_bubble']) {
+  transition: background-color 520ms cubic-bezier(0.22, 1, 0.36, 1), border-color 420ms ease;
+}
+#asuka-school-wallpaper-root {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+  contain: paint;
+  opacity: 0;
+  filter: blur(var(--asuka-wallpaper-blur, 0px));
+  transform: scale(1.015);
+  transition: opacity 420ms ease, filter 420ms ease;
+}
+#asuka-school-wallpaper-root[data-enabled='true'] { opacity: var(--asuka-wallpaper-opacity, 0.12); }
+.asuka-school-wallpaper-layer {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(90deg, var(--asuka-wallpaper-mask-start) 0%, var(--asuka-wallpaper-mask-middle) 44%, var(--asuka-wallpaper-mask-end) 72%, transparent 100%), var(--asuka-wallpaper-image);
+  background-position: center, right center;
+  background-size: cover, cover;
+  background-repeat: no-repeat;
+  opacity: 0;
+  will-change: opacity, transform;
+  filter: var(--asuka-wallpaper-filter, saturate(0.88) contrast(0.98));
+  transform: scale(1.015);
+  transition: opacity 560ms cubic-bezier(0.22, 1, 0.36, 1), transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.asuka-school-wallpaper-layer[data-active='true'] { opacity: 1; transform: scale(1); }
+body[data-asuka-school-reduce-motion='true'] #asuka-school-wallpaper-root,
+body[data-asuka-school-reduce-motion='true'] .asuka-school-wallpaper-layer,
+body[data-asuka-school-reduce-motion='true'][data-asuka-school-theme] { transition: none; }
+body[data-asuka-school-reduce-motion='true'] .asuka-school-wallpaper-layer { will-change: auto; }
+body[data-asuka-school-theme] {
+  --asuka-glass-surface-soft: rgb(242 247 249 / 0.22);
+  --asuka-glass-surface-medium: rgb(233 241 245 / 0.38);
+  --asuka-glass-surface-strong: rgb(226 236 242 / 0.56);
+  --asuka-composer-glass-surface: color-mix(in srgb, var(--asuka-glass-surface-strong) 72%, transparent);
+  --asuka-glass-code-surface: rgb(22 32 43 / 0.86);
+  --asuka-glass-code-banner: rgb(33 46 59 / 0.92);
+  --asuka-sidebar-glass-surface: rgb(202 222 233 / 0.32);
+  --asuka-glass-highlight: rgb(255 255 255 / 0.62);
+  --asuka-glass-edge: rgb(255 255 255 / 0.52);
+  --asuka-glass-edge-soft: rgb(187 223 244 / 0.18);
+  --asuka-glass-shadow: rgb(7 24 39 / 0.28);
+  --asuka-glass-sheen: linear-gradient(145deg, rgb(255 255 255 / 0.18), transparent 38%, rgb(165 222 255 / 0.07) 72%, rgb(255 255 255 / 0.1));
+  --asuka-glass-blur: 20px;
+  --asuka-glass-saturate: 1.55;
+  --asuka-glass-brightness: 1.04;
+  --asuka-settings-mask: rgb(31 46 58 / 0.16);
+  --asuka-settings-mask-brightness: 0.92;
+  --asuka-settings-glass-surface: color-mix(in srgb, var(--asuka-glass-surface-strong) 78%, transparent);
+  --asuka-settings-glass-layer-1: color-mix(in srgb, var(--asuka-glass-surface-soft) 78%, transparent);
+  --asuka-settings-glass-layer-2: color-mix(in srgb, var(--asuka-glass-surface-medium) 78%, transparent);
+  --asuka-settings-glass-layer-3: color-mix(in srgb, var(--asuka-glass-surface-strong) 58%, transparent);
+  --asuka-settings-glass-highlight: var(--asuka-glass-highlight);
+  --asuka-settings-glass-edge: color-mix(in srgb, var(--asuka-glass-edge) 82%, white);
+  --asuka-settings-glass-edge-soft: var(--asuka-glass-edge-soft);
+  --asuka-settings-glass-flare-a: rgb(165 222 255 / 0.2);
+  --asuka-settings-glass-flare-b: rgb(255 171 195 / 0.14);
+  --asuka-settings-glass-shadow: rgb(7 24 39 / 0.4);
+  --asuka-settings-glass-fallback: rgb(231 238 242 / 0.96);
+  --asuka-settings-glass-brightness: 1.06;
+}
+body[data-asuka-school-theme][data-asuka-school-scene='morning'] {
+  --asuka-glass-surface-soft: rgb(255 244 234 / 0.24);
+  --asuka-glass-surface-medium: rgb(252 234 219 / 0.4);
+  --asuka-glass-surface-strong: rgb(248 226 208 / 0.58);
+  --asuka-glass-code-surface: rgb(34 30 34 / 0.88);
+  --asuka-glass-code-banner: rgb(48 39 44 / 0.92);
+  --asuka-sidebar-glass-surface: rgb(245 219 198 / 0.34);
+  --asuka-glass-edge: rgb(255 248 236 / 0.56);
+  --asuka-glass-edge-soft: rgb(255 201 169 / 0.22);
+  --asuka-glass-shadow: rgb(69 39 27 / 0.26);
+  --asuka-glass-sheen: linear-gradient(145deg, rgb(255 255 255 / 0.2), transparent 38%, rgb(224 99 105 / 0.06) 72%, rgb(255 244 230 / 0.12));
+  --asuka-settings-mask: rgb(82 52 35 / 0.12);
+  --asuka-settings-mask-brightness: 0.96;
+  --asuka-settings-glass-flare-a: rgb(255 247 229 / 0.3);
+  --asuka-settings-glass-flare-b: rgb(224 99 105 / 0.14);
+  --asuka-settings-glass-fallback: rgb(248 232 218 / 0.96);
+}
+body[data-asuka-school-theme][data-asuka-school-scene='night'] {
+  --asuka-glass-surface-soft: rgb(25 48 69 / 0.24);
+  --asuka-glass-surface-medium: rgb(20 42 64 / 0.38);
+  --asuka-glass-surface-strong: rgb(18 37 58 / 0.5);
+  --asuka-glass-code-surface: rgb(7 18 31 / 0.86);
+  --asuka-glass-code-banner: rgb(14 31 48 / 0.92);
+  --asuka-sidebar-glass-surface: rgb(19 42 63 / 0.48);
+  --asuka-glass-highlight: rgb(255 255 255 / 0.3);
+  --asuka-glass-edge: rgb(224 245 255 / 0.38);
+  --asuka-glass-edge-soft: rgb(89 190 255 / 0.18);
+  --asuka-glass-shadow: rgb(0 5 16 / 0.56);
+  --asuka-glass-sheen: linear-gradient(145deg, rgb(255 255 255 / 0.1), transparent 38%, rgb(69 189 255 / 0.08) 70%, rgb(255 126 177 / 0.07));
+  --asuka-glass-brightness: 1;
+  --asuka-settings-mask: rgb(2 10 22 / 0.34);
+  --asuka-settings-mask-brightness: 0.74;
+  --asuka-settings-glass-flare-a: rgb(69 189 255 / 0.24);
+  --asuka-settings-glass-flare-b: rgb(255 126 177 / 0.16);
+  --asuka-settings-glass-shadow: rgb(0 5 16 / 0.64);
+  --asuka-settings-glass-fallback: rgb(24 39 56 / 0.97);
+  --asuka-settings-glass-brightness: 1;
+}
+/* Settings use immediate, local text colors so a scene change never leaves
+   dark-mode labels on the new light glass. Native option popups need an opaque pair. */
+body[data-asuka-school-theme='light'] div[role='presentation']:has(> [aria-hidden='true'] + [role='dialog'][aria-modal='true']) > [role='dialog'][aria-modal='true'] {
+  color-scheme: light;
+  --dsw-alias-label-primary: #202D38;
+  --dsw-alias-label-primary-bluish: #202D38;
+  --dsw-alias-label-secondary: #293B48;
+  --dsw-alias-label-tertiary: #304452;
+  --dsw-alias-label-caption: #304452;
+  --dsw-alias-label-dimmed: #3A4D5A;
+  --asuka-settings-control-bg: #F1F4F5;
+  --asuka-settings-control-text: #202D38;
+  color: var(--dsw-alias-label-primary);
+}
+body[data-asuka-school-theme='dark'] div[role='presentation']:has(> [aria-hidden='true'] + [role='dialog'][aria-modal='true']) > [role='dialog'][aria-modal='true'] {
+  color-scheme: dark;
+  --asuka-settings-control-bg: #182738;
+  --asuka-settings-control-text: #F4F0E9;
+}
+body[data-asuka-school-theme] div[role='presentation']:has(> [aria-hidden='true'] + [role='dialog'][aria-modal='true']) > [role='dialog'][aria-modal='true'] select,
+body[data-asuka-school-theme] div[role='presentation']:has(> [aria-hidden='true'] + [role='dialog'][aria-modal='true']) > [role='dialog'][aria-modal='true'] select option {
+  color: var(--asuka-settings-control-text);
+  background-color: var(--asuka-settings-control-bg);
+}
+/* The settings host mounts synchronously and unmounts immediately on close, so only entrance motion is safe here. */
+body[data-asuka-school-theme] div[role='presentation']:has(> [aria-hidden='true'] + [role='dialog'][aria-modal='true']) > [aria-hidden='true'] {
+  background: linear-gradient(145deg, var(--asuka-settings-mask), rgb(0 0 0 / 0.06));
+  -webkit-backdrop-filter: blur(10px) saturate(1.2) brightness(var(--asuka-settings-mask-brightness));
+  backdrop-filter: blur(10px) saturate(1.2) brightness(var(--asuka-settings-mask-brightness));
+  animation: asuka-settings-mask-enter 200ms ease-out both;
+}
+body[data-asuka-school-theme] div[role='presentation']:has(> [aria-hidden='true'] + [role='dialog'][aria-modal='true']) > [role='dialog'][aria-modal='true'] {
+  --dsw-alias-bg-layer-1: var(--asuka-settings-glass-layer-1);
+  --dsw-alias-bg-layer-2: var(--asuka-settings-glass-layer-2);
+  --dsw-alias-bg-layer-3: var(--asuka-settings-glass-layer-3);
+  --dsw-specific-sidebar-nav-item-hover: var(--asuka-settings-glass-layer-2);
+  --dsw-specific-sidebar-nav-item-active: var(--asuka-settings-glass-layer-3);
+  isolation: isolate;
+  border: 1px solid transparent;
+  background:
+    radial-gradient(100% 54% at 8% 0%, var(--asuka-settings-glass-flare-a), transparent 58%) padding-box,
+    radial-gradient(90% 72% at 100% 100%, var(--asuka-settings-glass-flare-b), transparent 64%) padding-box,
+    linear-gradient(145deg, var(--asuka-settings-glass-surface), color-mix(in srgb, var(--asuka-settings-glass-surface) 78%, transparent)) padding-box,
+    linear-gradient(135deg, var(--asuka-settings-glass-edge), var(--asuka-settings-glass-edge-soft) 34%, var(--asuka-settings-glass-flare-b) 70%, var(--asuka-settings-glass-edge)) border-box;
+  -webkit-backdrop-filter: blur(32px) saturate(1.72) brightness(var(--asuka-settings-glass-brightness)) contrast(1.02);
+  backdrop-filter: blur(32px) saturate(1.72) brightness(var(--asuka-settings-glass-brightness)) contrast(1.02);
+  box-shadow:
+    inset 0 1px 0 var(--asuka-settings-glass-highlight),
+    inset 1px 0 0 var(--asuka-settings-glass-edge-soft),
+    inset -1px 0 0 rgb(255 255 255 / 0.07),
+    inset 0 -1px 0 rgb(3 15 27 / 0.12),
+    0 4px 18px rgb(0 10 22 / 0.2),
+    0 30px 96px var(--asuka-settings-glass-shadow);
+  animation: asuka-settings-panel-enter 240ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+body[data-asuka-school-theme] div[role='presentation']:has(> [aria-hidden='true'] + [role='dialog'][aria-modal='true']) > [role='dialog'][aria-modal='true']::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    linear-gradient(105deg, transparent 18%, rgb(255 255 255 / 0.08) 46%, transparent 70%),
+    radial-gradient(70% 18% at 50% 0%, var(--asuka-settings-glass-highlight), transparent 100%);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.055);
+}
+@keyframes asuka-settings-mask-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes asuka-settings-panel-enter {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+body[data-asuka-school-reduce-motion='true'] div[role='presentation']:has(> [aria-hidden='true'] + [role='dialog'][aria-modal='true']) > :is([aria-hidden='true'], [role='dialog'][aria-modal='true']) {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  body[data-asuka-school-theme] div[role='presentation']:has(> [aria-hidden='true'] + [role='dialog'][aria-modal='true']) > :is([aria-hidden='true'], [role='dialog'][aria-modal='true']) {
+    animation: none;
+  }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  body[data-asuka-school-theme] div[role='presentation']:has(> [aria-hidden='true'] + [role='dialog'][aria-modal='true']) > [role='dialog'][aria-modal='true'] {
+    background: var(--asuka-settings-glass-fallback);
+  }
+}
+/* Stable DSH surfaces share one restrained material; strength changes with information density. */
+body[data-asuka-school-theme] :is([data-composer-card], [class*='_bubble'], [role='menu'], [role='listbox'], [role='dialog']:not([aria-modal='true'])) {
+  border: 1px solid var(--asuka-glass-edge);
+  background-color: var(--asuka-glass-surface-medium);
+  background-image: var(--asuka-glass-sheen);
+  -webkit-backdrop-filter: blur(var(--asuka-glass-blur)) saturate(var(--asuka-glass-saturate)) brightness(var(--asuka-glass-brightness));
+  backdrop-filter: blur(var(--asuka-glass-blur)) saturate(var(--asuka-glass-saturate)) brightness(var(--asuka-glass-brightness));
+  box-shadow:
+    inset 0 1px 0 var(--asuka-glass-highlight),
+    inset 0 0 0 1px rgb(255 255 255 / 0.04),
+    0 12px 36px var(--asuka-glass-shadow);
+}
+body[data-asuka-school-theme] :is([role='menu'], [role='listbox'], [role='dialog']:not([aria-modal='true'])) {
+  background-color: var(--asuka-glass-surface-strong);
+}
+body[data-asuka-school-theme] [data-composer-card] {
+  background-color: var(--asuka-composer-glass-surface);
+}
+body[data-asuka-school-theme] :is([data-composer-card], [class*='_bubble']) {
+  position: relative;
+  z-index: 2;
+}
+body[data-asuka-school-theme] [data-composer-card]:focus-within {
+  border-color: color-mix(in srgb, var(--asuka-glass-edge) 64%, var(--dsw-alias-brand-primary));
+  box-shadow:
+    inset 0 1px 0 var(--asuka-glass-highlight),
+    inset 0 0 0 1px rgb(255 255 255 / 0.05),
+    0 14px 42px var(--asuka-glass-shadow);
+}
+/* The host's active composer seat normally fades into opaque bg-base, which creates the white rectangle around the card. */
+body[data-asuka-school-theme] [data-phase='active'] [data-composer-seat] {
+  background: transparent;
+}
+body[data-asuka-school-theme] aside {
+  position: relative;
+  z-index: 2;
+  background-color: var(--asuka-sidebar-glass-surface);
+  background-image: linear-gradient(180deg, rgb(255 255 255 / 0.1), transparent 44%), var(--asuka-glass-sheen);
+  border-right-color: var(--asuka-glass-edge-soft);
+  -webkit-backdrop-filter: blur(20px) saturate(1.62) brightness(1.02);
+  backdrop-filter: blur(20px) saturate(1.62) brightness(1.02);
+  box-shadow: inset -1px 0 0 rgb(255 255 255 / 0.1), 10px 0 32px rgb(5 20 33 / 0.08);
+}
+/* Stable semantic details: the palette is applied by presentation.ts, while these make its school motif tangible. */
+body[data-asuka-school-theme][data-asuka-school-details='true'] :is(button, [role='button']) {
+  border-radius: 8px;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.14), 0 1px 0 rgb(20 32 40 / 0.08);
+  transition: box-shadow 160ms ease, transform 160ms ease;
+}
+body[data-asuka-school-theme][data-asuka-school-details='true'] :is(button, [role='button']):not(:disabled):hover {
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.2), 0 5px 15px rgb(37 57 69 / 0.14);
+  transform: translateY(-1px);
+}
+body[data-asuka-school-theme][data-asuka-school-details='true'] pre {
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-left: 3px solid var(--dsw-alias-brand-primary);
+  border-radius: 10px;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 8px 24px rgb(19 30 41 / 0.12);
+}
+body[data-asuka-school-theme][data-asuka-school-details='true'] .md-code-block {
+  --dsw-alias-markdown-code-block: var(--asuka-glass-code-surface);
+  --dsw-alias-markdown-code-block-banner: var(--asuka-glass-code-banner);
+  --shiki-background: var(--asuka-glass-code-surface);
+  --dsw-alias-label-primary: #F5F8FA;
+  --dsw-alias-label-secondary: #DDE6EC;
+  --dsw-alias-label-tertiary: #C2CFD8;
+  --dsw-alias-label-caption: #9FB0BD;
+  --dsw-alias-border-l2: rgb(215 232 242 / 0.32);
+  overflow: clip;
+  position: relative;
+  z-index: 2;
+  border-radius: 10px;
+  background: var(--asuka-glass-sheen);
+  -webkit-backdrop-filter: blur(18px) saturate(1.18) brightness(0.94);
+  backdrop-filter: blur(18px) saturate(1.18) brightness(0.94);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08), 0 12px 34px var(--asuka-glass-shadow);
+}
+/* Match the proven Phase-1 treatment: a square theme-base mask behind the rounded painted banner keeps scrolling code from bleeding through. */
+body[data-asuka-school-theme][data-asuka-school-details='true'] .md-code-block > :first-child {
+  border-radius: 0;
+  background: var(--dsw-alias-bg-base);
+}
+body[data-asuka-school-theme][data-asuka-school-details='true'] .md-code-block > :first-child > :first-child {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  background: var(--dsw-alias-markdown-code-block-banner);
+}
+body[data-asuka-school-theme][data-asuka-school-details='true'] .md-code-block > :first-child > :first-child button {
+  min-width: 36px;
+  min-height: 24px;
+  padding: 0 6px;
+}
+body[data-asuka-school-theme][data-asuka-school-details='true'] .md-code-block pre {
+  border-top: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  background-color: var(--asuka-glass-code-surface);
+  box-shadow: none;
+}
+.asuka-quick-row, .asuka-section { color: var(--dsw-alias-label-primary); }
+.asuka-quick-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 20px;
+  align-items: center;
+  padding: 18px 0;
+  border-top: 1px solid var(--dsw-alias-border-l1);
+}
+.asuka-quick-copy, .asuka-section-header { display: grid; gap: 5px; }
+.asuka-kicker {
+  color: var(--dsw-alias-brand-text);
+  font-family: Georgia, 'Noto Serif SC', serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+.asuka-quick-copy strong { font-size: 15px; }
+.asuka-quick-copy p, .asuka-section-header p { margin: 0; color: var(--dsw-alias-label-secondary); font-size: 13px; line-height: 1.55; }
+.asuka-mode-switch { display: flex; flex-wrap: wrap; gap: 8px; }
+.asuka-mode-button, .asuka-theme-card, .asuka-reset-button { font: inherit; cursor: pointer; }
+.asuka-mode-button { min-height: 34px; padding: 0 12px; border: 1px solid var(--asuka-glass-edge-soft); border-radius: 8px; color: var(--dsw-alias-label-secondary); background-color: var(--asuka-glass-surface-soft); background-image: var(--asuka-glass-sheen); font-size: 12px; }
+.asuka-mode-button[aria-pressed='true'] { border-color: var(--dsw-alias-brand-primary); color: var(--dsw-alias-brand-primary-invert); background: var(--dsw-alias-brand-primary); }
+.asuka-mode-button:focus-visible, .asuka-theme-card:focus-visible, .asuka-reset-button:focus-visible, .asuka-section input:focus-visible, .asuka-section select:focus-visible { outline: 2px solid var(--dsw-alias-brand-primary); outline-offset: 2px; }
+.asuka-section { max-width: 760px; padding: 8px 0 32px; }
+.asuka-section-header { padding: 18px 20px; border-left: 3px solid var(--dsw-alias-brand-primary); background: linear-gradient(90deg, var(--dsw-alias-bg-layer-2), transparent); }
+.asuka-section-header h2 { margin: 0; font-family: Georgia, 'Noto Serif SC', serif; font-size: 26px; letter-spacing: -0.02em; }
+.asuka-setting-group { display: grid; gap: 14px; margin: 24px 0 0; padding: 0; border: 0; }
+.asuka-setting-group legend { padding: 0; color: var(--dsw-alias-label-primary); font-size: 14px; font-weight: 700; }
+.asuka-theme-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.asuka-theme-card { display: grid; gap: 10px; padding: 10px; border: 1px solid var(--asuka-glass-edge-soft); border-radius: 10px; color: var(--dsw-alias-label-primary); text-align: left; background-color: var(--asuka-glass-surface-soft); background-image: var(--asuka-glass-sheen); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.1); }
+.asuka-theme-card[aria-pressed='true'] { border-color: var(--dsw-alias-brand-primary); box-shadow: inset 3px 0 0 var(--dsw-alias-brand-primary); }
+.asuka-theme-card span:last-child { display: grid; gap: 3px; }
+.asuka-theme-card b { font-size: 13px; }
+.asuka-theme-card small, .asuka-toggle-row small, .asuka-range-row small, .asuka-select-row small { color: var(--dsw-alias-label-tertiary); font-size: 11px; line-height: 1.4; }
+.asuka-theme-swatch { display: block; height: 42px; border-radius: 6px; }
+.asuka-theme-swatch-morning { background: linear-gradient(120deg, #F4F0E9 0%, #DCE6E8 52%, #C7474F 100%); }
+.asuka-theme-swatch-noon { background: linear-gradient(120deg, #E8EDF0 0%, #9FC2E2 54%, #6D93B8 100%); }
+.asuka-theme-swatch-night { background: linear-gradient(120deg, #171C24 0%, #30485D 55%, #D96A36 100%); }
+.asuka-theme-swatch-off { background: repeating-linear-gradient(-45deg, var(--dsw-alias-bg-layer-2), var(--dsw-alias-bg-layer-2) 8px, var(--dsw-alias-bg-layer-1) 8px, var(--dsw-alias-bg-layer-1) 16px); }
+.asuka-toggle-row, .asuka-range-row, .asuka-select-row { display: grid; gap: 8px; padding: 14px 0; border-top: 1px solid var(--dsw-alias-border-l1); }
+.asuka-toggle-row, .asuka-select-row { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
+.asuka-toggle-row span, .asuka-range-row span, .asuka-select-row span { display: grid; gap: 3px; }
+.asuka-toggle-row input { width: 18px; height: 18px; accent-color: var(--dsw-alias-brand-primary); }
+.asuka-range-row input { width: min(100%, 420px); accent-color: var(--dsw-alias-brand-primary); }
+.asuka-select-row select { min-height: 34px; max-width: 230px; padding: 0 28px 0 10px; border: 1px solid var(--asuka-glass-edge-soft); border-radius: 6px; color: var(--dsw-alias-label-primary); background-color: var(--asuka-glass-surface-soft); background-image: var(--asuka-glass-sheen); font: inherit; }
+.asuka-section-footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--dsw-alias-border-l2); color: var(--dsw-alias-label-secondary); font-size: 12px; line-height: 1.5; }
+.asuka-section-footer b { color: var(--dsw-alias-label-primary); }
+.asuka-reset-button { padding: 8px 10px; border: 1px solid var(--asuka-glass-edge-soft); border-radius: 6px; color: var(--dsw-alias-label-primary); background-color: var(--asuka-glass-surface-soft); background-image: var(--asuka-glass-sheen); white-space: nowrap; }
+.asuka-session-title-trigger,
+.asuka-session-title-action {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  color: var(--dsw-alias-label-tertiary);
+  background: transparent;
+  cursor: pointer;
+}
+.asuka-session-title-trigger:hover,
+.asuka-session-title-action:hover:not(:disabled) {
+  color: var(--dsw-alias-label-primary);
+  background: var(--dsw-alias-interactive-bg-hover);
+}
+.asuka-session-title-trigger:active,
+.asuka-session-title-action:active:not(:disabled) {
+  background: var(--dsw-alias-interactive-bg-active);
+}
+.asuka-session-title-trigger:focus-visible,
+.asuka-session-title-action:focus-visible,
+.asuka-session-title-input:focus-visible {
+  outline: 2px solid var(--dsw-alias-brand-primary);
+  outline-offset: 2px;
+}
+.asuka-session-title-action:disabled {
+  color: var(--dsw-alias-label-dimmed);
+  cursor: not-allowed;
+}
+.asuka-session-title-editor {
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  padding: 2px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 9px;
+  background: var(--dsw-alias-bg-layer-1);
+}
+.asuka-session-title-editor[aria-busy='true'] {
+  border-color: var(--dsw-alias-brand-primary);
+  background: var(--dsw-alias-bg-layer-2);
+}
+.asuka-session-title-input {
+  box-sizing: border-box;
+  width: clamp(132px, 24vw, 240px);
+  min-width: 0;
+  height: 26px;
+  padding: 2px 7px;
+  border: 0;
+  border-radius: 6px;
+  color: var(--dsw-alias-label-primary);
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+}
+.asuka-session-title-input:disabled {
+  color: var(--dsw-alias-label-dimmed);
+}
+.asuka-session-title-input[aria-invalid='true'] {
+  box-shadow: inset 0 -2px 0 var(--dsw-alias-state-error-primary);
+}
+.asuka-session-title-confirm:not(:disabled) {
+  color: var(--dsw-alias-brand-primary);
+}
+.asuka-session-title-error {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 6px);
+  right: 0;
+  width: max-content;
+  max-width: min(320px, 70vw);
+  padding: 7px 9px;
+  border: 1px solid var(--dsw-alias-state-error-primary);
+  border-radius: 7px;
+  color: var(--dsw-alias-state-error-primary);
+  background: var(--dsw-alias-bg-overlay);
+  box-shadow: 0 4px 14px var(--dsw-alias-bg-mask-2);
+  font-size: 12px;
+  line-height: 18px;
+}
+.asuka-session-title-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+body[data-asuka-school-details='true'] { --asuka-selection-rail: var(--dsw-specific-sidebar-nav-item-active-accent); }
+@media (max-width: 640px) {
+  .asuka-quick-row { grid-template-columns: 1fr; }
+  .asuka-mode-switch { width: fit-content; }
+  .asuka-theme-cards { grid-template-columns: 1fr; }
+  .asuka-section-footer { align-items: flex-start; flex-direction: column; }
+  .asuka-session-title-input { width: clamp(112px, 34vw, 180px); }
+}

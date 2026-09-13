@@ -1,13 +1,154 @@
 /* YRN-playmaker/dsh-wallpaper_share — src/client/panelStyle.ts
-   fetched 2026-09-05 from https://raw.githubusercontent.com/YRN-playmaker/dsh-wallpaper_share/main/src/client/panelStyle.ts
+   fetched 2026-09-13 from https://raw.githubusercontent.com/YRN-playmaker/dsh-wallpaper_share/main/src/client/panelStyle.ts
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/* ── share 视图激活期间的宿主滚动体锁定 ──────────────────────────
+   share 页面装在宿主 GUI 的 .scrollBody（[data-conversation-scroll]）里：
+   滚动条与面板外区域的滚轮都归它。挂锁类：隐藏滚动条、收回预留 gutter、
+   关闭键盘/拖动滚动路径，确保 share 页内只有虚拟滚动引擎一条滚路。 */
+[data-conversation-scroll].wesync-wheel-lock {
+  scrollbar-width: none;      /* Firefox */
+  scrollbar-gutter: auto;     /* 收回 reserved gutter，滚动条消失不跳动 */
+  overflow: hidden;           /* 键盘/拖动滚动路径一并关闭 */
+  overscroll-behavior: contain;
+}
+[data-conversation-scroll].wesync-wheel-lock::-webkit-scrollbar {
+  display: none;              /* Chromium/WebView2：彻底隐藏滚动条 */
+}
 .wesync-panel {
-  padding: 24px;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  /* 撑满宿主会话列：原来 724px 的硬上限让整个面板只占页面左半边，
+     壁纸库的网格因此被挤成 2 列、单卡被撑得异常大，右侧空间全浪费。
+     宽度上限交给会话列自身决定（宿主 root 的 padding 已提供边距）。 */
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  min-height: 0;
+  box-sizing: border-box;
+}
+
+/* ── 双页虚拟滚动：一套滚轮全接管（设置 ⇄ 壁纸库）──────────────────
+   视口 overflow hidden 禁原生滚动，wheel 全部进动量引擎：页内跟手+惯性阻尼，
+   页界蓄力（拉扯 ≤7% 视口 + 动量累加，突破 600 翻页，250ms 无输入弹回）。
+   轨道 transform 直写，两页之间留断层（.wesync-page-gap）。 */
+.wesync-pages {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  /* 高度上限：默认给宿主头部留 32px、再封 980px。
+     --wesync-pages-max 由面板实测覆盖（面板顶 → 宿主输入框顶）：输入框是
+     sticky + z-index 7 的常驻条，压在它下面的内容点不到（elementFromPoint
+     命中的是输入框），所以滚动视口必须止于输入框上沿。 */
+  max-height: var(--wesync-pages-max, min(100vh - 32px, 980px));
+  overflow: hidden;
+  position: relative;
+}
+
+.wesync-pages-track {
+  will-change: transform;
+}
+
+.wesync-page {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  max-width: 660px;
+  min-width: 0;
+  /* 每页至少撑满一个视口高（--wesync-vph 由引擎 measure() 注入）：
+     保证翻页后当前页独占视口，矮页不会把相邻页尾巴留在视口上方 */
+  min-height: var(--wesync-vph, 640px);
+  /* 面板现在铺满会话列，右侧也需要内边距，否则卡片贴着列右缘 */
+  padding: 24px;
   box-sizing: border-box;
+}
+
+/* 设置页保持紧凑阅读宽度：滑块/选项行拉满整列会失去可读性。
+   壁纸库页（.wesync-page-library）不设上限，铺满会话列。 */
+.wesync-page-settings {
+  max-width: 748px;
+}
+
+/* 页间断层：只在蓄力拉扯/翻页动画经过时露出，提示「继续滚动翻页」 */
+.wesync-page-gap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 24px 10px 24px;
+  opacity: 0.75;
+}
+
+.wesync-page-gap-line {
+  flex: 1;
+  height: 1px;
+  background: var(--dsw-alias-border-l1);
+}
+
+.wesync-page-hint {
+  font-size: 11px;
+  color: var(--dsw-alias-label-caption);
+  white-space: nowrap;
+}
+
+/* ── 右缘页签：当前页高亮 + 蓄力进度条（醒目、可点击兜底）────────── */
+.wesync-pager {
+  flex: 0 0 auto;
+  width: 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  padding-right: 8px;
+}
+
+.wesync-pager-dot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  padding: 6px 4px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--dsw-alias-bg-layer-1) 82%, transparent);
+  border: 1px solid var(--dsw-alias-border-l1);
+  color: var(--dsw-alias-label-caption);
+  cursor: pointer;
+  opacity: 0.55;
+  overflow: hidden;
+  transition: opacity 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.wesync-pager-dot:hover { opacity: 0.9; }
+
+.wesync-pager-dot-on {
+  opacity: 1;
+  border-color: rgba(234, 179, 8, 0.85);
+  box-shadow: 0 0 10px rgba(234, 179, 8, 0.35);
+}
+
+.wesync-pager-label {
+  font-size: 11px;
+  line-height: 1.2;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.wesync-pager-dot-on .wesync-pager-label {
+  color: rgba(250, 204, 21, 0.95);
+  font-weight: 600;
+}
+
+.wesync-pager-progress {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  background: rgba(234, 179, 8, 0.3);
+  transform-origin: left center;
+  transform: scaleX(0);
+  pointer-events: none;
 }
 
 .wesync-card {
@@ -38,6 +179,13 @@
   color: var(--dsw-alias-label-caption);
   font-variant-numeric: tabular-nums;
   user-select: all;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.wesync-ver:hover {
+  color: var(--dsw-alias-brand-primary);
+  text-decoration: underline;
 }
 
 .wesync-title {
@@ -326,12 +474,20 @@ body[data-ds-dark-theme] .wesync-gaze-status.is-error { color: #fdba74; }
   color: var(--dsw-alias-label-secondary);
 }
 
+/* 壁纸库页头右侧：切页操作提示 */
+.wesync-page-hint {
+  font-size: 11px;
+  color: var(--dsw-alias-label-caption);
+  white-space: nowrap;
+}
+
 .wesync-apps-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  /* 响应式多列：原来固定 2 列，面板一宽单张卡就被撑成半个屏幕
+     （缩略图 16:9 随宽度放大 → 单项异常大、一屏放不下几张）。
+     按最小 160px 自动铺列，窄容器退化成 2 列，宽容器自然变密。 */
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 8px;
-  max-height: 420px;
-  overflow-y: auto;
   padding: 2px;
 }
 
@@ -374,6 +530,107 @@ body[data-ds-dark-theme] .wesync-gaze-status.is-error { color: #fdba74; }
   font-size: 12px;
   color: var(--dsw-alias-label-secondary);
   padding: 10px 2px;
+}
+
+/* 壁纸库「本地」栏：应用大类下的二级分类行（全部 / we应用 / 应用）。
+   与上一行筛选 chips 分开一点点间距，视觉上从属而非并列。 */
+.wesync-apps-subs {
+  margin: 6px 0 8px;
+}
+
+/* 应用启动器卡片：操作行只剩「详细」，撑满整行——点击区域大，
+   不再是一排挤在卡片底部、字号 11px 的小按钮（原先「启动 / … / 卸载」三个）。 */
+.wesync-detail-btn {
+  flex: 1;
+  font-size: 12px;
+  padding: 6px 10px;
+}
+
+/* 壁纸库「本地」栏 · 管理模式：卡片上的操作行（打开源文件 / 卸载）。
+   只在「管理」开启时渲染，平时卡片上没有任何小按钮。 */
+.wesync-manage-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.wesync-manage-row .wesync-btn {
+  flex: 1;
+  font-size: 11px;
+  padding: 4px 8px;
+}
+
+/* 卸载是破坏性操作：与「打开源文件」拉开颜色差异 */
+.wesync-manage-del {
+  color: #fca5a5;
+}
+
+/* 壁纸库「本地」栏 · 管理模式：卡片进入"编辑态"——
+   整体轻微晃动（iOS 桌面编辑态的观感，每张卡由内联 animation-delay 错开相位），
+   点卡片 = 多选：选中项固定不再晃，背景转蓝并打勾。
+   只有真正可卸载的项（dwp 壁纸 / 启动器装的应用）能选中，工坊内容点了给提示。 */
+@keyframes wesync-jiggle {
+  0% { transform: rotate(-0.9deg); }
+  50% { transform: rotate(0.9deg); }
+  100% { transform: rotate(-0.9deg); }
+}
+
+.wesync-app-card-manage {
+  cursor: pointer;
+  /* 0.72s = 原 0.36s 放慢 50%（太快会显得躁，慢一点更像"编辑态待命"） */
+  animation: wesync-jiggle 0.72s ease-in-out infinite;
+}
+
+/* 选中：停住晃动 + 蓝色高亮（用户要求的"被固定、背景变蓝"） */
+.wesync-app-card-manage.wesync-app-card-selected {
+  animation: none;
+  transform: none;
+  background: rgba(59, 130, 246, 0.26);
+  border-color: rgba(59, 130, 246, 0.72);
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.45);
+}
+
+.wesync-app-card-selected:hover {
+  background: rgba(59, 130, 246, 0.32);
+}
+
+/* 选中角标：缩略图右上角的勾 */
+.wesync-app-selmark {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  line-height: 1;
+  color: #fff;
+  background: rgba(59, 130, 246, 0.95);
+  pointer-events: none;
+}
+
+/* 管理模式的选择计数条：已选 N + 卸载选中 + 清空选择 */
+.wesync-selbar {
+  margin: 6px 0 8px;
+}
+
+.wesync-selbar-count {
+  font-size: 12px;
+  color: var(--dsw-alias-label-primary);
+  margin-right: 2px;
+}
+
+.wesync-selbar .wesync-btn {
+  font-size: 12px;
+  padding: 4px 10px;
+}
+
+/* 无障碍：系统开启「减少动态效果」时不晃，选中态仍然清晰 */
+@media (prefers-reduced-motion: reduce) {
+  .wesync-app-card-manage { animation: none; }
 }
 
 /* 壁纸库：本地 / 市场 分类行 + 类型筛选 chips + 标题搜索 */
@@ -453,6 +710,8 @@ body[data-ds-dark-theme] .wesync-gaze-status.is-error { color: #fdba74; }
 .wesync-badge-video { background: rgba(168, 85, 247, 0.82); border-color: transparent; }
 .wesync-badge-image { background: rgba(34, 197, 94, 0.82); border-color: transparent; }
 .wesync-badge-application { background: rgba(239, 68, 68, 0.82); border-color: transparent; }
+/* 启动器安装的应用：黄色「应用」徽章，区别于 WE 工坊应用的红色「we 应用」 */
+.wesync-badge-launcher { background: rgba(234, 179, 8, 0.85); border-color: transparent; }
 .wesync-badge-web { background: rgba(245, 158, 11, 0.82); border-color: transparent; }
 .wesync-badge-other { background: rgba(107, 114, 128, 0.82); border-color: transparent; }
 
@@ -465,9 +724,6 @@ body[data-ds-dark-theme] .wesync-gaze-status.is-error { color: #fdba74; }
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding-bottom: 12px;
-  margin-bottom: 12px;
-  border-bottom: 1px solid var(--dsw-alias-border-l1);
 }
 
 .wesync-dir-row {
@@ -497,8 +753,6 @@ body[data-ds-dark-theme] .wesync-gaze-status.is-error { color: #fdba74; }
   display: flex;
   flex-direction: column;
   gap: 6px;
-  max-height: 140px;
-  overflow-y: auto;
 }
 
 .wesync-dir-item {
@@ -558,6 +812,44 @@ body[data-ds-dark-theme] .wesync-gaze-status.is-error { color: #fdba74; }
 .wesync-market-install, .wesync-market-uninstall { flex: 1; font-size: 12px; padding: 6px 8px; }
 .wesync-market-uninstall { opacity: 0.8; }
 
+/* ── 应用启动器：确认弹层（每次启动都要用户手势确认）────────────────── */
+.wesync-confirm-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(2px);
+}
+.wesync-confirm {
+  width: min(420px, 86vw);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: var(--dsw-alias-bg-layer-1, #1c1f26);
+  border: 1px solid var(--dsw-alias-border, rgba(255, 255, 255, 0.12));
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+}
+.wesync-confirm-title { font-size: 14px; font-weight: 600; color: var(--dsw-alias-label-primary); }
+.wesync-confirm-body { font-size: 12px; line-height: 1.7; color: var(--dsw-alias-label-secondary); }
+.wesync-confirm-path {
+  display: block;
+  margin-top: 6px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: var(--dsw-alias-bg-layer-2);
+  color: var(--dsw-alias-label-primary);
+  font-size: 11px;
+  word-break: break-all;
+  user-select: all;
+}
+.wesync-confirm-actions { display: flex; gap: 8px; justify-content: flex-end; }
+.wesync-confirm-actions .wesync-market-install { flex: 0 0 auto; padding: 6px 18px; }
+
 /* 禁用会话正文两侧的「拖拽调整宽度」把手，与轨迹页表现一致。
    harness 只在检测到 composer-overlay 标记时隐藏这对把手（见
    ui-conversation ConversationRoot.module.css），而本面板不接管
@@ -566,4 +858,24 @@ body[data-ds-dark-theme] .wesync-gaze-status.is-error { color: #fdba74; }
    隐藏把手，切回对话 / 轨迹页不影响 harness 自己的宽度拖拽。 */
 body:has(.wesync-panel) [data-width-handle] {
   display: none;
+}
+
+/* ── 「设置」「壁纸库」全程收起宿主输入框，只有「dwp创作」页显示 ────────
+   两层原因：
+   1) 观感：输入框固定占着会话列底部（实测 126px），两页的卡片底部行被它压住；
+   2) 可点性：它是 sticky + z-index 7 的常驻条，压在它下面的控件点不到——
+      elementFromPoint 命中的是输入框的「+」按钮 / 模式行，而不是卡片按钮
+      （实测 1280×800：应用启动器卡片的按钮点击全被输入框吞掉）。
+   收起姿势与沉浸模式同款（opacity + pointer-events，不改布局、seat 高度稳定）：
+   看不见，但点击穿透到面板。dwp创作页（唯一需要输入框的页）不加这条规则，
+   其可用高度由面板实测的 --wesync-pages-max 扣掉输入框高度。
+   :has([data-composer-card]) 只认真正的输入条：授权／提问／子代理只读条
+   接管编辑器期间 seat 保持可见，不会把等待回答的输入框一起藏掉。 */
+body[data-wesync-page]:not([data-wesync-page='dwp']) [data-composer-seat]:has([data-composer-card]) {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 0.3s ease !important;
+}
+body[data-wesync-page] [data-composer-seat] {
+  transition: opacity 0.3s ease !important;
 }

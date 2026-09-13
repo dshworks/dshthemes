@@ -1,5 +1,5 @@
 /* webkubor/dsh-bloom-theme — lib/client.js
-   fetched 2026-09-05 from https://raw.githubusercontent.com/webkubor/dsh-bloom-theme/main/lib/client.js
+   fetched 2026-09-13 from https://raw.githubusercontent.com/webkubor/dsh-bloom-theme/main/lib/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 /* ═══ 极光流线（v0.9.0，仅 aurora 变体）═══════════════════════════
    用户要的「流线」—— body 背后挂两条斜向渐变丝带，transform 缓慢漂移 +
@@ -52,8 +52,8 @@ body[data-bloom-variant="aurora"]::before {
 
    玻璃需要面积才成立。窄条带该做的是「分界」而不是「面」,所以只留一条
    morandi 发丝底边,底色完全交给 body 的氛围渐变。 */
-div[class*="_tabs"] {
-  background-color: transparent !important;
+body[data-bloom-variant] div[class*="_tabs"] {
+  background-color: transparent;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   box-shadow: inset 0 -1px 0 var(--bloom-hairline, rgba(146,168,179,0.3));
@@ -61,8 +61,8 @@ div[class*="_tabs"] {
 
 /* ═══ 面级面板（排队条 / 预览 dock）═══════════════════════════════
    面积大，档位「略实」；顶部亮高光 + 深色外辉让它像一块立起来的玻璃。 */
-div[class*="_dock"]:has(> [class*="_preview"]) {
-  background-color: color-mix(in oklch, var(--dsw-alias-bg-layer-1, #fff), transparent 82%) !important;
+body[data-bloom-variant] div[class*="_dock"]:has(> [class*="_preview"]) {
+  background-color: color-mix(in oklch, var(--dsw-alias-bg-layer-1, #fff), transparent 82%);
   backdrop-filter: blur(var(--bloom-glass-blur, 24px)) saturate(1.3);
   -webkit-backdrop-filter: blur(var(--bloom-glass-blur, 24px)) saturate(1.3);
   box-shadow:
@@ -71,7 +71,7 @@ div[class*="_dock"]:has(> [class*="_preview"]) {
     0 14px 44px -16px rgba(0,0,0,0.22);
 }
 body[data-ds-dark-theme] div[class*="_dock"]:has(> [class*="_preview"]) {
-  background-color: color-mix(in oklch, var(--dsw-alias-bg-layer-1, #101010), transparent 64%) !important;
+  background-color: color-mix(in oklch, var(--dsw-alias-bg-layer-1, #101010), transparent 64%);
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.10),
     inset 0 0 0 1px rgba(255,255,255,0.05),
@@ -105,33 +105,46 @@ body[data-ds-dark-theme] div[class*="_dock"]:has(> [class*="_preview"]) {
 
    判据（以后加玻璃时对每个目标问一遍）：
    「这个元素的子树里有 position:fixed 的东西吗？」有 → 玻璃必须走 ::before，
-   且不得引入 isolation / transform / filter / contain / will-change。 */
-[class*="_sidebarCol"] {
+   且不得引入 isolation / transform / filter / contain / will-change。
+   输入卡的 conversation.input.overlay 槽也会注入 fixed 元素（如 dsh-convmap），
+   必须遵守同一判据，不能把滤镜放回卡片本体（issue #15）。 */
+body[data-bloom-variant] [class*="_sidebarCol"] {
   position: relative;
-  background-color: transparent !important;
+  /* v0.10.x：之前 transparent !important 让侧栏和 body 完全同色，没有容器感。
+     改成带 accent tint 的底色 —— 6% accent 混进 bg-layer-1，肉眼能看出
+     "这块区域有自己的颜色"，但又不至于抢内容。 */
+  background-color: color-mix(in oklch, var(--bloom-accent, #6b8f71), var(--dsw-alias-bg-layer-1, #fff) 94%);
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.22),
     inset 0 0 0 1px rgba(255,255,255,0.10),
+    /* 右缘冷光必须走 box-shadow：侧栏 overflow:hidden，伪元素画的光带只能落在
+       容器内侧，看上去是「向内发光」（owner 2026-09-10 反馈）；外阴影不受自身
+       overflow 裁剪，是唯一真正往外散的做法。offset 与 spread 同量（24/-24），
+       让光只出现在右侧，不糊到上下边。 */
+    24px 0 40px -24px color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent 45%),
     0 14px 44px -16px rgba(0,0,0,0.22);
 }
-[class*="_sidebarCol"]::before {
+body[data-bloom-variant] [class*="_sidebarCol"]::before {
   content: '';
   position: absolute;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background-color: color-mix(in oklch, var(--dsw-alias-bg-layer-1, #fff), transparent 82%);
+  /* 玻璃层也带一点 accent tint —— 和上面的底色呼应 */
+  background-color: color-mix(in oklch, var(--bloom-accent, #6b8f71), var(--dsw-alias-bg-layer-1, #fff) 88%);
   backdrop-filter: blur(var(--bloom-glass-blur, 24px)) saturate(1.3);
   -webkit-backdrop-filter: blur(var(--bloom-glass-blur, 24px)) saturate(1.3);
 }
 body[data-ds-dark-theme] [class*="_sidebarCol"] {
+  background-color: color-mix(in oklch, var(--bloom-accent, #6b8f71), var(--dsw-alias-bg-layer-1, #101010) 92%);
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.10),
     inset 0 0 0 1px rgba(255,255,255,0.05),
+    24px 0 40px -24px color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent 35%),
     0 16px 48px -18px rgba(0,0,0,0.5);
 }
 body[data-ds-dark-theme] [class*="_sidebarCol"]::before {
-  background-color: color-mix(in oklch, var(--dsw-alias-bg-layer-1, #101010), transparent 64%);
+  background-color: color-mix(in oklch, var(--bloom-accent, #6b8f71), var(--dsw-alias-bg-layer-1, #101010) 82%);
 }
 
 /* v0.6.2: 「对话 / 轨迹」tab 字号上限保护 —— 用户在窄屏 / 浏览器 zoom>100% 下
@@ -155,36 +168,64 @@ div[class*="_tabs"] [class*="_tab"] {
      和外阴影；focus 环 3px -> 2px，颜色用 accent x 25% 收敛到主题色相，
      远看像一根细线而不是一圈光晕。border 本身仍走 COMPONENT_CSS 的 hairline。 */
 body[data-bloom-variant] div[class*="_composer"] div[class*="_card"] {
-  background-color: color-mix(in oklch, var(--dsw-alias-bg-layer-1, #fff), transparent 84%) !important;
-  backdrop-filter: blur(var(--bloom-glass-blur, 24px)) saturate(1.35);
-  -webkit-backdrop-filter: blur(var(--bloom-glass-blur, 24px)) saturate(1.35);
+  position: relative;
+  background-color: transparent;
+  /* v0.10.x（owner 反馈「没层次感」）：阴影只完成"功能"没完成"戏剧"。
+     单层远影 + 顶部内高光只是让卡片不和背景撞色，不让卡片"提起来"。
+     三层叠：① 顶部内高光（光从上方来）；② 紧贴的硬短影（贴着卡边的
+     0.5px 影，像把卡片按下去一点弹回来的感觉）；③ 远散的长距柔影
+     （把卡片安放在画布上）；④ 主题色 tint 外晕（"这张卡属于这里"——
+     莫兰迪主题自己的颜色，不是死的灰黑阴影）。 */
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.28),
-    0 18px 52px -20px rgba(0,0,0,0.26);
+    0 1px 2px -1px rgba(0, 0, 0, 0.18),
+    0 18px 52px -20px rgba(0,0,0,0.26),
+    /* 外晕浓度由 --bloom-halo 驱动（component.ts §7 的呼吸动画在推它）：
+       halo=0.73 时等于原来的 78%，0.3 时淡到 91%，0.85 时浓到 74.5%。 */
+    0 0 48px -16px color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent calc(100% - var(--bloom-halo, 0.73) * 30%));
+}
+body[data-bloom-variant] div[class*="_composer"] div[class*="_card"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: inherit;
+  background-color: color-mix(in oklch, var(--dsw-alias-bg-layer-1, #fff), transparent 84%);
+  backdrop-filter: blur(var(--bloom-glass-blur, 24px)) saturate(1.35);
+  -webkit-backdrop-filter: blur(var(--bloom-glass-blur, 24px)) saturate(1.35);
 }
 body[data-ds-dark-theme] div[class*="_composer"] div[class*="_card"] {
-  background-color: color-mix(in oklch, var(--dsw-alias-bg-layer-1, #101010), transparent 66%) !important;
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.12),
-    0 20px 56px -22px rgba(0,0,0,0.55);
+    0 1px 2px -1px rgba(0, 0, 0, 0.5),
+    0 20px 56px -22px rgba(0,0,0,0.55),
+    0 0 64px -20px color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent calc(100% - var(--bloom-halo, 0.7) * 40%));
 }
-div[class*="_composer"] div[class*="_card"]:focus-within {
-  border-color: var(--bloom-hairline-strong) !important;
+body[data-ds-dark-theme] div[class*="_composer"] div[class*="_card"]::before {
+  background-color: color-mix(in oklch, var(--dsw-alias-bg-layer-1, #101010), transparent 66%);
+}
+body[data-bloom-variant] div[class*="_composer"] div[class*="_card"]:focus-within {
+  border-color: var(--bloom-hairline-strong);
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.3),
+    0 1px 2px -1px rgba(0, 0, 0, 0.18),
     0 0 0 2px color-mix(in oklch, var(--bloom-accent) 25%, transparent),
-    0 18px 52px -20px rgba(0,0,0,0.26) !important;
+    0 18px 52px -20px rgba(0,0,0,0.26),
+    0 0 56px -16px color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent 74%);
 }
 body[data-ds-dark-theme] div[class*="_composer"] div[class*="_card"]:focus-within {
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.14),
+    0 1px 2px -1px rgba(0, 0, 0, 0.5),
     0 0 0 2px color-mix(in oklch, var(--bloom-accent) 28%, transparent),
-    0 20px 56px -22px rgba(0,0,0,0.55) !important;
+    0 20px 56px -22px rgba(0,0,0,0.55),
+    0 0 72px -20px color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent 68%);
 }
 
 /* ═══ 消息气泡 —— 柔和玻璃，近距淡影，不压内容 ═══ */
-[class*="_bubble"] {
-  background-color: color-mix(in oklch, var(--dsw-alias-bg-layer-1, #fff), transparent 78%) !important;
+body[data-bloom-variant] [class*="_bubble"] {
+  background-color: color-mix(in oklch, var(--dsw-alias-bg-layer-1, #fff), transparent 78%);
   backdrop-filter: blur(var(--bloom-glass-blur, 24px)) saturate(1.25);
   -webkit-backdrop-filter: blur(var(--bloom-glass-blur, 24px)) saturate(1.25);
   box-shadow:
@@ -193,7 +234,7 @@ body[data-ds-dark-theme] div[class*="_composer"] div[class*="_card"]:focus-withi
     0 6px 24px -10px rgba(0,0,0,0.14);
 }
 body[data-ds-dark-theme] [class*="_bubble"] {
-  background-color: color-mix(in oklch, var(--dsw-alias-bg-layer-1, #101010), transparent 62%) !important;
+  background-color: color-mix(in oklch, var(--dsw-alias-bg-layer-1, #101010), transparent 62%);
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.08),
     inset 0 0 0 1px rgba(255,255,255,0.04),
@@ -205,9 +246,9 @@ body[data-ds-dark-theme] [class*="_bubble"] {
    v0.6.0 早期设到 22%（78% 不透明）已被 verify 证伪：青金/冷色调 + 亮色聊天内容
    透字仍明显（用户截图「字竖排的 layout bug」整段透出）。现在跟 Bloom 自己的
    下拉（transparent 12%）一致。*/
-[class*="_menu"],
-[class*="_selector"] {
-  background-color: color-mix(in oklch, var(--dsw-alias-bg-layer-2, #fff), transparent 20%) !important;
+body[data-bloom-variant] [class*="_menu"],
+body[data-bloom-variant] [class*="_selector"] {
+  background-color: color-mix(in oklch, var(--dsw-alias-bg-layer-2, #fff), transparent 20%);
   backdrop-filter: blur(28px) saturate(1.4);
   -webkit-backdrop-filter: blur(28px) saturate(1.4);
   box-shadow:
@@ -217,7 +258,7 @@ body[data-ds-dark-theme] [class*="_bubble"] {
 }
 body[data-ds-dark-theme] [class*="_menu"],
 body[data-ds-dark-theme] [class*="_selector"] {
-  background-color: color-mix(in oklch, var(--dsw-alias-bg-layer-2, #101010), transparent 12%) !important;
+  background-color: color-mix(in oklch, var(--dsw-alias-bg-layer-2, #101010), transparent 12%);
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.1),
     inset 0 0 0 1px rgba(255,255,255,0.05),
@@ -243,11 +284,11 @@ body[data-ds-dark-theme] [class*="_selector"] {
    选中卡片写的是 border-color: var(--dsw-alias-label-primary) —— 那是正文文字色，
    Bloom 在暗色下给它 oklch(0.96 …) 近白，于是选中卡围了一圈刺眼白边。
    选中态本该是主题色。hover 态同样拿 label-dimmed 当边框，一并换成发丝线。 */
-[class*="_cardActive"] {
-  border-color: var(--bloom-accent) !important;
+body[data-bloom-variant] [class*="_cardActive"] {
+  border-color: var(--bloom-accent);
 }
-[class*="_card"]:hover:not([class*="_cardActive"]) {
-  border-color: var(--bloom-hairline-strong) !important;
+body[data-bloom-variant] [class*="_card"]:hover:not([class*="_cardActive"]) {
+  border-color: var(--bloom-hairline-strong);
 }
 
 /* 「浅色 / 深色 / 跟随系统」选中态的边框：DSH 用 --dsw-static-neutral-bluish-400
@@ -258,29 +299,30 @@ body[data-ds-dark-theme] [class*="_selector"] {
    选中态本该是主题色，这里按 accent 接管。并且**不**整体覆盖
    --dsw-static-neutral-bluish-400 —— static 是 DSH 的基础色阶，全局改会波及
    大量无关组件；只在这个具体组件上纠正，影响面可控。 */
-button[class*="_themeCube"][class*="_selected"] {
-  border-color: var(--bloom-accent) !important;
+body[data-bloom-variant] button[class*="_themeCube"][class*="_selected"] {
+  border-color: var(--bloom-accent);
 }
 
-.md-code-block,
-[class*="_tableScroll"] {
-  background-color: color-mix(in oklch, var(--dsw-alias-bg-layer-1, #fff), transparent 70%) !important;
+body[data-bloom-variant] .md-code-block,
+body[data-bloom-variant] [class*="_tableScroll"] {
+  background-color: color-mix(in oklch, var(--dsw-alias-bg-layer-1, #fff), transparent 70%);
   backdrop-filter: blur(var(--bloom-glass-blur, 24px)) saturate(1.2);
   -webkit-backdrop-filter: blur(var(--bloom-glass-blur, 24px)) saturate(1.2);
 }
 body[data-ds-dark-theme] .md-code-block,
 body[data-ds-dark-theme] [class*="_tableScroll"] {
-  background-color: color-mix(in oklch, var(--dsw-alias-bg-layer-1, #101010), transparent 56%) !important;
+  background-color: color-mix(in oklch, var(--dsw-alias-bg-layer-1, #101010), transparent 56%);
 }
-.md-code-block pre, .md-code-block code { background: transparent !important; }
+body[data-bloom-variant] .md-code-block pre,
+body[data-bloom-variant] .md-code-block code { background: transparent; }
 
 /* ═══ 表格内部分隔线加强（v0.9.0）用户截图反馈列线几乎不可见 ═══
    原 CSS 用 var(--bloom-hairline)（莫兰迪 30% alpha）做列分隔，
    在深色氛围渐变上几乎消失，看起来像没线的「列表」。提到
    hairline-strong（55% alpha）并给 thead 加一档淡底，列与行都立起来。 */
-[class*="_tableScroll"] th,
-[class*="_tableScroll"] td {
-  border-color: var(--bloom-hairline-strong) !important;
+body[data-bloom-variant] [class*="_tableScroll"] th,
+body[data-bloom-variant] [class*="_tableScroll"] td {
+  border-color: var(--bloom-hairline-strong);
 }
 [class*="_tableScroll"] thead th {
   background: rgba(var(--bloom-morandi), 0.10);
@@ -311,7 +353,17 @@ body[data-ds-dark-theme] [class*="_tableScroll"] tbody tr:nth-child(even) td {
   top: 84px;
   right: 16px;
   z-index: 9999;
+  /* 触摸设备上拖动不要连带滚页面 */
+  touch-action: none;
 }
+/* 浮动形态可拖动（#14）：这个形态钉在固定坐标上，会压住什么取决于用户
+   装了哪些插件（报告里是侧边栏展开后顶部那排按钮）。给 grab 光标是为了
+   让「它挡住我了」的人第一反应就是把它拖开；点击打开菜单照旧可用。 */
+.dsh-bloom-switcher[data-floating="true"] .dsh-bloom-trigger { cursor: grab; }
+.dsh-bloom-switcher[data-dragging="true"] .dsh-bloom-trigger { cursor: grabbing; }
+.dsh-bloom-switcher[data-dragging="true"] .dsh-bloom-trigger { transition: none; }
+/* 拖到屏幕左半边时菜单改左对齐，否则 right:0 的菜单会伸出视口 */
+.dsh-bloom-switcher[data-menu-side="left"] .dsh-bloom-menu { left: 0; right: auto; }
 
 .dsh-bloom-trigger {
   display: inline-flex;
@@ -347,11 +399,82 @@ body[data-ds-dark-theme] [class*="_tableScroll"] tbody tr:nth-child(even) td {
 .dsh-bloom-trigger[aria-expanded="true"] .dsh-bloom-chevron { transform: rotate(180deg); }
 
 .dsh-bloom-dot {
-  width: 12px; height: 12px;
+  width: 14px; height: 14px;
   border-radius: 999px;
   flex: none;
   box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12);
 }
+
+/* ── 面板头部：标题 + 当前配色胶囊 + 关闭（按 owner 2026-09-10 的设计图） ── */
+.dsh-bloom-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px 10px;
+  /* 用阴影代替分隔线：硬线在圆角面板里显得生硬、没有过渡（owner 2026-09-10）。
+     一道极浅的向下扩散阴影同样能分出层次，边界是渐隐的。 */
+  box-shadow: 0 6px 10px -8px color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent 78%);
+}
+/* 有新版时的小红点：徽标本体在「版本与更新」折叠区里，默认看不见，
+   所以在触发器和那一行入口各点一个 6px 圆点。用 accent 而不是红色 ——
+   这是"有更新"不是"出错了"，莫兰迪主题里一点纯红会非常突兀。 */
+.dsh-bloom-switcher[data-bloom-update] .dsh-bloom-trigger::after,
+.dsh-bloom-switcher[data-bloom-update] .dsh-bloom-more::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--bloom-accent, #6b8f71);
+  box-shadow: 0 0 6px -1px var(--bloom-glow);
+  flex: 0 0 auto;
+}
+.dsh-bloom-switcher[data-bloom-update] .dsh-bloom-trigger::after {
+  margin-left: 1px;
+}
+.dsh-bloom-switcher[data-bloom-update] .dsh-bloom-more::after {
+  margin-left: 4px;
+}
+
+.dsh-bloom-head__title { font-size: 14px; font-weight: 600; color: var(--dsw-alias-label-primary, #222); }
+.dsh-bloom-head__current {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: auto;
+  padding: 3px 10px;
+  border-radius: 999px;
+  /* 浅色底代替描边：一圈线在头部会和标题争视觉重量 */
+  background: color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent 92%);
+  font-size: 12px;
+}
+.dsh-bloom-close {
+  appearance: none; border: 0; background: transparent; cursor: pointer;
+  color: var(--dsw-alias-label-tertiary, #999);
+  font-size: 13px; line-height: 1; padding: 4px; border-radius: 6px;
+}
+.dsh-bloom-close:hover { background: color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent 90%); }
+
+/* 分组标题：「主题」「模式」—— 弱化的小标题，把长列表切成两块 */
+.dsh-bloom-section {
+  padding: 10px 14px 4px;
+  font-size: 12px;
+  color: var(--dsw-alias-label-tertiary, #999);
+}
+.dsh-bloom-section[hidden] { display: none; }
+
+/* 「版本与更新 ›」：默认收起，日常用不到的信息不占版面 */
+.dsh-bloom-more {
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  width: 100%; appearance: none; border: 0; background: transparent; cursor: pointer;
+  margin-top: 8px; padding: 9px 14px;
+  box-shadow: 0 -6px 10px -8px color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent 78%);
+  font: inherit; font-size: 12px;
+  color: var(--dsw-alias-label-secondary, #777);
+}
+.dsh-bloom-more:hover { color: var(--dsw-alias-label-primary, #222); }
+.dsh-bloom-more[aria-expanded="true"] .dsh-bloom-more__arrow { transform: rotate(90deg); }
+.dsh-bloom-more__arrow { transition: transform .16s ease; }
+.dsh-bloom-more-body[hidden] { display: none; }
 
 .dsh-bloom-menu {
   position: absolute;
@@ -360,8 +483,8 @@ body[data-ds-dark-theme] [class*="_tableScroll"] tbody tr:nth-child(even) td {
   /* v0.6.0 patch: 提到 99999，确保 Bloom 下拉菜单覆盖在 DSH 原生顶栏 tabs
      （"对话 / 轨迹"，z-index 更高）之上，不被截断 */
   z-index: 99999;
-  min-width: 168px;
-  padding: 5px;
+  min-width: 236px;
+  padding: 0 0 6px;
   border-radius: 12px;
   border: 1px solid var(--bloom-hairline, rgba(0,0,0,0.08));
   background: color-mix(in oklch, var(--dsw-alias-bg-layer-2, #fff), transparent 12%);
@@ -390,7 +513,7 @@ body[data-ds-dark-theme] [class*="_tableScroll"] tbody tr:nth-child(even) td {
   align-items: center;
   gap: 8px;
   width: 100%;
-  padding: 7px 9px;
+  padding: 8px 14px;
   border: 0;
   border-radius: 8px;
   background: transparent;
@@ -427,13 +550,63 @@ body[data-ds-dark-theme] [class*="_tableScroll"] tbody tr:nth-child(even) td {
 /* v0.5.0：氛围区（壁纸 / 玻璃 toggle / 主题包控件）已移除，菜单只保留变体列表。 */
 
 /* 版本 / 更新指示（菜单底部）：一眼看到当前版本，有新版亮「↑ vX」 chip */
+/* 外观切换（浅色/深色/跟随）——分段控件，跟变体列表用同一条分隔线语言 */
+/* 模式分段控件：等宽三格，外面一圈细框（设计图的样子）。
+   这里不再自带分隔线和标题 —— 标题由 .dsh-bloom-section 提供。 */
+.dsh-bloom-appearance {
+  padding: 0 14px;
+  font-size: 12px;
+  color: var(--dsw-alias-label-secondary, #777);
+}
+.dsh-bloom-appearance[hidden] { display: none; }
+.dsh-bloom-appearance__seg {
+  display: flex;
+  width: 100%;                 /* 撑满面板宽度，里面三个按钮才能真正三等分
+                                  （inline-flex 时宽度被内容决定，"跟随系统"四个字
+                                  把那格撑到别人的两倍） */
+  /* 整条用一层浅底当容器，不描边；选中项靠更实的底色浮起来 —— 
+     线框 + 格间竖线在小尺寸下线太多，显得脏 */
+  padding: 3px;
+  border-radius: 9px;
+  background: color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent 94%);
+}
+.dsh-bloom-appearance__btn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  flex: 1;                     /* 三等分 */
+  padding: 7px 4px;
+  cursor: pointer;
+  line-height: 1.7;
+  white-space: nowrap;         /* 「浅色」被折成两行就是少了这一条 */
+  text-align: center;
+  transition: background-color .14s ease, color .14s ease;
+}
+.dsh-bloom-appearance__btn[hidden] { display: none; }
+.dsh-bloom-appearance__btn { border-radius: 7px; }
+.dsh-bloom-appearance__btn:hover {
+  background: color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent 92%);
+}
+/* 选中态用主题强调色，和上方变体的选中打勾是同一套视觉权重 */
+.dsh-bloom-appearance__btn[data-active="true"] {
+  background: var(--dsw-alias-bg-layer-1, #fff);
+  color: var(--bloom-accent, #6b8f71);
+  font-weight: 600;
+  box-shadow: 0 1px 3px -1px color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent 70%);
+}
+.dsh-bloom-appearance__btn:focus-visible {
+  outline: 2px solid var(--bloom-accent, #6b8f71);
+  outline-offset: -2px;
+}
+
 .dsh-bloom-version {
   display: flex;
   align-items: center;
   gap: 6px;
   margin-top: 4px;
-  padding: 6px 9px 2px;
-  border-top: 1px solid var(--bloom-hairline, rgba(0,0,0,0.08));
+  padding: 6px 14px 2px;
   font-size: 11px;
   color: var(--dsw-alias-label-tertiary, #999);
 }
@@ -459,13 +632,16 @@ body[data-ds-dark-theme] [class*="_tableScroll"] tbody tr:nth-child(even) td {
 .dsh-bloom-version__update:hover { color: color-mix(in oklch, var(--dsw-alias-brand-primary, #4a90e2), black 15%); }
 
 /* ── DSH 升级检查区块（紧贴 Bloom 版本行下方）── */
+/* 版本区：两行封顶（当前+按钮 / 最新），按钮收进第一行右侧。
+   原来是三行——版本、最新、两个大按钮各占一行，菜单被撑得很长（owner 反馈"太拥挤"）。 */
+.dsh-bloom-dsh-spacer { flex: 1; }
+.dsh-bloom-dsh-row--latest { opacity: .72; }
 .dsh-bloom-dsh-update {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  margin-top: 4px;
-  padding: 6px 9px 7px;
-  border-top: 1px solid var(--bloom-hairline, rgba(0,0,0,.06));
+  gap: 2px;
+  margin-top: 2px;
+  padding: 2px 14px 6px;
   font-size: 11px;
   color: var(--dsw-alias-label-tertiary, #999);
 }
@@ -504,6 +680,11 @@ body[data-ds-dark-theme] [class*="_tableScroll"] tbody tr:nth-child(even) td {
 .dsh-bloom-dsh-state[data-state="latest"] {
   background: color-mix(in oklch, oklch(45% 0.13 150), transparent 88%);
   color: oklch(45% 0.13 150);
+}
+.dsh-bloom-dsh-state[data-state="managed"],
+.dsh-bloom-dsh-state[data-state="ahead"] {
+  background: color-mix(in oklch, var(--dsw-alias-brand-primary, #4a90e2), transparent 88%);
+  color: var(--dsw-alias-brand-primary, #4a90e2);
 }
 .dsh-bloom-dsh-state[data-state="err"] {
   background: color-mix(in oklch, oklch(48% 0.17 28), transparent 88%);
