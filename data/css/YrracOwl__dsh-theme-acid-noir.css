@@ -1,5 +1,5 @@
 /* YrracOwl/dsh-theme-acid-noir — lib/client.js
-   fetched 2026-09-09 from https://raw.githubusercontent.com/YrracOwl/dsh-theme-acid-noir/main/lib/client.js
+   fetched 2026-09-17 from https://raw.githubusercontent.com/YrracOwl/dsh-theme-acid-noir/main/lib/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 body[data-acid-noir] {
   --an-accent: #caef55;
@@ -30,9 +30,30 @@ body[data-acid-noir] [data-composer-card]:focus-within {
   border-color: var(--an-accent);
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--an-accent) 52%, transparent), 0 12px 34px rgba(0, 0, 0, .28);
 }
-body[data-acid-noir] [data-dsh-part="queue-dock"] {
+body[data-acid-noir] [data-queue-dock] > div {
   background: var(--dsw-alias-bg-layer-1);
   color: var(--dsw-alias-label-primary);
+}
+body[data-acid-noir] [data-queue-dock] > div > button {
+  font-family: var(--dsw-mono-family, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace);
+  letter-spacing: .02em;
+}
+/* Composer attachment button: the component paints it with
+   --dsw-specific-selector, which the token table leaves light. Target it by its
+   stable aria-label so the glyph stays legible instead of depending on a
+   CSS-module class hash. */
+body[data-acid-noir] button[aria-label][class*="_add"] {
+  color: var(--dsw-alias-label-primary);
+  background: var(--dsw-alias-bg-layer-1);
+  border: 1px solid var(--dsw-alias-border-l2);
+}
+body[data-acid-noir] button[aria-label][class*="_add"]:hover:not(:disabled) {
+  color: var(--an-accent);
+  background: var(--dsw-alias-interactive-bg-hover-solid);
+}
+body[data-acid-noir] button[aria-label][class*="_add"]:focus-visible {
+  outline: 2px solid var(--an-accent);
+  outline-offset: 1px;
 }
 body[data-acid-noir] [data-tool],
 body[data-acid-noir] [data-variant="think"] {

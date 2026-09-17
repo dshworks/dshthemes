@@ -1,5 +1,5 @@
 /* YrracOwl/dsh-theme-cutout-clash — lib/client.js
-   fetched 2026-09-09 from https://raw.githubusercontent.com/YrracOwl/dsh-theme-cutout-clash/main/lib/client.js
+   fetched 2026-09-17 from https://raw.githubusercontent.com/YrracOwl/dsh-theme-cutout-clash/main/lib/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 body[data-cutout-clash] { --cc-ink:#17181e; --cc-shadow:#17181e; --cc-paper:var(--dsw-alias-bg-base); --cc-primary:#e9f45f; --cc-hot:#ff4d6d; --cc-signal:#4ed7e8; --cc-link:#164dba; --cc-link-hover:#944500; background-color:var(--cc-paper); background-image:radial-gradient(circle at 8% 10%,rgba(255,77,109,.09),transparent 22%),radial-gradient(circle at 88% 88%,rgba(78,215,232,.08),transparent 25%); }
 body[data-cutout-clash="night"] { --cc-ink:#f7f2e7; --cc-shadow:#05070a; --cc-paper:#0e1117; --cc-primary:#ffd33d; --cc-hot:#ff5d9e; --cc-signal:#39d6ff; --cc-link:#78ddff; --cc-link-hover:#ffe074; background-image:radial-gradient(circle at 14% 7%,rgba(255,211,61,.07),transparent 24%); }
@@ -7,7 +7,13 @@ body[data-cutout-clash="pop"] { --cc-ink:#17181e; --cc-shadow:#17181e; --cc-pape
 body[data-cutout-clash] [data-pane="sidebar"] { border-inline-end:2px solid var(--cc-ink); background-image:repeating-linear-gradient(135deg,transparent 0 16px,color-mix(in srgb,var(--cc-ink) 4%,transparent) 16px 18px); }
 body[data-cutout-clash] [data-composer-card] { border:2px solid var(--cc-ink); border-radius:4px; box-shadow:4px 4px 0 var(--cc-shadow); }
 body[data-cutout-clash] [data-composer-card]:focus-within { border-color:var(--cc-hot); box-shadow:5px 5px 0 var(--cc-hot); }
-body[data-cutout-clash] [data-dsh-part="queue-dock"] { background:var(--dsw-alias-bg-layer-1); color:var(--dsw-alias-label-primary); }
+body[data-cutout-clash] [data-queue-dock] > div { border:2px solid var(--cc-ink); border-bottom:0; border-radius:4px 4px 0 0; box-shadow:3px 0 0 var(--cc-shadow); background:var(--dsw-alias-bg-layer-1); color:var(--dsw-alias-label-primary); }
+body[data-cutout-clash] [data-queue-dock] > div > button { color:var(--dsw-alias-label-primary); font-weight:700; }
+/* Composer attachment button: the component paints it with
+   --dsw-specific-selector. Match it by its stable aria-label so the glyph
+   survives whatever surface that token carries. */
+body[data-cutout-clash] button[aria-label][class*="_add"] { color:var(--dsw-alias-label-primary); }
+body[data-cutout-clash] button[aria-label][class*="_add"]:hover:not(:disabled) { color:var(--dsw-alias-bg-layer-1); background:var(--cc-ink); }
 body[data-cutout-clash] [data-tool],body[data-cutout-clash] [data-variant="think"] { border:1px solid var(--dsw-alias-border-l2); border-inline-start:4px solid var(--cc-ink); border-radius:4px; background:var(--dsw-alias-bg-layer-1); box-shadow:none; }
 body[data-cutout-clash] [data-tool][data-state="ok"] { border-inline-start-color:var(--dsw-alias-state-success-primary); }
 body[data-cutout-clash] [data-tool][data-state="error"] { border-inline-start-color:var(--dsw-alias-state-error-primary); }

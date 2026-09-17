@@ -1,5 +1,5 @@
 /* Voyage-He/dsh-background-image — lib/client.js
-   fetched 2026-09-09 from https://raw.githubusercontent.com/Voyage-He/dsh-background-image/main/lib/client.js
+   fetched 2026-09-17 from https://raw.githubusercontent.com/Voyage-He/dsh-background-image/main/lib/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 .bgimg-root{border:1px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-3);border-radius:10px;min-width:0;overflow:hidden}
 .bgimg-header{box-sizing:border-box;width:100%;min-height:52px;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;cursor:pointer;user-select:none;color:inherit;font:inherit;text-align:left}
@@ -48,10 +48,15 @@
 .cvtE3a_business select,.Nqubda_row select,.Nqubda_panel select,.cvtE3a_card select{background:var(--dsw-alias-bg-layer-2) !important}
 .uV2eYG_card{-webkit-backdrop-filter:blur(var(--bgimg-blur,0px)) saturate(var(--bgimg-saturation,1));backdrop-filter:blur(var(--bgimg-blur,0px)) saturate(var(--bgimg-saturation,1))}
 /* 连续性：图片只在 frame 绘制一次，对话区与详情列透明透出同一张图，消除侧栏/会话区/详情列的“多副本”断裂 */
-.wSkVaW_root{background:transparent !important}
-/* 与侧栏相同：玻璃放在伪元素上，避免模糊文字或改变 fixed 弹层的包含块。
-   原生 root、header 和 body 已定位，后两者按树序绘制在玻璃上方，无需新增层叠上下文。 */
-.wSkVaW_root::before{content:'';position:absolute;inset:0;pointer-events:none;background:var(--bgimg-conversation-light,transparent);-webkit-backdrop-filter:var(--bgimg-conversation-filter,none);backdrop-filter:var(--bgimg-conversation-filter,none)}
+.wSkVaW_root{background:transparent !important;z-index:0}
+/* 玻璃放在伪元素上（不给 root 加 filter，避免它成为 fixed 弹层的包含块），并用
+   root 自身的层叠上下文 + ::before 的负 z-index 把玻璃压到所有原生内容之下：
+   root 本就是 position:relative，声明 z-index:0 即建立层叠上下文（它在兄弟中的绘制
+   次序仍是 z-index:auto 的树序位置，也不会成为 fixed 后代的包含块）；此时 ::before
+   只绘制在 root 自身背景之上、全部流内内容（header、消息区、输入区）之下。
+   不要依赖“header/body 已定位”：新版 DSH 的 .wSkVaW_header 是静态元素，
+   玻璃会盖住会话标题栏与页签，表现为“模糊遮挡了原生内容”。 */
+.wSkVaW_root::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:var(--bgimg-conversation-light,transparent);-webkit-backdrop-filter:var(--bgimg-conversation-filter,none);backdrop-filter:var(--bgimg-conversation-filter,none)}
 body[data-ds-dark-theme] .wSkVaW_root::before{background:var(--bgimg-conversation-dark,transparent)}
 .ydkMvW_root{background:transparent !important}
 /* 对话区偏移：仅平移聊天内容——消息区（viewArea）与居中的输入卡片（composerHero），
@@ -74,5 +79,6 @@ body[data-ds-dark-theme] .wSkVaW_composerSeat{background:linear-gradient(180deg,
 .pI_x6G_sidebarCol::before{content:'';position:absolute;inset:0;pointer-events:none;background:var(--dsw-specific-sidebar-fill);-webkit-backdrop-filter:var(--bgimg-sidebar-filter,none);backdrop-filter:var(--bgimg-sidebar-filter,none)}
 .hHd-Xa_root{position:relative;background:transparent !important}
 /* 列表底部淡出遮罩：全屏玻璃模式下终点改为 transparent（经 --bgimg-fade-fill 控制），
-   避免在玻璃 ::before 之上再叠一层半透明白，消除 .qDHVXG_list 底部的白边。 */
-.qDHVXG_fade{background:linear-gradient(to bottom, transparent, var(--bgimg-fade-fill, var(--dsw-specific-sidebar-fill))) !important}
+   避免在玻璃 ::before 之上再叠一层半透明白，消除会话列表底部的白边。
+   类名随 DSH 版本变化：新版为 .bhn1Oq_fade（ui-workspace），旧版为 .qDHVXG_fade，两者都保留。 */
+.qDHVXG_fade,.bhn1Oq_fade{background:linear-gradient(to bottom, transparent, var(--bgimg-fade-fill, var(--dsw-specific-sidebar-fill))) !important}
