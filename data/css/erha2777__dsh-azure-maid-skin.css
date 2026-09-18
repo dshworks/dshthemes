@@ -1,0 +1,320 @@
+/* erha2777/dsh-azure-maid-skin — lib/styles/azure-maid.css
+   fetched 2026-09-18 from https://raw.githubusercontent.com/erha2777/dsh-azure-maid-skin/main/lib/styles/azure-maid.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* ============================================================================
+ * 蓝瓷女仆 · Azure Maid —— 首绘样式表(构建产物,请勿手工编辑)
+ * ============================================================================
+ * 由 scripts/build-tokens.mjs 生成。改配色请改 theme/palette.mjs 后运行 npm run build。
+ *
+ * 由 Host 半边(lib/index.js)在 <body> 起始处注入,位置早于任何模块脚本,
+ * 因此首次绘制就是皮肤色,不会先闪一下官方配色。
+ *
+ * 本文件**只声明 token 值,不含任何选择器层面的产品 DOM 假设** ——
+ * 不碰 --dsw-static-*(那是设计基线的原始色阶,改它等于改调色板本身),
+ * 只覆盖语义层 90 个 token。DSH 升级换掉内部类名也不会让本文件失效。
+ *
+ * 三段生效规则,对应三种外观偏好(详见 scripts/build-tokens.mjs 顶部注释):
+ *   1. body{...}                                    → 偏好 light
+ *   2. @media (prefers-color-scheme: dark) 里的 body  → 偏好 dark 或 system 且系统为暗
+ *   3. 同处媒体查询内的 body[data-ds-dark-theme]      → 系统亮但用户手动选了暗色
+ *
+ * 自停用 / Self-disable
+ *   最后一条规则让本文件在客户端接手后自己失效:客户端半边的模块在加载时(早于
+ *   插件 apply)就给 <html> 打上 data-dsh-azure-maid-client,于是这份样式表的
+ *   每一条规则都被后面那条同特异性、且写在最后的原值规则压回去 ——
+ *   此后配色由 theme.overrideTokens 在 body 行内样式上负责(优先级更高)。
+ *
+ *   这样做的好处是**不需要任何 DOM 查询**:不用去 document 里找这个 <link>
+ *   再把它的 media 改掉,少一处会和宿主 DOM 结构耦合的地方。
+ *   在客户端尚未接管的这段时间里,本文件保证首绘就是皮肤色。
+ * ========================================================================= */
+
+/* 自停用:客户端已接管时,把上面所有 token 还原成设计基线的原值。
+   选择器与 body / body[data-ds-dark-theme] 同特异性,但写在最后,因此在
+   "后写的同特异性规则胜出"这条规则下必然生效;又因为用的是 CSS 变量自身的
+   初始值(unset),还原结果是"回到官方配色",不需要知道官方任何具体色值。 */
+html[data-dsh-azure-maid-client] body,
+html[data-dsh-azure-maid-client] body[data-ds-dark-theme] {
+  --dsw-alias-bg-base: unset;
+  --dsw-alias-bg-layer-1: unset;
+  --dsw-alias-bg-layer-2: unset;
+  --dsw-alias-bg-layer-3: unset;
+  --dsw-alias-bg-module-platform: unset;
+  --dsw-alias-bg-multi-select: unset;
+  --dsw-alias-bg-overlay: unset;
+  --dsw-alias-bg-skeleton: unset;
+  --dsw-alias-bg-mask-1: unset;
+  --dsw-alias-bg-mask-2: unset;
+  --dsw-alias-bg-mask-3: unset;
+  --dsw-alias-bg-mask-photo: unset;
+  --dsw-alias-bg-mask-drop: unset;
+  --dsw-alias-border-l1: unset;
+  --dsw-alias-border-l2: unset;
+  --dsw-alias-border-l2-darkmode-thin: unset;
+  --dsw-alias-border-l3: unset;
+  --dsw-alias-border-l4: unset;
+  --dsw-alias-border-inverted: unset;
+  --dsw-alias-border-inverted2: unset;
+  --dsw-alias-label-primary: unset;
+  --dsw-alias-label-primary-bluish: unset;
+  --dsw-alias-label-primary-dimmed: unset;
+  --dsw-alias-label-primary-foreground: unset;
+  --dsw-alias-label-primary-inverted: unset;
+  --dsw-alias-label-secondary: unset;
+  --dsw-alias-label-tertiary: unset;
+  --dsw-alias-label-caption: unset;
+  --dsw-alias-label-dimmed: unset;
+  --dsw-alias-brand-primary: unset;
+  --dsw-alias-brand-primary-invert: unset;
+  --dsw-alias-brand-primary-new-colorprimary-new-color: unset;
+  --dsw-alias-brand-text: unset;
+  --dsw-alias-link: unset;
+  --dsw-alias-button-primary-fill: unset;
+  --dsw-alias-button-primary-hover: unset;
+  --dsw-alias-button-primary-dimmed: unset;
+  --dsw-alias-button-contrast-fill: unset;
+  --dsw-alias-button-elevated-fill: unset;
+  --dsw-alias-button-floating-fill: unset;
+  --dsw-alias-button-floating-hover: unset;
+  --dsw-alias-button-ghost-active-fill: unset;
+  --dsw-alias-button-ghost-active-border: unset;
+  --dsw-alias-button-ghost-active-hover: unset;
+  --dsw-alias-button-info-fill: unset;
+  --dsw-alias-button-info-hover: unset;
+  --dsw-alias-button-tool-bar-fill: unset;
+  --dsw-alias-button-tool-bar-fill-invisible: unset;
+  --dsw-alias-button-tool-bar-hover: unset;
+  --dsw-alias-interactive-bg-hover: unset;
+  --dsw-alias-interactive-bg-hover-solid: unset;
+  --dsw-alias-interactive-bg-hover-accent: unset;
+  --dsw-alias-interactive-bg-hover-danger: unset;
+  --dsw-alias-interactive-bg-active: unset;
+  --dsw-alias-state-business-primary: unset;
+  --dsw-alias-state-business-tertiary: unset;
+  --dsw-alias-state-success-primary: unset;
+  --dsw-alias-state-success-secondary: unset;
+  --dsw-alias-state-success-tertiary: unset;
+  --dsw-alias-state-warn-primary: unset;
+  --dsw-alias-state-warn-secondary: unset;
+  --dsw-alias-state-warn-tertiary: unset;
+  --dsw-alias-state-warn-label: unset;
+  --dsw-alias-state-error-primary: unset;
+  --dsw-alias-state-error-secondary: unset;
+  --dsw-alias-markdown-code-block: unset;
+  --dsw-alias-markdown-code-block-banner: unset;
+  --dsw-alias-markdown-code-segment-selected: unset;
+  --dsw-alias-markdown-code-segment-unselected: unset;
+  --dsw-alias-markdown-inline-code: unset;
+  --dsw-alias-markdown-placeholder: unset;
+  --dsw-alias-markdown-tag: unset;
+  --dsw-alias-markdown-citation: unset;
+  --dsw-alias-scrollbar-bg-l1: unset;
+  --dsw-alias-scrollbar-bg-l2: unset;
+  --dsw-alias-scrollbar-hover-l1: unset;
+  --dsw-alias-scrollbar-hover-l2: unset;
+  --dsw-alias-toast-bg: unset;
+  --dsw-alias-tooltip-bg: unset;
+  --dsw-specific-bubble: unset;
+  --dsw-specific-bubble-highlight: unset;
+  --dsw-specific-input-major: unset;
+  --dsw-specific-login-input: unset;
+  --dsw-specific-menu: unset;
+  --dsw-specific-selector: unset;
+  --dsw-specific-sidebar-fill: unset;
+  --dsw-specific-sidebar-nav-item-hover: unset;
+  --dsw-specific-sidebar-nav-item-active: unset;
+  --dsw-specific-sidebar-nav-item-active-accent: unset;
+  --dsw-specific-tip: unset;
+}
+
+/* ── 1. 亮色档 ────────────────────────────────────────────────────────────── */
+body {
+  --dsw-alias-bg-base: #F4F7FE;
+  --dsw-alias-bg-layer-1: #FFFFFF;
+  --dsw-alias-bg-layer-2: #E9EFFB;
+  --dsw-alias-bg-layer-3: #FFFFFF;
+  --dsw-alias-bg-module-platform: #EDF2FC;
+  --dsw-alias-bg-multi-select: #EDF2FC;
+  --dsw-alias-bg-overlay: #DEE7F8;
+  --dsw-alias-bg-skeleton: #0000000A;
+  --dsw-alias-bg-mask-1: #0000003D;
+  --dsw-alias-bg-mask-2: #0000001F;
+  --dsw-alias-bg-mask-3: #0000007A;
+  --dsw-alias-bg-mask-photo: #000000E0;
+  --dsw-alias-bg-mask-drop: #FFFFFFB3;
+  --dsw-alias-border-l1: #2A35680F;
+  --dsw-alias-border-l2: #2A356826;
+  --dsw-alias-border-l2-darkmode-thin: #2A35681F;
+  --dsw-alias-border-l3: #2A356833;
+  --dsw-alias-border-l4: #2A356840;
+  --dsw-alias-border-inverted: #00000000;
+  --dsw-alias-border-inverted2: #00000000;
+  --dsw-alias-label-primary: #141C36;
+  --dsw-alias-label-primary-bluish: #1E2A52;
+  --dsw-alias-label-primary-dimmed: #101731;
+  --dsw-alias-label-primary-foreground: #FFFFFF;
+  --dsw-alias-label-primary-inverted: #FFFFFF;
+  --dsw-alias-label-secondary: #3F4B78;
+  --dsw-alias-label-tertiary: #5A648F;
+  --dsw-alias-label-caption: #767FA6;
+  --dsw-alias-label-dimmed: #C3CFE8;
+  --dsw-alias-brand-primary: #3A4A8C;
+  --dsw-alias-brand-primary-invert: #141C36;
+  --dsw-alias-brand-primary-new-colorprimary-new-color: #276C9F;
+  --dsw-alias-brand-text: #141C36;
+  --dsw-alias-link: #2F6FB0;
+  --dsw-alias-button-primary-fill: #3A4A8C;
+  --dsw-alias-button-primary-hover: #4A5BA6;
+  --dsw-alias-button-primary-dimmed: #D6E3F8;
+  --dsw-alias-button-contrast-fill: #3F4B78;
+  --dsw-alias-button-elevated-fill: #FFFFFF;
+  --dsw-alias-button-floating-fill: #FFFFFF;
+  --dsw-alias-button-floating-hover: #F4F7FE;
+  --dsw-alias-button-ghost-active-fill: #D2DFF6;
+  --dsw-alias-button-ghost-active-border: #4A5BA6;
+  --dsw-alias-button-ghost-active-hover: #BDD1F2;
+  --dsw-alias-button-info-fill: #276C9F;
+  --dsw-alias-button-info-hover: #2F6FB0;
+  --dsw-alias-button-tool-bar-fill: #54555780;
+  --dsw-alias-button-tool-bar-fill-invisible: #1F1F1F5C;
+  --dsw-alias-button-tool-bar-hover: #54555799;
+  --dsw-alias-interactive-bg-hover: #2432560F;
+  --dsw-alias-interactive-bg-hover-solid: #F4F7FE;
+  --dsw-alias-interactive-bg-hover-accent: #276C9F24;
+  --dsw-alias-interactive-bg-hover-danger: #E0416A12;
+  --dsw-alias-interactive-bg-active: #24325626;
+  --dsw-alias-state-business-primary: #276C9F;
+  --dsw-alias-state-business-tertiary: #D6E3F8;
+  --dsw-alias-state-success-primary: #1A7B61;
+  --dsw-alias-state-success-secondary: #1A7B61;
+  --dsw-alias-state-success-tertiary: #DEF4EA;
+  --dsw-alias-state-warn-primary: #936511;
+  --dsw-alias-state-warn-secondary: #936511;
+  --dsw-alias-state-warn-tertiary: #FBF0D8;
+  --dsw-alias-state-warn-label: #8A5E0E;
+  --dsw-alias-state-error-primary: #B83551;
+  --dsw-alias-state-error-secondary: #B83551;
+  --dsw-alias-markdown-code-block: #EDF2FC;
+  --dsw-alias-markdown-code-block-banner: #DCE6F9;
+  --dsw-alias-markdown-code-segment-selected: #FFFFFF;
+  --dsw-alias-markdown-code-segment-unselected: #E9EFFB;
+  --dsw-alias-markdown-inline-code: #E4EBF9;
+  --dsw-alias-markdown-placeholder: #E9EFFB;
+  --dsw-alias-markdown-tag: #DFE8F8;
+  --dsw-alias-markdown-citation: #DCE6F8;
+  --dsw-alias-scrollbar-bg-l1: #DFE7F6;
+  --dsw-alias-scrollbar-bg-l2: #DFE7F6;
+  --dsw-alias-scrollbar-hover-l1: #C3CFE8;
+  --dsw-alias-scrollbar-hover-l2: #A6B6DC;
+  --dsw-alias-toast-bg: #1B2444;
+  --dsw-alias-tooltip-bg: #1B2444;
+  --dsw-specific-bubble: #EAF0FC;
+  --dsw-specific-bubble-highlight: #CEDDF6;
+  --dsw-specific-input-major: #FFFFFF;
+  --dsw-specific-login-input: #F4F7FE;
+  --dsw-specific-menu: #FFFFFF;
+  --dsw-specific-selector: #EDF2FC;
+  --dsw-specific-sidebar-fill: #E7EEFA;
+  --dsw-specific-sidebar-nav-item-hover: #F4F7FE;
+  --dsw-specific-sidebar-nav-item-active: #D2DFF6;
+  --dsw-specific-sidebar-nav-item-active-accent: #BDD1F2;
+  --dsw-specific-tip: #EDF2FC;
+}
+
+/* ── 2/3. 暗色档 ──────────────────────────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  body,
+  body[data-ds-dark-theme] {
+    --dsw-alias-bg-base: #0A1024;
+    --dsw-alias-bg-layer-1: #151E42;
+    --dsw-alias-bg-layer-2: #1D2750;
+    --dsw-alias-bg-layer-3: #1D2750;
+    --dsw-alias-bg-module-platform: #1B2549;
+    --dsw-alias-bg-multi-select: #1B2549;
+    --dsw-alias-bg-overlay: #2E3C74;
+    --dsw-alias-bg-skeleton: #FFFFFF14;
+    --dsw-alias-bg-mask-1: #00000080;
+    --dsw-alias-bg-mask-2: #00000033;
+    --dsw-alias-bg-mask-3: #0000007A;
+    --dsw-alias-bg-mask-photo: #000000E0;
+    --dsw-alias-bg-mask-drop: #272730B3;
+    --dsw-alias-border-l1: #FFFFFF0F;
+    --dsw-alias-border-l2: #FFFFFF1F;
+    --dsw-alias-border-l2-darkmode-thin: #FFFFFF0F;
+    --dsw-alias-border-l3: #FFFFFF29;
+    --dsw-alias-border-l4: #FFFFFF33;
+    --dsw-alias-border-inverted: #FFFFFF0F;
+    --dsw-alias-border-inverted2: #FFFFFF14;
+    --dsw-alias-label-primary: #E8EEFB;
+    --dsw-alias-label-primary-bluish: #E8EEFB;
+    --dsw-alias-label-primary-dimmed: #E8EEFB;
+    --dsw-alias-label-primary-foreground: #0A1024;
+    --dsw-alias-label-primary-inverted: #1D2750;
+    --dsw-alias-label-secondary: #A9B7E0;
+    --dsw-alias-label-tertiary: #8A9AD8;
+    --dsw-alias-label-caption: #6E7CB4;
+    --dsw-alias-label-dimmed: #2E3C74;
+    --dsw-alias-brand-primary: #8A9AD8;
+    --dsw-alias-brand-primary-invert: #E8EEFB;
+    --dsw-alias-brand-primary-new-colorprimary-new-color: #7FC0E8;
+    --dsw-alias-brand-text: #E8EEFB;
+    --dsw-alias-link: #8FBEF0;
+    --dsw-alias-button-primary-fill: #8A9AD8;
+    --dsw-alias-button-primary-hover: #B9C5EC;
+    --dsw-alias-button-primary-dimmed: #27336A;
+    --dsw-alias-button-contrast-fill: #E8EEFB;
+    --dsw-alias-button-elevated-fill: #2E3C74;
+    --dsw-alias-button-floating-fill: #1B2549;
+    --dsw-alias-button-floating-hover: #1D2750;
+    --dsw-alias-button-ghost-active-fill: #2E3C74;
+    --dsw-alias-button-ghost-active-border: #2E3C74;
+    --dsw-alias-button-ghost-active-hover: #B9C5EC;
+    --dsw-alias-button-info-fill: #7FC0E8;
+    --dsw-alias-button-info-hover: #8FBEF0;
+    --dsw-alias-button-tool-bar-fill: #54555780;
+    --dsw-alias-button-tool-bar-fill-invisible: #1F1F1F5C;
+    --dsw-alias-button-tool-bar-hover: #54555799;
+    --dsw-alias-interactive-bg-hover: #FFFFFF14;
+    --dsw-alias-interactive-bg-hover-solid: #1B2549;
+    --dsw-alias-interactive-bg-hover-accent: #FFFFFF3D;
+    --dsw-alias-interactive-bg-hover-danger: #F25A5A26;
+    --dsw-alias-interactive-bg-active: #FFFFFF24;
+    --dsw-alias-state-business-primary: #8A9AD8;
+    --dsw-alias-state-business-tertiary: #2E3C74;
+    --dsw-alias-state-success-primary: #5FD6B4;
+    --dsw-alias-state-success-secondary: #5FD6B4;
+    --dsw-alias-state-success-tertiary: #173A44;
+    --dsw-alias-state-warn-primary: #F0C168;
+    --dsw-alias-state-warn-secondary: #F0C168;
+    --dsw-alias-state-warn-tertiary: #33294A;
+    --dsw-alias-state-warn-label: #F2A9BE;
+    --dsw-alias-state-error-primary: #FF8598;
+    --dsw-alias-state-error-secondary: #FF8598;
+    --dsw-alias-markdown-code-block: #161F42;
+    --dsw-alias-markdown-code-block-banner: #27336A;
+    --dsw-alias-markdown-code-segment-selected: #27336A;
+    --dsw-alias-markdown-code-segment-unselected: #161F42;
+    --dsw-alias-markdown-inline-code: #1B2549;
+    --dsw-alias-markdown-placeholder: #1D2750;
+    --dsw-alias-markdown-tag: #1B2549;
+    --dsw-alias-markdown-citation: #2E3C74;
+    --dsw-alias-scrollbar-bg-l1: #27336A;
+    --dsw-alias-scrollbar-bg-l2: #27336A;
+    --dsw-alias-scrollbar-hover-l1: #3A4A8C;
+    --dsw-alias-scrollbar-hover-l2: #4A5BA6;
+    --dsw-alias-toast-bg: #C6D2EE;
+    --dsw-alias-tooltip-bg: #C6D2EE;
+    --dsw-specific-bubble: #1B2549;
+    --dsw-specific-bubble-highlight: #27336A;
+    --dsw-specific-input-major: #1B2549;
+    --dsw-specific-login-input: #0A1024;
+    --dsw-specific-menu: #1D2750;
+    --dsw-specific-selector: #1D2750;
+    --dsw-specific-sidebar-fill: #0D1430;
+    --dsw-specific-sidebar-nav-item-hover: #1B2549;
+    --dsw-specific-sidebar-nav-item-active: #2A366B;
+    --dsw-specific-sidebar-nav-item-active-accent: #43549B;
+    --dsw-specific-tip: #1B2549;
+  }
+}
+

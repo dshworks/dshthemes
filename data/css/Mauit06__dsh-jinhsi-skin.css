@@ -1,0 +1,440 @@
+/* Mauit06/dsh-jinhsi-skin — skin/skin.css
+   fetched 2026-09-18 from https://raw.githubusercontent.com/Mauit06/dsh-jinhsi-skin/main/skin/skin.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* ============================================================================
+ * 今汐·洄天溯海 (jinhsi-spectro) — skin.css
+ *
+ * L1：重映射官方 --dsw-* 设计 token。
+ * L2：样式化语义属性 data-dsh-surface / data-dsh-part（契约 semantic-attrs/v1）。
+ *
+ * 加载器会把本文件每条选择器强制限定在 html[data-dsh-skin="jinhsi-spectro"]
+ * 之下，因此这里不需要、也不应该自己写作用域前缀。
+ *
+ * 配色取自角色立绘实际取样：银白 / 墨黑 / 金线 / 淡青 / 薄荷青。
+ * 未列出的官方 token 交给加载器的 color-mix() 自动派生，不强行补齐。
+ * 所有本该半透的底色都乘上 var(--dsw-skin-scrim)，以跟随皮肤中心的「背景遮蔽」滑杆。
+ * ========================================================================= */
+
+/* ── 自有调色变量 ───────────────────────────────────────────────────────── */
+
+:root {
+  color: #141a1f;
+  /* 刻意不在这里写 background-color：
+     整张可见底由装饰层 [data-dsh-skin-layer="background"] 拥有（见 patches.css）。
+     若在此处写不透明底色，加载器会把它克隆到 body，反而盖住 z-index:-2 的立绘层。 */
+
+  /* 浅色「溯海晴光」 */
+  --jinhsi-ink: #141a1f;
+  --jinhsi-ink-soft: #3a454e;
+  --jinhsi-ink-mute: #5d6a75;
+  --jinhsi-porcelain: #f4f7fa;
+  --jinhsi-porcelain-hi: #ffffff;
+  --jinhsi-jade: #39697a;          /* 青金：她的淡青发带与衣缘 */
+  --jinhsi-jade-hi: #4a7e90;
+  --jinhsi-gold: #a8892b;          /* 金线：衣饰掐丝 */
+  --jinhsi-gold-hi: #d4b968;
+  --jinhsi-mint: #4e8c7c;          /* 薄荷青：内衬与腰封 */
+  --jinhsi-ice: #a9c8dc;
+  --jinhsi-cinnabar: #a8402f;      /* 朱砂：闲章与警示 */
+  --jinhsi-spectro: #e6d49a;       /* 衍射微光 */
+  --jinhsi-vignette: rgba(20, 26, 31, 0.05);
+  --jinhsi-thin: rgba(20, 26, 31, 0.18);
+  /* 助手消息左侧留给头像的缩进；宽表格补偿也引用它，改一处即可。 */
+  --jinhsi-avatar-gutter: 46px;
+  /* 壁纸纱幕的 RGB 分量（供 rgba(var(--…), α) 使用，α 由遮蔽滑杆计算）。 */
+  --jinhsi-veil-rgb: 244, 247, 250;
+  --jinhsi-card-rgb: 255, 255, 255;
+}
+
+body[data-ds-dark-theme] {
+  color: #edf1f5;
+  /* 同上：底色交给装饰层，这里不写 background-color。 */
+
+  /* 深色「洄天溯海」 */
+  --jinhsi-ink: #edf1f5;
+  --jinhsi-ink-soft: #c2cbd5;
+  --jinhsi-ink-mute: #93a0ad;
+  --jinhsi-porcelain: #0c0f13;
+  --jinhsi-porcelain-hi: #141920;
+  --jinhsi-jade: #8fc3d0;
+  --jinhsi-jade-hi: #a6d4df;
+  --jinhsi-gold: #dfc078;
+  --jinhsi-gold-hi: #f2e0a6;
+  --jinhsi-mint: #7fbfad;
+  --jinhsi-ice: #6f93a6;
+  --jinhsi-cinnabar: #d9705c;
+  --jinhsi-spectro: #ffe9a8;
+  --jinhsi-vignette: rgba(0, 0, 0, 0.42);
+  --jinhsi-thin: rgba(255, 255, 255, 0.16);
+  --jinhsi-veil-rgb: 12, 15, 19;
+  --jinhsi-card-rgb: 20, 25, 32;
+}
+
+/* ── L1：官方 token 重映射（浅色） ──────────────────────────────────────── */
+
+:root {
+  /* 关键：底色在遮蔽滑杆为 0 时必须完全透明，立绘才能透出来；
+     滑杆拉高才逐层加纱。可读性由 manifest 的 backgroundMedia.scrim 负责，
+     而不是靠压暗整张底。 */
+  --dsw-alias-bg-base: rgba(244, 247, 250, calc(var(--dsw-skin-scrim, 0) * 0.72));
+  --dsw-alias-bg-layer-1: rgba(255, 255, 255, calc(0.84 - var(--dsw-skin-scrim, 0) * 0.3));
+  --dsw-alias-bg-layer-2: rgba(235, 240, 244, calc(0.82 - var(--dsw-skin-scrim, 0) * 0.28));
+  --dsw-alias-bg-layer-3: rgba(223, 230, 236, calc(0.8 - var(--dsw-skin-scrim, 0) * 0.26));
+  --dsw-alias-bg-mask-1: #141a1f5c;
+  --dsw-alias-bg-mask-2: #141a1f2e;
+  --dsw-alias-bg-mask-3: #141a1f7a;
+  --dsw-alias-bg-mask-drop: #141a1f1f;
+  --dsw-alias-bg-mask-photo: #0c0f13d9;
+  --dsw-alias-bg-module-platform: rgba(235, 240, 244, calc(0.82 - var(--dsw-skin-scrim, 0) * 0.28));
+  --dsw-alias-bg-multi-select: #dde7eecc;
+  --dsw-alias-bg-overlay: rgba(250, 252, 253, calc(0.92 - var(--dsw-skin-scrim, 0) * 0.25));
+  --dsw-alias-bg-skeleton: #141a1f0f;
+  --dsw-alias-border-inverted: #ffffff5c;
+  --dsw-alias-border-inverted2: #ffffff8c;
+  --dsw-alias-border-l1: #141a1f1f;
+  --dsw-alias-border-l2: #141a1f33;
+  --dsw-alias-border-l2-darkmode-thin: #141a1f2b;
+  --dsw-alias-border-l3: #141a1f4d;
+  --dsw-alias-border-l4: #141a1f6b;
+  --dsw-alias-brand-primary: #39697a;
+  --dsw-alias-brand-primary-invert: #ffffff;
+  --dsw-alias-brand-primary-new-colorprimary-new-color: #39697a;
+  --dsw-alias-brand-text: #234b59;
+  --dsw-alias-button-contrast-fill: #2c5563;
+  --dsw-alias-button-elevated-fill: #ffffff;
+  --dsw-alias-button-floating-fill: #ffffff;
+  --dsw-alias-button-floating-hover: #ebf0f4;
+  --dsw-alias-button-ghost-active-border: #a9c8dc;
+  --dsw-alias-button-ghost-active-fill: #dde7ee;
+  --dsw-alias-button-ghost-active-hover: #c8dbe6;
+  --dsw-alias-button-info-fill: #39697a;
+  --dsw-alias-button-info-hover: #4a7e90;
+  --dsw-alias-button-primary-dimmed: #d5e3ea;
+  --dsw-alias-button-primary-fill: #39697a;
+  --dsw-alias-button-primary-hover: #4a7e90;
+  --dsw-alias-button-tool-bar-fill: #39697a80;
+  --dsw-alias-button-tool-bar-fill-invisible: #39697a5c;
+  --dsw-alias-button-tool-bar-hover: #39697a99;
+  --dsw-alias-interactive-bg-active: #39697a24;
+  --dsw-alias-interactive-bg-hover: #39697a14;
+  --dsw-alias-interactive-bg-hover-accent: #a8892b2e;
+  --dsw-alias-interactive-bg-hover-danger: #a8402f14;
+  --dsw-alias-interactive-bg-hover-solid: #e4edf2;
+  --dsw-alias-label-caption: #7e8b97;
+  --dsw-alias-label-dimmed: #98a5b0;
+  --dsw-alias-label-primary: #141a1f;
+  --dsw-alias-label-primary-bluish: #24404d;
+  --dsw-alias-label-primary-dimmed: #333f48;
+  --dsw-alias-label-primary-foreground: #ffffff;
+  --dsw-alias-label-primary-inverted: #ffffff;
+  --dsw-alias-label-secondary: #3a454e;
+  --dsw-alias-label-tertiary: #5d6a75;
+  --dsw-alias-markdown-citation: #ebf0f499;
+  --dsw-alias-markdown-code-block: #eef2f6e6;
+  --dsw-alias-markdown-code-block-banner: #e6ecf1e6;
+  --dsw-alias-markdown-code-segment-selected: #ffffff;
+  --dsw-alias-markdown-code-segment-unselected: #e9eef399;
+  --dsw-alias-markdown-inline-code: #e4edf2cc;
+  --dsw-alias-markdown-placeholder: #eef2f6e6;
+  --dsw-alias-markdown-tag: #e4edf2cc;
+  --dsw-alias-scrollbar-bg-l1: #d3dde5;
+  --dsw-alias-scrollbar-bg-l2: #d3dde5;
+  --dsw-alias-scrollbar-hover-l1: #a9c8dc;
+  --dsw-alias-scrollbar-hover-l2: #a9c8dc;
+  --dsw-alias-state-business-primary: #39697a;
+  --dsw-alias-state-business-tertiary: #dde7ee;
+  --dsw-alias-state-error-primary: #a8402f;
+  --dsw-alias-state-error-secondary: #c4604c;
+  --dsw-alias-state-success-primary: #3d7f6b;
+  --dsw-alias-state-success-secondary: #4e8c7c;
+  --dsw-alias-state-success-tertiary: #dcefe8;
+  --dsw-alias-state-warn-label: #8a6f1f;
+  --dsw-alias-state-warn-primary: #a8892b;
+  --dsw-alias-state-warn-secondary: #c2a34e;
+  --dsw-alias-state-warn-tertiary: #f6efd8;
+  --dsw-alias-toast-bg: #2c5563;
+  --dsw-alias-tooltip-bg: #fbfcfe;
+  --dsw-alias-tooltip-fg: #141a1f;
+  --dsw-hovercard-bg: #ffffff;
+  --dsw-linear-gradient-think: linear-gradient(90deg, #39697a00 0%, #39697a2e 50%, #39697a00 100%);
+  --dsw-linear-think-select: linear-gradient(90deg, #a8892b1f 0%, #a9c8dc3d 100%);
+  --dsw-shadow-lv1: 0 1px 2px #141a1f14;
+  --dsw-shadow-lv1-blur: 2px;
+  --dsw-shadow-lv2: 0 4px 14px #141a1f1f;
+  --dsw-shadow-lv3: 0 12px 34px #141a1f29;
+  --dsw-specific-bubble: #dbe9e5;
+  --dsw-specific-bubble-highlight: #c6ded8;
+  --dsw-specific-input-major: rgba(255, 255, 255, calc(0.86 - var(--dsw-skin-scrim, 0) * 0.3));
+  --dsw-specific-login-input: rgba(255, 255, 255, calc(0.86 - var(--dsw-skin-scrim, 0) * 0.3));
+  --dsw-specific-menu: rgba(252, 253, 254, calc(0.94 - var(--dsw-skin-scrim, 0) * 0.3));
+  --dsw-specific-selector: #e9eef3dd;
+  --dsw-specific-sidebar-fill: rgba(238, 243, 247, calc(0.8 - var(--dsw-skin-scrim, 0) * 0.3));
+  --dsw-specific-sidebar-nav-item-active: #dde7ee;
+  --dsw-specific-sidebar-nav-item-active-accent: #a8892b;
+  --dsw-specific-sidebar-nav-item-hover: #e4edf2;
+  --dsw-specific-tip: #eef2f6;
+}
+
+/* ── L1：官方 token 重映射（深色） ──────────────────────────────────────── */
+
+body[data-ds-dark-theme] {
+  /* 与浅色同理：底色在遮蔽为 0 时完全透明，立绘透出。 */
+  --dsw-alias-bg-base: rgba(12, 15, 19, calc(var(--dsw-skin-scrim, 0) * 0.78));
+  --dsw-alias-bg-layer-1: rgba(20, 25, 32, calc(0.86 - var(--dsw-skin-scrim, 0) * 0.3));
+  --dsw-alias-bg-layer-2: rgba(27, 34, 42, calc(0.84 - var(--dsw-skin-scrim, 0) * 0.28));
+  --dsw-alias-bg-layer-3: rgba(35, 44, 53, calc(0.82 - var(--dsw-skin-scrim, 0) * 0.26));
+  --dsw-alias-bg-mask-1: #0000008c;
+  --dsw-alias-bg-mask-2: #0000004d;
+  --dsw-alias-bg-mask-3: #00000099;
+  --dsw-alias-bg-mask-drop: #00000033;
+  --dsw-alias-bg-mask-photo: #05070ae6;
+  --dsw-alias-bg-module-platform: rgba(27, 34, 42, calc(0.84 - var(--dsw-skin-scrim, 0) * 0.28));
+  --dsw-alias-bg-multi-select: #2a3742cc;
+  --dsw-alias-bg-overlay: rgba(18, 23, 29, calc(0.92 - var(--dsw-skin-scrim, 0) * 0.25));
+  --dsw-alias-bg-skeleton: #ffffff0f;
+  --dsw-alias-border-inverted: #ffffff29;
+  --dsw-alias-border-inverted2: #ffffff47;
+  --dsw-alias-border-l1: #ffffff1f;
+  --dsw-alias-border-l2: #ffffff33;
+  --dsw-alias-border-l2-darkmode-thin: #ffffff29;
+  --dsw-alias-border-l3: #ffffff4d;
+  --dsw-alias-border-l4: #ffffff6b;
+  --dsw-alias-brand-primary: #8fc3d0;
+  --dsw-alias-brand-primary-invert: #0c0f13;
+  --dsw-alias-brand-primary-new-colorprimary-new-color: #8fc3d0;
+  --dsw-alias-brand-text: #cfe6ec;
+  --dsw-alias-button-contrast-fill: #a6d4df;
+  --dsw-alias-button-elevated-fill: #232c35;
+  --dsw-alias-button-floating-fill: #1b222a;
+  --dsw-alias-button-floating-hover: #232c35;
+  --dsw-alias-button-ghost-active-border: #8fc3d07a;
+  --dsw-alias-button-ghost-active-fill: #2a3742;
+  --dsw-alias-button-ghost-active-hover: #33424f;
+  --dsw-alias-button-info-fill: #8fc3d0;
+  --dsw-alias-button-info-hover: #a6d4df;
+  --dsw-alias-button-primary-dimmed: #2a3742;
+  --dsw-alias-button-primary-fill: #8fc3d0;
+  --dsw-alias-button-primary-hover: #a6d4df;
+  --dsw-alias-button-tool-bar-fill: #8fc3d080;
+  --dsw-alias-button-tool-bar-fill-invisible: #8fc3d05c;
+  --dsw-alias-button-tool-bar-hover: #8fc3d099;
+  --dsw-alias-interactive-bg-active: #8fc3d024;
+  --dsw-alias-interactive-bg-hover: #8fc3d014;
+  --dsw-alias-interactive-bg-hover-accent: #dfc0782e;
+  --dsw-alias-interactive-bg-hover-danger: #d9705c1f;
+  --dsw-alias-interactive-bg-hover-solid: #232c35;
+  --dsw-alias-label-caption: #6d7a87;
+  --dsw-alias-label-dimmed: #5a6774;
+  --dsw-alias-label-primary: #edf1f5;
+  --dsw-alias-label-primary-bluish: #cfe6ec;
+  --dsw-alias-label-primary-dimmed: #aab5c0;
+  --dsw-alias-label-primary-foreground: #0c0f13;
+  --dsw-alias-label-primary-inverted: #0c0f13;
+  --dsw-alias-label-secondary: #c2cbd5;
+  --dsw-alias-label-tertiary: #93a0ad;
+  --dsw-alias-markdown-citation: #232c3599;
+  --dsw-alias-markdown-code-block: #10151ae6;
+  --dsw-alias-markdown-code-block-banner: #1b222ae6;
+  --dsw-alias-markdown-code-segment-selected: #2a3742;
+  --dsw-alias-markdown-code-segment-unselected: #1b222a99;
+  --dsw-alias-markdown-inline-code: #1b222acc;
+  --dsw-alias-markdown-placeholder: #10151ae6;
+  --dsw-alias-markdown-tag: #1b222acc;
+  --dsw-alias-scrollbar-bg-l1: #2a3742;
+  --dsw-alias-scrollbar-bg-l2: #2a3742;
+  --dsw-alias-scrollbar-hover-l1: #4a6270;
+  --dsw-alias-scrollbar-hover-l2: #4a6270;
+  --dsw-alias-state-business-primary: #8fc3d0;
+  --dsw-alias-state-business-tertiary: #223038;
+  --dsw-alias-state-error-primary: #d9705c;
+  --dsw-alias-state-error-secondary: #e58e7c;
+  --dsw-alias-state-success-primary: #7fbfad;
+  --dsw-alias-state-success-secondary: #9ad2c2;
+  --dsw-alias-state-success-tertiary: #1b2b28;
+  --dsw-alias-state-warn-label: #dfc078;
+  --dsw-alias-state-warn-primary: #dfc078;
+  --dsw-alias-state-warn-secondary: #ecd39b;
+  --dsw-alias-state-warn-tertiary: #2b2618;
+  --dsw-alias-toast-bg: #2a3742;
+  --dsw-alias-tooltip-bg: #1b222a;
+  --dsw-alias-tooltip-fg: #edf1f5;
+  --dsw-hovercard-bg: #1b222a;
+  --dsw-linear-gradient-think: linear-gradient(90deg, #8fc3d000 0%, #8fc3d02e 50%, #8fc3d000 100%);
+  --dsw-linear-think-select: linear-gradient(90deg, #dfc0781f 0%, #8fc3d03d 100%);
+  --dsw-shadow-lv1: 0 1px 2px #00000059;
+  --dsw-shadow-lv1-blur: 2px;
+  --dsw-shadow-lv2: 0 4px 14px #00000073;
+  --dsw-shadow-lv3: 0 12px 34px #0000008c;
+  --dsw-specific-bubble: #1d2c2a;
+  --dsw-specific-bubble-highlight: #2a3f3b;
+  --dsw-specific-input-major: rgba(20, 25, 32, calc(0.88 - var(--dsw-skin-scrim, 0) * 0.3));
+  --dsw-specific-login-input: rgba(20, 25, 32, calc(0.88 - var(--dsw-skin-scrim, 0) * 0.3));
+  --dsw-specific-menu: rgba(24, 30, 37, calc(0.95 - var(--dsw-skin-scrim, 0) * 0.3));
+  --dsw-specific-selector: #232c35dd;
+  --dsw-specific-sidebar-fill: rgba(16, 21, 27, calc(0.82 - var(--dsw-skin-scrim, 0) * 0.3));
+  --dsw-specific-sidebar-nav-item-active: #232c35;
+  --dsw-specific-sidebar-nav-item-active-accent: #dfc078;
+  --dsw-specific-sidebar-nav-item-hover: #1b222a;
+  --dsw-specific-tip: #10151a;
+}
+
+/* ============================================================================
+ * L2：语义层
+ * 只使用契约枚举里的 data-dsh-surface / data-dsh-part 值。
+ * 这些属性由皮肤中心的兼容适配器打在官方壳层 DOM 上。
+ * ========================================================================= */
+
+/* ── 根 ─────────────────────────────────────────────────────────────────── */
+
+[data-dsh-surface="root"] {
+  background-color: transparent;
+}
+
+/* ── 侧栏 ───────────────────────────────────────────────────────────────── */
+
+[data-dsh-surface="sidebar"] {
+  border-right: 1px solid var(--jinhsi-thin);
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--jinhsi-gold) 7%, transparent) 0%,
+    transparent 22%,
+    transparent 78%,
+    color-mix(in srgb, var(--jinhsi-jade) 6%, transparent) 100%
+  );
+}
+
+/* 新会话按钮：令尹印式金线描边 */
+[data-dsh-part="new-session"] {
+  border: 1px solid color-mix(in srgb, var(--jinhsi-gold) 34%, transparent);
+  border-radius: 6px;
+}
+
+[data-dsh-part="new-session"]:hover {
+  border-color: color-mix(in srgb, var(--jinhsi-gold) 62%, transparent);
+  background-color: var(--dsw-alias-interactive-bg-hover-accent);
+}
+
+/* ── 会话头 ─────────────────────────────────────────────────────────────── */
+
+[data-dsh-surface="session-header"] {
+  border-bottom: 1px solid var(--jinhsi-thin);
+  background-image: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--jinhsi-gold) 9%, transparent) 0%,
+    transparent 46%
+  );
+}
+
+/* ── 中栏对话区 ─────────────────────────────────────────────────────────── */
+
+[data-dsh-surface="conversation"] {
+  background-color: transparent;
+}
+
+[data-dsh-part="scrollport"] {
+  scrollbar-color: var(--dsw-alias-scrollbar-bg-l1) transparent;
+}
+
+/* 消息行：助手侧留金线题头，用户侧用青金浅底 */
+[data-dsh-part="message-row"] {
+  border-radius: 8px;
+}
+
+[data-dsh-part="message-row"][data-chat-flow-kind="user"] {
+  background-image: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--jinhsi-jade) 8%, transparent) 0%,
+    transparent 84%
+  );
+}
+
+[data-dsh-part="message-row"][data-chat-flow-kind="assistant-step"] {
+  background-image: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--jinhsi-gold) 7%, transparent) 0%,
+    transparent 88%
+  );
+}
+
+/* 助手正文的左缘留白交给 patches.css 的来信卡片统一处理，
+   这里不再单独加 2px —— 那需要 markdown 根元素，而它的类名是构建期哈希。 */
+
+/* 排队条 */
+[data-dsh-part="queue-dock"] {
+  border-top: 1px solid color-mix(in srgb, var(--jinhsi-gold) 26%, transparent);
+}
+
+/* turn 尾行 */
+[data-dsh-part="turn-tail"] {
+  border-top: 1px solid var(--jinhsi-thin);
+}
+
+/* ── 输入区 ─────────────────────────────────────────────────────────────── */
+
+[data-dsh-surface="composer"] {
+  border-top: 1px solid color-mix(in srgb, var(--jinhsi-gold) 24%, transparent);
+}
+
+[data-dsh-part="composer-input"] {
+  caret-color: var(--jinhsi-gold);
+}
+
+[data-dsh-part="composer-input"]::placeholder {
+  color: var(--dsw-alias-label-tertiary);
+  opacity: 1;
+}
+
+[data-dsh-part="composer-chip"] {
+  border: 1px solid color-mix(in srgb, var(--jinhsi-jade) 40%, transparent);
+  border-radius: 5px;
+  background-color: color-mix(in srgb, var(--jinhsi-jade) 10%, transparent);
+}
+
+/* ── 右详情列 ───────────────────────────────────────────────────────────── */
+
+[data-dsh-surface="details"] {
+  border-left: 1px solid var(--jinhsi-thin);
+  background-image: linear-gradient(
+    270deg,
+    color-mix(in srgb, var(--jinhsi-jade) 6%, transparent) 0%,
+    transparent 40%
+  );
+}
+
+/* ── 设置模态 ───────────────────────────────────────────────────────────── */
+
+[data-dsh-surface="settings"] {
+  border: 1px solid color-mix(in srgb, var(--jinhsi-gold) 28%, transparent);
+  box-shadow: var(--dsw-shadow-lv3);
+}
+
+/* ── 帧级浮层 ───────────────────────────────────────────────────────────── */
+
+/* 刻意不写 backdrop-filter：performance-guidelines/v1 的 R4 要求
+   「backdrop-filter 是实时的、昂贵的：把覆盖面积压到需要该效果的最小表面」。
+   浮层是全屏的，而 saturate(1.06) 的收益几乎为零 —— 不值得为它常驻一层合成。 */
+
+/* ── 列宽手柄 ───────────────────────────────────────────────────────────── */
+
+[data-dsh-part="resize-handle"]:hover {
+  background-color: color-mix(in srgb, var(--jinhsi-gold) 34%, transparent);
+}
+
+/* ── 滚动条 ─────────────────────────────────────────────────────────────── */
+
+[data-dsh-part="scrollport"]::-webkit-scrollbar-thumb {
+  background-color: var(--dsw-alias-scrollbar-bg-l1);
+  border-radius: 6px;
+}
+
+[data-dsh-part="scrollport"]::-webkit-scrollbar-thumb:hover {
+  background-color: var(--dsw-alias-scrollbar-hover-l1);
+}
+
+/* ── 焦点可见性：统一为金线 ─────────────────────────────────────────────── */
+
+[data-dsh-surface="root"] :focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--jinhsi-gold) 74%, transparent);
+  outline-offset: 1px;
+}
+

@@ -1,0 +1,67 @@
+/* exmachina67/dsh-theme — client.js
+   fetched 2026-09-18 from https://raw.githubusercontent.com/exmachina67/dsh-theme/main/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+html, body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+::selection { background: var(--dsh-theme-accent-soft2, rgba(77,107,254,0.24)); }
+* { scrollbar-width: thin; scrollbar-color: var(--dsh-theme-scrollbar, rgba(127,130,135,0.4)) transparent; }
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb {
+  background: var(--dsh-theme-scrollbar, rgba(127,130,135,0.4));
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--dsh-theme-scrollbar-strong, rgba(101,103,107,0.6));
+  background-clip: content-box;
+}
+:focus-visible { outline: 2px solid var(--dsh-theme-accent, #4d6bfe); outline-offset: 2px; }
+a, button, input, textarea, select, [role="button"] {
+  transition: background-color .16s ease, border-color .16s ease, color .16s ease,
+    box-shadow .16s ease, opacity .16s ease;
+}
+/* Recolor the design's blue accents to the chosen preset. The primary (send)
+   button is left to the host so its text contrast stays guaranteed. */
+body, body[data-ds-dark-theme] {
+  --dsw-alias-brand-text: var(--dsh-theme-accent-strong);
+  --dsw-alias-button-info-fill: var(--dsh-theme-accent);
+  --dsw-alias-button-info-hover: var(--dsh-theme-accent-strong);
+  --dsw-alias-label-primary-bluish: var(--dsh-theme-accent-strong);
+  --dsw-alias-state-business-primary: var(--dsh-theme-accent);
+  --dsw-alias-state-business-tertiary: var(--dsh-theme-accent-soft);
+  --dsw-specific-sidebar-nav-item-active-accent: var(--dsh-theme-accent-soft);
+  --dsw-specific-sidebar-nav-item-active: var(--dsh-theme-accent-soft);
+  --dsw-specific-bubble: var(--dsh-theme-accent-soft);
+  --dsw-specific-bubble-highlight: var(--dsh-theme-accent-soft2);
+  --dsw-alias-interactive-bg-hover-accent: var(--dsh-theme-accent-soft);
+  --dsw-alias-interactive-bg-active: var(--dsh-theme-accent-soft2);
+  --dsw-alias-button-primary-dimmed: var(--dsh-theme-accent-soft);
+}
+
+
+
+.dsh-theme-video {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+  object-fit: cover;
+  pointer-events: none;
+}
+.dsh-theme-image {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  pointer-events: none;
+}

@@ -1,0 +1,1077 @@
+/* seabiscuit29/dsh-ui-skin-wave — skin/skin.css
+   fetched 2026-09-18 from https://raw.githubusercontent.com/seabiscuit29/dsh-ui-skin-wave/main/skin/skin.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* =====================================================================
+   DSH 皮肤插件 · 结构层（与色相无关）
+   · 调色板（蓝/橘/绿/灰 × 明/暗，共 8 套）由 tools/palettes.mjs 生成，
+     在文件末尾的 /* ============ 色相：蓝色 ============ */
+body[data-dsh-skin="ocean"][data-dsh-hue="blue"] {
+  --dsw-static-neutral-bluish-00:   #ffffff;
+  --dsw-static-neutral-bluish-50:   #f8fbff;
+  --dsw-static-neutral-bluish-60:   #f4f9ff;
+  --dsw-static-neutral-bluish-75:   #eef5ff;
+  --dsw-static-neutral-bluish-100:  #e8f1fd;
+  --dsw-static-neutral-bluish-150:  #e1ebfa;
+  --dsw-static-neutral-bluish-200:  #d8e5f8;
+  --dsw-static-neutral-bluish-300:  #c4d6f0;
+  --dsw-static-neutral-bluish-400:  #a7bcd9;
+  --dsw-static-neutral-bluish-500:  #8fa6c6;
+  --dsw-static-neutral-bluish-600:  #7a8da8;
+  --dsw-static-neutral-bluish-700:  #637a9a;
+  --dsw-static-neutral-bluish-750:  #455c7c;
+  --dsw-static-neutral-bluish-800:  #334a6a;
+  --dsw-static-neutral-bluish-850:  #263c5a;
+  --dsw-static-neutral-bluish-875:  #1c2c42;
+  --dsw-static-neutral-bluish-900:  #142031;
+  --dsw-static-neutral-bluish-950:  #080f18;
+  --dsw-static-neutral-bluish-1000: #0c1624;
+}
+body[data-dsh-skin="ocean"][data-dsh-hue="blue"]:not([data-ds-dark-theme]) {
+  /* 页面底色交给 body 的渐变来画；令该令牌透明，避免任何容器遮挡特效层 */
+  --dsw-alias-bg-base:              transparent;
+  --dsw-alias-bg-layer-1:           #ffffff;
+  --dsw-alias-bg-layer-2:           #ffffff;
+  --dsw-alias-bg-layer-3:           #f8fbff;
+  --dsw-alias-bg-overlay:           #e9f2ff;
+  --dsw-alias-bg-module-platform:   #eef5ff;
+  --dsw-alias-bg-multi-select:      #eef5ff;
+  --dsw-alias-bg-skeleton:          rgba(47, 107, 255, .06);
+  --dsw-alias-bg-mask-drop:         rgba(255, 255, 255, .72);
+  --dsw-alias-border-l1:            rgba(47, 107, 255, .10);
+  --dsw-alias-border-l2:            rgba(47, 107, 255, .17);
+  --dsw-alias-border-l2-darkmode-thin: rgba(47, 107, 255, .17);
+  --dsw-alias-border-l3:            rgba(47, 107, 255, .26);
+  --dsw-alias-border-l4:            rgba(47, 107, 255, .34);
+  --dsw-alias-border-inverted:      rgba(255, 255, 255, .60);
+  --dsw-alias-border-inverted2:     rgba(255, 255, 255, .40);
+  --dsw-alias-label-primary:        #0e1d33;
+  --dsw-alias-label-secondary:      #7a8da8;
+  --dsw-alias-label-tertiary:       #93a5be;
+  --dsw-alias-label-caption:        #9faec4;
+  --dsw-alias-label-dimmed:         #c4d6f0;
+  --dsw-alias-label-primary-bluish: #1e4d8f;
+  --dsw-alias-label-primary-dimmed: #d8e5f8;
+  --dsw-alias-brand-primary:        #2563eb;
+  --dsw-alias-brand-primary-invert: #ffffff;
+  --dsw-alias-brand-text:           #2563eb;
+  --dsw-alias-link:                 #2563eb;
+  --dsw-alias-button-primary-fill:  #2563eb;
+  --dsw-alias-button-primary-hover: #1d4ed8;
+  --dsw-alias-button-primary-dimmed:#c4d6f0;
+  --dsw-alias-button-floating-fill: #ffffff;
+  --dsw-alias-button-floating-hover:#f1f7ff;
+  --dsw-alias-button-elevated-fill: #ffffff;
+  --dsw-alias-button-contrast-fill:#0e1d33;
+  --dsw-alias-button-tool-bar-fill: rgba(47, 107, 255, .10);
+  --dsw-alias-button-tool-bar-fill-invisible: rgba(20, 48, 92, .16);
+  --dsw-alias-button-tool-bar-hover:rgba(47, 107, 255, .16);
+  --dsw-alias-interactive-bg-hover:        rgba(47, 107, 255, .07);
+  --dsw-alias-interactive-bg-active:       rgba(47, 107, 255, .12);
+  --dsw-alias-interactive-bg-hover-accent: rgba(47, 107, 255, .16);
+  --dsw-alias-interactive-bg-hover-solid:  #eef5ff;
+  --dsw-alias-state-business-primary:  #2563eb;
+  --dsw-alias-state-business-tertiary: #e8f1fd;
+  --dsw-alias-toast-bg:                #334a6a;
+  --dsw-alias-tooltip-bg:              #263c5a;
+  --dsw-alias-scrollbar-bg-l1:      #d8e5f8;
+  --dsw-alias-scrollbar-bg-l2:      #d8e5f8;
+  --dsw-alias-scrollbar-hover-l1:   #c4d6f0;
+  --dsw-alias-scrollbar-hover-l2:   #c4d6f0;
+  --dsw-alias-markdown-code-block:         #f8fbff;
+  --dsw-alias-markdown-code-block-banner:  #eef5ff;
+  --dsw-alias-markdown-inline-code:        #f1f7ff;
+  --dsw-alias-markdown-tag:                #eef5ff;
+  --dsw-alias-markdown-citation:           #e8f1fd;
+  --dsw-elevation-stroke-color: rgba(47, 107, 255, .16);
+  --dsw-shadow-lv1: 0 2px 6px 0 rgba(47, 107, 255, .10);
+  --dsw-shadow-lv2: 0 6px 18px 0 rgba(47, 107, 255, .12);
+  --dsw-shadow-lv3: 0 0 1px 0 rgba(47, 107, 255, .18), 0 14px 38px 0 rgba(47, 107, 255, .20);
+  --dsw-elevation-panel:     var(--dsw-elevation-stroke), 0 10px 30px -12px rgba(47, 107, 255, .35), 0 0 24px 0 rgba(47, 107, 255, .10);
+  --dsw-elevation-prominent: var(--dsw-elevation-stroke), 0 24px 56px -24px rgba(47, 107, 255, .55), 0 0 30px 0 rgba(47, 107, 255, .16);
+  --dsw-elevation-soft:      var(--dsw-elevation-stroke), 0 16px 40px -18px rgba(47, 107, 255, .40), 0 0 30px 0 rgba(47, 107, 255, .12);
+}
+body[data-dsh-skin="ocean"][data-dsh-hue="blue"][data-ds-dark-theme] {
+  /* 同上：页面底色由 body 渐变负责 */
+  --dsw-alias-bg-base:              transparent;
+  --dsw-alias-bg-layer-1:           #101c2c;
+  --dsw-alias-bg-layer-2:           #142236;
+  --dsw-alias-bg-layer-3:           #1b2c44;
+  --dsw-alias-bg-overlay:           #263c5a;
+  --dsw-alias-bg-module-platform:   #1b2c44;
+  --dsw-alias-bg-multi-select:      #1c2c42;
+  --dsw-alias-bg-skeleton:          rgba(98, 150, 255, .10);
+  --dsw-alias-bg-mask-drop:         rgba(12, 20, 36, .72);
+  --dsw-alias-border-l1:            rgba(98, 150, 255, .12);
+  --dsw-alias-border-l2:            rgba(98, 150, 255, .18);
+  --dsw-alias-border-l2-darkmode-thin: rgba(98, 150, 255, .12);
+  --dsw-alias-border-l3:            rgba(98, 150, 255, .26);
+  --dsw-alias-border-l4:            rgba(98, 150, 255, .36);
+  --dsw-alias-border-inverted:      rgba(255, 255, 255, .60);
+  --dsw-alias-border-inverted2:     rgba(255, 255, 255, .40);
+  --dsw-alias-label-primary:        #e9f2ff;
+  --dsw-alias-label-secondary:      #c2d2e8;
+  --dsw-alias-label-tertiary:       #9bb0ce;
+  --dsw-alias-label-caption:        #7d91ad;
+  --dsw-alias-label-dimmed:         #455c7c;
+  --dsw-alias-label-primary-bluish: #cfe3ff;
+  --dsw-alias-label-primary-dimmed: #1c2c42;
+  --dsw-alias-brand-primary:        #3b82f6;
+  --dsw-alias-brand-primary-invert: #080f18;
+  --dsw-alias-brand-text:           #7fb0ff;
+  --dsw-alias-link:                 #7fb0ff;
+  --dsw-alias-button-primary-fill:  #3b82f6;
+  --dsw-alias-button-primary-hover: #2563eb;
+  --dsw-alias-button-primary-dimmed:#334a6a;
+  --dsw-alias-button-floating-fill: #142236;
+  --dsw-alias-button-floating-hover:#1b2c44;
+  --dsw-alias-button-elevated-fill: #263c5a;
+  --dsw-alias-button-tool-bar-fill: rgba(98, 150, 255, .14);
+  --dsw-alias-button-tool-bar-fill-invisible: rgba(8, 16, 32, .36);
+  --dsw-alias-button-tool-bar-hover:rgba(98, 150, 255, .22);
+  --dsw-alias-interactive-bg-hover:        rgba(98, 150, 255, .12);
+  --dsw-alias-interactive-bg-active:       rgba(98, 150, 255, .20);
+  --dsw-alias-interactive-bg-hover-accent: rgba(98, 150, 255, .28);
+  --dsw-alias-interactive-bg-hover-solid:  #1b2c44;
+  --dsw-alias-state-business-primary:  #3b82f6;
+  --dsw-alias-state-business-tertiary: #142236;
+  --dsw-alias-toast-bg:                #1b2c44;
+  --dsw-alias-tooltip-bg:              #263c5a;
+  --dsw-alias-scrollbar-bg-l1:      #334a6a;
+  --dsw-alias-scrollbar-bg-l2:      #334a6a;
+  --dsw-alias-scrollbar-hover-l1:   #455c7c;
+  --dsw-alias-scrollbar-hover-l2:   #455c7c;
+  --dsw-alias-markdown-code-block:         #101c2c;
+  --dsw-alias-markdown-code-block-banner:  #1c2c42;
+  --dsw-alias-markdown-inline-code:        #1c2c42;
+  --dsw-alias-markdown-tag:                #1b2c44;
+  --dsw-alias-markdown-citation:           #1c2c42;
+  --dsw-elevation-stroke-color: rgba(98, 150, 255, .18);
+  --dsw-shadow-lv1: 0 2px 6px 0 rgba(0, 0, 0, .45);
+  --dsw-shadow-lv2: 0 6px 18px 0 rgba(0, 0, 0, .50);
+  --dsw-shadow-lv3: 0 0 1px 0 rgba(98, 150, 255, .22), 0 14px 38px 0 rgba(0, 0, 0, .60);
+  --dsw-elevation-panel:     var(--dsw-elevation-stroke), 0 4px 12px 0 rgba(0, 0, 0, .35), 0 0 22px 0 rgba(98, 150, 255, .18);
+  --dsw-elevation-prominent: var(--dsw-elevation-stroke), 0 4px 14px 0 rgba(0, 0, 0, .40), 0 0 26px 0 rgba(98, 150, 255, .26);
+  --dsw-elevation-soft:      var(--dsw-elevation-stroke), 0 6px 20px 0 rgba(0, 0, 0, .35), 0 0 30px 0 rgba(98, 150, 255, .18);
+}
+body[data-dsh-skin="ocean"][data-dsh-hue="blue"]:not([data-ds-dark-theme]) {
+  background-color: #dfeaff;
+  background-image:
+    radial-gradient(980px 460px at 50% -6%, rgba(91, 156, 255, .34), transparent 64%),
+    linear-gradient(180deg, #f9fcff 0%, #dfeaff 100%);
+  background-attachment: fixed;
+}
+body[data-dsh-skin="ocean"][data-dsh-hue="blue"][data-ds-dark-theme] {
+  background-color: #070b14;
+  background-image:
+    radial-gradient(980px 460px at 50% -6%, rgba(37, 99, 235, .30), transparent 64%),
+    linear-gradient(180deg, #0a1020 0%, #070b14 100%);
+  background-attachment: fixed;
+}
+body[data-dsh-skin="ocean"][data-dsh-hue="blue"]:not([data-ds-dark-theme]) { --dsh-skin-accent: #2563eb; --dsh-skin-accent-rgb: 37, 99, 235; }
+body[data-dsh-skin="ocean"][data-dsh-hue="blue"][data-ds-dark-theme] { --dsh-skin-accent: #3b82f6; --dsh-skin-accent-rgb: 59, 130, 246; }
+body[data-dsh-skin="ocean"][data-dsh-hue="blue"] #dsh-ocean-fx { --dsh-fx: 79, 140, 255; --dsh-fx-grid: .042; }
+body[data-dsh-skin="ocean"][data-dsh-hue="blue"][data-ds-dark-theme] #dsh-ocean-fx { --dsh-fx: 118, 166, 255; --dsh-fx-grid: .055; }
+
+/* ============ 色相：橘色 ============ */
+body[data-dsh-skin="ocean"][data-dsh-hue="orange"] {
+  --dsw-static-neutral-bluish-00:   #ffffff;
+  --dsw-static-neutral-bluish-50:   #f8fbff;
+  --dsw-static-neutral-bluish-60:   #fff9f4;
+  --dsw-static-neutral-bluish-75:   #fff5ee;
+  --dsw-static-neutral-bluish-100:  #fdf1e8;
+  --dsw-static-neutral-bluish-150:  #faece1;
+  --dsw-static-neutral-bluish-200:  #f8e6d8;
+  --dsw-static-neutral-bluish-300:  #f0d7c4;
+  --dsw-static-neutral-bluish-400:  #d9bda7;
+  --dsw-static-neutral-bluish-500:  #c6a78f;
+  --dsw-static-neutral-bluish-600:  #a88e7a;
+  --dsw-static-neutral-bluish-700:  #9a7b63;
+  --dsw-static-neutral-bluish-750:  #7c5d45;
+  --dsw-static-neutral-bluish-800:  #6a4b33;
+  --dsw-static-neutral-bluish-850:  #5a3d26;
+  --dsw-static-neutral-bluish-875:  #422c1c;
+  --dsw-static-neutral-bluish-900:  #312114;
+  --dsw-static-neutral-bluish-950:  #180f08;
+  --dsw-static-neutral-bluish-1000: #24160c;
+}
+body[data-dsh-skin="ocean"][data-dsh-hue="orange"]:not([data-ds-dark-theme]) {
+  /* 页面底色交给 body 的渐变来画；令该令牌透明，避免任何容器遮挡特效层 */
+  --dsw-alias-bg-base:              transparent;
+  --dsw-alias-bg-layer-1:           #ffffff;
+  --dsw-alias-bg-layer-2:           #ffffff;
+  --dsw-alias-bg-layer-3:           #f8fbff;
+  --dsw-alias-bg-overlay:           #fff3e9;
+  --dsw-alias-bg-module-platform:   #fff5ee;
+  --dsw-alias-bg-multi-select:      #fff5ee;
+  --dsw-alias-bg-skeleton:          rgba(242, 122, 32, .06);
+  --dsw-alias-bg-mask-drop:         rgba(255, 255, 255, .72);
+  --dsw-alias-border-l1:            rgba(242, 122, 32, .10);
+  --dsw-alias-border-l2:            rgba(242, 122, 32, .17);
+  --dsw-alias-border-l2-darkmode-thin: rgba(242, 122, 32, .17);
+  --dsw-alias-border-l3:            rgba(242, 122, 32, .26);
+  --dsw-alias-border-l4:            rgba(242, 122, 32, .34);
+  --dsw-alias-border-inverted:      rgba(255, 255, 255, .60);
+  --dsw-alias-border-inverted2:     rgba(255, 255, 255, .40);
+  --dsw-alias-label-primary:        #331e0e;
+  --dsw-alias-label-secondary:      #a88e7a;
+  --dsw-alias-label-tertiary:       #bea693;
+  --dsw-alias-label-caption:        #c4af9f;
+  --dsw-alias-label-dimmed:         #f0d7c4;
+  --dsw-alias-label-primary-bluish: #8f4f1e;
+  --dsw-alias-label-primary-dimmed: #f8e6d8;
+  --dsw-alias-brand-primary:        #e2670a;
+  --dsw-alias-brand-primary-invert: #ffffff;
+  --dsw-alias-brand-text:           #e2670a;
+  --dsw-alias-link:                 #e2670a;
+  --dsw-alias-button-primary-fill:  #e2670a;
+  --dsw-alias-button-primary-hover: #c4550a;
+  --dsw-alias-button-primary-dimmed:#f0d7c4;
+  --dsw-alias-button-floating-fill: #ffffff;
+  --dsw-alias-button-floating-hover:#fff7f1;
+  --dsw-alias-button-elevated-fill: #ffffff;
+  --dsw-alias-button-contrast-fill:#331e0e;
+  --dsw-alias-button-tool-bar-fill: rgba(242, 122, 32, .10);
+  --dsw-alias-button-tool-bar-fill-invisible: rgba(20, 48, 92, .16);
+  --dsw-alias-button-tool-bar-hover:rgba(242, 122, 32, .16);
+  --dsw-alias-interactive-bg-hover:        rgba(242, 122, 32, .07);
+  --dsw-alias-interactive-bg-active:       rgba(242, 122, 32, .12);
+  --dsw-alias-interactive-bg-hover-accent: rgba(242, 122, 32, .16);
+  --dsw-alias-interactive-bg-hover-solid:  #fff5ee;
+  --dsw-alias-state-business-primary:  #e2670a;
+  --dsw-alias-state-business-tertiary: #fdf1e8;
+  --dsw-alias-toast-bg:                #6a4b33;
+  --dsw-alias-tooltip-bg:              #5a3d26;
+  --dsw-alias-scrollbar-bg-l1:      #f8e6d8;
+  --dsw-alias-scrollbar-bg-l2:      #f8e6d8;
+  --dsw-alias-scrollbar-hover-l1:   #f0d7c4;
+  --dsw-alias-scrollbar-hover-l2:   #f0d7c4;
+  --dsw-alias-markdown-code-block:         #f8fbff;
+  --dsw-alias-markdown-code-block-banner:  #fff5ee;
+  --dsw-alias-markdown-inline-code:        #fff7f1;
+  --dsw-alias-markdown-tag:                #fff5ee;
+  --dsw-alias-markdown-citation:           #fdf1e8;
+  --dsw-elevation-stroke-color: rgba(242, 122, 32, .16);
+  --dsw-shadow-lv1: 0 2px 6px 0 rgba(242, 122, 32, .10);
+  --dsw-shadow-lv2: 0 6px 18px 0 rgba(242, 122, 32, .12);
+  --dsw-shadow-lv3: 0 0 1px 0 rgba(242, 122, 32, .18), 0 14px 38px 0 rgba(242, 122, 32, .20);
+  --dsw-elevation-panel:     var(--dsw-elevation-stroke), 0 10px 30px -12px rgba(242, 122, 32, .35), 0 0 24px 0 rgba(242, 122, 32, .10);
+  --dsw-elevation-prominent: var(--dsw-elevation-stroke), 0 24px 56px -24px rgba(242, 122, 32, .55), 0 0 30px 0 rgba(242, 122, 32, .16);
+  --dsw-elevation-soft:      var(--dsw-elevation-stroke), 0 16px 40px -18px rgba(242, 122, 32, .40), 0 0 30px 0 rgba(242, 122, 32, .12);
+}
+body[data-dsh-skin="ocean"][data-dsh-hue="orange"][data-ds-dark-theme] {
+  /* 同上：页面底色由 body 渐变负责 */
+  --dsw-alias-bg-base:              transparent;
+  --dsw-alias-bg-layer-1:           #2c1c10;
+  --dsw-alias-bg-layer-2:           #362314;
+  --dsw-alias-bg-layer-3:           #442d1b;
+  --dsw-alias-bg-overlay:           #5a3d26;
+  --dsw-alias-bg-module-platform:   #442d1b;
+  --dsw-alias-bg-multi-select:      #422c1c;
+  --dsw-alias-bg-skeleton:          rgba(255, 163, 92, .10);
+  --dsw-alias-bg-mask-drop:         rgba(12, 20, 36, .72);
+  --dsw-alias-border-l1:            rgba(255, 163, 92, .12);
+  --dsw-alias-border-l2:            rgba(255, 163, 92, .18);
+  --dsw-alias-border-l2-darkmode-thin: rgba(255, 163, 92, .12);
+  --dsw-alias-border-l3:            rgba(255, 163, 92, .26);
+  --dsw-alias-border-l4:            rgba(255, 163, 92, .36);
+  --dsw-alias-border-inverted:      rgba(255, 255, 255, .60);
+  --dsw-alias-border-inverted2:     rgba(255, 255, 255, .40);
+  --dsw-alias-label-primary:        #fff3e9;
+  --dsw-alias-label-secondary:      #e8d2c2;
+  --dsw-alias-label-tertiary:       #ceb19b;
+  --dsw-alias-label-caption:        #ad927d;
+  --dsw-alias-label-dimmed:         #7c5d45;
+  --dsw-alias-label-primary-bluish: #ffe4cf;
+  --dsw-alias-label-primary-dimmed: #422c1c;
+  --dsw-alias-brand-primary:        #f5883a;
+  --dsw-alias-brand-primary-invert: #180f08;
+  --dsw-alias-brand-text:           #ffb478;
+  --dsw-alias-link:                 #ffb478;
+  --dsw-alias-button-primary-fill:  #f5883a;
+  --dsw-alias-button-primary-hover: #e2670a;
+  --dsw-alias-button-primary-dimmed:#6a4b33;
+  --dsw-alias-button-floating-fill: #362314;
+  --dsw-alias-button-floating-hover:#442d1b;
+  --dsw-alias-button-elevated-fill: #5a3d26;
+  --dsw-alias-button-tool-bar-fill: rgba(255, 163, 92, .14);
+  --dsw-alias-button-tool-bar-fill-invisible: rgba(8, 16, 32, .36);
+  --dsw-alias-button-tool-bar-hover:rgba(255, 163, 92, .22);
+  --dsw-alias-interactive-bg-hover:        rgba(255, 163, 92, .12);
+  --dsw-alias-interactive-bg-active:       rgba(255, 163, 92, .20);
+  --dsw-alias-interactive-bg-hover-accent: rgba(255, 163, 92, .28);
+  --dsw-alias-interactive-bg-hover-solid:  #442d1b;
+  --dsw-alias-state-business-primary:  #f5883a;
+  --dsw-alias-state-business-tertiary: #362314;
+  --dsw-alias-toast-bg:                #442d1b;
+  --dsw-alias-tooltip-bg:              #5a3d26;
+  --dsw-alias-scrollbar-bg-l1:      #6a4b33;
+  --dsw-alias-scrollbar-bg-l2:      #6a4b33;
+  --dsw-alias-scrollbar-hover-l1:   #7c5d45;
+  --dsw-alias-scrollbar-hover-l2:   #7c5d45;
+  --dsw-alias-markdown-code-block:         #2c1c10;
+  --dsw-alias-markdown-code-block-banner:  #422c1c;
+  --dsw-alias-markdown-inline-code:        #422c1c;
+  --dsw-alias-markdown-tag:                #442d1b;
+  --dsw-alias-markdown-citation:           #422c1c;
+  --dsw-elevation-stroke-color: rgba(255, 163, 92, .18);
+  --dsw-shadow-lv1: 0 2px 6px 0 rgba(0, 0, 0, .45);
+  --dsw-shadow-lv2: 0 6px 18px 0 rgba(0, 0, 0, .50);
+  --dsw-shadow-lv3: 0 0 1px 0 rgba(255, 163, 92, .22), 0 14px 38px 0 rgba(0, 0, 0, .60);
+  --dsw-elevation-panel:     var(--dsw-elevation-stroke), 0 4px 12px 0 rgba(0, 0, 0, .35), 0 0 22px 0 rgba(255, 163, 92, .18);
+  --dsw-elevation-prominent: var(--dsw-elevation-stroke), 0 4px 14px 0 rgba(0, 0, 0, .40), 0 0 26px 0 rgba(255, 163, 92, .26);
+  --dsw-elevation-soft:      var(--dsw-elevation-stroke), 0 6px 20px 0 rgba(0, 0, 0, .35), 0 0 30px 0 rgba(255, 163, 92, .18);
+}
+body[data-dsh-skin="ocean"][data-dsh-hue="orange"]:not([data-ds-dark-theme]) {
+  background-color: #ffe8d6;
+  background-image:
+    radial-gradient(980px 460px at 50% -6%, rgba(255, 156, 82, .30), transparent 64%),
+    linear-gradient(180deg, #fffaf5 0%, #ffe8d6 100%);
+  background-attachment: fixed;
+}
+body[data-dsh-skin="ocean"][data-dsh-hue="orange"][data-ds-dark-theme] {
+  background-color: #0f0a06;
+  background-image:
+    radial-gradient(980px 460px at 50% -6%, rgba(226, 103, 10, .28), transparent 64%),
+    linear-gradient(180deg, #181008 0%, #0f0a06 100%);
+  background-attachment: fixed;
+}
+body[data-dsh-skin="ocean"][data-dsh-hue="orange"]:not([data-ds-dark-theme]) { --dsh-skin-accent: #e2670a; --dsh-skin-accent-rgb: 226, 103, 10; }
+body[data-dsh-skin="ocean"][data-dsh-hue="orange"][data-ds-dark-theme] { --dsh-skin-accent: #f5883a; --dsh-skin-accent-rgb: 245, 136, 58; }
+body[data-dsh-skin="ocean"][data-dsh-hue="orange"] #dsh-ocean-fx { --dsh-fx: 242, 146, 58; --dsh-fx-grid: .042; }
+body[data-dsh-skin="ocean"][data-dsh-hue="orange"][data-ds-dark-theme] #dsh-ocean-fx { --dsh-fx: 255, 172, 98; --dsh-fx-grid: .055; }
+
+/* ============ 色相：绿色 ============ */
+body[data-dsh-skin="ocean"][data-dsh-hue="green"] {
+  --dsw-static-neutral-bluish-00:   #ffffff;
+  --dsw-static-neutral-bluish-50:   #f8fbff;
+  --dsw-static-neutral-bluish-60:   #f5fefa;
+  --dsw-static-neutral-bluish-75:   #effef7;
+  --dsw-static-neutral-bluish-100:  #eafbf3;
+  --dsw-static-neutral-bluish-150:  #e3f8ee;
+  --dsw-static-neutral-bluish-200:  #daf6e9;
+  --dsw-static-neutral-bluish-300:  #c7eddb;
+  --dsw-static-neutral-bluish-400:  #abd5c1;
+  --dsw-static-neutral-bluish-500:  #93c2ac;
+  --dsw-static-neutral-bluish-600:  #7da592;
+  --dsw-static-neutral-bluish-700:  #679680;
+  --dsw-static-neutral-bluish-750:  #497862;
+  --dsw-static-neutral-bluish-800:  #376650;
+  --dsw-static-neutral-bluish-850:  #2a5641;
+  --dsw-static-neutral-bluish-875:  #1f3f30;
+  --dsw-static-neutral-bluish-900:  #162f23;
+  --dsw-static-neutral-bluish-950:  #091710;
+  --dsw-static-neutral-bluish-1000: #0e2219;
+}
+body[data-dsh-skin="ocean"][data-dsh-hue="green"]:not([data-ds-dark-theme]) {
+  /* 页面底色交给 body 的渐变来画；令该令牌透明，避免任何容器遮挡特效层 */
+  --dsw-alias-bg-base:              transparent;
+  --dsw-alias-bg-layer-1:           #ffffff;
+  --dsw-alias-bg-layer-2:           #ffffff;
+  --dsw-alias-bg-layer-3:           #f8fbff;
+  --dsw-alias-bg-overlay:           #ebfdf5;
+  --dsw-alias-bg-module-platform:   #effef7;
+  --dsw-alias-bg-multi-select:      #effef7;
+  --dsw-alias-bg-skeleton:          rgba(22, 163, 106, .06);
+  --dsw-alias-bg-mask-drop:         rgba(255, 255, 255, .72);
+  --dsw-alias-border-l1:            rgba(22, 163, 106, .10);
+  --dsw-alias-border-l2:            rgba(22, 163, 106, .17);
+  --dsw-alias-border-l2-darkmode-thin: rgba(22, 163, 106, .17);
+  --dsw-alias-border-l3:            rgba(22, 163, 106, .26);
+  --dsw-alias-border-l4:            rgba(22, 163, 106, .34);
+  --dsw-alias-border-inverted:      rgba(255, 255, 255, .60);
+  --dsw-alias-border-inverted2:     rgba(255, 255, 255, .40);
+  --dsw-alias-label-primary:        #113022;
+  --dsw-alias-label-secondary:      #7da592;
+  --dsw-alias-label-tertiary:       #96bbaa;
+  --dsw-alias-label-caption:        #a2c1b3;
+  --dsw-alias-label-dimmed:         #c7eddb;
+  --dsw-alias-label-primary-bluish: #26875a;
+  --dsw-alias-label-primary-dimmed: #daf6e9;
+  --dsw-alias-brand-primary:        #0f9d63;
+  --dsw-alias-brand-primary-invert: #ffffff;
+  --dsw-alias-brand-text:           #0f9d63;
+  --dsw-alias-link:                 #0f9d63;
+  --dsw-alias-button-primary-fill:  #0f9d63;
+  --dsw-alias-button-primary-hover: #0b7d4f;
+  --dsw-alias-button-primary-dimmed:#c7eddb;
+  --dsw-alias-button-floating-fill: #ffffff;
+  --dsw-alias-button-floating-hover:#f2fef8;
+  --dsw-alias-button-elevated-fill: #ffffff;
+  --dsw-alias-button-contrast-fill:#113022;
+  --dsw-alias-button-tool-bar-fill: rgba(22, 163, 106, .10);
+  --dsw-alias-button-tool-bar-fill-invisible: rgba(20, 48, 92, .16);
+  --dsw-alias-button-tool-bar-hover:rgba(22, 163, 106, .16);
+  --dsw-alias-interactive-bg-hover:        rgba(22, 163, 106, .07);
+  --dsw-alias-interactive-bg-active:       rgba(22, 163, 106, .12);
+  --dsw-alias-interactive-bg-hover-accent: rgba(22, 163, 106, .16);
+  --dsw-alias-interactive-bg-hover-solid:  #effef7;
+  --dsw-alias-state-business-primary:  #0f9d63;
+  --dsw-alias-state-business-tertiary: #eafbf3;
+  --dsw-alias-toast-bg:                #376650;
+  --dsw-alias-tooltip-bg:              #2a5641;
+  --dsw-alias-scrollbar-bg-l1:      #daf6e9;
+  --dsw-alias-scrollbar-bg-l2:      #daf6e9;
+  --dsw-alias-scrollbar-hover-l1:   #c7eddb;
+  --dsw-alias-scrollbar-hover-l2:   #c7eddb;
+  --dsw-alias-markdown-code-block:         #f8fbff;
+  --dsw-alias-markdown-code-block-banner:  #effef7;
+  --dsw-alias-markdown-inline-code:        #f2fef8;
+  --dsw-alias-markdown-tag:                #effef7;
+  --dsw-alias-markdown-citation:           #eafbf3;
+  --dsw-elevation-stroke-color: rgba(22, 163, 106, .16);
+  --dsw-shadow-lv1: 0 2px 6px 0 rgba(22, 163, 106, .10);
+  --dsw-shadow-lv2: 0 6px 18px 0 rgba(22, 163, 106, .12);
+  --dsw-shadow-lv3: 0 0 1px 0 rgba(22, 163, 106, .18), 0 14px 38px 0 rgba(22, 163, 106, .20);
+  --dsw-elevation-panel:     var(--dsw-elevation-stroke), 0 10px 30px -12px rgba(22, 163, 106, .35), 0 0 24px 0 rgba(22, 163, 106, .10);
+  --dsw-elevation-prominent: var(--dsw-elevation-stroke), 0 24px 56px -24px rgba(22, 163, 106, .55), 0 0 30px 0 rgba(22, 163, 106, .16);
+  --dsw-elevation-soft:      var(--dsw-elevation-stroke), 0 16px 40px -18px rgba(22, 163, 106, .40), 0 0 30px 0 rgba(22, 163, 106, .12);
+}
+body[data-dsh-skin="ocean"][data-dsh-hue="green"][data-ds-dark-theme] {
+  /* 同上：页面底色由 body 渐变负责 */
+  --dsw-alias-bg-base:              transparent;
+  --dsw-alias-bg-layer-1:           #1e2d26;
+  --dsw-alias-bg-layer-2:           #24352d;
+  --dsw-alias-bg-layer-3:           #2d4138;
+  --dsw-alias-bg-overlay:           #3b5448;
+  --dsw-alias-bg-module-platform:   #2d4138;
+  --dsw-alias-bg-multi-select:      #2d4037;
+  --dsw-alias-bg-skeleton:          rgba(74, 214, 150, .10);
+  --dsw-alias-bg-mask-drop:         rgba(12, 20, 36, .72);
+  --dsw-alias-border-l1:            rgba(74, 214, 150, .12);
+  --dsw-alias-border-l2:            rgba(74, 214, 150, .18);
+  --dsw-alias-border-l2-darkmode-thin: rgba(74, 214, 150, .12);
+  --dsw-alias-border-l3:            rgba(74, 214, 150, .26);
+  --dsw-alias-border-l4:            rgba(74, 214, 150, .36);
+  --dsw-alias-border-inverted:      rgba(255, 255, 255, .60);
+  --dsw-alias-border-inverted2:     rgba(255, 255, 255, .40);
+  --dsw-alias-label-primary:        #eff9f4;
+  --dsw-alias-label-secondary:      #d6e3dd;
+  --dsw-alias-label-tertiary:       #b3c6bd;
+  --dsw-alias-label-caption:        #93a69d;
+  --dsw-alias-label-dimmed:         #5c7569;
+  --dsw-alias-label-primary-bluish: #ddf1e8;
+  --dsw-alias-label-primary-dimmed: #2d4037;
+  --dsw-alias-brand-primary:        #22c98a;
+  --dsw-alias-brand-primary-invert: #131d18;
+  --dsw-alias-brand-text:           #6ee7b7;
+  --dsw-alias-link:                 #6ee7b7;
+  --dsw-alias-button-primary-fill:  #22c98a;
+  --dsw-alias-button-primary-hover: #0f9d63;
+  --dsw-alias-button-primary-dimmed:#496357;
+  --dsw-alias-button-floating-fill: #24352d;
+  --dsw-alias-button-floating-hover:#2d4138;
+  --dsw-alias-button-elevated-fill: #3b5448;
+  --dsw-alias-button-tool-bar-fill: rgba(74, 214, 150, .14);
+  --dsw-alias-button-tool-bar-fill-invisible: rgba(8, 16, 32, .36);
+  --dsw-alias-button-tool-bar-hover:rgba(74, 214, 150, .22);
+  --dsw-alias-interactive-bg-hover:        rgba(74, 214, 150, .12);
+  --dsw-alias-interactive-bg-active:       rgba(74, 214, 150, .20);
+  --dsw-alias-interactive-bg-hover-accent: rgba(74, 214, 150, .28);
+  --dsw-alias-interactive-bg-hover-solid:  #2d4138;
+  --dsw-alias-state-business-primary:  #22c98a;
+  --dsw-alias-state-business-tertiary: #24352d;
+  --dsw-alias-toast-bg:                #2d4138;
+  --dsw-alias-tooltip-bg:              #3b5448;
+  --dsw-alias-scrollbar-bg-l1:      #496357;
+  --dsw-alias-scrollbar-bg-l2:      #496357;
+  --dsw-alias-scrollbar-hover-l1:   #5c7569;
+  --dsw-alias-scrollbar-hover-l2:   #5c7569;
+  --dsw-alias-markdown-code-block:         #1e2d26;
+  --dsw-alias-markdown-code-block-banner:  #2d4037;
+  --dsw-alias-markdown-inline-code:        #2d4037;
+  --dsw-alias-markdown-tag:                #2d4138;
+  --dsw-alias-markdown-citation:           #2d4037;
+  --dsw-elevation-stroke-color: rgba(74, 214, 150, .18);
+  --dsw-shadow-lv1: 0 2px 6px 0 rgba(0, 0, 0, .45);
+  --dsw-shadow-lv2: 0 6px 18px 0 rgba(0, 0, 0, .50);
+  --dsw-shadow-lv3: 0 0 1px 0 rgba(74, 214, 150, .22), 0 14px 38px 0 rgba(0, 0, 0, .60);
+  --dsw-elevation-panel:     var(--dsw-elevation-stroke), 0 4px 12px 0 rgba(0, 0, 0, .35), 0 0 22px 0 rgba(74, 214, 150, .18);
+  --dsw-elevation-prominent: var(--dsw-elevation-stroke), 0 4px 14px 0 rgba(0, 0, 0, .40), 0 0 26px 0 rgba(74, 214, 150, .26);
+  --dsw-elevation-soft:      var(--dsw-elevation-stroke), 0 6px 20px 0 rgba(0, 0, 0, .35), 0 0 30px 0 rgba(74, 214, 150, .18);
+}
+body[data-dsh-skin="ocean"][data-dsh-hue="green"]:not([data-ds-dark-theme]) {
+  background-color: #d9f7e9;
+  background-image:
+    radial-gradient(980px 460px at 50% -6%, rgba(74, 214, 150, .28), transparent 64%),
+    linear-gradient(180deg, #f7fffb 0%, #d9f7e9 100%);
+  background-attachment: fixed;
+}
+body[data-dsh-skin="ocean"][data-dsh-hue="green"][data-ds-dark-theme] {
+  background-color: #081310;
+  background-image:
+    radial-gradient(980px 460px at 50% -6%, rgba(15, 157, 99, .22), transparent 64%),
+    linear-gradient(180deg, #0c1a14 0%, #081310 100%);
+  background-attachment: fixed;
+}
+body[data-dsh-skin="ocean"][data-dsh-hue="green"]:not([data-ds-dark-theme]) { --dsh-skin-accent: #0f9d63; --dsh-skin-accent-rgb: 15, 157, 99; }
+body[data-dsh-skin="ocean"][data-dsh-hue="green"][data-ds-dark-theme] { --dsh-skin-accent: #22c98a; --dsh-skin-accent-rgb: 34, 201, 138; }
+body[data-dsh-skin="ocean"][data-dsh-hue="green"] #dsh-ocean-fx { --dsh-fx: 46, 190, 125; --dsh-fx-grid: .042; }
+body[data-dsh-skin="ocean"][data-dsh-hue="green"][data-ds-dark-theme] #dsh-ocean-fx { --dsh-fx: 88, 220, 150; --dsh-fx-grid: .055; }
+
+/* ============ 色相：灰色 ============ */
+body[data-dsh-skin="ocean"][data-dsh-hue="gray"] {
+  --dsw-static-neutral-bluish-00:   #ffffff;
+  --dsw-static-neutral-bluish-50:   #f8fbff;
+  --dsw-static-neutral-bluish-60:   #f9f9fa;
+  --dsw-static-neutral-bluish-75:   #f6f6f7;
+  --dsw-static-neutral-bluish-100:  #f2f2f3;
+  --dsw-static-neutral-bluish-150:  #ededee;
+  --dsw-static-neutral-bluish-200:  #e7e8e9;
+  --dsw-static-neutral-bluish-300:  #d8dadc;
+  --dsw-static-neutral-bluish-400:  #bec0c2;
+  --dsw-static-neutral-bluish-500:  #a9aaac;
+  --dsw-static-neutral-bluish-600:  #8f9193;
+  --dsw-static-neutral-bluish-700:  #7d7e80;
+  --dsw-static-neutral-bluish-750:  #5f6062;
+  --dsw-static-neutral-bluish-800:  #4d4e50;
+  --dsw-static-neutral-bluish-850:  #3e4042;
+  --dsw-static-neutral-bluish-875:  #2e2f30;
+  --dsw-static-neutral-bluish-900:  #212224;
+  --dsw-static-neutral-bluish-950:  #0f1011;
+  --dsw-static-neutral-bluish-1000: #171819;
+}
+body[data-dsh-skin="ocean"][data-dsh-hue="gray"]:not([data-ds-dark-theme]) {
+  /* 页面底色交给 body 的渐变来画；令该令牌透明，避免任何容器遮挡特效层 */
+  --dsw-alias-bg-base:              transparent;
+  --dsw-alias-bg-layer-1:           #ffffff;
+  --dsw-alias-bg-layer-2:           #ffffff;
+  --dsw-alias-bg-layer-3:           #f8fbff;
+  --dsw-alias-bg-overlay:           #f3f4f5;
+  --dsw-alias-bg-module-platform:   #f6f6f7;
+  --dsw-alias-bg-multi-select:      #f6f6f7;
+  --dsw-alias-bg-skeleton:          rgba(110, 120, 138, .06);
+  --dsw-alias-bg-mask-drop:         rgba(255, 255, 255, .72);
+  --dsw-alias-border-l1:            rgba(110, 120, 138, .10);
+  --dsw-alias-border-l2:            rgba(110, 120, 138, .17);
+  --dsw-alias-border-l2-darkmode-thin: rgba(110, 120, 138, .17);
+  --dsw-alias-border-l3:            rgba(110, 120, 138, .26);
+  --dsw-alias-border-l4:            rgba(110, 120, 138, .34);
+  --dsw-alias-border-inverted:      rgba(255, 255, 255, .60);
+  --dsw-alias-border-inverted2:     rgba(255, 255, 255, .40);
+  --dsw-alias-label-primary:        #1f2022;
+  --dsw-alias-label-secondary:      #8f9193;
+  --dsw-alias-label-tertiary:       #a7a8aa;
+  --dsw-alias-label-caption:        #b0b1b3;
+  --dsw-alias-label-dimmed:         #d8dadc;
+  --dsw-alias-label-primary-bluish: #53565a;
+  --dsw-alias-label-primary-dimmed: #e7e8e9;
+  --dsw-alias-brand-primary:        #4b5563;
+  --dsw-alias-brand-primary-invert: #ffffff;
+  --dsw-alias-brand-text:           #4b5563;
+  --dsw-alias-link:                 #4b5563;
+  --dsw-alias-button-primary-fill:  #4b5563;
+  --dsw-alias-button-primary-hover: #3b4453;
+  --dsw-alias-button-primary-dimmed:#d8dadc;
+  --dsw-alias-button-floating-fill: #ffffff;
+  --dsw-alias-button-floating-hover:#f8f8f8;
+  --dsw-alias-button-elevated-fill: #ffffff;
+  --dsw-alias-button-contrast-fill:#1f2022;
+  --dsw-alias-button-tool-bar-fill: rgba(110, 120, 138, .10);
+  --dsw-alias-button-tool-bar-fill-invisible: rgba(20, 48, 92, .16);
+  --dsw-alias-button-tool-bar-hover:rgba(110, 120, 138, .16);
+  --dsw-alias-interactive-bg-hover:        rgba(110, 120, 138, .07);
+  --dsw-alias-interactive-bg-active:       rgba(110, 120, 138, .12);
+  --dsw-alias-interactive-bg-hover-accent: rgba(110, 120, 138, .16);
+  --dsw-alias-interactive-bg-hover-solid:  #f6f6f7;
+  --dsw-alias-state-business-primary:  #4b5563;
+  --dsw-alias-state-business-tertiary: #f2f2f3;
+  --dsw-alias-toast-bg:                #4d4e50;
+  --dsw-alias-tooltip-bg:              #3e4042;
+  --dsw-alias-scrollbar-bg-l1:      #e7e8e9;
+  --dsw-alias-scrollbar-bg-l2:      #e7e8e9;
+  --dsw-alias-scrollbar-hover-l1:   #d8dadc;
+  --dsw-alias-scrollbar-hover-l2:   #d8dadc;
+  --dsw-alias-markdown-code-block:         #f8fbff;
+  --dsw-alias-markdown-code-block-banner:  #f6f6f7;
+  --dsw-alias-markdown-inline-code:        #f8f8f8;
+  --dsw-alias-markdown-tag:                #f6f6f7;
+  --dsw-alias-markdown-citation:           #f2f2f3;
+  --dsw-elevation-stroke-color: rgba(110, 120, 138, .16);
+  --dsw-shadow-lv1: 0 2px 6px 0 rgba(110, 120, 138, .10);
+  --dsw-shadow-lv2: 0 6px 18px 0 rgba(110, 120, 138, .12);
+  --dsw-shadow-lv3: 0 0 1px 0 rgba(110, 120, 138, .18), 0 14px 38px 0 rgba(110, 120, 138, .20);
+  --dsw-elevation-panel:     var(--dsw-elevation-stroke), 0 10px 30px -12px rgba(110, 120, 138, .35), 0 0 24px 0 rgba(110, 120, 138, .10);
+  --dsw-elevation-prominent: var(--dsw-elevation-stroke), 0 24px 56px -24px rgba(110, 120, 138, .55), 0 0 30px 0 rgba(110, 120, 138, .16);
+  --dsw-elevation-soft:      var(--dsw-elevation-stroke), 0 16px 40px -18px rgba(110, 120, 138, .40), 0 0 30px 0 rgba(110, 120, 138, .12);
+}
+body[data-dsh-skin="ocean"][data-dsh-hue="gray"][data-ds-dark-theme] {
+  /* 同上：页面底色由 body 渐变负责 */
+  --dsw-alias-bg-base:              transparent;
+  --dsw-alias-bg-layer-1:           #262728;
+  --dsw-alias-bg-layer-2:           #2d2e2f;
+  --dsw-alias-bg-layer-3:           #37383a;
+  --dsw-alias-bg-overlay:           #47494a;
+  --dsw-alias-bg-module-platform:   #37383a;
+  --dsw-alias-bg-multi-select:      #373839;
+  --dsw-alias-bg-skeleton:          rgba(150, 162, 180, .10);
+  --dsw-alias-bg-mask-drop:         rgba(12, 20, 36, .72);
+  --dsw-alias-border-l1:            rgba(150, 162, 180, .12);
+  --dsw-alias-border-l2:            rgba(150, 162, 180, .18);
+  --dsw-alias-border-l2-darkmode-thin: rgba(150, 162, 180, .12);
+  --dsw-alias-border-l3:            rgba(150, 162, 180, .26);
+  --dsw-alias-border-l4:            rgba(150, 162, 180, .36);
+  --dsw-alias-border-inverted:      rgba(255, 255, 255, .60);
+  --dsw-alias-border-inverted2:     rgba(255, 255, 255, .40);
+  --dsw-alias-label-primary:        #f3f4f5;
+  --dsw-alias-label-secondary:      #dddedf;
+  --dsw-alias-label-tertiary:       #bcbdbf;
+  --dsw-alias-label-caption:        #9d9e9f;
+  --dsw-alias-label-dimmed:         #68696b;
+  --dsw-alias-label-primary-bluish: #e6e7e8;
+  --dsw-alias-label-primary-dimmed: #373839;
+  --dsw-alias-brand-primary:        #9aa3b2;
+  --dsw-alias-brand-primary-invert: #18191a;
+  --dsw-alias-brand-text:           #c3cad6;
+  --dsw-alias-link:                 #c3cad6;
+  --dsw-alias-button-primary-fill:  #9aa3b2;
+  --dsw-alias-button-primary-hover: #7c8798;
+  --dsw-alias-button-primary-dimmed:#565759;
+  --dsw-alias-button-floating-fill: #2d2e2f;
+  --dsw-alias-button-floating-hover:#37383a;
+  --dsw-alias-button-elevated-fill: #47494a;
+  --dsw-alias-button-tool-bar-fill: rgba(150, 162, 180, .14);
+  --dsw-alias-button-tool-bar-fill-invisible: rgba(8, 16, 32, .36);
+  --dsw-alias-button-tool-bar-hover:rgba(150, 162, 180, .22);
+  --dsw-alias-interactive-bg-hover:        rgba(150, 162, 180, .12);
+  --dsw-alias-interactive-bg-active:       rgba(150, 162, 180, .20);
+  --dsw-alias-interactive-bg-hover-accent: rgba(150, 162, 180, .28);
+  --dsw-alias-interactive-bg-hover-solid:  #37383a;
+  --dsw-alias-state-business-primary:  #9aa3b2;
+  --dsw-alias-state-business-tertiary: #2d2e2f;
+  --dsw-alias-toast-bg:                #37383a;
+  --dsw-alias-tooltip-bg:              #47494a;
+  --dsw-alias-scrollbar-bg-l1:      #565759;
+  --dsw-alias-scrollbar-bg-l2:      #565759;
+  --dsw-alias-scrollbar-hover-l1:   #68696b;
+  --dsw-alias-scrollbar-hover-l2:   #68696b;
+  --dsw-alias-markdown-code-block:         #262728;
+  --dsw-alias-markdown-code-block-banner:  #373839;
+  --dsw-alias-markdown-inline-code:        #373839;
+  --dsw-alias-markdown-tag:                #37383a;
+  --dsw-alias-markdown-citation:           #373839;
+  --dsw-elevation-stroke-color: rgba(150, 162, 180, .18);
+  --dsw-shadow-lv1: 0 2px 6px 0 rgba(0, 0, 0, .45);
+  --dsw-shadow-lv2: 0 6px 18px 0 rgba(0, 0, 0, .50);
+  --dsw-shadow-lv3: 0 0 1px 0 rgba(150, 162, 180, .22), 0 14px 38px 0 rgba(0, 0, 0, .60);
+  --dsw-elevation-panel:     var(--dsw-elevation-stroke), 0 4px 12px 0 rgba(0, 0, 0, .35), 0 0 22px 0 rgba(150, 162, 180, .18);
+  --dsw-elevation-prominent: var(--dsw-elevation-stroke), 0 4px 14px 0 rgba(0, 0, 0, .40), 0 0 26px 0 rgba(150, 162, 180, .26);
+  --dsw-elevation-soft:      var(--dsw-elevation-stroke), 0 6px 20px 0 rgba(0, 0, 0, .35), 0 0 30px 0 rgba(150, 162, 180, .18);
+}
+body[data-dsh-skin="ocean"][data-dsh-hue="gray"]:not([data-ds-dark-theme]) {
+  background-color: #e7ebf2;
+  background-image:
+    radial-gradient(980px 460px at 50% -6%, rgba(150, 162, 180, .26), transparent 64%),
+    linear-gradient(180deg, #fbfcfe 0%, #e7ebf2 100%);
+  background-attachment: fixed;
+}
+body[data-dsh-skin="ocean"][data-dsh-hue="gray"][data-ds-dark-theme] {
+  background-color: #0d0f12;
+  background-image:
+    radial-gradient(980px 460px at 50% -6%, rgba(120, 130, 150, .18), transparent 64%),
+    linear-gradient(180deg, #13161a 0%, #0d0f12 100%);
+  background-attachment: fixed;
+}
+body[data-dsh-skin="ocean"][data-dsh-hue="gray"]:not([data-ds-dark-theme]) { --dsh-skin-accent: #4b5563; --dsh-skin-accent-rgb: 75, 85, 99; }
+body[data-dsh-skin="ocean"][data-dsh-hue="gray"][data-ds-dark-theme] { --dsh-skin-accent: #9aa3b2; --dsh-skin-accent-rgb: 154, 163, 178; }
+body[data-dsh-skin="ocean"][data-dsh-hue="gray"] #dsh-ocean-fx { --dsh-fx: 120, 130, 150; --dsh-fx-grid: .042; }
+body[data-dsh-skin="ocean"][data-dsh-hue="gray"][data-ds-dark-theme] #dsh-ocean-fx { --dsh-fx: 150, 162, 180; --dsh-fx-grid: .055; }
+
+/* ============ 色相：紫色 ============ */
+body[data-dsh-skin="ocean"][data-dsh-hue="purple"] {
+  --dsw-static-neutral-bluish-00:   #ffffff;
+  --dsw-static-neutral-bluish-50:   #f8fbff;
+  --dsw-static-neutral-bluish-60:   #f8f5fe;
+  --dsw-static-neutral-bluish-75:   #f4effe;
+  --dsw-static-neutral-bluish-100:  #f0e9fc;
+  --dsw-static-neutral-bluish-150:  #ebe2f9;
+  --dsw-static-neutral-bluish-200:  #e4daf6;
+  --dsw-static-neutral-bluish-300:  #d5c6ee;
+  --dsw-static-neutral-bluish-400:  #baaad7;
+  --dsw-static-neutral-bluish-500:  #a492c3;
+  --dsw-static-neutral-bluish-600:  #8b7ca6;
+  --dsw-static-neutral-bluish-700:  #786697;
+  --dsw-static-neutral-bluish-750:  #5a4879;
+  --dsw-static-neutral-bluish-800:  #483667;
+  --dsw-static-neutral-bluish-850:  #3a2957;
+  --dsw-static-neutral-bluish-875:  #2a1e40;
+  --dsw-static-neutral-bluish-900:  #1f1530;
+  --dsw-static-neutral-bluish-950:  #0e0917;
+  --dsw-static-neutral-bluish-1000: #150d23;
+}
+body[data-dsh-skin="ocean"][data-dsh-hue="purple"]:not([data-ds-dark-theme]) {
+  /* 页面底色交给 body 的渐变来画；令该令牌透明，避免任何容器遮挡特效层 */
+  --dsw-alias-bg-base:              transparent;
+  --dsw-alias-bg-layer-1:           #ffffff;
+  --dsw-alias-bg-layer-2:           #ffffff;
+  --dsw-alias-bg-layer-3:           #f8fbff;
+  --dsw-alias-bg-overlay:           #f1eafe;
+  --dsw-alias-bg-module-platform:   #f4effe;
+  --dsw-alias-bg-multi-select:      #f4effe;
+  --dsw-alias-bg-skeleton:          rgba(124, 92, 214, .06);
+  --dsw-alias-bg-mask-drop:         rgba(255, 255, 255, .72);
+  --dsw-alias-border-l1:            rgba(124, 92, 214, .10);
+  --dsw-alias-border-l2:            rgba(124, 92, 214, .17);
+  --dsw-alias-border-l2-darkmode-thin: rgba(124, 92, 214, .17);
+  --dsw-alias-border-l3:            rgba(124, 92, 214, .26);
+  --dsw-alias-border-l4:            rgba(124, 92, 214, .34);
+  --dsw-alias-border-inverted:      rgba(255, 255, 255, .60);
+  --dsw-alias-border-inverted2:     rgba(255, 255, 255, .40);
+  --dsw-alias-label-primary:        #1c1031;
+  --dsw-alias-label-secondary:      #8b7ca6;
+  --dsw-alias-label-tertiary:       #a395bc;
+  --dsw-alias-label-caption:        #ada1c2;
+  --dsw-alias-label-dimmed:         #d5c6ee;
+  --dsw-alias-label-primary-bluish: #492489;
+  --dsw-alias-label-primary-dimmed: #e4daf6;
+  --dsw-alias-brand-primary:        #7c3aed;
+  --dsw-alias-brand-primary-invert: #ffffff;
+  --dsw-alias-brand-text:           #7c3aed;
+  --dsw-alias-link:                 #7c3aed;
+  --dsw-alias-button-primary-fill:  #7c3aed;
+  --dsw-alias-button-primary-hover: #6d28d9;
+  --dsw-alias-button-primary-dimmed:#d5c6ee;
+  --dsw-alias-button-floating-fill: #ffffff;
+  --dsw-alias-button-floating-hover:#f6f2fe;
+  --dsw-alias-button-elevated-fill: #ffffff;
+  --dsw-alias-button-contrast-fill:#1c1031;
+  --dsw-alias-button-tool-bar-fill: rgba(124, 92, 214, .10);
+  --dsw-alias-button-tool-bar-fill-invisible: rgba(20, 48, 92, .16);
+  --dsw-alias-button-tool-bar-hover:rgba(124, 92, 214, .16);
+  --dsw-alias-interactive-bg-hover:        rgba(124, 92, 214, .07);
+  --dsw-alias-interactive-bg-active:       rgba(124, 92, 214, .12);
+  --dsw-alias-interactive-bg-hover-accent: rgba(124, 92, 214, .16);
+  --dsw-alias-interactive-bg-hover-solid:  #f4effe;
+  --dsw-alias-state-business-primary:  #7c3aed;
+  --dsw-alias-state-business-tertiary: #f0e9fc;
+  --dsw-alias-toast-bg:                #483667;
+  --dsw-alias-tooltip-bg:              #3a2957;
+  --dsw-alias-scrollbar-bg-l1:      #e4daf6;
+  --dsw-alias-scrollbar-bg-l2:      #e4daf6;
+  --dsw-alias-scrollbar-hover-l1:   #d5c6ee;
+  --dsw-alias-scrollbar-hover-l2:   #d5c6ee;
+  --dsw-alias-markdown-code-block:         #f8fbff;
+  --dsw-alias-markdown-code-block-banner:  #f4effe;
+  --dsw-alias-markdown-inline-code:        #f6f2fe;
+  --dsw-alias-markdown-tag:                #f4effe;
+  --dsw-alias-markdown-citation:           #f0e9fc;
+  --dsw-elevation-stroke-color: rgba(124, 92, 214, .16);
+  --dsw-shadow-lv1: 0 2px 6px 0 rgba(124, 92, 214, .10);
+  --dsw-shadow-lv2: 0 6px 18px 0 rgba(124, 92, 214, .12);
+  --dsw-shadow-lv3: 0 0 1px 0 rgba(124, 92, 214, .18), 0 14px 38px 0 rgba(124, 92, 214, .20);
+  --dsw-elevation-panel:     var(--dsw-elevation-stroke), 0 10px 30px -12px rgba(124, 92, 214, .35), 0 0 24px 0 rgba(124, 92, 214, .10);
+  --dsw-elevation-prominent: var(--dsw-elevation-stroke), 0 24px 56px -24px rgba(124, 92, 214, .55), 0 0 30px 0 rgba(124, 92, 214, .16);
+  --dsw-elevation-soft:      var(--dsw-elevation-stroke), 0 16px 40px -18px rgba(124, 92, 214, .40), 0 0 30px 0 rgba(124, 92, 214, .12);
+}
+body[data-dsh-skin="ocean"][data-dsh-hue="purple"][data-ds-dark-theme] {
+  /* 同上：页面底色由 body 渐变负责 */
+  --dsw-alias-bg-base:              transparent;
+  --dsw-alias-bg-layer-1:           #20182f;
+  --dsw-alias-bg-layer-2:           #261d38;
+  --dsw-alias-bg-layer-3:           #302544;
+  --dsw-alias-bg-overlay:           #403159;
+  --dsw-alias-bg-module-platform:   #302544;
+  --dsw-alias-bg-multi-select:      #302543;
+  --dsw-alias-bg-skeleton:          rgba(162, 132, 255, .10);
+  --dsw-alias-bg-mask-drop:         rgba(12, 20, 36, .72);
+  --dsw-alias-border-l1:            rgba(162, 132, 255, .12);
+  --dsw-alias-border-l2:            rgba(162, 132, 255, .18);
+  --dsw-alias-border-l2-darkmode-thin: rgba(162, 132, 255, .12);
+  --dsw-alias-border-l3:            rgba(162, 132, 255, .26);
+  --dsw-alias-border-l4:            rgba(162, 132, 255, .36);
+  --dsw-alias-border-inverted:      rgba(255, 255, 255, .60);
+  --dsw-alias-border-inverted2:     rgba(255, 255, 255, .40);
+  --dsw-alias-label-primary:        #f2ecfc;
+  --dsw-alias-label-secondary:      #d7cee6;
+  --dsw-alias-label-tertiary:       #b5a9ca;
+  --dsw-alias-label-caption:        #968aaa;
+  --dsw-alias-label-dimmed:         #60517a;
+  --dsw-alias-label-primary-bluish: #e3d6f8;
+  --dsw-alias-label-primary-dimmed: #302543;
+  --dsw-alias-brand-primary:        #a78bfa;
+  --dsw-alias-brand-primary-invert: #130e1c;
+  --dsw-alias-brand-text:           #c4b5fd;
+  --dsw-alias-link:                 #c4b5fd;
+  --dsw-alias-button-primary-fill:  #a78bfa;
+  --dsw-alias-button-primary-hover: #7c3aed;
+  --dsw-alias-button-primary-dimmed:#4e3f68;
+  --dsw-alias-button-floating-fill: #261d38;
+  --dsw-alias-button-floating-hover:#302544;
+  --dsw-alias-button-elevated-fill: #403159;
+  --dsw-alias-button-tool-bar-fill: rgba(162, 132, 255, .14);
+  --dsw-alias-button-tool-bar-fill-invisible: rgba(8, 16, 32, .36);
+  --dsw-alias-button-tool-bar-hover:rgba(162, 132, 255, .22);
+  --dsw-alias-interactive-bg-hover:        rgba(162, 132, 255, .12);
+  --dsw-alias-interactive-bg-active:       rgba(162, 132, 255, .20);
+  --dsw-alias-interactive-bg-hover-accent: rgba(162, 132, 255, .28);
+  --dsw-alias-interactive-bg-hover-solid:  #302544;
+  --dsw-alias-state-business-primary:  #a78bfa;
+  --dsw-alias-state-business-tertiary: #261d38;
+  --dsw-alias-toast-bg:                #302544;
+  --dsw-alias-tooltip-bg:              #403159;
+  --dsw-alias-scrollbar-bg-l1:      #4e3f68;
+  --dsw-alias-scrollbar-bg-l2:      #4e3f68;
+  --dsw-alias-scrollbar-hover-l1:   #60517a;
+  --dsw-alias-scrollbar-hover-l2:   #60517a;
+  --dsw-alias-markdown-code-block:         #20182f;
+  --dsw-alias-markdown-code-block-banner:  #302543;
+  --dsw-alias-markdown-inline-code:        #302543;
+  --dsw-alias-markdown-tag:                #302544;
+  --dsw-alias-markdown-citation:           #302543;
+  --dsw-elevation-stroke-color: rgba(162, 132, 255, .18);
+  --dsw-shadow-lv1: 0 2px 6px 0 rgba(0, 0, 0, .45);
+  --dsw-shadow-lv2: 0 6px 18px 0 rgba(0, 0, 0, .50);
+  --dsw-shadow-lv3: 0 0 1px 0 rgba(162, 132, 255, .22), 0 14px 38px 0 rgba(0, 0, 0, .60);
+  --dsw-elevation-panel:     var(--dsw-elevation-stroke), 0 4px 12px 0 rgba(0, 0, 0, .35), 0 0 22px 0 rgba(162, 132, 255, .18);
+  --dsw-elevation-prominent: var(--dsw-elevation-stroke), 0 4px 14px 0 rgba(0, 0, 0, .40), 0 0 26px 0 rgba(162, 132, 255, .26);
+  --dsw-elevation-soft:      var(--dsw-elevation-stroke), 0 6px 20px 0 rgba(0, 0, 0, .35), 0 0 30px 0 rgba(162, 132, 255, .18);
+}
+body[data-dsh-skin="ocean"][data-dsh-hue="purple"]:not([data-ds-dark-theme]) {
+  background-color: #ece7ff;
+  background-image:
+    radial-gradient(980px 460px at 50% -6%, rgba(140, 110, 240, .30), transparent 64%),
+    linear-gradient(180deg, #fbfaff 0%, #ece7ff 100%);
+  background-attachment: fixed;
+}
+body[data-dsh-skin="ocean"][data-dsh-hue="purple"][data-ds-dark-theme] {
+  background-color: #0b0813;
+  background-image:
+    radial-gradient(980px 460px at 50% -6%, rgba(124, 58, 237, .30), transparent 64%),
+    linear-gradient(180deg, #100c1c 0%, #0b0813 100%);
+  background-attachment: fixed;
+}
+body[data-dsh-skin="ocean"][data-dsh-hue="purple"]:not([data-ds-dark-theme]) { --dsh-skin-accent: #7c3aed; --dsh-skin-accent-rgb: 124, 58, 237; }
+body[data-dsh-skin="ocean"][data-dsh-hue="purple"][data-ds-dark-theme] { --dsh-skin-accent: #a78bfa; --dsh-skin-accent-rgb: 167, 139, 250; }
+body[data-dsh-skin="ocean"][data-dsh-hue="purple"] #dsh-ocean-fx { --dsh-fx: 140, 110, 240; --dsh-fx-grid: .042; }
+body[data-dsh-skin="ocean"][data-dsh-hue="purple"][data-ds-dark-theme] #dsh-ocean-fx { --dsh-fx: 170, 145, 255; --dsh-fx-grid: .055; }
+
+/* ============ 色相：玫红 ============ */
+body[data-dsh-skin="ocean"][data-dsh-hue="rose"] {
+  --dsw-static-neutral-bluish-00:   #ffffff;
+  --dsw-static-neutral-bluish-50:   #f8fbff;
+  --dsw-static-neutral-bluish-60:   #fff4f7;
+  --dsw-static-neutral-bluish-75:   #ffeef2;
+  --dsw-static-neutral-bluish-100:  #fce9ed;
+  --dsw-static-neutral-bluish-150:  #f9e2e7;
+  --dsw-static-neutral-bluish-200:  #f7d9df;
+  --dsw-static-neutral-bluish-300:  #efc5ce;
+  --dsw-static-neutral-bluish-400:  #d8a8b3;
+  --dsw-static-neutral-bluish-500:  #c5909c;
+  --dsw-static-neutral-bluish-600:  #a77b85;
+  --dsw-static-neutral-bluish-700:  #996470;
+  --dsw-static-neutral-bluish-750:  #7b4652;
+  --dsw-static-neutral-bluish-800:  #693440;
+  --dsw-static-neutral-bluish-850:  #592732;
+  --dsw-static-neutral-bluish-875:  #411d25;
+  --dsw-static-neutral-bluish-900:  #30151b;
+  --dsw-static-neutral-bluish-950:  #18080c;
+  --dsw-static-neutral-bluish-1000: #230d12;
+}
+body[data-dsh-skin="ocean"][data-dsh-hue="rose"]:not([data-ds-dark-theme]) {
+  /* 页面底色交给 body 的渐变来画；令该令牌透明，避免任何容器遮挡特效层 */
+  --dsw-alias-bg-base:              transparent;
+  --dsw-alias-bg-layer-1:           #ffffff;
+  --dsw-alias-bg-layer-2:           #ffffff;
+  --dsw-alias-bg-layer-3:           #f8fbff;
+  --dsw-alias-bg-overlay:           #feeaee;
+  --dsw-alias-bg-module-platform:   #ffeef2;
+  --dsw-alias-bg-multi-select:      #ffeef2;
+  --dsw-alias-bg-skeleton:          rgba(225, 29, 72, .06);
+  --dsw-alias-bg-mask-drop:         rgba(255, 255, 255, .72);
+  --dsw-alias-border-l1:            rgba(225, 29, 72, .10);
+  --dsw-alias-border-l2:            rgba(225, 29, 72, .17);
+  --dsw-alias-border-l2-darkmode-thin: rgba(225, 29, 72, .17);
+  --dsw-alias-border-l3:            rgba(225, 29, 72, .26);
+  --dsw-alias-border-l4:            rgba(225, 29, 72, .34);
+  --dsw-alias-border-inverted:      rgba(255, 255, 255, .60);
+  --dsw-alias-border-inverted2:     rgba(255, 255, 255, .40);
+  --dsw-alias-label-primary:        #320f17;
+  --dsw-alias-label-secondary:      #a77b85;
+  --dsw-alias-label-tertiary:       #bd949d;
+  --dsw-alias-label-caption:        #c3a0a8;
+  --dsw-alias-label-dimmed:         #efc5ce;
+  --dsw-alias-label-primary-bluish: #8c2138;
+  --dsw-alias-label-primary-dimmed: #f7d9df;
+  --dsw-alias-brand-primary:        #e11d48;
+  --dsw-alias-brand-primary-invert: #ffffff;
+  --dsw-alias-brand-text:           #e11d48;
+  --dsw-alias-link:                 #e11d48;
+  --dsw-alias-button-primary-fill:  #e11d48;
+  --dsw-alias-button-primary-hover: #be123c;
+  --dsw-alias-button-primary-dimmed:#efc5ce;
+  --dsw-alias-button-floating-fill: #ffffff;
+  --dsw-alias-button-floating-hover:#fff1f4;
+  --dsw-alias-button-elevated-fill: #ffffff;
+  --dsw-alias-button-contrast-fill:#320f17;
+  --dsw-alias-button-tool-bar-fill: rgba(225, 29, 72, .10);
+  --dsw-alias-button-tool-bar-fill-invisible: rgba(20, 48, 92, .16);
+  --dsw-alias-button-tool-bar-hover:rgba(225, 29, 72, .16);
+  --dsw-alias-interactive-bg-hover:        rgba(225, 29, 72, .07);
+  --dsw-alias-interactive-bg-active:       rgba(225, 29, 72, .12);
+  --dsw-alias-interactive-bg-hover-accent: rgba(225, 29, 72, .16);
+  --dsw-alias-interactive-bg-hover-solid:  #ffeef2;
+  --dsw-alias-state-business-primary:  #e11d48;
+  --dsw-alias-state-business-tertiary: #fce9ed;
+  --dsw-alias-toast-bg:                #693440;
+  --dsw-alias-tooltip-bg:              #592732;
+  --dsw-alias-scrollbar-bg-l1:      #f7d9df;
+  --dsw-alias-scrollbar-bg-l2:      #f7d9df;
+  --dsw-alias-scrollbar-hover-l1:   #efc5ce;
+  --dsw-alias-scrollbar-hover-l2:   #efc5ce;
+  --dsw-alias-markdown-code-block:         #f8fbff;
+  --dsw-alias-markdown-code-block-banner:  #ffeef2;
+  --dsw-alias-markdown-inline-code:        #fff1f4;
+  --dsw-alias-markdown-tag:                #ffeef2;
+  --dsw-alias-markdown-citation:           #fce9ed;
+  --dsw-elevation-stroke-color: rgba(225, 29, 72, .16);
+  --dsw-shadow-lv1: 0 2px 6px 0 rgba(225, 29, 72, .10);
+  --dsw-shadow-lv2: 0 6px 18px 0 rgba(225, 29, 72, .12);
+  --dsw-shadow-lv3: 0 0 1px 0 rgba(225, 29, 72, .18), 0 14px 38px 0 rgba(225, 29, 72, .20);
+  --dsw-elevation-panel:     var(--dsw-elevation-stroke), 0 10px 30px -12px rgba(225, 29, 72, .35), 0 0 24px 0 rgba(225, 29, 72, .10);
+  --dsw-elevation-prominent: var(--dsw-elevation-stroke), 0 24px 56px -24px rgba(225, 29, 72, .55), 0 0 30px 0 rgba(225, 29, 72, .16);
+  --dsw-elevation-soft:      var(--dsw-elevation-stroke), 0 16px 40px -18px rgba(225, 29, 72, .40), 0 0 30px 0 rgba(225, 29, 72, .12);
+}
+body[data-dsh-skin="ocean"][data-dsh-hue="rose"][data-ds-dark-theme] {
+  /* 同上：页面底色由 body 渐变负责 */
+  --dsw-alias-bg-base:              transparent;
+  --dsw-alias-bg-layer-1:           #31181d;
+  --dsw-alias-bg-layer-2:           #3a1c23;
+  --dsw-alias-bg-layer-3:           #47242c;
+  --dsw-alias-bg-overlay:           #5c313a;
+  --dsw-alias-bg-module-platform:   #47242c;
+  --dsw-alias-bg-multi-select:      #46252c;
+  --dsw-alias-bg-skeleton:          rgba(255, 120, 150, .10);
+  --dsw-alias-bg-mask-drop:         rgba(12, 20, 36, .72);
+  --dsw-alias-border-l1:            rgba(255, 120, 150, .12);
+  --dsw-alias-border-l2:            rgba(255, 120, 150, .18);
+  --dsw-alias-border-l2-darkmode-thin: rgba(255, 120, 150, .12);
+  --dsw-alias-border-l3:            rgba(255, 120, 150, .26);
+  --dsw-alias-border-l4:            rgba(255, 120, 150, .36);
+  --dsw-alias-border-inverted:      rgba(255, 255, 255, .60);
+  --dsw-alias-border-inverted2:     rgba(255, 255, 255, .40);
+  --dsw-alias-label-primary:        #fcecef;
+  --dsw-alias-label-secondary:      #e7cfd5;
+  --dsw-alias-label-tertiary:       #cca9b1;
+  --dsw-alias-label-caption:        #ac8a92;
+  --dsw-alias-label-dimmed:         #7d515a;
+  --dsw-alias-label-primary-bluish: #f9d5dd;
+  --dsw-alias-label-primary-dimmed: #46252c;
+  --dsw-alias-brand-primary:        #fb7185;
+  --dsw-alias-brand-primary-invert: #1f0e12;
+  --dsw-alias-brand-text:           #fda4af;
+  --dsw-alias-link:                 #fda4af;
+  --dsw-alias-button-primary-fill:  #fb7185;
+  --dsw-alias-button-primary-hover: #e11d48;
+  --dsw-alias-button-primary-dimmed:#6b3f48;
+  --dsw-alias-button-floating-fill: #3a1c23;
+  --dsw-alias-button-floating-hover:#47242c;
+  --dsw-alias-button-elevated-fill: #5c313a;
+  --dsw-alias-button-tool-bar-fill: rgba(255, 120, 150, .14);
+  --dsw-alias-button-tool-bar-fill-invisible: rgba(8, 16, 32, .36);
+  --dsw-alias-button-tool-bar-hover:rgba(255, 120, 150, .22);
+  --dsw-alias-interactive-bg-hover:        rgba(255, 120, 150, .12);
+  --dsw-alias-interactive-bg-active:       rgba(255, 120, 150, .20);
+  --dsw-alias-interactive-bg-hover-accent: rgba(255, 120, 150, .28);
+  --dsw-alias-interactive-bg-hover-solid:  #47242c;
+  --dsw-alias-state-business-primary:  #fb7185;
+  --dsw-alias-state-business-tertiary: #3a1c23;
+  --dsw-alias-toast-bg:                #47242c;
+  --dsw-alias-tooltip-bg:              #5c313a;
+  --dsw-alias-scrollbar-bg-l1:      #6b3f48;
+  --dsw-alias-scrollbar-bg-l2:      #6b3f48;
+  --dsw-alias-scrollbar-hover-l1:   #7d515a;
+  --dsw-alias-scrollbar-hover-l2:   #7d515a;
+  --dsw-alias-markdown-code-block:         #31181d;
+  --dsw-alias-markdown-code-block-banner:  #46252c;
+  --dsw-alias-markdown-inline-code:        #46252c;
+  --dsw-alias-markdown-tag:                #47242c;
+  --dsw-alias-markdown-citation:           #46252c;
+  --dsw-elevation-stroke-color: rgba(255, 120, 150, .18);
+  --dsw-shadow-lv1: 0 2px 6px 0 rgba(0, 0, 0, .45);
+  --dsw-shadow-lv2: 0 6px 18px 0 rgba(0, 0, 0, .50);
+  --dsw-shadow-lv3: 0 0 1px 0 rgba(255, 120, 150, .22), 0 14px 38px 0 rgba(0, 0, 0, .60);
+  --dsw-elevation-panel:     var(--dsw-elevation-stroke), 0 4px 12px 0 rgba(0, 0, 0, .35), 0 0 22px 0 rgba(255, 120, 150, .18);
+  --dsw-elevation-prominent: var(--dsw-elevation-stroke), 0 4px 14px 0 rgba(0, 0, 0, .40), 0 0 26px 0 rgba(255, 120, 150, .26);
+  --dsw-elevation-soft:      var(--dsw-elevation-stroke), 0 6px 20px 0 rgba(0, 0, 0, .35), 0 0 30px 0 rgba(255, 120, 150, .18);
+}
+body[data-dsh-skin="ocean"][data-dsh-hue="rose"]:not([data-ds-dark-theme]) {
+  background-color: #ffe4ea;
+  background-image:
+    radial-gradient(980px 460px at 50% -6%, rgba(240, 90, 120, .28), transparent 64%),
+    linear-gradient(180deg, #fffafb 0%, #ffe4ea 100%);
+  background-attachment: fixed;
+}
+body[data-dsh-skin="ocean"][data-dsh-hue="rose"][data-ds-dark-theme] {
+  background-color: #12080c;
+  background-image:
+    radial-gradient(980px 460px at 50% -6%, rgba(225, 29, 72, .28), transparent 64%),
+    linear-gradient(180deg, #1a0c11 0%, #12080c 100%);
+  background-attachment: fixed;
+}
+body[data-dsh-skin="ocean"][data-dsh-hue="rose"]:not([data-ds-dark-theme]) { --dsh-skin-accent: #e11d48; --dsh-skin-accent-rgb: 225, 29, 72; }
+body[data-dsh-skin="ocean"][data-dsh-hue="rose"][data-ds-dark-theme] { --dsh-skin-accent: #fb7185; --dsh-skin-accent-rgb: 251, 113, 133; }
+body[data-dsh-skin="ocean"][data-dsh-hue="rose"] #dsh-ocean-fx { --dsh-fx: 240, 90, 120; --dsh-fx-grid: .042; }
+body[data-dsh-skin="ocean"][data-dsh-hue="rose"][data-ds-dark-theme] #dsh-ocean-fx { --dsh-fx: 255, 130, 155; --dsh-fx-grid: .055; }
+ 处插入
+   · 全部为增量覆盖：样式标签 + 特效层节点 + body 属性，关闭即 100% 复原
+   ===================================================================== */
+
+/* ---------- P2 页面层：让 body 的底色/渐变透出来 ----------
+   选择器全部走 data-slot 结构（不用哈希类名，抗版本升级） */
+body[data-dsh-skin="ocean"] [data-slot="root"] > *,
+body[data-dsh-skin="ocean"] [data-slot="main.conversation"] > *,
+body[data-dsh-skin="ocean"] [data-slot="conversation.session"] > *,
+body[data-dsh-skin="ocean"] [data-slot="conversation.view"] > *,
+body[data-dsh-skin="ocean"] [data-slot="conversation.composer"] > * {
+  background-color: transparent;
+  background-image: none;
+}
+
+/* ---------- L3 特效层：六边形网格 + 数字波纹 ---------- */
+#dsh-ocean-fx {
+  position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden;
+  --dsh-fx: 79, 140, 255;
+  --dsh-fx-grid: .042;
+}
+#dsh-ocean-fx canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+body[data-dsh-skin="ocean"][data-dsh-fx="off"] #dsh-ocean-fx { display: none; }
+/* 排查用：某些版本若仍被不透明容器遮挡，可把特效层强行提到最上层 */
+body[data-dsh-skin="ocean"][data-dsh-fx-top="1"] #dsh-ocean-fx { z-index: 9999; }
+
+/* ---------- P4 设置面板 ---------- */
+.dshsk_section { max-width: 760px; display: flex; flex-direction: column; gap: 14px; color: var(--dsw-alias-label-primary); }
+.dshsk_heading { margin: 0; font-size: 16px; font-weight: 700; }
+.dshsk_intro { margin: 0; font-size: 13px; line-height: 1.7; color: var(--dsw-alias-label-tertiary); }
+.dshsk_row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 14px; border-radius: 12px;
+             background: var(--dsw-alias-bg-layer-2); border: 1px solid var(--dsw-alias-border-l2); }
+.dshsk_text { flex: 0 1 auto; min-width: 0; max-width: min(46%, 320px); }
+.dshsk_label { font-size: 14px; }
+.dshsk_hint { font-size: 12px; color: var(--dsw-alias-label-tertiary); margin-top: 2px; }
+.dshsk_group { display: flex; gap: 6px; flex: 0 1 auto; min-width: 0; }
+/* 配色色条：横向可滑动，隐藏滚动条 */
+.dshsk_stripwrap { display: flex; align-items: center; gap: 2px; flex: 0 1 auto; min-width: 0; }
+.dshsk_strip { display: flex; align-items: center; gap: 6px; overflow-x: auto; padding: 5px 0;
+               scrollbar-width: none; -ms-overflow-style: none; scroll-snap-type: x proximity; scroll-behavior: smooth; }
+.dshsk_strip::-webkit-scrollbar { display: none; }
+.dshsk_strip .dshsk_btn { flex: none; scroll-snap-align: start; }
+/* 色条宽度由 JS 量成"恰好 4 个按钮"，超出部分滚出视野 */
+.dshsk_strip { max-width: 100%; }
+/* 箭头是普通 flex 项（与色条并排），占据真实空间 —— 结构上不可能压住按钮 */
+.dshsk_nav { flex: none; width: 16px; height: 24px; padding: 0; border: 0; margin: 0;
+             display: flex; align-items: center; justify-content: center;
+             background: transparent; cursor: pointer; color: var(--dsw-alias-label-tertiary); }
+.dshsk_nav::before { content: ''; width: 6px; height: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; }
+.dshsk_nav[data-side="right"]::before { transform: rotate(-45deg); }
+.dshsk_nav[data-side="left"]::before  { transform: rotate(135deg); }
+.dshsk_nav:hover { color: var(--dsw-alias-label-primary); }
+.dshsk_btn[data-dim="true"] { opacity: .5; }
+.dshsk_btn { border: 1px solid var(--dsw-alias-border-l2); background: transparent; color: var(--dsw-alias-label-secondary);
+             font: inherit; font-size: 13px; padding: 6px 12px; border-radius: 999px; cursor: pointer; white-space: nowrap; }
+/* 选中态：同色柔光 + 隐藏色块（色块与背景同色会看不见，且会把文字挤偏） */
+.dshsk_btn[data-on="true"] { background: var(--dsh-skin-accent, #2563eb); border-color: transparent; color: #fff;
+                             box-shadow: 0 0 0 3px rgba(var(--dsh-skin-accent-rgb, 37, 99, 235), .22); }
+.dshsk_btn[data-on="true"] .dshsk_swatch { display: none; }
+.dshsk_btn:hover { border-color: var(--dsw-alias-border-l3); }
+.dshsk_swatch { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
+
+/*__PALETTES__*/
+
