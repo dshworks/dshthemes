@@ -1,5 +1,5 @@
 /* zaimokuza-yoshiteru/dsh-theme-library — src/client/styles.ts
-   fetched 2026-09-13 from https://raw.githubusercontent.com/zaimokuza-yoshiteru/dsh-theme-library/main/src/client/styles.ts
+   fetched 2026-09-21 from https://raw.githubusercontent.com/zaimokuza-yoshiteru/dsh-theme-library/main/src/client/styles.ts
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 body[data-dsh-wallpaper-active] {
   isolation: isolate;
@@ -39,106 +39,39 @@ canvas[data-dsh-wallpaper-intro] {
   opacity: 1;
 }
 
-.dsh-wallpaper-library-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 16px 0;
-  border-bottom: 1px solid var(--dsw-alias-border-l2);
-}
 
-.dsh-wallpaper-library-controls .dsh-wallpaper-library-row:last-child {
-  border-bottom: 0;
-}
-
-.dsh-wallpaper-library-copy {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding-right: 32px;
-}
-
-.dsh-wallpaper-library-title {
-  color: var(--dsw-alias-label-primary);
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 22px;
-}
-
-.dsh-wallpaper-library-description {
-  color: var(--dsw-alias-label-tertiary);
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 18px;
-}
-
-.dsh-wallpaper-library-select-wrap {
-  position: relative;
-  flex: none;
-}
-
-.dsh-wallpaper-library-select {
-  box-sizing: border-box;
-  min-width: 170px;
-  height: 36px;
-  padding: 0 38px 0 14px;
-  appearance: none;
-  border: 1px solid transparent;
-  border-radius: 18px;
-  outline: none;
-  background: var(--dsw-alias-bg-module-platform);
-  color: var(--dsw-alias-label-primary);
-  font: inherit;
-  font-size: 14px;
-  line-height: 22px;
-  cursor: pointer;
-}
-
-.dsh-wallpaper-library-select:hover:not(:disabled) {
-  background: var(--dsw-alias-interactive-bg-hover);
-}
-
-.dsh-wallpaper-library-select:focus-visible {
-  border-color: var(--dsw-alias-brand-primary);
-}
-
-.dsh-wallpaper-library-select:disabled {
-  cursor: default;
-  opacity: 0.65;
-}
-
-.dsh-wallpaper-library-chevron {
-  position: absolute;
-  top: 50%;
-  right: 14px;
-  transform: translateY(-58%);
-  color: var(--dsw-alias-label-secondary);
-  pointer-events: none;
-}
-
-.dsh-wallpaper-opacity-control {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 230px;
-}
-
-.dsh-wallpaper-opacity-range {
-  width: 176px;
-  accent-color: var(--dsw-alias-brand-primary);
-  cursor: pointer;
-}
-
-.dsh-wallpaper-opacity-range:disabled {
-  cursor: default;
-  opacity: 0.65;
-}
-
-.dsh-wallpaper-opacity-value {
-  min-width: 38px;
-  color: var(--dsw-alias-label-secondary);
-  font-variant-numeric: tabular-nums;
-  text-align: right;
+.dsh-theme-panel { width:100%; min-width:0; }
+.dsh-theme-panel-header { display:flex; align-items:center; padding:0 0 16px; gap:16px; }
+.dsh-theme-heading { display:flex; align-items:center; gap:10px; color:var(--dsw-alias-label-primary); }
+.dsh-theme-heading h2 { margin:0; font-size:20px; font-weight:600; line-height:28px; }
+.dsh-theme-version { font:400 11px/20px ui-monospace, SFMono-Regular, Menlo, monospace; color:var(--dsw-alias-label-tertiary); border:1px solid var(--dsw-alias-border-l2); border-radius:5px; padding:0 6px; align-self:center; letter-spacing:.02em; }
+.dsh-theme-panel-body { padding:0 0 24px; }
+.dsh-theme-description { margin:0 0 20px; font-size:13px; line-height:20px; color:var(--dsw-alias-label-secondary); }
+.dsh-theme-preferences { border:1px solid var(--dsw-alias-border-l2); border-radius:14px; padding:0 16px; background:var(--dsw-alias-bg-module-platform); }
+.dsh-theme-preference { display:flex; gap:12px; align-items:center; padding:13px 0; color:var(--dsw-alias-label-secondary); }
+.dsh-theme-preference + .dsh-theme-preference { border-top:1px solid var(--dsw-alias-border-l2); }
+.dsh-theme-preference > svg { flex-shrink:0; }
+.dsh-theme-copy { flex:1; min-width:0; }
+.dsh-theme-copy strong, .dsh-theme-copy label { font-size:13px; line-height:20px; font-weight:500; color:var(--dsw-alias-label-primary); }
+.dsh-theme-copy p { font-size:12px; line-height:18px; margin:3px 0 0; color:var(--dsw-alias-label-tertiary); }
+.dsh-theme-range { display:flex; align-items:center; gap:10px; }
+.dsh-theme-range input { width:126px; accent-color:var(--dsw-alias-brand-primary); cursor:pointer; }
+.dsh-theme-range output { width:36px; text-align:right; font-size:12px; font-variant-numeric:tabular-nums; color:var(--dsw-alias-label-secondary); }
+.dsh-theme-section-title { display:flex; align-items:center; gap:8px; margin:22px 0 12px; color:var(--dsw-alias-label-primary); font-size:13px; font-weight:500; }
+.dsh-theme-section-title span { font-size:11px; color:var(--dsw-alias-label-tertiary); }
+.dsh-theme-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+.dsh-theme-card { padding:0; text-align:left; cursor:pointer; overflow:hidden; border-radius:12px; border:1px solid var(--dsw-alias-border-l2); background:var(--dsw-alias-bg-module-platform); color:var(--dsw-alias-label-primary); transition:border-color 150ms, box-shadow 150ms; font:inherit; }
+.dsh-theme-card:hover { border-color:var(--dsw-alias-label-tertiary); }
+.dsh-theme-card[aria-pressed="true"] { border-color:var(--dsw-alias-brand-primary); box-shadow:0 0 0 1px var(--dsw-alias-brand-primary); }
+.dsh-theme-card:focus-visible { outline:2px solid var(--dsw-alias-brand-primary); outline-offset:3px; }
+.dsh-theme-card:disabled { opacity:.5; cursor:wait; }
+.dsh-theme-card-image { position:relative; aspect-ratio:16/9; overflow:hidden; background:#101218; }
+.dsh-theme-card-image img { display:block; width:100%; height:100%; object-fit:cover; }
+.dsh-theme-card-badge { position:absolute; top:8px; right:8px; display:flex; gap:4px; align-items:center; border-radius:99px; padding:3px 7px; background:rgba(10,16,22,.8); color:#fff; font-size:10px; }
+.dsh-theme-card-name { display:block; padding:10px 12px; font-size:12px; line-height:18px; font-weight:500; }
+.dsh-theme-panel-footer { display:flex; align-items:center; gap:6px; padding:12px 0; border-top:1px solid var(--dsw-alias-border-l2); color:var(--dsw-alias-label-tertiary); font-size:11px; }
+@media(max-width:600px) {
+  .dsh-theme-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .dsh-theme-preference { flex-wrap:wrap; }
+  .dsh-theme-range { margin-left:30px; }
 }

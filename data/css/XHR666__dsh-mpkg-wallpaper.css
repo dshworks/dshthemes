@@ -1,5 +1,5 @@
 /* XHR666/dsh-mpkg-wallpaper — lib/client.js
-   fetched 2026-09-13 from https://raw.githubusercontent.com/XHR666/dsh-mpkg-wallpaper/main/lib/client.js
+   fetched 2026-09-21 from https://raw.githubusercontent.com/XHR666/dsh-mpkg-wallpaper/main/lib/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 body[data-mpw-theme] .pI_x6G_sidebarCol {
 	background-color: color-mix(in srgb, var(--mpw-theme-color) 30%, transparent) !important;
@@ -16,12 +16,333 @@ body[data-mpw-theme] [class*="settingsArea"] [role="alertdialog"] {
 }
 
 
+/* ══ ①(NP-1) Now playing（DSH 左侧栏「设置」入口上方） ══
+   14 个 Bencho token 的**本地映射**（组件根上定义，不是全局；只读宿主 --dsw-*，不覆盖）。
+   --mpw-np-font-num / --mpw-np-slab / --mpw-np-on-slab 三项目前**未被引用**：它们属于上游
+   同一文件里我们**未移植**的 Sound-board / 曲库页区块（.snd-wake/.snd-num/.snd-key）。
+   按 14 项登记是为了"映射表完整"，不是为了现在就用上。 */
+[data-mpw-now-playing] {
+	--mpw-np-card: var(--dsw-alias-bg-base, #ffffff);
+	--mpw-np-font-num: var(--dsw-font-mono, ui-monospace, SFMono-Regular, monospace);
+	--mpw-np-font-ui: var(--dsw-font-family, system-ui, -apple-system, "Segoe UI", sans-serif);
+	--mpw-np-ink: var(--dsw-alias-label-primary, #132d53);
+	--mpw-np-ink-3: var(--dsw-alias-label-secondary, #4a5f80);
+	--mpw-np-ink-4: var(--dsw-alias-label-tertiary, #6b7d99);
+	/* 三个**裸数字**（上游要求：它的 CSS 用 rgba(var(--ink-rgb), .12) 拼半透明墨色）。
+	   宿主没有等价 token（--dsw-* 全是整色），所以本地取本插件已有的墨色 19,45,83
+	   —— 与 body[data-mpw-float] 的 rgba(19,45,83,.26) 同源。 */
+	--mpw-np-ink-rgb: 19, 45, 83;
+	--mpw-np-on-ink: var(--dsw-alias-label-primary-inverted, #ffffff);
+	--mpw-np-on-slab: var(--dsw-alias-label-primary-inverted, #ffffff);
+	--mpw-np-pane: var(--dsw-alias-bg-layer-2, rgba(255,255,255,0.86));
+	--mpw-np-pane-edge: var(--dsw-alias-border-l2, rgba(19,45,83,0.16));
+	--mpw-np-slab: var(--dsw-alias-bg-layer-3, rgba(19,45,83,0.08));
+	--mpw-np-surface-2: var(--dsw-alias-bg-layer-2, #eef1f6);
+	--mpw-np-surface-3: var(--dsw-alias-bg-layer-3, #e2e7ef);
+}
+body[data-ds-dark-theme] [data-mpw-now-playing] {
+	/* 暗色：宿主 token 自己会翻，只有"裸数字"那一项非翻不可（它是给 rgba() 用的） */
+	--mpw-np-ink-rgb: 214, 226, 245;
+}
+/* ══ 上游原文（保留）：There is almost nothing here, and that is deliberate: every position,
+   size and radius in this component is written by the tween and arrives as an inline style.
+   A transition on any of these rules would be a SECOND opinion about where a thing is,
+   fighting the first one every frame. What is left is the material — the surfaces, the type
+   and the two hover states — which never animates with the shape and so has nothing to fight. */
+[data-mpw-now-playing] {
+	position: relative;
+	display: grid;
+	place-items: center;
+	font-family: var(--mpw-np-font-ui);
+	/* ①(NP-1) 挂在宿主侧栏底部那一组里：上下留一点气口，别贴着「设置」入口 */
+	padding: 6px 0 8px;
+	min-width: 0;
+	transition: opacity 160ms ease;
+}
+/* 左侧栏收起 ⇒ 隐藏自己（判据见 NP_COLLAPSE_MAX_W；属性由 JS 写） */
+[data-mpw-now-playing][data-mpw-np-hidden] { display: none; }
+/* ①(NP-1) 我们在宿主人事 slot 里自己渲染的那个 div：
+   它是 footerActions（display:flex 行）的 flex 项，所以自己也要能屈能伸。 */
+.mpw_np_slot {
+	flex: 1 1 auto;
+	min-width: 0;
+	display: block;
+}
+/* ①(NP-1) 贴合缩放：侧栏最小 264px（宿主 clampWidth 下限），减掉两侧 12px 内边距只剩 240px，
+   而组件是照 260px 画的（上游的 W，宽度在两个状态之间**刻意不变** —— 见 math 文件顶上那段）。
+   把整体 scale 成一个数，而不是去改内部几何：内部比例是这个组件唯一不能动的东西。
+   --mpw-np-fit 由 JS 按实测宽度写（拿不到就 1 = 不缩）。 */
+[data-mpw-now-playing] .mpw_np {
+	/* ①(NP-3 2026-09-19 真机) **宽度必须钉死成组件的 W（= math 的 W，260px）**。
+	   真机实测（探针 G3，开了悬浮效果）：--mpw-np-fit 已经算对（0.892），但卡片右边
+	   仍然伸出容器可视区 10.9px。根因：.mpw_np 是 grid item，place-items:center 下
+	   width:auto 会被**夹到 grid 区域宽**（侧栏 256 减 padding = 232），而卡片本体
+	   .mpw_np_box 写死 260 ⇒ 溢出的 28px 全在其右侧；scale() 的 transform-origin:50% 0
+	   量的是**232 宽那个盒子**的中心（116）而不是卡片中心（130）⇒ 缩放后整体右移 14px、
+	   右边被 overflow:hidden 切掉（用户在悬浮态看到的"卡片被切掉"就是它）。
+	   宽度钉死后：grid 居中 ⇒ 260 的盒子在 232 的容器里**左右各溢出 14px**，缩放原点
+	   回到卡片中心 ⇒ 缩放结果正好等于可用宽度并居中（探针 G3 判据：四边都在可视区内）。 */
+	width: 260px;
+	max-width: none;
+	/* 比容器宽时**均分**溢出（负 margin）：grid 的 center 对齐在"项溢出区域"时会退化成
+	   start（Firefox 实测就是 start）⇒ 不写这条的话，260 的盒子从容器左缘开始排，
+	   缩放原点（盒子中心）比容器中心右移 14px，卡片右边照样被切。 */
+	margin-inline: calc((100% - 260px) / 2);
+	justify-self: center;
+	transform: scale(var(--mpw-np-fit, 1));
+	transform-origin: 50% 0;
+}
+/* The object. It is the only thing on the card, so it is the quietest surface that still
+   reads as one: the pane the rest of the bench uses, and a hairline. */
+.mpw_np_box {
+	position: relative;
+	background: var(--mpw-np-pane);
+	-webkit-backdrop-filter: blur(2px) saturate(150%);
+	backdrop-filter: blur(2px) saturate(150%);
+	overflow: hidden;
+	/* 上游：NO BORDER of its own —— 用 spread shadow 而不是 border，
+	   因为盒子有 overflow:hidden，border 会让形变每帧多带一样东西。 */
+	box-shadow: 0 0 0 1px var(--mpw-np-pane-edge);
+}
+/* ── the cover ── 上游用 background-size:cover 而非 contain：正方形是固定的那个东西，
+   图片被裁到它上面，所以封面在形变两端都不会出现信箱边。 */
+.mpw_np_art {
+	position: absolute;
+	background-color: var(--mpw-np-surface-2);
+	background-image: linear-gradient(148deg, var(--mpw-np-surface-3), var(--mpw-np-surface-2));
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	transition: scale 130ms cubic-bezier(0.3, 0.9, 0.4, 1);
+}
+/* ── the words ── 居中由盒子给：给它封面自己的高度并让它内部居中，
+   所以两端都跟封面齐平 —— 上游为此删掉两个魔法数字。 */
+.mpw_np_say {
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 2px;
+	min-width: 0;
+	pointer-events: none;
+}
+.mpw_np_title {
+	color: var(--mpw-np-ink);
+	font-weight: 500;
+	letter-spacing: -0.01em;
+	line-height: 1.25;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.mpw_np_by {
+	color: var(--mpw-np-ink-4);
+	line-height: 1.25;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+/* ── the track ── 轨道与游标；两端的时间只属于卡片，随 late 淡入 */
+.mpw_np_bar {
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	pointer-events: none;
+}
+.mpw_np_rail {
+	display: block;
+	height: 3px;
+	border-radius: 999px;
+	background: rgba(var(--mpw-np-ink-rgb), 0.12);
+	overflow: hidden;
+}
+.mpw_np_run {
+	display: block;
+	height: 100%;
+	border-radius: 999px;
+	background: var(--mpw-np-ink);
+}
+/* ── the clock ── 上游：用界面字体的**等宽数字**（tabular-nums）而不是 mono 栈，
+   因为按比例排的 1 比 0 窄，计数器会自己每秒抖一下。 */
+.mpw_np_clock {
+	display: flex;
+	justify-content: space-between;
+	font-family: var(--mpw-np-font-ui);
+	font-variant-numeric: tabular-nums;
+	font-size: 10.5px;
+	line-height: 1;
+	letter-spacing: 0.04em;
+	color: var(--mpw-np-ink-4);
+}
+/* ── the transport ── 按**行的中心**定位（行自己的宽度在两态之间会变，
+   用边定位的话，即使中点没动，边也会动）。 */
+.mpw_np_ops {
+	position: absolute;
+	display: flex;
+	align-items: center;
+	translate: -50% -50%;
+}
+.mpw_np_op {
+	flex: none;
+	display: grid;
+	place-items: center;
+	padding: 0;
+	border: 0;
+	border-radius: 999px;
+	background: transparent;
+	color: var(--mpw-np-ink-3);
+	cursor: pointer;
+	overflow: hidden;
+	transition: color 160ms ease, background 160ms ease, scale 130ms cubic-bezier(0.3, 0.9, 0.4, 1);
+}
+.mpw_np_op:hover { color: var(--mpw-np-ink); background: rgba(var(--mpw-np-ink-rgb), 0.07); }
+/* ── the press ── 它先让步再动作：只变状态的控件读起来是"被触发"，先让一下再动才是
+   "被按下"，差别就是 40ms 与百分之四。scale 单独成属性而不是塞进 transform 简写：
+   行是用 translate 定位的，播放键的尺寸又由补间逐帧写，任何共用 transform 简写的
+   写法都会被每帧覆盖。 */
+.mpw_np_op:active { scale: 0.9; }
+/* the one you press most, and the only one that is filled --
+   1(NP-1) hooks are our own class names (.mpw_np_lead / .mpw_np_on), not bare attribute
+   selectors ([data-lead] / [data-on]): style-scope-guard only sanctions .mpw* / [data-mpw*] /
+   #mpw-* anchors, and a bare attribute atom is a REVIEW. */
+.mpw_np_op.mpw_np_lead { background: var(--mpw-np-ink); color: var(--mpw-np-on-ink); }
+.mpw_np_op.mpw_np_lead:hover { background: var(--mpw-np-ink); opacity: 0.88; }
+.mpw_np_op:focus-visible,
+.mpw_np_like:focus-visible,
+.mpw_np_tap:focus-visible {
+	outline: none;
+	box-shadow: 0 0 0 2px var(--mpw-np-card), 0 0 0 4px rgba(var(--mpw-np-ink-rgb), 0.35);
+}
+/* ①(NP-1) 做不到的事按钮**明确禁用**，而不是点了没反应（诚实：能做才让按） */
+.mpw_np_op:disabled { opacity: 0.4; cursor: not-allowed; }
+.mpw_np_op:disabled:hover { color: var(--mpw-np-ink-3); background: transparent; }
+/* ── ①(NP-3) 卡片里那第四个键（音量/静音）──
+   它只在形变的**深半边**存在（late，与时钟/进度同一条约定）：收起态的传输行是按
+   "88px 宽的行"定位的（math 的 opsX(0)），四个键会溢出右边距；展开态行中心在盒子正中，
+   放得下。fade 与几何都由 JS 写（transition 只留给颜色/背景，别和每帧写的尺寸打架）。 */
+.mpw_np_op.mpw_np_fourth { transition: color 160ms ease, background 160ms ease, opacity 200ms linear; }
+/* ── the heart ── ①(NP-1) 规则**照移植**（上游 .snd-like），但本插件**不渲染**这个按钮：
+   没有"喜欢的歌"这个可落库的概念，留一个点了只改自己颜色的按钮就是假动作。
+   保留规则是因为两端几何（LIKE=30）仍然决定文字块宽度 sayWidth。
+   上游原文：built off .snd-op rather than sharing it: same size, same give, but it is not in
+   the transport row and it is the only control here that stays on after you let go. */
+.mpw_np_like {
+	position: absolute;
+	display: grid;
+	place-items: center;
+	padding: 0;
+	border: 0;
+	border-radius: 999px;
+	background: transparent;
+	color: var(--mpw-np-ink-3);
+	cursor: pointer;
+	transition: color 160ms ease, background 160ms ease, scale 130ms cubic-bezier(0.3, 0.9, 0.4, 1);
+}
+.mpw_np_like:hover { color: var(--mpw-np-ink); background: rgba(var(--mpw-np-ink-rgb), 0.07); }
+.mpw_np_like:active { scale: 0.9; }
+.mpw_np_like.mpw_np_on { color: var(--mpw-np-ink); }
+/* ── the beat ── 只在"点亮"那一下：取消喜欢不值得一段花活，两边都放会读成
+   "一个按钮在动"而不是"一样东西被喜欢了"。过冲就是全部效果 —— 1.34 再回来。 */
+.mpw_np_like.mpw_np_on .mpw_np_ic { animation: mpw_np_beat 340ms cubic-bezier(0.3, 1.4, 0.5, 1); }
+/* the hit area, and nothing else */
+.mpw_np_tap {
+	position: absolute;
+	padding: 0;
+	border: 0;
+	background: none;
+	cursor: pointer;
+}
+/* the cover gives too —— 它就是那个"按下去换形状"的东西，所以它该和传输键同样应答。
+   作用在封面上而不是命中区上：命中区是看不见的，缩放看不见的东西等于没有。 */
+.mpw_np_box:has(.mpw_np_tap:active) .mpw_np_art { scale: 0.96; }
+/* ①(NP-1) 面板上的**可观测说明**（诚实清单的落点之一）：
+   点了做不到的事 → 这里出一行字 + console 一行；不是静默。 */
+.mpw_np_note {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 2px;
+	margin: 0 auto;
+	max-width: 236px;
+	padding: 2px 8px;
+	border-radius: 999px;
+	background: rgba(var(--mpw-np-ink-rgb), 0.08);
+	color: var(--mpw-np-ink-3);
+	font-size: 10.5px;
+	line-height: 1.4;
+	text-align: center;
+	opacity: 0;
+	transition: opacity 160ms ease;
+	pointer-events: none;
+}
+[data-mpw-now-playing][data-mpw-np-note] .mpw_np_note { opacity: 1; }
+@keyframes mpw_np_beat {
+	0% { scale: 1; }
+	38% { scale: 1.34; }
+	100% { scale: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+	.mpw_np_op, .mpw_np_art, .mpw_np_like { transition-duration: 1ms; }
+	.mpw_np_like.mpw_np_on .mpw_np_ic { animation: none; }
+}
+/* ══ ①(NP-4) 拖动（进度 seek + 音量）══
+   两条都是自绘的（不用 input[type=range]）：本组件的每个位置都由补间逐帧写成内联样式，
+   浏览器原生控件的高度/内边距/thum 尺寸在各家实现里都不一样，塞进来就是"第二个意见"。
+   规则只写**材料**（颜色/圆角/命中带），位置与长度一律由 JS 内联写。 */
+/* the scrubber —— 轨道只有 3px，命中带上下各补 9px（NP_SCRUB_PAD）。
+   它绝对定位在 .mpw_np_bar 里（那条是 position:absolute ⇒ 自己是包含块），
+   **不参与** 那一列的 flex 流 ⇒ 时钟/进度条的布局一个像素都不动（放大那件事不留回归）。 */
+.mpw_np_scrub {
+	position: absolute;
+	left: 0;
+	width: 100%;
+	pointer-events: auto;
+	cursor: pointer;
+	touch-action: none;
+	background: transparent;
+}
+/* 没有可 seek 的媒体时：命中带仍然在（判据要能量到它），但不给"能拖"的指针语义 */
+.mpw_np_scrub[data-mpw-np-noseek] { cursor: default; }
+/* the rail 的可见部分保持 3px；拖动时只把游标点亮，不改几何 */
+.mpw_np_rail { position: relative; }
+.mpw_np_scrub[data-mpw-np-drag] ~ .mpw_np_clock { color: var(--mpw-np-ink-3); }
+/* the level —— 卡片里时钟行的中间那一段（左时刻 / 音量 / 右剩余）。
+   收起态整行随 late 淡出，音量条与时钟同一条约定：只在卡片里存在。 */
+.mpw_np_vol { flex: 1 1 auto; display: flex; align-items: center; justify-content: center; min-width: 0; }
+.mpw_np_volHit {
+	position: relative;
+	display: block;
+	width: 84px;              /* = NP_VOL_W，两端实测一致（css-matrix 有一条对拍） */
+	height: 12px;             /* 命中带；可见轨道只有 2px，居中 */
+	pointer-events: auto;
+	cursor: pointer;
+	touch-action: none;
+}
+.mpw_np_volRail {
+	position: absolute; left: 0; right: 0; top: 50%; height: 2px; margin-top: -1px;
+	border-radius: 999px; background: rgba(var(--mpw-np-ink-rgb), 0.16);
+}
+.mpw_np_volRun {
+	position: absolute; left: 0; top: 50%; height: 2px; margin-top: -1px;
+	border-radius: 999px; background: var(--mpw-np-ink);
+}
+.mpw_np_volKnob {
+	position: absolute; top: 50%; width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px;
+	border-radius: 999px; background: var(--mpw-np-ink);
+}
+.mpw_np_volHit:focus-visible, .mpw_np_scrub:focus-visible {
+	outline: none;
+	box-shadow: 0 0 0 2px var(--mpw-np-card), 0 0 0 4px rgba(var(--mpw-np-ink-rgb), 0.35);
+}
+
+
 
 html, body { background: transparent !important; }
 .mpw-bgWrap { display: none !important; }
 .pI_x6G_frame { background-color: var(--dsw-alias-bg-base) !important; }
 .pI_x6G_sidebarCol,
-.hHd-Xa_root { background-color: var(--dsw-specific-sidebar-fill) !important; }
+.hHd-Xa_root { background-color: var(--mpw-surface-host-side) !important; }
 .wSkVaW_root { background-color: var(--dsw-alias-bg-base) !important; }
 .ydkMvW_root { background-color: var(--dsw-alias-bg-base) !important; }
 
@@ -29,10 +350,10 @@ html, body { background: transparent !important; }
 
 /* 弹窗兜底：不透明（防透出/防字叠字） */
 .mpw_dialog {
-	background: var(--dsw-static-neutral-bluish-950) !important;
+	background: var(--mpw-surface-dialog-dark) !important;
 }
 body:not([data-ds-dark-theme]) .mpw_dialog {
-	background: var(--dsw-static-neutral-bluish-00) !important;
+	background: var(--mpw-surface-dialog-light) !important;
 }
 /* 遮罩虚化：无条件（无壁纸也要模糊，否则字叠字）。
    ①(修正) 只作用于插件自己的弹窗遮罩 .mpw_mask——原 [class*="mask"] 宽匹配会
@@ -47,6 +368,17 @@ body:not([data-ds-dark-theme]) .mpw_dialog {
 }
 /* 遮罩背景加深（防字叠字） */
 [class$="_mask"], .mpw_mask { background: rgba(0,0,0,0.55) !important; }
+
+
+
+.mpw-bgWrap .mpw-webInteract{position:fixed;inset:0;z-index:1;display:none;background:transparent;cursor:crosshair;pointer-events:auto;touch-action:none;user-select:none;-webkit-user-select:none;}
+.mpw-bgWrap.mpw-webInteract-on .mpw-webInteract{display:block;}
+html[data-mpw-interact="on"] body{pointer-events:none !important;}
+html[data-mpw-interact="on"] .mpw-bgWrap .mpw-webInteract{pointer-events:auto !important;}
+.mpw-bgWrap .mpw-webInteractExit{position:fixed;right:12px;top:12px;z-index:2;pointer-events:auto;cursor:pointer;font:12px/1.6 ui-sans-serif,system-ui,sans-serif;color:#fff;background:rgba(24,26,34,.82);border:1px solid rgba(255,255,255,.28);border-radius:8px;padding:6px 10px;display:none;}
+html[data-mpw-interact="on"] .mpw-bgWrap .mpw-webInteractExit{display:block;}
+.mpw-bgWrap .mpw-webInteractBtn{position:fixed;right:12px;bottom:12px;z-index:2;pointer-events:auto;cursor:pointer;font:12px/1.6 ui-sans-serif,system-ui,sans-serif;color:#fff;background:rgba(24,26,34,.72);border:1px solid rgba(255,255,255,.22);border-radius:8px;padding:6px 10px;display:none;}
+.mpw-bgWrap.mpw-web .mpw-webInteractBtn{display:block;}
 
 
 
@@ -77,6 +409,11 @@ html, body {
 	position: absolute; inset: 0; width: 100%; height: 100%; display: none;
 }
 .mpw-bgWrap.mpw-scene canvas.mpw-bgCanvas { display: block; }
+/* ①(批次15 B1) 场景首帧看门狗兜底：mpw-scene-fallback 出现在场景壁纸（mpw-web）上时
+   隐藏 iframe、显示静态帧 img（img 需 !important 压过 ensureBgDom/showWebEl 的内联 display:none；
+   iframe 需 !important 压过 .mpw-web iframe 的 display:block）。看门狗确认/重试时移除该类即恢复。 */
+.mpw-bgWrap.mpw-scene-fallback iframe.mpw-webFrame { display: none !important; }
+.mpw-bgWrap.mpw-scene-fallback img.mpw-bgImg { display: block !important; }
 /* ①(修正) Edge 视频 canvas 渲染路径：showVideoEdge 给 wrap 加 mpw-video 类 + 清空
    canvas 内联 display（=回退到 CSS）——但原 CSS 只有 .mpw-scene 才 display:block，
    Edge 走视频路径时 canvas 被 CSS display:none 藏住 → 壁纸空白（用户实测：Edge
@@ -104,7 +441,7 @@ html, body {
 /* ⑬(新) 取消工作区列表底部的自带渐变 fade（用户要求直接去掉白色虚化带） */
 .hHd-Xa_regionArea [class*="fade"],
 [data-slot*="workspaces"] [class*="fade"],
-[data-slot*="session"] [class*="fade"] {
+[data-slot="sidebar"] [class*="fade"] {
 	display: none !important;
 }
 /* 聊天区 / 详情面板根：背景透明，由 token override 的 --dsw-alias-bg-base
@@ -118,14 +455,17 @@ html, body {
 	background: transparent !important;
 }
 .ydkMvW_root {
+	/* ③(新) unify 开 → 与聊天区同色系（static 色）；关 → 原 bg-base 混色 */
+	background-color: var(--mpw-surface-content) !important;
 }
 }
 	background-color: transparent !important;
 }
 /* ⑩(新) 第三方插件注入侧边栏的内容（DSH-better-sidebar/account-balance 等）：
-   兜底 45% 雾底保证在壁纸上可读；不加 !important → 插件自己的背景样式优先 */
+   兜底 45% 雾底保证在壁纸上可读；不加 !important → 插件自己的背景样式优先。
+   ①(2026-09-18 §5 第1项) 宿主 token 消费收进 SSOT（--mpw-surface-side-plugin）。 */
 [data-slot="sidebar"] [data-plugin] {
-	background-color: color-mix(in srgb, var(--dsw-alias-bg-base) 45%, transparent);
+	background-color: var(--mpw-surface-side-plugin);
 	border-radius: 8px;
 }
 .wSkVaW_scrollBody {
@@ -136,11 +476,59 @@ html, body {
 
 
 
+.pI_x6G_sidebarCol::after,
+.wSkVaW_header::after {
+	content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
+	background: linear-gradient(180deg, rgba(255,255,255,0.16), rgba(255,255,255,0.02) 38%, rgba(255,255,255,0) 62%);
+	box-shadow: inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -1px 0 rgba(0,0,0,0.06);
+	mix-blend-mode: screen;
+}
+
+
+
 .wSkVaW_header {
-	backdrop-filter: none !important;
-	border-bottom: 1px solid transparent !important;
+	background-color: var(--mpw-surface-frost-top) !important;
+	/* ②(2026-09-16 回归修复) 这里原本是 border-bottom: 1px solid transparent !important;
+	   —— 「顶栏下描边消失」的元凶之一（另一处在下面 headerBg && !headerBlur 分支）。
+	   带 !important 的特异性压过宿主自己的 border-bottom ⇒ 下描边整条变透明。
+	   已删除：底色（background-color）我们管，描边一律交还宿主。*/
+	position: relative;   /* 作为 ::before 磨砂层的定位上下文 */
+	overflow: visible;    /* 展开面板/菜单不被裁切 */
 }
 body:not([data-ds-dark-theme]) .wSkVaW_header {
+	background-color: var(--mpw-surface-frost-top-light) !important;
+}
+/* 修正(2026-09-13 用户第1项 + "展开框被压住" 双约束) 标题栏磨砂放在 **::before 伪元素**上：
+   磨砂若加在 header 本体（backdrop-filter），会让 header 成为 ①层叠上下文 → 展开浮层被关在
+   标题栏内部、压不过标题文字 ②fixed/absolute 后代的 containing block → 面板定位/裁剪异常。
+   伪元素不是那些浮层的祖先，因此：磨砂保留、浮层不受困、层叠比较照常。 */
+/* 标题栏磨砂层（默认方案）：
+   为什么用伪元素 + isolation 而不是给 header 本体加 backdrop-filter：
+     * header 本体加 backdrop-filter 会同时产生 **层叠上下文** 与 **fixed 后代的 containing block**
+       → 展开浮层被"关"在标题栏内 / 定位被改（用户实测"浮层被压住"）。
+     * 伪元素不是浮层的祖先，不会困住任何浮层；
+     * isolation: isolate 让 header 自己成为层叠上下文（**不会**产生 containing block），
+       于是 z-index:-1 的伪元素被限制在 header 内部绘制：在 header 背景之上、内容之下，
+       可靠可见（这正是上一版伪元素方案缺失的一环）。
+   ?hdrblur=element 可切回"本体"方案做对照。 */
+/* ①(关键修正 2026-09-13 用户截图定案) **绝不能在 header 上加 isolation / backdrop-filter**：
+   它们都会让 header 成为 **backdrop root**，而 header 里的浮层（后台任务菜单等）也带
+   backdrop-filter —— 成为 backdrop root 的祖先会让后代的 backdrop 采样范围被"隔离"在内部，
+   于是浮层模糊失效 → 背后文字**清晰**透出来（截图实锤：文字是锐利的、不是糊的）。
+   所以 header 只保留：position:relative（给 ::before 做定位上下文）+ 半透明底；
+   磨砂完全交给 ::before（伪元素不是浮层的祖先 → 不影响浮层的 backdrop）。
+   ①(2026-09-16) 追加 :not([data-mpw-hdr-frost-el])：JS 注入的真实元素层（.mpw-hdrFrost）
+   一旦生效就给 body 打这个标记 → **伪元素兜底自动让位**，避免两层模糊叠加（30+30px 糊成一片）；
+   若 JS 注入失败（极端环境/CSP/找不到 header），标记不存在 → 伪元素仍在 ⇒ 双保险不互相打架。 */
+html body:not([data-mpw-hdr-blur-element]):not([data-mpw-hdr-frost-el]) .wSkVaW_header::before {
+	content: "" !important;
+	position: absolute !important;
+	inset: 0 !important;
+	z-index: -1 !important;
+	pointer-events: none !important;
+	border-radius: inherit !important;
+	-webkit-backdrop-filter: blur(var(--mpw-hdr-blur, 24px)) saturate(140%) !important;
+	backdrop-filter: blur(var(--mpw-hdr-blur, 24px)) saturate(140%) !important;
 }
 
 
@@ -163,18 +551,42 @@ body:not([data-ds-dark-theme]) .wSkVaW_header {
 
 
 .wSkVaW_header {
-	background-color: var(--dsw-static-neutral-bluish-00) !important;
+	background-color: transparent !important;
+	backdrop-filter: none !important;
+	/* ②(2026-09-16 回归修复) 同上：原来的 border-bottom: 1px solid transparent !important;
+	   在「透出壁纸且不磨砂」这一档（用户实测命中的就是它）把宿主下描边整条抹掉。
+	   已删除 —— 透明底只改底色，下描边仍由宿主绘制（亮色 rgba(19,45,83,.26) /
+	   暗色 rgba(148,180,220,.32)），悬浮态圆角外框的下边也随之恢复。*/
+}
+.wSkVaW_header button,
+.wSkVaW_header [class*="button"],
+.wSkVaW_header [class*="logo"],
+.wSkVaW_header [class*="mode"],
+.wSkVaW_header [class*="badge"],
+.wSkVaW_header [class*="segmented"] {
+	background: transparent !important;
+	box-shadow: none !important;
+}
+
+
+
+.wSkVaW_header {
+	background-color: var(--mpw-surface-opaque-top) !important;
 	backdrop-filter: none !important;
 }
 body[data-ds-dark-theme] .wSkVaW_header {
-	background-color: var(--dsw-static-neutral-bluish-950) !important;
+	background-color: var(--mpw-surface-opaque-top-dark) !important;
 }
 
 
 
-.pI_x6G_sidebarCol,
-.hHd-Xa_root {
-	background-color: var(--dsw-specific-sidebar-fill) !important;
+html body .pI_x6G_sidebarCol,
+html body [class*="sidebarCol"]:not([class*="_tab"]) {
+	background-color: var(--mpw-surface-opaque-side) !important;
+}
+html body[data-ds-dark-theme] .pI_x6G_sidebarCol,
+html body[data-ds-dark-theme] [class*="sidebarCol"]:not([class*="_tab"]) {
+	background-color: var(--mpw-surface-opaque-side-dark) !important;
 }
 .hHd-Xa_newSession {
 	background-color: var(--dsw-alias-button-elevated-fill) !important;
@@ -182,7 +594,7 @@ body[data-ds-dark-theme] .wSkVaW_header {
 .hHd-Xa_regionArea { backdrop-filter: none !important; }
 .hHd-Xa_regionArea [class*="fade"],
 [data-slot*="workspaces"] [class*="fade"],
-[data-slot*="session"] [class*="fade"] {
+[data-slot="sidebar"] [class*="fade"] {
 	display: none !important;
 }
 
@@ -202,11 +614,11 @@ body[data-ds-dark-theme] .wSkVaW_header {
    （90% 时磨砂感几乎不可见，用户实测仍像纯白）。 */
 [class*="overlay"] [role="dialog"],
 [class*="overlay"] [role="alertdialog"] {
-	background-color: color-mix(in srgb, var(--dsw-static-neutral-bluish-00) 80%, transparent) !important;
+	background-color: var(--mpw-surface-panel-frost) !important;
 }
 body[data-ds-dark-theme] [class*="overlay"] [role="dialog"],
 body[data-ds-dark-theme] [class*="overlay"] [role="alertdialog"] {
-	background-color: color-mix(in srgb, var(--dsw-static-neutral-bluish-950) 80%, transparent) !important;
+	background-color: var(--mpw-surface-panel-frost-dark) !important;
 }
 [role="dialog"] [class*="card"] {
 	backdrop-filter: none !important;
@@ -214,10 +626,10 @@ body[data-ds-dark-theme] [class*="overlay"] [role="alertdialog"] {
 /* 提问输入框（composer）：跟随「虚化对话框」开关（聊天框不随统一虚化）。
    虚化开 = 半透明背景，透出模糊壁纸/经过的字。 */
 [data-composer-card] {
-	background-color: color-mix(in srgb, #1b2233 42%, transparent) !important;
+	background-color: var(--mpw-surface-composer) !important;
 }
 body:not([data-ds-dark-theme]) [data-composer-card] {
-	background-color: color-mix(in srgb, #dde3ee 55%, transparent) !important;
+	background-color: var(--mpw-surface-composer-light) !important;
 }
 /* 输入框背后区域（composerStack/seat）背景透明，让壁纸透到输入框背后 */
 [data-slot*="composer"] [class*="stack"],
@@ -239,20 +651,20 @@ body:not([data-ds-dark-theme]) [data-composer-card] {
 
 /* ── 设置面板虚化（覆盖通用对话框值，独立可调） ── */
 [class*="settingsArea"] [role="dialog"] {
-	background-color: color-mix(in srgb, var(--dsw-static-neutral-bluish-00) 80%, transparent) !important;
+	background-color: var(--mpw-surface-panel-frost) !important;
 }
 body[data-ds-dark-theme] [class*="settingsArea"] [role="dialog"] {
-	background-color: color-mix(in srgb, var(--dsw-static-neutral-bluish-950) 80%, transparent) !important;
+	background-color: var(--mpw-surface-panel-frost-dark) !important;
 }
 
 
 
 /* ── 下载/确认弹窗虚化（本插件 .mpw_dialog） ── */
 .mpw_dialog {
-	background: color-mix(in srgb, var(--dsw-static-neutral-bluish-950) 80%, transparent) !important;
+	background: var(--mpw-surface-dialog-frost-dark) !important;
 }
 body:not([data-ds-dark-theme]) .mpw_dialog {
-	background: color-mix(in srgb, var(--dsw-static-neutral-bluish-00) 80%, transparent) !important;
+	background: var(--mpw-surface-dialog-frost-light) !important;
 }
 
 
@@ -264,9 +676,22 @@ body:not([data-ds-dark-theme]) .mpw_dialog {
    被 flex 压缩进侧栏（诊断数据实锤：panel 宽 254 而非 800）。统一虚化的视觉效果本就由
    "壁纸层 filter blur（--mpw-bg-blur）+ 表面半透明"提供，此处只保留半透明、去掉 backdrop。
    :has() 兜底：任何 fixed overlay 出现时也强制清掉（防其它来源的 backdrop）。 */
-html body:not([data-mpw-sblur-off]):not([data-mpw-header-blur-off]).pI_x6G_sidebarCol,
-html body:not([data-mpw-sblur-off]):not([data-mpw-header-blur-off])[class*="sidebarCol"]:not([data-sidebar-right-panel]),
-html body:not([data-mpw-sblur-off]):not([data-mpw-header-blur-off]).wSkVaW_header {
+/* ①(2026-09-13 定案：磨砂回到标题栏本体) 用户实测"标题栏模糊直接没了" →
+   磨砂必须在 header 本体上才有稳定观感（伪元素方案在部分层级/背景组合下不可见）。
+   同时用两条护栏避免历史上那两个 side effect：
+     ① **大浮层/弹窗打开时自动摘除**（下方已有的 :has([class*="_overlay"]/_modal) 规则把
+        header 的 backdrop-filter 置 none）→ 不会困住 fixed 面板；
+     ② 浮层的层叠问题**不再依赖 header 不是层叠上下文**：改为抬高"浮层宿主"的 z-index
+        （见上方 QsffPG_root 规则，z-index:500）→ 浮层在 header 的层叠上下文内部也能压过标题文字。
+   ?hdrblur=pseudo 可切到"仅伪元素"方案（对照排障用）。 */
+html body[data-mpw-hdr-blur-element]:not([data-mpw-sblur-off]) .wSkVaW_header {
+}
+/* ⑥(2026-09-20) :not([data-mpw-holds-layer])：**该节点是弹层的祖先时绝不给 backdrop-filter**
+   —— 真机实测这条规则一旦落在 pI_x6G_sidebarCol 上（设置 overlay 的后代祖先链里有它），
+   面板 rect 立刻从 {x:320,w:800} 变成 {x:13,w:254}（被压缩进左栏）。标记由 mpwSyncLayerHosts()
+   按**结构**维护（不依赖 :has()、不依赖弹层可见性/动画进度）。 */
+html body:not([data-mpw-sblur-off]).pI_x6G_sidebarCol:not([data-mpw-holds-layer]),
+html body:not([data-mpw-sblur-off])[class*="sidebarCol"]:not([data-sidebar-right-panel]):not([data-mpw-holds-layer]) {
 }
 html body:has([class*="_overlay"]), html body:has([class*="_modal"]), html body:has([class*="_portal"]) {
 	--mpw-overlay-open: 1;
@@ -283,6 +708,323 @@ html body:has([class*="_overlay"]) [data-mpw-rs],
 html body:has([class*="_modal"]) [data-mpw-rs] {
 	backdrop-filter: none !important;
 	-webkit-backdrop-filter: none !important;
+}
+
+
+
+/* ── H. 玻璃统一块（CSS-first）：标题栏 / 左侧栏 / 右侧栏(dockkit) ──
+   ①(2026-09-18 §5 第1项) 本块不再自建 :root —— 表面 token 全部由 emitSurfaceTokens()
+   在唯一一处输出（值不变），四表面只读 var(--mpw-surface-*)。 */
+/* 标题栏与左侧栏（含 better-sidebar 与 DSH 原生 sidebarCol） */
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+/* ①(修正 2026-09-13 用户"展开框还是被压住" —— 真机 layer-diag 定案)
+   diag 实测：HEADER.wSkVaW_header 的 computed backdrop-filter = set（仍在本体上），
+   于是 header 成为 **层叠上下文 + fixed/absolute 后代的 containing block**：
+     * 作为 containing block：展开面板的定位/裁剪会受 header 影响；
+     * 作为层叠上下文：浮层被"关"在 header 内部，无法压过 header 内的文字。
+   修法：**header 本体彻底不加 backdrop-filter**（磨砂改由 .wSkVaW_header::before 承担，
+   见上方标题栏规则），这里只保留左侧栏的规则。 */
+html body:not([data-mpw-sblur-off]) [class*="sidebarCol"]:not([data-sidebar-right-panel]):not([data-dockkit-strip]):not([data-mpw-holds-layer]) {
+	-webkit-backdrop-filter: blur(var(--mpw-chrome-blur)) saturate(140%) !important;
+	backdrop-filter: blur(var(--mpw-chrome-blur)) saturate(140%) !important;
+	background-color: var(--mpw-surface-side-frost) !important;
+}
+/* 右侧栏 / dockkit（V 形：面板 + 标签条 + 表面） */
+html body[data-mpw-rsblur="on"] [data-sidebar-right-panel],
+html body[data-mpw-rsblur="on"] [data-dockkit-pane],
+html body[data-mpw-rsblur="on"] [data-dockkit-strip],
+html body[data-mpw-rsblur="on"] [data-dockkit-surface] {
+	-webkit-backdrop-filter: blur(var(--mpw-rs-blur)) saturate(140%) !important;
+	backdrop-filter: blur(var(--mpw-rs-blur)) saturate(140%) !important;
+	background-color: var(--mpw-surface-rs-dock) !important;
+}
+/* 抑制：弹窗/设置面板打开时（backdrop-filter 会成为 fixed 弹窗的 containing block → 必须摘除） */
+html body:has([class*="_overlay"]) [class*="sidebarCol"],
+html body:has([class*="_overlay"]) header[class*="_header_"],
+html body:has([class*="_overlay"]) [data-dockkit-pane],
+html body:has([class*="_overlay"]) [data-dockkit-strip],
+html body:has([class*="_modal"]) [class*="sidebarCol"],
+html body:has([class*="_modal"]) header[class*="_header_"],
+html body:has([class*="_modal"]) [data-dockkit-pane],
+html body:has([class*="_modal"]) [data-dockkit-strip] {
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+}
+/* 抑制：拖拽中（降低重绘开销 + 保证跟手） */
+html body[data-dsh-sidebar-dragging] [class*="sidebarCol"],
+html body[data-dsh-sidebar-dragging] [data-dockkit-pane],
+html body[data-dsh-sidebar-dragging] [data-dockkit-strip],
+html body[data-dragging] [class*="sidebarCol"],
+html body[data-dragging] [data-dockkit-pane] {
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+	transition: none !important;
+}
+}
+/* ①(修正 2026-09-13 花括号配平 —— 承接上一行的 @supports 收尾)：
+   历史上这里被当成"多余的一个右花括号"删掉过一次，实际上它是上面
+   @supports ((backdrop-filter:…) or (-webkit-backdrop-filter:…)) 的**闭合括号**。
+   删掉之后：① 这个 @supports 一直到文件结尾才被浏览器隐式闭合 → 从"玻璃统一块"
+   往后的**所有**规则（弹层虚化/悬浮几何/右侧导航条/轨迹裁剪/层级…）统统变成
+   "仅在支持 backdrop-filter 的浏览器里生效"；② 文件末尾那个
+   @supports not (backdrop-filter …)  兜底块被套进外层条件 → 变成永远不成立
+   （(支持) AND (不支持) = 假）的死代码。
+   现在把 @supports 收在它真正该结束的地方（玻璃/抑制规则之后），后面与
+   backdrop-filter 无关的规则恢复无条件生效；Chromium 下渲染结果不变，
+   但在不支持 backdrop-filter 的环境里不再整片规则丢失。
+   守护：panel-smoke 与 css-matrix 都把"花括号不配平"判为失败。 */
+/* ①(2026-09-12 用户实测) 深色模式：白雾底色会把文字/栏位照得"过曝" → 深色主题改用深色底 */
+html body[data-ds-dark-theme]:not([data-mpw-sblur-off]) header[class*="_header_"],
+html body[data-ds-dark-theme]:not([data-mpw-sblur-off]) header.wSkVaW_header,
+html body[data-ds-dark-theme]:not([data-mpw-sblur-off]) [class*="sidebarCol"]:not([data-sidebar-right-panel]):not([data-dockkit-strip]),
+html body[data-ds-dark-theme][data-mpw-rsblur="on"] [data-sidebar-right-panel],
+html body[data-ds-dark-theme][data-mpw-rsblur="on"] [data-dockkit-pane],
+html body[data-ds-dark-theme][data-mpw-rsblur="on"] [data-dockkit-strip],
+html body[data-ds-dark-theme][data-mpw-rsblur="on"] [data-dockkit-surface] {
+	background-color: var(--mpw-surface-rs-dock-dark) !important;
+	color: var(--dsw-alias-label-primary, var(--dsw-alias-text-primary, inherit));
+}
+html body[data-ds-dark-theme]:not([data-mpw-sblur-off]) header[class*="_header_"] *,
+html body[data-ds-dark-theme]:not([data-mpw-sblur-off]) [class*="sidebarCol"]:not([data-sidebar-right-panel]) * {
+	filter: none !important;
+	text-shadow: none !important;
+}
+/* ②(2026-09-12) 下拉/菜单必须压在设置面板之上，且**不得被我们的玻璃规则困在弹层堆叠上下文里**：
+   官方设置弹层 z=20（pI_x6G_overlayLayer）；这里把 portal 类弹层提到 3000，并让玻璃只作用于
+   ::before（伪元素不产生 containing block，弹层里的下拉不会再被"困"在设置面板后面）。 */
+/* ③(#3 用户实测) 右栏全屏时收纳态左栏会盖到右栏上 → 右栏/浮层层级高于左栏 */
+/* ③(#3) 右栏层级只比左栏高，但**必须低于设置弹层**（官方设置层 z=20；此前写 40 会压住设置） */
+html body [data-sidebar-right-panel], html body [data-dockkit-pane], html body [data-dockkit-strip], html body [data-dockkit-surface] {
+	z-index: 12 !important;
+}
+html body [class*="sidebarCol"]:not([data-sidebar-right-panel]) { z-index: 1 !important; }
+[role="menu"], [role="listbox"], [role="dialog"], [role="tooltip"],
+[class*="_popover"], [class*="_dropdown"], [class*="_selectMenu"], [class*="_menu_"],
+[data-radix-popper-content-wrapper], [data-dsh-popover] {
+	z-index: 3000 !important;
+}
+/* ═══ ①(2026-09-12 用户实测#2) 设置/弹层打开时"本插件抬高过的层级一律让位" ═══
+   现象：打开设置后 标题栏 / 聊天消息框 / 右栏 / 左栏 / 拖宽条 会叠到设置上面。
+   根因：我们为修"右栏被左栏盖住""展开框被压"把若干元素 z-index 抬到 12/40/60/3000，
+        而官方设置弹层只有 z=20（diag 实测 pI_x6G_overlayLayer）。
+   修法：只要页面上存在弹层/遮罩，本插件对所有**非弹层**元素的自定义层级全部撤回
+        （回到 auto，让 DSH 自己的层序管理），弹层与菜单保持最高。 */
+html body:has([class*="_overlay"]),
+html body:has([class*="_overlayLayer"]),
+html body:has([class*="_modal"]),
+html body:has([role="dialog"]) {
+	/* 本插件抬高过的容器：全部让位 */
+}
+html body:has([class*="_overlayLayer"]) [data-sidebar-right-panel],
+html body:has([class*="_overlayLayer"]) [data-dockkit-pane],
+html body:has([class*="_overlayLayer"]) [data-dockkit-strip],
+html body:has([class*="_overlayLayer"]) [data-dockkit-surface],
+html body:has([class*="_overlay"]) [data-sidebar-right-panel],
+html body:has([class*="_overlay"]) [data-dockkit-pane],
+html body:has([class*="_overlay"]) [data-dockkit-strip],
+html body:has([class*="_overlay"]) [data-dockkit-surface],
+html body:has([class*="_modal"]) [data-sidebar-right-panel],
+html body:has([class*="_modal"]) [data-dockkit-pane],
+html body:has([class*="_modal"]) [data-dockkit-strip] {
+	z-index: auto !important;
+}
+html body:has([class*="_overlayLayer"]) header[class*="_header_"],
+html body:has([class*="_overlayLayer"]) header.wSkVaW_header,
+html body:has([class*="_overlay"]) header[class*="_header_"],
+html body:has([class*="_modal"]) header[class*="_header_"],
+html body:has([class*="_overlayLayer"]) [class*="sidebarCol"],
+html body:has([class*="_overlay"]) [class*="sidebarCol"],
+html body:has([class*="_modal"]) [class*="sidebarCol"],
+html body:has([class*="_overlayLayer"]) [class*="_resizer"],
+html body:has([class*="_overlay"]) [class*="_resizer"],
+html body:has([class*="_overlayLayer"]) [class*="_resizeHandle"],
+html body:has([class*="_overlay"]) [class*="_resizeHandle"],
+html body:has([class*="_overlayLayer"]) [class*="_divider"],
+html body:has([class*="_overlay"]) [class*="_divider"],
+html body:has([class*="_overlayLayer"]) [class*="_scrollBody"],
+html body:has([class*="_overlay"]) [class*="_scrollBody"],
+html body:has([class*="_overlayLayer"]) [data-composer-card],
+html body:has([class*="_overlay"]) [data-composer-card],
+html body:has([class*="_overlayLayer"]) [class*="_floatHeader_"],
+html body:has([class*="_overlay"]) [class*="_floatHeader_"] {
+	z-index: auto !important;
+}
+/* 设置/弹层本身必须最高（含其内部下拉），保证可点可选 */
+html body [class*="_overlayLayer"], html body [class*="_overlay"], html body [class*="_modal"], html body [role="dialog"] {
+	z-index: 2000 !important;
+}
+/* 设置/对话弹层本身不做玻璃（避免 backdrop-filter 变成下拉的 containing block） */
+[class*="_overlay"], [class*="_modal"], [role="dialog"], [class*="_overlayLayer"],
+[class*="_overlay"] *, [class*="_overlayLayer"] * {
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+}
+/* ③(2026-09-12) 标题栏右侧展开面板（VS Code 等）不得被标题栏玻璃压到文字下面 */
+/* ②(#2 回归修复) 只提层级，**不改 position**：上一版给它 position:relative 导致标题栏被展开面板撑大 */
+header [class*="_panel"], header [class*="_popover"], header [class*="_menu"],
+header [class*="_expand"], header [class*="_dropdown"] {
+	z-index: 60 !important;
+}
+/* ②(#2) 标题栏不再抬高到设置之上（原 30 > 设置的 20 → 标题栏盖住设置） */
+header[class*="_header_"], header.wSkVaW_header { z-index: 5; }
+/* 悬浮（卡片化）：左栏（沿用既有 body[data-mpw-float] 语义）+ 右侧 dockkit 新增适配 */
+/* ④(2026-09-12 用户实测"右栏还是贴到屏幕上下")：DSH 原生右栏是绝对定位面板（内联 width:581px），
+   margin 对它无效 → 必须用 top/bottom/right 内缩 + height:auto 才能变成悬浮卡片。 */
+/* ①(#1 用户实测) 右栏里还会内嵌一层同属性的面板（文件界面）→ 内层必须还原成普通矩形，
+   只让最外层浮起：用 :has() 排除"自身内部还含同属性面板"的祖先，改为只匹配 push 变体 + 重置嵌套层。 */
+/* ①(2026-09-12 用户再次反馈) 右栏内层的"文件界面"面板同样带 data-sidebar-right-panel →
+   外层浮起后内层也浮起 = 悬浮窗里又套一个悬浮窗。这里把**任何内层面板**一律还原为普通矩形
+   （不限属性取值，覆盖 push/true/其他；同时覆盖 dockkit 内层）。 */
+html body[data-mpw-float] [data-sidebar-right-panel] [data-sidebar-right-panel],
+html body[data-mpw-float] [data-sidebar-right-panel] [data-dockkit-pane],
+html body[data-mpw-float] [data-sidebar-right-panel] [data-dockkit-surface],
+html body[data-mpw-float] [data-dockkit-pane] [data-sidebar-right-panel],
+html body[data-mpw-float] [data-dockkit-pane] [data-dockkit-pane] {
+	top: 0 !important; bottom: 0 !important; right: 0 !important; left: auto !important;
+	margin: 0 !important; border-radius: 0 !important; border: none !important; box-shadow: none !important;
+	height: 100% !important; max-height: none !important; overflow: visible !important;
+}
+html body[data-mpw-float] [data-sidebar-right-panel="push"] [data-sidebar-right-panel] {
+	top: 0 !important; bottom: 0 !important; right: 0 !important;
+	margin: 0 !important; border-radius: 0 !important; border: none !important; box-shadow: none !important;
+}
+html body[data-mpw-float] [data-sidebar-right-panel="push"] {
+	top: 10px !important;
+	bottom: 10px !important;
+	right: 10px !important;
+	height: auto !important;
+	max-height: calc(100vh - 20px) !important;
+	border-radius: 18px !important;
+	border: 1px solid rgba(148,180,220,0.28) !important;
+	overflow: hidden !important;
+	box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+}
+html body[data-ds-dark-theme][data-mpw-float] [data-sidebar-right-panel] {
+	border-color: rgba(148,180,220,0.34) !important;
+}
+html body[data-mpw-float] [data-dockkit-pane],
+html body[data-mpw-float] [data-dockkit-strip] {
+	margin: 10px 10px 10px 0 !important;
+	border: 1px solid rgba(148,180,220,0.28) !important;
+	border-radius: 18px !important;
+	overflow: hidden !important;
+	box-shadow: 0 6px 24px rgba(0,0,0,0.10);
+	transition: margin .18s ease, border-radius .18s ease, border-color .18s ease;
+}
+html body[data-ds-dark-theme][data-mpw-float] [data-dockkit-pane],
+html body[data-ds-dark-theme][data-mpw-float] [data-dockkit-strip] {
+	border-color: rgba(148,180,220,0.32) !important;
+}
+html body[data-dsh-sidebar-dragging][data-mpw-float] [data-dockkit-pane],
+html body[data-dsh-sidebar-dragging][data-mpw-float] [data-dockkit-strip] {
+	margin: 0 !important;
+	border-radius: 0 !important;
+	transition: none !important;
+}
+/* 修正(2026-09-13 用户第2项) 标题栏内展开的菜单/面板必须盖住标题栏文字：
+   VS Code 按钮旁的展开（open-in-app chevron 菜单）此前叠到文字下面——它是 header 的后代，
+   而 header 的文字节点在其后/层叠更高。这里把所有 header 内浮层抬到 z-index:90
+   （header 本体已 position:relative + overflow:visible，见上方标题栏规则）。 */
+html body .wSkVaW_header [role="menu"],
+html body .wSkVaW_header [class*="_menu"],
+html body .wSkVaW_header [class*="_popover"],
+html body .wSkVaW_header [class*="_panel"],
+html body .wSkVaW_header [class*="_dropdown"],
+html body [class*="wSkVaW_header"] [role="menu"],
+html body [class*="wSkVaW_header"] [class*="_menu"],
+html body [class*="wSkVaW_header"] [class*="_popover"],
+html body [class*="wSkVaW_header"] [class*="_panel"],
+html body [class*="wSkVaW_header"] [class*="_dropdown"] {
+	/* 修正(2026-09-13 用户反馈"展开框被收进标题栏、标题栏跟着变大")：
+	   绝对不要改浮层自己的 position（会把 absolute 变成流内元素 → 撑大标题栏）。
+	   这里只给 z-index；真正解决问题的是下面"抬高定位宿主"的规则。 */
+	z-index: 90 !important;
+}
+/* ═══ ①(修正 2026-09-13 用户"展开框又跑到文字底下") 正解：抬高**浮层宿主**的层叠 ═══
+   DSH 的后台任务(jobs)浮层结构（dsh-client-ui-jobs 实测源码）：
+     .QsffPG_root  { position: relative }                      ← 宿主（trigger 的包裹层，位于 header 内）
+     .QsffPG_menu  { position: absolute; top: calc(100% + 5px); left: 0; z-index: 100 }
+   浮层自身已经是 absolute + z-index:100，它压在文字下面**不是因为自己层级低**，而是因为它的
+   宿主在 header 的层叠里排在标题文字之后（z-index:auto → 按 DOM 顺序绘制）。
+   给浮层再加 z-index 是没用的（z-index 只在同一个层叠上下文里比较），给它加 position 会把
+   absolute 变流内（就是刚才"撑大标题栏"的 bug）。
+   正解：**只给宿主加 z-index**（宿主本来就是 position:relative → 加 z-index 不产生任何布局变化），
+   宿主整体就被抬到标题文字之上，里面的 absolute 浮层自然跟着上来。
+   同时兼容 hash 变化：凡是 header 内含 _menu/_popover 的 _root 宿主，一并抬高。 */
+html body header [class*="QsffPG_root"],
+html body header [class*="QsffPG"],
+html body .wSkVaW_header [class*="QsffPG_root"],
+html body .wSkVaW_header [class*="QsffPG"],
+html body [class*="wSkVaW_header"] [class*="QsffPG_root"],
+html body [class*="wSkVaW_header"] [class*="QsffPG"] {
+	z-index: 500 !important;
+}
+/* 说明：曾用 [class*="_root"]:has([class*="_menu"]) 广撒网抬层级，但它会把**标题文字所在容器**
+   也一起抬到同层级（DOM 更靠后 → 反而压住浮层）。已删除，只保留精确的浮层宿主规则。 */
+
+/* ═══ ①(修正 2026-09-13 用户第1+3项) 右侧栏**全屏**：要磨砂玻璃，不要死白 ═══
+   用户要求：全屏时也要"背景模糊"，而不是被强制不透明；同时又不能让聊天输入框/消息框清晰地
+   透在右栏上。做法 = 真正的磨砂玻璃（半透明底 + backdrop blur）+ 抬高 z-index：
+     * 半透明底用右侧栏自己的设置（--mpw-rs-alpha，默认 45 → 乘 0.55 后 ≈25%）；
+     * backdrop blur 用 --mpw-rs-blur（匹配「右侧边栏/dock 虚化」条），把背后内容糊掉；
+     * z-index:40 高于聊天输入框 seat 的 z-index:7（conversation 的 wSkVaW_composerSeat），
+       避免输入框画在右栏之上。
+   DSH 全屏时给 frame 打 data-rightbar-fullscreen（ui-layout AppFrame.module.css），只在该状态生效。 */
+html body .pI_x6G_frame[data-rightbar-fullscreen] [data-sidebar-right-panel],
+html body [data-rightbar-fullscreen] [data-sidebar-right-panel],
+html body .pI_x6G_frame[data-rightbar-fullscreen] [class*="P3OORG_panel"],
+html body [data-rightbar-fullscreen] [class*="P3OORG_panel"] {
+	z-index: 40 !important;
+	-webkit-backdrop-filter: blur(var(--mpw-rs-blur, 14px)) saturate(140%) !important;
+	backdrop-filter: blur(var(--mpw-rs-blur, 14px)) saturate(140%) !important;
+	background-color: var(--mpw-surface-rs-full) !important;
+}
+/* 全屏时把聊天输入框区域压到右栏之下（即便它有自己的 stacking context 也不会盖住卡片圆角） */
+html body [data-rightbar-fullscreen] .wSkVaW_composerSeat,
+html body [data-rightbar-fullscreen] [class*="composerSeat"] {
+	z-index: 5 !important;
+}
+
+/* ═══ ①(修正 2026-09-13 第9/10 项 → 再修正为 用户第1/2项反馈) 悬浮右栏内 tab 条几何 ═══
+   背景：DSH 原生 tab 条规则是
+     ._tabStrip_17p4l_156 { display:flex; height:28px; padding:10px 6px 0 10px; align-items:center }
+   即 **content-box** 下总高 = 28 + 10(top) = 38px。
+   上一版我给它加了 box-sizing:border-box + padding-left/right:10px 想造左右对称间隙，
+   结果把 28px 的内容高吃掉了 10px → 用户实测"导航栏被切变小了"。
+   现在：**不改任何尺寸相关属性**（box-sizing / padding / height 全部交回 DSH），
+   只用 margin-left 造左侧间隙：flex 子项 width:auto 会随 margin 自动收窄，
+   所以右侧原有的间隙不会被挤掉，也不会溢出到面板外。
+   垂直居中交给 DSH 自己的 align-items:center（这里只做保险，不改尺寸）。
+   ⚠ 注意：本段位于 JS 模板字符串内，注释里**禁止出现反引号**（会提前终止模板 → buildCss 抛错
+   → 整张样式表为空 → 画面错乱；panel-smoke 的 CSS 结构校验会拦住）。 */
+html body[data-mpw-float] [data-sidebar-right-panel] [data-dockkit-strip],
+html body[data-mpw-float] [data-sidebar-right-panel] [class*="_tabStrip"] {
+	margin-left: 10px !important;
+	align-items: center !important;
+}
+html body[data-mpw-float] [data-sidebar-right-panel] [data-dockkit-strip] > *,
+html body[data-mpw-float] [data-sidebar-right-panel] [class*="_tabStrip"] > * {
+	align-self: center !important;
+}
+/* ①(修正 2026-09-13 第12项，按用户要求收窄选择器) 悬浮模式下，**只针对轨迹页**：其"总览"区块
+   会横向溢出到悬浮右栏上。这里把裁剪切在轨迹页自身根节点（不是整个中间列），因此不会夹到
+   其它面板/弹层。选择器同时写 hash 类与结构类名，兼容 DSH 重编译后的 hash 变化。
+   （qBU-ya_root 轨迹根 / fV0t5q_root 顶部工具条 / Y0dWHa_overview 总览 / _1p9O6q_root 轨道区）
+   回退：给 body 加 data-mpw-traject-clip="off"。 */
+html body[data-mpw-float]:not([data-mpw-traject-clip="off"]) .qBU-ya_root,
+html body[data-mpw-float]:not([data-mpw-traject-clip="off"]) [class$="_root"][class*="qBU-ya"],
+html body[data-mpw-float]:not([data-mpw-traject-clip="off"]) .Y0dWHa_overview,
+html body[data-mpw-float]:not([data-mpw-traject-clip="off"]) [class*="_overview"] {
+	max-width: 100% !important;
+	box-sizing: border-box !important;
+}
+html body[data-mpw-float]:not([data-mpw-traject-clip="off"]) .qBU-ya_root,
+html body[data-mpw-float]:not([data-mpw-traject-clip="off"]) [class*="qBU-ya"] {
+	overflow-x: clip !important;
+}
+html body[data-mpw-float]:not([data-mpw-traject-clip="off"]) [class*="_overview"] {
+	overflow-x: auto !important;            /* 需要时总览自己内部横滚，而不是画到面板外 */
+	overscroll-behavior-x: contain !important;
 }
 
 
@@ -324,37 +1066,6 @@ html body:has([class*="_modal"]) [data-mpw-rs] {
 }
 
 
-
-/* ── Aqua 实验模式：自适应文字色 + 蓝色清理（可开关，默认关） ── */
-body[data-mpw-aqua] {
-	--dsw-alias-label-primary: var(--mpw-aqua-ink, inherit);
-	--dsw-alias-label-secondary: var(--mpw-aqua-ink-secondary, inherit);
-	--dsw-alias-label-tertiary: var(--mpw-aqua-ink-tertiary, inherit);
-	--dsw-alias-label-caption: var(--mpw-aqua-ink-tertiary, inherit);
-	--dsw-alias-label-dimmed: var(--mpw-aqua-ink-tertiary, inherit);
-	/* ①(修正) 品牌交互色优先用「配色」(accent)：默认(空)=DSH 原色/回退 aqua-ink；
-	   选了 accent 才切换成所选色(第4项: 默认不启用, 手动选才生效) */
-	--dsw-alias-brand-primary: var(--mpw-accent-color, var(--mpw-aqua-ink, inherit));
-	--dsw-alias-brand-text: var(--mpw-accent-color, var(--mpw-aqua-ink, inherit));
-	--dsw-alias-state-business-primary: var(--mpw-accent-color, var(--mpw-aqua-ink-secondary, inherit));
-}
-/* ①(修正) 配色(accent) 不依赖 Aqua 也改品牌交互色/发送键(第4/5项):
-   body 有 data-mpw-accent(选了配色) 时, brand-primary/button-info-fill/state-business
-   全部用所选 accent 色——否则 accent 只在 Aqua 模式生效, 用户没开 Aqua 时配色无效。 */
-body[data-mpw-accent] {
-	--dsw-alias-brand-primary: var(--mpw-accent-color);
-	--dsw-alias-brand-text: var(--mpw-accent-color);
-	--dsw-alias-state-business-primary: var(--mpw-accent-color);
-	--dsw-alias-button-info-fill: var(--mpw-accent-color);
-	--dsw-alias-button-info-hover: var(--mpw-accent-color);
-}
-/* ①(修正) 发送键颜色用 accent(配色)：非 Aqua 也覆盖(原 3027 规则在 body[data-mpw-aqua]
-   门控下, 没开 Aqua 时发送键不变——用户实测"改了配色发送键没变") */
-body[data-mpw-accent] [data-composer-card] [class*="primary"],
-body[data-mpw-accent] [data-slot*="composer"] [class*="primary"] {
-	background-color: var(--mpw-accent-color) !important;
-	color: var(--mpw-aqua-brand-contrast, #fff) !important;
-}
 /* ①(修正) 面板取色/统一雾时标题栏背景跟随 mask 色（用户实测只改侧边栏不改标题栏）。
    ①(修正2) 标题栏是否刷 mask 色由 JS 打 data-mpw-aqua-header 门控：
    纯 aquaInk（自适应文字色）时不刷——此时遮罩色=主题中性色（亮色主题=白），
@@ -391,10 +1102,28 @@ body[data-mpw-aqua] .mpw_dialog .mpw_title,
 body[data-mpw-aqua] .mpw_dialog .mpw_label,
 body[data-mpw-aqua] .mpw_dialog .mpw_hint,
 body[data-mpw-aqua] .mpw_dialog .mpw_value { color: inherit !important; }
+
+
 /* ⑲(修正) 深底文字可读增强（aquaTextEnhance，独立开关）：之前只打 data-mpw-aqua-text
    属性但 buildCss 没生成规则 → 功能无效（用户实测）。给聊天/内容文字加双色描边
    （深色阴影 + 浅色高光），黑底/深色背景上也能看清。近似：无法精确只变经过
    深色处的字，故全量加描边；默认关。 */
+/* ①(#16) 亮度自适应文字色：token 覆盖（仅在"深底文字可读增强"开启时生效）
+   ①(2026-09-16 bug①根治) 两处修正：
+     · 门控 [data-mpw-text-ink]：只有 JS 真把 --mpw-text-ink 写进 html 时才覆盖；
+     · **去掉自引用 fallback**（旧写法 var(--mpw-text-ink, var(--dsw-alias-label-primary))
+       在同一个元素上定义 --dsw-alias-label-primary 时构成循环引用 ⇒ guaranteed-invalid
+       ⇒ 所有引用该 token 的声明变 unset（背景透明/文字失色），右侧时间线的激活条正是其一）。 */
+body[data-mpw-aqua-text][data-mpw-text-ink] {
+	/* ①(修正 2026-09-13 第16项 token 漂移) DSH 0.1.5 用 label-* 家族；text-* 仅 0.1.4- 存在。
+	   两套都写：旧版走 text-*，新版走 label-*（否则自适应文字色在 0.1.5 上完全不生效）。 */
+	--dsw-alias-text-primary: var(--mpw-text-ink) !important;
+	--dsw-alias-text-secondary: var(--mpw-text-ink-dim) !important;
+	--dsw-alias-text-tertiary: var(--mpw-text-ink-dim) !important;
+	--dsw-alias-label-primary: var(--mpw-text-ink) !important;
+	--dsw-alias-label-secondary: var(--mpw-text-ink-dim) !important;
+	--dsw-alias-label-tertiary: var(--mpw-text-ink-dim) !important;
+}
 body[data-mpw-aqua-text] .wSkVaW_scrollBody,
 body[data-mpw-aqua-text] [data-slot*="message"],
 body[data-mpw-aqua-text] [data-slot*="conversation"] [class*="message"] {
@@ -407,7 +1136,6 @@ body[data-mpw-aqua-text] [role="dialog"],
 body[data-mpw-aqua-text] .mpw_dialog {
 	text-shadow: none !important;
 }
-
 
 
 /* ── 任务列表磨砂（实验，默认关）：todo 卡片纯模糊，无白色底条 ──
@@ -463,11 +1191,11 @@ body[data-ds-dark-theme] [data-mpw-lg-css]:not([class*="sidebarCol"]):not([class
 	   该 token（tinted 0.85）→ 本设置容器随 aquaTint 变色（用户实测「壁纸引擎背景
 	   右边设置区跟着面板颜色变」）。改用不受 aqua 影响的 static 色 + 半透明，既透出
 	   壁纸又不随 aquaTint 变。 */
-	background: color-mix(in srgb, var(--dsw-static-neutral-bluish-00) 62%, transparent) !important;
+	background: var(--mpw-surface-glass) !important;
 	border-radius: 14px; padding: 10px 12px;
 }
 body[data-ds-dark-theme] .mpw_glassHost {
-	background: color-mix(in srgb, var(--dsw-static-neutral-bluish-950) 62%, transparent) !important;
+	background: var(--mpw-surface-glass-dark) !important;
 }
 .mpw_title { font-size: 16px; line-height: 24px; font-weight: 600; color: var(--dsw-alias-label-primary); }
 /* ①(新) 活动进度条（转码/scene 提取）：设置面板顶部细条 */
@@ -605,8 +1333,8 @@ body[data-ds-dark-theme] .mpw_tabBar {
 }
 /* ④(新) 时段按钮：当前生效项高亮（自动/手动锁定） */
 .mpw_timeActive {
-	border-color: var(--dsw-alias-brand-600, var(--dsw-alias-interactive-active, #4f8cff)) !important;
-	color: var(--dsw-alias-brand-600, var(--dsw-alias-interactive-active, #4f8cff)) !important;
+	border-color: var(--dsw-alias-brand-primary, var(--dsw-alias-brand-600, var(--dsw-alias-interactive-active, #4f8cff))) !important;
+	color: var(--dsw-alias-brand-primary, var(--dsw-alias-brand-600, var(--dsw-alias-interactive-active, #4f8cff))) !important;
 	background: var(--dsw-alias-interactive-bg-hover);
 }
 .mpw_fileBtn:hover, .mpw_reset:hover { background: var(--dsw-alias-interactive-bg-hover); }
@@ -667,8 +1395,24 @@ body[data-ds-dark-theme] .mpw_tabBar {
 }
 .mpw_presetSwatch:hover { transform: scale(1.12); }
 /* ①(新) 壁纸扫描结果预览缩略图 */
-.mpw_thumb { flex: none; width: 72px; height: 40px; border-radius: 6px; overflow: hidden; border: 1px solid var(--dsw-alias-border-l2); background: var(--dsw-alias-bg-layer-2); }
-.mpw_thumbImg { width: 100%; height: 100%; object-fit: cover; display: block; }
+.mpw_thumb { position: relative; flex: none; width: 72px; height: 40px; border-radius: 6px; overflow: hidden; border: 1px solid var(--dsw-alias-border-l2); background: var(--dsw-alias-bg-layer-2); }
+/* ①(2026-09-12 用户要求) 当前壁纸预览图：尺寸对齐"自定义本地壁纸目录"里的预览窗(72×40)等比放大 1.3 倍 → 94×52 */
+.mpw_wallThumb { position: relative; flex: none; width: 94px; height: 52px; border-radius: 8px; overflow: hidden; border: 1px solid var(--dsw-alias-border-l2); background: var(--dsw-alias-bg-layer-2); }
+/* ①(2026-09-21 真机修复 第12/13条) 预览框里的**媒体与占位不并排**：
+   媒体脱离文档流铺满整框 + object-fit:contain（宁可留边，绝不切图）；占位同层居中。
+   旧写法是 flex 行 + object-fit:cover：占位一露出来就把 100% 宽的图压到 3/4，
+   右侧 1/4 变成白块（真机读数）——现在两者重叠而非并排，且由状态机保证只露一个。 */
+.mpw_wallThumb .mpw_thumbImg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: block; }
+.mpw_thumbImg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: block; }
+/* 占位：整块（铺满 + 居中），不是一条被挤出来的白边。
+   显隐由**我们自己的**属性 data-mpw-thumb-shown 控制（不用标准 [hidden]：样式作用域护栏要求
+   选择器里的原子都在登记表里，而我们自己的 data-mpw-* 天生在册；状态机也只有这一个开关）。 */
+.mpw_wallThumb [data-mpw-thumb-ph], .mpw_thumb [data-mpw-thumb-ph] {
+	position: absolute; inset: 0; display: none; align-items: center; justify-content: center;
+	text-align: center; padding: 0 4px; box-sizing: border-box;
+	background: var(--dsw-alias-bg-layer-2); color: var(--dsw-alias-label-tertiary);
+}
+.mpw_wallThumb [data-mpw-thumb-ph][data-mpw-thumb-shown], .mpw_thumb [data-mpw-thumb-ph][data-mpw-thumb-shown] { display: flex; }
 /* ①(修正) 问题3：扫描列表图片悬停不应被鼠标拖选（用户想选标题文本复制，
    鼠标划过图片却选中了图片本身）→ 图片/缩略图禁选，标题文字保持可选。 */
 .mpw_thumbImg, .mpw_thumb video, .mpw_thumb {
@@ -689,7 +1433,13 @@ body[data-ds-dark-theme] .mpw_tabBar {
 /* ④(新) 导入失败/错误提示：红色醒目，不再一闪而过看不清 */
 .mpw_hint.mpw_err { color: #ff6b6b; font-weight: 500; }
 .mpw_info { font-size: 12px; line-height: 18px; color: var(--dsw-alias-label-secondary); margin: 0; }
-.mpw_props { display: flex; flex-direction: column; gap: 6px; padding: 8px; border-radius: 8px; background: var(--dsw-alias-bg-module-platform); overflow-anchor: none; /* 防 Firefox 滚动锚定跳顶（目录/轮播列表滚动时内容高度变化把 scrollTop 锚走，松手后/滑到底再滑自动跳顶，用户实测；同轮播 3ea2d96 根因） */ }
+.mpw_props { display: flex; flex-direction: column; gap: 6px; padding: 8px; border-radius: 8px; background: var(--dsw-alias-bg-module-platform); overflow-anchor: none; overscroll-behavior: contain; /* 第13条：① overflow-anchor:none 防 Firefox 滚动锚定把 scrollTop 锚走（用户实测"滑到底再滑自动跳顶"）② overscroll-behavior:contain 让列表到边界后**不再把滚轮串联给宿主设置面板**（否则"画面"跟着面板一起跳） */ }
+/* ①(第13条) 选择器：活动行高亮（键盘导航用；只改颜色，不改焦点、不影响布局高度） */
+.mpw_prop.mpw_rowActive > button,
+.mpw_prop.mpw_rowActive { border-color: var(--dsw-alias-brand-primary, #4f8cff) !important; }
+.mpw_prop.mpw_rowActive { background: color-mix(in srgb, var(--dsw-alias-brand-primary, #4f8cff) 12%, transparent); border-radius: 8px; }
+/* ①(第13条) 列表容器可聚焦（Tab 进入后用 ↑↓ 导航）：焦点环只在键盘聚焦时出现 */
+.mpw_dirList:focus-visible { outline: 2px solid var(--dsw-alias-brand-primary, #7aa2ff); outline-offset: 2px; }
 .mpw_prop { display: flex; flex-direction: column; gap: 4px; padding: 6px 0; }
 .mpw_propLabel { font-size: 12px; line-height: 18px; color: var(--dsw-alias-label-tertiary); }
 .mpw_propLabel b { color: var(--dsw-alias-label-secondary); font-weight: 500; }
@@ -702,13 +1452,19 @@ body[data-ds-dark-theme] .mpw_tabBar {
 	background: color-mix(in srgb, var(--dsw-alias-label-primary) 16%, transparent);
 	position: relative; cursor: pointer; transition: background .15s ease; outline: none;
 }
+/* ①(修复 2026-09-13 开关动画) 圆点位移改用 transform：left 动画走主线程，重建 CSS 的重活
+   一占主线程就会"跳"过去（用户实测：开关没有中间动画）。transform 走合成器，主线程再忙也平滑；
+   transition 覆盖 transform+background-color，另加 will-change 提示图层提升。 */
 .mpw_switch::after {
 	content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px;
 	border-radius: 50%; background: var(--dsw-alias-label-primary);
-	box-shadow: 0 1px 2px rgba(0,0,0,0.35); transition: left .15s ease;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.35);
+	transition: transform .18s cubic-bezier(.4,0,.2,1), background-color .18s ease;
+	transform: translateX(0); will-change: transform;
 }
+.mpw_switch { transition: background-color .18s ease, border-color .18s ease; }
 .mpw_switch.mpw_on { background: var(--dsw-alias-brand-primary, #3964fe); border-color: transparent; }
-.mpw_switch.mpw_on::after { left: 20px; background: #fff; }
+.mpw_switch.mpw_on::after { transform: translateX(18px); background: #fff; }
 .mpw_switch:focus-visible { outline: 2px solid var(--dsw-alias-brand-primary, #7aa2ff); outline-offset: 2px; }
 /* ①(新) 新式开关（uiverse anand_4957 移植：红关/绿开 + 滑块动画） */
 .mpw_switch.mpw_new {
@@ -791,6 +1547,78 @@ body[data-ds-dark-theme] .mpw_tabBar {
 	width: 16px; height: 16px; flex: none; vertical-align: -3px; margin-right: 8px;
 	border-radius: 4px; object-fit: cover;
 	background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+}
+/* ①(2026-09-13) 用户指定的图标是**线性 SVG**（stroke=currentColor）：旧的"浅底+描边"是为
+   位图图标准备的，套在线性图上会变成一个框 → 只在 svg 形态下去掉底/边（?navicon=old 的 img 保留原样式）。 */
+svg.mpw_navIconImg { background: none; border: 0; border-radius: 0; color: inherit; }
+
+/* ①(2026-09-13) 「标题栏磨砂」自动半透明底：只有半透明顶栏才看得见磨砂（属性由 JS 按设置挂上）。
+   ①(2026-09-16) 底色改用**我们自己的命名空间 token** --mpw-hdr-frost-bg（JS 按亮/暗写入），
+   不再直接引用宿主静态色 token —— 满足"只覆盖 --mpw-* 命名空间"的纪律（见 docs/HEADER-FROST.md）。
+   关闭插件或 ?hdrfrost=off 时属性会被移除 → 规则自动失效。
+   ②(2026-09-16 回归修复) 这里原本还有一条 border-bottom: 1px solid transparent !important;
+   —— 它就是用户反馈「顶栏下面一部分的描边被你去掉了」的**唯一元凶**：带 !important 的
+   border-bottom 简写把宿主自己的下描边（浅色 1px solid rgba(19,45,83,.26) / 深色
+   rgba(148,180,220,.32)，以及悬浮态圆角外框的下边）整个改成透明，且特异性/权重
+   压过宿主与我方其它规则。**已删除**：本规则从此只碰 background-color，
+   描边一律交还宿主（下方 hover/悬浮块里的 border-bottom-color 兜底保持不变）。 */
+html body .wSkVaW_header[data-mpw-hdr-translucent],
+html body header[class*="_header_"][data-mpw-hdr-translucent] {
+	background-color: var(--mpw-hdr-frost-bg, rgba(255, 255, 255, 0.38)) !important;
+}
+html body[data-ds-dark-theme] .wSkVaW_header[data-mpw-hdr-translucent],
+html body[data-ds-dark-theme] header[class*="_header_"][data-mpw-hdr-translucent] {
+	background-color: var(--mpw-hdr-frost-bg, rgba(18, 22, 30, 0.45)) !important;
+}
+/* ②(2026-09-16 视觉回归修复) 标题栏磨砂"元素层"（.mpw-hdrFrost，由 JS 注入）的**层叠与托底**规则。
+   为什么必须有这三条（真根因链）：
+     · 顶栏 position:relative 但**不是层叠上下文** ⇒ 之前 z-index:-1 的注入层被顶栏自己的
+       background-color 整片盖住，backdrop-filter 一点都透不出来（用户反复反馈"没有磨砂"）。
+     · JS 现在写 z-index:0（见 ensureHeaderFrost）：画在顶栏背景之上、内容之下。
+     · 第二条把宿主 header 的**直接子节点**抬到 z-index:1（它们原本都是 static/auto，
+       抬升只改绘制序、不改布局），保证磨砂层绝不盖住标题文字/logo/按钮；:not(.mpw-hdrFrost)
+       保证不会把磨砂层自己抬上去。
+     · 层背景一律 transparent：半透明底色仍由宿主 header 承担（上面的 --mpw-hdr-frost-bg 规则），
+       避免"底色叠两次"变成两层白纱。
+   注意：这三条**无条件输出**（不受 headerBg/磨砂开关分支影响）—— 否则"另一档配置下规则消失"
+   会让层叠修复静默失效（本仓库历史上正是"规则落在分支里"吃过亏）。 */
+.mpw-hdrFrost { z-index: 0 !important; background: transparent !important; }
+/* 两条并列：:has(> .mpw-hdrFrost) 覆盖"磨砂层不在首位"的情况（宿主结构变化时也成立），
+   :first-child ~ * 是无 :has 环境的兜底（两者都只影响 header 内部绘制序）。 */
+.wSkVaW_header:has(> .mpw-hdrFrost) > :not(.mpw-hdrFrost) { position: relative; z-index: 1; }
+.mpw-hdrFrost:first-child ~ * { position: relative; z-index: 1; }
+.wSkVaW_header > .mpw-hdrFrost { z-index: 0 !important; }
+/* ①(2026-09-16 bug①) 右侧「轮次导航条」（DSH 0.1.5 的 TurnNavigator rail / .eGxaPq_*）对比兜底。
+   判据：宿主 .eGxaPq_mark::before 用 --dsw-alias-border-l4（#00000029 / #fff3 = 16%/20% alpha），
+   假定条背后是**不透明表面**；壁纸模式把表面透明化后，条与壁纸混色 ⇒ 用户观感"条变透明"。
+   这里**只作用于明确白名单的宿主 rail 节点**，值全部走我们自己的 --mpw-rail-* 命名空间，
+   **不重定义任何宿主 token、不用 !important**（html body[attr] 前缀提供稳定特异性）。
+   开关：body[data-mpw-rail-ink]（由 refreshRailInk() 维护；?railink=off 可一键回退）。
+
+   ③(2026-09-16 第四次反馈"条还是看不见" → 定案与加强) **真机取证结论：不是我们的覆盖把条删掉了**：
+     · tools/header-rail-collect.mjs 在真机页面上实测 .eGxaPq_mark::before 的
+       background = rgba(0,0,0,0.42)（我们的 --mpw-rail-ink 生效）、alpha=0.42、w=12px h=2px、
+       opacity=1、display=block、无裁切祖先；body[data-mpw-rail-ink] 存在。
+     · 宿主 token 在 body 上解析正常：--dsw-alias-border-l4 = #00000029（16% alpha）。
+     · 即：条的**几何与颜色都在**，看不见的是**对比度**——2px 高、16%~42% alpha 的细条压在
+       壁纸上时，与壁纸同色系就彻底糊掉（宿主原本假定背后是不透明表面）。
+   加强（只加"可见性"，不抢宿主的形制）：给条加一圈**反色描边晕** box-shadow 0 0 0 1px，
+   并用自己命名空间的 --mpw-rail-halo 按亮/暗取反色 ⇒ 无论壁纸深浅，条都有一圈对比边。
+   几何（宽/高/圆角/transform）一律不动，仍由宿主决定。 */
+html body[data-mpw-rail-ink] .eGxaPq_mark::before {
+	background: var(--mpw-rail-ink, rgba(0, 0, 0, 0.42));
+	box-shadow: 0 0 0 1px var(--mpw-rail-halo, rgba(255, 255, 255, 0.55));
+}
+html body[data-mpw-rail-ink] .eGxaPq_markUnloaded::before { opacity: 0.55; }
+html body[data-mpw-rail-ink] .eGxaPq_markPreview::before {
+	background: var(--mpw-rail-ink, rgba(0, 0, 0, 0.42));
+	box-shadow: 0 0 0 1px var(--mpw-rail-halo, rgba(255, 255, 255, 0.55));
+	width: 18px;
+}
+html body[data-mpw-rail-ink] .eGxaPq_markActive::before {
+	background: var(--mpw-rail-ink-strong, rgba(0, 0, 0, 0.86));
+	box-shadow: 0 0 0 1px var(--mpw-rail-halo, rgba(255, 255, 255, 0.55));
+	width: 20px;
 }
 	backdrop-filter: none !important;
 	-webkit-backdrop-filter: none !important;

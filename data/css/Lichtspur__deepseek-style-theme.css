@@ -1,5 +1,5 @@
 /* Lichtspur/deepseek-style-theme — lib/client.js
-   fetched 2026-09-13 from https://raw.githubusercontent.com/Lichtspur/deepseek-style-theme/master/lib/client.js
+   fetched 2026-09-21 from https://raw.githubusercontent.com/Lichtspur/deepseek-style-theme/master/lib/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 .dshome-locale{display:inline-flex;align-items:center;height:28px;border:1px solid color-mix(in srgb,var(--ds-brand) 25%,transparent);border-radius:999px;background:color-mix(in srgb,var(--ds-brand) 8%,transparent);overflow:hidden;flex:none;corner-shape:round;transition:transform .28s cubic-bezier(.2,.8,.2,1),box-shadow .28s ease,border-color .22s ease,background .22s ease}
 .dshome-locale:hover{transform:translateY(-1px) scale(1.03);border-color:color-mix(in srgb,var(--ds-brand) 48%,transparent);background:color-mix(in srgb,var(--ds-brand) 14%,transparent);box-shadow:0 4px 14px color-mix(in srgb,var(--ds-brand) 26%,transparent)}
@@ -99,7 +99,12 @@ body[data-dshome-dark] .YDXeBa_sessionRow.YDXeBa_selected{background:linear-grad
 .wSkVaW_scrollBody{padding-top:56px}
 .wSkVaW_viewArea{padding:0 18px}
 .wSkVaW_viewArea{animation:dshome-view-enter .45s ease}
-.wSkVaW_header{position:absolute;top:8px;left:24px;right:24px;z-index:5;min-height:36px;padding:4px 12px;display:flex;flex-direction:row;align-items:center;gap:8px;justify-content:flex-start;border:0!important;border-radius:0;background:transparent!important;transition:border-radius .3s ease}
+/* Header z-index: the product's column-resize grips (.wSkVaW_widthHandle) are
+   40px-wide full-height strips at z-index 8, while this bar sat at 5 — so the
+   cursor anywhere inside the title bar's own box turned into col-resize and the
+   bar's controls were unreachable. 9 puts the bar above the grips; the grips
+   stay grabbable everywhere the bar is not (above y=8, below y=46). */
+.wSkVaW_header{position:absolute;top:8px;left:24px;right:24px;z-index:9;min-height:36px;padding:4px 12px;display:flex;flex-direction:row;align-items:center;gap:8px;justify-content:flex-start;border:0!important;border-radius:0;background:transparent!important;transition:border-radius .3s ease}
 .wSkVaW_header::before{content:"";position:absolute;inset:0;z-index:-1;background:transparent;border:1px solid transparent;border-radius:inherit;-webkit-backdrop-filter:none;backdrop-filter:none;transition:background .3s ease,border-color .3s ease,box-shadow .3s ease}
 .wSkVaW_header:hover{border-radius:999px}
 .wSkVaW_titleRow{display:contents}
@@ -134,7 +139,7 @@ body[data-dshome-dark] .wSkVaW_tabActive{box-shadow:0 3px 12px color-mix(in srgb
 /* Header chips: the product's global corner-shape:superellipse(1.5) squares off
    even pill radii, so every control in the bar is restored to a true round end
    (and the session-title crumb, 12px on a 28px box, becomes a real pill). */
-.wSkVaW_header .SVAs4q_label,.wSkVaW_header .cubgiG_seat,.wSkVaW_header .CAgGvG_split,.wSkVaW_header .dshome-locale,.wSkVaW_header [data-sidebar-right-expand],.wSkVaW_header .nL4_yW_sessionLogButton,.wSkVaW_header .wSkVaW_crumb{corner-shape:round}
+.wSkVaW_header .SVAs4q_label,.wSkVaW_header .cubgiG_seat,.wSkVaW_header .CAgGvG_split,.wSkVaW_header .dshome-locale,.wSkVaW_header [data-sidebar-right-expand],.wSkVaW_header [class*="_moreButton"],.wSkVaW_header .wSkVaW_crumb{corner-shape:round}
 .wSkVaW_header .wSkVaW_crumb{border-radius:999px}
 /* Open-in-app split button: hover lift with a brand tint, and the chevron turns
    over while its menu is open. */
@@ -150,11 +155,11 @@ body[data-dshome-dark] .wSkVaW_header .CAgGvG_split:hover .CAgGvG_main,body[data
 
 
 
-.nL4_yW_sessionLogButton{min-width:0!important;width:28px;height:28px;padding:0!important;border-radius:50%!important;border:none!important;background:color-mix(in srgb,var(--ds-brand) 8%,transparent)!important;color:var(--ds-brand)!important;overflow:hidden;transition:width .2s ease,padding .2s ease,border-radius .2s ease}
-.nL4_yW_sessionLogButton span{max-width:0;opacity:0;overflow:hidden;transition:max-width .2s ease,opacity .2s ease}
-.wSkVaW_header:hover .nL4_yW_sessionLogButton{width:auto;padding:0 12px!important;border-radius:18px!important}
-.wSkVaW_header:hover .nL4_yW_sessionLogButton span{max-width:90px;opacity:1}
-body[data-dshome-dark] .nL4_yW_sessionLogButton{color:var(--ds-brand-light)!important}
+:is([class*="_moreButton"]){min-width:0!important;width:28px;height:28px;padding:0!important;border-radius:50%!important;border:none!important;background:color-mix(in srgb,var(--ds-brand) 8%,transparent)!important;color:var(--ds-brand)!important;overflow:hidden;transition:width .2s ease,padding .2s ease,border-radius .2s ease}
+:is([class*="_moreButton"]) span{max-width:0;opacity:0;overflow:hidden;transition:max-width .2s ease,opacity .2s ease}
+.wSkVaW_header:hover :is([class*="_moreButton"]){width:auto;padding:0 12px!important;border-radius:18px!important}
+.wSkVaW_header:hover :is([class*="_moreButton"]) span{max-width:90px;opacity:1}
+body[data-dshome-dark] :is([class*="_moreButton"]){color:var(--ds-brand-light)!important}
 
 
 
@@ -165,19 +170,38 @@ body[data-dshome-dark] .uV2eYG_card{background:rgba(13,30,60,.55)!important;bord
 body[data-dshome-dark] .uV2eYG_card::before{background:conic-gradient(from var(--dsh-border-angle),rgba(255,255,255,0),color-mix(in srgb,var(--ds-brand) 55%,transparent),color-mix(in srgb,var(--ds-brand-light) 25%,transparent),color-mix(in srgb,var(--ds-brand) 55%,transparent),rgba(255,255,255,0))}
 .uV2eYG_card>*{position:relative;z-index:1}
 .uV2eYG_primary{background:linear-gradient(135deg,var(--ds-brand) 0%,var(--ds-brand-mid) 100%)!important;border:none!important;color:#fff!important;box-shadow:0 4px 14px color-mix(in srgb,var(--ds-brand) 35%,transparent);transition:box-shadow .15s ease,transform .15s ease}
-.uV2eYG_primary:hover{box-shadow:0 6px 18px color-mix(in srgb,var(--ds-brand) 45%,transparent);transform:translateY(-1px)}
+.uV2eYG_primary:hover{box-shadow:0 6px 18px color-mix(in srgb,var(--ds-brand) 45%,transparent)}
+/* 2.0.80: the hover no longer lifts the button by 1px. That translateY(-1px)
+   was ours (it came with the primary-button styling, not from the product), and
+   it was the last geometry change this theme made to the send/stop button under
+   the cursor -- a 1px surface motion is enough to hand the hover to a neighbour
+   or to the column's width handle, which is the same class of loop the composer
+   tilt caused (2.0.79). Hover now changes colour and shadow only. The product's
+   own hover on this button changes nothing but its background, so nothing else
+   moves it. */
 
 
 
-.pXSMma_headlineText{font-size:34px;line-height:42px;font-weight:700;letter-spacing:-.01em;background:linear-gradient(120deg,#152443 0%,var(--ds-brand-deep) 55%,var(--ds-brand) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
-body[data-dshome-dark] .pXSMma_headlineText{background:linear-gradient(120deg,#fff 0%,var(--ds-brand-light) 60%,var(--ds-brand) 100%);-webkit-background-clip:text;background-clip:text}
-.pXSMma_previewBadge{border-radius:999px!important;background:color-mix(in srgb,var(--ds-brand) 10%,transparent)!important;border:1px solid color-mix(in srgb,var(--ds-brand) 25%,transparent)!important;color:var(--ds-brand)!important}
-.pXSMma_fish{color:var(--ds-brand)!important}
+:is([class*="_headline"]){font-size:34px;line-height:42px;font-weight:700;letter-spacing:-.01em;background:linear-gradient(120deg,#152443 0%,var(--ds-brand-deep) 55%,var(--ds-brand) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+body[data-dshome-dark] :is([class*="_headline"]){background:linear-gradient(120deg,#fff 0%,var(--ds-brand-light) 60%,var(--ds-brand) 100%);-webkit-background-clip:text;background-clip:text}
+:is([class*="_previewBadge"]){border-radius:999px!important;background:color-mix(in srgb,var(--ds-brand) 10%,transparent)!important;border:1px solid color-mix(in srgb,var(--ds-brand) 25%,transparent)!important;color:var(--ds-brand)!important}
+:is([class*="_fish"]){color:var(--ds-brand)!important}
+
+
+background:rgba(255,255,255,.6)!important;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border:1px solid rgba(0,0,0,.05);box-shadow:0 4px 16px rgba(13,30,60,.06)}background:rgba(21,42,86,.65)!important;border:1px solid rgba(255,255,255,.1);box-shadow:0 4px 16px rgba(0,0,0,.25)}
 
 
 
-.gdEzaW_bubble{background:rgba(255,255,255,.6)!important;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border:1px solid rgba(0,0,0,.05);box-shadow:0 4px 16px rgba(13,30,60,.06)}
-body[data-dshome-dark] .gdEzaW_bubble{background:rgba(21,42,86,.65)!important;border:1px solid rgba(255,255,255,.1);box-shadow:0 4px 16px rgba(0,0,0,.25)}
+[data-dsh-inputbar]:has([data-dsh-stats]){position:relative;z-index:8;padding:0;border:1.5px solid rgba(255,255,255,.55);border-radius:24px;background:rgba(255,255,255,.42);box-shadow:0 8px 32px rgba(13,30,60,.1),inset 0 1px 1px hsla(0,0%,100%,.8)}
+[data-dsh-inputbar]:has([data-dsh-stats])::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:-1;-webkit-backdrop-filter:blur(28px) saturate(1.42) brightness(1.02);backdrop-filter:blur(28px) saturate(1.42) brightness(1.02)}
+[data-dsh-inputbar]:has([data-dsh-stats]) [data-composer-card]{border:none!important;border-radius:0!important;background:transparent!important;background-image:none!important;box-shadow:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+[data-dsh-inputbar]:has([data-dsh-stats]) [data-composer-card]::before,[data-dsh-inputbar]:has([data-dsh-stats]) [data-composer-card]::after{display:none!important}
+[data-dsh-inputbar]:has([data-dsh-stats]) [data-dsh-stats]{display:block;width:100%;max-width:none;box-sizing:border-box;margin:auto 0 0;min-height:24px;padding:2px 16px;border:none;border-top:1px solid rgba(0,0,0,.06);border-radius:0;background:transparent;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;transform-origin:left center;transition:transform .24s cubic-bezier(.2,.8,.2,1)}
+[data-dsh-stats]{transform:scale(1.04)}
+html[data-dshome-leaning] [data-dsh-inputbar]:has([data-dsh-stats]) [data-dsh-stats]{transform:scale(1.08)}
+body[data-dshome-dark] [data-dsh-inputbar]:has([data-dsh-stats]){border-color:rgba(255,255,255,.16);background:rgba(13,30,60,.55);box-shadow:0 10px 40px rgba(0,0,0,.35),inset 0 1px 1px rgba(255,255,255,.06)}
+body[data-dshome-dark] [data-dsh-inputbar]:has([data-dsh-stats]) [data-dsh-stats]{border-top-color:rgba(255,255,255,.1)}
+@media (prefers-reduced-motion:reduce){[data-dsh-inputbar]:has([data-dsh-stats]) [data-dsh-stats]{transition:none}}
 
 
 
@@ -193,3 +217,57 @@ body[data-dshome-dark] ._1p9O6q_root{background:rgba(13,30,60,.3)!important}
 .VOzbGW_panel{background:rgba(255,255,255,.97)!important;animation:dshome-modal-in .4s cubic-bezier(.2,.8,.2,1)!important}
 body[data-dshome-dark] .VOzbGW_panel{background:rgba(13,30,60,.96)!important}
 .VOzbGW_overlay{position:fixed!important;top:0!important;left:0!important;width:100vw!important;height:100vh!important;inset:0!important}
+
+
+
+:root{
+  --dshome-glass-blur:16px;
+  --dshome-glass-saturate:1.42;
+  --dshome-glass-brightness:1;
+  --dshome-glass-contrast:1.01;
+  --dshome-glass-sheen:.14;
+  --dshome-glass-sheen-mid:.05;
+  --dshome-glass-edge:rgba(255,255,255,.62);
+  --dshome-glass-edge-low:rgba(255,255,255,.14);
+  --dshome-glass-ring:rgba(255,255,255,.34);
+  --dshome-glass-shadow:0 12px 40px rgba(0,0,0,.12);
+  --dshome-glass-spec:0;
+}
+body[data-dshome-dark]{
+  --dshome-glass-sheen:.16;
+  --dshome-glass-sheen-mid:.06;
+  --dshome-glass-edge:rgba(255,255,255,.30);
+  --dshome-glass-edge-low:rgba(255,255,255,.07);
+  --dshome-glass-ring:rgba(255,255,255,.18);
+  --dshome-glass-shadow:0 14px 44px rgba(0,0,0,.45);
+}
+  background-image:
+    radial-gradient(340px circle at calc(50% + var(--dshome-spec-x,0) * 50%) calc(50% + var(--dshome-spec-y,0) * 50%), rgb(255 255 255 / calc(var(--dshome-glass-spec) * .30)), transparent 62%),
+    linear-gradient(180deg, rgba(255,255,255,var(--dshome-glass-sheen)), rgba(255,255,255,var(--dshome-glass-sheen-mid)) 38%, rgba(255,255,255,.01))!important;
+  -webkit-backdrop-filter:blur(var(--dshome-glass-blur)) saturate(var(--dshome-glass-saturate)) brightness(var(--dshome-glass-brightness)) contrast(var(--dshome-glass-contrast))!important;
+  backdrop-filter:blur(var(--dshome-glass-blur)) saturate(var(--dshome-glass-saturate)) brightness(var(--dshome-glass-brightness)) contrast(var(--dshome-glass-contrast))!important;
+  box-shadow:inset 0 1px 0 var(--dshome-glass-edge),inset 0 -1px 0 var(--dshome-glass-edge-low),inset 0 0 0 .5px var(--dshome-glass-ring),var(--dshome-glass-shadow);
+  transition:background-color .18s ease,box-shadow .18s ease;
+}
+/* The specular layer is multiplied by --dshome-glass-spec, so it has to be
+   switched on: while the cursor is over a spot surface the highlight follows
+   --dshome-spec-x/y (written per element by startSpecularParallax). */
+html [data-dshome-spot]:hover{--dshome-glass-spec:1;}
+html [data-composer-card]:hover{--dshome-glass-spec:1;--dshome-glass-sheen:.12;}
+  background-color:rgb(255 255 255 / calc(var(--dshome-glass-sheen) + .16))!important;
+}
+  background-color:rgb(255 255 255 / calc(var(--dshome-glass-sheen) + .06))!important;
+}
+  -webkit-backdrop-filter:url(#dshome-glass-dispersion) blur(var(--dshome-glass-blur)) saturate(var(--dshome-glass-saturate))!important;
+  backdrop-filter:url(#dshome-glass-dispersion) blur(var(--dshome-glass-blur)) saturate(var(--dshome-glass-saturate))!important;
+}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+    background-color:rgba(255,255,255,.86)!important;
+  }
+    background-color:rgba(13,30,60,.92)!important;
+  }
+}
+
+
+position:fixed;z-index:2147483000;min-width:198px;padding:6px;border-radius:14px;background:rgba(255,255,255,.94);border:.5px solid var(--dsw-alias-border-l2,rgba(0,0,0,.1));box-shadow:0 18px 44px rgba(15,30,60,.2);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);animation:dshome-menu-pop .16s cubic-bezier(.2,.8,.2,1);transform-origin:top left}background:rgba(14,30,60,.94);box-shadow:0 18px 44px rgba(0,0,0,.5)}display:flex;align-items:center;gap:9px;box-sizing:border-box;width:100%;padding:8px 10px;border:0;border-radius:9px;background:transparent;color:var(--dsw-alias-label-primary,#152443);font:inherit;font-size:13px;line-height:20px;text-align:left;cursor:pointer;transition:background-color .12s ease,transform .12s ease}background:color-mix(in srgb,var(--ds-brand,#4d6bfe) 13%,transparent);transform:translateX(1px)}outline:2px solid var(--dsw-alias-brand-primary,#4d6bfe);outline-offset:-2px}flex:none;width:15px;height:15px;opacity:.72}display:inline-flex;align-items:center;min-width:0}height:1px;margin:5px 6px;background:var(--dsw-alias-border-l1,rgba(0,0,0,.06))}position:fixed;z-index:2147483001;left:50%;bottom:56px;transform:translateX(-50%);padding:8px 15px;border-radius:999px;background:rgba(20,36,70,.93);color:#fff;font-size:12px;line-height:18px;pointer-events:none;animation:dshome-fade-in .18s ease}
+@keyframes dshome-menu-pop{from{opacity:0;transform:scale(.96) translateY(-4px)}to{opacity:1;transform:none}}

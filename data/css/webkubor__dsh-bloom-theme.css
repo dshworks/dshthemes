@@ -1,15 +1,16 @@
 /* webkubor/dsh-bloom-theme — lib/client.js
-   fetched 2026-09-13 from https://raw.githubusercontent.com/webkubor/dsh-bloom-theme/main/lib/client.js
+   fetched 2026-09-21 from https://raw.githubusercontent.com/webkubor/dsh-bloom-theme/main/lib/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
-/* ═══ 极光流线（v0.9.0，仅 aurora 变体）═══════════════════════════
+/* ═══ 落霞流线（v0.9.0，仅 aurora 变体）═══════════════════════════
    用户要的「流线」—— body 背后挂两条斜向渐变丝带，transform 缓慢漂移 +
-   blur 软化，做出北极光帘幕的视差感。
+   blur 软化，做出光帘的视差感。
    用 ::before 而非改 body background 的原因：动 body 的 background-image
    每帧重绘整个 viewport；伪元素独立合成层，transform 走 GPU，便宜得多。
    z-index:-1 + position:fixed —— body 的背景透传规则下，负 z-index 落在根
    堆叠上下文的负层，画在 body 背景之上、应用内容之下。
    颜色走 --bloom-aurora-stream-1/2/3（在 tokens.ts 由 motion 谱混透明得到），
-   切到 aurora 变体时呈现青绿→蓝→紫的北极光，其它变体保持原样不显示。 */
+   v0.12.x 起 aurora 换橙黄系，切到该变体时呈现金→橙→珊瑚的晚霞流光，
+   其它变体保持原样不显示。 */
 body[data-bloom-variant="aurora"]::before {
   content: '';
   position: fixed;
@@ -26,8 +27,14 @@ body[data-bloom-variant="aurora"]::before {
   background-size: 220% 220%, 260% 240%, 100% 100%;
   background-position: 25% 30%, 80% 15%, 50% 50%;
   background-repeat: no-repeat;
-  filter: blur(60px) saturate(1.2);
-  opacity: 0.6;
+  /* v0.12.1：这层是「脏」的真正来源（owner 2026-09-15）。原来 opacity .6 +
+     saturate(1.2) + blur 60px 铺满整个视口 —— 三条金橙渐变糊成一片盖在界面上，
+     底色再干净也被这层罩住。saturate 尤其致命：它在已经糊开的大色块上继续加彩度，
+     等于把浑浊放大。
+     氛围层的作用是「若隐若现的呼吸感」，不是给界面上色：不透明度砍到三分之一，
+     去掉饱和增益，blur 加大让边界更软。 */
+  filter: blur(76px);
+  opacity: 0.2;
   transform: translate3d(0, 0, 0);
   animation: bloom-aurora-drift 28s ease-in-out infinite alternate;
   will-change: transform, background-position;
@@ -223,8 +230,14 @@ body[data-ds-dark-theme] div[class*="_composer"] div[class*="_card"]:focus-withi
     0 0 72px -20px color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent 68%);
 }
 
-/* ═══ 消息气泡 —— 柔和玻璃，近距淡影，不压内容 ═══ */
-body[data-bloom-variant] [class*="_bubble"] {
+/* ═══ 消息气泡 —— 柔和玻璃，近距淡影，不压内容 ═══
+   ⚠️ 必须限定 div（2026-09-14 用户实拍「浅色下提示看不清」）：
+   DSH 的全局 Tooltip 与消息气泡共用「_bubble」语义类名（_bubble_1nw3t_1，span）。
+   裸 [class*="_bubble"] 会把 tooltip 的深底 var(--dsw-alias-tooltip-bg) 盖成
+   22% 透明度的近白玻璃，而 tooltip 文字是 static 白（--dsw-static-neutral-bluish-00）
+   —— 白字白底，实测对比度 1.0。消息气泡是 div、tooltip 是 span，限定标签即分开；
+   tooltip 的底色由 tokens.ts 接管的 --dsw-alias-tooltip-bg（深底）自动跟随主题。 */
+body[data-bloom-variant] div[class*="_bubble"] {
   background-color: color-mix(in oklch, var(--dsw-alias-bg-layer-1, #fff), transparent 78%);
   backdrop-filter: blur(var(--bloom-glass-blur, 24px)) saturate(1.25);
   -webkit-backdrop-filter: blur(var(--bloom-glass-blur, 24px)) saturate(1.25);
@@ -233,7 +246,7 @@ body[data-bloom-variant] [class*="_bubble"] {
     inset 0 0 0 1px rgba(255,255,255,0.08),
     0 6px 24px -10px rgba(0,0,0,0.14);
 }
-body[data-ds-dark-theme] [class*="_bubble"] {
+body[data-ds-dark-theme] div[class*="_bubble"] {
   background-color: color-mix(in oklch, var(--dsw-alias-bg-layer-1, #101010), transparent 62%);
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.08),
@@ -483,7 +496,12 @@ body[data-ds-dark-theme] [class*="_tableScroll"] tbody tr:nth-child(even) td {
   /* v0.6.0 patch: 提到 99999，确保 Bloom 下拉菜单覆盖在 DSH 原生顶栏 tabs
      （"对话 / 轨迹"，z-index 更高）之上，不被截断 */
   z-index: 99999;
-  min-width: 236px;
+  /* v0.12.x: 236 → 312。最宽的是「版本与更新」里的 DSH 检查行：
+     label 28 + 版本号 63 + 状态 chip 62 + 两个按钮 92 + 5×gap 30 = 275，
+     加左右 padding 28 ≈ 303 —— 236px 时 flex 把没有 nowrap 的状态 chip
+     压到 min-content（1 字宽），「版本未知」被折成竖排字（owner 2026-09-14
+     实拍反馈「下面怎么就变窄了」）。宽度按最宽内容实算留出余量。 */
+  min-width: 312px;
   padding: 0 0 6px;
   border-radius: 12px;
   border: 1px solid var(--bloom-hairline, rgba(0,0,0,0.08));
@@ -532,11 +550,45 @@ body[data-ds-dark-theme] [class*="_tableScroll"] tbody tr:nth-child(even) td {
 }
 .dsh-bloom-option[data-active="true"] { background: rgba(var(--bloom-morandi), 0.2); }
 .dsh-bloom-option__name { font-weight: 500; }
+/* 右列从英文名改成出处诗句（v0.12.1）：中文在 11px 下太小、字距也不该按西文排，
+   所以放大一档、加字距、上衬线。衬线体是这套主题唯一的书卷气来源 —— 正文保持
+   无衬线保可读性，只在这一列用宋体，克制但立得住。 */
 .dsh-bloom-option__en {
   margin-left: auto;
-  font-size: 11px;
-  opacity: 0.5;
-  letter-spacing: 0.02em;
+  flex: 0 0 auto;
+  white-space: nowrap;
+  font-size: 12.5px;
+  letter-spacing: 0.08em;
+  font-family: 'Songti SC', 'STSong', 'Source Han Serif SC', 'Noto Serif SC', serif;
+  /* 诗句走渐变文字（owner 2026-09-15：「和深度求索中…一样有颜色渐变」）。
+     两端取本变体的气质轨→可读轨，跟左边色点同一对颜色，所以整行是一句话：
+     色点是这个颜色，诗句也是这个颜色。纯灰的 opacity 做不到这件事。 */
+  /* 起点用正文次级色而不是该变体的气质轨：气质轨是低饱和的莫兰迪，深色底上
+     竹青/琥珀这几支直接糊掉（实测诗句看不清）。起点保证可读、终点交代身份。 */
+  background-image: linear-gradient(100deg, var(--dsw-alias-label-tertiary, #9a9a9a) 0%, var(--bloom-poem-b) 66%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  opacity: 0.8;
+}
+body[data-ds-dark-theme] .dsh-bloom-option__en {
+  background-image: linear-gradient(100deg, var(--dsw-alias-label-tertiary, #8d8d8d) 0%, var(--bloom-poem-bd) 66%);
+  opacity: 0.88;
+}
+.dsh-bloom-option:hover .dsh-bloom-option__en,
+.dsh-bloom-option[data-active="true"] .dsh-bloom-option__en { opacity: 1; }
+/* 选中那一行让渐变缓缓流过，跟「深度求索中…」同一种语言 —— 只给一行，
+   十行一起流会变成灯箱。 */
+.dsh-bloom-option[data-active="true"] .dsh-bloom-option__en {
+  background-size: 220% 100%;
+  animation: dsh-bloom-poem-flow 4.2s ease-in-out infinite;
+}
+@keyframes dsh-bloom-poem-flow {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dsh-bloom-option[data-active="true"] .dsh-bloom-option__en { animation: none; }
 }
 .dsh-bloom-check {
   width: 12px;
@@ -660,9 +712,14 @@ body[data-ds-dark-theme] [class*="_tableScroll"] tbody tr:nth-child(even) td {
   color: var(--dsw-alias-label-secondary, #555);
   font-family: ui-monospace, SFMono-Regular, 'Menlo', monospace;
   font-size: 10.5px;
+  white-space: nowrap;
 }
+/* 状态 chip：绝不允许折行 —— 折行后 flex-shrink 会把它压到 1 字宽，
+   「版本未知」变成竖排字。推右交给 .dsh-bloom-dsh-spacer（flex:1），
+   不再用 margin-left:auto，两份「吃光自由空间」会互相抵消语义。 */
 .dsh-bloom-dsh-state {
-  margin-left: auto;
+  flex: none;
+  white-space: nowrap;
   font-size: 10px;
   padding: 1px 6px;
   border-radius: 999px;
@@ -703,8 +760,8 @@ body[data-ds-dark-theme] .dsh-bloom-dsh-state[data-state="err"] {
   gap: 4px;
   margin-top: 4px;
 }
-/* 下拉只有 180px 宽,actions 区实际可用 150px。两个按钮原本都 flex:1 平分 73px,
-   而「复制升级命令」6 字 × 10.5px + 左右 padding ≈ 79px —— 装不下就折成两行,
+/* 菜单 min-width 312px 时 actions 区实际可用 ≈ 284px。两个按钮原本都 flex:1
+   平分,而「复制升级命令」6 字 × 10.5px + 左右 padding 装不下就折成两行,
    加上 line-height:1 两行字直接贴在一起。修法三件套:
      · 文案缩到「复制命令」(完整说明进 title)
      · white-space: nowrap 兜底 —— 以后换文案/换字号也不会再折行
@@ -781,6 +838,52 @@ body[data-ds-dark-theme] .dsh-bloom-dsh-hint {
   background: color-mix(in oklch, oklch(78% 0.14 150), transparent 88%);
   color: oklch(78% 0.14 150);
 }
+
+/* ── 底部快链：配色投票 / 反馈（v0.12.x，owner 要求）──
+   放常驻底部而不是「版本与更新」折叠区里 —— 折叠区本来就是低频信息，
+   反馈入口再藏一层等于没有。分隔沿用全站的「向下扩散阴影」语言。 */
+.dsh-bloom-foot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 2px;
+  padding: 7px 14px 9px;
+  font-size: 11px;
+  box-shadow: 0 -6px 10px -8px color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent 82%);
+}
+.dsh-bloom-foot__link {
+  color: var(--dsw-alias-label-secondary, #777);
+  text-decoration: none;
+  transition: color .15s ease;
+  /* 「分享」是 button（要跑复制逻辑），其余是 a —— 这里把 button 的默认样式抹平，
+     两种标签在这一行必须长得一模一样。 */
+  border: 0;
+  padding: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+.dsh-bloom-foot__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  line-height: 1;
+}
+.dsh-bloom-foot__icon {
+  width: 13px;
+  height: 13px;
+  flex: 0 0 auto;
+  opacity: .78;
+}
+.dsh-bloom-foot__link:hover { color: var(--bloom-accent, #6b8f71); }
+.dsh-bloom-foot__link:hover .dsh-bloom-foot__icon { opacity: 1; }
+.dsh-bloom-foot__link:focus-visible {
+  outline: 2px solid var(--bloom-accent, #6b8f71);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.dsh-bloom-foot__sep { color: var(--dsw-alias-label-tertiary, #999); opacity: .6; }
 
 @media (prefers-reduced-motion: reduce) {
   .dsh-bloom-trigger, .dsh-bloom-chevron, .dsh-bloom-option { transition: none !important; }

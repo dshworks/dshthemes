@@ -1,5 +1,5 @@
 /* Small-tailqwq/dsh-deep-whale — maid-atelier/src/client/maid-atelier.module.css
-   fetched 2026-09-13 from https://raw.githubusercontent.com/Small-tailqwq/dsh-deep-whale/main/maid-atelier/src/client/maid-atelier.module.css
+   fetched 2026-09-21 from https://raw.githubusercontent.com/Small-tailqwq/dsh-deep-whale/main/maid-atelier/src/client/maid-atelier.module.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* Deep-sea maid atelier: a self-contained presentation layer over the stock
    web GUI. The generated palace and character layers are applied separately
@@ -3197,9 +3197,9 @@ body[data-dsh-maid-atelier] [data-composer-card] > * {
   z-index: 2;
 }
 
-/* The center strip stays continuous across the visible jewel. Its two joins sit
-   under fully opaque parts of the bow, while the outer strips keep the source
-   phase of their adjacent fixed corners. */
+/* The 123:75 source tile becomes one 54x33px unit. Keep exactly one unit on the
+   card centre; its joins at +/-27px sit under opaque parts of the bow, while
+   the outer strips keep the source phase of their adjacent fixed corners. */
 body[data-dsh-maid-atelier]
   [data-composer-card]
   > [data-skin-chrome='composer-lace'] {
@@ -3224,7 +3224,7 @@ body[data-dsh-maid-atelier]
   position: absolute;
   top: 30px;
   height: 33px;
-  background-size: auto 33px;
+  background-size: 54px 33px;
   background-repeat: repeat-x;
 }
 
@@ -3234,7 +3234,7 @@ body[data-dsh-maid-atelier]
 body[data-dsh-maid-atelier]
   [data-composer-card]
   > [data-skin-chrome='composer-lace']::after {
-  width: calc(50% - 96px);
+  width: max(0px, calc(50% - 81px));
 }
 
 body[data-dsh-maid-atelier]
@@ -3257,10 +3257,11 @@ body[data-dsh-maid-atelier]
   [data-composer-card]
   > [data-skin-chrome='composer-lace']
   > [data-maid-composer-lace-center] {
-  left: calc(50% - 42px);
-  width: 84px;
+  left: calc(50% - 27px);
+  width: 54px;
   background-image: var(--maid-composer-lace-art);
-  background-position: left top;
+  background-position: center top;
+  background-repeat: no-repeat;
 }
 
 /* The official attachments slot is a display: contents container: it emits no

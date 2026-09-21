@@ -1,5 +1,5 @@
 /* NoNameLeGo/dsh-catppuccin-theme — src/client/glass/glass.module.css
-   fetched 2026-09-13 from https://raw.githubusercontent.com/NoNameLeGo/dsh-catppuccin-theme/main/src/client/glass/glass.module.css
+   fetched 2026-09-21 from https://raw.githubusercontent.com/NoNameLeGo/dsh-catppuccin-theme/main/src/client/glass/glass.module.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* ============================================================================
  * Catppuccin glass layer — a toggleable glassmorphism skin for the DeepSeek
@@ -235,7 +235,17 @@
   border-radius: 14px;
   border: 1px solid var(--dsh-glass-rim-soft);
   background: color-mix(in srgb, var(--dsw-alias-bg-layer-1) calc(46% * var(--dsh-glass-frost, 1)), transparent);
-  backdrop-filter: blur(var(--dsh-glass-blur, 14px));
+  /* NO backdrop-filter here (issue #13). The transcript column is transparent
+     and the page ground behind it is a SOLID colour (the body rule above), so
+     blurring a bubble's backdrop is the identity transform: the flat area is
+     pixel-for-pixel unchanged, while Chromium still promotes the bubble to a
+     compositing layer and re-reads its backdrop every frame — and every
+     streamed token repaints the transcript. (Measured on the same
+     composition: 0 differing interior pixels; the only delta is ±1/255 on a
+     few pixels of the element's own antialiased edge — see
+     docs/plugin-improvements.md, issue #13.) Bubbles are the most numerous
+     surface in the busiest region, so this was the cheapest blur to delete.
+     The frosted look comes from the translucent fill, which stays. */
 }
 
 /* Card family: hover cards, panels, plugin cards, tool cards, the composer. */
@@ -275,6 +285,8 @@
     var(--dsw-static-neutral-bluish-800) var(--dsh-glass-settings-soft), transparent);
   --dsw-alias-bg-layer-2: color-mix(in srgb,
     var(--dsw-static-neutral-bluish-850) var(--dsh-glass-settings-raised), transparent);
+  --dsw-alias-bg-layer-1: color-mix(in srgb,
+    var(--dsw-static-neutral-bluish-850) var(--dsh-glass-settings-soft), transparent);
   --dsw-specific-sidebar-nav-item-active: color-mix(in srgb,
     var(--dsw-static-neutral-bluish-750) var(--dsh-glass-settings-raised), transparent);
   --dsw-specific-sidebar-nav-item-hover: color-mix(in srgb,
@@ -291,6 +303,8 @@
     var(--dsw-static-neutral-bluish-00) var(--dsh-glass-settings-soft), transparent);
   --dsw-alias-bg-layer-2: color-mix(in srgb,
     var(--dsw-static-neutral-bluish-00) var(--dsh-glass-settings-raised), transparent);
+  --dsw-alias-bg-layer-1: color-mix(in srgb,
+    var(--dsw-static-neutral-bluish-00) var(--dsh-glass-settings-soft), transparent);
   --dsw-specific-sidebar-nav-item-active: color-mix(in srgb,
     var(--dsw-static-neutral-bluish-100) var(--dsh-glass-settings-raised), transparent);
   --dsw-specific-sidebar-nav-item-hover: color-mix(in srgb,
@@ -337,11 +351,12 @@
    dialog guard can see them) then lands inside the column, and the column's
    overflow:hidden clips it into a narrow strip. The frosted fill + blur
    therefore live on a ::before CHILD layer instead: a pseudo-element is not
-   an ancestor of the column's content, so its backdrop-filter blurs the
-   page ground behind the card without ever re-anchoring a fixed descendant
-   — the generic fix, no per-plugin selectors, all sidebar-slot popovers
-   (menus, dialogs, third-party dashboards) keep the viewport containing
-   block. ---------- */
+   an ancestor of the column's content, so the fill never re-anchors a fixed
+   descendant — the generic fix, no per-plugin selectors, all sidebar-slot
+   popovers (menus, dialogs, third-party dashboards) keep the viewport
+   containing block. The column must stay free of backdrop-filter too (the
+   blur that used to sit on the sheet was dropped as pure waste — issue #13).
+   ---------- */
 [data-dsh-glass-float] [class*='sidebarCol'] {
   --dsw-specific-sidebar-fill: transparent;
   position: relative;
@@ -361,12 +376,18 @@
   overflow: hidden;
 }
 
-/* The glass sheet: translucent fill + backdrop blur + top edge light drawn
-   on a child layer (negative z-index paints below the in-flow content, so
-   the sidebar's own rows stay readable on top of it; plain content needs
-   no extra z-index). The outer drop shadow stays on the column — it lives
-   outside the border box where the sheet cannot cover it. The radius
-   transition matches the rail collapse animation in the rule below. */
+/* The glass sheet: translucent fill + top edge light drawn on a child layer
+   (negative z-index paints below the in-flow content, so the sidebar's own
+   rows stay readable on top of it; plain content needs no extra z-index).
+   The outer drop shadow stays on the column — it lives outside the border
+   box where the sheet cannot cover it. The radius transition matches the
+   rail collapse animation in the rule below.
+   NO backdrop-filter here (issue #13): the column floats with a 12px margin
+   and the frame above it is transparent, so the sheet's backdrop is the
+   SOLID page ground — measured: the flat area renders pixel-identically and
+   only the element's own antialiased edge shifts by ±1/255, while the blur
+   cost the largest backdrop read on the page (≈250k px², every frame).
+   The fill alone carries the frost look. */
 [data-dsh-glass-float] [class*='sidebarCol']::before {
   content: '';
   position: absolute;
@@ -374,7 +395,6 @@
   border-radius: inherit;
   background: var(--dsh-glass-card);
   box-shadow: var(--dsh-glass-edge);
-  backdrop-filter: blur(var(--dsh-glass-blur, 14px));
   z-index: -1;
   pointer-events: none;
   transition: border-radius 150ms var(--ds-ease-in-out);
@@ -405,7 +425,11 @@
 }
 
 /* ---------- Trajectory view (轨迹视图): a glass panel aligned with the
-   header card's left/right edges, frosted like the other surfaces. ---------- */
+   header card's left/right edges, filled like the other surfaces.
+   NO backdrop-filter (issue #13): the trajectory overlay is a SIBLING view
+   inside the scroll body (stock: `.scrollBody:has([data-conversation-
+   composer-overlay])`), so the transcript is not behind it — its backdrop is
+   the solid ground again. ---------- */
 [data-dsh-glass-float] [data-dsh-glass-trajectory] {
   margin: 8px 16px 12px;
   width: calc(100% - 32px);
@@ -414,7 +438,6 @@
   border-radius: 20px;
   background: var(--dsh-glass-card);
   box-shadow: var(--dsh-glass-edge), var(--dsh-glass-drop);
-  backdrop-filter: blur(var(--dsh-glass-blur, 14px));
   overflow: hidden;
 }
 
@@ -520,8 +543,22 @@
   padding-right: 0;
 }
 
-/* ---------- Sidebar: the selected session gets an accent bar and a soft halo. ---------- */
+/* ---------- Sidebar rows: the selected row gets a real fill, because
+   upstream gives hover and selected the SAME 6% tint (`rgba(38,49,72,.06)`
+   on both, measured on the live GUI) — a row could only tell you it was
+   picked through the 2px accent bar, and the list had no resting locator.
+   The fill uses DSH's own selected-nav token, not this skin's `card-hover`:
+   that recipe is the SAME colour as the page ground, so over the solid
+   ground it composites to a pixel-identical fill (measured: 0 visible delta,
+   only glyph antialiasing). Hover stays upstream's own 6% tint (227,229,235
+   on Latte); the 40% selected fill composites to (219,221,229) there, a clear
+   step above it while keeping the translucency. 40% is the ceiling, not a
+   taste call: the row's 12px timestamp is `label-secondary` and its contrast
+   against the fill is 4.62 at 40% but 4.41 at 50% — under AA.
+   The row title (14px `label-primary`) measures 5.89 / 8.29 / 10.07 / 11.38
+   across the four flavours (injected A/B on the live GUI, 2026-09-18). ---------- */
 [data-dsh-glass-float] [role='treeitem'][aria-selected='true'] {
+  background: color-mix(in srgb, var(--dsw-specific-sidebar-nav-item-active) 40%, transparent);
   box-shadow:
     inset 2px 0 0 var(--dsw-specific-sidebar-nav-item-active-accent),
     0 0 16px color-mix(in srgb, var(--dsw-alias-brand-primary-new-colorprimary-new-color) 20%, transparent);
@@ -597,12 +634,19 @@
   text-shadow: 0 0 1px rgba(0, 0, 0, 0.4);
 }
 
-/* Composer placeholder and stats text: neutral, scheme-adaptive tones from
-   the label tokens — no colour cast fighting the glass. */
-[data-dsh-glass-float] [data-composer-card] textarea::placeholder {
-  color: color-mix(in srgb, var(--dsw-alias-label-primary) 45%, transparent);
-}
+/* NO placeholder rule here on purpose (issue #12). The composer hint is not a
+   textarea::placeholder: DSH paints it as a `div[data-composer-placeholder]`
+   inside the contenteditable editor, with its own --dsw-alias-label-caption.
+   A `textarea::placeholder` rule matches nothing (0 textareas inside
+   [data-composer-card] in DSH 0.1.2-rc.1 and 0.1.5-rc.2), so it painted no
+   pixel while reading like the glass owned that colour — and had it ever
+   matched, `label-primary` at 45% is a 2.1:1 wash on a light sheet (fine only
+   on dark flavours). Caption is already scheme-adaptive (Latte #7c7f93 on
+   #eff1f5 = 3.5:1); the official light theme's own #adb2b8 on white = 2.1:1 is
+   upstream's call, not ours to repaint. */
 
+/* Composer stats text: a neutral tone from the label tokens — no colour cast
+   fighting the glass. */
 [data-dsh-glass-float] [data-dsh-glass-inputbar] [data-slot] {
   color: var(--dsw-alias-label-secondary);
 }
@@ -655,7 +699,28 @@
    The layout rules above are gated on data-dsh-glass-float, so in compat
    mode the stock layout stays byte-for-byte; the conservative surface
    families get the frosted blur so other plugins' UI picks up the glass
-   with zero coordination. Dialogs keep their stock surface (see above). ---------- */
+   with zero coordination. Dialogs keep their stock surface (see above).
+
+   OO (2026-09-18): the blur alone read as nothing — a blur over the flat page
+   ground paints no pixels at all, so the surface still looked stock and
+   compat mode "看不出皮肤". The floating families now carry the material
+   itself: this skin's own raised fill plus a hairline rim. Three deliberate
+   choices:
+   - `[class*='panel']` is deliberately NOT filled (it keeps only its blur).
+     Panels nest — probed on the live GUI 2026-09-18: `P3OORG_panel` (opaque)
+     contains a transparent `P3OORG_panelBody`; filling both stacks two layers
+     and paints an inner rectangle the host never asked for. Cards and the
+     overlay families (menu / tooltip / popover / dropdown) do not nest this way.
+   - the rim is drawn with `outline` (+ negative offset), not `border` /
+     `box-shadow`: a border shifts box-sizing:content-box host surfaces and a
+     box-shadow would clobber the host's own elevation — `outline` touches
+     neither, so "the stock layout stays byte-for-byte" still holds.
+     `:focus-visible` is excluded so the shared focus ring (below) keeps winning.
+   - the rim is what carries the material in Latte: there
+     `--dsw-alias-bg-layer-1` === `--dsw-alias-bg-base` (official Catppuccin
+     mapping), so the fill mixes to the page ground and is invisible on its own;
+     the dark flavours get both. Same trap PP hit with `--dsh-glass-card*`.
+   No new `backdrop-filter` here — see the blur budget note under the bubbles. ---------- */
 [data-dsh-glass-compat] [role='menu'],
 [data-dsh-glass-compat] [role='tooltip'],
 [data-dsh-glass-compat] [class*='card'],
@@ -665,13 +730,39 @@
   backdrop-filter: blur(12px);
 }
 
-/* Compat-mode bubbles are narrowed to the transcript like the float-mode
-   rule above, for the same reason: the generic `[class*='bubble']`
-   substring would blur foreign widgets (e.g. dsh-whale-widget's body-level
-   `.dshwv-bubble`) that only share the word "bubble" in their class name. */
-[data-dsh-glass-compat] [data-conversation-scroll] [class*='bubble'] {
-  backdrop-filter: blur(12px);
+[data-dsh-glass-compat] [role='menu'],
+[data-dsh-glass-compat] [role='tooltip'],
+[data-dsh-glass-compat] [class*='card'],
+[data-dsh-glass-compat] [class*='popover'],
+[data-dsh-glass-compat] [class*='dropdown'] {
+  background: var(--dsh-glass-card-raised);
 }
+
+[data-dsh-glass-compat] [role='menu']:not(:focus-visible),
+[data-dsh-glass-compat] [role='tooltip']:not(:focus-visible),
+[data-dsh-glass-compat] [class*='card']:not(:focus-visible),
+[data-dsh-glass-compat] [class*='popover']:not(:focus-visible),
+[data-dsh-glass-compat] [class*='dropdown']:not(:focus-visible) {
+  outline: 1px solid var(--dsh-glass-rim);
+  outline-offset: -1px;
+}
+
+/* Compat-mode bubbles carry NO glass at all (issue #13). They used to inherit
+   a bare `backdrop-filter: blur(12px)` from this rule; the backdrop is the
+   solid page ground, so it painted nothing while still promoting every bubble
+   to a compositing layer in the streaming region. (The float-mode rule above
+   used to narrow the same selector to the transcript — that narrowing is gone
+   with the rest of the blur.)
+   Compat mode remains the cheaper material overall — measured on the live GUI
+   (1440×900, one conversation): mica carries ~460k px² of visible blurred
+   surface, compat ~106k px². But do NOT read that as "compat never blurs the
+   composer": the generic `[class*='card']` rule above still blurs DSH's
+   composer card (~76k px²), which is why issue #13's surface table is off on
+   two rows — the composer card is not mica-only, and neither are the page-edge
+   fade bands (they are gated on `[data-dsh-glass]`, so both modes have them).
+   What mica genuinely adds on top of compat: the top bar (~96k px²), the
+   sidebar sheet (dropped here — it was ~222k px²), the trajectory panel and
+   the "+" bead / new-session button. */
 
 /* Compatibility-mode modal panels: same live translucent fill as the float
    mode (the generic blur above alone would sit behind an opaque panel). */

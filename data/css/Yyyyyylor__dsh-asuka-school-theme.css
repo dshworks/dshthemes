@@ -1,5 +1,5 @@
 /* Yyyyyylor/dsh-asuka-school-theme — src/client/styles.ts
-   fetched 2026-09-13 from https://raw.githubusercontent.com/Yyyyyylor/dsh-asuka-school-theme/main/src/client/styles.ts
+   fetched 2026-09-21 from https://raw.githubusercontent.com/Yyyyyylor/dsh-asuka-school-theme/main/src/client/styles.ts
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 /* Animate painted surfaces, not inherited tokens: token interpolation invalidates
    every descendant on every frame, including code and glass backdrop layers. */
@@ -242,10 +242,15 @@ body[data-asuka-school-theme] aside {
 body[data-asuka-school-theme][data-asuka-school-details='true'] :is(button, [role='button']) {
   border-radius: 8px;
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.14), 0 1px 0 rgb(20 32 40 / 0.08);
-  transition: box-shadow 160ms ease, transform 160ms ease;
+  transition: box-shadow 160ms ease;
 }
 body[data-asuka-school-theme][data-asuka-school-details='true'] :is(button, [role='button']):not(:disabled):hover {
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.2), 0 5px 15px rgb(37 57 69 / 0.14);
+}
+body[data-asuka-school-theme][data-asuka-school-details='true'] :is(.asuka-mode-button, .asuka-theme-card, .asuka-reset-button, .asuka-session-title-trigger, .asuka-session-title-action) {
+  transition: box-shadow 160ms ease, transform 160ms ease;
+}
+body[data-asuka-school-theme][data-asuka-school-details='true'] :is(.asuka-mode-button, .asuka-theme-card, .asuka-reset-button, .asuka-session-title-trigger, .asuka-session-title-action):not(:disabled):hover {
   transform: translateY(-1px);
 }
 body[data-asuka-school-theme][data-asuka-school-details='true'] pre {
@@ -282,7 +287,7 @@ body[data-asuka-school-theme][data-asuka-school-details='true'] .md-code-block >
   border-top-right-radius: 10px;
   background: var(--dsw-alias-markdown-code-block-banner);
 }
-body[data-asuka-school-theme][data-asuka-school-details='true'] .md-code-block > :first-child > :first-child button {
+body[data-asuka-school-theme][data-asuka-school-details='true'] .md-code-block [data-code-block-banner='true'] button {
   min-width: 36px;
   min-height: 24px;
   padding: 0 6px;
