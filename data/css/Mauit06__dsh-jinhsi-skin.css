@@ -1,5 +1,5 @@
 /* Mauit06/dsh-jinhsi-skin — skin/skin.css
-   fetched 2026-09-18 from https://raw.githubusercontent.com/Mauit06/dsh-jinhsi-skin/main/skin/skin.css
+   fetched 2026-09-26 from https://raw.githubusercontent.com/Mauit06/dsh-jinhsi-skin/main/skin/skin.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* ============================================================================
  * 今汐·洄天溯海 (jinhsi-spectro) — skin.css
@@ -21,7 +21,7 @@
   color: #141a1f;
   /* 刻意不在这里写 background-color：
      整张可见底由装饰层 [data-dsh-skin-layer="background"] 拥有（见 patches.css）。
-     若在此处写不透明底色，加载器会把它克隆到 body，反而盖住 z-index:-2 的立绘层。 */
+     若在此处写不透明底色，加载器会把它克隆到 body，反而盖住 z-index:-2 的底图层。 */
 
   /* 浅色「溯海晴光」 */
   --jinhsi-ink: #141a1f;
@@ -73,7 +73,7 @@ body[data-ds-dark-theme] {
 /* ── L1：官方 token 重映射（浅色） ──────────────────────────────────────── */
 
 :root {
-  /* 关键：底色在遮蔽滑杆为 0 时必须完全透明，立绘才能透出来；
+  /* 关键：底色在遮蔽滑杆为 0 时必须完全透明，动态壁纸才能透出来；
      滑杆拉高才逐层加纱。可读性由 manifest 的 backgroundMedia.scrim 负责，
      而不是靠压暗整张底。 */
   --dsw-alias-bg-base: rgba(244, 247, 250, calc(var(--dsw-skin-scrim, 0) * 0.72));
@@ -178,7 +178,7 @@ body[data-ds-dark-theme] {
 /* ── L1：官方 token 重映射（深色） ──────────────────────────────────────── */
 
 body[data-ds-dark-theme] {
-  /* 与浅色同理：底色在遮蔽为 0 时完全透明，立绘透出。 */
+  /* 与浅色同理：底色在遮蔽为 0 时完全透明，动态壁纸透出。 */
   --dsw-alias-bg-base: rgba(12, 15, 19, calc(var(--dsw-skin-scrim, 0) * 0.78));
   --dsw-alias-bg-layer-1: rgba(20, 25, 32, calc(0.86 - var(--dsw-skin-scrim, 0) * 0.3));
   --dsw-alias-bg-layer-2: rgba(27, 34, 42, calc(0.84 - var(--dsw-skin-scrim, 0) * 0.28));
