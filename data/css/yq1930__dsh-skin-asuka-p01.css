@@ -1,0 +1,1345 @@
+/* yq1930/dsh-skin-asuka-p01 — lib/client.js
+   fetched 2026-09-29 from https://raw.githubusercontent.com/yq1930/dsh-skin-asuka-p01/master/lib/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/* Scoped reading tokens follow the host font setting; task-state colors stay native. */
+body[data-dsh-asuka-p01] {
+  --asuka-chrome: #23171c;
+  --asuka-chrome-raised: #3c202a;
+  --asuka-chrome-text: #fff1de;
+  --asuka-chrome-muted: #d7bbaa;
+  --asuka-copper: #bd9060;
+  --asuka-ruby: #a83337;
+  --asuka-reading-background-factor: 0.4;
+  --asuka-reading-inline: 32px;
+  --asuka-base: #f1ebe5;
+  --asuka-panel: #fffbf6;
+  --asuka-raised: #f1e4d9;
+  --asuka-overlay: #fffdf9;
+  --asuka-code: #f3ede4;
+  --asuka-text: #30272a;
+  --asuka-secondary: #6b5e58;
+  --asuka-muted: #6f6063;
+  --asuka-diff-add: #21633e;
+  --asuka-diff-delete: #a33339;
+  --asuka-primary: #a83337;
+  --asuka-primary-hover: #8b292d;
+  --asuka-on-primary: #ffffff;
+  --asuka-link: #88413e;
+  --asuka-border: #d8c1a6;
+  --asuka-control: #9d7e70;
+  --asuka-selected: #f3dad1;
+  --asuka-error: #b33535;
+  --asuka-notice: #895900;
+  --asuka-body-size: var(--dsh-content-font-size, 16px);
+  --asuka-process-size: calc(var(--dsh-content-font-size-secondary, 13px) + 1px);
+  --asuka-code-size: calc(14px + var(--dsh-content-font-delta, 0px));
+  --asuka-code-leading: calc(22px + var(--dsh-content-font-delta, 0px));
+  --asuka-meta-size: calc(12px + var(--dsh-content-font-delta-secondary, 0px));
+  --asuka-process-height: calc(36px + var(--dsh-content-font-delta, 0px));
+
+  --dsw-alias-bg-base: var(--asuka-base);
+  --dsw-alias-bg-layer-1: var(--asuka-panel);
+  --dsw-alias-bg-layer-2: var(--asuka-raised);
+  --dsw-alias-bg-layer-3: var(--asuka-overlay);
+  --dsw-alias-bg-overlay: var(--asuka-overlay);
+  --dsw-alias-bg-module-platform: var(--asuka-panel);
+  --dsw-alias-border-l1: var(--asuka-border);
+  --dsw-alias-border-l2-darkmode-thin: var(--asuka-border);
+  --dsw-alias-border-l2: var(--asuka-control);
+  --dsw-alias-border-l3: var(--asuka-control);
+  --dsw-alias-border-l4: var(--asuka-control);
+  --dsw-alias-brand-primary: var(--asuka-primary);
+  --dsw-alias-brand-text: var(--asuka-text);
+  --dsw-alias-button-elevated-fill: var(--asuka-panel);
+  --dsw-alias-button-floating-fill: var(--asuka-overlay);
+  --dsw-alias-button-floating-hover: var(--asuka-raised);
+  --dsw-alias-button-info-fill: var(--asuka-primary);
+  --dsw-alias-button-info-hover: var(--asuka-primary-hover);
+  --dsw-alias-interactive-bg-active: var(--asuka-selected);
+  --dsw-alias-interactive-bg-hover: var(--asuka-raised);
+  --dsw-alias-interactive-bg-hover-solid: var(--asuka-raised);
+  --dsw-alias-label-primary: var(--asuka-text);
+  --dsw-alias-label-primary-bluish: var(--asuka-link);
+  --dsw-alias-label-secondary: var(--asuka-secondary);
+  --dsw-alias-label-tertiary: var(--asuka-muted);
+  --dsw-alias-label-caption: var(--asuka-muted);
+  --dsw-alias-label-primary-dimmed: var(--asuka-secondary);
+  --dsw-alias-label-dimmed: var(--asuka-muted);
+  --dsw-alias-label-primary-foreground: var(--asuka-on-primary);
+  --dsw-alias-label-primary-inverted: var(--asuka-panel);
+  --dsw-alias-state-business-primary: var(--asuka-link);
+  --dsw-alias-state-business-tertiary: var(--asuka-raised);
+  --dsw-alias-markdown-code-block: var(--asuka-code);
+  --dsw-alias-scrollbar-bg-l2: var(--asuka-control);
+  --dsw-alias-scrollbar-hover-l2: var(--asuka-secondary);
+  --dsw-specific-input-major: var(--asuka-panel);
+  --dsw-specific-menu: var(--asuka-overlay);
+  --dsw-specific-selector: var(--asuka-raised);
+  --dsw-specific-sidebar-fill: var(--asuka-base);
+  --dsw-specific-sidebar-nav-item-active-accent: var(--asuka-primary);
+
+  color: var(--asuka-text);
+  background-color: var(--asuka-base);
+}
+
+body[data-dsh-asuka-p01][data-ds-dark-theme] {
+  --asuka-base: #171b29;
+  --asuka-panel: #26232e;
+  --asuka-raised: #342c33;
+  --asuka-overlay: #42323b;
+  --asuka-code: #1e202c;
+  --asuka-text: #f6eada;
+  --asuka-secondary: #e2cfc5;
+  --asuka-muted: #c9b6af;
+  --asuka-diff-add: #8bd5a5;
+  --asuka-diff-delete: #ffada8;
+  --asuka-link: #ffc4a4;
+  --asuka-border: #68524e;
+  --asuka-control: #aa8474;
+  --asuka-selected: #4b2c33;
+  --asuka-error: #ffada8;
+  --asuka-notice: #f1c57a;
+}
+
+/* No isolation, transform or z-index on the host column/root: fixed dialogs retain their host tier. */
+body[data-dsh-asuka-p01] :is([data-pane='conversation'], [class*='centerCol']) {
+  position: relative;
+}
+
+body[data-dsh-asuka-p01] :is([data-pane='conversation'], [class*='centerCol'])
+  :is([data-phase='hero'], [data-phase='active'], [data-phase='settling']):not(.asuka-stage) {
+  position: relative;
+  background-color: transparent;
+}
+
+/* 0.1.7 owns width tokens on the conversation body, below the phase root. */
+body[data-dsh-asuka-p01] :is([data-pane='conversation'], [class*='centerCol'])
+  [data-phase]:not(.asuka-stage) > [class*='_body'] {
+  --dsh-chat-content-width: var(--dsh-chat-user-width, clamp(620px, calc(var(--dsh-conversation-column-width, 0px) * 0.66), 920px));
+  --dsh-composer-card-max-width: var(--dsh-chat-content-width);
+}
+
+body[data-dsh-asuka-p01] :is([data-pane='conversation'], [class*='centerCol'])
+  [data-phase='hero']:not(.asuka-stage) > [class*='_body'] {
+  --dsh-composer-card-max-width: min(var(--dsh-chat-content-width), 800px);
+}
+
+/* The client inserts this first and calculates an unused rectangle for its character. */
+body[data-dsh-asuka-p01] .asuka-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+
+body[data-dsh-asuka-p01] .asuka-stage *,
+body[data-dsh-asuka-p01] .asuka-stage::before,
+body[data-dsh-asuka-p01] .asuka-stage::after {
+  pointer-events: none;
+}
+
+body[data-dsh-asuka-p01] .asuka-stage__background {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background-image: var(--asuka-scene-day, none);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: clamp(0, var(--asuka-scene-opacity, 0.18), 1);
+}
+
+/* Keep the saved strength for the welcome scene; quieten only the reading scene. */
+body[data-dsh-asuka-p01] .asuka-stage[data-phase='active'] .asuka-stage__background {
+  opacity: clamp(0, calc(var(--asuka-scene-opacity, 0.18) * var(--asuka-reading-background-factor)), 1);
+  /* Preserve the architecture at the sides, with less contrast behind process rows. */
+  mask-image: linear-gradient(90deg, #000 0%, #0009 20%, #0005 36% 64%, #0009 80%, #000 100%);
+}
+
+body[data-dsh-asuka-p01][data-ds-dark-theme] .asuka-stage__background {
+  background-image: var(--asuka-scene-night, none);
+}
+
+body[data-dsh-asuka-p01][data-asuka-background='true'] .asuka-stage__background {
+  display: block;
+}
+
+body[data-dsh-asuka-p01] .asuka-stage__character {
+  position: absolute;
+  display: block;
+  left: var(--asuka-art-left, 0px);
+  bottom: var(--asuka-art-bottom, 0px);
+  width: var(--asuka-art-width, 0px);
+  height: var(--asuka-art-height, 0px);
+  max-width: none;
+  object-fit: contain;
+  object-position: center bottom;
+}
+
+body[data-dsh-asuka-p01] .asuka-stage__companion {
+  position: absolute;
+  display: block;
+  left: var(--asuka-companion-left, 0px);
+  bottom: var(--asuka-companion-bottom, 0px);
+  width: var(--asuka-companion-width, 0px);
+  height: var(--asuka-companion-height, 0px);
+  max-width: none;
+  object-fit: contain;
+  object-position: center bottom;
+}
+
+body[data-dsh-asuka-p01] .asuka-stage:not([data-companion-visible='true']) .asuka-stage__companion {
+  display: none;
+}
+
+/* A complete proscenium, drawn inside the conversation column under live UI. */
+body[data-dsh-asuka-p01] .asuka-stage__frame {
+  position: absolute;
+  inset: 6px;
+  border: 1px solid #d3b67b;
+  border-radius: 6px;
+  background:
+    var(--asuka-corner-tl-art) left top / 72px 72px no-repeat,
+    var(--asuka-corner-tr-art) right top / 72px 72px no-repeat,
+    var(--asuka-corner-bl-art) left bottom / 72px 72px no-repeat,
+    var(--asuka-corner-br-art) right bottom / 72px 72px no-repeat,
+    var(--asuka-trim-art) left 27px / 100px 24px repeat-x,
+    linear-gradient(180deg, #271019, #5b1d2b 45%, #32131e) top / 100% 28px no-repeat,
+    linear-gradient(90deg, #b48547, #f3dfab 45%, #9c6b34) bottom / 100% 5px no-repeat;
+}
+
+body[data-dsh-asuka-p01] .asuka-stage__frame::before {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border: 1px solid rgb(223 191 129 / 58%);
+  border-radius: 3px;
+}
+
+body[data-dsh-asuka-p01] .asuka-stage__frame::after {
+  content: '';
+  position: absolute;
+  inset: -6px 0 -6px;
+  background:
+    var(--asuka-ribbon-art) center top / 130px 48px no-repeat,
+    var(--asuka-flourish-art) center bottom / 190px 46px no-repeat;
+}
+
+body[data-dsh-asuka-p01] .asuka-stage__mark {
+  display: none;
+  position: absolute;
+  left: calc(var(--asuka-art-left, 0px) + 12px);
+  bottom: 12px;
+  color: var(--asuka-secondary);
+  background: var(--asuka-panel);
+  border: 1px solid var(--asuka-border);
+  border-radius: 4px;
+  padding: 3px 6px;
+  font: 600 11px/1.2 ui-monospace, 'SF Mono', Menlo, monospace;
+  letter-spacing: 0.08em;
+}
+
+body[data-dsh-asuka-p01] .asuka-stage[data-phase='hero'][data-art-visible='true'] .asuka-stage__mark {
+  display: block;
+}
+
+body[data-dsh-asuka-p01] .asuka-stage:not([data-art-visible='true']) .asuka-stage__character,
+body[data-dsh-asuka-p01] .asuka-stage[data-phase='unknown'],
+body[data-dsh-asuka-p01][data-asuka-mode='focus'] .asuka-stage {
+  display: none;
+}
+
+/* Keep native scroll, width-dragging and input behavior. */
+body[data-dsh-asuka-p01] :is([data-composer-card], [data-composer-input]) {
+  background-color: var(--asuka-panel);
+}
+
+body[data-dsh-asuka-p01] [data-composer-card] {
+  font-size: var(--asuka-body-size);
+  line-height: 1.75;
+}
+
+body[data-dsh-asuka-p01] [data-asuka-density='compact'] {
+  --asuka-reading-inline: 24px;
+}
+
+body[data-dsh-asuka-p01] [data-asuka-density='narrow'] {
+  --asuka-reading-inline: 16px;
+}
+
+/* The native message flow stays intact; each rendered reply owns its surface. */
+body[data-dsh-asuka-p01] [data-chat-flow] {
+  --dsw-font-markdown-base: var(--asuka-body-size)/1.75 var(--dsw-font-family);
+  --dsw-font-markdown-base-strong: 600 var(--asuka-body-size)/1.75 var(--dsw-font-family);
+  --dsw-font-markdown-h1: 600 calc(24px + var(--dsh-content-font-delta, 0px))/1.4 var(--dsw-font-family);
+  --dsw-font-markdown-h2: 600 calc(20px + var(--dsh-content-font-delta, 0px))/1.4 var(--dsw-font-family);
+  --dsw-font-markdown-h3: 600 calc(18px + var(--dsh-content-font-delta, 0px))/1.5 var(--dsw-font-family);
+  --dsw-font-markdown-code-block: var(--asuka-code-size)/var(--asuka-code-leading) var(--ds-font-family-code);
+  --dsw-font-markdown-code-block-small: var(--asuka-code-size)/var(--asuka-code-leading) var(--ds-font-family-code);
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 0;
+  background: transparent;
+  --dsh-chat-flow-gap: 22px;
+}
+
+/* New grouped process bodies also carry data-chat-flow. Keep their native
+   disclosure/scroll ownership and avoid treating them as a second transcript. */
+body[data-dsh-asuka-p01] [data-step-process-content][data-chat-flow] {
+  --dsh-chat-flow-gap: 8px;
+}
+
+body[data-dsh-asuka-p01] [data-chat-flow] button[data-process-activity] {
+  box-sizing: border-box;
+  width: fit-content;
+  max-width: 100%;
+  min-height: var(--asuka-process-height);
+  padding: 6px 12px;
+  border: 1px solid var(--asuka-border);
+  border-radius: 10px;
+  color: var(--asuka-secondary);
+  background: var(--asuka-panel);
+  font-size: var(--asuka-process-size);
+  line-height: 1.5;
+}
+
+body[data-dsh-asuka-p01] [data-chat-flow] button[data-process-activity][aria-expanded='true'] {
+  margin-bottom: 8px;
+}
+
+body[data-dsh-asuka-p01] [data-chat-flow] button[data-process-activity]:hover {
+  color: var(--asuka-text);
+  background: var(--asuka-raised);
+}
+
+body[data-dsh-asuka-p01] [data-chat-flow] button[data-process-activity]:focus-visible {
+  outline: 2px solid var(--asuka-link);
+  outline-offset: 2px;
+}
+
+/* Consecutive process items are compact. Answers and turns retain their own gap.
+   Do not give hidden/until-found host rows a box, padding or display override. */
+body[data-dsh-asuka-p01] [data-chat-flow] > :is(
+  [data-chat-flow-kind='tool-call'], [data-chat-flow-kind='command'],
+  [data-chat-flow-kind='turn-process'],
+  [data-chat-flow-kind='assistant-step']:not(:has([class*='markdown']))
+):not([hidden]) + :is(
+  [data-chat-flow-kind='tool-call'], [data-chat-flow-kind='command'],
+  [data-chat-flow-kind='assistant-step']:not(:has([class*='markdown']))
+):not([hidden]) {
+  --dsh-chat-flow-gap: 8px;
+}
+
+body[data-dsh-asuka-p01] [data-chat-flow-kind='assistant-step']
+  > [data-slot='conversation.chat.node'] > div > div > div[class*='markdown'] {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 20px var(--asuka-reading-inline);
+  border: 1px solid var(--asuka-border);
+  border-left: 3px solid var(--asuka-ruby);
+  border-radius: 14px 14px 14px 4px;
+  background: var(--asuka-panel);
+  box-shadow: 0 6px 24px rgb(35 23 28 / 7%);
+}
+
+body[data-dsh-asuka-p01] [data-chat-flow] [class*='markdown'] :is(p, ul, ol) {
+  margin-block: 14px;
+}
+
+body[data-dsh-asuka-p01] [data-chat-flow] [class*='markdown'] li > :is(p, ul, ol) {
+  margin-block: 6px;
+}
+
+body[data-dsh-asuka-p01] [data-chat-flow] [class*='markdown'] :is(h1, h2, h3) {
+  margin-block: 24px 12px;
+}
+
+body[data-dsh-asuka-p01] [class*='userRow'] > [class*='userStack'] > [class*='bubble']:not([role='tooltip']) {
+  padding: 14px 20px;
+  border: 1px solid var(--asuka-border);
+  border-radius: 14px 14px 4px 14px;
+  color: var(--asuka-text);
+  background: var(--asuka-selected);
+  font-size: var(--asuka-body-size);
+  line-height: 1.75;
+}
+
+/* Metadata and process controls need their own plates between the replies. */
+body[data-dsh-asuka-p01] [data-chat-flow] :is(
+  [data-chat-flow-kind='system-prompt'], [data-chat-flow-kind='context'],
+  [data-chat-flow-kind='command'], [data-chat-flow-kind='turn-process'],
+  [data-chat-flow-kind='tool-call']
+) > [data-slot='conversation.chat.node'] > :not(:empty),
+body[data-dsh-asuka-p01] [data-chat-flow] [data-variant='think'] {
+  border-radius: 8px;
+  background: var(--asuka-panel);
+}
+
+body[data-dsh-asuka-p01] [data-chat-flow] [data-disclosure-row] {
+  --dsh-content-font-size-secondary: var(--asuka-process-size);
+  box-sizing: border-box;
+  height: var(--asuka-process-height);
+  padding-inline: 12px;
+  border-radius: 7px;
+  background: var(--asuka-panel);
+}
+
+body[data-dsh-asuka-p01] [data-chat-flow] [data-variant='think']:not([data-expanded]) {
+  height: var(--asuka-process-height);
+}
+
+body[data-dsh-asuka-p01] [data-chat-flow] button[data-turn-process] {
+  height: var(--asuka-process-height);
+  margin-bottom: 0;
+  padding: 0 12px;
+  border-bottom: 0;
+}
+
+body[data-dsh-asuka-p01] [data-chat-flow] button[data-turn-process] > [class*='label'] {
+  font-size: var(--asuka-process-size);
+}
+
+body[data-dsh-asuka-p01] [data-chat-flow] [data-variant='think'] [class*='thinkBody'] {
+  padding: 10px 16px 14px 34px;
+  color: var(--asuka-secondary);
+  font-size: var(--asuka-process-size);
+  line-height: 1.6;
+}
+
+/* The diff owns its semantic palette. Success/error colors elsewhere are untouched.
+   diffBody is the host tool renderer's wrapper, not a generated primitive hash. */
+body[data-dsh-asuka-p01] [data-chat-flow] [class*='diffBody'] {
+  --dsw-alias-state-success-primary: var(--asuka-diff-add);
+  --dsw-alias-state-error-primary: var(--asuka-diff-delete);
+  --dsw-alias-label-tertiary: var(--asuka-secondary);
+  --dsl-diff-line-height: var(--asuka-code-leading);
+  min-width: 0;
+  margin: 4px 12px 12px;
+}
+
+body[data-dsh-asuka-p01] [data-chat-flow] [class*='diffBody'] > [class*='_body_'] {
+  padding: 16px 18px;
+}
+
+body[data-dsh-asuka-p01] [data-chat-flow] [class*='diffBody'] > [class*='_footer_'] {
+  padding: 0 18px 14px;
+  font-size: var(--asuka-meta-size);
+}
+
+body[data-dsh-asuka-p01] [data-chat-flow] :is([class*='metaRow'], [class*='referenceSummary']),
+body[data-dsh-asuka-p01] [data-chat-flow] [class*='userRow'] > [class*='actions'],
+body[data-dsh-asuka-p01] [data-chat-flow] [data-turn-tail] > [class*='actions'] {
+  width: fit-content;
+  max-width: 100%;
+  border-radius: 7px;
+  background: var(--asuka-panel);
+}
+
+body[data-dsh-asuka-p01] [data-chat-flow] > * {
+  min-width: 0;
+}
+
+/* Adjust the existing transcript insets, without introducing another scrollport. */
+body[data-dsh-asuka-p01] [data-conversation-scroll] :has(> [data-chat-flow]):not([data-step-process-body]) {
+  padding-block: 24px;
+}
+
+/* Native session header seats: never target unrelated headers or dialog content. */
+body[data-dsh-asuka-p01] header:has(> [data-conversation-header-leading]) {
+  background-color: var(--asuka-panel);
+}
+
+body[data-dsh-asuka-p01] :is([data-phase='active'], [data-phase='settling']) [data-composer-seat] {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--asuka-base) 80%, var(--asuka-panel)), var(--asuka-base) 36px);
+}
+
+/* Reserve the crest's strip next to its card, after any native queue, goal,
+   task or notice content. Seat-level padding would leave those rows exposed. */
+body[data-dsh-asuka-p01] :is([data-phase='active'], [data-phase='settling']) [data-composer-card] {
+  margin-top: 36px;
+}
+
+/* Wide tables normally break out into the full conversation width. Keep their
+   native horizontal scroller, but contain it inside the reading panel. */
+body[data-dsh-asuka-p01] [data-chat-flow] .md-table-wide {
+  --dsh-table-spare: 0px;
+  --dsh-table-lead: 0px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin-inline: 0;
+  padding-inline: 0;
+  /* The native hover-only scrollbar reserve must not remain with auto scrolling. */
+  padding-block-end: 0;
+  overflow-x: auto;
+}
+
+body[data-dsh-asuka-p01] [data-chat-flow] pre,
+body[data-dsh-asuka-p01] [data-terminal] {
+  background-color: var(--asuka-code);
+}
+
+body[data-dsh-asuka-p01] [data-chat-flow] [data-terminal] {
+  --dsl-terminal-line-height: var(--asuka-code-leading);
+}
+
+body[data-dsh-asuka-p01] [data-chat-flow] pre {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  /* Whitespace belongs to the native 0.1.7 code-wrap toggle. */
+}
+
+/* Keep the native centered flex row and its height; the paint-only surround avoids moving the composer. */
+body[data-dsh-asuka-p01] [data-phase='hero'] [class*='headline']:has(> [class*='fish']) {
+  width: fit-content;
+  max-width: 100%;
+  align-self: center;
+  border-radius: 8px;
+  background-color: var(--asuka-panel);
+  box-shadow: 0 0 0 6px var(--asuka-panel);
+}
+
+body[data-dsh-asuka-p01] [data-phase='hero']:not(.asuka-stage) [class*='heroWorkspaceRow'] {
+  align-self: center;
+  max-width: 100%;
+  padding: 4px 10px;
+  border: 1px solid var(--asuka-border);
+  border-radius: 12px;
+  background: var(--asuka-panel);
+}
+
+body[data-dsh-asuka-p01] :is([data-chat-flow], .asuka-settings) a[href] {
+  color: var(--asuka-link);
+  text-decoration-color: currentColor;
+}
+
+body[data-dsh-asuka-p01] .asuka-brand-image,
+body[data-dsh-asuka-p01] .asuka-brand-number {
+  display: block;
+  box-sizing: border-box;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  border-radius: 5px;
+}
+
+body[data-dsh-asuka-p01] .asuka-brand-image {
+  object-fit: cover;
+  object-position: center 25%;
+}
+
+body[data-dsh-asuka-p01] .asuka-brand-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--asuka-primary);
+  color: var(--asuka-on-primary);
+  font: 700 14px/1 ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+/* This layout belongs only to the theme's settings section. */
+body[data-dsh-asuka-p01] .asuka-settings {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 980px;
+  min-width: 0;
+  margin: 0 auto;
+  padding: 24px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(240px, 1fr);
+  gap: 24px;
+  color: var(--asuka-text);
+  background-color: var(--asuka-panel);
+}
+
+body[data-dsh-asuka-p01] .asuka-settings :is(button, select, input) {
+  box-sizing: border-box;
+  font: inherit;
+}
+
+body[data-dsh-asuka-p01] .asuka-settings__header,
+body[data-dsh-asuka-p01] .asuka-settings__actions,
+body[data-dsh-asuka-p01] .asuka-settings__notice,
+body[data-dsh-asuka-p01] .asuka-settings__status {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+body[data-dsh-asuka-p01] .asuka-settings__header {
+  border-bottom: 1px solid var(--asuka-border);
+  padding-bottom: 18px;
+}
+
+body[data-dsh-asuka-p01] .asuka-settings__header :is(h1, h2, h3) {
+  margin: 0 0 8px;
+  font-size: 22px;
+  line-height: 1.4;
+}
+
+body[data-dsh-asuka-p01] .asuka-settings__header p {
+  margin: 0;
+  color: var(--asuka-secondary);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+body[data-dsh-asuka-p01] .asuka-settings__preview {
+  display: block;
+  box-sizing: border-box;
+  align-self: start;
+  width: 100%;
+  min-width: 0;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border: 1px solid var(--asuka-border);
+  border-radius: 10px;
+  background-color: var(--asuka-raised);
+  overflow: hidden;
+}
+
+body[data-dsh-asuka-p01] .asuka-settings__preview > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+body[data-dsh-asuka-p01] .asuka-settings__preview-scene {
+  position: absolute;
+  inset: 0;
+  background: var(--asuka-preview-day) center / cover no-repeat;
+  pointer-events: none;
+  opacity: var(--asuka-scene-opacity);
+}
+
+body[data-dsh-asuka-p01] .asuka-settings__preview[data-preview-phase='active'] .asuka-settings__preview-scene {
+  opacity: calc(var(--asuka-scene-opacity) * var(--asuka-reading-background-factor));
+  mask-image: linear-gradient(90deg, #000, #0005 36% 64%, #000);
+}
+
+body[data-dsh-asuka-p01] .asuka-settings__preview-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+body[data-dsh-asuka-p01] .asuka-settings__preview-tabs button {
+  padding: 6px 10px;
+  border: 1px solid var(--asuka-control);
+  border-radius: 6px;
+  color: var(--asuka-secondary);
+  background: var(--asuka-panel);
+  cursor: pointer;
+}
+
+body[data-dsh-asuka-p01] .asuka-settings__preview-tabs button[aria-pressed='true'] {
+  border-color: var(--asuka-primary);
+  color: var(--asuka-primary);
+  background: var(--asuka-selected);
+}
+
+body[data-dsh-asuka-p01] .asuka-settings__preview-reading {
+  position: absolute;
+  top: 18%;
+  right: 26%;
+  bottom: 18%;
+  left: 26%;
+  padding: 12px;
+  border: 1px solid var(--asuka-border);
+  border-radius: 6px;
+  background: var(--asuka-panel);
+  color: var(--asuka-secondary);
+  font-size: 11px;
+}
+
+body[data-dsh-asuka-p01] .asuka-settings__preview[data-preview-side='right'] .asuka-settings__preview-reading {
+  right: 26%;
+  left: 26%;
+}
+
+body[data-dsh-asuka-p01] .asuka-settings__preview[data-preview-mode='focus'] .asuka-settings__preview-reading {
+  right: 10%;
+  left: 10%;
+}
+
+body[data-dsh-asuka-p01] .asuka-settings__preview-reading::after {
+  content: '';
+  display: block;
+  height: 3px;
+  margin-top: 16px;
+  background: var(--asuka-border);
+  box-shadow: 0 10px var(--asuka-border), 0 20px var(--asuka-border);
+}
+
+body[data-dsh-asuka-p01][data-ds-dark-theme] .asuka-settings__preview-scene {
+  background-image: var(--asuka-preview-night);
+}
+
+body[data-dsh-asuka-p01] .asuka-settings__controls {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+body[data-dsh-asuka-p01] .asuka-settings__field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 9px;
+  min-width: 0;
+  color: var(--asuka-text);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+body[data-dsh-asuka-p01] .asuka-settings__field :is(select, input:not([type='checkbox']):not([type='range'])) {
+  width: 100%;
+  min-width: 0;
+  min-height: 36px;
+  padding: 7px 10px;
+  border: 1px solid var(--asuka-control);
+  border-radius: 6px;
+  color: var(--asuka-text);
+  background: var(--asuka-overlay);
+  color-scheme: light;
+}
+
+body[data-dsh-asuka-p01][data-ds-dark-theme] .asuka-settings__field :is(select, input) {
+  color-scheme: dark;
+}
+
+body[data-dsh-asuka-p01] .asuka-settings__field input[type='range'] {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  accent-color: var(--asuka-primary);
+}
+
+body[data-dsh-asuka-p01] .asuka-settings__field input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  flex: 0 0 16px;
+  accent-color: var(--asuka-primary);
+}
+
+body[data-dsh-asuka-p01] .asuka-settings__field:has(> input[type='checkbox']) {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+body[data-dsh-asuka-p01] .asuka-settings__field :is(small, output) {
+  color: var(--asuka-secondary);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+body[data-dsh-asuka-p01] .asuka-settings__actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-block: 12px;
+  border-top: 1px solid var(--asuka-border);
+  background: var(--asuka-panel);
+}
+
+body[data-dsh-asuka-p01] .asuka-settings__actions button {
+  min-height: 36px;
+  padding: 7px 14px;
+  border: 1px solid var(--asuka-control);
+  border-radius: 6px;
+  background: var(--asuka-overlay);
+  color: var(--asuka-text);
+  cursor: pointer;
+  line-height: 1.5;
+}
+
+body[data-dsh-asuka-p01] .asuka-settings__actions button:hover:not(:disabled):not(.disabled):not([aria-disabled='true']) {
+  background: var(--asuka-raised);
+}
+
+body[data-dsh-asuka-p01] .asuka-settings__actions button:is(.primary, [data-variant='primary'], [type='submit']) {
+  border-color: var(--asuka-primary);
+  background: var(--asuka-primary);
+  color: var(--asuka-on-primary);
+}
+
+body[data-dsh-asuka-p01] .asuka-settings__actions button:is(.primary, [data-variant='primary'], [type='submit']):hover:not(:disabled):not(.disabled):not([aria-disabled='true']) {
+  background: var(--asuka-primary-hover);
+  border-color: var(--asuka-primary-hover);
+}
+
+body[data-dsh-asuka-p01] .asuka-settings :is(button, input, select, a):focus-visible {
+  outline: 2px solid var(--asuka-link);
+  outline-offset: 3px;
+}
+
+body[data-dsh-asuka-p01] .asuka-settings :is(button, input, select):is(:disabled, .disabled, [aria-disabled='true']) {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+body[data-dsh-asuka-p01] :is(.asuka-settings__notice, .asuka-settings__status) {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: var(--asuka-secondary);
+  font-size: 12px;
+  line-height: 1.75;
+}
+
+body[data-dsh-asuka-p01] .asuka-settings__notice {
+  padding: 11px 13px;
+  border: 1px solid var(--asuka-border);
+  border-radius: 6px;
+  background: var(--asuka-raised);
+}
+
+body[data-dsh-asuka-p01] :is(.asuka-settings__notice, .asuka-settings__status)[data-state='error'] {
+  color: var(--asuka-error);
+}
+
+body[data-dsh-asuka-p01] :is(.asuka-settings__notice, .asuka-settings__status)[data-state='warning'] {
+  color: var(--asuka-notice);
+}
+
+@media (max-width: 1100px) {
+  body[data-dsh-asuka-p01] .asuka-settings {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 20px;
+    gap: 20px;
+  }
+
+  /* Extra safeguard while the client recalculates a narrow conversation's free rectangle. */
+  body[data-dsh-asuka-p01] .asuka-stage[data-phase='active'] :is(.asuka-stage__character, .asuka-stage__companion),
+  body[data-dsh-asuka-p01] .asuka-stage__mark {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-dsh-asuka-p01] .asuka-stage,
+  body[data-dsh-asuka-p01] .asuka-stage *,
+  body[data-dsh-asuka-p01] .asuka-settings,
+  body[data-dsh-asuka-p01] .asuka-settings * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto;
+  }
+}
+
+@media (forced-colors: active) {
+  body[data-dsh-asuka-p01],
+  body[data-dsh-asuka-p01][data-ds-dark-theme] {
+    --asuka-base: Canvas;
+    --asuka-panel: Canvas;
+    --asuka-raised: Canvas;
+    --asuka-overlay: Canvas;
+    --asuka-code: Canvas;
+    --asuka-text: CanvasText;
+    --asuka-secondary: CanvasText;
+    --asuka-muted: GrayText;
+    --asuka-primary: Highlight;
+    --asuka-primary-hover: Highlight;
+    --asuka-on-primary: HighlightText;
+    --asuka-link: LinkText;
+    --asuka-border: ButtonBorder;
+    --asuka-control: ButtonBorder;
+    --asuka-selected: Canvas;
+    --asuka-error: CanvasText;
+    --asuka-notice: CanvasText;
+    --asuka-diff-add: CanvasText;
+    --asuka-diff-delete: CanvasText;
+  }
+
+  body[data-dsh-asuka-p01] .asuka-stage {
+    display: none;
+  }
+
+  body[data-dsh-asuka-p01] .asuka-settings :is(button, input, select):is(:disabled, .disabled, [aria-disabled='true']) {
+    color: GrayText;
+    border-color: GrayText;
+    opacity: 1;
+  }
+}
+
+body[data-dsh-asuka-p01] :is(.asuka-stage, .asuka-stage__character, .asuka-settings, .asuka-settings__notice, .asuka-settings__status)[hidden] {
+  display: none;
+}
+
+/* Welcome typography sits between two complete figures rather than inside a
+   small app-like title chip. Text retains an opaque plate under its strokes. */
+body[data-dsh-asuka-p01][data-asuka-mode] [data-phase='hero']:not(.asuka-stage)
+  [class*='headline']:has(> [class*='fish']) {
+  position: relative;
+  flex-direction: column;
+  padding: 0;
+  gap: 12px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+body[data-dsh-asuka-p01] .asuka-hero-emblem {
+  display: grid;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+  color: #ffe9b5;
+  background: var(--asuka-medallion-art) center / contain no-repeat;
+  font: 600 22px/1 Georgia, serif;
+  letter-spacing: 0.06em;
+  text-shadow: 0 1px 2px #361018;
+}
+
+body[data-dsh-asuka-p01] .asuka-hero-emblem > span {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 55px;
+  border: 1px solid #dfbd7b;
+  border-radius: 50%;
+  background: linear-gradient(150deg, #8e2f43, #35101d);
+}
+
+body[data-dsh-asuka-p01][data-asuka-mode] [data-phase='hero']:not(.asuka-stage) [class*='titleGroup'] {
+  padding: 8px 20px;
+  border-block: 1px solid var(--asuka-copper);
+  background: var(--asuka-panel);
+  box-shadow: 28px 0 25px -25px var(--asuka-panel), -28px 0 25px -25px var(--asuka-panel);
+}
+
+body[data-dsh-asuka-p01][data-asuka-mode] [data-phase='hero']:not(.asuka-stage) [data-composer-card] {
+  min-height: 160px;
+  justify-content: space-between;
+}
+
+@media (forced-colors: active) {
+  body[data-dsh-asuka-p01] .asuka-hero-emblem {
+    background: Canvas;
+    color: CanvasText;
+    border: 1px solid CanvasText;
+    text-shadow: none;
+  }
+}
+
+
+/* P01 salon: wine velvet, engraved champagne gold and ruby ribbon clasps.
+   Artwork decorates existing host surfaces; it never owns an overlay tier. */
+body[data-dsh-asuka-p01] {
+  --asuka-gold-light: #f4daa4;
+  --asuka-gold-shadow: #9a6b3c;
+  --asuka-velvet-glow: #592433;
+  --asuka-ivory-button: #fff5e4;
+  --asuka-ivory-button-ink: #512733;
+}
+body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol']),
+body[data-dsh-asuka-p01] header:has(> [data-conversation-header-leading]) {
+  --dsw-specific-sidebar-fill: var(--asuka-chrome);
+  --dsw-alias-bg-base: var(--asuka-chrome);
+  --dsw-alias-bg-layer-1: var(--asuka-chrome);
+  --dsw-alias-bg-layer-2: var(--asuka-chrome-raised);
+  --dsw-alias-bg-layer-3: var(--asuka-chrome-raised);
+  --dsw-alias-label-primary: var(--asuka-chrome-text);
+  --dsw-alias-label-primary-bluish: var(--asuka-chrome-text);
+  --dsw-alias-label-primary-inverted: var(--asuka-chrome);
+  --dsw-alias-label-primary-dimmed: var(--asuka-chrome-muted);
+  --dsw-alias-label-secondary: var(--asuka-chrome-muted);
+  --dsw-alias-label-tertiary: var(--asuka-chrome-muted);
+  --dsw-alias-label-caption: var(--asuka-chrome-muted);
+  --dsw-alias-label-dimmed: var(--asuka-chrome-muted);
+  --dsw-alias-brand-text: var(--asuka-chrome-text);
+  --dsw-alias-border-l1: color-mix(in srgb, var(--asuka-copper) 35%, transparent);
+  --dsw-alias-border-l2: var(--asuka-copper);
+  --dsw-alias-interactive-bg-hover: var(--asuka-chrome-raised);
+  --dsw-alias-interactive-bg-hover-solid: var(--asuka-chrome-raised);
+  --dsw-alias-interactive-bg-active: var(--asuka-ruby);
+  --dsw-alias-button-elevated-fill: var(--asuka-chrome-raised);
+  --dsw-alias-button-floating-hover: var(--asuka-chrome-raised);
+  --dsw-specific-sidebar-nav-item-active-accent: var(--asuka-copper);
+  color: var(--asuka-chrome-text);
+  background-color: var(--asuka-chrome);
+}
+
+/* Fixed dialogs can live inside the sidebar instead of in a body portal. */
+body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol'], [data-slot='conversation.session.header'])
+  :is([role='dialog'], [role='menu'], [data-cordis-panel]) {
+  --dsw-alias-bg-base: var(--asuka-base);
+  --dsw-alias-bg-layer-1: var(--asuka-panel);
+  --dsw-alias-bg-layer-2: var(--asuka-raised);
+  --dsw-alias-bg-layer-3: var(--asuka-overlay);
+  --dsw-alias-label-primary: var(--asuka-text);
+  --dsw-alias-label-primary-bluish: var(--asuka-link);
+  --dsw-alias-label-primary-inverted: var(--asuka-panel);
+  --dsw-alias-label-primary-dimmed: var(--asuka-secondary);
+  --dsw-alias-label-secondary: var(--asuka-secondary);
+  --dsw-alias-label-tertiary: var(--asuka-muted);
+  --dsw-alias-label-caption: var(--asuka-muted);
+  --dsw-alias-label-dimmed: var(--asuka-muted);
+  --dsw-alias-brand-text: var(--asuka-text);
+  --dsw-alias-border-l1: var(--asuka-border);
+  --dsw-alias-border-l2: var(--asuka-control);
+  --dsw-alias-interactive-bg-hover: var(--asuka-raised);
+  --dsw-alias-interactive-bg-hover-solid: var(--asuka-raised);
+  --dsw-alias-interactive-bg-active: var(--asuka-selected);
+  --dsw-alias-button-elevated-fill: var(--asuka-panel);
+  --dsw-alias-button-floating-hover: var(--asuka-raised);
+  color: var(--asuka-text);
+}
+
+body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol']) {
+  box-shadow: inset -1px 0 var(--asuka-copper), inset -4px 0 var(--asuka-chrome-raised);
+}
+
+body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol']) div:has(> [class*='logoRow']) {
+  position: relative;
+  background-color: var(--asuka-chrome);
+  background-image:
+    radial-gradient(ellipse at 35% 0, var(--asuka-velvet-glow), transparent 65%),
+    repeating-linear-gradient(92deg, #fff4d501 0 1px, transparent 1px 4px);
+  box-shadow: inset 5px 0 var(--asuka-chrome), inset 6px 0 color-mix(in srgb, var(--asuka-copper) 48%, transparent);
+}
+
+body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol']) div:not([class*='collapsed']):has(> [class*='logoRow']) {
+  padding-top: 32px;
+}
+
+/* Native macOS chrome already reserves 52px. Do not add the Web-only inset. */
+body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol'])
+  div:has(> [class*='logoRow']):has(> [class*='topStrip']) {
+  padding-top: 6px;
+}
+
+body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol']) div:has(> [class*='logoRow'])::before {
+  content: '';
+  position: absolute;
+  /* The top 32px remain free of ornament for native macOS window controls. */
+  inset: 32px 7px 7px 5px;
+  border: 1px solid var(--asuka-copper);
+  border-radius: 13px;
+  background:
+    var(--asuka-corner-bl-art, none) left bottom / 40px 40px no-repeat,
+    var(--asuka-corner-br-art, none) right bottom / 40px 40px no-repeat;
+  pointer-events: none;
+}
+
+body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol'])
+  div:has(> [class*='logoRow']):has(> [class*='topStrip'])::before {
+  top: 44px;
+}
+
+body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol']) div:has(> [class*='logoRow'])::after {
+  content: '';
+  position: absolute;
+  left: max(12.5%, calc(50% - 109px));
+  bottom: 88px;
+  width: min(75%, 218px);
+  aspect-ratio: 220 / 244;
+  background:
+    var(--asuka-medallion-art, none) center / 100% 100% no-repeat,
+    var(--asuka-portrait-art, none) center 40% / 58% auto no-repeat;
+  opacity: 0.18;
+  pointer-events: none;
+}
+
+body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol'])
+  div:not([class*='collapsed']):has(> [class*='logoRow']) > [class*='logoRow'] {
+  position: relative;
+  border-radius: 12px 12px 7px 7px;
+  background:
+    var(--asuka-plaque-art, none) center / 100% 100% no-repeat,
+    linear-gradient(115deg, var(--asuka-chrome-raised), var(--asuka-chrome) 60%, var(--asuka-velvet-glow));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--asuka-copper) 60%, transparent), 0 2px 5px #10060b40;
+}
+
+body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol']) [class*='logoRow'] [class*='brand'] > svg {
+  color: var(--asuka-chrome-text);
+}
+
+body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol']) button[class*='newSession'] {
+  position: relative;
+  color: var(--asuka-ivory-button-ink);
+  background: linear-gradient(180deg, #fffdf4, var(--asuka-ivory-button));
+  border-color: var(--asuka-copper);
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px #fffaf0, 0 2px 6px #10060b30;
+}
+
+body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol']) button[class*='newSession']:hover {
+  color: var(--asuka-ivory-button-ink);
+  background-color: #fff9eb;
+  box-shadow: 0 0 0 1px var(--asuka-gold-light), 0 2px 8px #10060b40;
+}
+
+body[data-dsh-asuka-p01] [data-slot='sidebar.settings'] button:has(> [data-slot='settings.trigger']) {
+  position: relative;
+  color: var(--asuka-chrome-text);
+  background: linear-gradient(180deg, var(--asuka-chrome-raised), var(--asuka-chrome));
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--asuka-copper) 80%, transparent);
+  min-height: 40px;
+}
+
+/* 0.1.7 puts Settings inside the account / More launcher. Keep its avatar and
+   native menu behavior, and use semantic markers rather than its CSS hash. */
+body[data-dsh-asuka-p01] [data-slot='settings.launcher'] button[aria-haspopup='menu'] {
+  box-sizing: border-box;
+  color: var(--asuka-chrome-text);
+  background: var(--asuka-chrome-raised);
+  border: 1px solid color-mix(in srgb, var(--asuka-copper) 65%, transparent);
+  border-radius: 10px;
+  min-height: 40px;
+  padding-inline: 10px;
+}
+
+body[data-dsh-asuka-p01] [data-slot='settings.launcher'] button[aria-haspopup='menu']:hover {
+  background: var(--asuka-velvet-glow);
+}
+
+body[data-dsh-asuka-p01] [data-slot='settings.launcher'] button[aria-haspopup='menu']:focus-visible {
+  outline: 2px solid var(--asuka-chrome-text);
+  outline-offset: -3px;
+}
+
+body[data-dsh-asuka-p01] [data-slot='settings.launcher'] button[data-collapsed='true'] {
+  min-height: 36px;
+  padding: 0;
+}
+
+body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol']) div:not([class*='collapsed']):has(> [class*='logoRow']) > [class*='footArea'] {
+  padding-top: 27px;
+  background: var(--asuka-flourish-art, none) center top / min(100%, 230px) 38px no-repeat;
+}
+
+body[data-dsh-asuka-p01] [data-slot='sidebar.workspaces'] [class*='projectRow'] {
+  position: relative;
+  border-radius: 4px;
+  box-shadow: inset 0 -1px color-mix(in srgb, var(--asuka-copper) 27%, transparent);
+}
+
+body[data-dsh-asuka-p01] [data-slot='sidebar.workspaces'] [role='treeitem'] {
+  min-height: 36px;
+  font-size: 14px;
+  line-height: 22px;
+}
+
+body[data-dsh-asuka-p01] [data-slot='sidebar.workspaces'] [role='treeitem'] > [class*='title'] {
+  font-size: inherit;
+  line-height: inherit;
+}
+
+body[data-dsh-asuka-p01] [data-slot='sidebar.workspaces'] [role='treeitem'] > [class*='time'] {
+  flex-shrink: 0;
+  margin-left: 8px;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+body[data-dsh-asuka-p01] [data-slot='sidebar.workspaces'] [class*='projectRow']:has(> [class*='folderActive']) {
+  color: var(--asuka-chrome-text);
+  background:
+    linear-gradient(180deg, #fff3c21c, transparent 24%, #15050e24 82%, #fff3c21c),
+    linear-gradient(100deg, var(--asuka-velvet-glow), var(--asuka-ruby) 47%, var(--asuka-chrome-raised));
+  box-shadow: inset 0 0 0 1px var(--asuka-copper), inset 0 0 0 3px #8c495530, 0 3px 4px #10060b30;
+}
+
+body[data-dsh-asuka-p01] [data-slot='sidebar.workspaces'] [class*='projectRow']:has(> [class*='folderActive'])::before {
+  content: '';
+  position: absolute;
+  inset: 3px 3px 3px auto;
+  width: 12px;
+  border-block: 1px solid var(--asuka-gold-light);
+  background: linear-gradient(135deg, transparent 44%, var(--asuka-gold-light) 46% 50%, transparent 52%) top right / 12px 50% no-repeat,
+    linear-gradient(45deg, transparent 44%, var(--asuka-gold-light) 46% 50%, transparent 52%) bottom right / 12px 50% no-repeat;
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+body[data-dsh-asuka-p01] [data-slot='sidebar.workspaces'] [class*='folderActive'] {
+  color: var(--asuka-gold-light);
+}
+
+body[data-dsh-asuka-p01] [data-slot='sidebar.workspaces'] [role='treeitem'][aria-selected='true'],
+body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol']) [class*='panelRow'][aria-current='page'] {
+  color: var(--asuka-chrome-text);
+  background: linear-gradient(100deg, var(--asuka-chrome-raised), var(--asuka-velvet-glow));
+  box-shadow: inset 3px 0 var(--asuka-gold-light), inset 0 0 0 1px color-mix(in srgb, var(--asuka-copper) 75%, transparent);
+}
+
+body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol'])
+  :is(button[class*='newSession'], [role='treeitem'], [class*='panelRow']):focus-visible,
+body[data-dsh-asuka-p01] [data-slot='sidebar.settings'] button:has(> [data-slot='settings.trigger']):focus-visible {
+  outline: 2px solid var(--asuka-chrome-text);
+  outline-offset: -3px;
+}
+
+/* Do not widen the native 56px collapsed rail or cover its expand affordance. */
+body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol']) div[class*='collapsed']:has(> [class*='logoRow'])::before,
+body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol']) div[class*='collapsed']:has(> [class*='logoRow'])::after,
+body[data-dsh-asuka-p01][data-asuka-mode='focus'] :is([data-pane='sidebar'], [class*='sidebarCol']) div:has(> [class*='logoRow'])::after {
+  display: none;
+}
+
+body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol']) div[class*='collapsed']:has(> [class*='logoRow']) {
+  box-shadow: none;
+  background-image: none;
+}
+
+body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol']) div[class*='collapsed']:has(> [class*='logoRow']) button[class*='newSession'] {
+  color: var(--asuka-chrome-text);
+  background: var(--asuka-chrome-raised);
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px var(--asuka-copper);
+}
+
+body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol']) div[class*='collapsed']:has(> [class*='logoRow']) [data-slot='sidebar.settings'] button {
+  background-image: none;
+  min-height: 0;
+}
+
+/* Color only the conversation's owning header; retain its native stacking. */
+body[data-dsh-asuka-p01] header:has(> [data-conversation-header-leading]) {
+  background: radial-gradient(ellipse at 25% 0, var(--asuka-velvet-glow), transparent 70%), var(--asuka-chrome);
+  box-shadow: inset 0 -1px var(--asuka-copper), inset 0 -3px var(--asuka-chrome-raised);
+}
+
+body[data-dsh-asuka-p01] header:has(> [data-conversation-header-leading]):is([class*='headerBlank'], [class*='headerSessionless']) {
+  background: transparent;
+  box-shadow: none;
+}
+
+body[data-dsh-asuka-p01] header:has(> [data-conversation-header-leading]) [role='tab'][aria-selected='true'] {
+  color: var(--asuka-chrome-text);
+}
+
+body[data-dsh-asuka-p01] header:has(> [data-conversation-header-leading]) [role='tab'][aria-selected='true']::after {
+  background-color: var(--asuka-copper);
+}
+
+/* The crest sits above the text field in a reserved strip. ::after remains the
+   host's no-workspace affordance; no icon, hit target or text is repainted. */
+body[data-dsh-asuka-p01] [data-composer-card] {
+  --asuka-crest-width: 180px;
+  --asuka-crest-height: 56px;
+  --asuka-crest-top: -52px;
+  border-radius: 20px;
+  border-color: var(--asuka-copper);
+  padding-top: 26px;
+  background-image: var(--asuka-trim-art, none);
+  background-position: left 10px top 5px;
+  background-size: 72px 20px;
+  background-repeat: repeat-x;
+  box-shadow: 0 0 0 1px var(--asuka-copper), inset 0 0 0 3px var(--asuka-panel), inset 0 0 0 4px color-mix(in srgb, var(--asuka-copper) 60%, transparent), 0 6px 18px #23171c1a;
+}
+
+body[data-dsh-asuka-p01] :is([data-phase='active'], [data-phase='settling']) [data-composer-card] {
+  --asuka-crest-width: 136px;
+  --asuka-crest-height: 40px;
+  --asuka-crest-top: -36px;
+  padding-top: 20px;
+  background-size: 72px 14px;
+}
+
+body[data-dsh-asuka-p01] [data-composer-card]::before {
+  content: '';
+  position: absolute;
+  top: var(--asuka-crest-top);
+  left: calc(50% - var(--asuka-crest-width) / 2);
+  box-sizing: border-box;
+  width: var(--asuka-crest-width);
+  height: var(--asuka-crest-height);
+  background: var(--asuka-ribbon-art, var(--asuka-flourish-art, none)) center / contain no-repeat;
+  pointer-events: none;
+}
+
+body[data-dsh-asuka-p01] [data-phase='hero']:not(.asuka-stage) [data-composer-card] {
+  margin-top: 46px;
+}
+
+body[data-dsh-asuka-p01] [data-composer-card]:focus-within {
+  outline: 2px solid color-mix(in srgb, var(--asuka-ruby) 70%, var(--asuka-copper));
+  outline-offset: 3px;
+}
+
+body[data-dsh-asuka-p01] [data-phase='hero']:not(.asuka-stage) [class*='headline'] {
+  position: relative;
+  padding: 16px 22px;
+  border-block: 1px solid color-mix(in srgb, var(--asuka-copper) 72%, transparent);
+  background-image: var(--asuka-plaque-art, none);
+  background-position: center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  text-shadow: 0 1px var(--asuka-panel);
+}
+
+body[data-dsh-asuka-p01] [data-phase='hero']:not(.asuka-stage) [class*='titleGroup'] > span:first-child {
+  font-family: 'Songti SC', 'STSong', 'Noto Serif CJK SC', Georgia, serif;
+  font-size: clamp(28px, 2vw, 32px);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.35;
+}
+
+body[data-dsh-asuka-p01] [data-phase='hero']:not(.asuka-stage) [class*='previewBadge'] {
+  color: var(--asuka-secondary);
+  background: var(--asuka-panel);
+  border-color: var(--asuka-border);
+}
+
+@media (max-width: 1100px) {
+  body[data-dsh-asuka-p01] [data-phase='hero']:not(.asuka-stage) [data-composer-card] {
+    --asuka-crest-width: 148px;
+    --asuka-crest-height: 46px;
+    --asuka-crest-top: -43px;
+    margin-top: 38px;
+  }
+}
+
+/* A short window gives the navigation space back to its content. */
+@media (max-height: 700px) {
+  body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol']) div:has(> [class*='logoRow'])::after {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-dsh-asuka-p01] [data-composer-card]::before {
+    animation: none;
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol']) div:has(> [class*='logoRow'])::before,
+  body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol']) div:has(> [class*='logoRow'])::after,
+  body[data-dsh-asuka-p01] [data-composer-card]::before,
+  body[data-dsh-asuka-p01] [data-slot='sidebar.workspaces'] [class*='projectRow']::before {
+    display: none;
+  }
+
+  body[data-dsh-asuka-p01] [data-composer-card],
+  body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol']),
+  body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol']) :is(div:has(> [class*='logoRow']), [class*='logoRow'], button[class*='newSession']),
+  body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol']) div:not([class*='collapsed']):has(> [class*='logoRow']) > [class*='footArea'],
+  body[data-dsh-asuka-p01] [data-slot='sidebar.settings'] button,
+  body[data-dsh-asuka-p01] [data-phase='hero']:not(.asuka-stage) [class*='headline'],
+  body[data-dsh-asuka-p01] header:has(> [data-conversation-header-leading]) {
+    background-image: none;
+    box-shadow: none;
+  }
+
+  body[data-dsh-asuka-p01] [data-phase]:not(.asuka-stage) [data-composer-card] {
+    margin-top: 0;
+    padding-top: 8px;
+  }
+}

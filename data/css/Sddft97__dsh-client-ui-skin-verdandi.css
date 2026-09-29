@@ -1,5 +1,5 @@
 /* Sddft97/dsh-client-ui-skin-verdandi — src/client/verdandi.module.css
-   fetched 2026-09-21 from https://raw.githubusercontent.com/Sddft97/dsh-client-ui-skin-verdandi/main/src/client/verdandi.module.css
+   fetched 2026-09-29 from https://raw.githubusercontent.com/Sddft97/dsh-client-ui-skin-verdandi/main/src/client/verdandi.module.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* Verdandi · White Vow
    Deep crimson owns navigation; bridal white owns reading. */
@@ -38,9 +38,14 @@ body[data-dsh-verdandi] {
   --vd-bare-ink: #1b1116;
   --vd-danger: #9c1f30;
   --vd-warn: #7d5310;
-  --vd-stage-veil: rgba(255, 253, 251, 0.3);
-  --vd-stage-veil-edge: rgba(255, 253, 251, 0.12);
-  --vd-stage-veil-hero: rgba(255, 253, 251, 0.06);
+  /* The stage veil compresses the artwork's range so bare ink survives it. In
+     light mode it used to be white, which pushed the whole column towards paper
+     white and read as an overlay; a warm neutral at a lower alpha darkens
+     instead of washing, so the artwork keeps its depth and the reading surfaces
+     stay the brightest thing on screen. */
+  --vd-stage-veil: rgba(255, 253, 251, 0.22);
+  --vd-stage-veil-edge: rgba(255, 253, 251, 0.08);
+  --vd-stage-veil-hero: rgba(255, 253, 251, 0.05);
   --dsw-font-family: 'Avenir Next', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
   --dsw-font-family-code: 'JetBrains Mono', 'Cascadia Code', Consolas, monospace;
   background-color: #f8f2ed;
@@ -577,12 +582,17 @@ body[data-dsh-verdandi] [data-pane='conversation'] {
       var(--vd-stage-veil) 91%,
       var(--vd-stage-veil-edge) 100%
     ),
-    linear-gradient(180deg, rgba(255, 253, 251, 0.06), rgba(248, 242, 237, 0.15)),
+    linear-gradient(180deg, rgba(255, 253, 251, 0.05), rgba(248, 242, 237, 0.12)),
     var(--vd-art-workspace-light) center / cover no-repeat,
     var(--vd-ivory-soft) !important;
   --dsw-alias-label-primary: var(--vd-ink);
-  --dsw-alias-label-secondary: #654c54;
-  --dsw-alias-label-tertiary: #8a7077;
+  --dsw-alias-label-secondary: #5c434b;
+  --dsw-alias-label-tertiary: #74585f;
+  /* The host paints the transcript's bare chrome (the tail clock, the copy and
+     branch icons, the tool-row captions) from the caption seat. Left at the
+     host's default it resolves to a cool grey that washes out over this skin's
+     ivory surfaces, so the caption seat joins the same ink family. */
+  --dsw-alias-label-caption: var(--vd-ink-meta);
   --dsw-alias-brand-primary: var(--vd-crimson);
   --dsw-alias-brand-text: var(--vd-crimson-deep);
   --dsw-alias-button-primary-fill: var(--vd-crimson);
@@ -602,7 +612,7 @@ body[data-dsh-verdandi] [data-pane='conversation'][data-verdandi-phase='hero'] {
      stays as vivid as the artwork allows. */
   background:
     linear-gradient(90deg, transparent 0%, var(--vd-stage-veil-hero) 9% 91%, transparent 100%),
-    linear-gradient(180deg, rgba(255, 253, 251, 0.02), rgba(248, 242, 237, 0.1)),
+    linear-gradient(180deg, rgba(255, 253, 251, 0.03), rgba(248, 242, 237, 0.08)),
     var(--vd-art-workspace-light) center / cover no-repeat,
     var(--vd-ivory-soft) !important;
 }
@@ -967,7 +977,14 @@ body[data-dsh-verdandi] [data-verdandi-header] > [data-verdandi-decoration='head
   clip-path: polygon(0 50%, 14% 0, 100% 14%, 88% 50%, 100% 86%, 14% 100%);
 }
 
-body[data-dsh-verdandi] [data-verdandi-header] > :not([data-verdandi-decoration]) {
+/* The decorative layers below carry z-index 0-4, and 0.1.7 puts the header's
+   content one slot level deeper (the `conversation.session.header` anchor is a
+   `display: contents` seat), so the content is lifted by a descendant rule. A
+   `>` rule would only reach that anchor, which generates no box and therefore
+   ignores both declarations, and the veil would then paint over the title row.
+   The `:not(... *)` guard keeps the ornaments themselves out of the lift. */
+body[data-dsh-verdandi] [data-verdandi-header] > :not([data-verdandi-decoration]),
+body[data-dsh-verdandi] [data-verdandi-header] [data-slot='conversation.session.header'] > :not([data-verdandi-decoration] *) {
   position: relative;
   z-index: 3;
 }
@@ -976,12 +993,11 @@ body[data-dsh-verdandi] [data-verdandi-header] > :not([data-verdandi-decoration]
    row -- later in DOM order -- painting over a header menu (measured: the menu
    spans y 43-255 and the tabs cover y 50-75 of it). The title row owns the
    dropdown triggers (`_headerUtilities` sits inside it), so it has to outrank
-   the tabs. */
-body[data-dsh-verdandi] [data-verdandi-header] > [class*='_titleRow'] {
+   the tabs. Descendant, not child: 0.1.7 wraps the title row in the
+   `conversation.session.header` anchor, which is a `display: contents` slot, so
+   a `>` rule would match nothing on the real shell. */
+body[data-dsh-verdandi] [data-verdandi-header] [class*='_titleRow'] {
   z-index: 5;
-}
-
-body[data-dsh-verdandi] [data-verdandi-header] > div:first-child {
   font-family: Georgia, 'Noto Serif SC', 'Songti SC', serif;
   letter-spacing: 0.012em;
 }
@@ -1199,6 +1215,26 @@ body[data-dsh-verdandi][data-ds-dark-theme] [data-slot='conversation.chat.node']
   border-right-color: #d5788b;
 }
 
+/* Wide tables are a host feature: from four columns up, the chat plugin draws
+   the wrapper wider than the message column and holds the overflow hidden until
+   hover, so a table may use the gutters beside the reading column. That assumes
+   a borderless message; here the message is a paper card, and the bleed reads as
+   content escaping the card. Keep the wrapper inside the card and let the cells
+   wrap the way a narrower table does, so the gold border always contains it. */
+body[data-dsh-verdandi] [data-slot='conversation.chat.node'] [class*='_markdown_'] [class*='md-table-wide'] {
+  width: 100%;
+  max-width: 100%;
+  margin-left: 0;
+  padding-left: 0;
+  padding-bottom: 0;
+  overflow-x: auto;
+}
+
+body[data-dsh-verdandi] [data-slot='conversation.chat.node'] [class*='_markdown_'] [class*='md-table-wide'] > table {
+  width: 100%;
+  max-width: 100%;
+}
+
 body[data-dsh-verdandi] [data-slot='conversation.chat.node'] [data-variant='think'] {
   color: var(--vd-ink) !important;
   background: color-mix(in srgb, var(--vd-paper-solid) 78%, transparent);
@@ -1299,10 +1335,12 @@ body[data-dsh-verdandi] [data-pane='conversation'] :is(
 
 /* The host only exposes a class-suffix hook on the failure and compaction rows,
    which is the same contract the markdown/bubble rules above already rely on;
-   process and tail expose stable data attributes instead. */
+   process, tail, user-echo clock and turn trigger expose stable data attributes
+   instead, and the context notice is marked at runtime because its row root is
+   bare (`XrJvXW_root`) with only the disclosure's two semantic attributes as a
+   stable hook. */
 body[data-dsh-verdandi] [data-pane='conversation'] :is(
   [data-verdandi-slip],
-  [data-turn-process],
   [class*='_turnErrorRow'],
   [class*='_compactionRow']
 ) {
@@ -1314,6 +1352,25 @@ body[data-dsh-verdandi] [data-pane='conversation'] :is(
   border: 1px solid var(--vd-slip-line);
   border-radius: 10px;
   box-shadow: var(--vd-slip-shadow), inset 0 1px 0 rgba(255, 253, 251, 0.34);
+  -webkit-backdrop-filter: blur(7px) saturate(1.05);
+  backdrop-filter: blur(7px) saturate(1.05);
+  --dsw-alias-label-primary: var(--vd-ink);
+  --dsw-alias-label-secondary: var(--vd-ink-meta);
+  --dsw-alias-label-tertiary: var(--vd-ink-meta);
+  --dsw-alias-label-caption: var(--vd-ink-meta);
+}
+
+/* Rows the host draws itself keep the same surface with paint only. The process
+   row, the user-echo clock row and the turn trigger are revealed or restyled on
+   hover, so a margin, padding, border or size here re-flows them while that fade
+   runs and slides their buttons under the pointer; the dedicated rules below add
+   the radius, the shadow and the hover fill. */
+body[data-dsh-verdandi] [data-pane='conversation'] :is(
+  [data-clock='start'],
+  [data-turn-trigger]
+) {
+  color: var(--vd-ink) !important;
+  background: var(--vd-slip);
   -webkit-backdrop-filter: blur(7px) saturate(1.05);
   backdrop-filter: blur(7px) saturate(1.05);
   --dsw-alias-label-primary: var(--vd-ink);
@@ -1353,45 +1410,295 @@ body[data-dsh-verdandi] [data-pane='conversation'] [class*='_turnErrorRow'] [cla
   border-radius: 6px;
 }
 
-/* Turn process control: the host's transparent 33px separator becomes a
-   chapter ribbon in the same slip family. */
+/* Turn process control: the host draws a 33px separator with a hairline under
+   it, and 0.1.7 also hosts the live running status inside it. The skin keeps the
+   separator's shape as a chapter rule instead of a surface: no fill, no radius,
+   the label as the chapter's own caption and the hairline turned gold, so the
+   row never reads as a floating white bar. Nothing here changes geometry on
+   hover, which is what the message actions row must never do. */
 body[data-dsh-verdandi] [data-pane='conversation'] [data-turn-process] {
-  width: 100%;
-  height: auto;
-  margin: 4px 0 10px;
-  padding: 5px 14px;
+  /* Paint only: the host owns this row's box, and the transcript already carries
+     enough furniture without a rule under every finished turn. */
+  color: var(--vd-ink-meta);
+  background: none;
+  border: 0;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  text-align: start;
+}
+
+/* The running status is the one place the chapter language belongs: a gold rule
+   under the live line, with the sweep riding it. Marked by the hooks, so the
+   finished rows stay plain. */
+body[data-dsh-verdandi] [data-pane='conversation'] [data-verdandi-running] {
+  border-bottom: 1px solid color-mix(in srgb, var(--vd-gold) 42%, transparent);
+}
+
+
+body[data-dsh-verdandi] [data-pane='conversation'] [data-turn-process] [class*='_label'] {
+  position: relative;
+  padding: 1px 18px 1px 10px;
+  /* The turn-process row is the chapter that may fold many step groups inside
+     it, so it reads one step above the fold labels: the title in the brand
+     colour on opaque warm paper — crimson in light, gold in dark through
+     the official token — with the fold labels staying in meta ink. The
+     hierarchy is exactly "the heading takes the brand colour, the entries
+     do not". */
+  color: var(--dsw-alias-brand-primary);
+  font-weight: 600;
+  letter-spacing: 0.015em;
+  background-color: color-mix(in srgb, var(--vd-slip-solid) 94%, var(--vd-gold));
+  /* The artwork behind a transcript row can be near-black — measured at 1.37:1
+     for bare ink over the darkest band — so the copy keeps a paper wash that
+     follows it. The wash eases towards the row's end but never reaches
+     transparent: with the old full fade the tail characters of "用时 21分28秒"
+     landed on bare artwork and the line dissolved there. It still reads as a
+     line of ink on a soft ground rather than as a filled bar, which is what the
+     ribbon shape was rejected for. */
+  background-image: linear-gradient(
+    90deg,
+    var(--vd-slip) 0%,
+    color-mix(in srgb, var(--vd-slip) 88%, transparent) 58%,
+    color-mix(in srgb, var(--vd-slip) 76%, transparent) 100%
+  );
+  border-radius: 6px;
+  border-left: 4px solid var(--vd-crimson);
+  box-shadow:
+    var(--vd-slip-shadow),
+    0 0 0 1px var(--vd-gold);
+}
+
+/* The fold indicator sits at the chapter pill's tail. The host draws it as a
+   14px 1px-stroke svg in caption grey — invisible on the paper pill, the user
+   could not tell folded from expanded. The arrow reads in full ink on a soft
+   gold badge with a slightly heavier stroke and a paint-level scale; the box
+   stays 14px, so nothing around it moves. The host ships no rotation rule for
+   this chevron at all, so the expanded state is articulated here off the
+   disclosure's own aria-expanded. */
+body[data-dsh-verdandi] [data-pane='conversation'] [data-turn-process] [class*='_chevron'] {
+  /* A paper disc inside a gold ring, matching the chapter pill's own ring
+     grammar. The arrow stays ink-dark in both themes — dark-on-paper reads
+     at ~12:1, and colouring it per-theme put near-white ink on gold in dark
+     mode, which is why the arrow vanished there. */
+  color: var(--vd-ink);
+  background: var(--vd-slip-solid);
   border-radius: 999px;
+  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--vd-gold) 55%, transparent);
+  transition: box-shadow 0.15s ease;
+  /* scale via the individual property: it composes with the host's own
+     data-open rotation rule on this chevron, which a transform here would
+     override — that override is exactly why the arrow stopped turning. */
+  scale: 1.12;
+}
+
+/* Hover feedback is the ring brightening to full strength — no colour
+   inversion anywhere, so nothing can blend into anything. Scoped to the
+   whole chapter pill, which is the click target. */
+body[data-dsh-verdandi] [data-pane='conversation'] [data-turn-process]:hover [class*='_chevron'] {
+  box-shadow: 0 0 0 2px var(--vd-gold);
+}
+
+body[data-dsh-verdandi] [data-pane='conversation'] [data-turn-process] [class*='_chevron'] path {
+  stroke-width: 1.4px;
 }
 
 body[data-dsh-verdandi] [data-pane='conversation'] [data-turn-process]:hover {
-  border-color: var(--vd-gold);
+  color: var(--vd-ink);
+  border-bottom-color: var(--vd-gold);
 }
 
-/* Turn tail: the clock and the copy/branch icons are the last bare chrome on
-   the stage, so the action row becomes one small pill. */
-body[data-dsh-verdandi] [data-pane='conversation'] [data-turn-tail] > [class*='_actions'] {
-  width: fit-content;
-  height: auto;
-  margin: 2px 0 0;
-  padding: 2px 10px;
+body[data-dsh-verdandi] [data-pane='conversation'] [data-turn-process]:hover [class*='_label'] {
+  color: var(--vd-ink);
+}
+
+/* Work steps fold (dsh 0.1.7): consecutive steps collapse behind a range-level
+   group row — `div[data-step-process]` with a transparent 14px title and an
+   icon/chevron cross-fade — which the skin had no rule for at all. Only the
+   labels carry the chapter language now (the wash pills above): the gold
+   hairline this rule used to draw under `[data-step-process][data-chat-paging-anchor]`
+   was removed on purpose. Every step row carries that anchor — the rows inside
+   an expanded body and the virtualizer's compressed stubs included — so the
+   rule produced a ladder of gold lines under the fold (loudest in dark mode),
+   and a hairline that cannot tell a chapter boundary from any other row is not
+   worth its cost. */
+
+body[data-dsh-verdandi] [data-pane='conversation'] [data-step-process] [data-process-activity] {
+  position: relative;
+  padding: 1px 12px 1px 10px;
+  color: var(--vd-ink-meta);
+  font-weight: 600;
+  letter-spacing: 0.015em;
+  /* The expanded steps are the same bare ink over the same artwork as the turn
+     row — 1.37:1 over the darkest band in light mode — but they had no wash at
+     all, so "已协调子智能体" dissolved wherever the shelf behind it turned
+     dark. The label carries the turn label's paper wash (tail held at 72%), and
+     the label is the button's last child, so the extra inline padding never
+     moves a sibling; the box the host drew stays where it is. */
+  background-image: linear-gradient(
+    90deg,
+    var(--vd-slip) 0%,
+    color-mix(in srgb, var(--vd-slip) 84%, transparent) 58%,
+    color-mix(in srgb, var(--vd-slip) 72%, transparent) 100%
+  );
+  border-radius: 6px;
+}
+
+body[data-dsh-verdandi] [data-pane='conversation'] [data-step-process] [data-process-activity]:is(
+  :hover,
+  :focus-visible
+) {
+  color: var(--vd-ink);
+}
+
+body[data-dsh-verdandi] [data-pane='conversation'] [data-step-process] :is(
+  [data-step-process-icon],
+  [data-step-process-chevron]
+) {
+  color: color-mix(in srgb, var(--vd-gold) 72%, var(--vd-ink-meta));
+}
+
+/* Expanded work-step body: the host stacks the call rows directly under the
+   disclosure and against the next fold, so the crimson command rows read as
+   glued to the title above and the sibling fold below. The rows inside are
+   static content the user explicitly opened — not hover-revealed chrome — so a
+   vertical rhythm here is safe and wanted. */
+body[data-dsh-verdandi] [data-pane='conversation'] [data-step-process-body]:not(:empty) {
+  margin-top: 4px;
+}
+
+body[data-dsh-verdandi] [data-pane='conversation'] [data-step-process-body] > [class*='_content'] > * + * {
+  margin-top: 7px;
+}
+
+/* Turn tail: the clock and the copy/branch icons are the last bare chrome on the
+   stage, so the row keeps the slip pill — painted, never resized. The host fades
+   this row in with `[data-actions-reveal=hover]:hover .xzv4MW_actions`, so any
+   width, margin, padding or border added here moves the buttons under the pointer
+   while that fade runs, and the two hover states then fight (the row jitters and
+   the buttons slide left). Everything below is paint only: the box stays exactly
+   where the host put it, and the buttons carry their own hover. */
+body[data-dsh-verdandi] [data-pane='conversation'] [data-turn-tail] [class*='_actions']:has(
+  [class*='_time']
+) {
+  position: relative;
+  /* Constant, hover-independent padding: the host's own is 0 and the
+     clock hugged the pill's round edge. Padding moves the content
+     within the host's box, so the hover-reveal row stays jitter-free. */
+  padding-left: 10px;
   color: var(--vd-ink-meta);
   background: var(--vd-slip);
-  border: 1px solid var(--vd-slip-line);
   border-radius: 999px;
-  box-shadow: var(--vd-slip-shadow);
-  -webkit-backdrop-filter: blur(7px) saturate(1.05);
-  backdrop-filter: blur(7px) saturate(1.05);
+  box-shadow:
+    var(--vd-slip-shadow),
+    0 0 0 1px var(--vd-slip-line);
   --dsw-alias-label-secondary: var(--vd-ink);
   --dsw-alias-label-tertiary: var(--vd-ink-meta);
+  --dsw-alias-label-caption: var(--vd-ink-meta);
 }
 
-body[data-dsh-verdandi] [data-pane='conversation'] [data-turn-tail] > [class*='_actions'] button {
+body[data-dsh-verdandi] [data-pane='conversation'] [data-turn-tail] [class*='_actions'] button {
   color: var(--vd-ink-meta);
 }
 
-body[data-dsh-verdandi] [data-pane='conversation'] [data-turn-tail] > [class*='_actions'] button:hover {
+body[data-dsh-verdandi] [data-pane='conversation'] [data-turn-tail] [class*='_actions'] button:hover {
   color: var(--vd-ink);
   background: color-mix(in srgb, var(--vd-gold) 24%, transparent);
+}
+
+/* User echo: the same clock-and-copy row under a user message. It is a *sibling*
+   of the bubble inside `Sixlwa_userStack`, not a descendant of `[data-turn-tail]`,
+   and the host marks the pair rather than the row: `data-clock='start'` on the
+   echo, `data-clock='end'` on the tail, so `[data-clock='start']` is the narrowest
+   anchor that catches exactly this row. It gets the same pill as the tail, which
+   is why the radius overrides the slip family's 10px box. Same geometry rule as
+   the tail above: this row is revealed on hover too, so the skin paints it only
+   and never touches its width, margin, padding or border. */
+body[data-dsh-verdandi] [data-pane='conversation'] [data-clock='start'] {
+  position: relative;
+  /* Constant, hover-independent padding: the host's own is 0 and the
+     clock hugged the pill's round edge. Padding moves the content
+     within the host's box, so the hover-reveal row stays jitter-free. */
+  padding-left: 10px;
+  color: var(--vd-ink-meta);
+  background: var(--vd-slip);
+  border-radius: 999px;
+  box-shadow:
+    var(--vd-slip-shadow),
+    0 0 0 1px var(--vd-slip-line);
+  --dsw-alias-label-secondary: var(--vd-ink);
+  --dsw-alias-label-tertiary: var(--vd-ink-meta);
+  --dsw-alias-label-caption: var(--vd-ink-meta);
+}
+
+body[data-dsh-verdandi] [data-pane='conversation'] [data-clock='start'] button {
+  color: var(--vd-ink-meta);
+}
+
+body[data-dsh-verdandi] [data-pane='conversation'] [data-clock='start'] button:hover {
+  color: var(--vd-ink);
+  background: color-mix(in srgb, var(--vd-gold) 24%, transparent);
+}
+
+/* The host's copy tooltip (复制) animated its width open inside these rows —
+   the original source of the "buttons running around" jitter — and floating it
+   over the transcript covered live conversation. The copy icon with its gold
+   hover tint is self-explanatory, so the bubble is simply not rendered: the
+   jitter mechanism and the overlay die with it. */
+body[data-dsh-verdandi] [data-pane='conversation'] [data-clock='start'] [class*='_bubble'],
+body[data-dsh-verdandi] [data-pane='conversation'] [data-turn-tail] [class*='_actions'] [class*='_bubble'] {
+  display: none;
+}
+
+/* Turn triggers (收到执行请求 / 继续执行目标 / 收到任务消息 / 定时任务) are the host's
+   opaque `_root` card on its own surface, but the host hover REPLACES that fill
+   with `--dsw-alias-interactive-bg-hover`, which this skin defines as a 7.5%
+   crimson, so the row goes transparent exactly while the pointer is on it. The
+   skin gives the row its own reading surface, and the hover the same surface one
+   step more solid rather than the host's tint. Painted only, like every other
+   row on the stage: the host's 0.5px border, radius and padding stay theirs. */
+body[data-dsh-verdandi] [data-pane='conversation'] [data-turn-trigger] {
+  color: var(--vd-ink);
+  background: var(--vd-slip);
+  -webkit-backdrop-filter: blur(7px) saturate(1.05);
+  backdrop-filter: blur(7px) saturate(1.05);
+  --dsw-alias-label-primary: var(--vd-ink);
+  --dsw-alias-label-secondary: var(--vd-ink-meta);
+  --dsw-alias-label-tertiary: var(--vd-ink-meta);
+  --dsw-alias-label-caption: var(--vd-ink-meta);
+}
+
+body[data-dsh-verdandi] [data-pane='conversation'] [data-turn-trigger]:hover {
+  background: var(--vd-slip-solid);
+}
+
+/* Session navigation rail: the host's turn mini-map at the pane's right edge
+   draws every turn as a 20×2 tick in `--dsw-alias-border-l4`, which dissolves
+   over the artwork — the user could not find it at all. The rail gets a paper
+   seat fading in from the pane edge, the loaded turns read in the skin's ink,
+   the unloaded ones stay fainter, and the current turn takes the brand colour
+   (crimson in light, gold in dark). Paint only: the marks keep the host's 10px
+   hit boxes and the scroller's behaviour. */
+body[data-dsh-verdandi] [data-slot='conversation.view'] nav:has([class*='_marks']) {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--vd-slip) 62%, transparent) 42%
+  );
+  border-radius: 10px 0 0 10px;
+}
+
+body[data-dsh-verdandi] [data-slot='conversation.view'] nav [class*='_mark']::before {
+  background: color-mix(in srgb, var(--vd-ink) 58%, transparent);
+}
+
+body[data-dsh-verdandi] [data-slot='conversation.view'] nav [class*='_markUnloaded']::before {
+  background: color-mix(in srgb, var(--vd-ink) 26%, transparent);
+}
+
+body[data-dsh-verdandi] [data-slot='conversation.view'] nav [class*='_markActive']::before,
+body[data-dsh-verdandi] [data-slot='conversation.view'] nav [class*='_markPreview']::before {
+  background: var(--dsw-alias-brand-primary);
 }
 
 /* --- Hero and composer chrome chips. -------------------------------------- */
@@ -1509,6 +1816,52 @@ body[data-dsh-verdandi] [data-pane='conversation'] [class*='_turnStatus']::after
   pointer-events: none;
 }
 
+/* dsh 0.1.7 hosts the live status inside the turn-process control and switches
+   that label's copy with the turn state (running / worked / took / failed), so
+   the copy swap is scoped by the running marker the hooks project rather than by
+   the removed `_turnStatus` class. Finished states keep the host's own wording;
+   while the turn runs the label reads as ink and the gold hairline under the row
+   carries the motion, which is why no surface is involved. */
+body[data-dsh-verdandi] [data-pane='conversation'] [data-turn-process] [class*='_label'] {
+  position: relative;
+  text-shadow: none;
+}
+
+body[data-dsh-verdandi] [data-verdandi-running] [class*='_label'] {
+  color: var(--vd-ink);
+  font-size: 0;
+}
+
+body[data-dsh-verdandi] [data-verdandi-running] [class*='_label']::before {
+  content: '薇儿烧烤中...';
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+html:lang(en) body[data-dsh-verdandi] [data-verdandi-running] [class*='_label']::before {
+  content: 'Verdandi is grilling...';
+}
+
+/* The sweep rides the row's own hairline: the button keeps `padding-bottom: 7px`
+   above its border, so the label's baseline offset puts the highlight exactly on
+   the gold rule rather than beside it. */
+body[data-dsh-verdandi] [data-verdandi-running] [class*='_label']::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: -8px;
+  left: 0;
+  height: 2px;
+  background-color: color-mix(in srgb, var(--vd-gold) 30%, transparent);
+  background-image: linear-gradient(90deg, transparent, var(--vd-gold-light), transparent);
+  background-repeat: no-repeat;
+  background-size: 38% 100%;
+  border-radius: 2px;
+  animation: verdandi-status-sweep 1.9s linear infinite;
+  pointer-events: none;
+}
+
 @keyframes verdandi-status-sweep {
   from {
     background-position: -70% 0;
@@ -1529,7 +1882,9 @@ body[data-dsh-verdandi] [data-pane='conversation'] [class*='_turnStatusClock'] {
   body[data-dsh-verdandi] [data-pane='conversation'] :is(
     [data-verdandi-slip],
     [data-turn-process],
-    [data-turn-tail] > [class*='_actions'],
+    [data-turn-tail] [class*='_actions']:has([class*='_time']),
+    [data-clock='start'],
+    [data-turn-trigger],
     [class*='_turnErrorRow'],
     [class*='_compactionRow']
   ) {
@@ -1548,7 +1903,9 @@ body[data-dsh-verdandi] [data-pane='conversation'] [class*='_turnStatusClock'] {
   body[data-dsh-verdandi] [data-pane='conversation'] :is(
     [data-verdandi-slip],
     [data-turn-process],
-    [data-turn-tail] > [class*='_actions'],
+    [data-turn-tail] [class*='_actions']:has([class*='_time']),
+    [data-clock='start'],
+    [data-turn-trigger],
     [class*='_turnErrorRow'],
     [class*='_compactionRow']
   ) {
@@ -1559,9 +1916,9 @@ body[data-dsh-verdandi] [data-pane='conversation'] [class*='_turnStatusClock'] {
   }
 
   body[data-dsh-verdandi] [data-pane='conversation'] {
-    --vd-stage-veil: rgba(255, 253, 251, 0.44);
-    --vd-stage-veil-edge: rgba(255, 253, 251, 0.2);
-    --vd-stage-veil-hero: rgba(255, 253, 251, 0.34);
+    --vd-stage-veil: rgba(255, 253, 251, 0.34);
+    --vd-stage-veil-edge: rgba(255, 253, 251, 0.16);
+    --vd-stage-veil-hero: rgba(255, 253, 251, 0.12);
   }
 
   body[data-dsh-verdandi][data-ds-dark-theme] [data-pane='conversation'] {
@@ -1586,7 +1943,7 @@ body[data-dsh-verdandi] [data-pane='conversation'] [class*='_turnStatusClock'] {
   body[data-dsh-verdandi] [data-pane='conversation'] :is(
     [data-verdandi-slip],
     [data-turn-process],
-    [data-turn-tail] > [class*='_actions'],
+    [data-turn-tail] [class*='_actions']:has([class*='_time']),
     [class*='_turnErrorRow'],
     [class*='_compactionRow']
   ) {

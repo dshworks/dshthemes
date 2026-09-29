@@ -1,0 +1,379 @@
+/* g2025942049-glitch/dsh-rhine-skin — packages/dsh-rhine-avoid/client.js
+   fetched 2026-09-29 from https://raw.githubusercontent.com/g2025942049-glitch/dsh-rhine-skin/main/packages/dsh-rhine-avoid/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/* ===================== PRTS / ARKNIGHTS skin ===================== */
+
+html:root {
+  --ak-cyan: #18d1ff;
+  --ak-cyan-line: rgba(24, 209, 255, .38);
+  --ak-glow: rgba(24, 209, 255, .05);
+  --ak-edge: rgba(24, 209, 255, .28);
+  --ak-edge-soft: rgba(24, 209, 255, .18);
+  --ak-edge-faint: rgba(24, 209, 255, .14);
+  --ak-mesh: rgba(170, 214, 236, .045);
+  --ak-mesh-strong: rgba(170, 214, 236, .07);
+  --ak-text: #d2ecf9;
+  --ak-text-dim: rgba(178, 216, 234, .72);
+  --ak-key: rgba(150, 205, 230, .58);
+  --ak-hud-font: 'Cascadia Mono', 'Cascadia Code', Consolas, ui-monospace, monospace;
+
+  --dsw-font-family: 'Bahnschrift', 'Segoe UI Variable Display', 'Segoe UI', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+  --ds-font-family-code: 'Cascadia Mono', 'Cascadia Code', Consolas, 'JetBrains Mono',
+    'SF Mono', Menlo, 'PingFang SC', 'Microsoft YaHei';
+}
+
+/* Fault state: one attribute redefines every blue in the skin. The two canvas surfaces
+   are recoloured from JS because their colour is not a CSS property. */
+html:root[data-ak-fault="1"] {
+  --ak-cyan: #ff5468;
+  --ak-cyan-line: rgba(255, 84, 104, .42);
+  --ak-glow: rgba(255, 84, 104, .07);
+  --ak-edge: rgba(255, 84, 104, .34);
+  --ak-edge-soft: rgba(255, 84, 104, .22);
+  --ak-edge-faint: rgba(255, 84, 104, .16);
+  --ak-mesh: rgba(240, 150, 165, .05);
+  --ak-mesh-strong: rgba(240, 150, 165, .08);
+  --ak-text: #ffe0e4;
+  --ak-text-dim: rgba(255, 196, 204, .78);
+  --ak-key: rgba(255, 150, 164, .62);
+}
+
+body {
+  background-color: #06080a;
+  background-image:
+    radial-gradient(120% 80% at 50% -15%, rgba(24, 209, 255, .06), transparent 62%),
+    radial-gradient(90% 60% at 50% 115%, rgba(24, 209, 255, .03), transparent 62%);
+  background-attachment: fixed;
+}
+
+/* ---------- artwork layer (shell.overlay entry) ---------- */
+.ak-art {
+  position: fixed; inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: .72;
+  mix-blend-mode: screen;
+  transition: opacity .6s var(--ds-ease-in-out);
+}
+.ak-gl {
+  display: block;
+  width: 100%; height: 100%;
+}
+
+/* ---------- sidebar telemetry panel (shell.overlay entry) ---------- */
+/* Floats over the left column: the sidebar itself is single-occupant and belongs to the
+   session list. Only the header takes pointer events. No backdrop-filter: it recomputes
+   a blur over the panel area every frame. */
+.ak-sys {
+  position: fixed;
+  left: 8px; bottom: 8px;
+  width: var(--ak-sys-w, 236px);
+  max-height: 52vh;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  pointer-events: none;
+  font-family: var(--ak-hud-font);
+  letter-spacing: .06em;
+  color: var(--ak-text);
+  background: linear-gradient(180deg, rgba(7, 10, 12, .93), rgba(5, 7, 9, .97));
+  border: 1px solid var(--ak-edge-soft);
+  transition: opacity .6s var(--ds-ease-in-out), border-color .3s linear;
+}
+/* Hidden during the sequence but kept in the paint tree, so the card can fade in and then
+   open its body: display:none would make both arrive in a single frame. */
+.ak-sys[data-boot="1"] { visibility: hidden; opacity: 0; }
+.ak-sys[data-dragging="1"] { transition: none; }
+.ak-sys[data-ak="off"] { opacity: 0; }
+
+.ak-sys-head {
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 7px;
+  border-bottom: 1px solid var(--ak-edge-soft);
+  font-size: 10px; line-height: 14px; text-transform: uppercase;
+  color: var(--ak-cyan);
+  pointer-events: auto;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+.ak-sys-head:hover { background: var(--ak-glow); }
+.ak-sys[data-dragging="1"] .ak-sys-head { cursor: grabbing; }
+/* The lamp stops blinking and stays lit on a fault: a pulsing heartbeat would read as
+   "still alive". */
+.ak-sys-head .ak-sys-dot {
+  width: 5px; height: 5px; background: var(--ak-cyan);
+  animation: ak-blink 2.4s steps(1) infinite;
+}
+.ak-sys[data-fault="1"] .ak-sys-head .ak-sys-dot { animation: none; opacity: 1; }
+.ak-sys-head .ak-sys-title { flex: 1; }
+.ak-sys-head .ak-sys-toggle { color: var(--ak-text-dim); }
+
+.ak-sys-body {
+  padding: 6px 7px 8px;
+  overflow: hidden;
+  max-height: 340px;
+  opacity: 1;
+  transition: max-height .55s cubic-bezier(.4, 0, .2, 1), opacity .4s ease, padding .55s ease;
+}
+.ak-sys[data-open="0"] .ak-sys-body {
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0; padding-bottom: 0;
+}
+
+.ak-sys-rows { display: flex; flex-direction: column; gap: 2px; }
+.ak-sys-row { display: flex; align-items: baseline; gap: 6px; font-size: 10px; line-height: 14px; }
+.ak-sys-key { color: var(--ak-key); flex: 0 0 62px; }
+.ak-sys-val { flex: 1; text-align: right; color: var(--ak-text); }
+.ak-sys-val b { color: var(--ak-cyan); font-weight: 700; }
+.ak-sys-val .ak-err { color: #ff5468; font-weight: 700; letter-spacing: .14em; }
+
+.ak-sys-trace-wrap {
+  margin-top: 7px; padding-top: 6px;
+  border-top: 1px solid var(--ak-edge-faint);
+}
+.ak-sys-trace-label {
+  display: flex; justify-content: space-between;
+  font-size: 9px; line-height: 12px; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--ak-key);
+}
+.ak-sys-trace-label b { color: var(--ak-cyan); font-weight: 700; }
+.ak-sys-trace { display: block; width: 100%; height: 58px; margin-top: 3px; }
+
+/* ---------- frame-wide HUD chrome (shell.overlay entry) ---------- */
+.ak-hud {
+  position: fixed; inset: 0; overflow: hidden; pointer-events: none;
+  font-family: var(--ak-hud-font);
+  letter-spacing: .1em; text-transform: uppercase;
+  animation: ak-hud-in .9s ease-out both;
+}
+@keyframes ak-hud-in { from { opacity: 0; } to { opacity: 1; } }
+.ak-hud .ak-fx { position: absolute; inset: 0; transition: opacity .6s var(--ds-ease-in-out); }
+
+.ak-hud .ak-mesh {
+  position: absolute; inset: -160px;
+  background-image:
+    linear-gradient(45deg, var(--ak-mesh) 1px, transparent 1px),
+    linear-gradient(-45deg, var(--ak-mesh) 1px, transparent 1px);
+  background-size: 128px 128px;
+  -webkit-mask-image: radial-gradient(115% 95% at 58% 44%, #000 18%, transparent 82%);
+  mask-image: radial-gradient(115% 95% at 58% 44%, #000 18%, transparent 82%);
+  animation: ak-mesh-drift 40s linear infinite;
+}
+@keyframes ak-mesh-drift { to { transform: translate3d(128px, 128px, 0); } }
+
+.ak-hud .ak-align {
+  position: absolute; inset: -64px;
+  background-image:
+    linear-gradient(to right, var(--ak-mesh-strong) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--ak-mesh-strong) 1px, transparent 1px);
+  background-size: 256px 256px;
+  -webkit-mask-image: radial-gradient(78% 68% at 50% 45%, transparent 30%, #000 88%);
+  mask-image: radial-gradient(78% 68% at 50% 45%, transparent 30%, #000 88%);
+  transition: opacity .6s var(--ds-ease-in-out);
+}
+
+.ak-hud .ak-halftone {
+  position: absolute; inset: 0; opacity: .6;
+  background-image: radial-gradient(circle at center, rgba(180, 220, 240, .10) 1px, transparent 1.5px);
+  background-size: 7px 7px;
+  -webkit-mask-image:
+    radial-gradient(46% 52% at 8% 92%, #000 0%, transparent 72%),
+    radial-gradient(42% 48% at 96% 14%, #000 0%, transparent 72%);
+  mask-image:
+    radial-gradient(46% 52% at 8% 92%, #000 0%, transparent 72%),
+    radial-gradient(42% 48% at 96% 14%, #000 0%, transparent 72%);
+  transition: opacity .6s var(--ds-ease-in-out);
+}
+
+.ak-hud .ak-scan {
+  position: absolute; left: -10%; right: -10%; height: 200px; top: -200px;
+  background: linear-gradient(to bottom, transparent, var(--ak-glow), transparent);
+  animation: ak-scan 11s linear infinite;
+}
+@keyframes ak-scan { to { transform: translateY(calc(100vh + 400px)); } }
+
+.ak-hud .ak-line { position: absolute; opacity: 0; }
+.ak-hud .ak-line-h {
+  left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ak-cyan-line), transparent);
+}
+.ak-hud .ak-line-v {
+  top: 0; bottom: 0; width: 1px;
+  background: linear-gradient(180deg, transparent, var(--ak-cyan-line), transparent);
+}
+.ak-hud .ak-line-h1 { top: 22%; animation: ak-pulse-h 13s cubic-bezier(.4, 0, .6, 1) infinite; }
+.ak-hud .ak-line-h2 { top: 71%; animation: ak-pulse-h 17s cubic-bezier(.4, 0, .6, 1) 4s infinite; }
+.ak-hud .ak-line-v1 { left: 17%; animation: ak-pulse-v 19s cubic-bezier(.4, 0, .6, 1) 2s infinite; }
+.ak-hud .ak-line-v2 { left: 83%; animation: ak-pulse-v 15s cubic-bezier(.4, 0, .6, 1) 7s infinite; }
+@keyframes ak-pulse-h {
+  0%, 100% { opacity: 0; transform: translateY(0); }
+  10% { opacity: .75; } 50% { opacity: .16; }
+  90% { opacity: 0; transform: translateY(14px); }
+}
+@keyframes ak-pulse-v {
+  0%, 100% { opacity: 0; transform: translateX(0); }
+  10% { opacity: .75; } 50% { opacity: .16; }
+  90% { opacity: 0; transform: translateX(14px); }
+}
+
+.ak-hud[data-ak="soft"] .ak-scan,
+.ak-hud[data-ak="soft"] .ak-line,
+.ak-hud[data-ak="soft"] .ak-grain,
+.ak-hud[data-ak="soft"] .ak-halftone,
+.ak-hud[data-ak="soft"] .ak-align { opacity: 0; }
+.ak-hud[data-ak="soft"] .ak-bracket { opacity: .3; }
+.ak-hud[data-ak="off"] .ak-fx { opacity: 0; }
+
+.ak-hud .ak-mark {
+  position: absolute; left: 16px; bottom: 26px;
+  font-size: 88px; line-height: 88px; font-weight: 700;
+  letter-spacing: .04em; color: rgba(150, 205, 230, .045);
+  transition: opacity .6s var(--ds-ease-in-out);
+}
+
+.ak-hud .ak-hex {
+  position: absolute; left: 56px; bottom: 152px; width: 96px; height: 111px;
+  opacity: .38;
+  background-repeat: no-repeat; background-size: 100% 100%;
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20116'%3E%3Cpolygon%20points='50,2%2098,29%2098,87%2050,114%202,87%202,29'%20fill='none'%20stroke='%2318d1ff'%20stroke-opacity='.32'%20stroke-width='1.5'/%3E%3C/svg%3E");
+}
+
+.ak-hud .ak-bracket {
+  position: absolute; width: 22px; height: 22px;
+  border: 1px solid var(--ak-cyan-line); opacity: .5;
+}
+.ak-hud .ak-tl { top: 12px; left: 12px; border-right: 0; border-bottom: 0; }
+.ak-hud .ak-tr { top: 12px; right: 12px; border-left: 0; border-bottom: 0; }
+.ak-hud .ak-bl { bottom: 12px; left: 12px; border-right: 0; border-top: 0; }
+.ak-hud .ak-br { bottom: 12px; right: 12px; border-left: 0; border-top: 0; }
+
+.ak-hud .ak-grain {
+  position: absolute; inset: 0; opacity: .03; mix-blend-mode: screen;
+  transition: opacity .6s var(--ds-ease-in-out);
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='180'%20height='180'%3E%3Cfilter%20id='n'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='.85'%20numOctaves='3'%20stitchTiles='stitch'/%3E%3C/filter%3E%3Crect%20width='180'%20height='180'%20fill='%23fff'%20filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: ak-grain-shift .9s steps(1) infinite;
+}
+@keyframes ak-grain-shift {
+  0% { transform: translate(0, 0); }
+  33% { transform: translate(-3px, 2px); }
+  66% { transform: translate(2px, -3px); }
+  100% { transform: translate(0, 0); }
+}
+.ak-hud .ak-vignette {
+  position: absolute; inset: 0;
+  background: radial-gradient(125% 95% at 50% 42%, transparent 42%, rgba(0, 0, 0, .5) 100%);
+}
+
+.ak-hud .ak-readout {
+  position: absolute; right: 16px; bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 10px; line-height: 14px; color: var(--ak-key);
+}
+.ak-hud .ak-readout-mode { color: var(--ak-cyan); }
+.ak-hud .ak-dot { width: 5px; height: 5px; background: var(--ak-cyan); animation: ak-blink 2.4s steps(1) infinite; }
+.ak-hud[data-fault="1"] .ak-dot { animation: none; opacity: 1; }
+@keyframes ak-blink { 0%, 60% { opacity: 1; } 61%, 100% { opacity: .18; } }
+
+.ak-art[data-ak="soft"] { opacity: .4; }
+.ak-art[data-ak="off"] { opacity: 0; }
+
+/* ===================== PRTS boot sequence ===================== */
+/* Opaque, and ordered below the artwork: the GUI is hidden while the dot wordmark and the
+   console read over it. */
+.ak-bootbg {
+  position: fixed; inset: 0;
+  background: #050708;
+  pointer-events: none;
+  animation: ak-bootbg-out 1.5s cubic-bezier(.4, 0, .2, 1) 8.4s forwards;
+}
+@keyframes ak-bootbg-out {
+  0% { opacity: 1; visibility: visible; }
+  99% { opacity: 0; visibility: visible; }
+  100% { opacity: 0; visibility: hidden; }
+}
+
+/* The console sits low so the dot wordmark owns the upper half. */
+.ak-boot {
+  position: fixed; inset: 0;
+  display: flex; align-items: flex-end; justify-content: center;
+  padding-bottom: 7vh;
+  pointer-events: none;
+  font-family: var(--ak-hud-font);
+  color: var(--ak-text);
+}
+
+.ak-boot-inner {
+  position: relative; width: min(720px, 76vw);
+  display: flex; flex-direction: column; gap: 8px;
+  animation: ak-boot-chrome 1.1s ease-in 7.7s forwards;
+}
+@keyframes ak-boot-chrome { to { opacity: 0; transform: translateY(-8px); } }
+
+.ak-boot-brand {
+  font-size: 11px; letter-spacing: .44em; color: var(--ak-cyan);
+  animation: ak-boot-in .5s ease-out .3s both;
+}
+.ak-boot-brand b { color: #e8f7ff; font-weight: 700; }
+
+.ak-console { height: 208px; overflow: hidden; margin-top: 2px; padding-left: 2px;
+  border-left: 1px solid var(--ak-edge-soft); }
+.ak-console-list {
+  display: flex; flex-direction: column; gap: 1px;
+  animation: ak-console-scroll 3.6s steps(40) 1.1s both;
+}
+@keyframes ak-console-scroll { from { transform: translateY(0); } to { transform: translateY(-572px); } }
+.ak-console-line {
+  display: flex; align-items: baseline; gap: 8px;
+  font-size: 11px; line-height: 14px; letter-spacing: .06em;
+  opacity: 0; animation: ak-console-in .12s linear both;
+}
+@keyframes ak-console-in { from { opacity: 0; transform: translateX(-3px); } to { opacity: 1; transform: none; } }
+.ak-console-label { color: var(--ak-text-dim); white-space: nowrap; }
+.ak-console-lead { flex: 1; border-bottom: 1px dotted var(--ak-edge-soft); transform: translateY(-3px); }
+.ak-console-ok { color: #8fc31f; }
+.ak-console-warn { color: #ffb020; }
+.ak-console-dim { color: rgba(24, 209, 255, .5); }
+
+/* ASCII progress bar. One element, one text, one glyph: the gradient is painted through
+   the glyphs and only its hard edge moves. */
+.ak-ascii {
+  display: flex; align-items: center; gap: 10px;
+  margin-top: 10px;
+  font-size: 12px; line-height: 16px; letter-spacing: 0;
+  color: var(--ak-cyan);
+}
+.ak-ascii-bar {
+  white-space: pre;
+  background-image: linear-gradient(90deg, #18d1ff 0 50%, rgba(24, 209, 255, .2) 50% 100%);
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  background-position: 100% 0;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+  animation: ak-ascii 3.6s steps(40) .5s both;
+}
+@keyframes ak-ascii { to { background-position: 0% 0; } }
+.ak-boot-pct { color: var(--ak-cyan); min-width: 42px; text-align: right; }
+
+.ak-boot-meta {
+  display: flex; justify-content: space-between; margin-top: 2px;
+  font-size: 10px; letter-spacing: .22em; color: var(--ak-key);
+}
+
+@keyframes ak-boot-in { from { opacity: 0; } to { opacity: 1; } }
+
+/* ===================== Settings > General rows ===================== */
+.ak-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 0; }
+.ak-row-title { font-size: 14px; line-height: 22px; color: var(--ak-text); }
+.ak-row-desc { font-size: 12px; line-height: 18px; color: var(--ak-text-dim); }
+.ak-seg { display: flex; border: 1px solid var(--ak-edge); }
+.ak-seg-btn {
+  appearance: none; border: 0; background: transparent; cursor: pointer;
+  color: var(--ak-text-dim); font: inherit; font-size: 12px;
+  letter-spacing: .08em; padding: 5px 12px;
+}
+.ak-seg-btn + .ak-seg-btn { border-left: 1px solid var(--ak-edge); }
+.ak-seg-btn:hover { color: var(--ak-text); }
+.ak-seg-btn.is-active { background: var(--ak-cyan); color: #06080a; }

@@ -1,5 +1,5 @@
 /* JohnnyTing/dsh-official-homepage-theme — src/client/theme.css.js
-   fetched 2026-09-21 from https://raw.githubusercontent.com/JohnnyTing/dsh-official-homepage-theme/main/src/client/theme.css.js
+   fetched 2026-09-29 from https://raw.githubusercontent.com/JohnnyTing/dsh-official-homepage-theme/main/src/client/theme.css.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 html[data-dsh-harness-official-theme] {
   --dsh-harness-official-intensity: 0.86;
@@ -123,11 +123,6 @@ html[data-dsh-harness-official-theme] ::selection {
   background: #d7e8ff;
 }
 
-html[data-dsh-harness-official-theme] :focus-visible {
-  outline: 1px solid rgba(121, 169, 237, 0.62) !important;
-  outline-offset: 2px;
-}
-
 html[data-dsh-harness-official-theme] [class*='sidebarCol'] {
   background: linear-gradient(180deg, rgba(6, 20, 39, 0.48), rgba(3, 13, 27, 0.62)) !important;
   border-color: rgba(205, 224, 249, 0.16) !important;
@@ -138,6 +133,15 @@ html[data-dsh-harness-official-theme] [class*='sidebarCol'] [class*='_root '],
 html[data-dsh-harness-official-theme] [class*='sidebarCol'] [class$='_root'] {
   background-color: transparent !important;
   background-image: none !important;
+}
+
+html[data-dsh-harness-official-theme] [class*='_splitRow_'] > [class*='_divider_']:hover::after {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(121, 169, 237, 0.28) 50%,
+    transparent
+  ) center / 1px 100% no-repeat !important;
 }
 
 html[data-dsh-harness-official-theme] [role='dialog'] > [class$='_content'] > [class$='_header'],
@@ -166,7 +170,7 @@ html[data-dsh-harness-official-theme] [data-composer-seat] [class*='Card'] {
 
 html[data-dsh-harness-official-theme] [role='dialog'],
 html[data-dsh-harness-official-theme] [class*='popover'],
-html[data-dsh-harness-official-theme] [class*='menu'],
+html[data-dsh-harness-official-theme] [role='menu'],
 html[data-dsh-harness-official-theme] [class*='dropdown'] {
   color: #eef6ff !important;
   background: linear-gradient(145deg, rgba(32, 55, 84, 0.78), rgba(12, 29, 51, 0.9)) !important;
@@ -206,6 +210,14 @@ html[data-dsh-harness-official-theme] [role='button']:hover {
   background-color: rgba(183, 211, 247, 0.14) !important;
   border-color: rgba(225, 239, 255, 0.26) !important;
   box-shadow: inset 0 1px rgba(255, 255, 255, 0.08), 0 8px 24px rgba(2, 12, 32, 0.18);
+}
+
+/* The sidebar wordmark is a full-width, borderless button. Keep the shared
+   button hover treatment from painting a rectangle behind the artwork. */
+html[data-dsh-harness-official-theme] [class*='_logoRow'] > button[class*='_brand']:hover:not(:disabled) {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
 }
 
 html[data-dsh-harness-official-theme] button:active:not(:disabled),
@@ -278,7 +290,7 @@ html[data-dsh-harness-official-theme] code {
   color: inherit !important;
 }
 
-html[data-dsh-harness-official-theme] :not(pre) > code {
+html[data-dsh-harness-official-theme] [class*='_markdown_'] :not(pre) > code {
   color: #d8eaff !important;
   background: rgba(137, 174, 220, 0.17) !important;
   border: 1px solid rgba(205, 225, 250, 0.12) !important;

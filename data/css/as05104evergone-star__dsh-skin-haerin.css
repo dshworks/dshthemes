@@ -1,0 +1,853 @@
+/* as05104evergone-star/dsh-skin-haerin — haerin-skin/haerin.css
+   fetched 2026-09-29 from https://raw.githubusercontent.com/as05104evergone-star/dsh-skin-haerin/main/haerin-skin/haerin.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* ============================================================================
+   海粼 Haerin · DSH Skin  —  「听见海浪的猫」
+   ----------------------------------------------------------------------------
+   一套两态皮肤：日 (light) / 夜 (night)，纯 --dsw-* token 重着色，
+   不新增 DOM 依赖、不改动任何组件类名，因此与 DSH 后续版本保持兼容。
+
+   结构：
+     1. 调色板（primitives：海雾青 / 丹宁蓝 / 石墨）
+     2. 语义层（aliases：表面、文字、描边、阴影、气泡、滚动条）
+     3. 两态选择器（日 / 夜 / 跟随客户端）
+     4. 开关胶囊（.hj-* 自有命名空间，绝不碰撞宿主类名）
+   ========================================================================= */
+
+/* ---------------------------------------------------------------------------
+   1 + 2 · 日 —— 海粼·昼
+   奶油薄荷纸 + 白色卡片 + 松墨文字，点缀丹宁蓝链接。
+   ------------------------------------------------------------------------- */
+html[data-haerin-skin="on"] body {
+  /* — 海雾青：替换 neutral-bluish 阶梯（表面 / 文字） — */
+  --dsw-static-neutral-bluish-00: #fbfcff;
+  --dsw-static-neutral-bluish-50: #f4f8fd;
+  --dsw-static-neutral-bluish-60: #eff4fb;
+  --dsw-static-neutral-bluish-75: #e9f0f9;
+  --dsw-static-neutral-bluish-100: #dfe8f4;
+  --dsw-static-neutral-bluish-150: #d8e3f1;
+  --dsw-static-neutral-bluish-200: #cbd8ea;
+  --dsw-static-neutral-bluish-300: #b0c2da;
+  --dsw-static-neutral-bluish-400: #93a6c0;
+  --dsw-static-neutral-bluish-500: #7c8fa9;
+  --dsw-static-neutral-bluish-600: #69798f;
+  --dsw-static-neutral-bluish-700: #4f5d72;
+  --dsw-static-neutral-bluish-750: #3b4757;
+  --dsw-static-neutral-bluish-800: #2c3644;
+  --dsw-static-neutral-bluish-850: #232b37;
+  --dsw-static-neutral-bluish-875: #1b222b;
+  --dsw-static-neutral-bluish-900: #141a22;
+  --dsw-static-neutral-bluish-950: #0e131a;
+  --dsw-static-neutral-bluish-1000: #080c12;
+
+  /* — 丹宁蓝：替换 deepseek 阶梯（链接 / 信息 / 引用） — */
+  --dsw-static-deepseek-50: #eef3fa;
+  --dsw-static-deepseek-100: #e3ebf6;
+  --dsw-static-deepseek-200: #d0deee;
+  --dsw-static-deepseek-300: #aac1de;
+  --dsw-static-deepseek-400: #7e9bc4;
+  --dsw-static-deepseek-450: #6b8ab8;
+  --dsw-static-deepseek-500: #4a6c9c;
+  --dsw-static-deepseek-600: #3e5a82;
+  --dsw-static-deepseek-700: #2f4462;
+  --dsw-static-deepseek-800: #2a3a50;
+  --dsw-static-deepseek-900: #212d3f;
+
+  /* — 石墨：替换 neutral 阶梯（内联代码 / 滚动条） — */
+  --dsw-static-neutral-00: #ffffff;
+  --dsw-static-neutral-50: #fafbfd;
+  --dsw-static-neutral-100: #f4f6f9;
+  --dsw-static-neutral-150: #edf0f4;
+  --dsw-static-neutral-200: #e4e8ed;
+  --dsw-static-neutral-250: #dce1e8;
+  --dsw-static-neutral-300: #d2d8e0;
+  --dsw-static-neutral-400: #a4abb5;
+  --dsw-static-neutral-500: #808892;
+  --dsw-static-neutral-550: #676e78;
+  --dsw-static-neutral-600: #555b64;
+  --dsw-static-neutral-700: #3d4249;
+  --dsw-static-neutral-800: #2a2e34;
+  --dsw-static-neutral-850: #22252a;
+  --dsw-static-neutral-900: #101214;
+  --dsw-static-neutral-1000: #000000;
+
+  --dsw-alias-bg-mask-1:#0000003d;
+  --dsw-alias-bg-mask-2:#0000001f;
+  --dsw-alias-bg-mask-3:#0000007a;
+  --dsw-alias-bg-mask-photo:#000000e0;
+  --dsw-alias-bg-mask-drop:#ffffffb3;
+  --dsw-alias-bg-skeleton:#0000000a;
+  --dsw-alias-border-inverted2: rgb(251 252 255 / 16%);
+  --dsw-alias-border-inverted: rgb(251 252 255 / 12%);
+  --dsw-alias-border-l1: rgb(18 38 66 / 7%);
+  --dsw-alias-border-l2-darkmode-thin: rgb(18 38 66 / 8%);
+  --dsw-alias-border-l2: rgb(18 38 66 / 11%);
+  --dsw-alias-border-l3: rgb(18 38 66 / 15%);
+  --dsw-alias-border-l4: rgb(18 38 66 / 20%);
+  --dsw-alias-brand-primary-new-colorprimary-new-color: #c97f8e;
+  --dsw-alias-button-tool-bar-fill-invisible:#1f1f1f5c;
+  --dsw-alias-button-tool-bar-fill:#54555780;
+  --dsw-alias-button-tool-bar-hover:#54555799;
+  --dsw-alias-interactive-bg-active:#2631481a;
+  --dsw-alias-interactive-bg-hover-accent:#26314824;
+  --dsw-alias-interactive-bg-hover-danger:#ec13130d;
+  --dsw-alias-interactive-bg-hover:#2631480f;
+
+  /* — 映射层：与上游 alias + specific 逐条对齐，只把指向的阶梯换成海粼调色板 — */
+  --dsw-alias-bg-base: rgb(246 250 255 / 18%);
+  --dsw-alias-bg-layer-1: rgb(252 254 255 / 22%);
+  --dsw-alias-bg-layer-2: rgb(250 253 255 / 42%);
+  --dsw-alias-bg-layer-3: rgb(255 255 255 / 64%);
+  --dsw-alias-bg-mask-1:#0000003d;
+  --dsw-alias-bg-mask-2:#0000001f;
+  --dsw-alias-bg-mask-3:#0000007a;
+  --dsw-alias-bg-mask-photo:#000000e0;
+  --dsw-alias-bg-mask-drop:#ffffffb3;
+  --dsw-alias-bg-module-platform: rgb(240 245 252 / 54%);
+  --dsw-alias-bg-multi-select:var(--dsw-static-neutral-bluish-60);
+  --dsw-alias-bg-overlay: rgb(232 239 248 / 66%);
+  --dsw-alias-bg-skeleton:#0000000a;
+  --dsw-alias-border-inverted2: rgb(251 252 255 / 16%);
+  --dsw-alias-border-inverted: rgb(251 252 255 / 12%);
+  --dsw-alias-border-l1: rgb(18 38 66 / 7%);
+  --dsw-alias-border-l2-darkmode-thin: rgb(18 38 66 / 8%);
+  --dsw-alias-border-l2: rgb(18 38 66 / 11%);
+  --dsw-alias-border-l3: rgb(18 38 66 / 15%);
+  --dsw-alias-border-l4: rgb(18 38 66 / 20%);
+  --dsw-alias-brand-primary-invert: #fbfcff;
+  --dsw-alias-brand-primary-new-colorprimary-new-color: #c97f8e;
+  --dsw-alias-brand-primary: #131b26;
+  --dsw-alias-brand-text: #131b26;
+  --dsw-alias-button-contrast-fill:var(--dsw-static-neutral-bluish-700);
+  --dsw-alias-button-elevated-fill: rgb(255 255 255 / 74%);
+  --dsw-alias-button-floating-fill: rgb(255 255 255 / 68%);
+  --dsw-alias-button-floating-hover:var(--dsw-static-neutral-bluish-75);
+  --dsw-alias-button-ghost-active-border:var(--dsw-static-neutral-bluish-500);
+  --dsw-alias-button-ghost-active-fill:var(--dsw-static-neutral-bluish-100);
+  --dsw-alias-button-ghost-active-hover:var(--dsw-static-neutral-bluish-150);
+  --dsw-alias-button-info-fill:var(--dsw-static-deepseek-500);
+  --dsw-alias-button-info-hover:var(--dsw-static-deepseek-400);
+  --dsw-alias-button-primary-dimmed:var(--dsw-static-neutral-bluish-100);
+  --dsw-alias-button-primary-fill:var(--dsw-alias-brand-primary);
+  --dsw-alias-button-primary-hover:var(--dsw-static-neutral-bluish-750);
+  --dsw-alias-button-tool-bar-fill-invisible:#1f1f1f5c;
+  --dsw-alias-button-tool-bar-fill:#54555780;
+  --dsw-alias-button-tool-bar-hover:#54555799;
+  --dsw-alias-interactive-bg-active:#2631481a;
+  --dsw-alias-interactive-bg-hover-accent:#26314824;
+  --dsw-alias-interactive-bg-hover-danger:#ec13130d;
+  --dsw-alias-interactive-bg-hover-solid:var(--dsw-static-neutral-bluish-75);
+  --dsw-alias-interactive-bg-hover:#2631480f;
+  --dsw-alias-label-caption:var(--dsw-static-neutral-bluish-400);
+  --dsw-alias-label-dimmed:var(--dsw-static-neutral-bluish-200);
+  --dsw-alias-label-primary-bluish:var(--dsw-static-blue-900);
+  --dsw-alias-label-primary-dimmed:var(--dsw-static-neutral-bluish-950);
+  --dsw-alias-label-primary-foreground: #fbfcff;
+  --dsw-alias-label-primary-inverted:var(--dsw-static-neutral-bluish-00);
+  --dsw-alias-label-primary:var(--dsw-static-neutral-bluish-1000);
+  --dsw-alias-label-secondary:var(--dsw-static-neutral-bluish-700);
+  --dsw-alias-label-tertiary:var(--dsw-static-neutral-bluish-600);
+  --dsw-alias-link:var(--dsw-static-deepseek-500);
+  --dsw-alias-markdown-citation:var(--dsw-static-neutral-bluish-100);
+  --dsw-alias-markdown-code-block-banner: rgb(234 241 250 / 58%);
+  --dsw-alias-markdown-code-block: rgb(244 248 253 / 58%);
+  --dsw-alias-markdown-code-segment-selected:var(--dsw-static-neutral-bluish-00);
+  --dsw-alias-markdown-code-segment-unselected:var(--dsw-static-neutral-bluish-75);
+  --dsw-alias-markdown-inline-code:var(--dsw-static-neutral-50);
+  --dsw-alias-markdown-placeholder:var(--dsw-static-neutral-bluish-60);
+  --dsw-alias-markdown-tag:var(--dsw-static-neutral-bluish-75);
+  --dsw-alias-scrollbar-bg-l1: rgb(158 176 200 / 55%);
+  --dsw-alias-scrollbar-bg-l2: rgb(158 176 200 / 55%);
+  --dsw-alias-scrollbar-hover-l1: rgb(120 142 172 / 70%);
+  --dsw-alias-scrollbar-hover-l2: rgb(120 142 172 / 70%);
+  --dsw-alias-state-business-primary:var(--dsw-static-deepseek-500);
+  --dsw-alias-state-business-tertiary:var(--dsw-static-deepseek-100);
+  --dsw-alias-state-error-primary:var(--dsw-static-red-600);
+  --dsw-alias-state-error-secondary:var(--dsw-static-red-400);
+  --dsw-alias-state-success-primary:var(--dsw-static-green-500);
+  --dsw-alias-state-success-secondary:var(--dsw-static-green-400);
+  --dsw-alias-state-success-tertiary:var(--dsw-static-green-100);
+  --dsw-alias-state-warn-label:var(--dsw-static-amber-600);
+  --dsw-alias-state-warn-primary:var(--dsw-static-amber-500);
+  --dsw-alias-state-warn-secondary:var(--dsw-static-amber-400);
+  --dsw-alias-state-warn-tertiary:var(--dsw-static-amber-100);
+  --dsw-alias-toast-bg:var(--dsw-static-neutral-bluish-800);
+  --dsw-alias-tooltip-bg:var(--dsw-static-neutral-bluish-850);
+  --dsw-specific-bubble-highlight: rgb(210 226 246 / 72%);
+  --dsw-specific-bubble: rgb(230 240 252 / 68%);
+  --dsw-specific-input-major: rgb(252 254 255 / 62%);
+  --dsw-specific-login-input: rgb(246 250 254 / 60%);
+  --dsw-specific-menu: rgb(255 255 255 / 78%);
+  --dsw-specific-selector: rgb(233 241 251 / 60%);
+  --dsw-specific-sidebar-fill: rgb(236 243 252 / 34%);
+  --dsw-specific-sidebar-nav-item-active-accent: rgb(196 213 235 / 70%);
+  --dsw-specific-sidebar-nav-item-active: rgb(219 230 245 / 68%);
+  --dsw-specific-sidebar-nav-item-hover: rgb(228 237 249 / 62%);
+  --dsw-specific-tip: rgb(235 242 251 / 52%);
+
+  /* — 语义层微调 —
+     表面一律带透明度：壁纸在 html 上，玻璃靠 backdrop-filter，
+     所以 bg-base / layer-* / specific-* 必须是半透明的。 */
+  --dsw-alias-bg-base: rgb(246 250 255 / 18%);
+  --dsw-alias-bg-layer-1: rgb(252 254 255 / 22%);
+  --dsw-alias-bg-layer-2: rgb(250 253 255 / 42%);
+  --dsw-alias-bg-layer-3: rgb(255 255 255 / 64%);
+  --dsw-alias-bg-module-platform: rgb(240 245 252 / 54%);
+  --dsw-alias-bg-overlay: rgb(232 239 248 / 66%);
+  --dsw-alias-button-elevated-fill: rgb(255 255 255 / 74%);
+  --dsw-alias-button-floating-fill: rgb(255 255 255 / 68%);
+  --dsw-alias-markdown-code-block: rgb(244 248 253 / 58%);
+  --dsw-alias-markdown-code-block-banner: rgb(234 241 250 / 58%);
+  --dsw-specific-sidebar-fill: rgb(236 243 252 / 34%);
+  --dsw-specific-input-major: rgb(252 254 255 / 62%);
+  --dsw-specific-menu: rgb(255 255 255 / 78%);
+  --dsw-specific-sidebar-nav-item-hover: rgb(228 237 249 / 62%);
+  --dsw-specific-sidebar-nav-item-active: rgb(219 230 245 / 68%);
+  --dsw-specific-sidebar-nav-item-active-accent: rgb(196 213 235 / 70%);
+  --dsw-specific-tip: rgb(235 242 251 / 52%);
+  --dsw-specific-selector: rgb(233 241 251 / 60%);
+  --dsw-specific-login-input: rgb(246 250 254 / 60%);
+
+  /* 品牌：松墨 —— 极简黑白按钮，染上一层青 */
+  --dsw-alias-brand-primary: #131b26;
+  --dsw-alias-brand-text: #131b26;
+  --dsw-alias-brand-primary-invert: #fbfcff;
+  --dsw-alias-brand-primary-new-colorprimary-new-color: #c97f8e;
+  --dsw-alias-label-primary-foreground: #fbfcff;
+
+  /* 对话气泡：薄荷玻璃 */
+  --dsw-specific-bubble: rgb(230 240 252 / 68%);
+  --dsw-specific-bubble-highlight: rgb(210 226 246 / 72%);
+
+  /* 玻璃边缘的高光与暗边 */
+  --hj-glass-edge: rgb(255 255 255 / 82%);
+  --hj-glass-inner: rgb(255 255 255 / 34%);
+
+  /* 描边：青瓷发丝 */
+  --dsw-alias-border-l1: rgb(18 38 66 / 7%);
+  --dsw-alias-border-l2: rgb(18 38 66 / 11%);
+  --dsw-alias-border-l2-darkmode-thin: rgb(18 38 66 / 8%);
+  --dsw-alias-border-l3: rgb(18 38 66 / 15%);
+  --dsw-alias-border-l4: rgb(18 38 66 / 20%);
+  --dsw-alias-border-inverted: rgb(251 252 255 / 12%);
+  --dsw-alias-border-inverted2: rgb(251 252 255 / 16%);
+
+  /* 滚动条 */
+  --dsw-alias-scrollbar-bg-l1: rgb(158 176 200 / 55%);
+  --dsw-alias-scrollbar-bg-l2: rgb(158 176 200 / 55%);
+  --dsw-alias-scrollbar-hover-l1: rgb(120 142 172 / 70%);
+  --dsw-alias-scrollbar-hover-l2: rgb(120 142 172 / 70%);
+
+  /* 柔光阴影：带一点点青，比原生更轻 */
+  --dsw-shadow-lv1: 0 2px 4px 0 rgb(24 48 84 / 6%);
+  --dsw-shadow-lv1-blur: 0 4px 12px 0 rgb(24 48 84 / 5%);
+  --dsw-shadow-lv2: 0 4px 12px 0 rgb(24 48 84 / 6%), 0 2px 8px 0 rgb(24 48 84 / 5%);
+  --dsw-shadow-lv3: 0 0 1px 0 rgb(24 48 84 / 12%), 0 0 4px 0 rgb(24 48 84 / 4%), 0 12px 32px 0 rgb(24 48 84 / 9%);
+  --dsw-elevation-stroke-color: rgb(18 38 66 / 14%);
+  --dsw-linear-gradient-think: linear-gradient(180deg, rgb(246 250 255 / 92%) 20.19%, rgb(246 250 255 / 0%) 100%);
+  --dsw-linear-think-select: linear-gradient(180deg, rgb(233 241 251 / 88%) 20.19%, rgb(233 241 251 / 0%) 100%);
+}
+
+/* body 及其全部子元素都重声明 elevation（宿主在 `body, body *` 上声明） */
+html[data-haerin-skin="on"] body,
+html[data-haerin-skin="on"] body * {
+  --dsw-elevation-stroke: 0 0 0 0.5px var(--dsw-elevation-stroke-color);
+  --dsw-elevation-panel: var(--dsw-elevation-stroke), 0 3px 8px 0 rgb(24 48 84 / 5%), 0 0 16px 0 rgb(24 48 84 / 4%);
+  --dsw-elevation-prominent: var(--dsw-elevation-stroke), 0 3px 8px 0 rgb(24 48 84 / 7%), 0 0 20px 0 rgb(24 48 84 / 8%);
+  --dsw-elevation-soft: var(--dsw-elevation-stroke), 0 4px 16px 0 rgb(24 48 84 / 5%), 0 0 24px 0 rgb(24 48 84 / 5%);
+}
+
+/* ---------------------------------------------------------------------------
+   1 + 2 · 夜 —— 海粼·夜
+   深墨绿海面 + 薄荷月光文字 + 丹宁蓝星点。
+   同一组 token 名，因此组件样式零改动。
+   ------------------------------------------------------------------------- */
+html[data-haerin-skin="on"][data-haerin-mode="night"] body,
+html[data-haerin-skin="on"][data-haerin-mode="auto"] body[data-ds-dark-theme] {
+  /* — 海雾青：浅端反向（夜里的高光文字） — */
+  --dsw-static-neutral-bluish-00: #fbfcff;
+  --dsw-static-neutral-bluish-50: #f4f8fd;
+  --dsw-static-neutral-bluish-60: #eff4fb;
+  --dsw-static-neutral-bluish-75: #e9f0f9;
+  --dsw-static-neutral-bluish-100: #dfe8f4;
+  --dsw-static-neutral-bluish-150: #d8e3f1;
+  --dsw-static-neutral-bluish-200: #cbd8ea;
+  --dsw-static-neutral-bluish-300: #b0c2da;
+  --dsw-static-neutral-bluish-400: #93a6c0;
+  --dsw-static-neutral-bluish-500: #7c8fa9;
+  --dsw-static-neutral-bluish-600: #69798f;
+  --dsw-static-neutral-bluish-700: #4f5d72;
+  --dsw-static-neutral-bluish-750: #3b4757;
+  --dsw-static-neutral-bluish-800: #2c3644;
+  --dsw-static-neutral-bluish-850: #232b37;
+  --dsw-static-neutral-bluish-875: #1b222b;
+  --dsw-static-neutral-bluish-900: #141a22;
+  --dsw-static-neutral-bluish-950: #0e131a;
+  --dsw-static-neutral-bluish-1000: #080c12;
+
+  /* — 丹宁蓝：夜色里的牛仔布 — */
+  --dsw-static-deepseek-50: #eef3fa;
+  --dsw-static-deepseek-100: #e3ebf6;
+  --dsw-static-deepseek-200: #d0deee;
+  --dsw-static-deepseek-300: #aac1de;
+  --dsw-static-deepseek-400: #7e9bc4;
+  --dsw-static-deepseek-450: #6b8ab8;
+  --dsw-static-deepseek-500: #4a6c9c;
+  --dsw-static-deepseek-600: #3e5a82;
+  --dsw-static-deepseek-700: #2f4462;
+  --dsw-static-deepseek-800: #2a3a50;
+  --dsw-static-deepseek-900: #212d3f;
+
+  /* — 石墨 — */
+  --dsw-static-neutral-00: #ffffff;
+  --dsw-static-neutral-50: #fafbfd;
+  --dsw-static-neutral-100: #f4f6f9;
+  --dsw-static-neutral-150: #edf0f4;
+  --dsw-static-neutral-200: #e4e8ed;
+  --dsw-static-neutral-250: #dce1e8;
+  --dsw-static-neutral-300: #d2d8e0;
+  --dsw-static-neutral-400: #a4abb5;
+  --dsw-static-neutral-500: #808892;
+  --dsw-static-neutral-550: #676e78;
+  --dsw-static-neutral-600: #555b64;
+  --dsw-static-neutral-700: #3d4249;
+  --dsw-static-neutral-800: #2a2e34;
+  --dsw-static-neutral-850: #22252a;
+  --dsw-static-neutral-900: #101214;
+  --dsw-static-neutral-1000: #000000;
+
+  --dsw-alias-bg-mask-1:#0000003d;
+  --dsw-alias-bg-mask-2:#0000001f;
+  --dsw-alias-bg-mask-3:#0000007a;
+  --dsw-alias-bg-mask-photo:#000000e0;
+  --dsw-alias-bg-mask-drop:#ffffffb3;
+  --dsw-alias-bg-skeleton: rgb(255 226 220 / 8%);
+  --dsw-alias-border-inverted2: rgb(8 7 7 / 38%);
+  --dsw-alias-border-inverted: rgb(8 7 7 / 28%);
+  --dsw-alias-border-l1: rgb(255 226 220 / 7%);
+  --dsw-alias-border-l2-darkmode-thin: rgb(255 226 220 / 9%);
+  --dsw-alias-border-l2: rgb(255 226 220 / 12%);
+  --dsw-alias-border-l3: rgb(255 226 220 / 17%);
+  --dsw-alias-border-l4: rgb(255 226 220 / 22%);
+  --dsw-alias-brand-primary-new-colorprimary-new-color: #d2555f;
+  --dsw-alias-button-tool-bar-fill-invisible:#1f1f1f5c;
+  --dsw-alias-button-tool-bar-fill:#54555780;
+  --dsw-alias-button-tool-bar-hover:#54555799;
+  --dsw-alias-interactive-bg-active: rgb(255 226 220 / 14%);
+  --dsw-alias-interactive-bg-hover-accent: rgb(255 226 220 / 16%);
+  --dsw-alias-interactive-bg-hover-danger:#ec13130d;
+  --dsw-alias-interactive-bg-hover: rgb(255 226 220 / 8%);
+
+  --dsw-alias-bg-mask-1:#00000080;
+  --dsw-alias-bg-mask-2:#0003;
+  --dsw-alias-bg-mask-3:#0000007a;
+  --dsw-alias-bg-mask-photo:#000000e0;
+  --dsw-alias-bg-mask-drop:#272730b3;
+  --dsw-alias-bg-skeleton: rgb(255 226 220 / 8%);
+  --dsw-alias-border-inverted2: rgb(8 7 7 / 38%);
+  --dsw-alias-border-inverted: rgb(8 7 7 / 28%);
+  --dsw-alias-border-l1: rgb(255 226 220 / 7%);
+  --dsw-alias-border-l2-darkmode-thin: rgb(255 226 220 / 9%);
+  --dsw-alias-border-l2: rgb(255 226 220 / 12%);
+  --dsw-alias-border-l3: rgb(255 226 220 / 17%);
+  --dsw-alias-border-l4: rgb(255 226 220 / 22%);
+  --dsw-alias-button-tool-bar-fill-invisible:#1f1f1f5c;
+  --dsw-alias-button-tool-bar-fill:#54555780;
+  --dsw-alias-button-tool-bar-hover:#54555799;
+  --dsw-alias-interactive-bg-active: rgb(255 226 220 / 14%);
+  --dsw-alias-interactive-bg-hover-accent: rgb(255 226 220 / 16%);
+  --dsw-alias-interactive-bg-hover-danger:#f25a5a26;
+  --dsw-alias-interactive-bg-hover: rgb(255 226 220 / 8%);
+
+  /* — 映射层：与上游 alias + specific 逐条对齐，只把指向的阶梯换成海粼调色板 — */
+  --dsw-alias-bg-base: rgb(10 9 10 / 26%);
+  --dsw-alias-bg-layer-1: rgb(22 19 19 / 30%);
+  --dsw-alias-bg-layer-2: rgb(30 26 26 / 48%);
+  --dsw-alias-bg-layer-3: rgb(39 33 33 / 66%);
+  --dsw-alias-bg-mask-1:#00000080;
+  --dsw-alias-bg-mask-2:#0003;
+  --dsw-alias-bg-mask-3:#0000007a;
+  --dsw-alias-bg-mask-photo:#000000e0;
+  --dsw-alias-bg-mask-drop:#272730b3;
+  --dsw-alias-bg-module-platform: rgb(30 25 25 / 56%);
+  --dsw-alias-bg-multi-select: rgb(36 30 30 / 76%);
+  --dsw-alias-bg-overlay: rgb(22 18 18 / 70%);
+  --dsw-alias-bg-skeleton: rgb(255 226 220 / 8%);
+  --dsw-alias-border-inverted2: rgb(8 7 7 / 38%);
+  --dsw-alias-border-inverted: rgb(8 7 7 / 28%);
+  --dsw-alias-border-l1: rgb(255 226 220 / 7%);
+  --dsw-alias-border-l2-darkmode-thin: rgb(255 226 220 / 9%);
+  --dsw-alias-border-l2: rgb(255 226 220 / 12%);
+  --dsw-alias-border-l3: rgb(255 226 220 / 17%);
+  --dsw-alias-border-l4: rgb(255 226 220 / 22%);
+  --dsw-alias-brand-primary-invert: #0b0a0a;
+  --dsw-alias-brand-primary-new-colorprimary-new-color: #d2555f;
+  --dsw-alias-brand-primary: #f5eee9;
+  --dsw-alias-brand-text: #f5eee9;
+  --dsw-alias-button-contrast-fill: rgb(245 238 233 / 92%);
+  --dsw-alias-button-elevated-fill: rgb(44 37 37 / 72%);
+  --dsw-alias-button-floating-fill: rgb(36 30 30 / 70%);
+  --dsw-alias-button-floating-hover:var(--dsw-static-neutral-bluish-800);
+  --dsw-alias-button-ghost-active-border:var(--dsw-static-neutral-bluish-600);
+  --dsw-alias-button-ghost-active-fill:var(--dsw-static-neutral-bluish-750);
+  --dsw-alias-button-ghost-active-hover:var(--dsw-static-neutral-bluish-700);
+  --dsw-alias-button-info-fill: #c2606a;
+  --dsw-alias-button-info-hover: #d2707a;
+  --dsw-alias-button-primary-dimmed: rgb(58 48 48 / 80%);
+  --dsw-alias-button-primary-fill:var(--dsw-alias-brand-primary);
+  --dsw-alias-button-primary-hover: #ffffff;
+  --dsw-alias-button-tool-bar-fill-invisible:#1f1f1f5c;
+  --dsw-alias-button-tool-bar-fill:#54555780;
+  --dsw-alias-button-tool-bar-hover:#54555799;
+  --dsw-alias-interactive-bg-active: rgb(255 226 220 / 14%);
+  --dsw-alias-interactive-bg-hover-accent: rgb(255 226 220 / 16%);
+  --dsw-alias-interactive-bg-hover-danger:#f25a5a26;
+  --dsw-alias-interactive-bg-hover-solid: rgb(46 38 38 / 80%);
+  --dsw-alias-interactive-bg-hover: rgb(255 226 220 / 8%);
+  --dsw-alias-label-caption: #7a6866;
+  --dsw-alias-label-dimmed: rgb(255 226 220 / 22%);
+  --dsw-alias-label-primary-bluish: #f0dcd8;
+  --dsw-alias-label-primary-dimmed: #f0dcd8;
+  --dsw-alias-label-primary-foreground: #0b0a0a;
+  --dsw-alias-label-primary-inverted: #1a1515;
+  --dsw-alias-label-primary: #f3ebe7;
+  --dsw-alias-label-secondary: #bcaca8;
+  --dsw-alias-label-tertiary: #93817e;
+  --dsw-alias-link: #e8a7ad;
+  --dsw-alias-markdown-citation: rgb(50 38 38 / 74%);
+  --dsw-alias-markdown-code-block-banner: rgb(28 23 23 / 62%);
+  --dsw-alias-markdown-code-block: rgb(14 12 12 / 62%);
+  --dsw-alias-markdown-code-segment-selected: rgb(48 38 38 / 80%);
+  --dsw-alias-markdown-code-segment-unselected: rgb(30 25 25 / 70%);
+  --dsw-alias-markdown-inline-code: rgb(40 32 32 / 76%);
+  --dsw-alias-markdown-placeholder: rgb(42 34 34 / 72%);
+  --dsw-alias-markdown-tag: rgb(48 38 38 / 70%);
+  --dsw-alias-scrollbar-bg-l1: rgb(122 88 92 / 52%);
+  --dsw-alias-scrollbar-bg-l2: rgb(122 88 92 / 52%);
+  --dsw-alias-scrollbar-hover-l1: rgb(158 112 116 / 66%);
+  --dsw-alias-scrollbar-hover-l2: rgb(158 112 116 / 66%);
+  --dsw-alias-state-business-primary: #cf8f96;
+  --dsw-alias-state-business-tertiary: rgb(70 44 48 / 70%);
+  --dsw-alias-state-error-primary:var(--dsw-static-red-400);
+  --dsw-alias-state-error-secondary:var(--dsw-static-red-400);
+  --dsw-alias-state-success-primary:var(--dsw-static-green-500);
+  --dsw-alias-state-success-secondary:var(--dsw-static-green-400);
+  --dsw-alias-state-success-tertiary:var(--dsw-static-green-900);
+  --dsw-alias-state-warn-label:var(--dsw-static-amber-600);
+  --dsw-alias-state-warn-primary:var(--dsw-static-amber-500);
+  --dsw-alias-state-warn-secondary:var(--dsw-static-amber-400);
+  --dsw-alias-state-warn-tertiary:var(--dsw-static-amber-900);
+  --dsw-alias-toast-bg: rgb(58 46 46 / 90%);
+  --dsw-alias-tooltip-bg: rgb(58 46 46 / 92%);
+  --dsw-specific-bubble-highlight: rgb(46 34 35 / 72%);
+  --dsw-specific-bubble: rgb(34 26 27 / 68%);
+  --dsw-specific-input-major: rgb(30 26 26 / 64%);
+  --dsw-specific-login-input: rgb(17 14 14 / 64%);
+  --dsw-specific-menu: rgb(39 33 33 / 80%);
+  --dsw-specific-selector: rgb(39 33 33 / 64%);
+  --dsw-specific-sidebar-fill: rgb(14 12 12 / 38%);
+  --dsw-specific-sidebar-nav-item-active-accent: rgb(52 42 42 / 72%);
+  --dsw-specific-sidebar-nav-item-active: rgb(38 31 31 / 70%);
+  --dsw-specific-sidebar-nav-item-hover: rgb(28 24 24 / 64%);
+  --dsw-specific-tip: rgb(32 26 26 / 56%);
+
+  /* — 语义层微调 — */
+  --dsw-alias-bg-base: rgb(10 9 10 / 26%);
+  --dsw-alias-bg-layer-1: rgb(22 19 19 / 30%);
+  --dsw-alias-bg-layer-2: rgb(30 26 26 / 48%);
+  --dsw-alias-bg-layer-3: rgb(39 33 33 / 66%);
+  --dsw-alias-bg-module-platform: rgb(30 25 25 / 56%);
+  --dsw-alias-bg-overlay: rgb(22 18 18 / 70%);
+  --dsw-alias-button-elevated-fill: rgb(44 37 37 / 72%);
+  --dsw-alias-button-floating-fill: rgb(36 30 30 / 70%);
+  --dsw-alias-markdown-code-block: rgb(14 12 12 / 62%);
+  --dsw-alias-markdown-code-block-banner: rgb(28 23 23 / 62%);
+  --dsw-specific-sidebar-fill: rgb(14 12 12 / 38%);
+  --dsw-specific-input-major: rgb(30 26 26 / 64%);
+  --dsw-specific-menu: rgb(39 33 33 / 80%);
+  --dsw-specific-sidebar-nav-item-hover: rgb(28 24 24 / 64%);
+  --dsw-specific-sidebar-nav-item-active: rgb(38 31 31 / 70%);
+  --dsw-specific-sidebar-nav-item-active-accent: rgb(52 42 42 / 72%);
+  --dsw-specific-tip: rgb(32 26 26 / 56%);
+  --dsw-specific-selector: rgb(39 33 33 / 64%);
+  --dsw-specific-login-input: rgb(17 14 14 / 64%);
+
+  --dsw-alias-brand-primary: #f5eee9;
+  --dsw-alias-brand-text: #f5eee9;
+  --dsw-alias-brand-primary-invert: #0b0a0a;
+  --dsw-alias-brand-primary-new-colorprimary-new-color: #d2555f;
+  --dsw-alias-label-primary-foreground: #0b0a0a;
+
+  --dsw-specific-bubble: rgb(34 26 27 / 68%);
+  --dsw-specific-bubble-highlight: rgb(46 34 35 / 72%);
+
+  --hj-glass-edge: rgb(255 226 220 / 14%);
+  --hj-glass-inner: rgb(255 226 220 / 12%);
+
+  --dsw-alias-border-l1: rgb(255 226 220 / 7%);
+  --dsw-alias-border-l2: rgb(255 226 220 / 12%);
+  --dsw-alias-border-l2-darkmode-thin: rgb(255 226 220 / 9%);
+  --dsw-alias-border-l3: rgb(255 226 220 / 17%);
+  --dsw-alias-border-l4: rgb(255 226 220 / 22%);
+  --dsw-alias-border-inverted: rgb(8 7 7 / 28%);
+  --dsw-alias-border-inverted2: rgb(8 7 7 / 38%);
+
+  --dsw-alias-scrollbar-bg-l1: rgb(122 88 92 / 52%);
+  --dsw-alias-scrollbar-bg-l2: rgb(122 88 92 / 52%);
+  --dsw-alias-scrollbar-hover-l1: rgb(158 112 116 / 66%);
+  --dsw-alias-scrollbar-hover-l2: rgb(158 112 116 / 66%);
+
+  --dsw-shadow-lv1: 0 2px 4px 0 rgb(0 0 0 / 34%);
+  --dsw-shadow-lv1-blur: 0 4px 12px 0 rgb(0 0 0 / 28%);
+  --dsw-shadow-lv2: 0 4px 12px 0 rgb(0 0 0 / 32%), 0 2px 8px 0 rgb(0 0 0 / 28%);
+  --dsw-shadow-lv3: 0 0 1px 0 rgb(255 200 200 / 12%), 0 0 4px 0 rgb(0 0 0 / 22%), 0 12px 32px 0 rgb(0 0 0 / 48%);
+  --dsw-elevation-stroke-color: rgb(255 214 208 / 12%);
+  --dsw-linear-gradient-think: linear-gradient(180deg, rgb(10 9 10 / 92%) 20.19%, rgb(10 9 10 / 0%) 100%);
+  --dsw-linear-think-select: linear-gradient(180deg, rgb(22 19 19 / 88%) 20.19%, rgb(22 19 19 / 0%) 100%);
+}
+
+html[data-haerin-skin="on"][data-haerin-mode="night"] body,
+html[data-haerin-skin="on"][data-haerin-mode="night"] body *,
+html[data-haerin-skin="on"][data-haerin-mode="auto"] body[data-ds-dark-theme],
+html[data-haerin-skin="on"][data-haerin-mode="auto"] body[data-ds-dark-theme] * {
+  --dsw-elevation-stroke: 0 0 0 0.5px var(--dsw-elevation-stroke-color);
+  --dsw-elevation-panel: var(--dsw-elevation-stroke), 0 3px 8px 0 rgb(0 0 0 / 30%), 0 0 16px 0 rgb(0 0 0 / 24%);
+  --dsw-elevation-prominent: var(--dsw-elevation-stroke), 0 3px 8px 0 rgb(0 0 0 / 34%), 0 0 20px 0 rgb(0 0 0 / 30%);
+  --dsw-elevation-soft: var(--dsw-elevation-stroke), 0 4px 16px 0 rgb(0 0 0 / 30%), 0 0 24px 0 rgb(0 0 0 / 26%);
+}
+
+/* 原生控件（滚动条、表单、输入法）配色跟随皮肤。
+   宿主在引导阶段把 color-scheme 写成 html 的内联样式，因此显式模式必须用
+   !important 才压得住；auto 模式不声明，交给宿主自己解析。 */
+html[data-haerin-skin="on"][data-haerin-mode="night"] {
+  color-scheme: dark !important;
+}
+
+html[data-haerin-skin="on"][data-haerin-mode="day"] {
+  color-scheme: light !important;
+}
+
+/* ---------------------------------------------------------------------------
+   3 · 壁纸与磨砂玻璃
+   ---------------------------------------------------------------------------
+   壁纸画在 <html> 上（fixed，不随会话滚动），半透明的表面 token 让它透上来；
+   侧栏 / 右栏 / 菜单 / 输入卡 / 气泡各自 backdrop-filter，做出厚薄不同的玻璃。
+
+   结构选择器一律用 [class*="_xxx"]：客户端是带哈希的 CSS Module
+   （qNbT7G_sidebarCol），哈希每次构建都会变，后缀才是稳定的。
+   ------------------------------------------------------------------------- */
+html[data-haerin-skin="on"] {
+  --hj-wall-color: #f2f8fe;
+  /* 顺序＝自上而下：颗粒 → 像素贴纸 → 抖动网点 → 照片 → 晕染底。
+     照片的左缘与底边在烘焙时已经淡出（tools/prepare-photos.ps1），
+     因此它跟晕染底接得上，而正文那一片仍然安静。 */
+  --hj-wall:
+    url("https://raw.githubusercontent.com/as05104evergone-star/dsh-skin-haerin/main/haerin-skin/art/grain.svg"),
+    url("https://raw.githubusercontent.com/as05104evergone-star/dsh-skin-haerin/main/haerin-skin/art/day-pixel.svg"),
+    url("https://raw.githubusercontent.com/as05104evergone-star/dsh-skin-haerin/main/haerin-skin/art/dither-day.svg"),
+    url("https://raw.githubusercontent.com/as05104evergone-star/dsh-skin-haerin/main/haerin-skin/art/day-photo.jpg"),
+    url("https://raw.githubusercontent.com/as05104evergone-star/dsh-skin-haerin/main/haerin-skin/art/day-mist.svg");
+  --hj-wall-size: 180px 180px, 1600px 1000px, 4px 4px, auto 104%, cover;
+  --hj-wall-pos: center, center, center, right -3vw center, center;
+  --hj-wall-repeat: repeat, no-repeat, repeat, no-repeat, no-repeat;
+  background-color: var(--hj-wall-color);
+  background-image: var(--hj-wall);
+  background-size: var(--hj-wall-size);
+  background-position: var(--hj-wall-pos);
+  background-repeat: var(--hj-wall-repeat);
+  background-attachment: fixed;
+}
+
+/* 夜（含 auto 跟随客户端深色：data-haerin-night 由引导脚本写，:has() 兜底） */
+html[data-haerin-skin="on"][data-haerin-mode="night"],
+html[data-haerin-skin="on"][data-haerin-mode="auto"][data-haerin-night="on"],
+html[data-haerin-skin="on"][data-haerin-mode="auto"]:has(body[data-ds-dark-theme]) {
+  --hj-wall-color: #070708;
+  --hj-wall:
+    url("https://raw.githubusercontent.com/as05104evergone-star/dsh-skin-haerin/main/haerin-skin/art/grain.svg"),
+    url("https://raw.githubusercontent.com/as05104evergone-star/dsh-skin-haerin/main/haerin-skin/art/night-pixel.svg"),
+    url("https://raw.githubusercontent.com/as05104evergone-star/dsh-skin-haerin/main/haerin-skin/art/dither-night.svg"),
+    url("https://raw.githubusercontent.com/as05104evergone-star/dsh-skin-haerin/main/haerin-skin/art/night-photo.jpg"),
+    url("https://raw.githubusercontent.com/as05104evergone-star/dsh-skin-haerin/main/haerin-skin/art/night-mist.svg");
+  --hj-wall-size: 180px 180px, 1600px 1000px, 4px 4px, auto 104%, cover;
+  --hj-wall-pos: center, center, center, right -3vw center, center;
+}
+
+/* — 侧栏：整列厚磨砂 — */
+html[data-haerin-skin="on"] [class*="_sidebarCol"] {
+  background-image: linear-gradient(180deg, var(--hj-glass-inner), rgb(255 255 255 / 0%) 180px);
+  box-shadow: inset -1px 0 0 var(--hj-glass-edge), inset 0 1px 0 var(--hj-glass-inner);
+  backdrop-filter: blur(24px) saturate(1.45);
+  -webkit-backdrop-filter: blur(24px) saturate(1.45);
+}
+
+/* 侧栏内部的根节点铺的是同一种色，两层同色会叠暗，直接放行 */
+html[data-haerin-skin="on"] [class*="_sidebarCol"] > [class*="_root"] {
+  background: transparent;
+}
+
+/* — 右栏面板 — */
+html[data-haerin-skin="on"] [class*="_rightbarCol"] [class*="_panel"] {
+  background-image: linear-gradient(190deg, var(--hj-glass-inner), rgb(255 255 255 / 0%) 220px);
+  box-shadow: inset 1px 0 0 var(--hj-glass-edge), inset 0 1px 0 var(--hj-glass-inner);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+}
+
+/* — 菜单 / 下拉 / 浮层：最厚的一层玻璃 — */
+html[data-haerin-skin="on"] [class*="_menu"]:not([class*="_menuOpen"]):not([class*="_menuAnchor"]):not([class*="_menuAction"]):not([class*="_menuStatus"]),
+html[data-haerin-skin="on"] [class*="_viewport"],
+html[data-haerin-skin="on"] [class*="_dock"],
+html[data-haerin-skin="on"] [class*="_panel"]:not([class*="_panelRow"]):not([class*="_panelList"]):not([class*="_panelGlyph"]):not([class*="_panelIcon"]):not([class*="_panelTitle"]):not([class*="_panelActive"]):not([class*="_panelLead"]),
+html[data-haerin-skin="on"] [class*="_overlay"] > [class*="_card"],
+html[data-haerin-skin="on"] [data-cordis-panel],
+html[data-haerin-skin="on"] [data-sidebar-right-panel] {
+  background-image: linear-gradient(200deg, var(--hj-glass-inner), rgb(255 255 255 / 0%) 140px);
+  backdrop-filter: blur(30px) saturate(1.6);
+  -webkit-backdrop-filter: blur(30px) saturate(1.6);
+}
+
+/* — 输入卡：贴着会话内容的一层中厚玻璃 — */
+html[data-haerin-skin="on"] [data-composer-card],
+html[data-haerin-skin="on"] [class*="_composerSeat"] [class*="_card"] {
+  background-image: linear-gradient(180deg, var(--hj-glass-inner), rgb(255 255 255 / 0%) 120px);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+}
+
+/* — 对话气泡 — */
+html[data-haerin-skin="on"] [class*="_bubble"] {
+  backdrop-filter: blur(16px) saturate(1.35);
+  -webkit-backdrop-filter: blur(16px) saturate(1.35);
+}
+
+/* — 模态遮罩：把整页压暗一点，再虚化 — */
+html[data-haerin-skin="on"] [class*="_mask"] {
+  backdrop-filter: blur(8px) saturate(1.1);
+  -webkit-backdrop-filter: blur(8px) saturate(1.1);
+}
+
+/* ---------------------------------------------------------------------------
+   4 · 开关胶囊 —— .hj-*
+   自带全部属性与变量，不读取宿主 token，避免被宿主样式牵着走。
+   --hj-* 定义在 <html> 上，因此胶囊与提示条都能继承。
+   ------------------------------------------------------------------------- */
+html[data-haerin-skin="on"] {
+  --hj-surface: rgb(255 255 255 / 88%);
+  --hj-ink: #16202e;
+  --hj-accent: #4a6c9c;
+  --hj-accent-soft: #e2ebf7;
+  --hj-ring: rgb(18 38 66 / 12%);
+  --hj-shadow: 0 6px 20px rgb(24 48 84 / 14%), 0 1px 3px rgb(24 48 84 / 10%);
+}
+
+html[data-haerin-skin="on"][data-haerin-night="on"] {
+  --hj-surface: rgb(30 26 26 / 90%);
+  --hj-ink: #f3ebe7;
+  --hj-accent: #d2555f;
+  --hj-accent-soft: #3a2326;
+  --hj-ring: rgb(255 226 220 / 16%);
+  --hj-shadow: 0 6px 20px rgb(0 0 0 / 50%), 0 1px 3px rgb(0 0 0 / 42%);
+}
+
+.hj-dock {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 2147483000;
+}
+
+.hj-pill {
+  position: relative;
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  height: 34px;
+  padding: 0 12px 0 6px;
+  margin: 0;
+  font: 500 12px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Microsoft YaHei", sans-serif;
+  color: var(--hj-ink);
+  cursor: pointer;
+  background: var(--hj-surface);
+  border: 1px solid var(--hj-ring);
+  border-radius: 999px;
+  box-shadow: var(--hj-shadow);
+  backdrop-filter: saturate(1.3) blur(10px);
+  opacity: 0.62;
+  transition: opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1), transform 0.18s
+      cubic-bezier(0.4, 0, 0.2, 1), background-color 0.18s
+      cubic-bezier(0.4, 0, 0.2, 1);
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: none;
+}
+
+/* 猫耳：长在胶囊外面，才有剪影 */
+.hj-ears {
+  position: absolute;
+  top: -6px;
+  left: 5px;
+  display: block;
+  width: 24px;
+  height: 11px;
+  pointer-events: none;
+  filter: drop-shadow(0 0 0.6px var(--hj-ring));
+}
+
+.hj-ears i {
+  position: absolute;
+  bottom: 0;
+  width: 11px;
+  height: 11px;
+  background: var(--hj-surface);
+  clip-path: polygon(50% 0%, 100% 82%, 84% 100%, 16% 100%, 0% 82%);
+  transition: transform 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hj-ears i:first-child {
+  left: 0;
+  transform: rotate(-14deg);
+}
+
+.hj-ears i:last-child {
+  right: 0;
+  transform: rotate(14deg);
+}
+
+.hj-dock:hover .hj-ears i:first-child {
+  transform: rotate(-20deg);
+}
+
+.hj-dock:hover .hj-ears i:last-child {
+  transform: rotate(20deg);
+}
+
+.hj-dock:hover .hj-pill,
+.hj-pill:focus-visible {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+.hj-pill:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.hj-pill:focus-visible {
+  outline: 2px solid var(--hj-accent);
+  outline-offset: 2px;
+}
+
+/* 猫脸徽章：圆底 + 正中的日/月/跟随字形 */
+.hj-cat {
+  position: relative;
+  display: block;
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  background: var(--hj-accent-soft);
+  border-radius: 50%;
+}
+
+.hj-cat svg {
+  position: absolute;
+  inset: 0;
+  width: 22px;
+  height: 22px;
+  color: var(--hj-accent);
+}
+
+.hj-cat svg path,
+.hj-cat svg circle {
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+.hj-label {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.hj-pill[data-mode="night"] .hj-sun,
+.hj-pill[data-mode="day"] .hj-moon,
+.hj-pill[data-mode="auto"] .hj-sun,
+.hj-pill[data-mode="auto"] .hj-moon {
+  display: none;
+}
+
+.hj-pill[data-mode="auto"] .hj-auto {
+  display: block;
+}
+
+.hj-auto {
+  display: none;
+}
+
+/* 皮肤关闭时：缩成一只小猫 */
+.hj-dock[data-skin="off"] .hj-pill {
+  padding: 0 6px;
+  opacity: 0.42;
+}
+
+.hj-dock[data-skin="off"] .hj-ears,
+.hj-dock[data-skin="off"] .hj-label {
+  display: none;
+}
+
+/* 拖动中不拦截指针 */
+.hj-dock[data-dragging="on"] .hj-pill {
+  cursor: grabbing;
+  opacity: 1;
+}
+
+/* 提示条 */
+.hj-toast {
+  position: fixed;
+  right: 16px;
+  bottom: 60px;
+  z-index: 2147483000;
+  padding: 6px 12px;
+  font: 500 12px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Microsoft YaHei", sans-serif;
+  color: var(--hj-ink, #16261f);
+  pointer-events: none;
+  background: var(--hj-surface, rgb(255 255 255 / 92%));
+  border: 1px solid var(--hj-ring, rgb(10 60 45 / 12%));
+  border-radius: 10px;
+  box-shadow: var(--hj-shadow, 0 6px 20px rgb(24 48 84 / 14%));
+  backdrop-filter: saturate(1.3) blur(10px);
+  animation: hj-toast-in 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes hj-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hj-pill,
+  .hj-toast {
+    transition: none;
+    animation: none;
+  }
+}
+
+/* 选区与焦点：薄荷高光 */
+html[data-haerin-skin="on"] ::selection {
+  background: rgb(122 168 222 / 35%);
+}
+
+html[data-haerin-skin="on"] :focus-visible {
+  outline-color: #4fbfa0;
+}
+

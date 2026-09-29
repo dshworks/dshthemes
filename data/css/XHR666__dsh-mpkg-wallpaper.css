@@ -1,5 +1,5 @@
 /* XHR666/dsh-mpkg-wallpaper — lib/client.js
-   fetched 2026-09-21 from https://raw.githubusercontent.com/XHR666/dsh-mpkg-wallpaper/main/lib/client.js
+   fetched 2026-09-29 from https://raw.githubusercontent.com/XHR666/dsh-mpkg-wallpaper/main/lib/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 body[data-mpw-theme] .pI_x6G_sidebarCol {
 	background-color: color-mix(in srgb, var(--mpw-theme-color) 30%, transparent) !important;
@@ -1402,8 +1402,28 @@ body[data-ds-dark-theme] .mpw_tabBar {
    媒体脱离文档流铺满整框 + object-fit:contain（宁可留边，绝不切图）；占位同层居中。
    旧写法是 flex 行 + object-fit:cover：占位一露出来就把 100% 宽的图压到 3/4，
    右侧 1/4 变成白块（真机读数）——现在两者重叠而非并排，且由状态机保证只露一个。 */
-.mpw_wallThumb .mpw_thumbImg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: block; }
-.mpw_thumbImg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: block; }
+.mpw_wallThumb .mpw_thumbImg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: block; z-index: 1; }
+.mpw_thumbImg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: block; z-index: 1; }
+/* ①(2026-09-21 真机)"留白露框底色"的修法：媒体以 contain 呈现（**不裁切**，既有契约），
+   留白由**同一张图**的模糊铺满层兜底 —— --mpw-thumb-cover 由状态机在"媒体真的画出来"那一刻
+   写成（唯一事实源，与画面同一个元素）。真机读数：容器自带 192×192 预览放进 74×42 的框，
+   contain 左右各留 21.6% ≈ 用户说的"左右两边各约 1/5 是白块，只剩中间能预览"。 */
+.mpw_thumb::before, .mpw_wallThumb::before {
+  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background-image: var(--mpw-thumb-cover, none); background-size: cover; background-position: center;
+  filter: blur(6px); transform: scale(1.08);
+}
+.mpw_thumb [data-mpw-thumb-ph], .mpw_wallThumb [data-mpw-thumb-ph] { z-index: 2; }
+/* ①(2026-09-21 真机)"框里还没有画面"的加载态：给一层会走的骨架，而不是纯底色
+   （用户原话"变成一块白色、中间写着 mp4"—— 分不清在加载还是坏了）。
+   只在 trying 出现；一旦有媒体画出来 box 状态就变 media，这一层随之消失。 */
+.mpw_thumb[data-mpw-thumb-state="trying"], .mpw_wallThumb[data-mpw-thumb-state="trying"] {
+  background-image: linear-gradient(100deg, transparent 25%, rgba(255,255,255,.30) 50%, transparent 75%);
+  background-size: 200% 100%; background-repeat: no-repeat;
+  animation: mpwThumbSkeleton 1.4s linear infinite;
+}
+@keyframes mpwThumbSkeleton { from { background-position: 120% 0; } to { background-position: -120% 0; } }
+@media (prefers-reduced-motion: reduce) { .mpw_thumb[data-mpw-thumb-state="trying"], .mpw_wallThumb[data-mpw-thumb-state="trying"] { animation: none; } }
 /* 占位：整块（铺满 + 居中），不是一条被挤出来的白边。
    显隐由**我们自己的**属性 data-mpw-thumb-shown 控制（不用标准 [hidden]：样式作用域护栏要求
    选择器里的原子都在登记表里，而我们自己的 data-mpw-* 天生在册；状态机也只有这一个开关）。 */

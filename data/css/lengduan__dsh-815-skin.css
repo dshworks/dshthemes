@@ -1,5 +1,5 @@
 /* lengduan/dsh-815-skin — src/client/vj815.module.css
-   fetched 2026-09-21 from https://raw.githubusercontent.com/lengduan/dsh-815-skin/main/src/client/vj815.module.css
+   fetched 2026-09-29 from https://raw.githubusercontent.com/lengduan/dsh-815-skin/main/src/client/vj815.module.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* 1945-08-15 终战皮肤：史料照片底 + 可读玻璃层。 */
 
@@ -43,6 +43,18 @@ body[data-dsh-815] {
   --dsw-alias-button-floating-hover: #4a4e38;
   --dsw-alias-button-info-fill: #6a5a32;
   --dsw-alias-button-info-hover: #7c6a3c;
+  /* ghost 按钮的选中态底色与描边。上游只在浅色主题里给这套 token 赋值
+     （bluish-100 #ebeef2 + bluish-500 #979da6 + bluish-150），皮肤此前没接管，
+     于是选中态拿到近白底，而文字走皮肤全局的奶油 label-primary #f4ead6 ——
+     实测 active Pill（团队成员筛选「全部」）1.03:1，白底奶油字等于没字；鼠标
+     移入时背景换成下面那档暗金 interactive-bg-hover 才显形，正是用户报的
+     「移入才显示全部」。同一套 token 还喂着 Pill.active、轨迹回合头
+     （TrajectoryTurnHeader）、日程选择器选中格（DatePicker/ClockPicker
+     .selected）、cordis 运行行（CordisRunRow .message），落点文字都是皮肤的
+     浅色档，所以按皮肤自己的选中档一并补齐：底取 interactive-bg-active 同值，
+     描边取铜金细线 l3 那档。 */
+  --dsw-alias-button-ghost-active-fill: rgba(196, 163, 90, 0.28);
+  --dsw-alias-button-ghost-active-border: rgba(196, 163, 90, 0.7);
   --dsw-alias-interactive-bg-active: rgba(196, 163, 90, 0.28);
   --dsw-alias-interactive-bg-hover: rgba(196, 163, 90, 0.14);
   --dsw-alias-interactive-bg-hover-solid: #3a3e2c;
@@ -51,12 +63,45 @@ body[data-dsh-815] {
   --dsw-alias-label-secondary: #c8c0a4;
   --dsw-alias-label-tertiary: #9e9780;
   --dsw-alias-label-caption: #7e7866;
+  /* 菜单前置图标与导航箭头。0.2.0-rc.1 新开了这个 token：浅色主题取
+     neutral-bluish-800（rgb(53,54,56)），深色主题取 label-primary-dimmed；
+     上游把 Menu.module.css 的 .itemIcon 从 label-tertiary 改挂到它上面
+     （ModelSelect 的箭头、输入触发的斜杠 / 引用菜单、账号菜单同源）。皮肤
+     只覆盖了 label-* 那几档，于是深底菜单上的图标仍取浅色主题的近黑 ——
+     正是「文字已经变亮、图标还是暗的」。菜单底在皮肤下统一是深橄榄，
+     所以这里直接给成与菜单文字同色的奶油。 */
+  --dsw-alias-menu-icon: #f4ead6;
+  /* 运行中（「深度求索中，用时 …」）的蓝色文字与扫光。0.2.0-rc.1 新增这三条 token：
+     浅色主题是深蓝 color-mix(deepseek-500 70%, blue-950) 与 30% 透明黑扫光，
+     深色主题才换成亮蓝 color-mix(deepseek-450 55%, bluish-400) / (blue-300 65%, deepseek-400)
+     与 45% 透明白（ui-theme/src/styles/design-platform.css:215/216/224 与 :330/331/339）。
+     宿主跑浅色主题、皮肤又是深底 —— 实测运行行文字 rgb(52,94,186) 落在行底
+     rgb(22,19,12) 上只有 ≈3.1:1，扫光 rgba(0,0,0,.3) 在深底上等于不可见。
+     这里直接取宿主深色主题那套值（下面注释里给出对应表达式）。 */
+  --dsw-alias-label-deep-diving: #7d9ade;
+  --dsw-alias-label-deep-diving-shimmer: #8abcfe;
+  --dsw-alias-label-shimmer: rgba(255, 255, 255, 0.45);
+  /* 桌面端引导卡（ui-settings-account 的 DesktopOnboarding .card）卡底取
+     --dsw-alias-onboarding-card-fill：浅色那档是 80% 的近白，深色那档才换深灰
+     （ui-theme/src/styles/onboarding.css:7 与 :13），皮肤跑在浅色宿主下 —— 近白卡底
+     配皮肤奶油字。这里按皮肤自己的玻璃面板取深橄榄，另两条同源 token 一并跟上。 */
+  --dsw-alias-onboarding-card-fill: rgba(36, 38, 28, 0.88);
+  --dsw-alias-onboarding-secondary-fill: #2c2e24;
+  --dsw-alias-onboarding-checkbox-border: rgba(196, 163, 90, 0.5);
   --dsw-alias-state-business-primary: #c4a35a;
   --dsw-alias-state-business-tertiary: #3a3828;
   --dsw-shadow-lv2: var(--vj-shadow);
   --dsw-specific-input-major: rgba(28, 30, 22, 0.82);
   --dsw-specific-selector: #323428;
   --dsw-specific-menu: #2c2e24;
+  /* DSH 0.2.0-rc.1 起，共享菜单的材质改成 MenuSurface 组件的 .material 层来画：
+     它用 --dsw-menu-surface-fill 铺满整个表面（z-index:-1，画在表面自身底色之上），
+     再叠 --dsw-menu-backdrop-filter 的模糊。浅色主题那档是 rgba(248,249,250,.58)，
+     皮肤此前只覆盖旧的 --dsw-specific-menu，于是浅色玻璃盖在弹层的暗橄榄底上 ——
+     弹层整体变灰、皮肤的奶油字落上去只剩 2.2:1。这里把材质层压回皮肤的菜单实色，
+     并去掉实色之下不可见的模糊。 */
+  --dsw-menu-surface-fill: #2c2e24;
+  --dsw-menu-backdrop-filter: none;
   --dsw-specific-sidebar-fill: rgba(14, 16, 12, 0.88);
   --dsw-alias-markdown-code-block: #141610;
   --dsw-alias-markdown-code-block-banner: #1c1e16;
@@ -341,10 +386,15 @@ body[data-dsh-815] .md-table-wide {
   padding-bottom: 0;
 }
 
-/* 行内 code 走宣纸底墨字，白底场景下也必须压成墨色。 */
+/* 行内 code 走宣纸底墨字，白底场景下也必须压成墨色。
+   第三个选择器是本轮补的「思考」折叠块正文：思考块内的行内 code 同样落在宿主的
+   近白胶囊（浅色主题 --dsw-alias-markdown-inline-code = #fafafa）上，字色却跟着
+   思考正文走，本机 :3080 实测 #9e9780 落 #fafafa 只有 2.80:1（比正文的 6.81:1 更糟）。
+   并进来后与助手气泡、用户气泡同一视觉语言：宣纸底 + 墨字 + 铜边。 */
 body[data-dsh-815]
   :is(
     [data-chat-flow-kind='assistant-step'] > * > * > * > div[class*='markdown'],
+    [data-variant='think'] [class*='thinkBody'] [class*='markdown'],
     [class*='userRow'] [class*='bubble']
   )
   :not(pre) > code {
@@ -496,22 +546,70 @@ body[data-dsh-815]:not([data-ds-dark-theme])
   --dsw-alias-label-caption: #6a6454;
 }
 
-/* ui-goal 的目标条：条底是主题的浅色 var(--dsw-specific-tip)（非暗色主题下量到
-   #f5f6f7），而「进行中的目标」标签走 label-primary —— 皮肤在 body 上把它换成
-   奶油色 #f4ead6，对条底只有 1.1:1，标签整条融进条底看不见；目标正文走
-   label-primary-dimmed（浅色主题下是近黑）所以照常可见，看上去就只有标签失踪。
-   这里与 todo 面板同法，在条内把文字层级压回墨色：标签 primary、hover 态
-   secondary、图标 tertiary，对条底依次 16.1:1 / 8.7:1 / 7.0:1。暗色主题下条底
-   本身是深色，皮肤浅字仍然正确，故用 :not() 排除。 */
-body[data-dsh-815]:not([data-ds-dark-theme]) [data-goal-bar] {
-  --dsw-alias-label-primary: #1c1a14;
-  --dsw-alias-label-secondary: #4a4638;
-  --dsw-alias-label-tertiary: #5a5443;
+/* dsh-session-manager 会话头部工具条里的优先级徽章（`.sm-priorityBadge` 不带 hash，
+   挂在「标签/备注」按钮内，显示 P3 / 普通）：插件声明的是
+   background: var(--dsw-alias-fill-l2, #eee) + color: var(--dsw-alias-label-secondary, #666)。
+   815 皮肤没有定义 fill-l2，底于是落到回退值 #eee；皮肤又把 label-secondary 换成米色
+   #c8c0a4 —— 实测底 rgb(238,238,238)、字 rgb(200,192,164)，对比度 1.57:1，徽章里的 P3
+   基本看不见（P1/P2 走插件写死的橙 / 黄，不在此列）。这里在徽章自身重设这两个 token：
+   底换皮肤的橄榄深底、字留米色，与产出 chip 同族（约 8.5:1）；同一个徽章出现在「会话管理」
+   弹框里时落在插件写死的白底上，深底浅字同样成立，所以不加 :not([data-ds-dark-theme])。
+   仍须写成属性选择器：本表是 CSS Module，类选择器会被 hash 成 .xxxx_sm-priorityBadge。 */
+body[data-dsh-815] [class*='sm-priorityBadge'] {
+  --dsw-alias-fill-l2: rgba(36, 38, 28, 0.88);
+  --dsw-alias-label-secondary: #c8c0a4;
+}
+
+/* ui-goal 的目标条：宿主的条底是 .bar::before 的 var(--dsw-specific-menu)
+   （ui-goal/GoalBar.module.css），皮肤把它定成深橄榄 #2c2e24，实测确认不透明
+   （computed rgb(44,46,36)、alpha 1），backdrop-filter blur 不影响成色。
+   上一版规则按「条底是主题浅色 #f5f6f7」的旧假设把三级文字都压成墨色，方向正好
+   相反 —— 墨字落深底，且漏了 objective 走的 label-primary-dimmed（皮肤没定义，
+   落到浅色主题的近黑 #151517）。本机 :3080 受控探针（真实宿主类名 .ixix_W_* +
+   data-goal-bar，量计算样式）修前：标签 1.26:1、目标正文 1.32:1、目标图标与
+   三个操作图标 1.83:1 —— 与用户截图「整条糊在底色里」一致。
+   现改为深底提亮，与 todo 面板 / 排队坞同族：标签奶油、正文与 hover 次要米、
+   图标再亮一档（操作按钮要按得准）、编辑态 placeholder 走 tertiary 档。
+   对 #2c2e24 依次 11.54:1 / 8.57:1 / 7.57:1 / 4.72:1。暗色主题下条底同为深色，
+   浅字同样成立，故不再用 :not() 排除。 */
+body[data-dsh-815] [data-goal-bar] {
+  --dsw-alias-label-primary: #f4ead6;
+  --dsw-alias-label-primary-dimmed: #d4ccb0;
+  --dsw-alias-label-secondary: #d4ccb0;
+  --dsw-alias-label-tertiary: #c8c0a4;
+  --dsw-alias-label-caption: #9e9780;
 }
 
 body[data-dsh-815] [data-terminal] {
   --dsw-alias-markdown-code-block: rgba(18, 20, 14, 0.96);
   --dsw-alias-label-primary: #f4ead6;
+  color: #f4ead6;
+}
+
+/* dsh-better-sidebar 的「在文件夹中显示」（intercept.tsx 把 css.producedMore 同时挂在
+   「+N」计数 span 与这个 <button> 上，只有本轮产出超过 6 个文件时才渲染）。插件只声明了
+   font 与 label-tertiary，没重置按钮的 UA 外观，于是它自带 buttonface 灰底与 2px outset
+   白边，皮肤米灰字 #9e9780 压在上面只有 1.83:1（本机 :3080 实测按钮底 rgb(107,107,107)），
+   用户看到的就是「字和底色糊在一起」。这里只接管该行的 button（选择器末段限定 button，
+   「+N」那个 span 计数不受影响）：清掉 UA 外观，换成与产出 chip 同族的 token —— 橄榄底
+   bg-layer-2、铜边 border-l2，并把字提到比 chip 的 label-secondary 更亮一档的奶油色，
+   与本行文件 chip 区分「动作」与「文件」；对比度约 11:1。插件把下划线写在内联 style 上，
+   只能用 !important 压掉。 */
+body[data-dsh-815] [class*='producedRow'] button[class*='producedMore'] {
+  appearance: none;
+  box-sizing: border-box;
+  padding: 2px 8px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 999px;
+  background: var(--dsw-alias-bg-layer-2);
+  color: #e8dcc0;
+  font: var(--dsw-font-xxs-12);
+  text-decoration: none !important;
+  cursor: pointer;
+}
+
+body[data-dsh-815] [class*='producedRow'] button[class*='producedMore']:hover {
+  background: var(--dsw-alias-interactive-bg-hover);
   color: #f4ead6;
 }
 
@@ -582,8 +680,12 @@ body[data-dsh-815]:not([data-ds-dark-theme]) .xterm .xterm-rows .xterm-bg-14 { b
 body[data-dsh-815]:not([data-ds-dark-theme]) .xterm .xterm-rows .xterm-bg-15 { background-color: #ffffff; }
 
 /* 对话列把 --dsw-alias-bg-base 设成透明好露油画；对话管理等弹层若写
-   background: var(--dsw-alias-bg-base)，会整层透出后面的字。弹层改实色。 */
-body[data-dsh-815] :is([role='dialog'], [role='menu'], [role='listbox'], [aria-modal='true'], [data-radix-popper-content-wrapper] > *) {
+   background: var(--dsw-alias-bg-base)，会整层透出后面的字。弹层改实色。
+   role='alertdialog' 也要收：任务看板卡片的「删除任务」确认框
+   （_7D6uKa_modal，宿主写 background: var(--dsw-alias-bg-base)）走的是
+   alertdialog 而不是 dialog，先前漏在列表外，整层透明、与背后的执行 Prompt
+   文字叠在一起看不清。 */
+body[data-dsh-815] :is([role='dialog'], [role='alertdialog'], [role='menu'], [role='listbox'], [aria-modal='true'], [data-radix-popper-content-wrapper] > *) {
   color: #f4ead6;
   background-color: #24261c;
   --dsw-alias-bg-base: #24261c;
@@ -599,6 +701,8 @@ body[data-dsh-815] :is([role='dialog'], [role='menu'], [role='listbox'], [aria-m
   --dsw-specific-input-major: #24261c;
   --dsw-specific-selector: #323428;
   --dsw-specific-menu: #2c2e24;
+  /* 材质层与下面那条弹层底色同值，弹层才不会被提亮一档。 */
+  --dsw-menu-surface-fill: #24261c;
   --dsw-specific-tip: #2a2c22;
   --dsw-alias-button-elevated-fill: #2e3026;
   --dsw-alias-button-floating-fill: #2a2c22;
@@ -767,6 +871,20 @@ body[data-dsh-815] [class*='mneme-topentry-native'] {
   border: 0.5px solid var(--dsw-alias-border-l3);
   background: var(--dsw-alias-button-elevated-fill);
   color: var(--dsw-alias-label-primary);
+}
+
+/* 插件只给按钮 flex 布局，没给 gap；图标与文案因此贴在一起（实测 icon right 与
+   label left 同为 133.5px，间距 0）。宿主 .newSession 的图标与文案实测相距 6px
+   （icon right 123 / label left 129），这里补同值对齐。
+   同一按钮还带宿主 .newSession 的 overflow: hidden，而插件把冲突计数徽章
+   （.mneme-entrybadge）绝对定位在 top:-3px / right:-3px —— 徽章越出按钮 2~3px 的
+   部分被这条 overflow 裁掉（实测按钮 right 266 / badge right 268，徽章顶 118 也
+   高过按钮顶 120），于是「26」这类两位数只显示半截。按钮内只有图标、文案与徽章，
+   没有宿主 .newSession 用来做宽度动画的 labelMask，故把 overflow 放成可见，让徽章
+   按插件设计凸在角上完整显示；徽章最远到 x=269，仍在 280px 侧栏内。 */
+body[data-dsh-815] [class*='mneme-topentry-native'] {
+  gap: 6px;
+  overflow: visible;
 }
 
 body[data-dsh-815] [class*='mneme-topentry-native']:hover {
@@ -952,38 +1070,44 @@ body[data-dsh-815] [class*='titlebar'] [class*='button'] {
 }
 
 /* DSH 官方「在本地打开」分裂按钮（ui-open-in-app，挂在会话页头的
-   conversation.session.header.utilities 插槽）：宿主按已装应用下发真实 PNG 图标，
-   边框与分裂分隔线都取 --dsw-alias-border-l4，而皮肤没定义该 token（浅色主题下
-   是浅灰 hairline），于是边框和竖线在暗底上全都看不见。
-   这里把它按旁边的「对话管理 / 删除本对话」对齐：同款铜金边（l2）、同高 32px、
-   同 18px 圆角，并把两个分段的左右内边距各放宽 4px；宿主 PNG 换成统一的线性
-   文件夹图标（mask 跟随按钮文字色，hover/报错态一起变），分隔线取自 chevron
-   自身的 border-left，随边框一同显形。 */
-body[data-dsh-815] div:has(> button > img[src*='/open-in-app/icon']) {
-  --dsw-alias-border-l4: var(--dsw-alias-border-l2);
-  height: 32px;
-  border-radius: 18px;
-}
+   conversation.session.header.utilities 插槽）：宿主按已装应用下发真实彩色 PNG
+   图标（本机是蓝色文件夹），皮肤要把它换成统一的线性文件夹。
 
-body[data-dsh-815] div:has(> button > img[src*='/open-in-app/icon']) > button > img {
+   新版 DOM（0.1.7-rc.1 后再次变动）：
+     div[data-open-target='directory'][data-size='compact'][data-state='idle']
+       > button[class*='main']   > img[class*='appIcon'][src='open-in-app/icon/explorer']
+       > button[class*='chevron'] > svg
+   失配点只有一处：img 的 src 从绝对路径 `/open-in-app/icon/...` 改成相对路径
+   `open-in-app/icon/explorer`，旧选择器 `[src*='/open-in-app/icon']`（带前导斜杠）
+   于是命中 0 个元素（:3080 实测：旧写法 0 个，去掉前导斜杠 1 个），整段规则落空，
+   宿主 PNG 没被隐藏 —— 彩色文件夹就露出来了。
+   这里改用宿主语义钩子 data-open-target + appIcon 类名子串 + 直系结构（都不随
+   CSS Module hash 变），并把 src 子串那条按新写法一并保留，任一条命中即可。
+
+   尺寸不再干预：宿主 compact 态自身就是 43x24、圆角 9px、两个分段 padding
+   3px 5px / 3px 4px 3px 3px，边框与分裂分隔线已取皮肤的 --dsw-alias-border-l4
+   铜金（该 token 皮肤现已在全局定义，#c4a35a80 可见）。mask 尺寸与宿主 PNG 的
+   13x13 一致，不撑开按钮盒；图标色走 currentColor，hover / 报错态随之变化，
+   chevron 的分隔线仍来自它自身的 border-left。 */
+body[data-dsh-815]
+  :is(
+    div:has(> button > img[src*='open-in-app/icon']),
+    div[data-open-target]:has(> button > img[class*='appIcon'])
+  )
+  > button > img {
   display: none;
 }
 
-/* 主段：官方 padding 5px 6px 5px 7px，左右各 +4。 */
-body[data-dsh-815] div:has(> button > img[src*='/open-in-app/icon']) > button:first-child {
-  padding: 5px 10px 5px 11px;
-}
-
-/* 箭头段：官方 padding 5px 6px 5px 4px，左右各 +4。 */
-body[data-dsh-815] div:has(> button > img[src*='/open-in-app/icon']) > button:last-child {
-  padding: 5px 10px 5px 8px;
-}
-
-body[data-dsh-815] div:has(> button > img[src*='/open-in-app/icon']) > button:first-child::before {
+body[data-dsh-815]
+  :is(
+    div:has(> button > img[src*='open-in-app/icon']),
+    div[data-open-target]:has(> button > img[class*='appIcon'])
+  )
+  > button:first-child::before {
   content: '';
   flex: none;
-  width: 15px;
-  height: 15px;
+  width: 13px;
+  height: 13px;
   background-color: currentColor;
   -webkit-mask: var(--vj-folder-icon) center / contain no-repeat;
   mask: var(--vj-folder-icon) center / contain no-repeat;
@@ -1046,4 +1170,236 @@ body[data-dsh-815] [class*='markPosition'] {
     transition: none;
   }
 }
+
+/* ================= 新版 DSH（0.1.7-rc.1）适配：容器底与文字层级错配 =================
+   升级后宿主换掉了两批容器的底：一批原本是浅色面板的改成了深底，另一批原本深色的
+   写死了近白。皮肤按旧版假设压出来的文字层级（浅底压墨色 / 深底留奶油）于是全部
+   反向。以下按实测值逐处纠回；每条都注明本机 :3080 实测的 color / bg。 */
+
+/* 排队坞（data-queue-dock，新版类名前缀 WKTW0q/avG_hq）：坞面背景改成透明（旧版取
+   --dsw-specific-tip 的浅色 #f5f6f7，该 token 现在仍是 #f5f6f7 但已无人使用），于是
+   坞内那条「压墨色」的覆盖把 #1c1a14 墨字直接搁在暗油画上：标题「2 条排队消息」
+   color #1c1a14 / bg #080a06 = 1.14:1，左侧队列图标 stroke #5a5443 = 2.64:1。
+   坞内恢复皮肤浅色层级（标题 15.2:1、图标 6.8:1）。 */
+body[data-dsh-815]:not([data-ds-dark-theme]) [data-queue-dock] {
+  --dsw-alias-label-primary: #f4ead6;
+  --dsw-alias-label-secondary: #d4ccb0;
+  --dsw-alias-label-tertiary: #9e9780;
+  --dsw-alias-label-caption: #7e7866;
+}
+
+/* todo 面板（data-testid=todo-panel）：同因。新版面板底是深橄榄 #2c2e24（旧版为
+   主题浅色 #f5f6f7），皮肤压的墨色标题「任务」实测 1.26:1、进度「8 已完成」1.83:1。
+   面板内文字同样恢复浅色。 */
+body[data-dsh-815]:not([data-ds-dark-theme]) [data-testid='todo-panel'] {
+  --dsw-alias-label-primary: #f4ead6;
+  --dsw-alias-label-secondary: #d4ccb0;
+  --dsw-alias-label-tertiary: #9e9780;
+  --dsw-alias-label-caption: #7e7866;
+}
+
+/* 本轮改动卡片（data-changed-files=true，新版类名前缀 t0GBjq/z90sEq）：卡片自身的底
+   是皮肤的深橄榄 rgba(28,30,22,.78)，但宿主把 header 按钮的底写死成近白 #fafafa，
+   而 header 内文字取 label-primary（皮肤奶油 #f4ead6）——实测「已编辑 2 个文件」
+   1.14:1、+N 计数 2.18:1、说明文字 2.80:1，整条白 header 都糊住。header 内压回墨色
+   （与 [data-presented-file] 同法），卡片其余部分仍走深底浅字。 */
+body[data-dsh-815]:not([data-ds-dark-theme]) [data-changed-files='true'] button[class*='header'] {
+  --dsw-alias-label-primary: #1c1a14;
+  --dsw-alias-label-secondary: #4a4638;
+  --dsw-alias-label-tertiary: #5a5443;
+  --dsw-alias-label-caption: #6a6454;
+  color: #1c1a14;
+}
+
+/* 对话气泡里的文件提及（fileMention）：上面的规则给的是 #6b4e16 暗铜，那是为「浅纸底」
+   选的；气泡底实测 #1c1e15（深橄榄），暗铜落上去只有 2.19:1。深底上改用亮铜。 */
+body[data-dsh-815]
+  [data-chat-flow-kind='assistant-step'] > * > * > * > div[class*='markdown'] [class*='fileMention'] {
+  color: #e2c98a;
+}
+
+/* 但上面那条亮铜只对深底成立。行内 code 胶囊是宣纸底（--vj-paper #f3ead4），而
+   `pkg/package.json` 这种「目录 + 文件名」写法里，后半截是宿主渲染的
+   button[class*='fileMention']（带 `</>` 图标，图标取 currentColor），于是亮铜落进
+   浅纸胶囊 —— 2026-09-24 本机 :3080 实测 color #e2c98a on #f3ead4 = 1.33:1，胶囊
+   区域像素里出现最多的前景色就是 #e2c98a（75 px），紧随其后是它的抗锯齿过渡色；
+   用户截图里表现为胶囊后半截「package.json」几乎与纸面融成一片、前半截 `pkg/` 反而
+   清楚（那半截是普通 code 文本，走胶囊的墨色）。
+   胶囊内按皮肤给「浅纸底」的那一档压回暗铜（#6b4e16 on #f3ead4 = 6.29:1），
+   与用户气泡里同样的浅底场景取值一致。 */
+body[data-dsh-815]
+  [data-chat-flow-kind='assistant-step'] > * > * > * > div[class*='markdown']
+  :not(pre) > code [class*='fileMention'] {
+  color: #6b4e16;
+}
+
+/* 侧栏会话行的时长（选中行上）：文字取 label-caption #7e7866，而选中行底是铜金高亮
+   实测 #897442 —— 1.03:1，「2分钟 / 2小时」这种时长在选中行上等于没有。选中行内提亮。 */
+body[data-dsh-815] [data-vj-session][aria-selected='true'] [class*='_time'] {
+  color: #f2e6c6;
+}
+
+/* 侧栏选中行的行内操作按钮（收藏 / 标记待回看 / 编辑标签）：图标取 label-tertiary
+   #9e9780，选中行底是铜金高亮实测 #897442 —— 1.55:1，图标在选中行上消失。与同一行
+   的标题（上面已有的 #fff8e8 规则）同档提亮。 */
+body[data-dsh-815] [data-vj-session][aria-selected='true'] [class*='iconButton'] {
+  color: #fff8e8;
+}
+
+/* 消息尾部的时长与「用量 N tok」：宿主新版把悬停揭示容器从 data-time-hover-root 换成
+   data-turn-tail / data-actions-reveal='hover'（本机实测 document.querySelector
+   ('[data-time-hover-root]') === null），皮肤原来那条「悬停恒显」规则于是完全落空 ——
+   实测 div[data-clock='start'|'end'] 的 opacity 为 0，里面的 timeStart/timeEnd 与
+   tmg52W_label（用量）整块不可见；用户截图里表现为一行几乎读不出的「用量 1M tok 11:52」
+   （像素实测约 1.5:1，即 #9e9780 以约 25% 不透明度叠在 #23231d 上）。
+   按新属性把皮肤的「常显」意图重新挂上。 */
+body[data-dsh-815] [data-clock] {
+  opacity: 1 !important;
+}
+
+/* 排队坞展开后的条目正文（avG_hq_preview > _plainRun_*）：走的是
+   --dsw-alias-label-primary-dimmed，浅色主题下该 token 是近黑 #151517（实测本机同名
+   token = #151517），落在坞的深底上只有 1.09:1 —— 上面那批 token 覆盖漏了它。
+   坞内把它换成次要色档（10.9:1）。 */
+body[data-dsh-815]:not([data-ds-dark-theme]) [data-queue-dock] {
+  --dsw-alias-label-primary-dimmed: #d4ccb0;
+  --dsw-alias-label-dimmed: #9e9780;
+}
+
+/* 坞内每行右侧的操作按钮（删除 / 编辑排队消息）被宿主设成 opacity .45 淡显，图标色
+   虽是 label-tertiary #9e9780，实际只剩 2.21:1；坞内改为常显（6.81:1）。 */
+body[data-dsh-815] [data-queue-dock] [class*='action'] {
+  opacity: 1;
+}
+
+/* present 文件卡（data-presented-file）内的次要文字：上面那条规则只压了
+   label-primary，而卡里的说明行走 label-tertiary（#9e9780）——白卡 #fafafa 上只有
+   2.80:1。补齐墨色层级（secondary 8.7:1、tertiary 5.6:1、caption 4.2:1）。 */
+body[data-dsh-815]:not([data-ds-dark-theme]) [data-presented-file] {
+  --dsw-alias-label-secondary: #4a4638;
+  --dsw-alias-label-tertiary: #5a5443;
+  --dsw-alias-label-caption: #6a6454;
+}
+
+/* 改动卡片 header 上的 +N 计数是宿主写死的 #22c55e，落在白 header 上只有 2.18:1；
+   只把绿压深一档（+N 仍是绿、-N 仍是红，语义不变）。 */
+body[data-dsh-815]:not([data-ds-dark-theme]) [data-changed-files='true'] button[class*='header'] [class*='added'] {
+  color: #15803d;
+}
+
+/* ——— 第二轮适配 1/2：思考块正文提亮（见下）。图标那处在文件中部
+   「DSH 官方『在本地打开』分裂按钮」段，本轮已就地按新 DOM 重写。 ——— */
+
+/* 「思考」折叠块正文（新版 DOM：_3kTACG_root[data-variant='think'] > _root_luwio_9 >
+   _row_luwio_16[_3kTACG_row, role=button] + _3kTACG_thinkBody > _markdown_4zwvp_5
+   [data-markdown-variant='compact']）。宿主把正文颜色落在 --dsw-alias-label-tertiary
+   （皮肤该档 #9e9780），而思考块整棵子树没有自己的底色，正文直接浮在暗油画底上
+   （本机 :3080 实测合成背景 #080a06；父级 thinkBody 自身 color 是 #f4ead6，但正文被
+   markdown 那条盖掉，opacity 沿途全为 1）—— 有效对比度 6.81:1，比同页助手正文
+   （label-primary #f4ead6，16.65:1）暗一整档，14px 正文在油画底上发灰、读起来吃力。
+   这里把正文提到深底次要档 #d4ccb0（与 [data-queue-dock]、[data-testid='todo-panel']
+   在深底上的取色同值）：12.36:1；折叠态那一行预览（_3kTACG_summaryText，同样是正文
+   文本）一并纳入，避免折叠/展开两态亮度不一致。
+   钩子用宿主的语义属性 data-variant='think'，不随 CSS Module hash 变。 */
+body[data-dsh-815] [data-variant='think'] :is([class*='thinkBody'] [class*='markdown'], [class*='summaryText']) {
+  color: #d4ccb0;
+}
+
+/* ——— 第三轮适配：diff 视图改挂稳定语义属性（2026-09-28） ———
+
+   [这一处修过两次、坏过两次，坏法相同] 第二轮（2026-09-24）这批规则挂的是
+   FileDiff.module.css 的构建期 CSS Module hash 前缀 `DoHURa_`。DSH 升到
+   0.2.0-rc.1-7bb30cd 后同一模块的前缀变成 `N9Zj0W_`，六条选择器在本机 :3080
+   逐条实测命中 0 个 —— 修复整体失效，用户重新报障。本次不再引用任何 hash 前缀。
+
+   [两个容器] 同一个 diff 组件出现在两处，都要覆盖，两处都有宿主手写的稳定钩子：
+     ① 右栏「本轮改动」面板：[data-changes-review]（sidebar.right.pane.tab 槽）；
+     ② 对话区改动卡片上悬停弹出的预览卡：[data-changes-hover-preview]（用户本次截图指的就是它）。
+
+   [匹配策略：只用固定类名，禁止哈希整串]
+   CSS Module 的类名 = 构建期哈希 + `_` + localName（如 `N9Zj0W_add`、`DoHURa_add`），
+   哈希每次构建都可能变，localName 由源码写定、不变。所以本段只允许两种锚点：
+     ① 固定类名后缀：`[class*='_add']` / `[class*='_del']`，并加
+        `:not([class*='_added'])` / `:not([class*='_deleted'])` 挡开近邻（改动卡片的
+        计数 span 是 z90sEq_added / z90sEq_deleted，与本组件无关）；容器作用域再收一层；
+     ② 宿主手写的语义属性 data-diff-line='add' | 'del'（ui-deliverables/FileDiff.tsx，
+        同样不参与构建哈希），作为并列的第二锚点，split 视图的行也带它。
+   **本文件不得再出现 `[class*='DoHURa_add']` / `[class*='N9Zj0W_add']` 这类整串哈希**
+   —— 那正是这一处两次失效的原因。同理，行号 / hunk 头 / note 等一律不用 hash 类名。
+   行号与 +/- 号不需要单独选择：宿主规则 `.add .number / .add .sign` 取
+   var(--diff-marker)，在**行**上重设该变量，宿主自己会把两处一起改深。
+   可用但本段未用的其它稳定属性：data-diff-hunk-header、data-diff-note /
+   data-diff-coarse / data-diff-truncated。
+
+   [修前实测] 本机 :3080（浅色方案，弹框与右栏两容器同值；合成背景 + opacity 累乘，
+   opacity 沿途全为 1）：
+     新增行正文 span #f4ead6 on #e6f4e7 → 1.05:1（56 处）
+     shiki 标点 token #ced4da → 1.31:1；shiki 字符串 token #69db7c → 1.54:1
+     `+` 号 / 行号 #01a241（行号底 #edf7ed）→ 2.96:1 / 3.06:1
+   底色来自宿主浅色主题：行本体 #e6f4e7、行号底 #edf7ed；而皮肤全局把文字压成奶油
+   label-primary #f4ead6，shiki 那套 --shiki-* 也是为暗底选的亮色 —— 于是整片新增行
+   成了「浅绿底 + 浅字」。shiki 走 css-variables 主题（span 的内联 style 就是
+   color:var(--shiki-token-*)），故在行上重设变量即可，不需要 !important。
+
+   [修法] 只作用于**浅底行**（新增 / 删除两侧）：正文压回皮肤浅面板的墨色层级，
+   行内换一套深色 shiki token（逐个按 ≥4.5:1 选：正文 15.3:1、字符串 5.7:1、
+   关键字 6.3:1、注释 6.6:1、函数 6.8:1、常量 7.0:1、参数 6.0:1、标点 8.3:1），
+   并把 --diff-marker 一并压深（行号 6.05:1、+/- 号同档）。
+   diff 的 header 与 hunk 头（`@@ -73,3 +73,30 @@`）仍落在暗底上（6.04~6.81:1），
+   保持奶油 / 铜金不受影响；暗色主题下宿主给的是深底，整体排除。
+   注：手头的 diff 是纯新增（+36/-0），删除行的浅红底未实测，按同一结构一并处理。 */
+body[data-dsh-815]:not([data-ds-dark-theme])
+  :is([data-changes-review], [data-changes-hover-preview])
+  :is([data-diff-line='add'], [class*='_add']:not([class*='_added'])) {
+  --diff-marker: #0f6b2c;
+  color: #1c1a14;
+  --shiki-foreground: #1c1a14;
+  --shiki-token-constant: #1b4f9c;
+  --shiki-token-string: #146c2e;
+  --shiki-token-string-expression: #146c2e;
+  --shiki-token-comment: #5a5443;
+  --shiki-token-keyword: #9c2b5f;
+  --shiki-token-parameter: #8a4b00;
+  --shiki-token-function: #5b3fa8;
+  --shiki-token-punctuation: #4a4638;
+  --shiki-token-link: #1b4f9c;
+}
+
+/* 删除行同法，但行号与 `-` 号不动：宿主值 #ba2723 落浅红行号底 #fdece9 上 = 5.39:1，
+   本来就达标（只有新增行的 #01a241 需要压深）。 */
+body[data-dsh-815]:not([data-ds-dark-theme])
+  :is([data-changes-review], [data-changes-hover-preview])
+  :is([data-diff-line='del'], [class*='_del']:not([class*='_deleted'])) {
+  color: #1c1a14;
+  --shiki-foreground: #1c1a14;
+  --shiki-token-constant: #1b4f9c;
+  --shiki-token-string: #146c2e;
+  --shiki-token-string-expression: #146c2e;
+  --shiki-token-comment: #5a5443;
+  --shiki-token-keyword: #9c2b5f;
+  --shiki-token-parameter: #8a4b00;
+  --shiki-token-function: #5b3fa8;
+  --shiki-token-punctuation: #4a4638;
+  --shiki-token-link: #1b4f9c;
+}
+
+/* 面板头部「-N」计数是宿主写死的 #ec1313，落在暗底上实测 4.42:1，提亮一档到
+   #ff7a7a（7.9:1）；「+N」的 #22c55e 实测 8.72:1 已够，不动。这条表头只在右栏
+   面板里有（弹框的 header 只显示路径），故只挂 data-changes-review。 */
+body[data-dsh-815] [data-changes-review] [class*='deleted'] {
+  color: #ff7a7a;
+}
+
+/* schedule_create 工具卡（宿主 ui-schedule 的 ScheduleCreateCard .card）：卡底写死
+   --card-fill: var(--dsw-static-neutral-50)（近白静态色），只在 body[data-ds-dark-theme]
+   下换成深灰（ScheduleCreateCard.module.css:7/19/20 与 :24-27）。皮肤跑在浅色宿主主题下，
+   于是近白卡底 + 皮肤的奶油 label-primary，等于没字。卡上带宿主手写属性
+   data-tool='schedule_create'（ScheduleCreateCard.tsx:53），据此把卡底与 hover 底换成
+   皮肤的深橄榄；条内文字仍走皮肤的 label-* 那几档，不需要再改。 */
+body[data-dsh-815] [data-tool='schedule_create'] {
+  --card-fill: #24261c;
+  --card-hover: #2c2e24;
+}
+
+
 

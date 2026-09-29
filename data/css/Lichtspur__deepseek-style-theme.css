@@ -1,5 +1,5 @@
 /* Lichtspur/deepseek-style-theme — lib/client.js
-   fetched 2026-09-21 from https://raw.githubusercontent.com/Lichtspur/deepseek-style-theme/master/lib/client.js
+   fetched 2026-09-29 from https://raw.githubusercontent.com/Lichtspur/deepseek-style-theme/master/lib/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 .dshome-locale{display:inline-flex;align-items:center;height:28px;border:1px solid color-mix(in srgb,var(--ds-brand) 25%,transparent);border-radius:999px;background:color-mix(in srgb,var(--ds-brand) 8%,transparent);overflow:hidden;flex:none;corner-shape:round;transition:transform .28s cubic-bezier(.2,.8,.2,1),box-shadow .28s ease,border-color .22s ease,background .22s ease}
 .dshome-locale:hover{transform:translateY(-1px) scale(1.03);border-color:color-mix(in srgb,var(--ds-brand) 48%,transparent);background:color-mix(in srgb,var(--ds-brand) 14%,transparent);box-shadow:0 4px 14px color-mix(in srgb,var(--ds-brand) 26%,transparent)}
@@ -182,9 +182,9 @@ body[data-dshome-dark] .uV2eYG_card::before{background:conic-gradient(from var(-
 
 
 
-:is([class*="_headline"]){font-size:34px;line-height:42px;font-weight:700;letter-spacing:-.01em;background:linear-gradient(120deg,#152443 0%,var(--ds-brand-deep) 55%,var(--ds-brand) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
-body[data-dshome-dark] :is([class*="_headline"]){background:linear-gradient(120deg,#fff 0%,var(--ds-brand-light) 60%,var(--ds-brand) 100%);-webkit-background-clip:text;background-clip:text}
-:is([class*="_previewBadge"]){border-radius:999px!important;background:color-mix(in srgb,var(--ds-brand) 10%,transparent)!important;border:1px solid color-mix(in srgb,var(--ds-brand) 25%,transparent)!important;color:var(--ds-brand)!important}
+:is([class*="composerHero"] [class*="_headline"]){font-size:34px;line-height:42px;font-weight:700;letter-spacing:-.01em;background:linear-gradient(120deg,#152443 0%,var(--ds-brand-deep) 55%,var(--ds-brand) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+body[data-dshome-dark] :is([class*="composerHero"] [class*="_headline"]){background:linear-gradient(120deg,#fff 0%,var(--ds-brand-light) 60%,var(--ds-brand) 100%);-webkit-background-clip:text;background-clip:text}
+:is([class*="composerHero"] [class*="_previewBadge"]){border-radius:999px!important;background:color-mix(in srgb,var(--ds-brand) 10%,transparent)!important;border:1px solid color-mix(in srgb,var(--ds-brand) 25%,transparent)!important;color:var(--ds-brand)!important}
 :is([class*="_fish"]){color:var(--ds-brand)!important}
 
 
@@ -266,6 +266,23 @@ html [data-composer-card]:hover{--dshome-glass-spec:1;--dshome-glass-sheen:.12;}
   }
     background-color:rgba(13,30,60,.92)!important;
   }
+}
+
+
+
+html[data-dshome-glass="liquid"] [data-menu-material]{
+  border-radius:var(--dsw-radius-lg);
+  box-shadow:var(--dshome-liquid-shadow), inset 0 0 0 1px var(--dshome-liquid-ring);
+}
+html[data-dshome-glass="liquid"] [data-menu-material]>*{
+  border-radius:inherit;
+}
+/* The product's frosted pane keeps its own look; the two extra pixels of glass
+   identity are what it gains, gated per glass style so switching back to
+   frosted stays the byte-identical sheet the user approved. */
+html[data-dshome-glass="frosted"] [data-menu-material]{
+  border-radius:var(--dsw-radius-lg);
+  box-shadow:inset 0 0 0 1px var(--dshome-glass-ring);
 }
 
 

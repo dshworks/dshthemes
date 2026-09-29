@@ -1,5 +1,5 @@
 /* WJNCT55555/dsh-crt-theme — src/client/crt.css
-   fetched 2026-09-21 from https://raw.githubusercontent.com/WJNCT55555/dsh-crt-theme/main/src/client/crt.css
+   fetched 2026-09-29 from https://raw.githubusercontent.com/WJNCT55555/dsh-crt-theme/main/src/client/crt.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 :root {
   --crt-deepseek-blue: #ff641f;
@@ -244,6 +244,14 @@ html.dsh-crt-active select {
   border-color: color-mix(in srgb, var(--crt-instrument-amber) 66%, transparent) !important;
   background: var(--crt-input-fill) !important;
   box-shadow: inset 0 0 16px var(--crt-input-shadow);
+}
+
+/* The caret layer, visible glyph layer, and height mirror require identical text metrics. */
+html.dsh-crt-active [class*='_card']:has(textarea[class*='_input'])
+  :is(textarea[class*='_input'], [class*='_backdrop'], [class*='_mirror']) {
+  font-family: var(--dsw-font-family) !important;
+  font-stretch: normal;
+  letter-spacing: normal;
 }
 
 /* DSH paints composer glyphs in the backdrop below a transparent textarea. */
