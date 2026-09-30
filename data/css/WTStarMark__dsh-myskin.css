@@ -1,0 +1,76 @@
+/* WTStarMark/dsh-myskin — prototype/reversible-inject.mjs
+   fetched 2026-09-30 from https://raw.githubusercontent.com/WTStarMark/dsh-myskin/main/prototype/reversible-inject.mjs
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+body[data-poc-atelier] {
+  background-image: var(--poc-palace-art);
+  background-size: cover;
+  background-position: center top;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+body[data-poc-atelier][data-ds-dark-theme] { background-image: var(--poc-palace-dark-art); }
+
+/* --- character stage: a REAL injected layer, not a ::after --- */
+[data-poc-skin="character-stage"] {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  height: 64vh;
+  pointer-events: none;
+  z-index: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  transition: transform .55s cubic-bezier(.22,.61,.36,1);
+}
+[data-poc-skin="character-stage"] img {
+  height: 100%;
+  max-width: 46vw;
+  object-fit: contain;
+  filter: drop-shadow(0 16px 32px rgba(4,16,40,.5));
+  transition: transform .55s cubic-bezier(.22,.61,.36,1), opacity .4s ease;
+}
+[data-poc-skin="character-left"]  { transform-origin: bottom left; }
+[data-poc-skin="character-right"] { transform-origin: bottom right; }
+
+/* state hook : dock toward bottom as the composer becomes an active chat */
+body[data-poc-composer-motion="dock"] [data-poc-skin="character-stage"] {
+  transform: translateY(16%) scale(.92);
+}
+body[data-poc-composer-motion="dock"] [data-poc-skin="character-left"]  { transform: translateX(3%); }
+body[data-poc-composer-motion="dock"] [data-poc-skin="character-right"] { transform: translateX(-3%); }
+
+/* --- sidebar corners (injected, rotated from one art tile) --- */
+[data-poc-skin="sidebar-corners"] {
+  position: absolute; inset: 0; pointer-events: none; z-index: 2;
+}
+[data-poc-skin="sidebar-corners"] span {
+  position: absolute; width: 84px; height: 84px;
+  background-image: var(--poc-sidebar-corner-art);
+  background-size: contain; background-repeat: no-repeat;
+  opacity: .9;
+}
+[data-poc-skin="sidebar-corners"] span[data-corner="top-left"]     { top: 4px;    left: 4px;   transform: rotate(0deg); }
+[data-poc-skin="sidebar-corners"] span[data-corner="top-right"]    { top: 4px;    right: 4px;  transform: rotate(90deg); }
+[data-poc-skin="sidebar-corners"] span[data-corner="bottom-right"] { bottom: 4px; right: 4px; transform: rotate(180deg); }
+[data-poc-skin="sidebar-corners"] span[data-corner="bottom-left"]  { bottom: 4px; left: 4px;  transform: rotate(270deg); }
+
+/* --- nine-slice ornamental composer frame (border-image) --- */
+[data-poc-composer] {
+  position: relative;
+}
+[data-poc-composer]::before {
+  content: '';
+  position: absolute;
+  inset: -20px -16px -18px;
+  z-index: 1;
+  pointer-events: none;
+  border-width: 64px 48px 50px;
+  border-image-source: var(--poc-composer-frame-art);
+  border-image-slice: 130 110 110 110 fill;
+  border-image-width: 64px 48px 50px 48px;
+  border-image-repeat: stretch;
+}
+[data-poc-composer] > * { position: relative; z-index: 2; }
+
+/* --- subtle brand tint on native chrome (token-style, reversible via var) --- */
+[data-poc-atelier] { --poc-brand-tint: #0b193f; }
