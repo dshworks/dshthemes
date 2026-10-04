@@ -1,5 +1,5 @@
 /* lzhhhhc/Arknights-flavor-theme — assets/theme-preview.css
-   fetched 2026-09-26 from https://raw.githubusercontent.com/lzhhhhc/Arknights-flavor-theme/main/assets/theme-preview.css
+   fetched 2026-10-04 from https://raw.githubusercontent.com/lzhhhhc/Arknights-flavor-theme/main/assets/theme-preview.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* ── 明日方舟·罗德岛皮肤 — 官网设计语言 + HUD 动效层 ── */
 
@@ -7,9 +7,11 @@
 body[data-dsh-arknights] {
   color-scheme: dark;
   --dsw-alias-bg-base: rgba(10, 11, 13, 0.38);
-  --dsw-alias-bg-layer-1: rgba(13, 15, 18, 0.58);
-  --dsw-alias-bg-layer-2: rgba(16, 19, 23, 0.52);
-  --dsw-alias-bg-layer-3: rgba(19, 23, 27, 0.48);
+  /* 抬升面（卡片/工具输出/详情面板/第三方插件浮层）：必须接近不透明，否则后面的文字会透出来。
+     bg-base 保持 0.38，背景图仍然从画布层透出。 */
+  --dsw-alias-bg-layer-1: rgba(13, 15, 18, 0.94);
+  --dsw-alias-bg-layer-2: rgba(16, 19, 23, 0.92);
+  --dsw-alias-bg-layer-3: rgba(19, 23, 27, 0.9);
   --dsw-alias-bg-mask-1: rgba(4, 6, 9, 0.3);
   --dsw-alias-bg-module-platform: rgba(10, 11, 13, 0.45);
   --dsw-alias-border-l1: rgba(255, 255, 255, 0.1);
@@ -50,6 +52,84 @@ body[data-dsh-arknights] {
   --dsw-alias-hovercard-bg: rgba(16, 18, 21, 0.96);
   --dsw-alias-tooltip-bg: rgba(16, 18, 21, 0.96);
 
+  /* 1.1) 左栏专用官方 token（浅色主题下这几个默认是近白色，不覆盖则左栏全白） */
+  /* --dsw-specific-sidebar-fill：侧栏列 + 标题行的底色，由 layout 的 sidebarCol/frame
+     和 sidebar 的 root 同时消费，是「左栏全白」的唯一根因 */
+  --dsw-specific-sidebar-fill: rgba(11, 12, 14, 0.74);
+  /* 其余为侧栏内部控件消费、且在浅色主题下写死浅色的 token */
+  --dsw-alias-button-elevated-fill: rgba(19, 23, 27, 0.72);
+  --dsw-alias-button-floating-hover: rgba(255, 255, 255, 0.1);
+  --dsw-alias-scrollbar-hover-l2: rgba(255, 255, 255, 0.18);
+
+  /* 1.2) 弹窗 / 菜单 / 覆盖层 ---------------------------------------------- */
+  /* DSH 用 --dsw-specific-menu(= --dsw-menu-surface-fill) 画所有弹出面板：输入框上方的
+     添加/指令面板、模型菜单、任务菜单、子代理面板、cordis 面板等。浅色主题下它是 58% 白，
+     叠在暗色画布上就是「灰底 + 看不清」，必须覆盖。
+     另外这些面板多用 .panel:before + isolation:isolate 画底，backdrop-filter 的磨砂
+     会被 isolate 吃掉，只剩 alpha 生效 —— 所以这里给到接近不透明，否则后面的正文会透出来。 */
+  --dsw-menu-surface-fill: rgba(11, 13, 16, 0.97);
+  --dsw-specific-menu: rgba(11, 13, 16, 0.97);
+  --dsw-alias-menu-group-header-fill: rgba(16, 19, 23, 0.97);
+  --dsw-alias-menu-icon: rgba(244, 247, 249, 0.62);
+  --dsw-alias-bg-overlay: rgba(13, 15, 18, 0.97);
+  --dsw-specific-selector: rgba(19, 23, 27, 0.94);
+  --dsw-specific-tip: rgba(19, 23, 27, 0.96);
+  --dsw-specific-input-major: rgba(13, 15, 18, 0.94);
+  --dsw-specific-login-input: rgba(19, 23, 27, 0.94);
+  --dsw-alias-bg-multi-select: rgba(19, 23, 27, 0.94);
+  --dsw-alias-bg-skeleton: rgba(255, 255, 255, 0.08);
+  --dsw-alias-button-floating-fill: rgba(16, 18, 21, 0.92);
+  --dsw-alias-bg-mask-drop: rgba(39, 39, 48, 0.7);
+  --dsw-alias-interactive-bg-hover-solid: rgba(255, 255, 255, 0.08);
+  --dsw-alias-border-inverted: rgba(255, 255, 255, 0.06);
+  --dsw-alias-border-inverted2: rgba(255, 255, 255, 0.08);
+  --dsw-alias-border-l2-darkmode-thin: rgba(255, 255, 255, 0.06);
+  --dsw-alias-label-primary-dimmed: rgba(244, 247, 249, 0.72);
+  --dsw-alias-label-primary-bluish: #d7ecfb;
+
+  /* 1.3) 深色镜像 ---------------------------------------------------------- */
+  /* 皮肤未覆盖、且明暗两套值确实不同的官方 token：直接沿用 DSH 官方暗色值，
+     避免浅色主题的浅底/深字再次泄漏进来（折叠行、markdown、diff、开关、滚动条等）。 */
+  --dsw-alias-bg-document-preview: var(--dsw-static-neutral-bluish-950);
+  --dsw-alias-bg-mask-2: #0003;
+  --dsw-alias-brand-primary-invert: var(--dsw-static-neutral-bluish-50);
+  --dsw-alias-brand-text: var(--dsw-static-neutral-bluish-50);
+  --dsw-alias-button-ghost-active-hover: var(--dsw-static-neutral-bluish-700);
+  --dsw-alias-button-info-fill: var(--dsw-static-deepseek-400);
+  --dsw-alias-button-info-hover: var(--dsw-static-deepseek-500);
+  --dsw-alias-button-primary-dimmed: var(--dsw-static-neutral-bluish-750);
+  --dsw-alias-code-diff-added: var(--dsw-static-green-500-a12);
+  --dsw-alias-code-diff-deleted: var(--dsw-static-red-400-a12);
+  --dsw-alias-file-diff-added-bg: #1f3124;
+  --dsw-alias-file-diff-added-gutter: #132016;
+  --dsw-alias-file-diff-added-marker: #41c977;
+  --dsw-alias-file-diff-deleted-bg: #3c1f1b;
+  --dsw-alias-file-diff-deleted-gutter: #28130e;
+  --dsw-alias-file-diff-deleted-marker: #fa423e;
+  --dsw-alias-interactive-bg-hover-accent: #ffffff3d;
+  --dsw-alias-label-deep-diving-shimmer: color-mix(in srgb, var(--dsw-static-blue-300) 65%, var(--dsw-static-deepseek-400));
+  --dsw-alias-label-deep-diving: color-mix(in srgb, var(--dsw-static-deepseek-450) 55%, var(--dsw-static-neutral-bluish-400));
+  --dsw-alias-label-document-preview: var(--dsw-static-neutral-bluish-300);
+  --dsw-alias-label-shimmer: color-mix(in srgb, var(--dsw-static-neutral-00) 45%, transparent);
+  --dsw-alias-markdown-citation: var(--dsw-static-neutral-bluish-800);
+  --dsw-alias-markdown-code-block-banner: var(--dsw-static-neutral-bluish-850);
+  --dsw-alias-markdown-code-segment-selected: var(--dsw-static-neutral-bluish-800);
+  --dsw-alias-markdown-code-segment-unselected: var(--dsw-static-neutral-bluish-900);
+  --dsw-alias-markdown-placeholder: var(--dsw-static-neutral-bluish-850);
+  --dsw-alias-scrollbar-bg-l1: var(--dsw-static-neutral-700);
+  --dsw-alias-scrollbar-hover-l1: var(--dsw-static-neutral-600);
+  --dsw-alias-state-business-tertiary: var(--dsw-static-deepseek-800);
+  --dsw-alias-state-idle-primary: var(--dsw-static-neutral-600);
+  --dsw-alias-switch-thumb: var(--dsw-static-neutral-bluish-400);
+  --dsw-alias-toast-bg: var(--dsw-static-neutral-bluish-750);
+  --dsw-alias-turn-trigger-bg-hover: var(--dsw-alias-interactive-bg-active);
+  --dsw-alias-turn-trigger-bg: var(--dsw-alias-interactive-bg-hover);
+  --dsw-specific-bubble-highlight: var(--dsw-static-neutral-bluish-750);
+  --dsw-specific-bubble: var(--dsw-static-neutral-bluish-850);
+  --dsw-specific-sidebar-nav-item-active-accent: var(--dsw-static-neutral-bluish-800);
+  --dsw-specific-sidebar-nav-item-active: var(--dsw-static-neutral-bluish-750);
+  --dsw-specific-sidebar-nav-item-hover: var(--dsw-static-neutral-bluish-850);
+
   /* shadcn 风格变量（侧栏/面板同时在用的另一套） */
   --background: #0a0b0d;
   --foreground: #f4f7f9;
@@ -89,6 +169,20 @@ body[data-dsh-arknights] [data-slot='sidebar'],
 body[data-dsh-arknights] [class*='sidebarCol'] {
   background: linear-gradient(180deg, rgba(11, 12, 14, 0.74) 0%, rgba(16, 19, 21, 0.66) 100%) !important;
   backdrop-filter: blur(6px);
+}
+
+/* 3.0) 侧栏与正文交界：layout 的 sidebarCol 用 border-right + --dsw-alias-border-l3 画线，
+   皮肤把 border-l3 设成青色 0.4 → 那条贯穿全高的青色竖线就是"边界上的竖光"。
+   这里只压这一处的颜色（不动全局 border-l3，弹窗/卡片还要用）。 */
+body[data-dsh-arknights] [class*='sidebarCol'] {
+  border-right-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* 3.1) 侧栏内层根（slot 包装层的直接子元素）：清掉 DSH 自己的侧栏底色，
+   统一由上面那层暗色玻璃负责。DSH 换过侧栏底色 token 时这里不会再「露白」 */
+body[data-dsh-arknights] [data-slot='sidebar'] > * {
+  background-color: transparent !important;
+  background-image: none !important;
 }
 
 body[data-dsh-arknights] [data-slot='sidebar'] :is(span, div, p, a, button, h1, h2, h3, h4, label, li) {
@@ -149,7 +243,8 @@ body[data-dsh-arknights] [data-active='true'] {
 /* 4) 输入卡：极简 AK 面板语言 — 细线边框 + 顶部青色强调线 */
 body[data-dsh-arknights] [data-composer-card] {
   position: relative;
-  background: rgba(12, 14, 17, 0.72) !important;
+  /* 0.72 太透：底下的聊天正文会透进输入框。抬到 0.92，保留 blur 的磨砂感 */
+  background: rgba(12, 14, 17, 0.92) !important;
   border: 1px solid rgba(255, 255, 255, 0.13) !important;
   border-radius: 2px !important;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.42) !important;
@@ -553,16 +648,8 @@ body[data-dsh-arknights] [data-slot='sidebar.brand.mark'] {
   color: rgba(255, 255, 255, 0.45);
 }
 
-#ak-decor .ak-deco-rail {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 3px;
-  background: linear-gradient(180deg, #35c8f5 0%, rgba(53, 200, 245, 0.1) 45%, #35c8f5 100%);
-  background-size: 100% 300%;
-  animation: ak-rail-flow 8s linear infinite;
-}
+/* 左缘流光竖线已按需求移除（原 .ak-deco-rail：贴窗口左缘、贯穿整屏的青色竖光）。
+   元素与样式一起删掉，避免只删样式还在 DOM 里留一个空节点。 */
 
 #ak-decor .ak-deco-hazard {
   position: absolute;
@@ -595,21 +682,9 @@ body[data-dsh-arknights] [data-slot='sidebar.brand.mark'] {
 }
 
 /* ── 动效（全部 transform/opacity） ── */
-@keyframes ak-scan-sweep {
-  0% { transform: translateX(-30%); opacity: 0; }
-  15% { opacity: 0.75; }
-  85% { opacity: 0.75; }
-  100% { transform: translateX(190%); opacity: 0; }
-}
-
 @keyframes ak-ghost-breathe {
   0%, 100% { opacity: 0.55; transform: scale(1); }
   50% { opacity: 1; transform: scale(1.018); }
-}
-
-@keyframes ak-rail-flow {
-  0% { background-position: 0% 0; }
-  100% { background-position: 0% 300%; }
 }
 
 @keyframes ak-hazard-scroll {
@@ -652,16 +727,8 @@ body[data-dsh-arknights] [data-slot='sidebar.brand.mark'] {
   overflow: hidden;
 }
 
-#ak-decor-top .ak-deco-sweep {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 26%;
-  background: linear-gradient(100deg, transparent, rgba(53, 200, 245, 0.045) 45%, rgba(53, 200, 245, 0.09) 50%, rgba(53, 200, 245, 0.045) 55%, transparent);
-  transform: translateX(-30%);
-  animation: ak-scan-sweep 9s ease-in-out infinite;
-}
+/* 扫光带已按需求移除（原 .ak-deco-sweep：26vw 宽、贯穿全屏高，9s 横扫一次的青色竖光带，
+   是主题里唯一"会动的竖光"）。样式、keyframes、DOM 节点一起删。 */
 
 /* 顶层装饰字符：边缘竖排 + 十六进制码 + 刻度条 */
 #ak-decor-top .ak-deco-vl,
@@ -754,7 +821,11 @@ body[data-dsh-arknights] [data-slot='sidebar.brand.mark'] {
   top: 15%;
   width: 2px;
   height: 20vh;
-  background: repeating-linear-gradient(180deg, rgba(53, 200, 245, 0.4) 0 5px, transparent 5px 11px);
+  /* 0.4 的青色虚线在右缘非常跳（每段虚线的两端都是硬边）：降到 0.22、虚线段收短，
+     并让整条刻度列上下淡出。 */
+  background: repeating-linear-gradient(180deg, rgba(53, 200, 245, 0.22) 0 4px, transparent 4px 12px);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
 }
 
 /* 侧栏注入文字：logo 副标题 / 工作区英文 */

@@ -1,5 +1,5 @@
 /* XuHe896/dsh-skin-maid-atelier-kanade — patches.css
-   fetched 2026-09-26 from https://raw.githubusercontent.com/XuHe896/dsh-skin-maid-atelier-kanade/main/patches.css
+   fetched 2026-10-04 from https://raw.githubusercontent.com/XuHe896/dsh-skin-maid-atelier-kanade/main/patches.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 [id="root"] {
   background: none;
@@ -2703,3 +2703,18 @@ body[data-ds-dark-theme] :is([data-variant], [data-chat-flow-kind="context"]) [d
   background-size: 148px 320px, auto 320px !important;
   filter: drop-shadow(0 6px 16px #2a2a3a26) !important;
 }
+
+/* ===================================================================
+   [XuHe896] 背景遮罩几乎移除（让背景插画看得清）
+   皮肤插件在背景图上盖了一层 dim 遮罩（默认 25% 纯黑）。实测在暗色
+   主题下，这层黑纱会把背景插画压到"细节无法辨认"的程度。
+   该 dim 值存于 Electron 主机侧存储、无 UI 滑块暴露，故用 CSS 覆盖
+   其内联样式。这里降到 4%（近乎不可见）：
+     data-dsh-wallpaper-layer="media"  是背景图本身 (z-index -3)
+     data-dsh-wallpaper-layer="scrim"  是黑色遮罩    (z-index -2)
+   如仍偏暗可继续降到 0，或改用 background: none 完全移除。
+   =================================================================== */
+[data-dsh-wallpaper-layer="scrim"] {
+  background: rgba(0, 0, 0, 0.04) !important;
+}
+
