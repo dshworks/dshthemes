@@ -1,0 +1,59 @@
+/* Lenandy/dsh-glass-skin — lib/client.js
+   fetched 2026-10-05 from https://raw.githubusercontent.com/Lenandy/dsh-glass-skin/main/lib/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/* --- dsh-glass-skin ------------------------------------------------------- */
+/* Clear every opaque layer between the page root and the backdrop. */
+html, body { background-color: transparent !important; background-image: none !important; }
+#root { background: transparent !important; }
+
+/* The glass surfaces, mirrored into CSS from the scheme the presenter published.
+   This block follows the ACTIVE colour scheme, so it is the layer that keeps the
+   two schemes apart even for a paint that happens before the theme service has
+   re-published anything.
+
+   It is NOT the load-bearing path. The presenter publishes its tokens as
+   important inline custom properties, and an inline important declaration
+   outranks a stylesheet important one — so the registered override layer
+   (ctx.theme.overrideTokens) is the only thing that actually makes the glass
+   translucent. Everything here is per-scheme fallback for the moment between a
+   scheme switch and the re-registration in restack().
+
+   Gated twice: on the on/off flag (so switching the skin off really restores
+   the product's palette), and on the ACTIVE COLOUR SCHEME, which the presenter
+   publishes as the
+   body[data-ds-dark-theme] attribute. v0.3 shipped one dark value for both
+   schemes and broke light mode; each scheme now carries its own. */
+html:not([data-dsh-glass-skin="off"]):not([data-ds-dark-theme]),
+html:not([data-dsh-glass-skin="off"]) body:not([data-ds-dark-theme]) {
+html:not([data-dsh-glass-skin="off"])[data-ds-dark-theme],
+html:not([data-dsh-glass-skin="off"]) body[data-ds-dark-theme],
+html:not([data-dsh-glass-skin="off"]):has(body[data-ds-dark-theme]) {
+
+/* The backdrop and the wash follow the same scheme, so neither scheme gets a
+   backdrop that fights its label colours. */
+body {
+  --dsh-glass-skin-wash-default: rgba(255,255,255,.20);
+  --dsh-glass-skin-saturate: 128%;
+}
+body[data-ds-dark-theme] {
+  --dsh-glass-skin-wash-default: rgba(10,12,16,.28);
+  --dsh-glass-skin-saturate: 145%;
+}
+  position: fixed;
+  inset: -14%;
+  z-index: 0;
+  pointer-events: none;
+  background-size: cover, cover;
+  background-position: center, center;
+  background-repeat: no-repeat, no-repeat;
+  filter: blur(var(--dsh-glass-skin-blur, 64px)) saturate(var(--dsh-glass-skin-saturate, 145%));
+  transform: scale(1.06);
+}
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--dsh-glass-skin-wash, var(--dsh-glass-skin-wash-default, rgba(10,12,16,.20)));
+}
+
+/* Lift the app above the backdrop explicitly — no negative z-index. */
+#root { position: relative; z-index: 1; } display: none; }

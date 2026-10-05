@@ -1,0 +1,1455 @@
+/* Xian-JL/dsh-Xiao-theme — src/client/styles.css
+   fetched 2026-10-05 from https://raw.githubusercontent.com/Xian-JL/dsh-Xiao-theme/main/src/client/styles.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* ==========================================================================
+ * dsh-xiao-theme — authored layer
+ *
+ * Layout is owned by DSH. This file only adds tokens, decoration, the welcome
+ * composition, the Xiao companion and the settings surface. Everything is
+ * pointer-transparent except the companion cluster and its panel.
+ * ========================================================================== */
+
+.xiao-overlay {
+  --xiao-jade: var(--dsw-alias-brand-primary, #35c4a6);
+  --xiao-jade-deep: color-mix(in srgb, var(--xiao-jade) 72%, var(--dsw-alias-label-primary, #10302c));
+  --xiao-jade-soft: color-mix(in srgb, var(--xiao-jade) 28%, transparent);
+  --xiao-gold: #b8934a;
+  --xiao-gold-soft: color-mix(in srgb, var(--xiao-gold) 42%, transparent);
+  --xiao-violet: #8b7bd8;
+  --xiao-violet-soft: color-mix(in srgb, var(--xiao-violet) 26%, transparent);
+  --xiao-ink: var(--dsw-alias-label-primary, #10302c);
+  --xiao-muted: var(--dsw-alias-label-secondary, #4a6663);
+  --xiao-line: var(--dsw-alias-border-l3, rgba(16, 48, 44, 0.28));
+  --xiao-parallax-x: 0px;
+  --xiao-parallax-y: 0px;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  isolation: isolate;
+}
+
+.xiao-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* --- quiet native enhancements ------------------------------------------- */
+
+[data-xiao-pressed='true'] {
+  filter: brightness(0.88) saturate(0.94);
+  transition: filter 90ms ease-out;
+}
+
+[data-xiao-focus='true'] {
+  outline: 1px solid color-mix(in srgb, var(--dsw-alias-brand-primary, #35c4a6) 34%, transparent);
+  outline-offset: 0;
+}
+
+[data-xiao-nav-pulse] {
+  animation: xiao-nav-pulse 280ms ease-out;
+}
+
+body[data-xiao-theme='on'] ::selection {
+  background: color-mix(in srgb, var(--dsw-alias-brand-primary, #35c4a6) 26%, transparent);
+}
+
+body[data-xiao-state='running'] .xiao-decoration,
+.xiao-overlay[data-converged='true'] .xiao-decoration {
+  opacity: 0.62;
+  transition: opacity 420ms ease-out;
+}
+
+/* --- atmosphere ---------------------------------------------------------- */
+
+.xiao-decoration {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: opacity 420ms ease-out;
+}
+
+.xiao-atmosphere {
+  position: absolute;
+  inset: 0;
+  opacity: 0.9;
+  background:
+    radial-gradient(circle at 78% 10%, color-mix(in srgb, var(--xiao-jade) 12%, transparent), transparent 30rem),
+    radial-gradient(circle at 8% 94%, color-mix(in srgb, var(--xiao-violet) 7%, transparent), transparent 24rem),
+    linear-gradient(124deg, transparent 0 62%, color-mix(in srgb, var(--xiao-jade) 5%, transparent) 62% 63%, transparent 63%);
+}
+
+.xiao-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(42px);
+  opacity: 0.5;
+}
+
+.xiao-glow--jade {
+  top: -6rem;
+  right: 4vw;
+  width: 26rem;
+  height: 26rem;
+  background: color-mix(in srgb, var(--xiao-jade) 14%, transparent);
+}
+
+.xiao-glow--violet {
+  bottom: 2vh;
+  left: -8rem;
+  width: 20rem;
+  height: 20rem;
+  background: color-mix(in srgb, var(--xiao-violet) 12%, transparent);
+}
+
+.xiao-ornament--nuo {
+  position: absolute;
+  top: clamp(46px, 8vh, 108px);
+  right: clamp(-160px, -9vw, -70px);
+  width: clamp(220px, 25vw, 380px);
+  height: auto;
+  opacity: 0.3;
+  transform: rotate(8deg);
+  mix-blend-mode: normal;
+  filter: saturate(1.12) contrast(1.28) brightness(1.04) drop-shadow(0 0 16px color-mix(in srgb, var(--xiao-jade) 18%, transparent));
+}
+
+.xiao-ornament--cloud {
+  position: absolute;
+  left: clamp(-120px, -6vw, -60px);
+  bottom: 6vh;
+  width: clamp(240px, 28vw, 420px);
+  height: clamp(90px, 12vh, 150px);
+  opacity: 0.16;
+  border-radius: 50%;
+  border-top: 1px solid color-mix(in srgb, var(--xiao-jade) 40%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--xiao-gold) 24%, transparent);
+  transform: rotate(-6deg);
+}
+
+.xiao-wind-lines {
+  position: absolute;
+  inset: 0;
+}
+
+.xiao-wind-lines__line {
+  position: absolute;
+  display: block;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--xiao-jade) 46%, transparent), transparent);
+  opacity: 0.5;
+}
+
+.xiao-wind-lines__line--one {
+  top: 26%;
+  left: 4%;
+  width: 26vw;
+  transform: rotate(-4deg);
+}
+
+.xiao-wind-lines__line--two {
+  top: 52%;
+  left: 12%;
+  width: 18vw;
+  transform: rotate(3deg);
+  opacity: 0.34;
+}
+
+.xiao-wind-lines__line--three {
+  bottom: 22%;
+  right: 6%;
+  width: 22vw;
+  transform: rotate(-2deg);
+  opacity: 0.3;
+}
+
+/* --- ambient particles --------------------------------------------------- */
+
+.xiao-particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.xiao-mote {
+  position: absolute;
+  left: var(--xiao-mote-left);
+  top: var(--xiao-mote-top);
+  width: var(--xiao-mote-size);
+  height: var(--xiao-mote-size);
+  border-radius: 50%;
+  opacity: var(--xiao-mote-opacity);
+  background: color-mix(in srgb, var(--xiao-jade) 70%, white 30%);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--xiao-jade) 55%, transparent);
+  animation: xiao-mote-drift var(--xiao-mote-duration) ease-in-out infinite alternate;
+  animation-delay: var(--xiao-mote-delay);
+  will-change: transform, opacity;
+}
+
+.xiao-particles[data-count='0'] {
+  display: none;
+}
+
+/* --- character art ------------------------------------------------------- */
+
+.xiao-hero-frame {
+  position: absolute;
+  right: clamp(30px, 4vw, 84px);
+  bottom: -28px;
+  width: clamp(230px, 25vw, 372px);
+  aspect-ratio: 745 / 600;
+  transform-origin: bottom right;
+  transform: translate3d(var(--xiao-parallax-x), var(--xiao-parallax-y), 0) scale(0.94);
+  opacity: 0.32;
+  transition: transform 700ms cubic-bezier(0.22, 0.68, 0.24, 1), opacity 700ms ease-out;
+}
+
+.xiao-overlay[data-page-phase='entering-hero'] .xiao-hero-frame,
+.xiao-overlay[data-page-phase='hero'] .xiao-hero-frame {
+  transform: translate3d(calc(var(--xiao-parallax-x) - 3vw), calc(var(--xiao-parallax-y) - 34vh), 0) scale(1.24);
+  opacity: 0.98;
+}
+
+.xiao-overlay[data-page-phase='leaving-hero'] .xiao-hero-frame {
+  transition-duration: 700ms;
+}
+
+.xiao-hero-frame[data-position='corner'] {
+  right: clamp(20px, 2.6vw, 52px);
+  bottom: -18px;
+}
+
+.xiao-hero-frame[data-variant='celebration'] {
+  aspect-ratio: 1 / 1;
+  border-radius: 32px;
+  corner-shape: round;
+  overflow: hidden;
+}
+
+.xiao-hero-frame[data-variant='celebration'] .xiao-hero {
+  object-position: center 58%;
+  -webkit-mask-image: none;
+  mask-image: none;
+  filter: saturate(0.96) contrast(1.02) drop-shadow(0 18px 30px rgba(6, 24, 22, 0.28));
+}
+
+.xiao-hero-frame[data-opacity='low'] {
+  opacity: 0.2;
+}
+
+.xiao-hero-frame[data-opacity='high'] {
+  opacity: 0.46;
+}
+
+.xiao-overlay[data-page-phase='entering-hero'] .xiao-hero-frame[data-opacity='low'],
+.xiao-overlay[data-page-phase='hero'] .xiao-hero-frame[data-opacity='low'] {
+  opacity: 0.72;
+}
+
+.xiao-hero-frame .xiao-hero {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom right;
+  filter: saturate(0.98) contrast(1.03) drop-shadow(0 18px 30px rgba(6, 24, 22, 0.28));
+  -webkit-mask-image: linear-gradient(to bottom, black 76%, rgba(0, 0, 0, 0.8) 92%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 76%, rgba(0, 0, 0, 0.8) 92%, transparent 100%);
+  pointer-events: none;
+  user-select: none;
+}
+
+.xiao-hero-frame[data-animate='true'] .xiao-hero {
+  animation: xiao-hero-breathe 6.5s ease-in-out infinite;
+}
+
+.xiao-overlay[data-intensity='minimal'] .xiao-ornament--nuo,
+.xiao-overlay[data-intensity='minimal'] .xiao-ornament--cloud {
+  display: none;
+}
+
+.xiao-overlay[data-intensity='minimal'] .xiao-glow {
+  opacity: 0.24;
+}
+
+.xiao-overlay[data-ornament='false'] .xiao-ornament--nuo,
+.xiao-overlay[data-ornament='false'] .xiao-ornament--cloud {
+  display: none;
+}
+
+/* --- welcome composition ------------------------------------------------- */
+
+.xiao-welcome {
+  position: absolute;
+  z-index: 4;
+  top: 26%;
+  left: clamp(310px, 21vw, 470px);
+  width: min(460px, 33vw);
+  color: var(--xiao-ink);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(30px);
+  transition: opacity 700ms ease-out, transform 700ms cubic-bezier(0.22, 0.68, 0.24, 1), visibility 700ms;
+}
+
+.xiao-overlay[data-page-phase='entering-hero'] .xiao-welcome,
+.xiao-overlay[data-page-phase='hero'] .xiao-welcome {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.xiao-welcome__eyebrow {
+  display: block;
+  color: color-mix(in srgb, var(--xiao-gold) 62%, var(--xiao-ink));
+  font-size: 10px;
+  font-weight: 680;
+  letter-spacing: 0.22em;
+}
+
+.xiao-welcome h1 {
+  margin: 22px 0 16px;
+  font-size: clamp(32px, 2.9vw, 50px);
+  font-weight: 430;
+  line-height: 1.2;
+  letter-spacing: -0.035em;
+  background: linear-gradient(180deg, var(--xiao-ink) 0 48%, var(--xiao-jade-deep) 48% 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.xiao-welcome p {
+  margin: 0;
+  color: var(--xiao-muted);
+  font-size: 13px;
+  line-height: 1.9;
+}
+
+/* Replace the native welcome headline only while the Xiao composition is up. */
+body:has([data-phase='hero']) [data-phase='hero'] [class$='_headline'] {
+  visibility: hidden;
+}
+
+body:has([data-phase='hero']) [data-phase='hero'] [class$='_composerHero'] {
+  transform: translateY(108px);
+}
+
+/* --- companion ----------------------------------------------------------- */
+
+.xiao-companion-cluster {
+  position: absolute;
+  z-index: 20;
+  width: var(--xiao-companion-size, 72px);
+  pointer-events: auto;
+  transform: translate(-50%, -50%);
+  transition: left 320ms cubic-bezier(0.22, 0.68, 0.24, 1), top 320ms cubic-bezier(0.22, 0.68, 0.24, 1);
+}
+
+.xiao-companion-cluster[data-dragging='true'] {
+  transition: none;
+}
+
+.xiao-companion {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  padding: 0;
+  color: inherit;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-radius: 16px;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.xiao-companion[data-draggable='true'] {
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.xiao-companion[data-state='dragging'] {
+  cursor: grabbing;
+}
+
+.xiao-companion:focus-visible {
+  outline: 2px solid var(--xiao-jade);
+  outline-offset: 5px;
+}
+
+.xiao-companion__sprite {
+  position: absolute;
+  inset: 6%;
+  display: block;
+  overflow: hidden;
+  border-radius: 14px;
+  transform: scaleX(var(--xiao-companion-flip, 1));
+  transform-origin: center;
+}
+
+.xiao-companion__sprite img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  filter: drop-shadow(0 6px 12px rgba(6, 24, 22, 0.28));
+}
+
+.xiao-companion[data-animated='true'][data-state='idle'] .xiao-companion__sprite img,
+.xiao-companion[data-animated='true'][data-state='hover'] .xiao-companion__sprite img {
+  animation: xiao-companion-float 3.6s ease-in-out infinite;
+}
+
+.xiao-companion__ring {
+  position: absolute;
+  inset: 2%;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.xiao-companion__spark {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--xiao-jade);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.xiao-companion__spark--one { top: 8%; right: 6%; }
+.xiao-companion__spark--two { bottom: 12%; left: 4%; }
+
+.xiao-companion__bubble {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 18px;
+  color: var(--xiao-jade-deep);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.xiao-companion[data-state='hover'] .xiao-companion__ring,
+.xiao-companion[data-state='reacting'] .xiao-companion__ring {
+  opacity: 0.72;
+  border-color: color-mix(in srgb, var(--xiao-jade) 58%, transparent);
+}
+
+.xiao-companion[data-state='reacting'] .xiao-companion__sprite img {
+  animation: xiao-companion-hop 900ms cubic-bezier(0.24, 0.72, 0.26, 1);
+}
+
+.xiao-companion[data-state='sending'] .xiao-companion__ring {
+  opacity: 0.9;
+  border-color: color-mix(in srgb, var(--xiao-gold) 62%, transparent);
+  border-style: dashed;
+  animation: xiao-ring-spin 800ms linear infinite;
+}
+
+.xiao-companion[data-state='sending'] .xiao-companion__spark {
+  opacity: 0.85;
+  animation: xiao-spark-pulse 1.2s ease-in-out infinite;
+}
+
+.xiao-companion[data-state='running'] .xiao-companion__ring {
+  opacity: 0.95;
+  border-color: color-mix(in srgb, var(--xiao-jade) 66%, transparent);
+  border-top-color: transparent;
+  animation: xiao-ring-spin 800ms linear infinite;
+}
+
+.xiao-companion[data-state='running'] .xiao-companion__sprite img {
+  animation: xiao-companion-hover-breathe 3.2s ease-in-out infinite;
+}
+
+.xiao-companion[data-state='completed'] .xiao-companion__ring {
+  opacity: 1;
+  border-color: color-mix(in srgb, var(--xiao-jade) 76%, transparent);
+  animation: xiao-ring-collapse 420ms ease-out;
+}
+
+.xiao-companion[data-state='completed'] .xiao-companion__sprite img {
+  animation: xiao-companion-hop 420ms ease-out;
+}
+
+.xiao-companion[data-state='ended'] .xiao-companion__ring,
+.xiao-companion[data-state='stopped'] .xiao-companion__ring {
+  opacity: 0.5;
+  border-color: color-mix(in srgb, var(--xiao-muted) 62%, transparent);
+}
+
+.xiao-companion[data-state='failed'] .xiao-companion__ring {
+  opacity: 0.95;
+  border-color: color-mix(in srgb, var(--dsw-alias-state-error-primary, #b7443a) 78%, transparent);
+}
+
+.xiao-companion[data-state='failed'] .xiao-companion__bubble {
+  color: var(--dsw-alias-state-error-primary, #b7443a);
+}
+
+.xiao-companion[data-state='awaiting-input'] .xiao-companion__ring {
+  opacity: 0.8;
+  border-color: color-mix(in srgb, var(--xiao-gold) 58%, transparent);
+  border-style: dotted;
+}
+
+.xiao-companion-cluster[data-open='true'] .xiao-companion__ring {
+  opacity: 0.9;
+  border-color: color-mix(in srgb, var(--xiao-jade) 72%, transparent);
+}
+
+/* Low balance: a local warning only — no global recolour, no speed change. */
+.xiao-overlay[data-overheated='true'] .xiao-companion__ring {
+  border-color: color-mix(in srgb, var(--xiao-gold) 74%, transparent);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--xiao-gold) 34%, transparent);
+}
+
+.xiao-overlay[data-overheated='true'] .xiao-companion__bubble {
+  color: color-mix(in srgb, var(--xiao-gold) 78%, var(--xiao-ink));
+}
+
+/* --- panel --------------------------------------------------------------- */
+
+.xiao-panel {
+  position: absolute;
+  z-index: 30;
+  bottom: calc(100% + 14px);
+  left: 50%;
+  width: min(260px, calc(100vw - 24px));
+  max-height: min(72vh, 320px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 14px 15px 12px;
+  color: var(--xiao-ink);
+  background: var(--dsw-alias-bg-overlay, #f8fbfa);
+  border: 1px solid var(--xiao-line);
+  border-radius: 14px;
+  box-shadow: 0 18px 40px rgba(6, 24, 22, 0.22);
+  transform: translateX(-50%);
+  pointer-events: auto;
+  animation: xiao-panel-in 180ms ease-out;
+}
+
+.xiao-companion-cluster[data-bubble-side='right'] .xiao-panel {
+  left: calc(100% + 14px);
+  right: auto;
+  transform: none;
+}
+
+.xiao-companion-cluster[data-bubble-side='left'] .xiao-panel {
+  left: auto;
+  right: calc(100% + 14px);
+  transform: none;
+}
+
+.xiao-companion-cluster[data-bubble-vertical='down'] .xiao-panel {
+  top: calc(100% + 14px);
+  bottom: auto;
+}
+
+.xiao-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.xiao-panel__provider {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--xiao-muted);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.xiao-panel__diamond {
+  width: 7px;
+  height: 7px;
+  background: var(--xiao-jade);
+  transform: rotate(45deg);
+}
+
+.xiao-panel__actions {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.xiao-panel__refresh,
+.xiao-panel__close {
+  width: 22px;
+  height: 22px;
+  color: var(--xiao-muted);
+  font-size: 13px;
+  line-height: 1;
+  appearance: none;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.xiao-panel__refresh:hover:not(:disabled),
+.xiao-panel__close:hover {
+  color: var(--xiao-ink);
+  background: color-mix(in srgb, var(--xiao-jade) 12%, transparent);
+  border-color: color-mix(in srgb, var(--xiao-jade) 30%, transparent);
+}
+
+.xiao-panel__refresh:disabled {
+  opacity: 0.45;
+  cursor: progress;
+}
+
+.xiao-panel__state {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid color-mix(in srgb, var(--xiao-line) 70%, transparent);
+}
+
+.xiao-panel__state-label {
+  color: var(--xiao-muted);
+  font-size: 11px;
+}
+
+.xiao-panel__state-value {
+  font-size: 13px;
+  font-weight: 620;
+}
+
+.xiao-panel__state-value[data-state='failed'] { color: var(--dsw-alias-state-error-primary, #b7443a); }
+.xiao-panel__state-value[data-state='completed'] { color: var(--dsw-alias-state-success-primary, #2c8a5f); }
+.xiao-panel__state-value[data-state='running'] { color: var(--xiao-jade-deep); }
+
+.xiao-panel__balance {
+  display: grid;
+  gap: 3px;
+  margin-top: 11px;
+}
+
+.xiao-panel__balance-label {
+  color: var(--xiao-muted);
+  font-size: 11px;
+}
+
+.xiao-panel__amount {
+  font-size: 22px;
+  font-weight: 620;
+  letter-spacing: -0.02em;
+}
+
+.xiao-panel__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--xiao-muted);
+  font-size: 11px;
+}
+
+.xiao-panel__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--xiao-muted);
+}
+
+.xiao-panel[data-balance='ready'] .xiao-panel__dot { background: var(--dsw-alias-state-success-primary, #2c8a5f); }
+.xiao-panel[data-balance='error'] .xiao-panel__dot { background: var(--dsw-alias-state-error-primary, #b7443a); }
+.xiao-panel[data-balance='limited'] .xiao-panel__dot,
+.xiao-panel[data-balance='stale'] .xiao-panel__dot { background: var(--xiao-gold); }
+
+.xiao-panel__note,
+.xiao-panel__note--muted {
+  display: block;
+  margin: 8px 0 0;
+  color: var(--xiao-muted);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.xiao-panel__note--muted {
+  margin-top: 10px;
+}
+
+.xiao-panel__refresh-status {
+  display: block;
+  min-height: 14px;
+  margin-top: 6px;
+  color: var(--xiao-jade-deep);
+  font-size: 11px;
+}
+
+/* --- click wind trace ---------------------------------------------------- */
+
+.xiao-ripple-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 42;
+  pointer-events: none;
+}
+
+.xiao-wind-ripple {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 1px;
+  height: 1px;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* Author display rules must never override the pool's hidden lifecycle state. */
+.xiao-wind-ripple[hidden] {
+  display: none !important;
+}
+
+.xiao-wind-ripple > i {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.xiao-wind-ripple__core {
+  width: 30px;
+  height: 30px;
+  margin: -15px 0 0 -15px;
+  background: linear-gradient(135deg, var(--xiao-jade), color-mix(in srgb, var(--xiao-jade) 40%, transparent));
+  box-shadow: 0 0 30px color-mix(in srgb, var(--xiao-jade) 100%, transparent);
+}
+
+.xiao-wind-ripple__ring {
+  width: 246px;
+  height: 246px;
+  margin: -123px 0 0 -123px;
+  border: 3px solid color-mix(in srgb, var(--xiao-jade) 100%, transparent);
+  border-radius: 50%;
+}
+
+.xiao-wind-ripple__arc {
+  width: 162px;
+  height: 66px;
+  margin: -33px 0 0 -81px;
+  border-top: 3px solid color-mix(in srgb, var(--xiao-jade) 92%, transparent);
+  border-radius: 50%;
+  transform-origin: center;
+}
+
+.xiao-wind-ripple__arc--two {
+  border-top-color: color-mix(in srgb, var(--xiao-violet) 84%, transparent);
+}
+
+.xiao-wind-ripple__fragment {
+  width: 9px;
+  height: 9px;
+  margin: -4.5px 0 0 -4.5px;
+  background: color-mix(in srgb, var(--xiao-jade) 100%, white 0%);
+}
+
+/* --- sidebar brand ------------------------------------------------------- */
+
+.xiao-brand-shell {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.xiao-brand-mark {
+  position: relative;
+  display: block;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 0 rgba(6, 24, 22, 0.28));
+}
+
+.xiao-brand-shell__halo,
+.xiao-brand-shell__ring,
+.xiao-brand-shell__wind {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.xiao-brand-shell__halo {
+  background: radial-gradient(circle, color-mix(in srgb, var(--xiao-jade, #35c4a6) 24%, transparent), transparent 68%);
+}
+
+.xiao-brand-shell__ring {
+  inset: -8%;
+  border: 1px solid color-mix(in srgb, var(--xiao-jade, #35c4a6) 42%, transparent);
+  border-left-color: transparent;
+  animation: xiao-ring-spin 3s linear infinite;
+}
+
+.xiao-brand-shell__wind {
+  inset: 6% -14%;
+  border-radius: 50%;
+  border-top: 1px solid color-mix(in srgb, var(--xiao-gold, #b8934a) 38%, transparent);
+  transform: rotate(-24deg);
+}
+
+.xiao-brand-shell--hero {
+  filter: drop-shadow(0 10px 22px color-mix(in srgb, var(--xiao-jade, #35c4a6) 22%, transparent));
+}
+
+.xiao-sidebar-brand-name {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.xiao-sidebar-brand-name strong {
+  font-size: 13px;
+  font-weight: 680;
+  letter-spacing: 0.04em;
+}
+
+.xiao-sidebar-brand-name small {
+  color: color-mix(in srgb, var(--xiao-gold, #b8934a) 62%, currentColor);
+  font-size: 7px;
+  letter-spacing: 0.14em;
+  opacity: 0.88;
+}
+
+/* --- interaction status -------------------------------------------------- */
+
+.xiao-interaction-status {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  z-index: 18;
+  padding: 4px 10px;
+  color: var(--xiao-muted);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  background: color-mix(in srgb, var(--dsw-alias-bg-overlay, #f8fbfa) 82%, transparent);
+  border: 1px solid color-mix(in srgb, var(--xiao-line) 60%, transparent);
+  border-radius: 999px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.xiao-interaction-status:empty {
+  display: none;
+}
+
+/* --- settings ------------------------------------------------------------ */
+
+.xiao-settings {
+  --xiao-jade: var(--dsw-alias-brand-primary, #1f8f78);
+  display: grid;
+  gap: 16px;
+  padding: 4px 2px 20px;
+  color: var(--dsw-alias-label-primary);
+}
+
+.xiao-settings[data-pending='true'] {
+  cursor: progress;
+}
+
+.xiao-settings__header {
+  position: relative;
+  padding: 15px 17px;
+  overflow: hidden;
+  background: var(--dsw-alias-bg-layer-2);
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 14px;
+}
+
+.xiao-settings__banner {
+  position: absolute;
+  top: -18%;
+  right: -3%;
+  width: min(230px, 40%);
+  height: 136%;
+  object-fit: cover;
+  opacity: 0.34;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to left, black 8%, rgba(0, 0, 0, 0.4) 58%, transparent 100%);
+  mask-image: linear-gradient(to left, black 8%, rgba(0, 0, 0, 0.4) 58%, transparent 100%);
+}
+
+.xiao-settings__header > *:not(.xiao-settings__banner) {
+  position: relative;
+  z-index: 1;
+}
+
+.xiao-settings__kicker {
+  display: block;
+  color: color-mix(in srgb, var(--xiao-jade) 68%, var(--dsw-alias-label-primary));
+  font-size: 10px;
+  font-weight: 680;
+  letter-spacing: 0.2em;
+}
+
+.xiao-settings__title {
+  margin: 8px 0 6px;
+  font-size: 19px;
+  font-weight: 620;
+}
+
+.xiao-settings__description {
+  margin: 0;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.xiao-settings__version {
+  position: absolute;
+  top: 2px;
+  right: 0;
+  color: var(--dsw-alias-label-tertiary);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+.xiao-live-preview {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(180px, 42%);
+  gap: 14px;
+  align-items: center;
+  min-height: 168px;
+  padding: 14px 16px;
+  overflow: hidden;
+  background: var(--dsw-alias-bg-layer-2);
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 14px;
+}
+
+.xiao-live-preview__copy {
+  display: grid;
+  gap: 5px;
+  position: relative;
+  z-index: 2;
+}
+
+.xiao-live-preview__copy strong {
+  font-size: 15px;
+  font-weight: 620;
+}
+
+.xiao-live-preview__copy span {
+  color: var(--dsw-alias-label-secondary);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.xiao-live-preview__eyebrow {
+  color: color-mix(in srgb, var(--xiao-jade) 70%, var(--dsw-alias-label-primary)) !important;
+  font-size: 9px !important;
+  letter-spacing: 0.18em;
+}
+
+.xiao-live-preview__stage {
+  position: relative;
+  height: 168px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: radial-gradient(circle at 72% 24%, color-mix(in srgb, var(--xiao-jade) 16%, transparent), transparent 68%);
+}
+
+.xiao-live-preview__glow {
+  position: absolute;
+  inset: auto auto -30% -10%;
+  width: 60%;
+  height: 70%;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--xiao-jade) 18%, transparent);
+  filter: blur(18px);
+}
+
+.xiao-live-preview__wind {
+  position: absolute;
+  top: 26%;
+  left: 6%;
+  width: 46%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--xiao-jade) 52%, transparent), transparent);
+}
+
+.xiao-live-preview__hero {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+  opacity: 0.88;
+  transition: transform 300ms ease-out, opacity 300ms ease-out;
+}
+
+.xiao-live-preview[data-character='false'] .xiao-live-preview__hero {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.xiao-live-preview[data-intensity='immersive'] .xiao-live-preview__hero {
+  opacity: 1;
+}
+
+.xiao-live-preview[data-intensity='minimal'] .xiao-live-preview__hero {
+  opacity: 0.55;
+}
+
+.xiao-live-preview[data-opacity='low'] .xiao-live-preview__hero {
+  opacity: 0.62;
+}
+
+.xiao-live-preview[data-opacity='high'] .xiao-live-preview__hero {
+  opacity: 1;
+}
+
+.xiao-live-preview[data-variant='celebration'] .xiao-live-preview__hero {
+  object-position: center 58%;
+  position: relative;
+  inset: auto;
+  display: block;
+  width: auto;
+  max-width: 100%;
+  margin-inline: auto;
+  border-radius: 20px;
+  corner-shape: round;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+.xiao-live-preview[data-ornament='false'] .xiao-live-preview__wind {
+  display: none;
+}
+
+.xiao-settings__section {
+  display: grid;
+  gap: 10px;
+}
+
+.xiao-settings__section--last {
+  padding-bottom: 6px;
+}
+
+.xiao-settings__section-body {
+  display: grid;
+  gap: 8px;
+}
+
+.xiao-section-heading {
+  display: grid;
+  gap: 3px;
+}
+
+.xiao-section-heading__eyebrow {
+  color: color-mix(in srgb, var(--xiao-jade) 70%, var(--dsw-alias-label-primary));
+  font-size: 9px;
+  letter-spacing: 0.18em;
+}
+
+.xiao-section-heading__title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 620;
+}
+
+.xiao-section-heading__description {
+  color: var(--dsw-alias-label-secondary);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.xiao-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+  padding: 9px 11px;
+  text-align: left;
+  color: inherit;
+  appearance: none;
+  background: var(--dsw-alias-bg-layer-2);
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 140ms ease-out, background-color 140ms ease-out;
+}
+
+.xiao-toggle:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--xiao-jade) 42%, var(--dsw-alias-border-l2));
+}
+
+.xiao-toggle:focus-visible {
+  outline: 2px solid var(--xiao-jade);
+  outline-offset: 2px;
+}
+
+.xiao-toggle:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.xiao-toggle__copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.xiao-toggle__label {
+  font-size: 12px;
+  font-weight: 560;
+}
+
+.xiao-toggle__description {
+  color: var(--dsw-alias-label-secondary);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.xiao-toggle__track {
+  position: relative;
+  flex: none;
+  width: 34px;
+  height: 20px;
+  background: var(--dsw-alias-bg-layer-3);
+  border: 1px solid var(--dsw-alias-border-l3);
+  border-radius: 999px;
+  transition: background-color 160ms ease-out, border-color 160ms ease-out;
+}
+
+.xiao-toggle__track::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  background: var(--dsw-alias-label-tertiary);
+  border-radius: 50%;
+  transition: transform 160ms cubic-bezier(0.22, 0.68, 0.24, 1), background-color 160ms ease-out;
+}
+
+.xiao-toggle[aria-checked='true'] .xiao-toggle__track {
+  background: color-mix(in srgb, var(--xiao-jade) 34%, transparent);
+  border-color: color-mix(in srgb, var(--xiao-jade) 62%, transparent);
+}
+
+.xiao-toggle[aria-checked='true'] .xiao-toggle__track::after {
+  transform: translateX(14px);
+  background: var(--xiao-jade);
+}
+
+.xiao-choice {
+  display: grid;
+  gap: 5px;
+}
+
+.xiao-choice__label {
+  color: var(--dsw-alias-label-secondary);
+  font-size: 11px;
+}
+
+.xiao-choice__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.xiao-choice__button {
+  padding: 5px 11px;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 11px;
+  appearance: none;
+  background: var(--dsw-alias-bg-layer-2);
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 140ms ease-out, border-color 140ms ease-out, background-color 140ms ease-out;
+}
+
+.xiao-choice__button:hover:not(:disabled) {
+  color: var(--dsw-alias-label-primary);
+  border-color: color-mix(in srgb, var(--xiao-jade) 40%, var(--dsw-alias-border-l2));
+}
+
+.xiao-choice__button[aria-pressed='true'] {
+  color: color-mix(in srgb, var(--xiao-jade) 76%, var(--dsw-alias-label-primary));
+  background: color-mix(in srgb, var(--xiao-jade) 14%, transparent);
+  border-color: color-mix(in srgb, var(--xiao-jade) 58%, transparent);
+}
+
+.xiao-choice__button:focus-visible {
+  outline: 2px solid var(--xiao-jade);
+  outline-offset: 2px;
+}
+
+.xiao-choice__button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.xiao-action {
+  padding: 6px 13px;
+  color: var(--dsw-alias-label-primary);
+  font-size: 11px;
+  appearance: none;
+  background: var(--dsw-alias-bg-layer-2);
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+.xiao-action:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--xiao-jade) 50%, var(--dsw-alias-border-l2));
+}
+
+.xiao-action[data-tone='danger'] {
+  color: var(--dsw-alias-state-error-primary);
+  border-color: color-mix(in srgb, var(--dsw-alias-state-error-primary) 56%, transparent);
+}
+
+.xiao-action[data-tone='quiet'] {
+  color: var(--dsw-alias-label-secondary);
+}
+
+.xiao-action:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.xiao-settings__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.xiao-settings__hint {
+  margin: 0;
+  color: var(--dsw-alias-label-tertiary);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.xiao-settings__notice {
+  margin: 0;
+  padding: 7px 11px;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 11px;
+  background: color-mix(in srgb, var(--xiao-jade) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--xiao-jade) 26%, transparent);
+  border-radius: 9px;
+}
+
+.xiao-settings__error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0;
+  padding: 7px 11px;
+  color: var(--dsw-alias-state-error-primary);
+  font-size: 11px;
+  background: color-mix(in srgb, var(--dsw-alias-state-error-primary) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--dsw-alias-state-error-primary) 32%, transparent);
+  border-radius: 9px;
+}
+
+.xiao-settings__details {
+  display: grid;
+  gap: 8px;
+  padding-top: 2px;
+}
+
+.xiao-settings__details summary {
+  color: var(--dsw-alias-label-secondary);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.xiao-settings__details-body {
+  display: grid;
+  gap: 8px;
+  padding-top: 8px;
+}
+
+/* --- animation ----------------------------------------------------------- */
+
+@keyframes xiao-hero-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.018) translateY(-4.5px); }
+}
+
+@keyframes xiao-companion-float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-9px) scale(1.03); }
+}
+
+@keyframes xiao-companion-hop {
+  0% { transform: translateY(0) scale(1); }
+  35% { transform: translateY(-21px) scale(1.09); }
+  70% { transform: translateY(0) scale(0.97); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+@keyframes xiao-companion-hover-breathe {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes xiao-ring-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes xiao-ring-collapse {
+  0% { transform: scale(1.48); opacity: 0; }
+  60% { transform: scale(0.94); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.9; }
+}
+
+@keyframes xiao-spark-pulse {
+  0%, 100% { opacity: 0; transform: scale(0.4); }
+  50% { opacity: 1; transform: scale(1.6); }
+}
+
+@keyframes xiao-mote-drift {
+  0% { transform: translate3d(0, 0, 0); opacity: calc(var(--xiao-mote-opacity) * 0.15); }
+  50% { transform: translate3d(calc(var(--xiao-mote-drift) * 0.5), -54px, 0); opacity: min(1, calc(var(--xiao-mote-opacity) * 2)); }
+  100% { transform: translate3d(var(--xiao-mote-drift), -102px, 0); opacity: 0; }
+}
+
+@keyframes xiao-panel-in {
+  from { opacity: 0; translate: 0 15px; scale: 0.92; }
+  to { opacity: 1; translate: 0 0; scale: 1; }
+}
+
+@keyframes xiao-nav-pulse {
+  0% { box-shadow: inset 6px 0 0 0 var(--dsw-alias-brand-primary, #35c4a6); }
+  100% { box-shadow: inset 6px 0 0 0 transparent; }
+}
+
+/* --- lifecycle gates ----------------------------------------------------- */
+
+.xiao-overlay[data-hidden='true'] *,
+.xiao-overlay[data-reduced='true'] .xiao-mote {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xiao-overlay *,
+  .xiao-live-preview *,
+  .xiao-brand-shell__ring {
+    animation: none !important;
+  }
+
+  .xiao-hero-frame,
+  .xiao-welcome,
+  .xiao-companion-cluster {
+    transition-duration: 80ms !important;
+  }
+}
+
+/* --- responsive ---------------------------------------------------------- */
+
+@media (max-width: 1180px) {
+  .xiao-welcome {
+    left: clamp(270px, 20vw, 380px);
+    width: min(400px, 40vw);
+  }
+
+  .xiao-hero-frame {
+    width: clamp(210px, 24vw, 320px);
+  }
+}
+
+@media (max-width: 960px) {
+  .xiao-welcome {
+    top: 20%;
+    left: 8vw;
+    width: min(420px, 76vw);
+  }
+
+  .xiao-overlay[data-page-phase='entering-hero'] .xiao-hero-frame,
+  .xiao-overlay[data-page-phase='hero'] .xiao-hero-frame {
+    transform: translate3d(calc(var(--xiao-parallax-x) - 2vw), calc(var(--xiao-parallax-y) - 26vh), 0) scale(1.06);
+    opacity: 0.62;
+  }
+
+  .xiao-hero-frame {
+    width: clamp(180px, 34vw, 260px);
+  }
+
+  .xiao-ornament--nuo {
+    opacity: 0.18;
+  }
+
+  .xiao-glow--violet {
+    display: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .xiao-welcome {
+    top: 16%;
+  }
+
+  .xiao-welcome h1 {
+    font-size: clamp(26px, 7vw, 34px);
+  }
+
+  .xiao-overlay[data-page-phase='entering-hero'] .xiao-hero-frame,
+  .xiao-overlay[data-page-phase='hero'] .xiao-hero-frame {
+    transform: translate3d(calc(var(--xiao-parallax-x) - 1vw), calc(var(--xiao-parallax-y) - 20vh), 0) scale(0.88);
+    opacity: 0.34;
+  }
+
+  .xiao-ornament--cloud,
+  .xiao-wind-lines__line--two {
+    display: none;
+  }
+
+  .xiao-live-preview {
+    grid-template-columns: minmax(0, 1fr) minmax(112px, 36%);
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .xiao-live-preview__stage { height: 128px; }
+}
+
+@media (max-height: 720px) {
+  .xiao-overlay[data-page-phase='entering-hero'] .xiao-hero-frame,
+  .xiao-overlay[data-page-phase='hero'] .xiao-hero-frame {
+    transform: translate3d(calc(var(--xiao-parallax-x) - 2vw), calc(var(--xiao-parallax-y) - 26vh), 0) scale(1.04);
+  }
+}
+

@@ -1,0 +1,133 @@
+/* N3kOk0/dsh-acrylic — lib/client.js
+   fetched 2026-10-05 from https://raw.githubusercontent.com/N3kOk0/dsh-acrylic/main/lib/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+Injected board container carrying no class name; the data attributes are its only stable anchors. Verified rule on this install: `[data-dsh-taskboard-view]{box-sizing:border-box;background:var(--dsw-alias-bg-base);flex-direction:column;width:100%;min-width:0;height:100%;min-height:0;display:flex;container:...}` — position: STATIC, so the stylesheet supplies position: relative.
+
+
+  position:relative;
+}
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  background-repeat:repeat;
+  background-size:160px 160px;
+}
+
+/* ── The conversation header overlays its scroll area ────────────────────────
+   Without this the header's acrylic has nothing to blur but the page: the scroll
+   container is a SIBLING that starts below the header, so conversation content never
+   passes behind the glass.
+
+   Lifting the header out of the flow lets the scroller fill the column, and the
+   scroller reserves the header's height so its first line still starts below it. The
+   height is published as a custom property by the client half, because the product
+   has three variants — 76px normally, and min-height:0 for both the tabless and the
+   blank state — so a literal would leave a gap in two of them.
+
+   A REAL z-index IS REQUIRED HERE, and the first attempt's reasoning against one was
+   wrong in a way that is worth recording. A positioned element with z-index: auto
+   does paint above in-flow content — but the conversation content inside the scroll
+   area is POSITIONED TOO, so it enters the same painting layer and the tie is broken by
+   DOCUMENT ORDER, where the scroller comes after the header. The header lost.
+
+   The worry was that a z-index would create a stacking context and trap the header's
+   own popup menus. Trapping is real, but it is answered by the VALUE rather than by
+   avoiding it: the menus live inside this context, so lifting the context lifts them
+   with it.
+
+   isolation on the panel is consequently required again, and the header's
+   noIsolation opt-out is gone. Without it the material's z-index: -1 escapes into
+   the outer context, lands below the scrolled content, and the glass is covered by the
+   very content it exists to blur. */
+html body [class$="Dc7zOa_header"],
+html body [class*="Dc7zOa_header "],
+html body[data-ds-dark-theme] [class$="Dc7zOa_header"],
+html body[data-ds-dark-theme] [class*="Dc7zOa_header "]{
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  /* Above the conversation column and the composer, below the product's own overlays
+     (its settings dialog sits at z-index 1000). */
+  z-index:20;
+}
+
+html body [class$="Dc7zOa_scrollBody"],
+html body [class*="Dc7zOa_scrollBody "],
+html body[data-ds-dark-theme] [class$="Dc7zOa_scrollBody"],
+html body[data-ds-dark-theme] [class*="Dc7zOa_scrollBody "]{
+  padding-top:var(--dsh-win10-header-h, 76px);
+}
+
+/* ── Settings dialog: the surface moves off the panel, onto the content ──────
+   The dialog's nav rail is an acrylic panel of its own (see ACRYLIC_PANELS), but
+   its backdrop was the dialog PANEL, which the product paints opaquely with
+   --dsw-alias-bg-layer-2. Blurring a flat colour returns that colour, so the rail
+   got its tint and nothing else.
+
+   Moving the fill to the content area fixes it at the source: the panel becomes
+   fully transparent, the rail's backdrop is now the PAGE behind the dialog, and
+   the acrylic has something to actually blur. The dialog keeps its surface — it is
+   simply painted by the content column instead of by the frame around both.
+
+   The selectors are class-token boundaries for the same reason as the rail's:
+   SettingsRoot has panel and content alongside locals that merely START with
+   them, and [class*="wCInkW_panel"] would be a substring anchor. */
+html body [class$="wCInkW_panel"],
+html body [class*="wCInkW_panel "],
+html body[data-ds-dark-theme] [class$="wCInkW_panel"],
+html body[data-ds-dark-theme] [class*="wCInkW_panel "]{
+  background-color:transparent!important;
+}
+
+html body [class$="wCInkW_content"],
+html body [class*="wCInkW_content "],
+html body[data-ds-dark-theme] [class$="wCInkW_content"],
+html body[data-ds-dark-theme] [class*="wCInkW_content "]{
+  /* The dialog's own surface, at the token the panel used to carry. Mode-specific
+     automatically: --dsw-alias-bg-layer-2 is redeclared per theme by tokenLayer. */
+  background-color:var(--dsw-alias-bg-layer-2)!important;
+}
+
+
+ div#root (verified in the asar,
+   and the app's own onboarding code does document.getElementById("root")).
+   The layer must live INSIDE #root: an element behind the whole app is hidden by
+   #root's own opaque canvas paint, which is why a body-level layer shows nothing. */
+#root{
+  isolation:isolate;
+}
+  content:"";
+  position:absolute;
+  z-index:-1;
+  pointer-events:none;
+
+html body[data-ds-dark-theme] #root::before{
+}
+
+
+
+  html body .md-code-block{--dsl-code-block-background:rgba(247,247,247,0.97)}
+  html body[data-ds-dark-theme] .md-code-block{--dsl-code-block-background:rgba(37,37,37,0.97)}
+  html body [class*="_output"]{background-color:rgba(247,247,247,0.97)!important}
+  html body[data-ds-dark-theme] [class*="_output"]{background-color:rgba(37,37,37,0.97)!important}
+  html body [class$="_file"]{--deliverable-fill:rgba(255,255,255,0.97)}
+  html body[data-ds-dark-theme] [class$="_file"]{--deliverable-fill:rgba(43,43,43,0.97)}
+}
+
+
+/* ── Fluent focus ring: square, 2px, 1px offset ─────────────────────────── */
+html body :focus-visible{outline:2px solid var(--dsw-alias-brand-primary);outline-offset:1px}
+html body ::selection{background:var(--dsw-specific-bubble-highlight);color:var(--dsw-alias-label-primary)}
+
+/* Win10 dark mode fills accent buttons with a LIGHT blue (#4cc2ff), so the
+   button's own text must be dark. This is scoped to the dark theme and to
+   button-ish roles only, because a blanket [class*="primary"] rule would also
+   repaint non-accent surfaces that happen to carry "primary" in their name. */
+html body[data-ds-dark-theme] button[class*="primary"],
+html body[data-ds-dark-theme] [role="button"][class*="primary"],
+html body[data-ds-dark-theme] a[class*="primary"]{color:var(--dsw-alias-label-primary-foreground)}
+html body[data-ds-dark-theme] button[class*="primary"] svg,
+html body[data-ds-dark-theme] [role="button"][class*="primary"] svg{color:currentColor;fill:currentColor}

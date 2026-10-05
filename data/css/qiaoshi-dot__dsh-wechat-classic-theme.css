@@ -1,0 +1,928 @@
+/* qiaoshi-dot/dsh-wechat-classic-theme — lib/client.js
+   fetched 2026-10-05 from https://raw.githubusercontent.com/qiaoshi-dot/dsh-wechat-classic-theme/main/lib/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/* Desktop 2.0.17 / upstream client 639ed01, verified from installed bundles.
+   The client sets the real sidebar track to 360 px; only the rail is fixed.
+   Original React controls/slots stay mounted with their original handlers.
+   No transform, isolation, z-index or clipping is added to the sidebar root. */
+
+html[data-dsh-wechat-classic] {
+  --dsh-wechat-rail-width: 72px;
+}
+
+html[data-dsh-wechat-classic] :is(.dshDesktopFrame,.CZPbNW_frame):not([data-sidebar-collapsed]) :is(.dshDesktopSidebarSurface,.CZPbNW_sidebarCol) {
+  background: linear-gradient(90deg, #292e2c 0 72px, #f2f2f2 72px 100%);
+  border-right: 1px solid #dedfdd;
+  overflow: visible;
+}
+
+html[data-dsh-wechat-classic] :is(.dshDesktopFrame,.CZPbNW_frame):not([data-sidebar-collapsed]) .WYye1W_root {
+  position: relative;
+  width: 100% !important;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 0;
+  background: linear-gradient(90deg, #292e2c 0 72px, #f2f2f2 72px 100%);
+  overflow: visible;
+}
+
+/* Desktop's owned frame includes its caption row inside the sidebar height.
+   Upstream's frame instead places the whole root below its own top padding. */
+html[data-dsh-wechat-classic] .dshDesktopFrame[data-desktop-mode="advanced"][data-desktop-platform="win32"]:not([data-sidebar-collapsed]) .WYye1W_root:not(.WYye1W_collapsed) .WYye1W_logoRow {
+  margin-top: 32px;
+}
+html[data-dsh-wechat-classic] .dshDesktopFrame[data-desktop-mode="advanced"][data-desktop-platform="win32"]:not([data-sidebar-collapsed]) .WYye1W_root:not(.WYye1W_collapsed) .WYye1W_regionArea {
+  top: 32px;
+}
+html[data-dsh-wechat-classic] .dshDesktopWindowsCaptionRow {
+  background: #fff;
+}
+/* Paint only; the original pseudo-element retains its native drag contract. */
+html[data-dsh-wechat-classic][data-windows-titlebar] .CZPbNW_frame::before {
+  background: linear-gradient(90deg,
+    #292e2c 0 72px,
+    #f2f2f2 72px var(--dsh-windows-sidebar-width,360px),
+    #fff var(--dsh-windows-sidebar-width,360px) 100%);
+}
+
+/* Grey browsing column: no extra clipping around nested menus/popovers. */
+html[data-dsh-wechat-classic] :is(.dshDesktopFrame,.CZPbNW_frame):not([data-sidebar-collapsed]) .WYye1W_root > .WYye1W_regionArea {
+  position: absolute;
+  inset: 0 0 0 72px;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  padding: 14px 12px 0;
+  background: #f2f2f2;
+  color: #242825;
+  border-left: 1px solid #222824;
+  display: flex;
+  overflow: visible;
+}
+/* More-specific than the generic inset rule, while preserving desktop chrome. */
+html[data-dsh-wechat-classic] .dshDesktopFrame[data-desktop-mode="advanced"][data-desktop-platform="win32"]:not([data-sidebar-collapsed]) .WYye1W_root:not(.WYye1W_collapsed) > .WYye1W_regionArea {
+  top: 32px;
+}
+
+html[data-dsh-wechat-classic] :is(.dshDesktopFrame,.CZPbNW_frame):not([data-sidebar-collapsed]) .WYye1W_root > .WYye1W_logoRow {
+  box-sizing: border-box;
+  width: 72px;
+  height: 62px;
+  margin-bottom: 0;
+  padding: 11px 16px;
+  justify-content: center;
+  overflow: visible;
+}
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) .WYye1W_brand {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  flex: none;
+  padding: 0;
+  justify-content: center;
+  color: #edf2ee;
+}
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) .WYye1W_brandIdentity {
+  justify-content: center;
+  gap: 0;
+}
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) .WYye1W_brandName {
+  display: none;
+}
+html[data-dsh-wechat-classic] .dshDesktopFrame[data-desktop-mode="advanced"][data-desktop-platform="win32"]:not([data-sidebar-collapsed]) .WYye1W_root:not(.WYye1W_collapsed) .WYye1W_toggle {
+  position: absolute;
+  top: 8px;
+  left: 22px;
+  width: 28px;
+  height: 28px;
+  color: #c7d3cb;
+}
+
+html[data-dsh-wechat-classic] :is(.dshDesktopFrame,.CZPbNW_frame):not([data-sidebar-collapsed]) .WYye1W_root > .WYye1W_newSession {
+  align-self: flex-start;
+  flex: none;
+  box-sizing: border-box;
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  margin: 2px 14px 16px;
+  padding: 0;
+  gap: 0;
+  border: 0;
+  border-radius: 9px;
+  background: #3a463d;
+  color: #a0ed7b;
+  overflow: visible;
+}
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) .WYye1W_newSessionContent {
+  width: 44px;
+  gap: 0;
+}
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) :is(.WYye1W_newSessionLabel,.WYye1W_newSessionShortcut) {
+  display: none;
+}
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) .WYye1W_newSessionContent > svg {
+  width: 22px;
+  height: 22px;
+}
+
+html[data-dsh-wechat-classic] :is(.dshDesktopFrame,.CZPbNW_frame):not([data-sidebar-collapsed]) .WYye1W_root > .WYye1W_panelList {
+  box-sizing: border-box;
+  width: 72px;
+  min-height: 44px;
+  flex: 1;
+  margin: 0;
+  padding: 0 14px 12px;
+  gap: 12px;
+  overflow-x: visible;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) .WYye1W_panelRow {
+  box-sizing: border-box;
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  margin: 0;
+  padding: 0;
+  justify-content: center;
+  color: #bcc9c1;
+  border-radius: 9px;
+}
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) .WYye1W_panelTitle {
+  display: none;
+}
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) .WYye1W_panelGlyph svg {
+  width: 22px;
+  height: 22px;
+}
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) .WYye1W_panelRow[aria-current="page"] {
+  background: #3b493f;
+  color: #a0ec7d;
+}
+
+/* Real workspace toolbar. Its search-expanded state remains controlled by
+   the native search button, keyboard shortcut and Lexical-free input. */
+html[data-dsh-wechat-classic] .WYye1W_regionArea .tPVXea_root {
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+html[data-dsh-wechat-classic] .WYye1W_regionArea .tPVXea_sectionHeader {
+  min-height: 40px;
+  height: 40px;
+  margin-top: 0;
+  margin-bottom: 10px;
+  margin-right: 0;
+  padding-left: 2px;
+  gap: 5px;
+}
+html[data-dsh-wechat-classic] .WYye1W_regionArea .tPVXea_sectionLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #4f5852;
+}
+html[data-dsh-wechat-classic] .WYye1W_regionArea .tPVXea_search {
+  background: #fff;
+  border-radius: 6px;
+}
+html[data-dsh-wechat-classic] .WYye1W_regionArea .tPVXea_searchExpanded {
+  border: 1px solid #d8ded9;
+  margin-inline: 0;
+  width: 100%;
+}
+html[data-dsh-wechat-classic] .WYye1W_regionArea .tPVXea_headerActions > button {
+  color: #67746b;
+}
+html[data-dsh-wechat-classic] .WYye1W_regionArea [data-row-key^="workspace:"] {
+  min-height: 34px;
+  color: #5b655e;
+}
+html[data-dsh-wechat-classic] .WYye1W_regionArea [data-row-key^="session:"] {
+  box-sizing: border-box;
+  min-height: 46px;
+  border-radius: 6px;
+  margin-top: 3px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+html[data-dsh-wechat-classic] .WYye1W_regionArea [data-row-key^="session:"][aria-selected="true"] {
+  background: #dcebdd;
+  box-shadow: none;
+  border: 0;
+}
+/* Explicit component foundations keep the optional plugin's controls coherent
+   during stylesheet teardown/reload. Its handlers and measured thumb stay native. */
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) .WYye1W_regionArea .left-filter-strip {
+  --af-accent: #688b6f;
+  --af-primary: #415348;
+  --af-secondary: #737d76;
+  --af-tertiary: #909891;
+  --af-bg: #f2f2f2;
+  --af-surface: #e7eae6;
+  box-sizing: border-box;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 36px;
+  margin: 0 0 5px;
+  padding: 4px 0;
+  gap: 6px;
+  background: #f2f2f2;
+}
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) .WYye1W_regionArea .left-filter-strip .af-seg {
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+  width: auto;
+  height: 28px;
+  padding: 2px;
+  gap: 2px;
+  border: 0;
+  border-radius: 7px;
+  background: #e7eae6;
+  box-shadow: none;
+}
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) .WYye1W_regionArea .left-filter-strip .af-seg-thumb {
+  position: absolute;
+  left: 2px;
+  width: 0;
+  pointer-events: none;
+  top: 2px;
+  bottom: 2px;
+  border: 0;
+  border-radius: 5px;
+  background: #d7e5d8;
+  box-shadow: none;
+}
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) .WYye1W_regionArea .left-filter-strip .af-seg-item {
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+  flex: 1 1 0;
+  min-width: 0;
+  appearance: none;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  margin: 0;
+  font-family: inherit;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  height: 24px;
+  padding: 3px 2px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+  color: #737d76;
+}
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) .WYye1W_regionArea .left-filter-strip .af-seg-item.active {
+  color: #415348;
+  font-weight: 600;
+}
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) .WYye1W_regionArea .left-filter-strip .left-filter-n {
+  margin-left: 2px;
+  font-size: 11px;
+  font-weight: 400;
+  color: #7c867f;
+}
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) .WYye1W_regionArea :is(.left-filter-collapse,.left-filter-hbtn) {
+  box-sizing: border-box;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+  color: #818b83;
+  border-radius: 6px;
+}
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) .WYye1W_regionArea :is(.left-filter-collapse,.left-filter-hbtn) svg { width: 14px; height: 14px; display: block; }
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) .WYye1W_regionArea :is(.left-filter-collapse,.left-filter-hbtn):hover { background: #e5ebe5; color: #526858; }
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) .WYye1W_regionArea .adopt-entry {
+  box-sizing: border-box;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #cbd4cc;
+  border-radius: 50%;
+  background: transparent;
+  color: #818b83;
+  box-shadow: none;
+  cursor: pointer;
+}
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) .WYye1W_regionArea .adopt-entry svg { width: 16px; height: 16px; display: block; }
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) .WYye1W_regionArea .adopt-entry:hover { background: #e5ebe5; color: #526858; }
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) .WYye1W_regionArea :is(.af-seg-item,.left-filter-collapse,.left-filter-hbtn,.adopt-entry):not(:focus-visible) { outline: none; }
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) .WYye1W_regionArea :is(.af-seg-item,.left-filter-collapse,.left-filter-hbtn,.adopt-entry):focus-visible { outline: 2px solid #79a985; outline-offset: 1px; }
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) .WYye1W_regionArea .left-filter-hbtn.on {
+  background: #dce9dc;
+  color: #55745c;
+}
+/* Native title marquee and hover-to-actions remain unchanged. */
+html[data-dsh-wechat-classic] .WYye1W_regionArea [data-row-key^="session:"] ._7VDZUG_title {
+  margin-right: 8px;
+  font-size: 13px;
+  line-height: 20px;
+}
+html[data-dsh-wechat-classic] .WYye1W_regionArea [data-row-key^="session:"] ._7VDZUG_time {
+  font-size: 10px;
+  line-height: 20px;
+  color: #89928b;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* Real bottom controls; footer overlays/tooltips must escape the narrow seat.
+   Scope launchers directly so settings/inventory modal content stays light. */
+html[data-dsh-wechat-classic] :is(.dshDesktopFrame,.CZPbNW_frame):not([data-sidebar-collapsed]) .WYye1W_root > .WYye1W_footArea {
+  box-sizing: border-box;
+  width: 72px;
+  margin-top: auto;
+  padding: 6px 14px 12px;
+  gap: 3px;
+  flex: none;
+  overflow: visible;
+}
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) :is(.WYye1W_footerActions,.WYye1W_settingsArea) {
+  width: 44px;
+  min-width: 0;
+  overflow: visible;
+}
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) [data-slot="sidebar.footer.action"] {
+  display: flex !important;
+  box-sizing: border-box;
+  flex-direction: column;
+  align-items: center;
+  width: 44px;
+  min-width: 0;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  gap: 5px;
+  overflow: visible;
+}
+/* Do not assign width to all children: a child may itself be a Tooltip bubble. */
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) :is([data-cordis-badge],.ZiQlkq_trigger,._0mJWUG_button,._3OAjNW_trigger,.dshMarketLauncher) {
+  box-sizing: border-box;
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 9px;
+  justify-content: center;
+  gap: 0;
+  color: #bcc9c1;
+  background: transparent;
+  flex: none;
+}
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) :is(.fxu7oq_badgeLabel,.fxu7oq_badgeCount,.CFAWpG_triggerLabel,._0mJWUG_label,._3OAjNW_label) {
+  display: none;
+}
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) ._0mJWUG_trigger {
+  display: flex;
+  width: 44px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+}
+/* AccountMenu is the installed settings.launcher occupant. Its menu is a
+   native portal; only its existing trigger/anchor are narrowed here. */
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) ._3OAjNW_root {
+  width: 44px;
+  min-width: 0;
+  flex: none;
+}
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) ._3OAjNW_anchor {
+  width: 44px;
+}
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) .ZiQlkq_triggerRow {
+  width: 44px;
+  margin: 0;
+  gap: 3px;
+  flex-wrap: wrap;
+  overflow: visible;
+}
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) :is(.ZiQlkq_trigger,._0mJWUG_button,[data-cordis-badge]) svg {
+  width: 22px;
+  height: 22px;
+}
+html[data-dsh-wechat-classic] .WYye1W_root:not(.WYye1W_collapsed) :is(.WYye1W_newSession,.WYye1W_panelRow,[data-cordis-badge],.ZiQlkq_trigger,._0mJWUG_button,._3OAjNW_trigger,.dshMarketLauncher):hover {
+  background: #3b453e;
+  color: #a2ed7c;
+}
+
+/* Cost-meter 1.8.0 renders balance/today/peak information in one stack.
+   Keep the complete wide renderer in the grey browsing column. Its slot and
+   footer ancestors are static; the sidebar root supplies this containing box.
+   The bounded card remains scrollable when additional quota rows are enabled. */
+html[data-dsh-wechat-classic] :is(.dshDesktopFrame,.CZPbNW_frame):not([data-sidebar-collapsed]) .WYye1W_root:not(.WYye1W_collapsed):has(.cm-footer-stack) > .WYye1W_regionArea {
+  padding-bottom: 164px;
+}
+html[data-dsh-wechat-classic] :is(.dshDesktopFrame,.CZPbNW_frame):not([data-sidebar-collapsed]) .WYye1W_root:not(.WYye1W_collapsed) .cm-footer-stack {
+  position: absolute;
+  left: 84px;
+  right: 12px;
+  bottom: 12px;
+  box-sizing: border-box;
+  width: auto;
+  min-width: 0;
+  max-width: none;
+  max-height: min(30vh, 140px);
+  margin: 0;
+  padding: 8px 10px;
+  align-items: stretch;
+  gap: 4px;
+  border: 1px solid #dce2dd;
+  border-radius: 8px;
+  background: #f9fbf9;
+  color: #4f5b53;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+html[data-dsh-wechat-classic] :is(.dshDesktopFrame,.CZPbNW_frame):not([data-sidebar-collapsed]) .WYye1W_root:not(.WYye1W_collapsed) .cm-footer-stack > * {
+  flex-shrink: 0;
+  min-width: 0;
+  max-width: 100%;
+}
+html[data-dsh-wechat-classic] :is(.dshDesktopFrame,.CZPbNW_frame):not([data-sidebar-collapsed]) .WYye1W_root:not(.WYye1W_collapsed) .cm-footer-stack :is(.cm-bbox,.cm-foot) {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  padding: 4px 0;
+  border-radius: 0;
+  background: transparent;
+  border: 0;
+  gap: 4px;
+  font-size: 12px;
+  line-height: 18px;
+  color: #4f5b53;
+}
+html[data-dsh-wechat-classic] :is(.dshDesktopFrame,.CZPbNW_frame):not([data-sidebar-collapsed]) .WYye1W_root:not(.WYye1W_collapsed) .cm-footer-stack .cm-foot {
+  height: auto;
+  min-height: 24px;
+  white-space: normal;
+  overflow: visible;
+}
+html[data-dsh-wechat-classic] :is(.dshDesktopFrame,.CZPbNW_frame):not([data-sidebar-collapsed]) .WYye1W_root:not(.WYye1W_collapsed) .cm-footer-stack.compact .cm-bbox {
+  display: flex;
+  flex-direction: column;
+}
+html[data-dsh-wechat-classic] :is(.dshDesktopFrame,.CZPbNW_frame):not([data-sidebar-collapsed]) .WYye1W_root:not(.WYye1W_collapsed) .cm-footer-stack .cm-bbox-head {
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+html[data-dsh-wechat-classic] :is(.dshDesktopFrame,.CZPbNW_frame):not([data-sidebar-collapsed]) .WYye1W_root:not(.WYye1W_collapsed) .cm-footer-stack .cm-mm-row {
+  min-width: 0;
+  gap: 6px;
+  padding: 2px 0;
+}
+html[data-dsh-wechat-classic] :is(.dshDesktopFrame,.CZPbNW_frame):not([data-sidebar-collapsed]) .WYye1W_root:not(.WYye1W_collapsed) .cm-footer-stack :is(.cm-bbox-line,.cm-mm-reset,.cm-note,.cm-hint) {
+  display: block;
+  font-size: 11px;
+  line-height: 16px;
+  color: #748078;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+html[data-dsh-wechat-classic] :is(.dshDesktopFrame,.CZPbNW_frame):not([data-sidebar-collapsed]) .WYye1W_root:not(.WYye1W_collapsed) .cm-footer-stack :is(.cm-bbox-label,.cm-mm-title,.cm-mm-text,.cm-num) {
+  min-width: 0;
+  max-width: 100%;
+  font-size: 12px;
+  line-height: 18px;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  overflow-wrap: anywhere;
+}
+html[data-dsh-wechat-classic] :is(.dshDesktopFrame,.CZPbNW_frame):not([data-sidebar-collapsed]) .WYye1W_root:not(.WYye1W_collapsed) .cm-footer-stack .cm-bbox-bar {
+  min-width: 0;
+}
+html[data-dsh-wechat-classic] :is(.dshDesktopFrame,.CZPbNW_frame):not([data-sidebar-collapsed]) .WYye1W_root:not(.WYye1W_collapsed) .cm-footer-stack :is(.cm-peak-strip,.cm-peak-classic) {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 0;
+  max-width: 100%;
+  margin: 2px 0;
+  padding: 0;
+  gap: 6px;
+}
+html[data-dsh-wechat-classic] :is(.dshDesktopFrame,.CZPbNW_frame):not([data-sidebar-collapsed]) .WYye1W_root:not(.WYye1W_collapsed) .cm-footer-stack :is(.cm-peak-chip,.cm-peak-classic-chip) {
+  box-sizing: border-box;
+  max-width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font-size: 11px;
+  line-height: 16px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+html[data-dsh-wechat-classic] :is(.dshDesktopFrame,.CZPbNW_frame):not([data-sidebar-collapsed]) .WYye1W_root:not(.WYye1W_collapsed) .cm-footer-stack .cm-peak-track {
+  flex: none;
+  width: 100%;
+  height: 6px;
+}
+html[data-dsh-wechat-classic] :is(.dshDesktopFrame,.CZPbNW_frame):not([data-sidebar-collapsed]) .WYye1W_root:not(.WYye1W_collapsed) .cm-footer-stack .cm-simple-summary {
+  position: static;
+  margin: 0;
+  padding: 4px 0;
+  background: transparent;
+}
+
+/* Native collapsed mode owns its 56 px track and expand-button placement.
+   Paint that mode separately without overriding its geometry or cost renderer. */
+html[data-dsh-wechat-classic] :is(.dshDesktopFrame,.CZPbNW_frame)[data-sidebar-collapsed] :is(.dshDesktopSidebarSurface,.CZPbNW_sidebarCol),
+html[data-dsh-wechat-classic] :is(.dshDesktopFrame,.CZPbNW_frame)[data-sidebar-collapsed] .WYye1W_root.WYye1W_collapsed {
+  background: #292e2c;
+  color: #bcc9c1;
+}
+html[data-dsh-wechat-classic] :is(.dshDesktopFrame,.CZPbNW_frame)[data-sidebar-collapsed] .WYye1W_root.WYye1W_collapsed :is(.WYye1W_toggle,.WYye1W_newSession,.WYye1W_panelRow,[data-cordis-badge],.ZiQlkq_trigger,._0mJWUG_button,._3OAjNW_trigger,.dshMarketLauncher) {
+  color: #bcc9c1;
+  background: transparent;
+}
+html[data-dsh-wechat-classic] :is(.dshDesktopFrame,.CZPbNW_frame)[data-sidebar-collapsed] .WYye1W_root.WYye1W_collapsed .WYye1W_brand {
+  color: #edf2ee;
+}
+html[data-dsh-wechat-classic] :is(.dshDesktopFrame,.CZPbNW_frame)[data-sidebar-collapsed] .WYye1W_root.WYye1W_collapsed :is(.WYye1W_newSession,.WYye1W_panelRow,[data-cordis-badge],.ZiQlkq_trigger,._0mJWUG_button,._3OAjNW_trigger,.dshMarketLauncher):hover,
+html[data-dsh-wechat-classic] :is(.dshDesktopFrame,.CZPbNW_frame)[data-sidebar-collapsed] .WYye1W_root.WYye1W_collapsed .WYye1W_panelRow[aria-current="page"] {
+  background: #3b493f;
+  color: #a0ec7d;
+}
+
+/* Client should reversibly add title=aria-label to rail launchers whose native
+   Tooltip is disabled by wide=true. Never change aria-label or onClick.
+   Cost-meter receives the original wide=true props when expanded so all of
+   its balance, budget, today and peak details remain available in the card. */
+
+/* Installed workspace browser appends this 24 px fade inside its tree body.
+   Keep the native overlay/scroll behavior, but end on the grey list surface. */
+html[data-dsh-wechat-classic] :is(.dshDesktopFrame,.CZPbNW_frame):not([data-sidebar-collapsed]) .WYye1W_root:not(.WYye1W_collapsed) .WYye1W_regionArea .tPVXea_fade {
+  background: linear-gradient(to bottom, rgba(242, 242, 242, 0), #f2f2f2);
+}
+
+/* Scoped skin for DSH Desktop 2.0.17 / Harness UI 0.2.0-rc.2.
+   Only Pg4CGa, bfNlQW, uWtHQG and _sueoW below are version-specific mappings. */
+html[data-dsh-wechat-classic] {
+  --wechat-accent: #078b43;
+  --wechat-accent-hover: #067b3b;
+  --wechat-message-user: #95ec69;
+  --wechat-message-assistant: #fafbfa;
+  --wechat-message-border: #e7ebe7;
+}
+
+/* The installed row kind is assistant-step. Reasoning-only seats remain plain. */
+html[data-dsh-wechat-classic] [data-chat-flow-kind="assistant-step"]:not([data-chat-group-part="reasoning"]) .Pg4CGa_root {
+  box-sizing: border-box;
+  width: fit-content;
+  min-width: 0;
+  max-width: min(760px, 94%);
+  margin-right: auto;
+}
+html[data-dsh-wechat-classic] [data-chat-flow-kind="assistant-step"]:not([data-chat-group-part="reasoning"]) .Pg4CGa_body {
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 12px 16px;
+  gap: 10px;
+  border: 1px solid var(--wechat-message-border);
+  border-radius: 8px;
+  corner-shape: round;
+  background: var(--wechat-message-assistant);
+  color: #191919;
+  overflow-wrap: anywhere;
+}
+html[data-dsh-wechat-classic] [data-chat-flow-kind="assistant-step"]:not([data-chat-group-part="reasoning"]) .Pg4CGa_body > [data-turn-process-inline][hidden] {
+  margin-bottom: -10px;
+}
+/* Host wide-table rules intentionally break out into viewport margins.
+   Contain them within the new bubble and retain the table's scroll surface. */
+html[data-dsh-wechat-classic] [data-chat-flow-kind="assistant-step"]:not([data-chat-group-part="reasoning"]) .Pg4CGa_body .md-table-wide {
+  --dsh-table-spare: 0px;
+  --dsh-table-lead: 0px;
+  width: 100%;
+  max-width: 100%;
+  margin-left: 0;
+  padding-left: 0;
+}
+html[data-dsh-wechat-classic] [data-chat-flow-kind="assistant-step"]:not([data-chat-group-part="reasoning"]) .Pg4CGa_body :is(pre, [data-code-block-content]) {
+  min-width: 0;
+  max-width: 100%;
+}
+html[data-dsh-wechat-classic] [data-chat-flow-kind="assistant-step"]:not([data-chat-group-part="reasoning"]) .Pg4CGa_body img {
+  max-width: 100%;
+  height: auto;
+}
+
+html[data-dsh-wechat-classic] :is([data-chat-flow-kind="user"], [data-chat-flow-kind="steering"]) .bfNlQW_userStack {
+  max-width: min(680px, 82%);
+}
+html[data-dsh-wechat-classic] :is([data-chat-flow-kind="user"], [data-chat-flow-kind="steering"]) .bfNlQW_bubble {
+  box-sizing: border-box;
+  padding: 12px 16px;
+  border: 1px solid #86d75c;
+  border-radius: 8px;
+  corner-shape: round;
+  background: var(--wechat-message-user);
+  color: #191919;
+  box-shadow: none;
+  overflow-wrap: anywhere;
+}
+
+/* Semantic attributes cover all conversation tabs, independent of module hash. */
+html[data-dsh-wechat-classic] [data-conversation-tabs] [role="tab"] {
+  color: #727872;
+}
+html[data-dsh-wechat-classic] [data-conversation-tabs] [role="tab"]:hover {
+  color: #1f5e36;
+}
+html[data-dsh-wechat-classic] [data-conversation-tabs] [role="tab"][aria-selected="true"] {
+  color: var(--wechat-accent);
+}
+html[data-dsh-wechat-classic] [data-conversation-tabs] [role="tab"][aria-selected="true"]::after {
+  background: var(--wechat-accent);
+}
+
+/* One card owns its Lexical editor, tools, model and send/stop controls.
+   Preserve the host's editor height, sticky seat, queue dock and overlays. */
+html[data-dsh-wechat-classic] [data-composer-card] {
+  background: #ffffff;
+  border-radius: 9px;
+  corner-shape: round;
+  box-shadow: 0 0 0 1px #dfe4df, 0 2px 8px #00000003;
+}
+html[data-dsh-wechat-classic] [data-composer-card]:focus-within {
+  box-shadow: 0 0 0 1px #79bb8b, 0 2px 8px #00000003;
+}
+html[data-dsh-wechat-classic] [data-composer-input] {
+  color: #191919;
+  caret-color: var(--wechat-accent);
+}
+/* Exact class from InputBar.module.css. Both send and stop use this class. */
+html[data-dsh-wechat-classic] [data-composer-card] .uWtHQG_primary {
+  width: 36px;
+  height: 34px;
+  border-radius: 7px;
+  corner-shape: round;
+  background: #07b857;
+  color: #ffffff;
+  box-shadow: none;
+}
+html[data-dsh-wechat-classic] [data-composer-card] .uWtHQG_primary:hover:not(:disabled) {
+  background: #06a34d;
+}
+html[data-dsh-wechat-classic] [data-composer-card] .uWtHQG_primary:disabled {
+  opacity: 0.4;
+}
+
+/* Tool roots expose these data attributes in the current official renderer. */
+html[data-dsh-wechat-classic] [data-chat-call-id] [data-tool] {
+  box-sizing: border-box;
+  min-width: 0;
+  border: 1px solid #e2e7e2;
+  border-radius: 8px;
+  corner-shape: round;
+  background: #fafbfa;
+  padding: 7px 10px;
+}
+html[data-dsh-wechat-classic] [data-chat-call-id] [data-tool] [data-disclosure-row] {
+  color: #536456;
+}
+html[data-dsh-wechat-classic] [data-chat-call-id] [data-tool] :is(._sueoW_ioCard, [data-terminal]) {
+  background: #f0f3f0;
+  border-color: #dce3dc;
+  border-radius: 6px;
+  corner-shape: round;
+}
+html[data-dsh-wechat-classic] [data-chat-call-id] [data-tool] [data-terminal] {
+  --dsl-terminal-radius: 6px;
+  color: #28372b;
+}
+/* Keep error/warning/diff meaning: do not blanket-reset descendant colors. */
+
+@media (max-width: 700px) {
+  html[data-dsh-wechat-classic] [data-chat-flow-kind="assistant-step"]:not([data-chat-group-part="reasoning"]) .Pg4CGa_root {
+    max-width: 100%;
+  }
+  html[data-dsh-wechat-classic] [data-chat-flow-kind="assistant-step"]:not([data-chat-group-part="reasoning"]) .Pg4CGa_body {
+    padding: 12px 14px;
+  }
+  html[data-dsh-wechat-classic] :is([data-chat-flow-kind="user"], [data-chat-flow-kind="steering"]) .bfNlQW_userStack {
+    max-width: 90%;
+  }
+}
+
+/* The settings entry remains visible when this theme is switched off. */
+/* Keep the native scrolling, measured composer seat and overlays intact. */
+html[data-dsh-wechat-classic] body { color-scheme: light; }
+html[data-dsh-wechat-classic] ::selection { background: #c4ebcc; color: #191919; }
+html[data-dsh-wechat-classic] [data-conversation-header] {
+  min-height: 72px;
+  padding-inline: 24px;
+  background: #fff;
+  border-bottom: 1px solid #e7eae7;
+}
+html[data-dsh-wechat-classic] [data-conversation-header].ank0OG_headerBlank {
+  min-height: 0;
+  border-bottom: 0;
+}
+html[data-dsh-wechat-classic] [data-conversation-scroll] {
+  --dsh-chat-content-width: var(--dsh-chat-user-width, 800px);
+  background: #fff;
+}
+html[data-dsh-wechat-classic] .X6jxGq_scroll { padding-block: 24px; }
+html[data-dsh-wechat-classic] .X6jxGq_column { --dsh-chat-flow-gap: 12px; }
+html[data-dsh-wechat-classic] [data-chat-flow-kind="assistant-step"]:not([data-chat-group-part="reasoning"]) .Pg4CGa_root {
+  line-height: calc(22px + var(--dsh-content-font-delta, 0px));
+  --dsw-font-markdown-code-block: calc(13px + var(--dsh-content-font-delta, 0px))/calc(20px + var(--dsh-content-font-delta, 0px)) var(--ds-font-family-code);
+  --dsw-font-markdown-base: var(--dsh-content-font-size, 14px)/calc(22px + var(--dsh-content-font-delta, 0px)) var(--dsw-font-family);
+  --dsw-font-markdown-h1: 600 calc(20px + var(--dsh-content-font-delta, 0px))/1.4 var(--dsw-font-family);
+  --dsw-font-markdown-h2: 600 calc(18px + var(--dsh-content-font-delta, 0px))/1.45 var(--dsw-font-family);
+  --dsw-font-markdown-h3: 600 calc(16px + var(--dsh-content-font-delta, 0px))/1.5 var(--dsw-font-family);
+  --dsw-font-markdown-h4: 600 var(--dsh-content-font-size, 14px)/1.6 var(--dsw-font-family);
+}
+html[data-dsh-wechat-classic] [data-chat-flow-kind="assistant-step"]:not([data-chat-group-part="reasoning"]) .Pg4CGa_body :is(h1,h2,h3,h4,h5,h6) {
+  margin-top: 14px;
+  margin-bottom: 7px;
+}
+html[data-dsh-wechat-classic] [data-chat-flow-kind="assistant-step"]:not([data-chat-group-part="reasoning"]) .Pg4CGa_body :is(p,ul,ol,blockquote) {
+  margin-block: 8px;
+}
+html[data-dsh-wechat-classic] [data-chat-flow-kind="assistant-step"]:not([data-chat-group-part="reasoning"]) .Pg4CGa_body li > p { margin-block: 5px; }
+html[data-dsh-wechat-classic] [data-chat-flow-kind="assistant-step"]:not([data-chat-group-part="reasoning"]) .Pg4CGa_body hr { margin-block: 16px; }
+html[data-dsh-wechat-classic] [data-chat-flow-kind="assistant-step"]:not([data-chat-group-part="reasoning"]) .Pg4CGa_body :is(th,td) {
+  padding: 8px 12px;
+  font-size: var(--dsh-content-font-size, 14px);
+  line-height: calc(20px + var(--dsh-content-font-delta, 0px));
+}
+html[data-dsh-wechat-classic] [data-chat-flow-kind="assistant-step"]:not([data-chat-group-part="reasoning"]) .Pg4CGa_body th { background: #f1f4f1; }
+html[data-dsh-wechat-classic] [data-chat-flow-kind="assistant-step"]:not([data-chat-group-part="reasoning"]) .md-code-block {
+  --dsl-code-block-border-radius: 6px;
+  margin-block: 12px;
+  border: 1px solid #e0e6e0;
+}
+html[data-dsh-wechat-classic] [data-chat-flow-kind="assistant-step"]:not([data-chat-group-part="reasoning"]) [data-code-block-banner] { padding-block: 7px; }
+html[data-dsh-wechat-classic] [data-chat-flow-kind="assistant-step"]:not([data-chat-group-part="reasoning"]) .md-code-block pre { padding: 12px; }
+html[data-dsh-wechat-classic] [data-composer-card] { gap: 8px; }
+html[data-dsh-wechat-classic] [data-composer-input] { min-height: 38px; }
+html[data-dsh-wechat-classic] [data-composer-seat] {
+  --dsh-composer-card-max-width: var(--dsh-chat-content-width, 800px);
+  --dsh-composer-text-max-height: 180px;
+}
+html[data-dsh-wechat-classic] [data-composer-card] .uWtHQG_row { padding: 2px 10px 8px; }
+html[data-dsh-wechat-classic] [data-composer-card] .uWtHQG_primary { transform: none; }
+/* The native statistics pills own their dialogs. Keep their click targets;
+   constrain the cost plugin's text without replacing its native full title. */
+html[data-dsh-wechat-classic] [data-composer-seat] .uWtHQG_dock {
+  width: 100%;
+  max-width: var(--dsh-composer-card-max-width, 800px);
+  flex-wrap: wrap;
+  gap: 3px 8px;
+  padding-top: 6px;
+}
+html[data-dsh-wechat-classic] [data-composer-stats] {
+  flex: 0 1 auto;
+  gap: 4px;
+  color: #7b847e;
+  font-size: calc(var(--dsh-content-font-size-secondary, 13px) - 1px);
+}
+html[data-dsh-wechat-classic] [data-composer-stats] .z4IYsq_pill {
+  min-height: 24px;
+  padding: 2px 6px;
+  color: #7b847e;
+  border-radius: 6px;
+}
+html[data-dsh-wechat-classic] [data-composer-stats] button.z4IYsq_pill:is(:hover,[aria-expanded="true"]) {
+  background: #edf3ee;
+  color: #49624f;
+}
+html[data-dsh-wechat-classic] [data-composer-seat] .cm-root {
+  flex: 0 1 320px;
+  max-width: 100%;
+  padding: 2px 6px;
+  color: #818a84;
+  font-size: calc(var(--dsh-content-font-size-secondary, 13px) - 1px);
+  line-height: calc(20px + var(--dsh-content-font-delta-secondary, 0px));
+  font-variant-numeric: tabular-nums;
+}
+html[data-dsh-wechat-classic] [data-composer-seat] .cm-root:hover { color: #59655d; }
+html[data-dsh-wechat-classic] [data-conversation-header] .ank0OG_crumbCurrent {
+  font-size: 17px;
+  line-height: 26px;
+  font-weight: 600;
+  max-width: min(440px, 38cqw);
+}
+
+/* Existing companion control: move by scoped CSS only so its native handler,
+   accessible state and preference stay owned by the companion plugin. */
+html[data-dsh-wechat-classic]:has(.dshDesktopFrame) body > button.presence-toggle {
+  box-sizing: border-box;
+  left: 14px;
+  right: auto;
+  bottom: 108px;
+  width: 44px;
+  height: 40px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding: 4px 2px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  box-shadow: none;
+  color: #bdcbc2;
+  font: 10px/12px var(--dsw-font-family);
+  opacity: 0.85;
+}
+html[data-dsh-wechat-classic]:has(.dshDesktopFrame) body > button.presence-toggle:hover {
+  background: #3b493f;
+  opacity: 1;
+}
+html[data-dsh-wechat-classic]:has(.dshDesktopFrame[data-sidebar-collapsed]) body > button.presence-toggle { left: 6px; }
+html[data-dsh-wechat-classic]:has(.dshDesktopFrame) body > button.presence-toggle .presence-toggle-dot { width: 6px; height: 6px; }
+html[data-dsh-wechat-classic]:has(.dshDesktopFrame) body > button.presence-toggle .presence-toggle-label { white-space: nowrap; }
+@container (max-width: 700px) {
+  html[data-dsh-wechat-classic] [data-chat-flow-kind="assistant-step"]:not([data-chat-group-part="reasoning"]) .Pg4CGa_root {
+    max-width: 100%;
+  }
+  html[data-dsh-wechat-classic] [data-chat-flow-kind="assistant-step"]:not([data-chat-group-part="reasoning"]) .Pg4CGa_body {
+    padding-inline: 14px;
+  }
+  html[data-dsh-wechat-classic] :is([data-chat-flow-kind="user"], [data-chat-flow-kind="steering"]) .bfNlQW_userStack {
+    max-width: 90%;
+  }
+}
+
+.dshWechatThemeRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--dsw-alias-border-l2);
+  font: inherit;
+  color: var(--dsw-alias-label-primary);
+}
+.dshWechatThemeCopy { flex: 1; min-width: 220px; }
+.dshWechatThemeTitle { font-size: 14px; line-height: 22px; }
+.dshWechatThemeDescription {
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--dsw-alias-label-tertiary);
+}
+.dshWechatThemeChoices { display: flex; gap: 8px; }
+.dshWechatThemeChoice {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 6px 12px;
+  border: 1px solid var(--dsw-alias-border-l4);
+  border-radius: 7px;
+  background: var(--dsw-alias-bg-layer-1);
+  color: var(--dsw-alias-label-primary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+}
+.dshWechatThemeChoice[aria-pressed="true"] {
+  background: #e0f3e7;
+  border-color: #078b43;
+  color: #086332;
+}
+.dshWechatThemeChoice:focus-visible { outline: 2px solid #078b43; outline-offset: 2px; }
+.dshWechatThemeSwatch { width: 12px; height: 12px; border-radius: 3px; background: #07c160; }

@@ -1,0 +1,694 @@
+/* zkforge/dsh-claude-desktop-theme — src/client/theme/composer.css
+   fetched 2026-10-05 from https://raw.githubusercontent.com/zkforge/dsh-claude-desktop-theme/main/src/client/theme/composer.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/*
+ * Shared composer geometry.
+ *
+ * Both the blank-session page and the conversation page must place the official
+ * Composer at the same width and shape, so the geometry lives here instead of
+ * being duplicated in two features (siblings never import each other). The
+ * upstream structure is kept: the resident Composer card stays the single
+ * editable root, and only where its parts sit changes.
+ *
+ * Reference geometry (@2x reference screenshots, logical px at 1374x871):
+ * - input surface: 770x42, 1px border, radius 10, text line 24px at 8/14 padding
+ * - the send control is the return arrow *inside* that surface, 24px, 14px in
+ *   from the right border and anchored to the bottom text line
+ * - control row: outside the surface, 4px below it, ~28px tall
+ * - window edge: 8px below the row
+ *
+ * Host classes are pinned in src/client/compat/host-dom.ts.
+ */
+html[data-dsh-ccd-style="true"] .ST7X_W_body {
+  --dsh-chat-content-width: var(--ccd-composer-width);
+  --dsh-composer-card-max-width: var(--ccd-composer-width);
+  --dsh-composer-side-clearance: 16px;
+}
+
+/* The card becomes a transparent column: the input surface draws the border. */
+html[data-dsh-ccd-style="true"] .yhfFVG_card {
+  gap: 0;
+  padding-top: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Without a workspace the host makes the whole card a workspace picker and
+   draws a dashed ::after around it. Move that state cue to the input surface
+   that owns our border, while keeping the host's picker behavior. */
+html[data-dsh-ccd-style="true"] .yhfFVG_cardWorkspaceTrigger::after {
+  content: none;
+}
+
+html[data-dsh-ccd-style="true"] .yhfFVG_scroll {
+  box-sizing: border-box;
+  min-height: var(--ccd-composer-min-height);
+  margin-right: 0;
+  padding: var(--ccd-composer-padding);
+  border: 1px solid var(--ccd-border-strong);
+  border-radius: var(--ccd-composer-radius);
+  background: var(--ccd-card);
+  box-shadow: var(--ccd-shadow-card);
+}
+
+html[data-dsh-ccd-style="true"] .yhfFVG_cardWorkspaceTrigger .yhfFVG_scroll {
+  border-style: dashed;
+}
+
+/* The editor owns the focus cue. Model/effort menus live in this card too,
+   so :focus-within would leave the ring on while a menu has keyboard focus.
+   Darken the existing 1px border without changing the surface geometry. */
+html[data-dsh-ccd-style="true"] .yhfFVG_card:has(.yhfFVG_input:focus) .yhfFVG_scroll {
+  border-color: var(--ccd-composer-focus-border);
+}
+
+/* Attachments: the `ui-attachment` plugin renders the draft-image rail as a
+   sibling of the input panel inside the card (`conversation.input.attachments`
+   slot, class pinned in src/client/compat/host-dom.ts — ComposerAttachments
+   .module.css, `dVdiKa_`). With the card transparent the previews would float
+   on the page above the surface, and the send control, pinned to the card's
+   top-right corner, would leave the surface with them. When the rail is
+   present the two merge back into one surface: the rail draws the top cap and
+   the panel drops its own, while the card's zero gap keeps the 1px side
+   borders touching so no seam shows. The host's unstyled card pulled the rail
+   6px into the panel (`margin-bottom: -6px`); that belongs to the old card and
+   is dropped. The send control stays beside the bottom text line, so the rail
+   needs only the same side padding as the input. */
+html[data-dsh-ccd-style="true"] .yhfFVG_card:has(.dVdiKa_rail) .dVdiKa_rail {
+  box-sizing: border-box;
+  margin-bottom: 0;
+  padding: 10px var(--ccd-composer-padding-inline) 0;
+  border: 1px solid var(--ccd-border-strong);
+  border-bottom: 0;
+  border-radius: var(--ccd-composer-radius) var(--ccd-composer-radius) 0 0;
+  background: var(--ccd-card);
+  box-shadow: var(--ccd-shadow-card);
+}
+
+html[data-dsh-ccd-style="true"] .yhfFVG_card:has(.dVdiKa_rail) .yhfFVG_scroll {
+  border-top: 0;
+  border-radius: 0 0 var(--ccd-composer-radius) var(--ccd-composer-radius);
+}
+
+/* The attachment cap shares the editor's focused border colour. */
+html[data-dsh-ccd-style="true"] .yhfFVG_card:has(.yhfFVG_input:focus) .dVdiKa_rail {
+  border-color: var(--ccd-composer-focus-border);
+}
+
+/* Match the image tile to the outer editable surface, including its clipping. */
+html[data-dsh-ccd-style="true"] .yhfFVG_card .dVdiKa_thumbnail {
+  border-radius: var(--ccd-composer-radius);
+}
+
+html[data-dsh-ccd-style="true"] .yhfFVG_input,
+html[data-dsh-ccd-style="true"] .yhfFVG_hero .yhfFVG_input {
+  box-sizing: border-box;
+  min-height: 24px;
+  /* Keep text clear of the controls, including when the editor scrolls. */
+  padding: 0 var(--ccd-send-reserve) 0 0;
+  font-family: var(--ccd-font-ui);
+  font-size: var(--dsh-content-font-size, 14px);
+  line-height: 24px;
+  color: var(--ccd-text);
+}
+
+html[data-dsh-ccd-style="true"] .yhfFVG_placeholder {
+  /* Hero copy is longer than chat copy. Limit only the placeholder, leaving
+     the actual editor's wrapping and multiline growth untouched. */
+  inset: 0 0 auto 0;
+  box-sizing: border-box;
+  padding-right: var(--ccd-send-reserve);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--ccd-text-placeholder);
+  font-size: var(--dsh-content-font-size, 14px);
+  line-height: 24px;
+}
+
+/* Send / stop stay beside the input's bottom line. The row is their containing
+   block: its top follows the input's bottom even if the row itself wraps.
+   The host still owns both buttons, their state, labels and click handlers. */
+html[data-dsh-ccd-style="true"] .yhfFVG_primary {
+  /* The user agent's `1px 6px` button padding is asymmetric against a 24px box
+     only in the sense that it steals the content box; drop it and centre. */
+  padding: 0;
+  position: absolute;
+  top: auto;
+  bottom: calc(100% + var(--ccd-composer-row-gap) + var(--ccd-composer-padding-block) + 1px);
+  right: var(--ccd-composer-padding-inline);
+  width: var(--ccd-send-size);
+  height: var(--ccd-send-size);
+  border-radius: var(--ccd-send-radius);
+  background: transparent;
+  color: var(--ccd-text-nav);
+  transform: none;
+  transition: background-color 0.1s, color 0.1s;
+}
+
+html[data-dsh-ccd-style="true"] .yhfFVG_primary:hover:not(:disabled) {
+  background: var(--ccd-hover);
+  color: var(--ccd-text);
+}
+
+html[data-dsh-ccd-style="true"] .yhfFVG_primary:disabled {
+  background: transparent;
+  opacity: 0.4;
+}
+
+html[data-dsh-ccd-style="true"] .yhfFVG_primary svg {
+  display: none;
+}
+
+html[data-dsh-ccd-style="true"] .yhfFVG_primary::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  background-color: currentColor;
+  mask: var(--ccd-icon-send) center / 16px 16px no-repeat;
+}
+
+html[data-dsh-ccd-style="true"] .yhfFVG_primary:has(rect)::before {
+  mask-image: var(--ccd-icon-stop);
+}
+
+/* DSH exposes both stop and send when a new draft is entered while running. */
+html[data-dsh-ccd-style="true"] .yhfFVG_row .yhfFVG_primary:has(+ .yhfFVG_primary) {
+  right: calc(var(--ccd-composer-padding-inline) + var(--ccd-send-size) + 6px);
+}
+
+html[data-dsh-ccd-style="true"] .yhfFVG_card:has(.yhfFVG_primary + .yhfFVG_primary) .yhfFVG_input {
+  padding-right: calc(var(--ccd-send-reserve) + var(--ccd-send-size) + 6px);
+}
+
+/* Tool row: outside the surface, directly below it, and one rhythm end to end.
+   The row's own gap is the host's 12px, which the leading groups kept while the
+   trailing cluster was already on `--ccd-cluster-gap`; the rule below hands the
+   same 6px to every container in the bar, so the leading pair, the trailing
+   cluster, the statistics dock and the ring read as one row. */
+html[data-dsh-ccd-style="true"] .yhfFVG_row {
+  position: relative;
+  gap: var(--ccd-cluster-gap);
+  min-height: var(--ccd-control-row-height);
+  margin-top: var(--ccd-composer-row-gap);
+  padding: 0 var(--ccd-composer-row-inset);
+  color: var(--ccd-text-secondary);
+  font-size: var(--ccd-font-size-muted);
+}
+
+html[data-dsh-ccd-style="true"] .yhfFVG_row button {
+  color: var(--ccd-text-secondary);
+}
+
+/* The model selector's two texts — the model name and the reasoning effort —
+   are the row's chosen values, not chrome, so they carry the chosen-value ink
+   instead of the row's label grey; the host's own `font-weight: 400` stays.
+   Each text is its own span, so the colour lands on the spans rather than on
+   the button the rule above paints, and this plugin's own model/effort pair
+   (features/model-controls) follows the same token. Host classes are pinned in
+   src/client/compat/host-dom.ts (`ui-model-selection`'s
+   ModelSelect.module.css, `cl2Rlq_`). */
+html[data-dsh-ccd-style="true"] .cl2Rlq_triggerLabel,
+html[data-dsh-ccd-style="true"] .cl2Rlq_triggerEffort {
+  color: var(--ccd-text-strong);
+}
+
+/* Budget the complete row: the native model-collapse check cannot see the
+   sibling statistics dock. Keep the effort readable and give the name the
+   remaining space, instead of hiding either at a fixed column breakpoint. */
+html[data-dsh-ccd-style="true"] .cl2Rlq_trigger {
+  box-sizing: border-box;
+  max-width: min(360px, var(--ccd-model-max-width, 45cqw));
+}
+
+html[data-dsh-ccd-style="true"] .cl2Rlq_triggerEffort {
+  flex-shrink: 0;
+}
+
+/* The command button is a bare glyph in the reference, not a filled circle —
+   and it is a chip like every other control in the row: 20px tall, its 14px
+   glyph plus one chip padding on each side, so the box is the same 28px the
+   host drew and only its height and corner move. */
+html[data-dsh-ccd-style="true"] .yhfFVG_add {
+  width: calc(var(--ccd-row-icon-size) + 2 * var(--ccd-chip-padding-inline));
+  height: var(--ccd-chip-height);
+  border-radius: var(--ccd-chip-radius);
+  background: transparent;
+  color: var(--ccd-text-secondary);
+}
+
+html[data-dsh-ccd-style="true"] .yhfFVG_add:hover:not(:disabled) {
+  background: var(--ccd-hover);
+  color: var(--ccd-text);
+}
+
+html[data-dsh-ccd-style="true"] .yhfFVG_tools {
+  align-items: center;
+}
+
+/* Statistics cluster and context ring: the dock is a sibling of the card inside
+   the Composer root, so it is laid over the tool row instead of taking a line of
+   its own. Every readout keeps its own icon and its click-open detail panel;
+   only the narrow-column labels go. The root becomes the containing block, and
+   the offsets below walk back in from the column edge to the card's own right
+   edge, which the dock cannot see from where it sits.
+
+   The dock now owns the row's *last* seat rather than the one before the model:
+   the statistics cluster still stops one cluster gap short of the trailing
+   group, and the context ring hangs past it, on the row's right content edge.
+   Both offsets are built from `--ccd-ring-offset` — the trailing cluster's live
+   width, one cluster gap and the ring's own seat — so the ring lands on that
+   edge whatever the cluster measures, and the trailing group's `margin-right`
+   below keeps the model/effort pair clear of it. */
+html[data-dsh-ccd-style="true"] .yhfFVG_root {
+  position: relative;
+  container: ccd-composer / inline-size;
+}
+
+html[data-dsh-ccd-style="true"] .yhfFVG_dock {
+  position: absolute;
+  --ccd-ring-offset: calc(var(--ccd-trailing-width, 120px) + var(--ccd-cluster-gap)
+    + var(--ccd-context-ring-seat));
+  right: calc((100% - min(100% - 32px, var(--ccd-composer-width))) / 2
+    + var(--ccd-composer-row-inset) + var(--ccd-ring-offset));
+  bottom: var(--ccd-composer-bottom-gap);
+  height: var(--ccd-control-row-height);
+  /* Never measure narrower than the ring's own trigger box: compat/stats-values.ts
+     subtracts this dock from the model's budget, and an empty dock would
+     otherwise hand the model the ring's seat as well. */
+  min-width: var(--ccd-context-ring-trigger);
+  padding: 0;
+  gap: var(--ccd-cluster-gap);
+  align-items: center;
+  justify-content: flex-end;
+  /* The box is an overlay: only its occupants take pointer input, so an empty
+     dock never shadows the row underneath. */
+  pointer-events: none;
+}
+
+html[data-dsh-ccd-style="true"] .yhfFVG_dock > * {
+  pointer-events: auto;
+}
+
+/* The context ring's seat: the status bar's last one, where the voice control
+   used to sit. The ring is the host's own element — `ContextMeter` renders
+   `span.y0jqnG_root` as the dock's last child — and is placed rather than
+   re-parented: the host unmounts that ring whenever the voice control expands,
+   and React would then remove it from a parent it no longer belongs to. The
+   plugin's empty-state ring below shares this box exactly, so a session gaining
+   its first tokens hands the seat over without moving or resizing anything. */
+html[data-dsh-ccd-style="true"] .yhfFVG_dock > .y0jqnG_root,
+html[data-dsh-ccd-style="true"] .yhfFVG_dock::after {
+  position: absolute;
+  right: calc(-1 * var(--ccd-ring-offset));
+  top: 0;
+  width: var(--ccd-context-ring-trigger);
+  height: var(--ccd-control-row-height);
+  flex: none;
+}
+
+/* The seat is the row's own 28px line and the ring's trigger inside it is a
+   chip like every other control, so the artwork has to be centred in the seat
+   rather than laid out from its top edge: `align-items: stretch` does not
+   stretch an item that states its own height, it parks it at the line's start. */
+html[data-dsh-ccd-style="true"] .yhfFVG_dock > .y0jqnG_root {
+  align-items: center;
+  justify-content: center;
+}
+
+/* A session with no usage renders no `ContextMeter` at all: the component
+   returns null until the token meter knows both a numerator and the context
+   window, so the empty state is not something the host hides — there is nothing
+   to show. This draws the ring's own track in the seat above, at the host's own
+   geometry (`ContextMeter.module.css`: 14px box, r 5.5, 2px stroke), and
+   withdraws the moment the host's ring exists or the voice control's capture row
+   takes the bar — exactly the states in which the host unmounts its own ring. */
+html[data-dsh-ccd-style="true"] .yhfFVG_dock::after {
+  content: "";
+  background-color: var(--ccd-context-ring-track);
+  mask: var(--ccd-icon-context-ring) center / var(--ccd-context-ring-size) var(--ccd-context-ring-size) no-repeat;
+}
+
+html[data-dsh-ccd-style="true"] .yhfFVG_dock:has(.y0jqnG_root)::after,
+html[data-dsh-ccd-style="true"] .yhfFVG_root:has(.yhfFVG_trailingActive) .yhfFVG_dock::after {
+  content: none;
+}
+
+/* The trailing cluster stops one ring seat short of the row's right content
+   edge, so the model/effort pair never lands under the ring. While the voice
+   control's capture row owns the bar the ring is unmounted and the seat is given
+   back, leaving the host's own capture layout whole. */
+html[data-dsh-ccd-style="true"] .yhfFVG_trailing {
+  margin-right: var(--ccd-context-ring-seat);
+}
+
+html[data-dsh-ccd-style="true"] .yhfFVG_root:has(.yhfFVG_trailingActive) .yhfFVG_trailing {
+  margin-right: 0;
+}
+
+/* The host hides a hero-phase dock that has nothing in it; the ring's seat is
+   drawn through a pseudo-element, which `:empty` does not see. */
+html[data-dsh-ccd-style="true"] .yhfFVG_hero .yhfFVG_dock:empty {
+  display: flex;
+}
+
+/*
+ * The whole status row reads on one pitch — not just the trailing cluster. The
+ * host separates its groups with 12px (`InputBar.module.css`: the row itself,
+ * `.yhfFVG_tools` and `.yhfFVG_modes`) while the plugin's trailing cluster
+ * already ran on 6px, which put the leading pair, the model/effort pair and the
+ * ring on two different rhythms; every container in the bar now takes its gap
+ * from `--ccd-cluster-gap` (tokens.css).
+ *
+ * The group's last seat is the native activity control (speech to text). While
+ * no occupant is mounted, its wrapper is still a box — the renderer seats every
+ * entry in a `display: contents` wrapper, so the host's own `:empty` rule cannot
+ * see that it is empty — and the group's gap then held the model/effort pair
+ * 12px off the row's right content edge. Hiding the empty wrapper moves the pair
+ * (and, through `--ccd-trailing-width`, the whole cluster) back onto that edge.
+ * An expanded activity control carries the other class and keeps its seat.
+ *
+ * The control itself no longer lives in this group: flex `order` cannot cross
+ * the two containers, so compat/composer-status-order.ts moves the seat into the
+ * leading group's modes cluster, immediately after the permission control. The
+ * same empty-seat rule is repeated for that parent below.
+ */
+html[data-dsh-ccd-style="true"] .yhfFVG_tools,
+html[data-dsh-ccd-style="true"] .yhfFVG_modes,
+html[data-dsh-ccd-style="true"] .yhfFVG_trailing,
+html[data-dsh-ccd-style="true"] .yhfFVG_standardControls {
+  gap: var(--ccd-cluster-gap);
+}
+
+html[data-dsh-ccd-style="true"] .yhfFVG_trailing > .yhfFVG_activity:not(:has(> :not([data-slot]))):not(:has([data-slot] > *)),
+html[data-dsh-ccd-style="true"] .yhfFVG_modes > .yhfFVG_activity:not(:has(> :not([data-slot]))):not(:has([data-slot] > *)) {
+  display: none;
+}
+
+/* Voice input. The glyph is addressed through the control's own slot outlet —
+   the one stable name the seat has — so its size holds whether the seat still
+   sits in the trailing group or already beside the permission control, which is
+   where compat/composer-status-order.ts moves it; the `data-ccd-voice-seat` mark
+   that module leaves on a relocated seat is what the placement rule reads. The
+   host draws the microphone at 18px, while every other glyph in the status bar
+   (command plus, statistics readouts, context ring) is 14px artwork, so the
+   mic takes that size and stays centred in its box. Only `button > svg` is
+   resized: the recording row's waveform is a direct child of its own row and
+   keeps the host's sizing. */
+html[data-dsh-ccd-style="true"] .yhfFVG_modes > [data-ccd-voice-seat] {
+  align-items: center;
+}
+
+html[data-dsh-ccd-style="true"] [data-slot="conversation.input.activity"] button > svg {
+  width: var(--ccd-row-icon-size);
+  height: var(--ccd-row-icon-size);
+}
+
+/* The mic's own hit box is the row's glyph box, not the host's 28×14 strip: a
+   chip of the row's height around the 14px mark, the same box the command plus
+   beside it carries. The capture layout is left alone — the host hands that row
+   its own round buttons and its own geometry. */
+html[data-dsh-ccd-style="true"] .yhfFVG_root:not(:has(.yhfFVG_trailingActive))
+  [data-slot="conversation.input.activity"] button {
+  box-sizing: border-box;
+  display: inline-flex;
+  width: calc(var(--ccd-row-icon-size) + 2 * var(--ccd-chip-padding-inline));
+  height: var(--ccd-chip-height);
+  align-items: center;
+  justify-content: center;
+}
+
+html[data-dsh-ccd-style="true"] .OpZ85W_root {
+  gap: var(--ccd-cluster-gap);
+  align-items: center;
+}
+
+/* Same control shape as the model and permission selectors next to them: the
+   host draws these readouts as full pills (`border-radius: 999px`) on its own
+   28px line, which reads as a different family of control in the same row. They
+   take the row's chip box — height, corner and the readouts' own 6px inline
+   padding — and the row's own hover step, because the host paints its pill
+   hover from `--dsw-alias-interactive-bg-hover` (a 6% bluish grey) while every
+   other control in the bar sits in this palette's warm `--ccd-hover`. */
+html[data-dsh-ccd-style="true"] .OpZ85W_pill,
+html[data-dsh-ccd-style="true"] .y0jqnG_trigger {
+  gap: 4px;
+  height: var(--ccd-chip-height);
+  padding: 0 6px;
+  border-radius: var(--ccd-chip-radius);
+  color: var(--ccd-text-secondary);
+  font-size: var(--ccd-font-size-muted);
+}
+
+html[data-dsh-ccd-style="true"] .OpZ85W_pill:hover,
+html[data-dsh-ccd-style="true"] button.OpZ85W_pill[aria-expanded="true"],
+html[data-dsh-ccd-style="true"] .y0jqnG_trigger:hover,
+html[data-dsh-ccd-style="true"] .y0jqnG_trigger[aria-expanded="true"] {
+  background: var(--ccd-hover);
+}
+
+/* Wide columns show one short readout per icon, derived from host text.
+   Original aria-labels and click handlers stay on the host buttons. */
+html[data-dsh-ccd-style="true"] .OpZ85W_label,
+html[data-dsh-ccd-style="true"] .OpZ85W_sep {
+  display: none;
+}
+
+html[data-dsh-ccd-style="true"] .OpZ85W_pill::after {
+  content: var(--ccd-stat-value, "");
+  font-variant-numeric: tabular-nums;
+}
+
+@container ccd-composer (max-width: 700px) {
+  html[data-dsh-ccd-style="true"] .OpZ85W_pill::after {
+    content: none;
+  }
+}
+
+/* The ring carries no reading: the arc is the reading. The host's own text
+   (`span` inside the trigger) goes, while the trigger keeps its box so the
+   seat's geometry is unchanged. The hover panel keeps its numbers, and the
+   accessible name keeps its wording — compat/composer-status-order.ts strips
+   only the percentage from that. */
+html[data-dsh-ccd-style="true"] .y0jqnG_trigger > span {
+  display: none;
+}
+
+/* The consumed arc is the one reading this control exists to show, so it takes
+   the interface's accent blue instead of the host's tertiary label grey, which
+   painted it the same ink as the percentage beside it. Only the colour moves:
+   the host's 14px box, 2px stroke and round cap are untouched, and the track
+   underneath keeps `--dsw-alias-border-l3` (already a theme override), so the
+   two arcs stay clearly apart. The blue holds at every percentage — the
+   reference draws no warning step, and a hue that changed near the limit would
+   leave the ring's own reading ambiguous. */
+html[data-dsh-ccd-style="true"] .y0jqnG_fill {
+  stroke: var(--ccd-context-ring-fill);
+}
+
+/* The permission control is the row's other text chip: the host draws it on the
+   row's full 28px with a 4px/8px inline padding, so beside the model chip it kept
+   a taller fill and a different ink rhythm. It takes the chip box and the chip's
+   own 7px padding on both sides — the host's asymmetry was the two marks it
+   reserved room for, and neither of them is drawn (below), so the label sits on
+   the chip's even padding. Its hover fill is the row's warm step for the same
+   reason the readouts above are. Host class pinned in
+   src/client/compat/host-dom.ts (`ui-permission-presets`'s
+   PermissionSelect.module.css, `wXeviG_`). */
+html[data-dsh-ccd-style="true"] .wXeviG_trigger {
+  box-sizing: border-box;
+  height: var(--ccd-chip-height);
+  padding: 0 var(--ccd-chip-padding-inline);
+  border-radius: var(--ccd-chip-radius);
+}
+
+html[data-dsh-ccd-style="true"] .wXeviG_trigger:hover:not(:disabled) {
+  background: var(--ccd-hover);
+}
+
+/* The chip is its text, and nothing else. The host leads the control with the
+   mode's own glyph — `PermissionIconReadOnlyRegular` / `...WorkspaceWrite` /
+   `...FullAccess`, the same 14px artwork the command plus beside it draws — and
+   closes it with `IconChevronDownOutlineRegular`. Neither says anything the chip
+   does not: the glyph repeats the mode the label already spells out, and this
+   row's other menu controls (the two hero chips) draw no disclosure mark either.
+   Both come out of the line, and with them the host's two 4px gaps and the
+   4px/8px asymmetry they reserved. The control keeps the host's `aria-label`
+   ("模式 …") and its `title`, so a screen reader still hears the mode in full,
+   and the button keeps its own name — it is the same control, drawn shorter.
+   Its open state has no mark left to turn; the row's one fill already answers
+   the pointer that opened it. */
+html[data-dsh-ccd-style="true"] .wXeviG_triggerIcon,
+html[data-dsh-ccd-style="true"] .wXeviG_chevron {
+  display: none;
+}
+
+/* The label is what is left, so it is drawn at every width. The host's own
+   container query drops it below 460px
+   (`.wXeviG_trigger:has(.wXeviG_triggerIcon) .wXeviG_triggerLabel`), reading the
+   glyph as the reading that survives the narrow column; with that glyph
+   withdrawn the rule would leave a chip that still answers a click and shows
+   nothing. `:has()` plus the child combinator is what outranks the host's rule
+   — the sheet order does not decide it. */
+html[data-dsh-ccd-style="true"] .wXeviG_trigger:has(.wXeviG_triggerIcon) > .wXeviG_triggerLabel {
+  display: inline;
+}
+
+/* Narrow columns tighten the readouts' side padding and the ring's seat; the
+   permission chip keeps its label, because the label is the whole control. */
+@container ccd-composer (max-width: 560px) {
+  html[data-dsh-ccd-style="true"] .OpZ85W_pill,
+  html[data-dsh-ccd-style="true"] .y0jqnG_trigger {
+    padding-inline: 4px;
+  }
+
+  /* The ring's trigger keeps the chip's height but drops 7px of side padding to
+     4px, so the seat it occupies is 22px wide; the empty-state ring follows it
+     (the seat the row reserves stays the authored 32px, a hair generous). */
+  html[data-dsh-ccd-style="true"] .yhfFVG_dock {
+    --ccd-context-ring-trigger: 22px;
+  }
+}
+
+html[data-dsh-ccd-style="true"] .OpZ85W_pill,
+html[data-dsh-ccd-style="true"] .y0jqnG_trigger {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Hero keeps the workspace row above the composer, as the reference does. */
+html[data-dsh-ccd-style="true"] .ST7X_W_composerHero {
+  gap: 6px;
+  padding-bottom: 0;
+}
+
+/* Bottom inset: row → window edge. */
+html[data-dsh-ccd-style="true"] .yhfFVG_root,
+html[data-dsh-ccd-style="true"] .yhfFVG_hero {
+  padding-bottom: var(--ccd-composer-bottom-gap);
+}
+
+/* The chips row starts on the input surface's own left edge: the Composer root
+   insets that surface by the side clearance, so the row carries exactly that
+   inset and nothing more. The reference measures the chip's border within 1px
+   of the input's border, so a chip that sat any further right would read as a
+   second, misaligned column. */
+html[data-dsh-ccd-style="true"] .ST7X_W_heroWorkspaceRow {
+  justify-content: flex-start;
+  height: 26px;
+  padding: 0 var(--dsh-composer-side-clearance, 16px);
+}
+
+/* Both chips in that row are menu controls — the workspace picker and the
+   agent-preset picker — and the reference draws each of them as a bordered
+   card on the page rather than as a bare label: 1px `--ccd-border`, the row
+   radius, a hairline shadow, and no fill until hover. The input surface below
+   keeps the stronger border, because it is the editable surface. */
+html[data-dsh-ccd-style="true"] .ST7X_W_heroWorkspaceRow button[aria-haspopup="menu"],
+html[data-dsh-ccd-style="true"] .bocITq_workspace {
+  box-sizing: border-box;
+  height: 26px;
+  min-height: 26px;
+  padding: 0 8px;
+  border: 1px solid var(--ccd-border);
+  border-radius: var(--ccd-radius-row);
+  background: transparent;
+  box-shadow: var(--ccd-shadow-card);
+  color: var(--ccd-text-secondary);
+  font-size: var(--ccd-font-size-muted);
+}
+
+html[data-dsh-ccd-style="true"] .ST7X_W_heroWorkspaceRow button[aria-haspopup="menu"]:hover:not(:disabled),
+html[data-dsh-ccd-style="true"] .ST7X_W_heroWorkspaceRow button[aria-haspopup="menu"][aria-expanded="true"],
+html[data-dsh-ccd-style="true"] .bocITq_workspace:hover:not(:disabled),
+html[data-dsh-ccd-style="true"] .bocITq_workspace[aria-expanded="true"] {
+  background: var(--ccd-hover);
+  color: var(--ccd-text);
+}
+
+/* The chip's leading mark. The host picks that glyph from the chip's own state:
+   `IconFolderOpenRegular` — a slanted front panel over a translucent back panel
+   — as soon as a workspace is chosen, and a closed folder only while the chip
+   carries its placeholder. The reference leads with one closed folder either
+   way, so the host's svg is taken out of the line and the mark is painted in
+   its place from `--ccd-icon-folder`, on the same 16px box, with the chip's own
+   `currentColor` — which is the ink the label beside it uses, and the ink the
+   chip already steps up on hover, so the mark follows both for free.
+
+   `::before` on the button is the first flex item of its own `inline-flex`
+   line, exactly where the host's svg sat: the button's 4px gap and its 8px
+   leading padding keep measuring from a 16px box, so the label's x does not
+   move. `flex: none` is the host's own declaration on that svg, restated
+   because the seat is now a pseudo-element: left shrinkable, a long workspace
+   name would take its width out of the mark's 16px box as well as its own. */
+html[data-dsh-ccd-style="true"] .bocITq_workspace .bocITq_folder {
+  display: none;
+}
+
+html[data-dsh-ccd-style="true"] .bocITq_workspace::before {
+  content: "";
+  flex: none;
+  width: 16px;
+  height: 16px;
+  background-color: currentColor;
+  mask: var(--ccd-icon-folder) center / 16px 16px no-repeat;
+}
+
+/* Neither chip in the row closes on a disclosure mark. The reference draws the
+   two cards as a mark, a label and nothing else, where both host controls end
+   their line with `IconChevronDownOutlineRegular`: the workspace chip through
+   `HeroShell.module.css`, the mode chip through `AgentPresetSeat.module.css`.
+   The first selector names the workspace chip's own mark; the second is what
+   reaches the seat, whose module prefix is not in `host-builds.ts` and so
+   cannot be written down here at all — its chevron is matched on the artwork
+   itself, the way this stylesheet already matches the panel glyphs. Both are
+   the same 12px `M4 6L7.29289…` path; the seat's other mark is the preset
+   glyph and the workspace chip's is the folder, so neither can be caught here.
+
+   `display: none` is the whole change: the 12px box and the 4px gap leave the
+   line with it, and each label ends on the chip's own 8px trailing padding.
+   Nothing is taken from the controls themselves — both keep `aria-haspopup`
+   and `aria-expanded`, so a menu is still announced as a menu. */
+html[data-dsh-ccd-style="true"] .ST7X_W_heroWorkspaceRow button[aria-haspopup="menu"] > .bocITq_chevron,
+html[data-dsh-ccd-style="true"] .ST7X_W_heroWorkspaceRow button[aria-haspopup="menu"] > svg:has(> path[d^="M4 6L7.29289"]) {
+  display: none;
+}
+
+/* Both chips in the hero row open a card from the host's `Menu` primitive, and
+   every other host popup — the workspace `⋯` and session `⋯` menus, view
+   options, the permission picker, the account card, the command palette — is
+   built from the same two pieces. Their card chrome and their 24px flat cells
+   are drawn once for the whole interface in [menus.css](menus.css) (DESIGN.md
+   §6.7), so this sheet keeps only what belongs to the Composer it lays out.
+
+   What is genuinely the mode card's own is the second line of its rows: */
+
+/* The mode card's second line, and the reason its rows were not flat cells in
+   the first place: `ui-agent-preset` renders each row's label as a stack of a
+   name and a description (`AgentPresetSeat.module.css`: `.item` is a column
+   flex with a 2px gap, `.itemName` 13px/20px, `.itemDesc` a 12px/16px caption),
+   which makes one row 66px tall and stretches the card to its longest
+   description's measure — 324px for the four shipped presets, where the flat
+   cell needs a fraction of that. The design document's popup row is "text plus
+   a trailing mark" (DESIGN.md §6.7) and its height is one 20px line, so the
+   description is not drawn: the row then draws its name alone, and the card
+   falls back to the primitive's own 144px minimum width.
+
+   The line is reached structurally, not by class name: those two spans are the
+   label wrapper's only children and that wrapper is the row label's only child,
+   so "everything after the first span of the label's own span" is the
+   description on every row of this card. The classes in that pane (`m0vb0q_*`)
+   are a per-build hash of a desktop package — the same fact `host-builds.ts`
+   records for `_3li69W_` from the same package — so naming one would leave the
+   Windows build's rows two lines tall, silently, because that build has no
+   counterpart to alias it to. The guard is the preset seat's own expanded
+   state: the workspace chip beside it is the row's other `aria-haspopup`
+   button, and `:not(.bocITq_workspace)` keeps this rule on the mode card (the
+   workspace chip's class is pinned in `compat/host-dom.ts`). */
+html[data-dsh-ccd-style="true"]:has(.ST7X_W_heroWorkspaceRow button[aria-haspopup="menu"]:not(.bocITq_workspace)[aria-expanded="true"])
+  [role="menu"] > ._viewport_4ub78_19 > ._itemWrap_4ub78_90 > ._item_4ub78_90 > ._itemLabel_4ub78_190 > span > :not(:first-child) {
+  display: none;
+}
+
