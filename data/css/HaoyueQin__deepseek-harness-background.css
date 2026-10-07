@@ -1,314 +1,597 @@
-/* HaoyueQin/deepseek-harness-background — src/client/background-css.ts
-   fetched 2026-09-29 from https://raw.githubusercontent.com/HaoyueQin/deepseek-harness-background/main/src/client/background-css.ts
-   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
-.dsh-bg-layer {
-    position: fixed; inset: 0; z-index: -2; overflow: hidden; pointer-events: none;
-  }
-  .dsh-bg-layer .dsh-bg-image {
-    width: 100%; height: 100%; display: block; border: 0; background: transparent;
-    object-fit: var(--bg-object-fit, cover);
-    /* Normalized crop framing: percent object-position is the position of the
-       image inside its own overflow, so one stored 0..1 value holds for every
-       window size and every source. Both axes are always written; the axis
-       with no overflow simply ignores its value. */
-    object-position: calc(var(--bg-offset-x, 0.5) * 100%) calc(var(--bg-offset-y, 0.5) * 100%);
-    opacity: var(--bg-opacity, 1);
-    filter: blur(var(--bg-wallpaper-blur, 0px));
-    /* Blur thins the edges; scale the image up to hide the fringe. */
-    transform: scale(var(--bg-wallpaper-scale, 1));
-    transform-origin: center;
-  }
-  /* Scrim is theme-aware: a WHITE veil in the light scheme (it lifts the art
-     toward the near-white surface so dark text keeps contrast) and a BLACK veil
-     in the dark scheme (it dims the art so light text keeps contrast). */
-  .dsh-bg-scrim {
-    position: fixed; inset: 0; z-index: -1; pointer-events: none;
-    background: rgba(255, 255, 255, var(--bg-scrim, 0.25));
-  }
-  body[data-ds-dark-theme] .dsh-bg-scrim {
-    background: rgba(0, 0, 0, var(--bg-scrim, 0.25));
-  }
-  /* Desktop window drag (Electron on macOS): the shell marks a chrome row
-     `data-window-drag` and one rule subtracts every other body-level box
-     (`html[data-platform='darwin'] body > :not(#root) { -webkit-app-region:
-     no-drag; }`, ui-web base.css). Chromium collects app-region boxes by
-     geometry in DOM order and the LAST box containing a point decides, so
-     these two decorative layers — body children that follow #root — would
-     swallow the drag surface of the whole window (traffic-light strip,
-     conversation header, dock strip). They never take the pointer, so they
-     must not join the composition at all: a computed `none` is the one value
-     Chromium does not collect. The shell rule carries #root's id specificity,
-     so a plain declaration cannot outrank it — this needs `!important`. */
-  body > .dsh-bg-layer,
-  body > .dsh-bg-scrim {
-    -webkit-app-region: none !important;
-  }
+/* HaoyueQin/deepseek-harness-background — src/client/SettingsRow.module.css
+   fetched 2026-10-07 from https://raw.githubusercontent.com/HaoyueQin/deepseek-harness-background/main/src/client/SettingsRow.module.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* Settings-surface row for the background plugin. Chrome follows the official
+   General-section rows (Setting-Cell): 16/0 padding, hairline separator, alias
+   tokens only. The slider/segmented/button look mirrors the reference
+   dsh-wallpaper-engine picker (thin track, brand ring thumb, ghost capsules)
+   translated onto the harness design tokens. */
 
-  /* Active: make the app frame + sidebar background transparent so all columns
-     share the same wallpaper + scrim backdrop. */
-  body[data-dsh-bg] {
-    --dsw-alias-bg-base: transparent;
-    --dsw-specific-sidebar-fill: transparent;
-  }
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--dsw-alias-border-l2);
+}
 
-  /* ---- Whitelisted frosted-glass sheet ---------------------------------
-     Fills come from the --dsw-* tokens the painter overrides on body ONLY for
-     this list's own surfaces (input/bubble/code/tip); this block adds the
-     shared wet-glass sheen + blur from --bg-glass-blur. Exposure is calibrated
-     per scheme (the painter writes --bg-glass-brightness / --bg-glass-sheen):
-     light glass slightly DIMS, dark glass keeps a slight lift. Gated on the
-     GLASS ATTR (wallpaper active AND panelOpacity < 1): maxing the panel
-     slider returns these surfaces to the exact official paints. */
-  body[data-dsh-bg-glass] [class*="_bubble"]:not([role="tooltip"]),
-  /* The read_image toolview (dsh >= 0.1.2-rc.1 ToolRow) collapses its result
-     into an image body card; glass it like the other content blocks. */
-  body[data-dsh-bg-glass] [class*="_imageBody"],
-  body[data-dsh-bg-glass] .md-code-block,
-  body[data-dsh-bg-glass] [data-terminal],
-  body[data-dsh-bg-glass] [data-diff],
-  body[data-dsh-bg-glass] [data-read],
-  body[data-dsh-bg-glass] [data-search],
-  body[data-dsh-bg-glass] [data-web],
-  body[data-dsh-bg-glass] [class*="_ioCard"],
-  body[data-dsh-bg-glass] [class*="_instructionsCard"],
-  body[data-dsh-bg-glass] [class*="_markdown"]:not(pre) > code {
-    background-image: linear-gradient(180deg, rgba(255, 255, 255, var(--bg-glass-sheen, 0.07)), rgba(255, 255, 255, var(--bg-glass-sheen-mid, 0.02)) 38%, rgba(255, 255, 255, 0.01));
-    -webkit-backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
-    backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.32),
-      inset 0 -1px 0 rgba(255, 255, 255, 0.08),
-      inset 0 0 0 0.5px rgba(255, 255, 255, 0.08),
-      0 12px 40px rgba(0, 0, 0, 0.12);
-  }
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
 
-  /* ---- Composer card: the filter rides a pseudo-element ------------------
-     Chromium makes every element that carries a backdrop-filter a Backdrop
-     Root, and a filter inside one can only sample what that element itself
-     paints. The composer hosts the picker menu as an absolutely positioned
-     child ([data-composer-card] > … conversation.input.overlay), so with the
-     filter on the card itself that menu sampled the card's own paint only and
-     read as flat transparency over the wallpaper. Moving the filter to a
-     positioned ::before breaks the root — the pseudo-element is not an
-     ancestor of the menu, so the menu blurs the wallpaper again. The card
-     keeps its own frost (the ::before supplies it) and needs no layout change:
-     ui-conversation already declares it position: relative as the overlay
-     anchor context. */
-  body[data-dsh-bg-glass] [data-composer-card] {
-    background-color: var(--dsw-specific-input-major);
-    background-image: linear-gradient(180deg, rgba(255, 255, 255, var(--bg-glass-sheen, 0.07)), rgba(255, 255, 255, var(--bg-glass-sheen-mid, 0.02)) 38%, rgba(255, 255, 255, 0.01));
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.32),
-      inset 0 -1px 0 rgba(255, 255, 255, 0.08),
-      inset 0 0 0 0.5px rgba(255, 255, 255, 0.08),
-      0 12px 40px rgba(0, 0, 0, 0.12);
-  }
-  body[data-dsh-bg-glass] [data-composer-card]::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    border-radius: inherit;
-    -webkit-backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
-    backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
-  }
+/* Title row: the "Custom Background" title sits left, the clear button sits
+   right-aligned on the same baseline (vertical center of the title line). */
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 22px; /* matches .title line-height so the row stays stable */
+}
 
-  /* The sticky code-block header officially occludes scrolled code with
-     bg-base (transparent under a wallpaper): refill it with the banner token
-     (itself translucent glass) so code stays hidden beneath the sticky bar. */
-  body[data-dsh-bg] .md-code-block [class*="_bannerWrap"] {
-    background-color: var(--dsw-alias-markdown-code-block-banner);
-  }
+.clearBtn {
+  flex: none;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  line-height: 24px;
+}
 
-  /* The sidebar build badge paints with the label-ink token — a TEXT token we
-     must not override globally — so it gets a theme-aware translucent ink. */
-  body[data-dsh-bg] [class*="_buildVersion"] {
-    background-color: rgba(15, 17, 21, 0.62);
-  }
-  body[data-ds-dark-theme][data-dsh-bg] [class*="_buildVersion"] {
-    background-color: rgba(249, 250, 251, 0.62);
-  }
+.title {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+  color: var(--dsw-alias-label-primary);
+}
 
-  /* ---- Whitelisted chrome buttons --------------------------------------
-     These three buttons' official fills ride button-* tokens shared with
-     unrelated surfaces, so instead of overriding the tokens they get explicit
-     paints — but the SAME glass recipe as the composer card and bubbles:
-     fill = the painter's --dsw-specific-input-major token (the identical
-     translucent white + theme curve), filter = the sheet's exact
-     blur/saturate/brightness chain (blur follows the glass-blur slider, no
-     caps), sheen = the shared sheen vars. Hover = the same white glass at the
-     boosted alpha var. Gated on data-dsh-bg-glass (off when the panel is
-     fully opaque). */
-  body[data-dsh-bg-glass] button[class*="_newSession"],
-  body[data-dsh-bg-glass] [data-composer-card] [class*="_add"],
-  body[data-dsh-bg-glass] [class*="_toBottom"]:not([class*="Slot"]) {
-    background-color: var(--dsw-specific-input-major);
-    background-image: linear-gradient(180deg, rgba(255, 255, 255, var(--bg-glass-sheen, 0.07)), rgba(255, 255, 255, var(--bg-glass-sheen-mid, 0.02)) 38%, rgba(255, 255, 255, 0.01));
-    -webkit-backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
-    backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.32),
-      inset 0 0 0 0.5px rgba(255, 255, 255, 0.12),
-      0 4px 14px rgba(0, 0, 0, 0.08);
-  }
-  body[data-dsh-bg-glass] button[class*="_newSession"]:hover,
-  body[data-dsh-bg-glass] [data-composer-card] [class*="_add"]:hover:not(:disabled),
-  body[data-dsh-bg-glass] [class*="_toBottom"]:not([class*="Slot"]):hover {
-    background-color: color-mix(in srgb, rgb(255 255 255) calc(var(--bg-glass-alpha-strong, 0.8) * 100%), transparent);
-  }
-  /* Collapsed rail renders the new-session control as a bare icon — keep the
-     official transparent paint (and its official translucent hover). */
-  body[data-dsh-bg-glass] [data-sidebar-collapsed="true"] [class*="_newSession"],
-  body[data-dsh-bg-glass] [data-sidebar-collapsed="true"] [class*="_newSession"]:hover {
-    background-color: transparent;
-    background-image: none;
-    box-shadow: none;
-  }
+.desc {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+  color: var(--dsw-alias-label-tertiary);
+}
 
-  /* ---- Subagent lineage popover (title-bar expanded list) --------------
-     Its official fill rides the menu token shared with every dropdown; glass
-     THIS popover explicitly via its role="tree" + _menu combination so real
-     menus stay officially opaque and legible. Same unified recipe: the
-     composer fill token + the full shared filter chain (the official
-     elevation shadow stays). */
-  body[data-dsh-bg-glass] [role="tree"][class*="_menu"] {
-    background-color: var(--dsw-specific-input-major);
-    background-image: linear-gradient(180deg, rgba(255, 255, 255, var(--bg-glass-sheen, 0.07)), rgba(255, 255, 255, var(--bg-glass-sheen-mid, 0.02)) 38%, rgba(255, 255, 255, 0.01));
-    -webkit-backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
-    backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
-  }
+/* One-shot migration notice: an informational strip above the preview, on the
+   same surface tokens as the surrounding settings chrome. */
+.notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 8px;
+  background: var(--dsw-alias-bg-layer-1);
+}
 
-  /* ---- Home hero "preview" badge (top-right superscript pill) ----------
-     Officially the state-business-tertiary pastel; re-emit the same hue as
-     glass but with the UNIFIED alpha curve (color-mix against the painter's
-     --bg-glass-alpha) and the shared blur chain, so it sits on the wallpaper
-     with exactly the glass strength of the composer card. */
-  body[data-dsh-bg-glass] [class*="_previewBadge"] {
-    background-color: color-mix(in srgb, rgb(228 237 253) calc(var(--bg-glass-alpha, 0.72) * 100%), transparent);
-    -webkit-backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
-    backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
-  }
-  body[data-ds-dark-theme][data-dsh-bg-glass] [class*="_previewBadge"] {
-    background-color: color-mix(in srgb, rgb(52 65 91) calc(var(--bg-glass-alpha, 0.72) * 100%), transparent);
-  }
+.noticeText {
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--dsw-alias-label-secondary);
+}
 
-  /* ---- Composer dock family: task strips + takeover panels --------------
-     The agent task strips (TodoPanel, GoalBar, QueueDock — one dock column
-     above the composer) and the composer takeovers (approval, question,
-     plan review) paint with tokens the painter turns translucent
-     (--dsw-specific-tip / --dsw-specific-input-major) but their own styles
-     never blur anything: translucent-without-blur reads as bare
-     transparency, not frosted glass. Give each the shared sheen + filter
-     chain; their fills stay token-driven so the panel-opacity slider keeps
-     driving them. Anchors are the components' own stable data attributes
-     plus a structural child, so no generic class suffix is swept in. */
-  body[data-dsh-bg-glass] [data-testid="todo-panel"],
-  body[data-dsh-bg-glass] [data-goal-bar] > div,
-  body[data-dsh-bg-glass] [data-queue-dock] > div,
-  body[data-dsh-bg-glass] [data-approval-key] > div,
-  body[data-dsh-bg-glass] [data-question-key] > section,
-  body[data-dsh-bg-glass] [data-plan-review-key] > section {
-    background-image: linear-gradient(180deg, rgba(255, 255, 255, var(--bg-glass-sheen, 0.07)), rgba(255, 255, 255, var(--bg-glass-sheen-mid, 0.02)) 38%, rgba(255, 255, 255, 0.01));
-    -webkit-backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
-    backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
-  }
+.noticeBtn {
+  flex: none;
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--dsw-alias-label-secondary);
+  text-decoration: underline;
+  cursor: pointer;
+}
 
-  /* ---- "Load earlier" history button (top of long conversations) --------
-     Its official fill is an opaque solid button token that is deliberately
-     NOT overridden, so unlike the tip family it needs an explicit glass
-     fill too — same recipe as the three chrome buttons above. */
-  body[data-dsh-bg-glass] [class*="_older"] button {
-    background-color: var(--dsw-specific-input-major);
-    background-image: linear-gradient(180deg, rgba(255, 255, 255, var(--bg-glass-sheen, 0.07)), rgba(255, 255, 255, var(--bg-glass-sheen-mid, 0.02)) 38%, rgba(255, 255, 255, 0.01));
-    -webkit-backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
-    backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.32),
-      inset 0 0 0 0.5px rgba(255, 255, 255, 0.12),
-      0 4px 14px rgba(0, 0, 0, 0.08);
-  }
-  body[data-dsh-bg-glass] [class*="_older"] button:hover:not(:disabled) {
-    background-color: color-mix(in srgb, rgb(255 255 255) calc(var(--bg-glass-alpha-strong, 0.8) * 100%), transparent);
-  }
+.noticeBtn:hover {
+  color: var(--dsw-alias-label-primary);
+}
 
-  /* Sidebar build badge: translucent ink already, but it sat directly on
-     the wallpaper without frost. Join the shared blur chain under the same
-     gate (its theme-aware ink fills from the active block above). */
-  body[data-dsh-bg-glass] [class*="_buildVersion"] {
-    -webkit-backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
-    backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
-  }
+/* ── Live preview surface ───────────────────────────────────────────────────
+   Renders the current background + effects inside the panel: the image, the
+   theme-aware scrim, and a frosted "glass" bubble that blurs what sits under
+   it. paintPreviewSurface writes the --bg-* knobs onto this element, so
+   dragging any slider updates the card instantly, isolated from the live
+   backdrop.
+   The card's box tracks the live viewport ratio (set inline by the row): the
+   frame centers it, so a ratio-capped card (a very wide or very tall window)
+   shrinks as a whole instead of being squashed off-ratio. */
 
-  /* ---- Turn deliverables: the changed-files card + its hover preview -----
-     Both paint with the official opaque --dsw-alias-bg-layer-1 (the token the
-     painter deliberately keeps opaque, because it backs the settings UI,
-     dialogs and menus), so each needs an EXPLICIT fill on top of the shared
-     sheen/blur chain — the token-mediated rule above cannot reach them.
-     [data-changed-files] is the card a turn tail renders; its header and
-     rows carry their own fills, so the card surface alone is glassed and the
-     contents keep their official paints. [data-changes-hover-preview] is
-     the fixed HoverCard the changed-files rows open on hover and the shared
-     component behind every diff preview; its width/height are set by the
-     hover-card primitive, so this only supplies the material. The preview's
-     official elevation shadow rides its own token untouched — only the fill
-     and the filter chain are taken over here. */
-  body[data-dsh-bg-glass] [data-changed-files],
-  body[data-dsh-bg-glass] [data-changes-hover-preview] {
-    background-color: var(--dsw-specific-input-major);
-    background-image: linear-gradient(180deg, rgba(255, 255, 255, var(--bg-glass-sheen, 0.07)), rgba(255, 255, 255, var(--bg-glass-sheen-mid, 0.02)) 38%, rgba(255, 255, 255, 0.01));
-    -webkit-backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
-    backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
-    box-shadow: var(--dsw-elevation-panel, 0 4px 14px rgba(0, 0, 0, 0.08));
-  }
+.ratioFrame {
+  display: flex;
+  justify-content: center;
+}
 
-  /* The card's header paints the official opaque fill (--changes-fill is a
-     static neutral), so the glass card underneath never shows through: hand
-     that one surface back to the card by clearing its fill, and give the
-     header's own hover/focus feedback the translucent interactive token the
-     card's rows already use. */
-  body[data-dsh-bg-glass] [data-changed-files] > :first-child {
-    background-color: transparent;
-  }
-  body[data-dsh-bg-glass] [data-changed-files] > :first-child:hover:not(:disabled),
-  body[data-dsh-bg-glass] [data-changed-files] > :first-child:focus-visible {
-    background-color: var(--dsw-alias-interactive-bg-hover);
-  }
+.preview {
+  position: relative;
+  flex: none;
+  /* Fallbacks before the first measurement; the row overrides both inline. */
+  width: 100%;
+  height: 132px;
+  overflow: hidden;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 12px;
+  background: var(--dsw-alias-bg-layer-1);
+}
 
-  /* ---- Docked stat dialogs (turn time, session stats, token usage) -------
-     These portal to document.body, so unlike the picker menu above they do
-     reach the wallpaper; their official menu skin is a 40px blur under a flat
-     58% fill, which on a soft wallpaper still reads as plain transparency. The
-     official fill and its readable contrast stay, and the shared sheen +
-     exposure chain joins them to the same glass family as every other panel —
-     including the user's blur slider (--bg-glass-blur). Anchors are the
-     panels' own detail lists: class hashes are never structural hooks. */
-  body[data-dsh-bg-glass] [role="dialog"]:has([data-turn-usage-details]),
-  body[data-dsh-bg-glass] [role="dialog"]:has([data-session-stats-details]),
-  body[data-dsh-bg-glass] [role="dialog"]:has([data-session-stats-usage]) {
-    background-image: linear-gradient(180deg, rgba(255, 255, 255, var(--bg-glass-sheen, 0.07)), rgba(255, 255, 255, var(--bg-glass-sheen-mid, 0.02)) 38%, rgba(255, 255, 255, 0.01));
-    -webkit-backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
-    backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
-  }
+/* A cover crop that still has overflow on one axis is pannable; the four-way
+   move cursor advertises it. touch-action keeps a touch drag from scrolling
+   the settings pane instead of moving the image. */
+.preview[data-pan] {
+  cursor: move;
+  touch-action: none;
+}
 
-  /* ---- Official turn rail (dsh >= 0.1.2, TurnNavigator) -----------------
-     The enhance mode borrows the kernel's rail untouched, so its hover
-     preview card keeps the OFFICIAL opaque fill (bg-layer-1, not mediated
-     by any overridden token) — the "悬浮反馈形态不透明" complaint. Glass it
-     explicitly with the same explicit-fill recipe as the chrome buttons
-     (fill = the painter's composer token + shared blur/sheen). The anchor is
-     the rail's SEAT, the same one timeline/official-enhance.tsx identifies it
-     by: the only nav inside the conversation scrollport. 0.1.7 virtualized
-     the rail (commit f89cd786aa), which deleted the turn-natural-height
-     inline metric that used to sit on that nav — the nav carries no style
-     attribute at all now — so the selector that keyed on it matched nothing
-     and the preview went bare. The scrollport attribute and the preview's
-     role="tooltip" are the structural hooks; class hashes never are. No edge
-     dissolve on the marks column: the first and last tick dashes straddle
-     the marks box edges by 1px, so a fade zone sized off the box height
-     swallows them instead of the band. */
-  body[data-dsh-bg-glass] [data-conversation-scroll] nav [role="tooltip"] {
-    background-color: var(--dsw-specific-input-major);
-    background-image: linear-gradient(180deg, rgba(255, 255, 255, var(--bg-glass-sheen, 0.07)), rgba(255, 255, 255, var(--bg-glass-sheen-mid, 0.02)) 38%, rgba(255, 255, 255, 0.01));
-    -webkit-backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
-    backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1)) contrast(1.01);
+.preview:focus-visible {
+  outline: 2px solid var(--dsw-alias-brand-primary);
+  outline-offset: 2px;
+}
+
+.previewImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: var(--bg-object-fit, cover);
+  /* Same normalized framing as the live wallpaper layer. */
+  object-position: calc(var(--bg-offset-x, 0.5) * 100%) calc(var(--bg-offset-y, 0.5) * 100%);
+  opacity: var(--bg-opacity, 1);
+  filter: blur(var(--bg-wallpaper-blur, 0px));
+  transform: scale(var(--bg-wallpaper-scale, 1));
+}
+
+.previewScrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, var(--bg-scrim, 0.25));
+}
+
+body[data-ds-dark-theme] .previewScrim {
+  background: rgba(0, 0, 0, var(--bg-scrim, 0.25));
+}
+
+.previewGlass {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  width: 44%;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 10px;
+  /* The bubble's transparency is the panel-opacity preview: paintPreviewSurface
+     writes --bg-preview-glass (theme-aware, matching the live bubble token);
+     the default below approximates the default panel opacity before paint. */
+  background: var(--bg-preview-glass, rgba(255, 255, 255, 0.14));
+  -webkit-backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1));
+  backdrop-filter: blur(var(--bg-glass-blur, 16px)) saturate(var(--bg-glass-saturate, 1.42)) brightness(var(--bg-glass-brightness, 1));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.previewGlassText {
+  font-size: 11px;
+  line-height: 1;
+  /* Theme-aware ink: the bubble is translucent WHITE in light mode, where
+     pure-white text washed out; dark mode keeps light text on dark glass. */
+  color: rgba(15, 23, 42, 0.78);
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.4);
+  white-space: nowrap;
+}
+
+body[data-ds-dark-theme] .previewGlassText {
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+.previewEmpty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--dsw-alias-label-tertiary);
+}
+
+/* Recenter chip: only rendered once a pan moved the crop off center. A dark
+   neutral keeps it legible over any wallpaper in either scheme. */
+.previewReset {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  height: 22px;
+  padding: 0 9px;
+  border: none;
+  border-radius: 11px;
+  background: rgba(15, 23, 42, 0.45);
+  font: inherit;
+  font-size: 11px;
+  line-height: 22px;
+  color: #fff;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition: background-color 150ms ease;
+}
+
+.previewReset:hover {
+  background: rgba(15, 23, 42, 0.65);
+}
+
+/* ── Sections ─────────────────────────────────────────────────────────────── */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sectionLabel {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--dsw-alias-label-tertiary);
+  letter-spacing: 0.01em;
+}
+
+/* ── Source rows ─────────────────────────────────────────────────────────── */
+
+.sourceRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.urlRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.urlInput {
+  flex: 1;
+  min-width: 0;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 8px;
+  background: var(--dsw-alias-bg-layer-1);
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--dsw-alias-label-primary);
+}
+
+.urlInput::placeholder {
+  color: var(--dsw-alias-label-dimmed);
+}
+
+.urlInput:focus-visible {
+  outline: none;
+  border-color: var(--dsw-alias-brand-primary);
+}
+
+.hint {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--dsw-alias-label-tertiary);
+}
+
+.enabledBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 999px;
+  padding: 1px 8px;
+  font-size: 11px;
+  line-height: 17px;
+  font-weight: 500;
+  white-space: nowrap;
+  background: var(--dsw-alias-state-success-tertiary);
+  color: var(--dsw-alias-state-success-primary);
+}
+
+/* ── Buttons (ghost capsules, matching the official Button .sm geometry) ─── */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  padding: 0 12px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 14px;
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--dsw-alias-label-primary);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--dsw-alias-interactive-bg-hover);
+}
+
+.btn:active:not(:disabled) {
+  background: var(--dsw-alias-interactive-bg-active);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.btnPrimary {
+  border-color: transparent;
+  background: var(--dsw-alias-button-primary-fill);
+  color: var(--dsw-alias-label-primary-foreground);
+}
+
+.btnPrimary:hover:not(:disabled) {
+  background: var(--dsw-alias-button-primary-hover);
+}
+
+.btnDanger {
+  color: var(--dsw-alias-label-error);
+}
+
+.btnDanger:hover:not(:disabled) {
+  background: var(--dsw-alias-interactive-bg-hover-danger);
+}
+
+/* ── Sliders ─────────────────────────────────────────────────────────────── */
+
+.sliderRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sliderLabel {
+  flex: 0 0 96px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--dsw-alias-label-primary);
+}
+
+/* Vendor pseudo-element selectors MUST stay in separate rules: WebKit drops a
+   rule wholesale when it contains a pseudo-element it does not recognize
+   (e.g. ::-moz-range-thumb), which previously killed the thumb style. */
+
+.slider {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  height: 18px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* Track — WebKit. The filled fraction comes from --bg-fill, which the
+   component syncs on mount and on every drag (WebKit has no native
+   range-progress). */
+.slider::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg,
+    var(--dsw-alias-brand-primary) var(--bg-fill, 0%),
+    var(--dsw-alias-border-l3) var(--bg-fill, 0%));
+}
+
+/* Track — Firefox. */
+.slider::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--dsw-alias-border-l3);
+}
+
+/* Firefox draws the filled portion natively. */
+.slider::-moz-range-progress {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--dsw-alias-brand-primary);
+}
+
+/* Thumb — WebKit. */
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  margin-top: -5px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--dsw-alias-brand-primary);
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--dsw-alias-brand-primary) 14%, transparent),
+    0 1px 3px rgba(0, 0, 0, 0.28);
+}
+
+/* Thumb — Firefox. */
+.slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--dsw-alias-brand-primary);
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--dsw-alias-brand-primary) 14%, transparent),
+    0 1px 3px rgba(0, 0, 0, 0.28);
+}
+
+/* Hover: the halo widens so the knob reads as grabbable. */
+.slider:hover::-webkit-slider-thumb {
+  box-shadow:
+    0 0 0 5px color-mix(in srgb, var(--dsw-alias-brand-primary) 18%, transparent),
+    0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.slider:hover::-moz-range-thumb {
+  box-shadow:
+    0 0 0 5px color-mix(in srgb, var(--dsw-alias-brand-primary) 18%, transparent),
+    0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Active drag: a slightly larger knob plus a stronger halo. */
+.slider:active::-webkit-slider-thumb {
+  transform: scale(1.12);
+  box-shadow:
+    0 0 0 7px color-mix(in srgb, var(--dsw-alias-brand-primary) 22%, transparent),
+    0 1px 5px rgba(0, 0, 0, 0.32);
+}
+
+.slider:active::-moz-range-thumb {
+  transform: scale(1.12);
+  box-shadow:
+    0 0 0 7px color-mix(in srgb, var(--dsw-alias-brand-primary) 22%, transparent),
+    0 1px 5px rgba(0, 0, 0, 0.32);
+}
+
+.slider:focus-visible {
+  outline: none;
+}
+
+.slider:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid var(--dsw-alias-brand-primary);
+  outline-offset: 2px;
+}
+
+.slider:focus-visible::-moz-range-thumb {
+  outline: 2px solid var(--dsw-alias-brand-primary);
+  outline-offset: 2px;
+}
+
+.sliderValue {
+  flex: 0 0 52px;
+  text-align: right;
+  font-size: 13px;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+  color: var(--dsw-alias-label-secondary);
+}
+
+/* ── Fit segmented control ───────────────────────────────────────────────── */
+
+.segRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.segLabel {
+  flex: 0 0 96px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--dsw-alias-label-primary);
+}
+
+.segGroup {
+  display: inline-flex;
+  flex: 1;
+  min-width: 0;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 9px;
+  background: var(--dsw-alias-bg-layer-1);
+}
+
+.segBtn {
+  flex: 1;
+  height: 24px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+  line-height: 24px;
+  color: var(--dsw-alias-label-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.segBtn:hover:not(.segActive) {
+  color: var(--dsw-alias-label-primary);
+}
+
+.segActive {
+  background: var(--dsw-alias-bg-module-platform);
+  color: var(--dsw-alias-label-primary);
+  font-weight: 500;
+}
+
+/* ── Error + clear ───────────────────────────────────────────────────────── */
+
+.error {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--dsw-alias-label-error);
+}
+
+.clearRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ── Timeline switch ─────────────────────────────────────────────────────── */
+
+.switch {
+  position: relative;
+  flex: none;
+  width: 40px;
+  height: 22px;
+  border: none;
+  border-radius: 11px;
+  padding: 0;
+  background: var(--dsw-alias-border-l3);
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.switch[aria-checked='true'] {
+  background: var(--dsw-alias-brand-primary);
+}
+
+.switch:focus-visible {
+  outline: 2px solid var(--dsw-alias-brand-primary);
+  outline-offset: 2px;
+}
+
+.switchKnob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.28);
+  transition: transform 150ms ease;
+}
+
+.switch[aria-checked='true'] .switchKnob {
+  transform: translateX(18px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .switch,
+  .switchKnob {
+    transition: none;
   }
+}
+

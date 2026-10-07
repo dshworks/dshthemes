@@ -1,5 +1,5 @@
 /* XHR666/dsh-mpkg-wallpaper — lib/client.js
-   fetched 2026-09-29 from https://raw.githubusercontent.com/XHR666/dsh-mpkg-wallpaper/main/lib/client.js
+   fetched 2026-10-07 from https://raw.githubusercontent.com/XHR666/dsh-mpkg-wallpaper/main/lib/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 body[data-mpw-theme] .pI_x6G_sidebarCol {
 	background-color: color-mix(in srgb, var(--mpw-theme-color) 30%, transparent) !important;
@@ -527,8 +527,8 @@ html body:not([data-mpw-hdr-blur-element]):not([data-mpw-hdr-frost-el]) .wSkVaW_
 	z-index: -1 !important;
 	pointer-events: none !important;
 	border-radius: inherit !important;
-	-webkit-backdrop-filter: blur(var(--mpw-hdr-blur, 24px)) saturate(140%) !important;
-	backdrop-filter: blur(var(--mpw-hdr-blur, 24px)) saturate(140%) !important;
+	-webkit-backdrop-filter: blur(var(--mpw-hdr-blur, 24px)) !important;
+	backdrop-filter: blur(var(--mpw-hdr-blur, 24px)) !important;
 }
 
 
@@ -717,36 +717,6 @@ html body:has([class*="_modal"]) [data-mpw-rs] {
    在唯一一处输出（值不变），四表面只读 var(--mpw-surface-*)。 */
 /* 标题栏与左侧栏（含 better-sidebar 与 DSH 原生 sidebarCol） */
 @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-/* ①(修正 2026-09-13 用户"展开框还是被压住" —— 真机 layer-diag 定案)
-   diag 实测：HEADER.wSkVaW_header 的 computed backdrop-filter = set（仍在本体上），
-   于是 header 成为 **层叠上下文 + fixed/absolute 后代的 containing block**：
-     * 作为 containing block：展开面板的定位/裁剪会受 header 影响；
-     * 作为层叠上下文：浮层被"关"在 header 内部，无法压过 header 内的文字。
-   修法：**header 本体彻底不加 backdrop-filter**（磨砂改由 .wSkVaW_header::before 承担，
-   见上方标题栏规则），这里只保留左侧栏的规则。 */
-html body:not([data-mpw-sblur-off]) [class*="sidebarCol"]:not([data-sidebar-right-panel]):not([data-dockkit-strip]):not([data-mpw-holds-layer]) {
-	-webkit-backdrop-filter: blur(var(--mpw-chrome-blur)) saturate(140%) !important;
-	backdrop-filter: blur(var(--mpw-chrome-blur)) saturate(140%) !important;
-	background-color: var(--mpw-surface-side-frost) !important;
-}
-/* 右侧栏 / dockkit（V 形：面板 + 标签条 + 表面） */
-html body[data-mpw-rsblur="on"] [data-sidebar-right-panel],
-html body[data-mpw-rsblur="on"] [data-dockkit-pane],
-html body[data-mpw-rsblur="on"] [data-dockkit-strip],
-html body[data-mpw-rsblur="on"] [data-dockkit-surface] {
-	-webkit-backdrop-filter: blur(var(--mpw-rs-blur)) saturate(140%) !important;
-	backdrop-filter: blur(var(--mpw-rs-blur)) saturate(140%) !important;
-	background-color: var(--mpw-surface-rs-dock) !important;
-}
-/* 抑制：弹窗/设置面板打开时（backdrop-filter 会成为 fixed 弹窗的 containing block → 必须摘除） */
-html body:has([class*="_overlay"]) [class*="sidebarCol"],
-html body:has([class*="_overlay"]) header[class*="_header_"],
-html body:has([class*="_overlay"]) [data-dockkit-pane],
-html body:has([class*="_overlay"]) [data-dockkit-strip],
-html body:has([class*="_modal"]) [class*="sidebarCol"],
-html body:has([class*="_modal"]) header[class*="_header_"],
-html body:has([class*="_modal"]) [data-dockkit-pane],
-html body:has([class*="_modal"]) [data-dockkit-strip] {
 	-webkit-backdrop-filter: none !important;
 	backdrop-filter: none !important;
 }
@@ -777,10 +747,10 @@ html body[data-dragging] [data-dockkit-pane] {
 html body[data-ds-dark-theme]:not([data-mpw-sblur-off]) header[class*="_header_"],
 html body[data-ds-dark-theme]:not([data-mpw-sblur-off]) header.wSkVaW_header,
 html body[data-ds-dark-theme]:not([data-mpw-sblur-off]) [class*="sidebarCol"]:not([data-sidebar-right-panel]):not([data-dockkit-strip]),
-html body[data-ds-dark-theme][data-mpw-rsblur="on"] [data-sidebar-right-panel],
-html body[data-ds-dark-theme][data-mpw-rsblur="on"] [data-dockkit-pane],
-html body[data-ds-dark-theme][data-mpw-rsblur="on"] [data-dockkit-strip],
-html body[data-ds-dark-theme][data-mpw-rsblur="on"] [data-dockkit-surface] {
+html body[data-ds-dark-theme][data-mpw-rsblur="on"] [data-mpw-rs-surface],
+html body[data-ds-dark-theme][data-mpw-rsblur="on"] [data-mpw-rs-surface][data-dockkit-pane],
+html body[data-ds-dark-theme][data-mpw-rsblur="on"] [data-mpw-rs-surface][data-dockkit-strip],
+html body[data-ds-dark-theme][data-mpw-rsblur="on"] [data-mpw-rs-surface][data-dockkit-surface] {
 	background-color: var(--mpw-surface-rs-dock-dark) !important;
 	color: var(--dsw-alias-label-primary, var(--dsw-alias-text-primary, inherit));
 }
@@ -798,7 +768,18 @@ html body [data-sidebar-right-panel], html body [data-dockkit-pane], html body [
 	z-index: 12 !important;
 }
 html body [class*="sidebarCol"]:not([data-sidebar-right-panel]) { z-index: 1 !important; }
-[role="menu"], [role="listbox"], [role="dialog"], [role="tooltip"],
+/* ②(2026-10-05 真机："设置 → Agent 预设 → 查看，弹出的框被压在设置底下")
+   根因：宿主把设置弹层渲染在**左栏子树里**（真机读数 VOzbGW_overlay[z=2000] 是 pI_x6G_sidebarCol
+   的后代），而上面那条把左栏钉成 z-index:1 ⇒ 连同里面的弹窗一起被困在 z=1 的层叠上下文里，
+   被别的 z=2000 层盖住。⇒ 左栏子树里出现**可见的**宿主弹层/对话框时给左栏打抬升标记；
+   弹层关掉即摘（收纳态"左栏盖右栏"的老问题不受影响）。 */
+html body [data-mpw-side-lift] { z-index: 2500 !important; }
+/* ②(2026-10-05 真机定案续) 把 role=dialog 从这里拿掉：宿主的"设置"面板自己就带
+   role=dialog aria-modal（真机读数 VOzbGW_panel），把它钉到 3000 之后，宿主自己的对话框
+   （挂在 z-index:1000 的 portal root 里）永远追不上 ⇒ "设置里点查看，弹窗被压在设置底下、点不到"。
+   这里只保留**小浮层**（菜单/列表/提示/下拉）——它们需要压过面板才点得到；
+   面板/对话框的层级一律交还宿主自己的次序。我们自己的弹窗（.mpw_dialog）由上面的规则单独抬。 */
+[role="menu"], [role="listbox"], [role="tooltip"],
 [class*="_popover"], [class*="_dropdown"], [class*="_selectMenu"], [class*="_menu_"],
 [data-radix-popper-content-wrapper], [data-dsh-popover] {
 	z-index: 3000 !important;
@@ -849,13 +830,22 @@ html body:has([class*="_overlayLayer"]) [class*="_floatHeader_"],
 html body:has([class*="_overlay"]) [class*="_floatHeader_"] {
 	z-index: auto !important;
 }
-/* 设置/弹层本身必须最高（含其内部下拉），保证可点可选 */
-html body [class*="_overlayLayer"], html body [class*="_overlay"], html body [class*="_modal"], html body [role="dialog"] {
+/* 设置/弹层本身的层级：**只抬我们自己的弹窗，不重钉宿主自己的 overlay**。
+   ②(2026-10-05 真机定案："设置 → Agent 预设 → 查看，弹窗被压在设置底下；把壁纸/插件关掉就正常了")
+   根因就是这一条：旧写法把宿主的设置弹层（VOzbGW_overlay）一起钉成 z-index:2000，而宿主自己的
+   对话框挂在 portal root（position:fixed, z-index:1000）里 —— 层叠上下文一盖，里面的 dialog
+   再高也只能到 1000 ⇒ 永远被设置弹层压住、点不到（真机打印的祖先链：dialog → _root_w1urq_2
+   [z=1000] → BODY）。插件一关就没这条规则 ⇒ 宿主的自然次序恢复 ⇒ 弹窗正常在上面。
+   ⇒ 这里只保留我们自己的面板/弹窗类，宿主的 _overlay / _overlayLayer 一律交还宿主自己的层级。 */
+html body [class*="_modal"], html body .mpw_dialog {
 	z-index: 2000 !important;
 }
-/* 设置/对话弹层本身不做玻璃（避免 backdrop-filter 变成下拉的 containing block） */
-[class*="_overlay"], [class*="_modal"], [role="dialog"], [class*="_overlayLayer"],
-[class*="_overlay"] *, [class*="_overlayLayer"] * {
+/* 设置/对话弹层本身不做玻璃（避免 backdrop-filter 变成下拉的 containing block）。
+   ①(2026-10-02 真机读数) **收窄到"真弹层"**：旧写法把 [class*="_overlay"] 及其**所有后代**都清掉模糊，
+   而宿主的聊天输入区锚点类名是 uV2eYG_overlayAnchor（常驻！）⇒ 挂在输入框上的那些弹层
+   （「+」菜单 / 权限选择 / 模型与推理等级 / 上下文占用圆圈）的模糊**被永久清掉**，
+   表现为"完全透明、文字与聊天重叠"（用户第 3 条第②④⑤⑥项）。真弹层用 _overlayLayer / _modal / role=dialog 认。 */
+[role="dialog"][aria-modal="true"], [class*="_overlayLayer"], [class*="_modal"] {
 	-webkit-backdrop-filter: none !important;
 	backdrop-filter: none !important;
 }
@@ -975,8 +965,6 @@ html body [data-rightbar-fullscreen] [data-sidebar-right-panel],
 html body .pI_x6G_frame[data-rightbar-fullscreen] [class*="P3OORG_panel"],
 html body [data-rightbar-fullscreen] [class*="P3OORG_panel"] {
 	z-index: 40 !important;
-	-webkit-backdrop-filter: blur(var(--mpw-rs-blur, 14px)) saturate(140%) !important;
-	backdrop-filter: blur(var(--mpw-rs-blur, 14px)) saturate(140%) !important;
 	background-color: var(--mpw-surface-rs-full) !important;
 }
 /* 全屏时把聊天输入框区域压到右栏之下（即便它有自己的 stacking context 也不会盖住卡片圆角） */
@@ -1028,7 +1016,6 @@ html body[data-mpw-float]:not([data-mpw-traject-clip="off"]) [class*="_overview"
 }
 
 
-
 [data-composer-card] {
 	background-color: var(--dsw-alias-bg-base) !important;
 	backdrop-filter: none !important;
@@ -1070,9 +1057,12 @@ html body[data-mpw-float]:not([data-mpw-traject-clip="off"]) [class*="_overview"
    ①(修正2) 标题栏是否刷 mask 色由 JS 打 data-mpw-aqua-header 门控：
    纯 aquaInk（自适应文字色）时不刷——此时遮罩色=主题中性色（亮色主题=白），
    会把标题栏刷成 62% 白 → session log/标准模式背后的「白框」（用户实测：
-   统一虚化 + 自适应文字色同时开出现）。 */
+   统一虚化 + 自适应文字色同时开出现）。
+   ①(2026-10-02 第1项) 刷多厚由 **雾厚度** 决定（--mpw-aqua-header-alpha，JS 按
+   「左侧边栏/标题栏透明度」写；厚度 0 ⇒ 0% = 一个像素都不刷）。原来写死 62%
+   ⇒ 用户把透明度拉到 0 时标题栏仍被壁纸采样色盖住。 */
 body[data-mpw-aqua][data-mpw-aqua-header] .wSkVaW_header {
-	background-color: color-mix(in srgb, rgb(var(--mpw-aqua-rgb)) 62%, transparent) !important;
+	background-color: color-mix(in srgb, rgb(var(--mpw-aqua-rgb)) var(--mpw-aqua-header-alpha, 62%), transparent) !important;
 	backdrop-filter: none !important;
 }
 body[data-mpw-aqua] .wSkVaW_header {
@@ -1584,11 +1574,16 @@ svg.mpw_navIconImg { background: none; border: 0; border-radius: 0; color: inher
    描边一律交还宿主（下方 hover/悬浮块里的 border-bottom-color 兜底保持不变）。 */
 html body .wSkVaW_header[data-mpw-hdr-translucent],
 html body header[class*="_header_"][data-mpw-hdr-translucent] {
-	background-color: var(--mpw-hdr-frost-bg, rgba(255, 255, 255, 0.38)) !important;
+	/* ②(2026-10-04 真机："标题栏是白色底，左右栏却跟滑条走"）不许有写死的白回退：
+	   --mpw-hdr-frost-bg 一旦没写到（历史路径/时序竞态），旧写法就掉回 rgba(255,255,255,.38)
+	   ⇒ 标题栏看起来永远是白的、与「界面透明度」无关。回退到同一枚表面 token
+	   （= 宿主底色 × 表面不透明度，与左栏/右栏同一套模型）⇒ 三块构造逐字一致。
+	   注意：CSS 模板里的注释不许出现反引号（会截断模板串，本仓踩过三次）。 */
+	background-color: var(--mpw-hdr-frost-bg, var(--mpw-surface-frost-top)) !important;
 }
 html body[data-ds-dark-theme] .wSkVaW_header[data-mpw-hdr-translucent],
 html body[data-ds-dark-theme] header[class*="_header_"][data-mpw-hdr-translucent] {
-	background-color: var(--mpw-hdr-frost-bg, rgba(18, 22, 30, 0.45)) !important;
+	background-color: var(--mpw-hdr-frost-bg, var(--mpw-surface-frost-top)) !important;
 }
 /* ②(2026-09-16 视觉回归修复) 标题栏磨砂"元素层"（.mpw-hdrFrost，由 JS 注入）的**层叠与托底**规则。
    为什么必须有这三条（真根因链）：

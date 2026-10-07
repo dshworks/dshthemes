@@ -1,5 +1,5 @@
 /* NoNameLeGo/dsh-catppuccin-theme — src/client/glass/glass.module.css
-   fetched 2026-09-29 from https://raw.githubusercontent.com/NoNameLeGo/dsh-catppuccin-theme/main/src/client/glass/glass.module.css
+   fetched 2026-10-07 from https://raw.githubusercontent.com/NoNameLeGo/dsh-catppuccin-theme/main/src/client/glass/glass.module.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* ============================================================================
  * Catppuccin glass layer — a toggleable glassmorphism skin for the DeepSeek
@@ -151,6 +151,20 @@
   mask-image: linear-gradient(180deg, black 0%, transparent 100%);
 }
 
+/* Windows desktop shell (official `apps/desktop`): the preload marks <html> with
+   `data-windows-titlebar` and sets `--dsh-windows-titlebar-height: 40px`, and
+   ui-layout reserves that strip above every column. Two consequences for the top
+   band: nothing scrolls under it, so there is no content for the blur to soften
+   (it would be an identity read, the issue #13 shape); and the shell paints the
+   strip — plus the native caption overlay — with `--dsw-specific-sidebar-fill`,
+   so a dark veil there only creates a seam against the caption the shell
+   measured from the same token. Drop the top band only; the bottom one still
+   covers the scrolling transcript. Measured on DSH Desktop 0.2.0-rc.2
+   (2026-09-30): the strip renders #181825, the sidebar-fill value. */
+[data-dsh-glass][data-windows-titlebar] [data-dsh-glass-fade='top'] {
+  display: none;
+}
+
 [data-dsh-glass] [data-dsh-glass-fade='bottom'] {
   bottom: 0;
   -webkit-mask-image: linear-gradient(0deg, black 0%, transparent 100%);
@@ -161,6 +175,10 @@
 [data-dsh-glass-float] [role='menu'],
 [data-dsh-glass-float] [role='dialog'],
 [data-dsh-glass-float] [role='alert'],
+/* The trigger palette is a menu surface too, but it carries none of the ARIA
+   roles above (`MenuView` renders a bare `div[data-trigger-menu]`), so it needs
+   its own seat here to match the corner language (issue #19). */
+[data-dsh-glass-float] [data-trigger-menu],
 [data-dsh-glass-float] [data-dsh-glass-surface] {
   border-radius: 14px;
 }
@@ -448,7 +466,35 @@
 }
 
 /* ---------- Composer (输入框): the start-chat glass recipe — 24px corners,
-   frosted translucent fill, backdrop blur, soft drop shadow. ---------- */
+   frosted translucent fill, backdrop blur, soft drop shadow.
+
+   ⚠️ issue #19: the fill + blur live on a `::before` MATERIAL PLANE, and the
+   card itself carries none. The card is the host of the trigger palette —
+   `InputBar` renders `conversation.input.overlay` as the card's first child
+   (`.overlayAnchor`, `height:0`), and the palette inside it is
+   `bottom: calc(100% + 4px)` from that anchor, i.e. it hangs ENTIRELY ABOVE
+   the card's box. A `backdrop-filter` on the card therefore turns the card
+   into that palette's BACKDROP ROOT, and the backdrop a descendant may read is
+   its ancestor's own paint only — the page is not in it. Measured in Chromium
+   against this exact structure (`.debug/issue-19/`): with a filtered ancestor
+   the palette's own `blur(40px)` left the stripe stdev at 100.41, i.e. EXACTLY
+   the value of the same region with the palette's blur removed (identity
+   read), while dropping the ancestor's filter collapsed it to 7.04. Result on
+   the live GUI: the palette lost its frost and the transcript read straight
+   through its 58%/45% fill (the reporter's issue #19).
+
+   Splitting the material onto a plane is upstream's own idiom — see
+   `dsh-client-ui-primitives/lib/MenuSurface.module.css` ("Filtering only the
+   background keeps nested menus and fixed overlays free of an ancestor
+   backdrop root"): an `isolation: isolate` shell + a `z-index:-1` plane. The
+   plane must own the fill TOO, not just the blur: anything the card paints
+   below the plane (a background, an inset shadow) enters the plane's backdrop
+   and is what the plane then reads. `isolation` is NOT a backdrop root
+   (measured: the plane still blurs the page) — it only keeps the negative
+   z-index inside the card.
+
+   `::after` is taken by the host (`cardWorkspaceTrigger::after` draws the
+   dashed workspace ring), so the plane is `::before`. ---------- */
 [data-dsh-glass-float] [data-composer-card],
 [data-dsh-glass-float] [data-composer-card]::after {
   border-radius: 24px;
@@ -459,16 +505,33 @@
   /* Above the scrolling content and the code-banner stack (max 7), so the
      frosted card always reads as one piece over the transcript. */
   z-index: 8;
-  background: var(--dsh-glass-card);
+  /* Nothing painted here on purpose (issue #19) — see the plane below. This
+     also replaces the host's own `--dsw-specific-input-major` fill. */
+  isolation: isolate;
+  background: none;
   border: 1px solid var(--dsh-glass-rim);
-  box-shadow: var(--dsh-glass-edge), var(--dsh-glass-drop);
+  /* Only the OUTER drop: the inset edge light belongs on the plane, or the
+     card would paint it UNDER the 52%-alpha fill and wash it out. */
+  box-shadow: var(--dsh-glass-drop);
+}
+
+[data-dsh-glass-float] [data-composer-card]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--dsh-glass-card);
+  box-shadow: var(--dsh-glass-edge);
   backdrop-filter: blur(var(--dsh-glass-blur, 14px));
+  pointer-events: none;
 }
 
 /* ---------- Composer + stats line (统计行): ONE glass slab (ported from
    Aqua v1.3). Once the stats line is docked underneath, the WHOLE inputbar
-   becomes a single pane — one background, blur, border and shadow on the
-   wrapper; the card and the stats band turn transparent inside it, so
+   becomes a single pane — one background, blur, border and shadow for the
+   wrapper (the material rides its `::before` plane, issue #19); the card and
+   the stats band turn transparent inside it, so
    their frost and tone can never drift apart. The only seam cue is one
    hairline divider where the two pieces meet.
    The shell constrains the dock's child to the chat content width
@@ -480,15 +543,35 @@
 }
 
 [data-dsh-glass][data-dsh-glass-float] [data-dsh-glass-inputbar]:has([data-dsh-glass-stats]) {
+  /* Positioning context for the material plane below. The host's own `.root`
+     is static (`display:flex`), and every absolutely positioned element inside
+     the composer already resolves against the CARD (`uV2eYG_card` carries
+     `position:relative` upstream), so this adds a containing block but does not
+     re-anchor anything — re-check on the live GUI (issue #19 verification). */
+  position: relative;
+  isolation: isolate;
   width: var(--dsh-composer-card-max-width) !important;
   max-width: var(--dsh-composer-card-max-width) !important;
   margin: 0 auto 12px;
   padding: 0;
   border: 1px solid var(--dsh-glass-rim);
   border-radius: 24px;
+  /* Same split as the plain composer card (issue #19): the slab hosts the
+     trigger palette too, so its blur must NOT sit on this element. */
+  background: none;
+  box-shadow: var(--dsh-glass-drop);
+}
+
+[data-dsh-glass][data-dsh-glass-float] [data-dsh-glass-inputbar]:has([data-dsh-glass-stats])::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
   background: var(--dsh-glass-card);
-  box-shadow: var(--dsh-glass-edge), var(--dsh-glass-drop);
+  box-shadow: var(--dsh-glass-edge);
   backdrop-filter: blur(var(--dsh-glass-blur, 14px));
+  pointer-events: none;
 }
 
 /* Inside the slab the composer card is bare content: no glass of its own. */
@@ -498,6 +581,12 @@
   background: transparent;
   box-shadow: none;
   backdrop-filter: none;
+}
+
+/* …and its own material plane steps aside so the slab's plane is the only
+   one painting (two planes would stack two fills and two backdrop reads). */
+[data-dsh-glass-float] [data-dsh-glass-inputbar]:has([data-dsh-glass-stats]) [data-composer-card]::before {
+  display: none;
 }
 
 [data-dsh-glass-float] [data-dsh-glass-inputbar]:has([data-dsh-glass-stats]) [data-composer-card]::after {
@@ -652,25 +741,60 @@
 }
 
 /* ---------- Page transitions: opacity-only (a running transform would
-   re-anchor position:fixed descendants mid-flight). ---------- */
-[data-dsh-glass-float] [data-phase='hero'] {
-  animation: dsh-glass-in 0.32s var(--ds-ease-in-out);
+   re-anchor position:fixed descendants mid-flight).
+
+   The gate is `[data-dsh-glass]` — NOT `[data-dsh-glass-float]`. An animation
+   whose `animation-name` follows the rendering MODE restarts on every
+   compat→mica switch: adding the float attribute changes the computed
+   animation-name from none to the keyframes on every element that is already
+   on screen, so the whole page — and the settings dialog the mode picker sits
+   in — replays its entry fade. Measured in Chromium against the shipped sheet,
+   50 ms after the flip: the dialog at opacity 0.149 and the active phase at
+   0.085 (the reported "切换会闪一下"; controls are in
+   tests/glass-css.spec.ts, which pins the gate).
+
+   Compat keeps today's look the other way: `--dsh-glass-entry-scale` is 1 in
+   mica and 0 in compat, so the SAME shorthand is declared in both modes and
+   only its computed duration moves (0.3s → 0s). Changing an animation property
+   other than `animation-name` does not restart the animation (measured: both
+   flips leave every element at opacity 1.000 with no running animation), a view
+   mounted in compat still enters instantly, and the name never changes.
+
+   Trade-off, deliberate: because the shorthand now matches in compat too, the
+   zero-length recipe replaces whatever entry animation the HOST declared on
+   these five seams (the host Modal's `.dialog` carries its own 0.2s
+   `modalEnter`; its mask keeps its own fade, which this sheet does not touch).
+   The alternative — leaving compat without a declaration — is exactly the
+   animation-name flip that makes the skin flash, so "compat has no skin motion"
+   (the float gate's documented intent) and "the host's entry animation survives
+   in compat" cannot both hold. Compat, the conservative mode, keeps the
+   quieter side of that trade. ---------- */
+[data-dsh-glass] {
+  --dsh-glass-entry-scale: 1;
 }
 
-[data-dsh-glass-float] [data-phase='active'] {
-  animation: dsh-glass-in 0.3s var(--ds-ease-in-out);
+[data-dsh-glass-compat] {
+  --dsh-glass-entry-scale: 0;
 }
 
-[data-dsh-glass-float] [data-testid^='view-'] {
-  animation: dsh-glass-in 0.26s var(--ds-ease-in-out);
+[data-dsh-glass] [data-phase='hero'] {
+  animation: dsh-glass-in calc(0.32s * var(--dsh-glass-entry-scale, 1)) var(--ds-ease-in-out);
 }
 
-[data-dsh-glass-float] [data-tool] {
-  animation: dsh-glass-rise 0.3s var(--ds-ease-in-out) both;
+[data-dsh-glass] [data-phase='active'] {
+  animation: dsh-glass-in calc(0.3s * var(--dsh-glass-entry-scale, 1)) var(--ds-ease-in-out);
 }
 
-[data-dsh-glass-float] [role='dialog'] {
-  animation: dsh-glass-dialog-in 0.24s var(--ds-ease-in-out);
+[data-dsh-glass] [data-testid^='view-'] {
+  animation: dsh-glass-in calc(0.26s * var(--dsh-glass-entry-scale, 1)) var(--ds-ease-in-out);
+}
+
+[data-dsh-glass] [data-tool] {
+  animation: dsh-glass-rise calc(0.3s * var(--dsh-glass-entry-scale, 1)) var(--ds-ease-in-out) both;
+}
+
+[data-dsh-glass] [role='dialog'] {
+  animation: dsh-glass-dialog-in calc(0.24s * var(--dsh-glass-entry-scale, 1)) var(--ds-ease-in-out);
 }
 
 @keyframes dsh-glass-in {
@@ -756,8 +880,12 @@
      from the token remap under `[data-dsh-glass-settings]`, not from this rule.
      (Float mode still uses the `card` substring, but only for its 14px corner
      radius — a radius on a container that paints nothing is harmless.) */
+/* Issue #19: `[data-composer-card]` LEFT this rule set — the card hosts the
+   trigger palette, so a blur on it is the palette's backdrop root (see the long
+   note at the mica composer recipe). Compat gets the same plane split in the
+   dedicated block below; a `::before` selector cannot ride this list, which is
+   exactly why it needs its own rules. */
 [data-dsh-glass-compat] [role='menu'],
-[data-dsh-glass-compat] [data-composer-card],
 [data-dsh-glass-compat] [class*='popover'],
 [data-dsh-glass-compat] [class*='dropdown'] {
   backdrop-filter: blur(12px);
@@ -792,11 +920,36 @@
   backdrop-filter: blur(12px);
 }
 
+/* Issue #19: the composer card's fill moved onto its plane (below) — leaving it
+   here would paint the raised fill UNDER the plane, which is exactly what the
+   plane's blur would then read instead of the page. The RIM stays on the card:
+   an outline is painted above negative-z children, so it keeps carving the
+   surface out of the transcript. */
 [data-dsh-glass-compat] [role='menu'],
-[data-dsh-glass-compat] [data-composer-card],
 [data-dsh-glass-compat] [class*='popover'],
 [data-dsh-glass-compat] [class*='dropdown'] {
   background: var(--dsh-glass-card-raised);
+}
+
+/* Compat composer: the same material-plane split as mica (issue #19). Clears
+   the host's own `--dsw-specific-input-major` fill too — it is opaque, so left
+   in place it would both hide the plane and become its backdrop. */
+[data-dsh-glass-compat] [data-composer-card] {
+  position: relative;
+  isolation: isolate;
+  background: none;
+  backdrop-filter: none;
+}
+
+[data-dsh-glass-compat] [data-composer-card]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--dsh-glass-card-raised);
+  backdrop-filter: blur(12px);
+  pointer-events: none;
 }
 
 [data-dsh-glass-compat] [role='menu']:not(:focus-visible),
@@ -816,7 +969,7 @@
    Compat mode remains the cheaper material overall — measured on the live GUI
    (1440×900, one conversation): mica carries ~460k px² of visible blurred
    surface, compat ~106k px².    But do NOT read that as "compat never blurs the
-   composer": the `[data-composer-card]` rule above still blurs DSH's
+   composer": the composer card's `::before` plane below still blurs DSH's
    composer card (~76k px²), which is why issue #13's surface table is off on
    two rows — the composer card is not mica-only, and neither are the page-edge
    fade bands (they are gated on `[data-dsh-glass]`, so both modes have them).
@@ -834,11 +987,11 @@
 
 /* ---------- Reduced motion: keep the static look, drop every effect. ---------- */
 @media (prefers-reduced-motion: reduce) {
-  [data-dsh-glass-float] [data-phase='hero'],
-  [data-dsh-glass-float] [data-phase='active'],
-  [data-dsh-glass-float] [data-testid^='view-'],
-  [data-dsh-glass-float] [data-tool],
-  [data-dsh-glass-float] [role='dialog'] {
+  [data-dsh-glass] [data-phase='hero'],
+  [data-dsh-glass] [data-phase='active'],
+  [data-dsh-glass] [data-testid^='view-'],
+  [data-dsh-glass] [data-tool],
+  [data-dsh-glass] [role='dialog'] {
     animation: none;
   }
 }

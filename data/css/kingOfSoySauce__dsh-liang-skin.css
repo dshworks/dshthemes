@@ -1,5 +1,5 @@
 /* kingOfSoySauce/dsh-liang-skin — src/client/skin.css
-   fetched 2026-09-29 from https://raw.githubusercontent.com/kingOfSoySauce/dsh-liang-skin/main/src/client/skin.css
+   fetched 2026-10-07 from https://raw.githubusercontent.com/kingOfSoySauce/dsh-liang-skin/main/src/client/skin.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 .liang-skin-backdrop {
   position: fixed;
@@ -271,6 +271,13 @@ body[data-liang-skin="on"]:is(
 body[data-liang-skin="on"] > #root {
   position: relative;
   z-index: 1;
+  background: transparent !important;
+}
+
+/* Windows paints the sidebar fill across the host frame, covering the portrait.
+   Match macOS's transparent frame while keeping the sidebar, caption, and
+   conversation surfaces painted by their own host rules. */
+html[data-windows-titlebar] body[data-liang-skin="on"] #root [class*="_frame"]:has(> [class*="_centerCol"]) {
   background: transparent !important;
 }
 
