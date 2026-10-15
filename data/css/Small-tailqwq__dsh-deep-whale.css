@@ -1,5 +1,5 @@
 /* Small-tailqwq/dsh-deep-whale — maid-atelier/src/client/maid-atelier.module.css
-   fetched 2026-10-07 from https://raw.githubusercontent.com/Small-tailqwq/dsh-deep-whale/main/maid-atelier/src/client/maid-atelier.module.css
+   fetched 2026-10-15 from https://raw.githubusercontent.com/Small-tailqwq/dsh-deep-whale/main/maid-atelier/src/client/maid-atelier.module.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* Deep-sea maid atelier: a self-contained presentation layer over the stock
    web GUI. The generated palace and character layers are applied separately
@@ -24,7 +24,12 @@ body[data-dsh-maid-atelier] {
      ~2.6:1), transparent enough that the palace stays a backdrop. */
   --maid-reading-surface: rgba(249, 251, 255, 0.78);
   --maid-shadow: 0 18px 54px rgba(15, 30, 72, 0.2), 0 2px 8px rgba(15, 30, 72, 0.12);
+}
 
+/* Page and overlay controls share one palette; navy chrome overrides it at its
+   own boundary. Overlay reading surfaces are made opaque below. */
+body[data-dsh-maid-atelier],
+body[data-dsh-maid-atelier] :is(dialog, [role='dialog'], [role='alertdialog'], [role='menu'], [data-menu-material], [data-radix-popper-content-wrapper] > *) {
   --dsw-alias-bg-base: transparent;
   --dsw-alias-bg-layer-1: rgba(248, 250, 255, 0.72);
   --dsw-alias-bg-layer-2: rgba(235, 240, 250, 0.84);
@@ -47,8 +52,8 @@ body[data-dsh-maid-atelier] {
   --dsw-alias-label-primary: #172347;
   --dsw-alias-label-primary-bluish: #243866;
   --dsw-alias-label-secondary: #4d5d7f;
-  --dsw-alias-label-tertiary: #6f7c99;
-  --dsw-alias-label-caption: #8a94aa;
+  --dsw-alias-label-tertiary: #52658c;
+  --dsw-alias-label-caption: #55688c;
   /* DSH 0.2's running line under the transcript mixes the DeepSeek blue; keep it on the brand indigo. */
   --dsw-alias-label-deep-diving: #526aa8;
   /* 0.2.0-rc.2's sticky menu-group heading paints itself with this fill while a
@@ -61,6 +66,31 @@ body[data-dsh-maid-atelier] {
   --dsw-specific-input-major: rgba(255, 253, 248, 0.82);
   --dsw-specific-selector: rgba(226, 232, 246, 0.9);
   --dsw-specific-sidebar-fill: rgba(11, 25, 66, 0.88);
+  --dsw-alias-label-primary-foreground: #fff;
+  --dsw-alias-button-primary-fill: #526aa8;
+  --dsw-alias-button-primary-hover: #405a99;
+  --dsw-alias-state-error-primary: #c52d3b;
+  --dsw-alias-state-error-secondary: #c52d3b;
+  --dsw-alias-link: #405a99;
+  --dsw-alias-label-dimmed: #8995ad;
+  --dsw-alias-markdown-tag: #e0e7f6;
+  --dsw-alias-bg-module-platform: #ebf0fa;
+  --dsw-specific-menu: var(--dsw-alias-bg-layer-3);
+  --dsw-alias-label-primary-dimmed: #172347;
+  --dsw-alias-label-primary-inverted: #fff;
+  --dsw-alias-menu-icon: #243866;
+  --dsw-alias-button-contrast-fill: #243866;
+  --dsw-alias-button-ghost-active-fill: #e2e8f5;
+  --dsw-alias-button-ghost-active-hover: #d3ddef;
+  --dsw-alias-button-ghost-active-border: #6f7c99;
+  --dsw-alias-button-primary-dimmed: #e2e8f5;
+  --dsw-alias-state-success-primary: #247650;
+  --dsw-alias-state-success-secondary: #247650;
+  --dsw-alias-state-success-tertiary: #e0f3e9;
+  --dsw-alias-state-warn-primary: #815c18;
+  --dsw-alias-state-warn-secondary: #815c18;
+  --dsw-alias-state-warn-label: #815c18;
+  --dsw-alias-state-warn-tertiary: #faf0d8;
 }
 
 body[data-dsh-maid-atelier][data-ds-dark-theme] {
@@ -69,6 +99,10 @@ body[data-dsh-maid-atelier][data-ds-dark-theme] {
   --maid-glass: rgba(13, 25, 59, 0.74);
   --maid-reading-surface: rgba(10, 18, 42, 0.78);
   --maid-shadow: 0 18px 58px rgba(0, 0, 0, 0.38), 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+body[data-dsh-maid-atelier][data-ds-dark-theme],
+body[data-dsh-maid-atelier][data-ds-dark-theme] :is(dialog, [role='dialog'], [role='alertdialog'], [role='menu'], [data-menu-material], [data-radix-popper-content-wrapper] > *) {
   --dsw-alias-bg-base: transparent;
   --dsw-alias-bg-layer-1: rgba(18, 31, 67, 0.9);
   --dsw-alias-bg-layer-2: rgba(24, 40, 80, 0.92);
@@ -92,7 +126,7 @@ body[data-dsh-maid-atelier][data-ds-dark-theme] {
   --dsw-alias-label-primary-bluish: #d5dff3;
   --dsw-alias-label-secondary: #bdc9e3;
   --dsw-alias-label-tertiary: #96a6c9;
-  --dsw-alias-label-caption: #7f90b4;
+  --dsw-alias-label-caption: #8b9bbd;
   --dsw-alias-label-deep-diving: #9bb0e1;
   --dsw-alias-menu-group-header-fill: rgba(32, 49, 91, 0.94);
   --dsw-alias-state-business-primary: #9bb0e1;
@@ -100,6 +134,55 @@ body[data-dsh-maid-atelier][data-ds-dark-theme] {
   --dsw-specific-input-major: rgba(17, 30, 66, 0.88);
   --dsw-specific-selector: rgba(45, 64, 111, 0.9);
   --dsw-specific-sidebar-fill: rgba(5, 13, 40, 0.9);
+  --dsw-alias-label-primary-foreground: #091333;
+  --dsw-alias-button-primary-fill: #9bb0e1;
+  --dsw-alias-button-primary-hover: #b7c6e8;
+  --dsw-alias-state-error-primary: #ff8e98;
+  --dsw-alias-state-error-secondary: #ff8e98;
+  --dsw-alias-link: #b7c6e8;
+  --dsw-alias-label-dimmed: #7f90b4;
+  --dsw-alias-markdown-tag: #293f78;
+  --dsw-alias-bg-module-platform: #20315b;
+  --dsw-specific-menu: var(--dsw-alias-bg-layer-3);
+  --dsw-alias-label-primary-dimmed: #e7ecf7;
+  --dsw-alias-label-primary-inverted: #091333;
+  --dsw-alias-menu-icon: #d5dff3;
+  --dsw-alias-button-contrast-fill: #e7ecf7;
+  --dsw-alias-button-ghost-active-fill: #293f78;
+  --dsw-alias-button-ghost-active-hover: #354d88;
+  --dsw-alias-button-ghost-active-border: #96a6c9;
+  --dsw-alias-button-primary-dimmed: #293f78;
+  --dsw-alias-state-success-primary: #79cca4;
+  --dsw-alias-state-success-secondary: #79cca4;
+  --dsw-alias-state-success-tertiary: #123e30;
+  --dsw-alias-state-warn-primary: #f0cf8c;
+  --dsw-alias-state-warn-secondary: #f0cf8c;
+  --dsw-alias-state-warn-label: #f0cf8c;
+  --dsw-alias-state-warn-tertiary: #45371b;
+}
+
+/* Fallback, not an adaptation: the client marks the page when a plugin has
+   replaced the official root layout. The palace stage and sidebar art never
+   mount there, so the translucent surfaces above would show the plain page or
+   the conversation straight through a drawer. Keep the palette, drop the
+   transparency, and leave that layout's own structure alone. */
+body[data-dsh-maid-atelier][data-maid-shell='foreign'] {
+  --dsw-alias-bg-base: #e7edf8;
+  --dsw-alias-bg-layer-1: #f5f7fc;
+  --dsw-alias-bg-layer-2: #ebf0fa;
+  --dsw-alias-bg-layer-3: #e0e7f6;
+  --dsw-specific-sidebar-fill: #0b1942;
+  /* Portaled menus drop from the header's navy band, where the host's
+     translucent menu fill turned grey under dark ink. */
+  --dsw-specific-menu: var(--dsw-alias-bg-layer-1);
+}
+
+body[data-dsh-maid-atelier][data-ds-dark-theme][data-maid-shell='foreign'] {
+  --dsw-alias-bg-base: #0a132f;
+  --dsw-alias-bg-layer-1: #121f43;
+  --dsw-alias-bg-layer-2: #182850;
+  --dsw-alias-bg-layer-3: #20315b;
+  --dsw-specific-sidebar-fill: #050d28;
 }
 
 body[data-dsh-maid-atelier] [id='root'] {
@@ -567,18 +650,20 @@ body[data-dsh-maid-atelier] [data-slot='conversation.header'] > header {
   text-shadow: 0 1px 3px rgba(4, 11, 35, 0.55);
 }
 
-body[data-dsh-maid-atelier] [data-slot='conversation.header'] > header
-  button:not(:where([role='dialog'] *, [role='menu'] *, [data-radix-popper-content-wrapper] *)) {
-  text-shadow: inherit;
+/* Those light, glowing labels are drawn for the navy top band that only the
+   official conversation column paints. Under a plugin-replaced root layout the
+   header carries that band itself. */
+body[data-dsh-maid-atelier][data-maid-shell='foreign'] [data-slot='conversation.header'] > header {
+  background-color: var(--dsw-alias-bg-base);
 }
 
 body[data-dsh-maid-atelier] [data-slot='conversation.header'] > header
-  button:not(:where([role='dialog'] *, [role='menu'] *, [data-radix-popper-content-wrapper] *)):not([role='tab']):hover {
-  color: var(--maid-gold-soft);
+  button:not(:where(dialog *, [role='dialog'] *, [role='alertdialog'] *, [role='menu'] *, [data-menu-material] *, [data-radix-popper-content-wrapper] *)) {
+  text-shadow: none;
 }
 
 body[data-dsh-maid-atelier] [data-slot='conversation.header'] > header
-  button:not(:where([role='dialog'] *, [role='menu'] *, [data-radix-popper-content-wrapper] *)):not([role='tab']):focus-visible {
+  button:not(:where(dialog *, [role='dialog'] *, [role='alertdialog'] *, [role='menu'] *, [data-menu-material] *, [data-radix-popper-content-wrapper] *)):not([role='tab']):focus-visible {
   border-radius: 4px;
   outline: 1px solid rgba(235, 204, 143, 0.86);
   outline-offset: 2px;
@@ -600,18 +685,8 @@ body[data-dsh-maid-atelier] [data-slot='conversation.header'] > header > [data-s
 
 /* Pane surfaces, matched by the AppFrame column class substrings. */
 body[data-dsh-maid-atelier] [class*='sidebarCol'] {
-  --dsw-alias-label-primary: #f8f3e8;
-  --dsw-alias-label-secondary: #d7def0;
-  --dsw-alias-label-tertiary: #b5c1dd;
-  --dsw-alias-label-caption: #96a8ce;
-  --dsw-alias-border-l1: rgba(225, 207, 170, 0.2);
-  --dsw-alias-border-l2: rgba(225, 207, 170, 0.32);
-  --dsw-alias-button-elevated-fill: rgba(255, 252, 243, 0.13);
-  --dsw-alias-button-floating-hover: rgba(255, 252, 243, 0.18);
   --dsw-alias-scrollbar-bg-l2: rgba(205, 174, 111, 0.58);
   --dsw-alias-scrollbar-hover-l2: #e8c77f;
-  --dsw-alias-interactive-bg-hover: rgba(255, 252, 243, 0.1);
-  --dsw-alias-interactive-bg-active: rgba(197, 164, 104, 0.3);
   position: relative;
   z-index: auto;
   border-right: 0;
@@ -725,6 +800,15 @@ body[data-dsh-maid-atelier] [class*='sidebarCol'] [class*='fade'] {
 body[data-dsh-maid-atelier] [data-slot='sidebar.workspaces']
   [class*='treeBody'] > [class*='list'] {
   padding-bottom: var(--maid-sidebar-swag-height);
+  /* Android WebView reads only the prefixed longhands before 120. */
+  -webkit-mask-image:
+    linear-gradient(#000, #000),
+    radial-gradient(ellipse 75% 100% at 50% 0, #000 70%, transparent 100%);
+  -webkit-mask-size:
+    100% max(0px, calc(100% - var(--maid-sidebar-swag-height))),
+    100% min(100%, var(--maid-sidebar-swag-height));
+  -webkit-mask-position: top, bottom;
+  -webkit-mask-repeat: no-repeat;
   mask-image:
     linear-gradient(#000, #000),
     radial-gradient(ellipse 75% 100% at 50% 0, #000 70%, transparent 100%);
@@ -1329,6 +1413,55 @@ body[data-dsh-maid-atelier][data-maid-sidebar-size='rail'] button[class*='newSes
   filter: drop-shadow(0 1px 2px rgba(1, 7, 24, 0.48));
 }
 
+/* The brand plate above dresses every logo row. The official collapsed
+   layouts reshape it for their own rail, but a plugin-replaced root layout
+   keeps the host's narrow collapsed rail, where the plate grew into a box over
+   the header's tabs. Keep the host geometry there; the whale sits on the
+   header's navy band, so it takes the rail medallion's gold ink. */
+body[data-dsh-maid-atelier][data-maid-shell='foreign']
+  [data-slot='sidebar'] > [class*='root'][class*='collapsed'] > [class*='logoRow'] {
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+body[data-dsh-maid-atelier][data-maid-shell='foreign']
+  [data-slot='sidebar'] > [class*='root'][class*='collapsed']
+  > [class*='logoRow'] [class*='toggle'] {
+  color: #ebd29e;
+}
+
+/* On a wide screen that collapsed rail also carries New Session, which kept
+   the 58px ribbon and was cut off by the 56px rail. Give it the rail
+   medallion instead. */
+body[data-dsh-maid-atelier][data-maid-shell='foreign']
+  [data-slot='sidebar'] > [class*='root'][class*='collapsed'] button[class*='newSession'] {
+  width: 38px;
+  min-width: 38px;
+  height: 38px;
+  min-height: 38px;
+  align-self: center;
+  margin: 6px 0 10px;
+  padding: 0;
+  border: 1px solid rgba(225, 207, 170, 0.72);
+  border-image: none;
+  border-radius: 50%;
+  corner-shape: round;
+  color: #ebd29e;
+  background: linear-gradient(145deg, rgba(77, 103, 169, 0.4), rgba(7, 18, 52, 0.78));
+  box-shadow: inset 0 0 0 2px rgba(5, 15, 45, 0.7);
+  filter: drop-shadow(0 3px 7px rgba(1, 7, 24, 0.26));
+}
+
+body[data-dsh-maid-atelier][data-maid-shell='foreign']
+  [data-slot='sidebar'] > [class*='root'][class*='collapsed'] button[class*='newSession'] svg {
+  color: #efd7a1;
+}
+
 body[data-dsh-maid-atelier][data-maid-sidebar-size='rail']
     [class*='sidebarCol']
     :is([class*='iconButton'], [class*='searchButton']):not([class*='toggle']):not([role='dialog'] *) {
@@ -1412,8 +1545,12 @@ body[data-dsh-maid-atelier]
   margin-top: 0;
 }
 
-/* Navy chrome gives extension controls matching surface and label tokens.
+/* Expanded foreign-layout sidebars and native navy chrome share one palette.
+   The collapsed foreign rail keeps the page palette. Extension controls receive
+   matching surface and label tokens.
    Menus and dialogs establish their own theme palette at the overlay root. */
+body[data-dsh-maid-atelier] [class*='sidebarCol'],
+body[data-dsh-maid-atelier][data-maid-shell='foreign'] [data-slot='sidebar'] > [class*='root']:not([class*='collapsed']),
 body[data-dsh-maid-atelier] [data-slot='conversation.header'] > header,
 body[data-dsh-maid-atelier] [data-shell-leading],
 body[data-dsh-maid-atelier] [data-slot='sidebar.footer.action'] {
@@ -1422,6 +1559,43 @@ body[data-dsh-maid-atelier] [data-slot='sidebar.footer.action'] {
   --dsw-alias-bg-layer-2: rgba(11, 25, 66, 0.97);
   --dsw-alias-bg-layer-3: rgba(24, 40, 80, 0.98);
   --dsw-alias-bg-overlay: rgba(13, 25, 59, 0.98);
+  --dsw-alias-button-elevated-fill: #20315b;
+  --dsw-alias-button-floating-fill: #182850;
+  --dsw-alias-button-floating-hover: #293f78;
+  --dsw-specific-input-major: #121f43;
+  --dsw-alias-brand-primary: #9bb0e1;
+  --dsw-alias-brand-text: #e7ecf7;
+  --dsw-alias-menu-group-header-fill: #182850;
+  --dsw-alias-label-primary-dimmed: #e7ecf7;
+  --dsw-alias-label-primary-inverted: #091333;
+  --dsw-alias-menu-icon: #d5dff3;
+  --dsw-alias-button-contrast-fill: #e7ecf7;
+  --dsw-alias-button-ghost-active-fill: #293f78;
+  --dsw-alias-button-ghost-active-hover: #354d88;
+  --dsw-alias-button-ghost-active-border: #96a6c9;
+  --dsw-alias-button-primary-dimmed: #293f78;
+  --dsw-alias-state-success-primary: #79cca4;
+  --dsw-alias-state-success-secondary: #79cca4;
+  --dsw-alias-state-success-tertiary: #123e30;
+  --dsw-alias-state-warn-primary: #f0cf8c;
+  --dsw-alias-state-warn-secondary: #f0cf8c;
+  --dsw-alias-state-warn-label: #f0cf8c;
+  --dsw-alias-state-warn-tertiary: #45371b;
+  --dsw-alias-state-business-tertiary: #293d73;
+  --dsw-alias-label-primary-foreground: #091333;
+  --dsw-alias-button-info-fill: #9bb0e1;
+  --dsw-alias-button-info-hover: #b7c6e8;
+  --dsw-alias-button-primary-fill: #9bb0e1;
+  --dsw-alias-button-primary-hover: #b7c6e8;
+  --dsw-alias-state-business-primary: #9bb0e1;
+  --dsw-alias-state-error-primary: #ff8e98;
+  --dsw-alias-state-error-secondary: #ff8e98;
+  --dsw-alias-link: #b7c6e8;
+  --dsw-alias-label-dimmed: #7f90b4;
+  --dsw-alias-markdown-tag: #293f78;
+  --dsw-alias-bg-module-platform: #20315b;
+  --dsw-alias-interactive-bg-hover-solid: #293f78;
+  --dsw-specific-selector: #20315b;
   --dsw-specific-menu: var(--dsw-alias-bg-layer-3);
   --dsw-alias-label-primary: #f8f3e8;
   --dsw-alias-label-primary-bluish: #d5dff3;
@@ -1723,20 +1897,20 @@ body[data-dsh-maid-atelier][data-ds-dark-theme] [data-dsh-better-sidebar] {
   color: #e7ecf7;
 }
 
-body[data-dsh-maid-atelier] [class*='sectionHeader'] {
+body[data-dsh-maid-atelier] [data-slot='sidebar'] :not(:where(dialog *, [role='dialog'] *, [role='alertdialog'] *, [role='menu'] *, [data-menu-material] *))[class*='sectionHeader'] {
   color: #d9bd83;
   font-family: var(--maid-workspace-font);
   letter-spacing: 0.025em;
   text-shadow: 0 1px 2px rgba(2, 7, 24, 0.62);
 }
 
-body[data-dsh-maid-atelier] [class*='sectionHeader'] [class*='sectionLabel'] {
+body[data-dsh-maid-atelier] [data-slot='sidebar'] :not(:where(dialog *, [role='dialog'] *, [role='alertdialog'] *, [role='menu'] *, [data-menu-material] *))[class*='sectionHeader'] [class*='sectionLabel'] {
   color: #d9bd83;
   font-size: 15px;
   font-weight: 500;
 }
 
-body[data-dsh-maid-atelier] [class*='sectionHeader'] [class*='iconButton'] {
+body[data-dsh-maid-atelier] [data-slot='sidebar'] :not(:where(dialog *, [role='dialog'] *, [role='alertdialog'] *, [role='menu'] *, [data-menu-material] *))[class*='sectionHeader'] [class*='iconButton'] {
   position: relative;
   color: #d9bd83;
   border: 1px solid transparent;
@@ -1744,7 +1918,7 @@ body[data-dsh-maid-atelier] [class*='sectionHeader'] [class*='iconButton'] {
   transition: color 150ms ease, border-color 150ms ease, background 150ms ease;
 }
 
-body[data-dsh-maid-atelier] [class*='sectionHeader'] [class*='iconButton']:is(:hover, :focus-visible) {
+body[data-dsh-maid-atelier] [data-slot='sidebar'] :not(:where(dialog *, [role='dialog'] *, [role='alertdialog'] *, [role='menu'] *, [data-menu-material] *))[class*='sectionHeader'] [class*='iconButton']:is(:hover, :focus-visible) {
   color: #fff1cf;
   border-color: rgba(225, 191, 124, 0.56);
   background: rgba(91, 119, 188, 0.2);
@@ -1752,7 +1926,7 @@ body[data-dsh-maid-atelier] [class*='sectionHeader'] [class*='iconButton']:is(:h
   outline: none;
 }
 
-body[data-dsh-maid-atelier] [class*='sectionHeader'] [class*='iconButton'] svg {
+body[data-dsh-maid-atelier] [data-slot='sidebar'] :not(:where(dialog *, [role='dialog'] *, [role='alertdialog'] *, [role='menu'] *, [data-menu-material] *))[class*='sectionHeader'] [class*='iconButton'] svg {
   color: inherit;
   filter: drop-shadow(0 1px 2px rgba(2, 7, 24, 0.68));
 }
@@ -1788,12 +1962,12 @@ body[data-dsh-maid-atelier] [class*='sidebarCol'] [class*='search'][class*='sear
     0 4px 12px rgba(2, 7, 24, 0.2);
 }
 
-body[data-dsh-maid-atelier] [class*='searchInput'] {
+body[data-dsh-maid-atelier] [data-slot='sidebar'] :not(:where(dialog *, [role='dialog'] *, [role='alertdialog'] *, [role='menu'] *, [data-menu-material] *))[class*='searchInput'] {
   color: #f8f3e8;
   font-family: var(--maid-workspace-font);
 }
 
-body[data-dsh-maid-atelier] [class*='searchInput']::placeholder {
+body[data-dsh-maid-atelier] [data-slot='sidebar'] :not(:where(dialog *, [role='dialog'] *, [role='alertdialog'] *, [role='menu'] *, [data-menu-material] *))[class*='searchInput']::placeholder {
   color: #aeb9d3;
   opacity: 1;
 }
@@ -2023,7 +2197,7 @@ body[data-dsh-maid-atelier][data-maid-sidebar-size='rail']
   html:not([data-maid-nav-mode='rail']) body[data-dsh-maid-atelier]
     div[data-sidebar-collapsed],
   html:not([data-maid-nav-mode='rail']) body[data-dsh-maid-atelier]
-    [id='root'] > div[data-slot='root'] > div:not([data-sidebar-collapsed]) {
+    [id='root'] > div[data-slot='root'] > div[class*='frame']:not([data-sidebar-collapsed]) {
     display: flex !important;
     flex-direction: column !important;
     grid-template-columns: none !important;
@@ -2036,7 +2210,7 @@ body[data-dsh-maid-atelier][data-maid-sidebar-size='rail']
     div[data-sidebar-collapsed]
     > [class*='centerCol'],
   html:not([data-maid-nav-mode='rail']) body[data-dsh-maid-atelier]
-    [id='root'] > div[data-slot='root'] > div:not([data-sidebar-collapsed])
+    [id='root'] > div[data-slot='root'] > div[class*='frame']:not([data-sidebar-collapsed])
     > [class*='centerCol'] {
     flex: 1 1 auto !important;
     width: 100% !important;
@@ -2048,7 +2222,7 @@ body[data-dsh-maid-atelier][data-maid-sidebar-size='rail']
      While it is open the frame drops that track, the conversation keeps the
      full width, and the drawer floats (shared rule below). */
   html[data-maid-nav-mode='rail'] body[data-dsh-maid-atelier]
-    [id='root'] > div[data-slot='root'] > div:not([data-sidebar-collapsed]) {
+    [id='root'] > div[data-slot='root'] > div[class*='frame']:not([data-sidebar-collapsed]) {
     display: flex !important;
     flex-direction: column !important;
     grid-template-columns: none !important;
@@ -2058,7 +2232,7 @@ body[data-dsh-maid-atelier][data-maid-sidebar-size='rail']
   }
 
   html[data-maid-nav-mode='rail'] body[data-dsh-maid-atelier]
-    [id='root'] > div[data-slot='root'] > div:not([data-sidebar-collapsed])
+    [id='root'] > div[data-slot='root'] > div[class*='frame']:not([data-sidebar-collapsed])
     > [class*='centerCol'] {
     flex: 1 1 auto !important;
     width: 100% !important;
@@ -2080,7 +2254,7 @@ body[data-dsh-maid-atelier][data-maid-sidebar-size='rail']
      once it ends the column computes to no transform at all, so the panel is
      positioned right without disabling anything. */
   html:not([data-maid-nav-mode='rail']) body[data-dsh-maid-atelier]
-    [id='root'] > div[data-slot='root'] > div:not([data-sidebar-collapsed])
+    [id='root'] > div[data-slot='root'] > div[class*='frame']:not([data-sidebar-collapsed])
     [class*='sidebarCol'] {
     animation: maidAtelierPhoneDrawerIn 220ms cubic-bezier(0.22, 0.78, 0.2, 1) backwards;
   }
@@ -2097,7 +2271,7 @@ body[data-dsh-maid-atelier][data-maid-sidebar-size='rail']
   }
 
   html[data-maid-nav-mode='rail'] body[data-dsh-maid-atelier]
-    [id='root'] > div[data-slot='root'] > div:not([data-sidebar-collapsed])
+    [id='root'] > div[data-slot='root'] > div[class*='frame']:not([data-sidebar-collapsed])
     [class*='sidebarCol'] {
     animation: maidAtelierPhoneDrawerIn 220ms cubic-bezier(0.22, 0.78, 0.2, 1) backwards;
   }
@@ -2371,9 +2545,11 @@ body[data-dsh-maid-atelier][data-maid-sidebar-size='rail']
     filter: drop-shadow(0 1px 2px rgba(1, 7, 24, 0.5));
   }
 
+  /* 0.2.0-rc.2 seats the collapsed button's icon inside `newSessionLabelMask`;
+     only the text label may go, or the round target renders empty. */
   html[data-maid-nav-mode='topbar'] body[data-dsh-maid-atelier]
     div[data-sidebar-collapsed]
-    [class*='sidebarCol'] [class*='newSessionLabel'],
+    [class*='sidebarCol'] [class*='newSessionLabel']:not([class*='newSessionLabelMask']),
   html[data-maid-nav-mode='topbar'] body[data-dsh-maid-atelier]
     div[data-sidebar-collapsed]
     [class*='sidebarCol'] [class*='panelTitle'] {
@@ -2462,7 +2638,7 @@ body[data-dsh-maid-atelier][data-maid-sidebar-size='rail']
      keeps the full width and never moves. `rail` shares this rule so its own
      collapsed rail stays the host's, while opening it stops pushing the chat. */
   body[data-dsh-maid-atelier]
-    [id='root'] > div[data-slot='root'] > div:not([data-sidebar-collapsed])
+    [id='root'] > div[data-slot='root'] > div[class*='frame']:not([data-sidebar-collapsed])
     [class*='sidebarCol'] {
     position: fixed !important;
     top: 0 !important;
@@ -3757,10 +3933,10 @@ body[data-dsh-maid-atelier][data-ds-dark-theme]
   color: rgba(174, 189, 222, 0.5);
 }
 
-/* The alpha dock owns both statistics and ContextMeter, whose dialog portals
-   to body. Keep one backdrop layer on their shared surface. */
+/* Statistics and ContextMeter share one dock backdrop. Inline slot dialogs
+   own a separate reading surface, even when showModal() puts them in the top layer. */
 body[data-dsh-maid-atelier]
-  [data-composer-card] + div[class*='dock'] [data-slot='conversation.composer.dock'] > * {
+  [data-composer-card] + div[class*='dock'] [data-slot='conversation.composer.dock'] > *:not(dialog):not([role='dialog']) {
   background: transparent;
   backdrop-filter: none;
 }
@@ -5005,11 +5181,18 @@ body[data-dsh-maid-atelier]
   grid-template-columns: minmax(0, 1fr);
 }
 
+/* The pane paints under the body only because the body's mask makes it a
+   stacking context that follows the pane in paint order. The host writes the
+   fade as unprefixed `mask-image`, which Android WebView ignores before 120
+   while `:has()` (105+) still raises the pane; the pane's backdrop filter
+   then stacks it above the in-flow text and blurs it away (#181). Isolate the
+   body so the order no longer depends on the mask. */
 body[data-dsh-maid-atelier]
   [data-step-process]:not([hidden], [data-group-expanded-mode])
   > [data-step-process-body]:not([hidden]):is([data-scroll-up], [data-scroll-down]) {
   grid-row: 2;
   grid-column: 1;
+  isolation: isolate;
 }
 
 body[data-dsh-maid-atelier]
@@ -5251,76 +5434,6 @@ body[data-dsh-maid-atelier] [data-variant='think'][data-state='running'] [class*
 
 body[data-dsh-maid-atelier] [data-state='running'] :is([class*='runState'], [class*='stateDot']) {
   filter: drop-shadow(0 0 6px rgba(197, 164, 104, 0.7));
-}
-
-/* The subagent catalog is mounted inside the navy conversation header. Reset
-   that header's inverted copy before presenting the light porcelain tree. */
-body[data-dsh-maid-atelier]:not([data-ds-dark-theme])
-  [data-slot='conversation.session.header.actions'] [role='tree'] {
-  --dsw-alias-label-primary: #233763;
-  --dsw-alias-label-secondary: #40557f;
-  --dsw-alias-label-tertiary: #596b8e;
-  --dsw-alias-label-dimmed: #8995ad;
-  --dsw-alias-border-l2: rgba(95, 117, 169, 0.4);
-  --dsw-alias-interactive-bg-hover: rgba(103, 126, 183, 0.14);
-  border: 1px solid rgba(95, 117, 169, 0.26);
-  background: linear-gradient(
-    145deg,
-    rgba(248, 250, 255, 0.93),
-    rgba(232, 238, 250, 0.89)
-  );
-  color: #233763;
-  text-shadow: none;
-  box-shadow: 0 16px 36px rgba(19, 38, 87, 0.2);
-  backdrop-filter: blur(8px) saturate(0.92);
-}
-
-body[data-dsh-maid-atelier]:not([data-ds-dark-theme])
-  [data-slot='conversation.session.header.actions'] [role='tree']
-  :is([role='treeitem'], [class*='label']) {
-  color: #233763;
-  text-shadow: none;
-}
-
-body[data-dsh-maid-atelier]:not([data-ds-dark-theme])
-  [data-slot='conversation.session.header.actions'] [role='tree']
-  :is([class*='summary'], [class*='metrics'], [class*='notice']) {
-  color: #596b8e;
-  text-shadow: none;
-}
-
-body[data-dsh-maid-atelier][data-ds-dark-theme]
-  [data-slot='conversation.session.header.actions'] [role='tree'] {
-  --dsw-alias-label-primary: #edf1fa;
-  --dsw-alias-label-secondary: #d3ddf2;
-  --dsw-alias-label-tertiary: #b8c5e1;
-  --dsw-alias-label-dimmed: #7f90b4;
-  --dsw-alias-border-l2: rgba(151, 169, 216, 0.4);
-  --dsw-alias-interactive-bg-hover: rgba(164, 183, 229, 0.14);
-  border: 1px solid rgba(151, 169, 216, 0.26);
-  background: linear-gradient(
-    145deg,
-    rgba(10, 20, 48, 0.93),
-    rgba(18, 31, 67, 0.89)
-  );
-  color: #edf1fa;
-  text-shadow: none;
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.32);
-  backdrop-filter: blur(8px) saturate(0.92);
-}
-
-body[data-dsh-maid-atelier][data-ds-dark-theme]
-  [data-slot='conversation.session.header.actions'] [role='tree']
-  :is([role='treeitem'], [class*='label']) {
-  color: #edf1fa;
-  text-shadow: none;
-}
-
-body[data-dsh-maid-atelier][data-ds-dark-theme]
-  [data-slot='conversation.session.header.actions'] [role='tree']
-  :is([class*='summary'], [class*='metrics'], [class*='notice']) {
-  color: #b8c5e1;
-  text-shadow: none;
 }
 
 /* Question takeover: this component is seated directly in the composer and
@@ -5571,7 +5684,7 @@ body[data-dsh-maid-atelier][data-ds-dark-theme] :is([data-testid='todo-panel'], 
    keeps it from inheriting a value already resolved against the page/chrome
    tokens: the Agent Team panel mounts inside the conversation header and
    paints itself with `--dsw-specific-menu`. */
-body[data-dsh-maid-atelier] :is([role='dialog'], [role='menu'], [data-menu-material], [data-radix-popper-content-wrapper] > *) {
+body[data-dsh-maid-atelier] :is(dialog, [role='dialog'], [role='alertdialog'], [role='menu'], [data-menu-material], [data-radix-popper-content-wrapper] > *) {
   color: var(--dsw-alias-label-primary, #172347);
   text-shadow: none;
   --dsw-alias-bg-base: #f8faff;
@@ -5579,49 +5692,21 @@ body[data-dsh-maid-atelier] :is([role='dialog'], [role='menu'], [data-menu-mater
   --dsw-alias-bg-layer-2: #ebf0fa;
   --dsw-alias-bg-layer-3: #e0e7f6;
   --dsw-alias-bg-overlay: #f8faff;
-  --dsw-specific-menu: var(--dsw-alias-bg-layer-3);
-  --dsw-alias-label-primary: #172347;
-  --dsw-alias-label-primary-bluish: #243866;
-  --dsw-alias-label-secondary: #4d5d7f;
-  --dsw-alias-label-tertiary: #52658c;
-  --dsw-alias-label-caption: #55688c;
-  --dsw-alias-border-l1: rgba(71, 91, 145, 0.18);
-  --dsw-alias-border-l2-darkmode-thin: rgba(71, 91, 145, 0.25);
-  --dsw-alias-border-l2: rgba(71, 91, 145, 0.3);
-  --dsw-alias-button-elevated-fill: rgba(255, 253, 248, 0.88);
-  --dsw-alias-button-floating-fill: rgba(255, 253, 248, 0.94);
-  --dsw-alias-button-floating-hover: #ece6d8;
-  --dsw-alias-interactive-bg-hover: rgba(103, 126, 183, 0.12);
-  --dsw-alias-interactive-bg-hover-solid: #e2e8f5;
-  --dsw-alias-interactive-bg-active: rgba(197, 164, 104, 0.24);
-  --dsw-specific-input-major: rgba(255, 253, 248, 0.82);
+  --dsw-specific-selector: #e0e7f6;
   border-color: rgba(197, 164, 104, 0.52);
   box-shadow: var(--maid-shadow);
 }
 
-body[data-dsh-maid-atelier][data-ds-dark-theme] :is([role='dialog'], [role='menu'], [data-menu-material], [data-radix-popper-content-wrapper] > *) {
+body[data-dsh-maid-atelier][data-ds-dark-theme] :is(dialog, [role='dialog'], [role='alertdialog'], [role='menu'], [data-menu-material], [data-radix-popper-content-wrapper] > *) {
   color: var(--dsw-alias-label-primary, #e7ecf7);
   --dsw-alias-bg-base: #0d193b;
   --dsw-alias-bg-layer-1: #121f43;
   --dsw-alias-bg-layer-2: #182850;
   --dsw-alias-bg-layer-3: #20315b;
   --dsw-alias-bg-overlay: #0d193b;
-  --dsw-specific-menu: var(--dsw-alias-bg-layer-3);
-  --dsw-alias-label-primary: #e7ecf7;
-  --dsw-alias-label-primary-bluish: #d5dff3;
-  --dsw-alias-label-secondary: #bdc9e3;
-  --dsw-alias-label-tertiary: #96a6c9;
-  --dsw-alias-label-caption: #8b9bbd;
-  --dsw-alias-border-l1: rgba(151, 169, 216, 0.2);
-  --dsw-alias-border-l2-darkmode-thin: rgba(151, 169, 216, 0.3);
-  --dsw-alias-border-l2: rgba(151, 169, 216, 0.34);
-  --dsw-alias-button-elevated-fill: rgba(28, 44, 84, 0.94);
-  --dsw-alias-button-floating-fill: rgba(31, 49, 92, 0.96);
-  --dsw-alias-button-floating-hover: #354d88;
-  --dsw-alias-interactive-bg-hover: rgba(164, 183, 229, 0.14);
-  --dsw-alias-interactive-bg-hover-solid: #293f78;
-  --dsw-alias-interactive-bg-active: rgba(211, 180, 119, 0.24);
-  --dsw-specific-input-major: rgba(17, 30, 66, 0.88);
+  --dsw-alias-button-info-fill: #9bb0e1;
+  --dsw-alias-button-info-hover: #b7c6e8;
+  --dsw-specific-selector: #20315b;
   border-color: rgba(211, 180, 119, 0.66);
   box-shadow: var(--maid-shadow), inset 0 1px rgba(255, 255, 255, 0.08);
 }
@@ -6630,7 +6715,7 @@ body[data-dsh-maid-atelier][data-ds-dark-theme] [data-phase='active'] :has(+ * >
 
 @media (prefers-reduced-motion: reduce) {
   body[data-dsh-maid-atelier]
-    [id='root'] > div[data-slot='root'] > div:not([data-sidebar-collapsed])
+    [id='root'] > div[data-slot='root'] > div[class*='frame']:not([data-sidebar-collapsed])
     [class*='sidebarCol'] {
     animation: none;
   }

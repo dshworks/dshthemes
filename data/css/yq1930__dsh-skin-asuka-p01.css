@@ -1,5 +1,5 @@
 /* yq1930/dsh-skin-asuka-p01 — lib/client.js
-   fetched 2026-10-07 from https://raw.githubusercontent.com/yq1930/dsh-skin-asuka-p01/master/lib/client.js
+   fetched 2026-10-15 from https://raw.githubusercontent.com/yq1930/dsh-skin-asuka-p01/master/lib/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 /* Scoped reading tokens follow the host font setting; task-state colors stay native. */
 body[data-dsh-asuka-p01] {
@@ -36,6 +36,10 @@ body[data-dsh-asuka-p01] {
   --asuka-code-leading: calc(22px + var(--dsh-content-font-delta, 0px));
   --asuka-meta-size: calc(12px + var(--dsh-content-font-delta-secondary, 0px));
   --asuka-process-height: calc(36px + var(--dsh-content-font-delta, 0px));
+  /* One inset scale for every plate that paints its own background, so labels and
+     timestamps never sit flush against an edge. Matches the process activity row. */
+  --asuka-plate-block: 6px;
+  --asuka-plate-inline: 12px;
 
   --dsw-alias-bg-base: var(--asuka-base);
   --dsw-alias-bg-layer-1: var(--asuka-panel);
@@ -429,11 +433,14 @@ body[data-dsh-asuka-p01] [data-chat-flow] [class*='diffBody'] > [class*='_footer
   font-size: var(--asuka-meta-size);
 }
 
+/* Metadata and action plates paint a background, so they own an inset on all four
+   sides: without it the trailing timestamp renders flush against the plate edge. */
 body[data-dsh-asuka-p01] [data-chat-flow] :is([class*='metaRow'], [class*='referenceSummary']),
 body[data-dsh-asuka-p01] [data-chat-flow] [class*='userRow'] > [class*='actions'],
 body[data-dsh-asuka-p01] [data-chat-flow] [data-turn-tail] > [class*='actions'] {
   width: fit-content;
   max-width: 100%;
+  padding: var(--asuka-plate-block) var(--asuka-plate-inline);
   border-radius: 7px;
   background: var(--asuka-panel);
 }

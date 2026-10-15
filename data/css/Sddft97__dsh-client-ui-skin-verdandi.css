@@ -1,5 +1,5 @@
 /* Sddft97/dsh-client-ui-skin-verdandi — src/client/verdandi.module.css
-   fetched 2026-10-07 from https://raw.githubusercontent.com/Sddft97/dsh-client-ui-skin-verdandi/main/src/client/verdandi.module.css
+   fetched 2026-10-15 from https://raw.githubusercontent.com/Sddft97/dsh-client-ui-skin-verdandi/main/src/client/verdandi.module.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* Verdandi · White Vow
    Deep crimson owns navigation; bridal white owns reading. */
@@ -287,31 +287,24 @@ body[data-dsh-verdandi] [data-pane='sidebar'] button:not(
   color: inherit;
 }
 
-body[data-dsh-verdandi] [data-pane='sidebar'] button[aria-label='新建会话'] svg > rect,
-body[data-dsh-verdandi] [data-pane='sidebar'] button[aria-label='New session'] svg > rect {
-  fill: var(--vd-gold) !important;
-}
-
-body[data-dsh-verdandi] [data-pane='sidebar'] button[aria-label='新建会话'] svg > g:last-of-type path,
-body[data-dsh-verdandi] [data-pane='sidebar'] button[aria-label='New session'] svg > g:last-of-type path {
-  fill: var(--vd-crimson-deep) !important;
-}
+/* [P0 fix] Removed the `button[aria-label] svg > rect` / `svg > g:last-of-type
+   path` pair: both are dead selectors. The real new-session icon
+   (`NewChatOutlineArtwork`) draws with <path> only — no <rect>, no <g> — and on
+   macOS the brand is a <span> with no aria-label, so `button[aria-label]` never
+   matched it either. The icon colour is already handled by the `color: inherit`
+   rule above. */
 
 body[data-dsh-verdandi] [data-pane='sidebar'] button[aria-label='收起侧边栏'],
-body[data-dsh-verdandi] [data-pane='sidebar'] button[aria-label='展开侧边栏'],
 body[data-dsh-verdandi] [data-pane='sidebar'] button[aria-label='打开侧边栏'],
 body[data-dsh-verdandi] [data-pane='sidebar'] button[aria-label='Collapse sidebar'],
-body[data-dsh-verdandi] [data-pane='sidebar'] button[aria-label='Open sidebar'],
-body[data-dsh-verdandi] [data-pane='sidebar'] button[aria-label='Expand sidebar'] {
+body[data-dsh-verdandi] [data-pane='sidebar'] button[aria-label='Open sidebar'] {
   border-radius: 9px;
 }
 
 body[data-dsh-verdandi] [data-pane='sidebar'] button[aria-label='收起侧边栏']:hover,
-body[data-dsh-verdandi] [data-pane='sidebar'] button[aria-label='展开侧边栏']:hover,
 body[data-dsh-verdandi] [data-pane='sidebar'] button[aria-label='打开侧边栏']:hover,
 body[data-dsh-verdandi] [data-pane='sidebar'] button[aria-label='Collapse sidebar']:hover,
-body[data-dsh-verdandi] [data-pane='sidebar'] button[aria-label='Open sidebar']:hover,
-body[data-dsh-verdandi] [data-pane='sidebar'] button[aria-label='Expand sidebar']:hover {
+body[data-dsh-verdandi] [data-pane='sidebar'] button[aria-label='Open sidebar']:hover {
   background: rgba(255, 255, 255, 0.11);
 }
 
@@ -345,40 +338,40 @@ body[data-dsh-verdandi] [data-pane='sidebar'] [data-verdandi-new-session]:hover 
     0 9px 20px rgba(48, 6, 17, 0.26);
 }
 
-body[data-dsh-verdandi] [data-pane='sidebar'] [data-verdandi-nav-entry] {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-block: 2px;
-  border: 1px solid transparent;
-  border-radius: 9px;
-  transition: background 150ms ease, border-color 150ms ease;
+/* [darwin fix] On macOS the host paints the new-session button with its own
+   `#ffffff8c` fill (Windows has no such rule), which left a white block in the
+   sidebar's top-left corner. The platform marker gives this override the
+   specificity to win, and it also covers the inner `newSession*` wrapper in case
+   the hook has not stamped `data-verdandi-new-session` yet. */
+[data-platform='darwin'] body[data-dsh-verdandi] [data-pane='sidebar'] [class*='newSession'],
+[data-platform='darwin'] body[data-dsh-verdandi] [data-pane='sidebar'] [data-verdandi-new-session] {
+  background:
+    var(--vd-art-invitation-lace) center / 100% 100% no-repeat,
+    linear-gradient(180deg, #fffdf9, #f5eae2) !important;
+  color: var(--vd-crimson-deep) !important;
 }
 
-body[data-dsh-verdandi] [data-pane='sidebar'] [data-verdandi-nav-entry] > :first-child {
-  display: inline-flex;
-  flex: 0 0 24px;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
+[data-platform='darwin'] body[data-dsh-verdandi] [data-pane='sidebar'] [class*='newSession']:hover,
+[data-platform='darwin'] body[data-dsh-verdandi] [data-pane='sidebar'] [data-verdandi-new-session]:hover {
+  filter: brightness(1.03);
 }
 
-body[data-dsh-verdandi] [data-pane='sidebar'] [data-verdandi-nav-entry] > :first-child svg {
-  width: 24px;
-  height: 24px;
-  padding: 4px;
-  color: var(--vd-gold-light);
-  background: rgba(255, 253, 251, 0.08);
-  border: 1px solid rgba(230, 213, 169, 0.36);
-  border-radius: 50%;
-  box-sizing: border-box;
+/* [darwin fix] The brand element is a <span> on macOS (no aria-label, no
+   <button>), so the `button[aria-label='新建会话']` rules above never match it.
+   Style it through the class-name hook instead. */
+body[data-dsh-verdandi] [data-pane='sidebar'] [class*='_brand'],
+body[data-dsh-verdandi] [data-pane='sidebar'] [class*='_brandIdentity'] {
+  color: var(--vd-gold);
 }
 
-body[data-dsh-verdandi] [data-pane='sidebar'] [data-verdandi-nav-entry]:hover {
-  background: rgba(255, 255, 255, 0.095);
-  border-color: rgba(230, 213, 169, 0.28);
-}
+/* The framed 24px gold ring on the registered panel rows (task-board /
+   skill-explorer / ssh) is gone: the hook only marked those three, so the
+   sidebar read as three ringed icons above three bare ones. The rows now keep
+   the host's own geometry (16px glyph, 8px gap, 36px row) exactly like the
+   official Plugins / Schedule rows, so the icon column, the label indent, the
+   row rhythm and the hover tint are one shape top to bottom. The
+   `data-verdandi-nav-entry` hook is still projected by src/client/index.ts; it
+   just carries no paint any more. */
 
 body[data-dsh-verdandi] [data-pane='sidebar'] [data-verdandi-sidebar-action] {
   color: var(--vd-gold-light) !important;
@@ -672,6 +665,19 @@ body[data-dsh-verdandi] [data-pane='conversation'] > .characterStage {
   display: block !important;
 }
 
+/* A plugin surface (or its detail view) owns the main slot, so the stage drops behind
+   whatever that page paints. The stage is `position: absolute; z-index: 0`, which beats
+   a static page in paint order -- that is how the figures ended up over the MCP
+   connector's cards. At `-1` it stays above this pane's own background (the pane is a
+   stacking context) and below the page's in-flow content, so: a page with its own
+   background hides it outright (nothing decorative over key information), a page
+   without one still shows it in the gaps, behind the content. */
+body[data-dsh-verdandi]:has([data-slot='main'] > :not([data-slot])) .characterStage,
+body[data-dsh-verdandi]:has([data-slot='main'] [data-plugin-panel]) .characterStage,
+body[data-dsh-verdandi]:has([data-slot='main'] [data-plugin-detail]) .characterStage {
+  z-index: -1;
+}
+
 .characterFigure {
   position: absolute;
   bottom: clamp(10px, 1.4vh, 18px);
@@ -799,9 +805,46 @@ body[data-dsh-verdandi] [data-pane='conversation'] > [data-verdandi-decoration='
   border-right: 1px solid rgba(199, 168, 107, 0.44);
 }
 
+/* The shell's top bar is an Electron window-drag region: the header and its rows carry
+   `-webkit-app-region: drag` and each control opts out with `no-drag`. The property is
+   INHERITED, so every layer the skin mounts inside the header inherited `drag` and
+   re-declared the whole band -- including the area over the controls -- as draggable.
+   A real mouse press on the overflow menu or the panel toggle then started a window
+   drag instead of reaching the button; onlookers saw "the top bar is dead".
+
+   Nothing in-page can observe this: `elementFromPoint` skips these layers (they are
+   `pointer-events: none`) and CDP-injected clicks never enter the native drag path, so
+   both look perfectly healthy. The maid-atelier skin mounts the same band as a
+   body-level layer instead, which is why only this skin showed it.
+
+   The skin's own layers opt out; the shell's own drag rects are left untouched. */
+body[data-dsh-verdandi] [data-verdandi-header] > [data-verdandi-decoration],
+body[data-dsh-verdandi] [data-verdandi-header]::before,
+body[data-dsh-verdandi] [data-verdandi-header]::after {
+  -webkit-app-region: no-drag;
+}
+
+/* ...except this one, which is the drag handle the skin owes back. It contributes its
+   own rect (minus its own no-drag descendants, of which it has none) and covers only
+   the empty middle of the bar, so no control is ever inside it. */
+body[data-dsh-verdandi] [data-verdandi-header] > [data-verdandi-decoration='header-drag-strip'] {
+  -webkit-app-region: drag;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 40%;
+  width: 20%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* The pane lifts are deliberately in the single digits. Anything the host raises for
+   an overlay lives in the tens or hundreds, so a decoration that outranks it will
+   paint over the overlay -- reported once as the composer seal sitting on top of the
+   model picker, which is also what put the seal below the composer's own content. */
 body[data-dsh-verdandi] [data-verdandi-header] {
   position: relative;
-  z-index: 20;
+  z-index: 4;
   /* Deliberately no `overflow: hidden`. The host renders its title-row dropdowns
      *inside* the header instead of portalling them to `document.body` (measured:
      `[role=menu]`, `position: absolute; z-index: 100`, parent chain
@@ -993,10 +1036,19 @@ body[data-dsh-verdandi] [data-verdandi-header] [data-slot='conversation.session.
    row -- later in DOM order -- painting over a header menu (measured: the menu
    spans y 43-255 and the tabs cover y 50-75 of it). The title row owns the
    dropdown triggers (`_headerUtilities` sits inside it), so it has to outrank
-   the tabs. Descendant, not child: 0.1.7 wraps the title row in the
-   `conversation.session.header` anchor, which is a `display: contents` slot, so
-   a `>` rule would match nothing on the real shell. */
-body[data-dsh-verdandi] [data-verdandi-header] [class*='_titleRow'] {
+   the tabs.
+
+   Three components plus `:has()` on purpose: on 0.2.0 the row sits one slot deeper
+   (`conversation.session.header` is a `display: contents` seat), which makes the
+   blanket `z-index: 3` rule's descendant form 0-3-0 and drops a 0-2-0 title-row rule
+   below it -- and the menu then paints under the tabs. Same-specificity-later is not
+   something a skin may rely on across host versions, so the lift is spelled out at
+   0-3-0 or above and matched structurally as well as by class. */
+body[data-dsh-verdandi] [data-verdandi-header] > [class*='_titleRow'],
+body[data-dsh-verdandi] [data-verdandi-header] > :has([aria-haspopup]),
+body[data-dsh-verdandi] [data-verdandi-header] [data-slot='conversation.session.header'] > [class*='_titleRow'],
+body[data-dsh-verdandi] [data-verdandi-header] [data-slot='conversation.session.header'] > :has([aria-haspopup]),
+body[data-dsh-verdandi] [data-verdandi-header] [class*='_titleRow']:has([aria-haspopup]) {
   z-index: 5;
   font-family: Georgia, 'Noto Serif SC', 'Songti SC', serif;
   letter-spacing: 0.012em;
@@ -1023,6 +1075,37 @@ body[data-dsh-verdandi] [data-verdandi-header] button:hover {
   color: var(--vd-crimson-deep) !important;
   background: rgba(255, 253, 251, 0.9);
   border-color: var(--vd-gold);
+}
+
+/* Some header controls are really TWO buttons in one box -- the host's split control
+   ("open with <app>" plus its chevron) is `div > button + button` inside the shell.
+   The blanket button rule above gave each half its own capsule, so the pair showed a
+   notch at the seam and two inset rings butting together. A split control is one
+   control: the pair's box becomes the pill and the halves stay square, borderless and
+   transparent inside it.
+
+   Structural on purpose -- a container holding two adjacent buttons, minus the tab
+   list, which is also `button + button` but must keep its flat, unboxed look. */
+body[data-dsh-verdandi] [data-verdandi-header] :is(div, span):has(> button + button):not([role='tablist']) {
+  border: 1px solid rgba(199, 168, 107, 0.62);
+  border-radius: 999px;
+  background: rgba(255, 253, 251, 0.66);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.7),
+    0 2px 6px rgba(67, 16, 30, 0.07);
+  overflow: hidden;
+}
+
+body[data-dsh-verdandi] [data-verdandi-header] :is(div, span):has(> button + button):not([role='tablist']) > button {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+
+body[data-dsh-verdandi] [data-verdandi-header] :is(div, span):has(> button + button):not([role='tablist']) > button:hover {
+  color: var(--vd-crimson-deep) !important;
+  background: rgba(255, 253, 251, 0.9) !important;
 }
 
 body[data-dsh-verdandi] [data-verdandi-header] [role='tab'] {
@@ -1092,6 +1175,18 @@ body[data-dsh-verdandi][data-ds-dark-theme] [data-verdandi-header] button:hover 
   box-shadow:
     inset 0 0 0 1px var(--vd-gold),
     var(--vd-slip-shadow);
+}
+
+body[data-dsh-verdandi][data-ds-dark-theme] [data-verdandi-header] :is(div, span):has(> button + button):not([role='tablist']) {
+  background: var(--vd-slip);
+  box-shadow:
+    inset 0 0 0 1px var(--vd-slip-line),
+    var(--vd-slip-shadow);
+}
+
+body[data-dsh-verdandi][data-ds-dark-theme] [data-verdandi-header] :is(div, span):has(> button + button):not([role='tablist']) > button:hover {
+  color: var(--vd-gold-light) !important;
+  background: var(--vd-slip-solid) !important;
 }
 
 body[data-dsh-verdandi] [data-slot='conversation.chat.node'] {
@@ -1274,7 +1369,10 @@ body[data-dsh-verdandi] [data-slot='conversation.chat.node'] :is(
   --dsw-alias-label-tertiary: #dcbfc7;
 }
 
-body[data-dsh-verdandi] [data-pane='conversation'] [aria-label='Trajectory timeline'] {
+body[data-dsh-verdandi] [data-pane='conversation'] :is(
+  [aria-label='轨迹时间线'],
+  [aria-label='Trajectory timeline']
+) {
   position: relative;
   min-height: 0;
   overflow: hidden;
@@ -1287,11 +1385,35 @@ body[data-dsh-verdandi] [data-pane='conversation'] [aria-label='Trajectory timel
   box-shadow: inset 3px 0 0 var(--vd-crimson), 0 8px 24px rgba(62, 17, 29, 0.06);
 }
 
-body[data-dsh-verdandi] [data-pane='conversation'] [aria-label='Trajectory timeline'] button {
+body[data-dsh-verdandi] [data-pane='conversation'] :is(
+  [aria-label='轨迹时间线'],
+  [aria-label='Trajectory timeline']
+) button {
   color: var(--vd-crimson-deep);
   background: color-mix(in srgb, var(--vd-paper-solid) 88%, var(--vd-gold) 12%);
   border: 1px solid color-mix(in srgb, var(--vd-gold) 62%, transparent);
   border-radius: 999px;
+}
+
+/* The trace panel's «earlier history» control is anchored to the left edge of
+   the lanes (the host draws it square and flush, with a left-anchored fade). A
+   pill radius here does not work: at 28px wide and 50px tall the arc ate half of
+   the top and bottom edges, so the trailing rounding pulled the fill away from
+   the panel border and left hairline gaps along both edges. Left corners stay
+   square so the control sits flush on the lane edge, the trailing side takes the
+   same 6px as the other row chips, and the top/bottom rules are dropped so the
+   fill meets the panel's border lines instead of doubling them one pixel inside. */
+body[data-dsh-verdandi] [data-pane='conversation'] :is(
+  [aria-label='轨迹时间线'],
+  [aria-label='Trajectory timeline']
+) :is(
+  [aria-label='加载更早的历史'],
+  [aria-label='Load earlier history'],
+  [class*='earlierHistory']
+) {
+  border-top: 0;
+  border-bottom: 0;
+  border-radius: 0 6px 6px 0;
 }
 
 body[data-dsh-verdandi] [data-slot='tool.call.toolview'] {
@@ -1300,7 +1422,9 @@ body[data-dsh-verdandi] [data-slot='tool.call.toolview'] {
   box-shadow: 0 4px 14px rgba(58, 16, 28, 0.055);
 }
 
-body[data-dsh-verdandi] [data-pane='conversation'] :is(pre, [class*='codeBlock']) {
+/* [P0 fix] `[class*='codeBlock']` removed: the real CodeBlock has no such
+   class, so the selector only ever matched `pre` anyway. */
+body[data-dsh-verdandi] [data-pane='conversation'] pre {
   color: var(--vd-ink);
   background: color-mix(in srgb, var(--vd-paper-solid) 92%, #a9938b 8%);
   border: 1px solid var(--vd-line);
@@ -1311,14 +1435,8 @@ body[data-dsh-verdandi] [data-pane='conversation'] code {
   color: inherit;
 }
 
-/* bare text over the stage, same treatment as the running status */
-body[data-dsh-verdandi] [data-pane='conversation'] :is(
-  [class*='_producedLabel'],
-  [class*='_producedMore']
-) {
-  color: var(--vd-bare-ink);
-  -webkit-text-fill-color: var(--vd-bare-ink);
-}
+/* [P0 fix] Removed the `_producedLabel` / `_producedMore` rule: neither class
+   exists in any current dsh-client-ui-* bundle, so it painted nothing. */
 
 /* -------------------------------------------------------------------------- */
 /* Legibility guard — every bare transcript row carries its own paper.         */
@@ -1428,13 +1546,9 @@ body[data-dsh-verdandi] [data-pane='conversation'] [data-turn-process] {
   text-align: start;
 }
 
-/* The running status is the one place the chapter language belongs: a gold rule
-   under the live line, with the sweep riding it. Marked by the hooks, so the
-   finished rows stay plain. */
-body[data-dsh-verdandi] [data-pane='conversation'] [data-verdandi-running] {
-  border-bottom: 1px solid color-mix(in srgb, var(--vd-gold) 42%, transparent);
-}
-
+/* The running state used to add a gold rule under the live row. dsh 0.2.0 moved
+   the live status into a node of its own (`[data-chat-running]`), so the rule and
+   the marker it rode are gone — see the running-status note below. */
 
 body[data-dsh-verdandi] [data-pane='conversation'] [data-turn-process] [class*='_label'] {
   position: relative;
@@ -1741,139 +1855,154 @@ body[data-dsh-verdandi] [data-pane='conversation'] :is(
   border-color: var(--vd-gold);
 }
 
-/* --- Running status: plain ink, motion on a gold hairline. ---------------- */
+/* [P0 fix] Removed the whole `_turnStatus` / `_turnStatusClock` block: the host
+   class was dropped in DSH 0.1.7, so those rules were dead. The contrast
+   measurements that shaped the bare-ink treatment are kept in
+   docs/design/verdandi-white-vow.md §15.7. */
 
-/* The "深度求索中… 2分16秒" status is the last child of the transcript flow, so it
-   floats ~90px above the composer card over an arbitrary slice of the artwork.
-   Measured in that band (day/night artwork, pane veil applied) the luminance
-   spans 0.245-0.708 in light and 0.062-0.423 in dark, so a single ink tops out
-   at 4.76:1 in light and 2.05:1 in dark.
+/* --- Running status: the host's own component, re-tinted ---------------- */
 
-   Three cheaper ways to buy the missing contrast were tried and rejected by
-   review rather than by measurement: a text halo fabricates a local surface and
-   visibly softens 14px glyphs; a denser scrim (the composer paper fading up over
-   the band) reads as a mask over the illustration; and the host's own clipped
-   shimmer erases the glyphs whenever its near-white stop sweeps past.
-
-   What ships is therefore the honest text-only answer: plain solid ink, no
-   shadow, no outline, no clipped fill, no scene mask. Light clears AA on the
-   measured band; dark cannot, and the gap is recorded in
-   docs/design/verdandi-white-vow.md §15.7 with its two crisp remedies. Motion
-   moves to a gold hairline sweeping under the line, which cannot affect
-   contrast. The host's shimmer animation is switched off rather than overridden,
-   so the two never fight over `background-position`. */
-body[data-dsh-verdandi] [data-pane='conversation'] [class*='_turnStatus'] {
-  position: relative;
-  animation: none;
-  color: var(--vd-bare-ink);
-  -webkit-text-fill-color: currentColor;
-  background-image: none;
-  text-shadow: none;
+/* dsh 0.2.0 mounts the live status as a node of its own — `[data-chat-running]`,
+   carrying the whale tail and a TextShimmer sweep for the motion — and paints it
+   from two tokens. The skin therefore contributes nothing but those two colours:
+   the ink is the same plain-ink token the readability guard already measures, and
+   the sweeping band is the skin's crimson, because a band that keeps its contrast
+   with the artwork reads as motion rather than as the word blinking.
+   What this replaces: collapse the host's label, restate the copy from a
+   pseudo-element, and draw a gold hairline under the row. That version was
+   anchored on a marker the 0.2.0 shell never grows, and the sweep it painted was
+   never the host's — the two effects it imitated are both native here.
+   Measured against the artwork band (§15.7): ink 5.18:1 light / 2.03:1 dark, and
+   the band 1.48:1 / 1.95:1. The band has to be the *soft* crimson, not the deep
+   one: deep crimson sits 1.52x away from the near-black ink, which on the light
+   artwork reads as one more shade of black rather than as a pass of colour, while
+   soft crimson steps 3.5x / 4.0x away (the host's own step is 1.68x / 1.42x). One
+   token covers both palettes because `--vd-crimson-soft` already flips with them. */
+body[data-dsh-verdandi] [data-chat-running] {
+  --dsw-alias-label-deep-diving: var(--vd-bare-ink);
+  --dsw-alias-label-deep-diving-shimmer: var(--vd-crimson-soft);
 }
 
-/* The theme says its own line. The host renders `chat.deepDiving`; the skin
-   zeroes that text node's size and re-states the copy from a pseudo-element, so
-   nothing in the DOM is mutated and dispose() restores the host wording. The
-   host drives `documentElement.lang` from the active locale, so `:lang()` keeps
-   English on English. Assistive tech still reads the host's own localized
-   string, which is why the swap stays purely visual. */
-/* `_turnStatus` also matches `_turnStatusClock`, so both rules must exclude the
-   clock or it inherits the collapsed size and gains a second copy of the label. */
-body[data-dsh-verdandi] [data-pane='conversation'] [class*='_turnStatus']:not(
-  [class*='_turnStatusClock']
-) {
-  font-size: 0;
-}
-
-body[data-dsh-verdandi] [data-pane='conversation'] [class*='_turnStatus']:not(
-  [class*='_turnStatusClock']
-)::before {
-  content: '薇儿烧烤中...';
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-}
-
-html:lang(en) body[data-dsh-verdandi] [data-pane='conversation'] [class*='_turnStatus']:not(
-  [class*='_turnStatusClock']
-)::before {
-  content: 'Verdandi is grilling...';
-}
-
-body[data-dsh-verdandi] [data-pane='conversation'] [class*='_turnStatus']::after {
-  content: '';
-  position: absolute;
-  right: 0;
-  bottom: 1px;
-  left: 0;
-  height: 2px;
-  background-color: color-mix(in srgb, var(--vd-gold) 30%, transparent);
-  background-image: linear-gradient(90deg, transparent, var(--vd-gold-light), transparent);
-  background-repeat: no-repeat;
-  background-size: 38% 100%;
-  border-radius: 2px;
-  animation: verdandi-status-sweep 1.9s linear infinite;
-  pointer-events: none;
-}
-
-/* dsh 0.1.7 hosts the live status inside the turn-process control and switches
-   that label's copy with the turn state (running / worked / took / failed), so
-   the copy swap is scoped by the running marker the hooks project rather than by
-   the removed `_turnStatus` class. Finished states keep the host's own wording;
-   while the turn runs the label reads as ink and the gold hairline under the row
-   carries the motion, which is why no surface is involved. */
+/* The turn-process label is the chapter rule's business; it only wants the
+   host's halo off here. */
 body[data-dsh-verdandi] [data-pane='conversation'] [data-turn-process] [class*='_label'] {
-  position: relative;
   text-shadow: none;
 }
 
-body[data-dsh-verdandi] [data-verdandi-running] [class*='_label'] {
-  color: var(--vd-ink);
-  font-size: 0;
+/* [P0 fix] Removed the trailing `_turnStatusClock` rule too: same dead host
+   class as the block above. */
+
+/* --- Running status: the skin owns the whole line ------------------- */
+
+/* `[data-chat-running]` is the host's own marker for "a turn is running"; the
+   runtime hangs our line and its `data-verdandi-running-bar` marker off it. While
+   that marker is present the host's own pieces stand down — its whale, its
+   divider and its copy — and ours paint instead. Hiding by exclusion means no
+   host class name is named here. */
+body[data-dsh-verdandi] [data-chat-running][data-verdandi-running-bar] > :not([data-verdandi-running-line]) {
+  display: none !important;
 }
 
-body[data-dsh-verdandi] [data-verdandi-running] [class*='_label']::before {
-  content: '薇儿烧烤中...';
-  font-size: 14px;
+body[data-dsh-verdandi] [data-verdandi-running-line] {
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  display: inline-flex;
+}
+
+/* The skin's own mark, carrying the motion the host's whale used to carry. Plain
+   art at 14px, not a one-colour silhouette: the silhouette was built and looked
+   wrong here (it flattens the sword's own shading into a blob), so the mark keeps
+   its own drawing and only borrows the animation. */
+body[data-dsh-verdandi] [data-verdandi-running-icon] {
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  background: var(--vd-art-sequence-sword) center / contain no-repeat;
+  filter: drop-shadow(0 1px 2px rgba(72, 22, 36, 0.25));
+  animation: vd-running-icon 2.2s ease-in-out infinite;
+}
+
+@keyframes vd-running-icon {
+  0%, 100% {
+    transform: rotate(-11deg) translateY(0);
+    opacity: 0.86;
+  }
+
+  50% {
+    transform: rotate(11deg) translateY(-1px);
+    opacity: 1;
+  }
+}
+
+/* One layer, so the band cannot ghost: the ink and the band are stops of the same
+   gradient painted through the glyphs. Both ends are the ink colour and the tile
+   repeats, so the glyphs always have a background to be painted from as the band
+   travels — a non-repeating gradient leaves the tail of the line unpainted once it
+   slides off the element, and `color: transparent` then renders nothing at all. */
+body[data-dsh-verdandi] [data-verdandi-running-copy] {
+  color: transparent;
   font-weight: 600;
   letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
+  background-image: linear-gradient(
+    100deg,
+    var(--vd-bare-ink) 0 34%,
+    var(--vd-crimson-soft) 44% 56%,
+    var(--vd-bare-ink) 66% 100%
+  );
+  background-size: 260% 100%;
+  background-repeat: repeat-x;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: vd-running-sweep 1.5s steps(48, end) infinite;
 }
 
-html:lang(en) body[data-dsh-verdandi] [data-verdandi-running] [class*='_label']::before {
-  content: 'Verdandi is grilling...';
-}
-
-/* The sweep rides the row's own hairline: the button keeps `padding-bottom: 7px`
-   above its border, so the label's baseline offset puts the highlight exactly on
-   the gold rule rather than beside it. */
-body[data-dsh-verdandi] [data-verdandi-running] [class*='_label']::after {
-  content: '';
-  position: absolute;
-  right: 0;
-  bottom: -8px;
-  left: 0;
-  height: 2px;
-  background-color: color-mix(in srgb, var(--vd-gold) 30%, transparent);
-  background-image: linear-gradient(90deg, transparent, var(--vd-gold-light), transparent);
-  background-repeat: no-repeat;
-  background-size: 38% 100%;
-  border-radius: 2px;
-  animation: verdandi-status-sweep 1.9s linear infinite;
-  pointer-events: none;
-}
-
-@keyframes verdandi-status-sweep {
+@keyframes vd-running-sweep {
   from {
-    background-position: -70% 0;
+    background-position: 133% 0;
   }
+
   to {
-    background-position: 170% 0;
+    background-position: -33% 0;
   }
 }
 
-body[data-dsh-verdandi] [data-pane='conversation'] [class*='_turnStatusClock'] {
-  color: var(--vd-bare-ink);
-  -webkit-text-fill-color: var(--vd-bare-ink);
+/* The host's own running phrase, announced but never seen: the visual copy is ours,
+   so the live region has to be ours too. */
+body[data-dsh-verdandi] [data-verdandi-running-a11y] {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  position: absolute;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-dsh-verdandi] [data-verdandi-running-icon] {
+    animation: none;
+  }
+
+  body[data-dsh-verdandi] [data-verdandi-running-copy] {
+    animation: none;
+    background-position: 50% 0;
+  }
+}
+
+@media (forced-colors: active) {
+  body[data-dsh-verdandi] [data-verdandi-running-copy] {
+    color: CanvasText;
+    background-image: none;
+  }
+
+  body[data-dsh-verdandi] [data-verdandi-running-icon] {
+    filter: none;
+  }
 }
 
 /* --- Fallbacks: the slip must hold its ratio without compositing help. ----- */
@@ -1963,15 +2092,7 @@ body[data-dsh-verdandi] [data-pane='conversation'] [class*='_turnStatusClock'] {
     box-shadow: none;
   }
 
-  body[data-dsh-verdandi] [data-pane='conversation'] [class*='_turnStatus']::after {
-    display: none;
-  }
-
-  body[data-dsh-verdandi] [data-pane='conversation'] [class*='_turnStatus'],
-  body[data-dsh-verdandi] [data-pane='conversation'] [class*='_turnStatusClock'] {
-    color: CanvasText;
-    -webkit-text-fill-color: CanvasText;
-  }
+  /* [P0 fix] removed dead `_turnStatus` / `_turnStatusClock` forced-colors rules */
 }
 
 /* The archive bar's light-on-dark tokens must stop at the collapsed header.
@@ -1997,7 +2118,7 @@ body[data-dsh-verdandi] [data-slot='conversation.chat.node'] :is(
 
 body[data-dsh-verdandi] [data-composer-seat] {
   position: relative;
-  z-index: 15;
+  z-index: 3;
   background: transparent !important;
 }
 
@@ -2054,7 +2175,7 @@ body[data-dsh-verdandi] [data-composer-card]::after {
 
 body[data-dsh-verdandi] [data-composer-card] > [data-verdandi-decoration='composer-seal'] {
   position: absolute;
-  z-index: 5;
+  z-index: 1;
   top: -49px;
   left: 50%;
   width: 104px;
@@ -2204,7 +2325,13 @@ body[data-dsh-verdandi] [data-composer-card] :is(
 
 body[data-dsh-verdandi] [data-composer-card] :is(
   button[aria-label='发送消息'],
-  button[aria-label='Send message']
+  button[aria-label='Send message'],
+  button[aria-label='停止生成'],
+  button[aria-label='Stop generating'],
+  button[aria-label='排队发送'],
+  button[aria-label='Queue message'],
+  button[aria-label='插话发送'],
+  button[aria-label='Steer message']
 ) {
   position: relative;
   isolation: isolate;
@@ -2217,7 +2344,13 @@ body[data-dsh-verdandi] [data-composer-card] :is(
 
 body[data-dsh-verdandi] [data-composer-card] :is(
   button[aria-label='发送消息'],
-  button[aria-label='Send message']
+  button[aria-label='Send message'],
+  button[aria-label='停止生成'],
+  button[aria-label='Stop generating'],
+  button[aria-label='排队发送'],
+  button[aria-label='Queue message'],
+  button[aria-label='插话发送'],
+  button[aria-label='Steer message']
 )::before {
   content: '';
   position: absolute;
@@ -2233,7 +2366,13 @@ body[data-dsh-verdandi] [data-composer-card] :is(
 
 body[data-dsh-verdandi] [data-composer-card] :is(
   button[aria-label='发送消息'],
-  button[aria-label='Send message']
+  button[aria-label='Send message'],
+  button[aria-label='停止生成'],
+  button[aria-label='Stop generating'],
+  button[aria-label='排队发送'],
+  button[aria-label='Queue message'],
+  button[aria-label='插话发送'],
+  button[aria-label='Steer message']
 ) > * {
   position: relative;
   z-index: 1;
@@ -2241,14 +2380,26 @@ body[data-dsh-verdandi] [data-composer-card] :is(
 
 body[data-dsh-verdandi] [data-composer-card] :is(
   button[aria-label='发送消息'],
-  button[aria-label='Send message']
+  button[aria-label='Send message'],
+  button[aria-label='停止生成'],
+  button[aria-label='Stop generating'],
+  button[aria-label='排队发送'],
+  button[aria-label='Queue message'],
+  button[aria-label='插话发送'],
+  button[aria-label='Steer message']
 ):hover:not(:disabled) {
   background: var(--vd-crimson-soft) !important;
 }
 
 body[data-dsh-verdandi] [data-composer-card] :is(
   button[aria-label='发送消息'],
-  button[aria-label='Send message']
+  button[aria-label='Send message'],
+  button[aria-label='停止生成'],
+  button[aria-label='Stop generating'],
+  button[aria-label='排队发送'],
+  button[aria-label='Queue message'],
+  button[aria-label='插话发送'],
+  button[aria-label='Steer message']
 ):hover:not(:disabled)::before {
   transform: rotate(-31deg) scale(1.02);
   opacity: 0.58;

@@ -1,5 +1,5 @@
 /* Lichtspur/deepseek-style-theme — lib/client.js
-   fetched 2026-10-07 from https://raw.githubusercontent.com/Lichtspur/deepseek-style-theme/master/lib/client.js
+   fetched 2026-10-15 from https://raw.githubusercontent.com/Lichtspur/deepseek-style-theme/master/lib/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 .dshome-locale{display:inline-flex;align-items:center;height:28px;border:1px solid color-mix(in srgb,var(--ds-brand) 25%,transparent);border-radius:999px;background:color-mix(in srgb,var(--ds-brand) 8%,transparent);overflow:hidden;flex:none;corner-shape:round;transition:transform .28s cubic-bezier(.2,.8,.2,1),box-shadow .28s ease,border-color .22s ease,background .22s ease}
 .dshome-locale:hover{transform:translateY(-1px) scale(1.03);border-color:color-mix(in srgb,var(--ds-brand) 48%,transparent);background:color-mix(in srgb,var(--ds-brand) 14%,transparent);box-shadow:0 4px 14px color-mix(in srgb,var(--ds-brand) 26%,transparent)}
@@ -17,15 +17,18 @@ body[data-dshome-dark] .dshome-locale button{color:var(--ds-brand-light)}
 body[data-dshome-dark] .dshome-locale button:not(.dshome-on):hover{background:color-mix(in srgb,var(--ds-brand) 22%,transparent);color:#fff}
 body[data-dshome-dark] .dshome-locale button.dshome-on{background:linear-gradient(135deg,color-mix(in srgb,var(--ds-brand) 72%,#fff),var(--ds-brand));color:#fff}
 
-
-
 .dshome-sa{position:fixed;right:16px;bottom:16px;z-index:70;width:286px;max-width:calc(100vw - 32px);box-sizing:border-box;display:flex;flex-direction:column;gap:2px;padding:10px 12px 8px;border-radius:16px;border:1px solid rgba(255,255,255,.55);background:linear-gradient(165deg,rgba(255,255,255,.46),rgba(255,255,255,.22));box-shadow:0 12px 40px rgba(13,30,60,.14),inset 0 1px 0 rgba(255,255,255,.85),inset 0 0 0 .5px rgba(255,255,255,.5);-webkit-backdrop-filter:blur(24px) saturate(1.6);backdrop-filter:blur(24px) saturate(1.6);font-family:inherit;transition:opacity .22s ease,transform .22s ease;animation:dshome-sa-in .3s cubic-bezier(.2,.8,.2,1)}
 .dshome-sa[hidden]{display:none!important}
 .dshome-sa.dshome-sa-leave{opacity:0;transform:translateY(10px);pointer-events:none}
 body[data-dshome-dark] .dshome-sa{background:linear-gradient(165deg,rgba(21,42,86,.52),rgba(10,26,58,.3));border-color:color-mix(in srgb,var(--ds-brand) 24%,transparent);box-shadow:0 12px 40px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.12),inset 0 0 0 .5px color-mix(in srgb,var(--ds-brand) 16%,transparent)}
-@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.dshome-sa{background:linear-gradient(165deg,rgba(255,255,255,.84),rgba(255,255,255,.68))}body[data-dshome-dark] .dshome-sa{background:linear-gradient(165deg,rgba(13,30,60,.88),rgba(10,26,58,.78))}}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.dshome-sa{background:linear-gradient(165deg,rgba(255,255,255,.84),rgba(255,255,255,.68))}
+body[data-dshome-dark] .dshome-sa{background:linear-gradient(165deg,rgba(13,30,60,.88),rgba(10,26,58,.78))}}
 @keyframes dshome-sa-in{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
 .dshome-sa-head{display:flex;flex-direction:row;align-items:center;gap:7px;min-height:26px}
+.dshome-sa-grab{cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+.dshome-sa-grab:active{cursor:grabbing}
+.dshome-sa-dragging{transition:none!important;animation:none!important;box-shadow:0 18px 52px rgba(13,30,60,.22),inset 0 1px 0 rgba(255,255,255,.9),inset 0 0 0 .5px rgba(255,255,255,.5)!important}
+.dshome-sa-dragging .dshome-sa-list{pointer-events:none}
 .dshome-sa-pulse{position:relative;flex:none;width:8px;height:8px;border-radius:50%;background:var(--ds-brand);animation:dshome-sa-pulse 1.8s ease-out infinite}
 @keyframes dshome-sa-pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--ds-brand) 45%,transparent)}70%{box-shadow:0 0 0 7px color-mix(in srgb,var(--ds-brand) 0%,transparent)}100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--ds-brand) 0%,transparent)}}
 .dshome-sa-title{flex:1;min-width:0;font-size:12.5px;line-height:18px;font-weight:600;color:var(--dsw-alias-label-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -67,157 +70,103 @@ body[data-dshome-dark] .dshome-sa-item.dshome-sa-stopping .dshome-sa-bar{backgro
 @media (max-width:760px){.dshome-sa{right:10px;bottom:10px;width:min(286px,calc(100vw - 20px))}}
 
 
-
-.pI_x6G_frame,.pI_x6G_sidebarCol,.pI_x6G_detailsCol,.pI_x6G_centerCol{background:transparent!important}
-.pI_x6G_sidebarCol{border-right:none!important}
-.pI_x6G_detailsCol{border-left:none!important}
-
-
-
-.hHd-Xa_root{position:relative;background:transparent!important}
-.hHd-Xa_root::before{content:"";position:absolute;inset:0;z-index:-1;background:rgba(255,255,255,.5);-webkit-backdrop-filter:blur(var(--ds-glass-blur));backdrop-filter:blur(var(--ds-glass-blur));border-right:1px solid rgba(0,0,0,.06);pointer-events:none}
-body[data-dshome-dark] .hHd-Xa_root::before{background:rgba(10,26,58,.48);border-right:1px solid rgba(255,255,255,.08)}
-.hHd-Xa_brand{color:var(--ds-brand);cursor:pointer}
-body[data-dshome-dark] .hHd-Xa_brand{color:#fff}
-.hHd-Xa_newSession{border:none!important;background:linear-gradient(135deg,var(--ds-brand) 0%,var(--ds-brand-mid) 100%)!important;color:#fff!important;border-radius:999px!important;box-shadow:0 4px 14px color-mix(in srgb,var(--ds-brand) 35%,transparent);transition:transform .15s ease,box-shadow .15s ease,background .15s ease}
-.hHd-Xa_newSession:hover{background:linear-gradient(135deg,color-mix(in srgb,var(--ds-brand) 72%,#fff) 0%,var(--ds-brand) 100%)!important;box-shadow:0 6px 18px color-mix(in srgb,var(--ds-brand) 45%,transparent);transform:translateY(-1px)}
-
-
-
-.YDXeBa_sessionRow,.YDXeBa_projectRow{background:rgba(255,255,255,.35)!important;border:1px solid transparent;border-radius:10px!important;margin:1px 0;transition:background .15s ease,border-color .15s ease,transform .15s ease}
-.YDXeBa_sessionRow:hover,.YDXeBa_projectRow:hover{background:rgba(255,255,255,.6)!important;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);transform:translateX(2px)}
-.YDXeBa_sessionRow.YDXeBa_selected{background:linear-gradient(135deg,color-mix(in srgb,var(--ds-brand) 16%,transparent),color-mix(in srgb,var(--ds-brand-mid) 12%,transparent))!important;border-color:color-mix(in srgb,var(--ds-brand) 25%,transparent);color:var(--ds-brand-deep)}
-body[data-dshome-dark] .YDXeBa_sessionRow,body[data-dshome-dark] .YDXeBa_projectRow{background:rgba(21,42,86,.4)!important}
-body[data-dshome-dark] .YDXeBa_sessionRow:hover,body[data-dshome-dark] .YDXeBa_projectRow:hover{background:rgba(30,52,100,.6)!important}
-body[data-dshome-dark] .YDXeBa_sessionRow.YDXeBa_selected{background:linear-gradient(135deg,color-mix(in srgb,var(--ds-brand) 28%,transparent),color-mix(in srgb,var(--ds-brand) 20%,transparent))!important;border-color:color-mix(in srgb,var(--ds-brand) 35%,transparent);color:#eef2ff}
-.YDXeBa_iconButton{transition:background .15s ease,color .15s ease,transform .15s ease,opacity .15s ease}
-.YDXeBa_iconButton:hover{transform:scale(1.1)}
-
-
-
-.wSkVaW_root{position:relative;background:transparent!important}
-.wSkVaW_scrollBody{padding-top:56px}
-.wSkVaW_viewArea{padding:0 18px}
-.wSkVaW_viewArea{animation:dshome-view-enter .45s ease}
-/* Header z-index: the product's column-resize grips (.wSkVaW_widthHandle) are
-   40px-wide full-height strips at z-index 8, while this bar sat at 5 — so the
-   cursor anywhere inside the title bar's own box turned into col-resize and the
-   bar's controls were unreachable. 9 puts the bar above the grips; the grips
-   stay grabbable everywhere the bar is not (above y=8, below y=46). */
-.wSkVaW_header{position:absolute;top:8px;left:24px;right:24px;z-index:9;min-height:36px;padding:4px 12px;display:flex;flex-direction:row;align-items:center;gap:8px;justify-content:flex-start;border:0!important;border-radius:0;background:transparent!important;transition:border-radius .3s ease}
-.wSkVaW_header::before{content:"";position:absolute;inset:0;z-index:-1;background:transparent;border:1px solid transparent;border-radius:inherit;-webkit-backdrop-filter:none;backdrop-filter:none;transition:background .3s ease,border-color .3s ease,box-shadow .3s ease}
-.wSkVaW_header:hover{border-radius:999px}
-.wSkVaW_titleRow{display:contents}
-.wSkVaW_titleCluster{display:contents}
-.wSkVaW_crumbs{order:2;flex:none;min-width:0}
-.wSkVaW_tabs{order:0;flex:none;align-items:center;display:none;gap:8px;margin:0;padding:0}
-.wSkVaW_headerActions{order:1;flex:none;align-items:center;display:flex;gap:8px}
-.wSkVaW_headerUtilities{order:3;flex:none;align-items:center;display:flex;gap:8px;margin-left:auto}
-.wSkVaW_headerCorner{order:4;flex:none;align-items:center;display:flex;margin-left:0;margin-right:0}
-.wSkVaW_header.dshome-swap .wSkVaW_tabs{display:flex;animation:dshome-tab-in .22s ease}
-.wSkVaW_root:has(.fV0t5q_root) .wSkVaW_tabs{display:flex!important}
-.wSkVaW_header:hover::before{background:rgba(255,255,255,.45);border-color:rgba(0,0,0,.06);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);box-shadow:0 4px 16px rgba(0,0,0,.05)}
-body[data-dshome-dark] .wSkVaW_header:hover::before{background:rgba(13,30,60,.45);border-color:rgba(255,255,255,.1);box-shadow:0 4px 20px rgba(0,0,0,.3)}
-.wSkVaW_header:after{display:none!important}
-.SVAs4q_label{background:color-mix(in srgb,var(--ds-brand) 10%,transparent)!important;border:1px solid color-mix(in srgb,var(--ds-brand) 22%,transparent);border-radius:999px!important;padding:0 10px!important;height:28px;line-height:26px;color:var(--ds-brand)!important}
-body[data-dshome-dark] .SVAs4q_label{color:var(--ds-brand-light)!important}
-.wSkVaW_tab{border:1px solid color-mix(in srgb,var(--ds-brand) 25%,transparent);background:color-mix(in srgb,var(--ds-brand) 8%,transparent);border-radius:999px;corner-shape:round;padding:5px 16px;color:var(--dsw-alias-label-tertiary);font-size:13px;line-height:16px;font-weight:500;transition:color .22s ease,background .22s ease,border-color .22s ease,box-shadow .24s ease,transform .24s cubic-bezier(.2,.8,.2,1)}
-.wSkVaW_tab:hover{color:var(--dsw-alias-label-primary);background:color-mix(in srgb,var(--ds-brand) 16%,transparent);border-color:color-mix(in srgb,var(--ds-brand) 42%,transparent);box-shadow:0 4px 12px color-mix(in srgb,var(--ds-brand) 22%,transparent);transform:translateY(-1px)}
-.wSkVaW_tab:active{transform:translateY(0) scale(.96)}
-.wSkVaW_tab::after{display:none!important}
-.wSkVaW_tabActive{background:linear-gradient(135deg,var(--ds-brand),var(--ds-brand-mid));color:#fff;border-color:transparent;box-shadow:0 3px 10px color-mix(in srgb,var(--ds-brand) 26%,transparent);animation:dshome-tab-pop .34s cubic-bezier(.2,.8,.2,1)}
-.wSkVaW_tabActive:hover{color:#fff}
-body[data-dshome-dark] .wSkVaW_tab{border-color:color-mix(in srgb,var(--ds-brand) 32%,transparent);background:color-mix(in srgb,var(--ds-brand) 14%,transparent)}
-body[data-dshome-dark] .wSkVaW_tab:hover{background:color-mix(in srgb,var(--ds-brand) 24%,transparent);box-shadow:0 4px 14px color-mix(in srgb,var(--ds-brand) 34%,transparent)}
-body[data-dshome-dark] .wSkVaW_tabActive{box-shadow:0 3px 12px color-mix(in srgb,var(--ds-brand) 40%,transparent)}
-@keyframes dshome-tab-pop{0%{transform:translateY(-1px) scale(.88)}60%{transform:translateY(-1px) scale(1.05)}to{transform:none}}
-.wSkVaW_root:has(.fV0t5q_root) .wSkVaW_header:hover{border-radius:0}
-.wSkVaW_root:has(.fV0t5q_root) .wSkVaW_header:hover::before{background:transparent;border-color:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none}
-.wSkVaW_composerSeat{background:transparent!important}
-.wSkVaW_header:hover .dshome-locale .dshome-short{max-width:0;opacity:0;transform:translateX(6px)}
-.wSkVaW_header:hover .dshome-locale .dshome-full{max-width:3em;opacity:1;transform:none}
-/* Header chips: the product's global corner-shape:superellipse(1.5) squares off
-   even pill radii, so every control in the bar is restored to a true round end
-   (and the session-title crumb, 12px on a 28px box, becomes a real pill). */
-.wSkVaW_header .SVAs4q_label,.wSkVaW_header .cubgiG_seat,.wSkVaW_header .CAgGvG_split,.wSkVaW_header .dshome-locale,.wSkVaW_header [data-sidebar-right-expand],.wSkVaW_header [class*="_moreButton"],.wSkVaW_header .wSkVaW_crumb{corner-shape:round}
-.wSkVaW_header .wSkVaW_crumb{border-radius:999px}
-/* Open-in-app split button: hover lift with a brand tint, and the chevron turns
-   over while its menu is open. */
-.wSkVaW_header .CAgGvG_split{transition:transform .28s cubic-bezier(.2,.8,.2,1),box-shadow .28s ease,border-color .22s ease,background .22s ease}
-.wSkVaW_header .CAgGvG_split:hover{transform:translateY(-1px);border-color:color-mix(in srgb,var(--ds-brand) 40%,transparent);background:color-mix(in srgb,var(--ds-brand) 8%,transparent);box-shadow:0 4px 14px color-mix(in srgb,var(--ds-brand) 22%,transparent)}
-.wSkVaW_header .CAgGvG_split:active{transform:translateY(0) scale(.97)}
-.wSkVaW_header .CAgGvG_main,.wSkVaW_header .CAgGvG_chevron{transition:background .22s ease,color .22s ease}
-.wSkVaW_header .CAgGvG_split:hover .CAgGvG_main,.wSkVaW_header .CAgGvG_split:hover .CAgGvG_chevron{background:color-mix(in srgb,var(--ds-brand) 12%,transparent);color:var(--ds-brand-deep)}
-.wSkVaW_header .CAgGvG_chevron svg{transition:transform .3s cubic-bezier(.2,.8,.2,1)}
-.wSkVaW_header .CAgGvG_chevron[aria-expanded=true] svg{transform:rotate(180deg)}
-body[data-dshome-dark] .wSkVaW_header .CAgGvG_split:hover{border-color:color-mix(in srgb,var(--ds-brand) 52%,transparent);background:color-mix(in srgb,var(--ds-brand) 16%,transparent);box-shadow:0 4px 16px color-mix(in srgb,var(--ds-brand) 30%,transparent)}
-body[data-dshome-dark] .wSkVaW_header .CAgGvG_split:hover .CAgGvG_main,body[data-dshome-dark] .wSkVaW_header .CAgGvG_split:hover .CAgGvG_chevron{background:color-mix(in srgb,var(--ds-brand) 24%,transparent);color:#fff}
-
-
-
-:is([class*="_moreButton"]){min-width:0!important;width:28px;height:28px;padding:0!important;border-radius:50%!important;border:none!important;background:color-mix(in srgb,var(--ds-brand) 8%,transparent)!important;color:var(--ds-brand)!important;overflow:hidden;transition:width .2s ease,padding .2s ease,border-radius .2s ease}
-:is([class*="_moreButton"]) span{max-width:0;opacity:0;overflow:hidden;transition:max-width .2s ease,opacity .2s ease}
-.wSkVaW_header:hover :is([class*="_moreButton"]){width:auto;padding:0 12px!important;border-radius:18px!important}
-.wSkVaW_header:hover :is([class*="_moreButton"]) span{max-width:90px;opacity:1}
-body[data-dshome-dark] :is([class*="_moreButton"]){color:var(--ds-brand-light)!important}
-
-
-
-.uV2eYG_card{position:relative;background:rgba(255,255,255,.42)!important;border:1.5px solid rgba(255,255,255,.55)!important;box-shadow:0 8px 32px rgba(13,30,60,.1),inset 0 1px 1px hsla(0,0%,100%,.8);border-radius:22px!important}
-body[data-dshome-dark] .uV2eYG_card{background:rgba(13,30,60,.55)!important;border:1.5px solid rgba(255,255,255,.16)!important;box-shadow:0 10px 40px rgba(0,0,0,.35),inset 0 1px 1px rgba(255,255,255,.06)}
-.uV2eYG_card::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:22px;-webkit-backdrop-filter:blur(28px);backdrop-filter:blur(28px);pointer-events:none}
-.uV2eYG_card::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;background:conic-gradient(from var(--dsh-border-angle),color-mix(in srgb,var(--ds-brand) 0%,transparent),color-mix(in srgb,var(--ds-brand) 45%,transparent),color-mix(in srgb,var(--ds-brand-light) 20%,transparent),color-mix(in srgb,var(--ds-brand) 45%,transparent),color-mix(in srgb,var(--ds-brand) 0%,transparent));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;pointer-events:none;animation:dsh-border-spin 6s linear infinite;z-index:0}
-body[data-dshome-dark] .uV2eYG_card::before{background:conic-gradient(from var(--dsh-border-angle),rgba(255,255,255,0),color-mix(in srgb,var(--ds-brand) 55%,transparent),color-mix(in srgb,var(--ds-brand-light) 25%,transparent),color-mix(in srgb,var(--ds-brand) 55%,transparent),rgba(255,255,255,0))}
-.uV2eYG_card>*{position:relative;z-index:1}
-.uV2eYG_primary{background:linear-gradient(135deg,var(--ds-brand) 0%,var(--ds-brand-mid) 100%)!important;border:none!important;color:#fff!important;box-shadow:0 4px 14px color-mix(in srgb,var(--ds-brand) 35%,transparent);transition:box-shadow .15s ease,transform .15s ease}
-.uV2eYG_primary:hover{box-shadow:0 6px 18px color-mix(in srgb,var(--ds-brand) 45%,transparent)}
-/* 2.0.80: the hover no longer lifts the button by 1px. That translateY(-1px)
-   was ours (it came with the primary-button styling, not from the product), and
-   it was the last geometry change this theme made to the send/stop button under
-   the cursor -- a 1px surface motion is enough to hand the hover to a neighbour
-   or to the column's width handle, which is the same class of loop the composer
-   tilt caused (2.0.79). Hover now changes colour and shadow only. The product's
-   own hover on this button changes nothing but its background, so nothing else
-   moves it. */
-
-
-
-:is([class*="composerHero"] [class*="_headline"]){font-size:34px;line-height:42px;font-weight:700;letter-spacing:-.01em;background:linear-gradient(120deg,#152443 0%,var(--ds-brand-deep) 55%,var(--ds-brand) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
-body[data-dshome-dark] :is([class*="composerHero"] [class*="_headline"]){background:linear-gradient(120deg,#fff 0%,var(--ds-brand-light) 60%,var(--ds-brand) 100%);-webkit-background-clip:text;background-clip:text}
-:is([class*="composerHero"] [class*="_previewBadge"]){border-radius:999px!important;background:color-mix(in srgb,var(--ds-brand) 10%,transparent)!important;border:1px solid color-mix(in srgb,var(--ds-brand) 25%,transparent)!important;color:var(--ds-brand)!important}
+:is([class*="_previewBadge"]){border-radius:999px!important;background:color-mix(in srgb,var(--ds-brand) 10%,transparent)!important;border:1px solid color-mix(in srgb,var(--ds-brand) 25%,transparent)!important;color:var(--ds-brand)!important}
 :is([class*="_fish"]){color:var(--ds-brand)!important}
 
 
-background:rgba(255,255,255,.6)!important;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border:1px solid rgba(0,0,0,.05);box-shadow:0 4px 16px rgba(13,30,60,.06)}background:rgba(21,42,86,.65)!important;border:1px solid rgba(255,255,255,.1);box-shadow:0 4px 16px rgba(0,0,0,.25)}
+background:rgba(255,255,255,.42)!important;-webkit-backdrop-filter:blur(28px) saturate(1.42) brightness(1.02)!important;backdrop-filter:blur(28px) saturate(1.42) brightness(1.02)!important;box-shadow:0 8px 32px rgba(13,30,60,.1),inset 0 1px 1px hsla(0,0%,100%,.8)}background:rgba(13,30,60,.55)!important;box-shadow:0 10px 40px rgba(0,0,0,.35),inset 0 1px 1px rgba(255,255,255,.06)}
+
+
+position:relative;background:transparent!important}content:"";position:absolute;inset:0;z-index:-1;background:rgba(255,255,255,.5);-webkit-backdrop-filter:blur(var(--ds-glass-blur));backdrop-filter:blur(var(--ds-glass-blur));border-right:1px solid rgba(0,0,0,.06);pointer-events:none}background:rgba(10,26,58,.48);border-right:1px solid rgba(255,255,255,.08)}
+:is([class*="_brand"]){color:var(--ds-brand);cursor:pointer}
+body[data-dshome-dark] :is([class*="_brand"]){color:#fff}
+:where(div):has(> [class*="_overlayLayer"]){background:transparent!important}
+:where(div):has(> [class*="_overlayLayer"]) [class*="_sidebarCol"]{border-right:none!important}
+:is([class*="_sessionRow"],[class*="_projectRow"]){background:rgba(255,255,255,.35)!important;border:1px solid transparent;border-radius:10px!important;margin:1px 0;transition:background .15s ease,border-color .15s ease,transform .15s ease}
+:is([class*="_sessionRow"],[class*="_projectRow"]):hover{background:rgba(255,255,255,.6)!important;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);transform:translateX(2px)}
+body[data-dshome-dark] :is([class*="_sessionRow"],[class*="_projectRow"]){background:rgba(21,42,86,.4)!important}
+body[data-dshome-dark] :is([class*="_sessionRow"],[class*="_projectRow"]):hover{background:rgba(30,52,100,.6)!important}
+:where(div):has(> [class*="_scrollBody"]){position:relative;background:transparent!important}
+:is([class*="_scrollBody"]){padding-top:56px}
+:is([class*="_scrollBody"]) [class*="_viewArea"]{padding:0 18px}
 
 
 
-[data-dsh-inputbar]:has([data-dsh-stats]){position:relative;z-index:8;padding:0;border:1.5px solid rgba(255,255,255,.55);border-radius:24px;background:rgba(255,255,255,.42);box-shadow:0 8px 32px rgba(13,30,60,.1),inset 0 1px 1px hsla(0,0%,100%,.8)}
-[data-dsh-inputbar]:has([data-dsh-stats])::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:-1;-webkit-backdrop-filter:blur(28px) saturate(1.42) brightness(1.02);backdrop-filter:blur(28px) saturate(1.42) brightness(1.02)}
-[data-dsh-inputbar]:has([data-dsh-stats]) [data-composer-card]{border:none!important;border-radius:0!important;background:transparent!important;background-image:none!important;box-shadow:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
-[data-dsh-inputbar]:has([data-dsh-stats]) [data-composer-card]::before,[data-dsh-inputbar]:has([data-dsh-stats]) [data-composer-card]::after{display:none!important}
-[data-dsh-inputbar]:has([data-dsh-stats]) [data-dsh-stats]{display:block;width:100%;max-width:none;box-sizing:border-box;margin:auto 0 0;min-height:24px;padding:2px 16px;border:none;border-top:1px solid rgba(0,0,0,.06);border-radius:0;background:transparent;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;transform-origin:left center;transition:transform .24s cubic-bezier(.2,.8,.2,1)}
-[data-dsh-stats]{transform:scale(1.04)}
-html[data-dshome-leaning] [data-dsh-inputbar]:has([data-dsh-stats]) [data-dsh-stats]{transform:scale(1.08)}
-body[data-dshome-dark] [data-dsh-inputbar]:has([data-dsh-stats]){border-color:rgba(255,255,255,.16);background:rgba(13,30,60,.55);box-shadow:0 10px 40px rgba(0,0,0,.35),inset 0 1px 1px rgba(255,255,255,.06)}
-body[data-dshome-dark] [data-dsh-inputbar]:has([data-dsh-stats]) [data-dsh-stats]{border-top-color:rgba(255,255,255,.1)}
-@media (prefers-reduced-motion:reduce){[data-dsh-inputbar]:has([data-dsh-stats]) [data-dsh-stats]{transition:none}}
+:has(> [class*="_headerLeading"]):has([class*="_headerActions"]){position:absolute;top:8px;left:24px;right:24px;z-index:9;min-height:36px;padding:4px 12px;display:flex;flex-direction:row;align-items:center;gap:8px;justify-content:flex-start;border:0!important;border-radius:0;background:transparent!important;transition:border-radius .3s ease}
+:has(> [class*="_headerLeading"]):has([class*="_headerActions"])::before{content:"";position:absolute;inset:0;z-index:-1;background:transparent;border:1px solid transparent;border-radius:inherit;-webkit-backdrop-filter:none;backdrop-filter:none;transition:background .3s ease,border-color .3s ease,box-shadow .3s ease}
+:has(> [class*="_headerLeading"]):has([class*="_headerActions"]):hover{border-radius:999px}
+:has(> [class*="_headerLeading"]):has([class*="_headerActions"]):hover::before{background:rgba(255,255,255,.45);border-color:rgba(0,0,0,.06);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);box-shadow:0 4px 16px rgba(0,0,0,.05)}
+body[data-dshome-dark] :has(> [class*="_headerLeading"]):has([class*="_headerActions"]):hover::before{background:rgba(13,30,60,.45);border-color:rgba(255,255,255,.1);box-shadow:0 4px 20px rgba(0,0,0,.3)}
+:has(> [class*="_headerLeading"]):has([class*="_headerActions"])::after{display:none!important}
+/* 压平：两层包装 + titleRow 一律 display:contents，让所有控件成为标题栏这一条 flex 的直接子项，
+   于是 order 才排得动。少了这一步，标签页会留在第二行、胶囊变成两行高的块。 */
+:has(> [class*="_headerLeading"]):has([class*="_headerActions"]) > :is([class*="_headerLeading"]){display:contents}
+:has(> [class*="_headerLeading"]):has([class*="_headerActions"]) > :is([class*="_headerLeading"]) > div{display:contents}
+:has(> [class*="_headerLeading"]):has([class*="_headerActions"]) :is([class*="_titleRow"],[class*="_titleCluster"]){display:contents}
+:has(> [class*="_headerLeading"]):has([class*="_headerActions"]) :is([class*="_crumb"]){order:2;flex:none;min-width:0;border-radius:999px}
+:has(> [class*="_headerLeading"]):has([class*="_headerActions"]) :is([class*="_tabs"]){order:0;flex:none;align-items:center;display:none;gap:8px;margin:0;padding:0}
+:has(> [class*="_headerLeading"]):has([class*="_headerActions"]) :is([class*="_headerActions"]){order:1;flex:none;align-items:center;display:flex;gap:8px}
+:has(> [class*="_headerLeading"]):has([class*="_headerActions"]) :is([class*="_headerUtilities"]){order:3;flex:none;align-items:center;display:flex;gap:8px;margin-left:auto}
+:has(> [class*="_headerLeading"]):has([class*="_headerActions"]) :is([class*="_headerCorner"]){order:4;flex:none;align-items:center;display:flex}
+/* 标签页"悬停标题栏才出现"：原样保留，但驱动它的是纯 CSS :hover，不再是那个 JS 类
+   （dshome-swap 随 §3.7 的接管一起删掉了）。active 由产品给，我们只画。 */
+:has(> [class*="_headerLeading"]):has([class*="_headerActions"]):hover :is([class*="_tabs"]){display:flex;animation:dshome-tab-in .22s ease}
+/* 标签页胶囊 —— 只在会话标题栏内生效。
+   曾经写成裸的 [class*="_tab"]，结果 _tableScroll（含子串 _tab）、以及任何 _tab* 面板
+   都被套上了 999px 胶囊与半透明品牌底 —— 表格容器变蓝、文件预览面板又圆又透，都是它。 */
+:has(> [class*="_headerLeading"]):has([class*="_headerActions"]) :is([class*="_tab"]):not([class*="_tabs"]){border:1px solid color-mix(in srgb,var(--ds-brand) 25%,transparent);background:color-mix(in srgb,var(--ds-brand) 8%,transparent);border-radius:999px;corner-shape:round;padding:5px 16px;color:var(--dsw-alias-label-tertiary);font-size:13px;line-height:16px;font-weight:500;transition:color .22s ease,background .22s ease,border-color .22s ease,box-shadow .24s ease,transform .24s cubic-bezier(.2,.8,.2,1)}
+:has(> [class*="_headerLeading"]):has([class*="_headerActions"]) :is([class*="_tab"]):not([class*="_tabs"]):hover{color:var(--dsw-alias-label-primary);background:color-mix(in srgb,var(--ds-brand) 16%,transparent);border-color:color-mix(in srgb,var(--ds-brand) 42%,transparent);box-shadow:0 4px 12px color-mix(in srgb,var(--ds-brand) 22%,transparent);transform:translateY(-1px)}
+:has(> [class*="_headerLeading"]):has([class*="_headerActions"]) :is([class*="_tab"]):not([class*="_tabs"]):active{transform:translateY(0) scale(.96)}
+:has(> [class*="_headerLeading"]):has([class*="_headerActions"]) :is([class*="_tab"]):not([class*="_tabs"])::after{display:none!important}
+:has(> [class*="_headerLeading"]):has([class*="_headerActions"]) :is([class*="_tabActive"]){background:linear-gradient(135deg,var(--ds-brand),var(--ds-brand-mid))!important;color:#fff!important;border-color:transparent!important;box-shadow:0 3px 10px color-mix(in srgb,var(--ds-brand) 26%,transparent);animation:dshome-tab-pop .34s cubic-bezier(.2,.8,.2,1)}
+:has(> [class*="_headerLeading"]):has([class*="_headerActions"]) :is([class*="_tabActive"]):hover{color:#fff!important}
+body[data-dshome-dark] :has(> [class*="_headerLeading"]):has([class*="_headerActions"]) :is([class*="_tab"]):not([class*="_tabs"]){border-color:color-mix(in srgb,var(--ds-brand) 32%,transparent);background:color-mix(in srgb,var(--ds-brand) 14%,transparent)}
+body[data-dshome-dark] :has(> [class*="_headerLeading"]):has([class*="_headerActions"]) :is([class*="_tab"]):not([class*="_tabs"]):hover{background:color-mix(in srgb,var(--ds-brand) 24%,transparent);box-shadow:0 4px 14px color-mix(in srgb,var(--ds-brand) 34%,transparent)}
+body[data-dshome-dark] :has(> [class*="_headerLeading"]):has([class*="_headerActions"]) :is([class*="_tabActive"]){box-shadow:0 3px 12px color-mix(in srgb,var(--ds-brand) 40%,transparent)}
+@keyframes dshome-tab-pop{0%{transform:translateY(-1px) scale(.88)}60%{transform:translateY(-1px) scale(1.05)}to{transform:none}}
+/* 路径标签（会话标题）胶囊 + 品牌标签胶囊 */
+:has(> [class*="_headerLeading"]):has([class*="_headerActions"]) :is([class*="_crumb"]){border-radius:999px}
+:has(> [class*="_headerLeading"]):has([class*="_headerActions"]) :is([class*="_label"]){background:color-mix(in srgb,var(--ds-brand) 10%,transparent)!important;border:1px solid color-mix(in srgb,var(--ds-brand) 22%,transparent);border-radius:999px!important;padding:0 10px!important;height:28px;line-height:26px;color:var(--ds-brand)!important}
+body[data-dshome-dark] :has(> [class*="_headerLeading"]):has([class*="_headerActions"]) :is([class*="_label"]){color:var(--ds-brand-light)!important}
+/* 打开方式的分裂按钮：悬停抬升 + 品牌着色，菜单打开时箭头翻过来 */
+:has(> [class*="_headerLeading"]):has([class*="_headerActions"]) :is([class*="_split"]){transition:transform .28s cubic-bezier(.2,.8,.2,1),box-shadow .28s ease,border-color .22s ease,background .22s ease}
+:has(> [class*="_headerLeading"]):has([class*="_headerActions"]) :is([class*="_split"]):hover{transform:translateY(-1px);border-color:color-mix(in srgb,var(--ds-brand) 40%,transparent);background:color-mix(in srgb,var(--ds-brand) 8%,transparent);box-shadow:0 4px 14px color-mix(in srgb,var(--ds-brand) 22%,transparent)}
+:has(> [class*="_headerLeading"]):has([class*="_headerActions"]) :is([class*="_split"]):active{transform:translateY(0) scale(.97)}
+:has(> [class*="_headerLeading"]):has([class*="_headerActions"]) :is([class*="_chevron"]) svg{transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+:has(> [class*="_headerLeading"]):has([class*="_headerActions"]) :is([class*="_chevron"])[aria-expanded=true] svg{transform:rotate(180deg)}
+/* 语言开关：悬停标题栏时 中 → 中文 展开（原样的行为） */
+:has(> [class*="_headerLeading"]):has([class*="_headerActions"]):hover .dshome-locale .dshome-short{max-width:0;opacity:0;transform:translateX(6px)}
+:has(> [class*="_headerLeading"]):has([class*="_headerActions"]):hover .dshome-locale .dshome-full{max-width:3em;opacity:1;transform:none}
+/* 真圆配对：产品的全局 superellipse(1.5) 会把胶囊半径压成方圆 */
+:has(> [class*="_headerLeading"]):has([class*="_headerActions"]) :is([class*="_label"],[class*="_seat"],[class*="_split"],[class*="_crumb"],[class*="_moreButton"],[data-sidebar-right-expand]),.dshome-locale,[class*="_tabs"]{corner-shape:round}
+:is([class*="_moreButton"]){min-width:0!important;width:28px;height:28px;padding:0!important;border-radius:50%!important;border:none!important;background:color-mix(in srgb,var(--ds-brand) 8%,transparent)!important;color:var(--ds-brand)!important;overflow:hidden;transition:width .2s ease,padding .2s ease,border-radius .2s ease}
+:is([class*="_moreButton"]) span{max-width:0;opacity:0;overflow:hidden;transition:max-width .2s ease,opacity .2s ease}
+/* 原来这里写的是 :has(_moreButton) —— 那等于"只要存在就展开"，形态与原来不符。
+   原设计是**悬停标题栏才展开**成宽胶囊。 */
+:has(> [class*="_headerLeading"]):has([class*="_headerActions"]):hover :is([class*="_moreButton"]){width:auto;padding:0 12px!important;border-radius:18px!important}
+:has(> [class*="_headerLeading"]):has([class*="_headerActions"]):hover :is([class*="_moreButton"]) span{max-width:90px;opacity:1}
+body[data-dshome-dark] :is([class*="_moreButton"]){color:var(--ds-brand-light)!important}
+:is([class*="_newSession"]){border:none!important;background:linear-gradient(135deg,var(--ds-brand) 0%,var(--ds-brand-mid) 100%)!important;color:#fff!important;border-radius:999px!important;box-shadow:0 4px 14px color-mix(in srgb,var(--ds-brand) 35%,transparent);transition:transform .15s ease,box-shadow .15s ease,background .15s ease}
+:is([class*="_newSession"]):hover{background:linear-gradient(135deg,color-mix(in srgb,var(--ds-brand) 72%,#fff) 0%,var(--ds-brand) 100%)!important;box-shadow:0 6px 18px color-mix(in srgb,var(--ds-brand) 45%,transparent);transform:translateY(-1px)}
 
 
 
-._1p9O6q_root{background:rgba(255,255,255,.3)!important;border-bottom:1px solid rgba(0,0,0,.05)!important}
-._1p9O6q_plot{background:transparent!important}
-body[data-dshome-dark] ._1p9O6q_root{background:rgba(13,30,60,.3)!important}
-._1p9O6q_span[data-timeline-span=assistant]{background:var(--ds-brand)!important}
-._1p9O6q_span[data-timeline-span=user]{background:var(--ds-brand-light)!important}
-
-
-
-.VOzbGW_mask{animation:dshome-fade-in .2s ease}
-.VOzbGW_panel{background:rgba(255,255,255,.97)!important;animation:dshome-modal-in .4s cubic-bezier(.2,.8,.2,1)!important}
-body[data-dshome-dark] .VOzbGW_panel{background:rgba(13,30,60,.96)!important}
-.VOzbGW_overlay{position:fixed!important;top:0!important;left:0!important;width:100vw!important;height:100vh!important;inset:0!important}
-
+:has(> [class*="_centerCol"]):has(> [class*="_sidebarCol"]){background:transparent!important}
+[class*="_centerCol"],[class*="_rightbarCol"],[class*="_sidebarCol"]{background:transparent!important}
+div[class*="_root"][data-phase]{background:transparent!important}
+[class*="_composerSeat"]{background:transparent!important}
+/* 产品的大浮层（设置、以及其它 role=dialog 的面板）：它自己的底色是 85% 白、而且
+   **完全没有模糊** —— 实测 wCInkW_panel: bg=rgba(255,255,255,.85)、backdrop=none，
+   我们一条规则都没命中它。半透明而没有模糊兜着，背后 15% 的正文就直接透上来、字压字，
+   在流体背景上尤其不可读。用户要求"要么做成液态玻璃、要么全不透明"，选玻璃：
+   保留半透明、补上模糊链，背后的内容变成一团霜，面板自己读得清，形态也与主题
+   其它玻璃面一致。
+   注意它是挂在 body 上的浮层（实测距 body 两层、不在会话栏内），所以"给会话栏补一层底"
+   那条思路盖不到它 —— 只能直挂 role=dialog。这个选择器是 ARIA 角色，产品改哈希不受影响。
+   这条规则放在这个常驻补丁块里（而不是单开一个以 role=dialog 为锚点的块），是因为
+   锚点在浮层没打开时不存在，注入会晚一拍、开面板时会闪一下。 */
+[role="dialog"]{background:rgba(255,255,255,.68)!important;-webkit-backdrop-filter:blur(30px) saturate(1.6) brightness(1.03);backdrop-filter:blur(30px) saturate(1.6) brightness(1.03);border:1px solid rgba(255,255,255,.5);box-shadow:0 24px 70px rgba(13,30,60,.22),inset 0 1px 0 rgba(255,255,255,.75)}
+body[data-dshome-dark] [role="dialog"]{background:rgba(13,30,60,.74)!important;border-color:rgba(255,255,255,.12);box-shadow:0 24px 70px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.08)}
 
 
 :root{
@@ -249,26 +198,21 @@ body[data-dshome-dark]{
   box-shadow:inset 0 1px 0 var(--dshome-glass-edge),inset 0 -1px 0 var(--dshome-glass-edge-low),inset 0 0 0 .5px var(--dshome-glass-ring),var(--dshome-glass-shadow);
   transition:background-color .18s ease,box-shadow .18s ease;
 }
-/* The specular layer is multiplied by --dshome-glass-spec, so it has to be
-   switched on: while the cursor is over a spot surface the highlight follows
-   --dshome-spec-x/y (written per element by startSpecularParallax). */
-html [data-dshome-spot]:hover{--dshome-glass-spec:1;}
-html [data-composer-card]:hover{--dshome-glass-spec:1;--dshome-glass-sheen:.12;}
-  background-color:rgb(255 255 255 / calc(var(--dshome-glass-sheen) + .16))!important;
-}
-  background-color:rgb(255 255 255 / calc(var(--dshome-glass-sheen) + .06))!important;
-}
-  -webkit-backdrop-filter:url(#dshome-glass-dispersion) blur(var(--dshome-glass-blur)) saturate(var(--dshome-glass-saturate))!important;
-  backdrop-filter:url(#dshome-glass-dispersion) blur(var(--dshome-glass-blur)) saturate(var(--dshome-glass-saturate))!important;
-}
+/* 没有 backdrop-filter 的引擎：气泡退回不透明底，不做半透明假玻璃。 */
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
     background-color:rgba(255,255,255,.86)!important;
   }
     background-color:rgba(13,30,60,.92)!important;
   }
 }
-
-
+/* The specular layer is multiplied by --dshome-glass-spec, so it has to be
+   switched on: while the cursor is over a spot surface the highlight follows
+   --dshome-spec-x/y (written per element by startSpecularParallax). */
+html [data-dshome-spot]:hover{--dshome-glass-spec:1;}--dshome-glass-spec:1;--dshome-glass-sheen:.12;}
+  background-color:rgb(255 255 255 / calc(var(--dshome-glass-sheen) + .16))!important;
+}
+  background-color:rgb(255 255 255 / calc(var(--dshome-glass-sheen) + .06))!important;
+}
 
 html[data-dshome-glass="liquid"] [data-menu-material]{
   border-radius:var(--dsw-radius-lg);
@@ -284,7 +228,6 @@ html[data-dshome-glass="frosted"] [data-menu-material]{
   border-radius:var(--dsw-radius-lg);
   box-shadow:inset 0 0 0 1px var(--dshome-glass-ring);
 }
-
 
 position:fixed;z-index:2147483000;min-width:198px;padding:6px;border-radius:14px;background:rgba(255,255,255,.94);border:.5px solid var(--dsw-alias-border-l2,rgba(0,0,0,.1));box-shadow:0 18px 44px rgba(15,30,60,.2);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);animation:dshome-menu-pop .16s cubic-bezier(.2,.8,.2,1);transform-origin:top left}background:rgba(14,30,60,.94);box-shadow:0 18px 44px rgba(0,0,0,.5)}display:flex;align-items:center;gap:9px;box-sizing:border-box;width:100%;padding:8px 10px;border:0;border-radius:9px;background:transparent;color:var(--dsw-alias-label-primary,#152443);font:inherit;font-size:13px;line-height:20px;text-align:left;cursor:pointer;transition:background-color .12s ease,transform .12s ease}background:color-mix(in srgb,var(--ds-brand,#4d6bfe) 13%,transparent);transform:translateX(1px)}outline:2px solid var(--dsw-alias-brand-primary,#4d6bfe);outline-offset:-2px}flex:none;width:15px;height:15px;opacity:.72}display:inline-flex;align-items:center;min-width:0}height:1px;margin:5px 6px;background:var(--dsw-alias-border-l1,rgba(0,0,0,.06))}position:fixed;z-index:2147483001;left:50%;bottom:56px;transform:translateX(-50%);padding:8px 15px;border-radius:999px;background:rgba(20,36,70,.93);color:#fff;font-size:12px;line-height:18px;pointer-events:none;animation:dshome-fade-in .18s ease}
 @keyframes dshome-menu-pop{from{opacity:0;transform:scale(.96) translateY(-4px)}to{opacity:1;transform:none}}

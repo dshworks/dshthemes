@@ -1,5 +1,5 @@
 /* ymh0000123/dsh-theme-endfield — src/styles/theme.css
-   fetched 2026-10-07 from https://raw.githubusercontent.com/ymh0000123/dsh-theme-endfield/main/src/styles/theme.css
+   fetched 2026-10-15 from https://raw.githubusercontent.com/ymh0000123/dsh-theme-endfield/main/src/styles/theme.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
       /* endfield-build/2026-10-06-darker-dim — read this to tell which build's sheet is mounted.
          Kept literal (no template interpolation): check.js requires the stylesheet literal to be
@@ -392,14 +392,24 @@
          off-screen with visibility:hidden. Frosting the bare 'push' panel would
          leave an opaque glass rectangle covering the right half of the screen
          while collapsed, so frost it only when the panel is expanded. */
+      /* WHY no backdrop-filter on [data-composer-card]: a backdrop-filter (like
+         any filter) makes the element the containing block for position:fixed
+         descendants. The send-button tooltip is fixed-positioned from viewport
+         coords, so blurring the card resolved its coords against the shrunk
+         card box — pushing it past the card's right edge and making its
+         ResizeObserver re-measure in a loop (visible layout jitter). The card
+         keeps the same opaque glass fill without the filter; the docked panel
+         hosts no fixed tooltip so it can keep the real frost. See glass.md. */
       body[data-endfield-glass]
         :is([data-composer-card], [data-sidebar-right-panel='push'][data-sidebar-right-open]) {
         background-color: rgb(var(--edge-glass-fill) / var(--edge-glass-alpha)) !important;
         background-image: linear-gradient(145deg, var(--edge-glass-sheen), transparent 58%),
           radial-gradient(ellipse at 0% 0%, color-mix(in srgb, var(--edge-accent) 10%, transparent), transparent 75%) !important;
+        --dsw-elevation-stroke-color: var(--edge-glass-edge);
+      }
+      body[data-endfield-glass] [data-sidebar-right-panel='push'][data-sidebar-right-open] {
         -webkit-backdrop-filter: blur(var(--edge-glass-blur)) saturate(1.05);
         backdrop-filter: blur(var(--edge-glass-blur)) saturate(1.05);
-        --dsw-elevation-stroke-color: var(--edge-glass-edge);
       }
       body[data-endfield-glass] [data-slot='sidebar'] > div {
         background-image: linear-gradient(145deg, var(--edge-glass-sheen), transparent 58%),
@@ -419,6 +429,8 @@
           -webkit-backdrop-filter: none; backdrop-filter: none;
         }
       }
+      /* The composer card never gets a backdrop-filter in any tier or media state
+         (fixed-descendant containing block — see the WHY comment above). */
       ::selection {
         color: #000;
         background: var(--edge-signal, var(--edge-accent));
@@ -2164,8 +2176,11 @@
         /* Covers every circle INSIDE the pill (badge, ring, clock, brand
            mark): they inherit the host's superellipse(1.5) like everything
            else, and a 999px radius only draws a true disc when the shape is
-           round. The pill itself needs no shape — its radius is zero. */
-        corner-shape: round;
+           round. The pill itself needs no shape — its radius is zero.
+           !important like every other pin in this sheet: the host re-applies
+           its superellipse on its own selectors, and an unqualified round
+           loses to it (that is how the dial came out squircle-shaped). */
+        corner-shape: round !important;
         /* The silhouette is DRAWN (see the section comment): two discs at the
            ends + a band between their centres. A plain colour would be clipped
            by the host's superellipse corner shape; this way the outline IS the
@@ -2201,7 +2216,9 @@
           height 420ms cubic-bezier(0.22, 0.72, 0.2, 1),
           min-width 420ms cubic-bezier(0.22, 0.72, 0.2, 1),
           padding 420ms cubic-bezier(0.22, 0.72, 0.2, 1),
-          --endfield-balance-cap 420ms cubic-bezier(0.22, 0.72, 0.2, 1);
+          --endfield-balance-cap 420ms cubic-bezier(0.22, 0.72, 0.2, 1),
+          opacity 180ms ease,
+          transform 240ms cubic-bezier(0.22, 0.72, 0.2, 1);
       }
       /* Boot pose: the brand panel from the reference — 448x72 — held while the
          first account answer is still in flight. JS drops the attribute once the
@@ -2315,6 +2332,7 @@
         height: 10px;
         margin-right: 4px;
         border-radius: 3px;
+        corner-shape: round !important;
         background: #f1f1ec;
       }
       [data-endfield-balance] [data-endfield-balance-icon]::before {
@@ -2322,6 +2340,7 @@
         position: absolute;
         inset: 2px;
         border-radius: 2px;
+        corner-shape: round !important;
         background: #312f30;
       }
       [data-endfield-balance] [data-endfield-balance-icon]::after {
@@ -2329,6 +2348,7 @@
         position: absolute;
         inset: 3.5px;
         border-radius: 1px;
+        corner-shape: round !important;
         background: #f1f1ec;
       }
       /* ¥ + integer + fraction are one unbroken run: the reference has no gap
@@ -2448,6 +2468,7 @@
         width: 27px;
         height: 27px;
         border-radius: 999px;
+        corner-shape: round !important;
         background: #262425;
       }
       /* Progress ring: the accent segment covers the elapsed share starting at
@@ -2456,6 +2477,7 @@
         position: absolute;
         inset: 1.5px;
         border-radius: 999px;
+        corner-shape: round !important;
         background: conic-gradient(
           from 0deg,
           var(--edge-accent) 0deg var(--endfield-balance-sweep, 0deg),
@@ -2469,6 +2491,7 @@
         width: 12px;
         height: 12px;
         border-radius: 999px;
+        corner-shape: round !important;
         background: var(--edge-accent);
       }
       /* The needle: hangs from the face's centre up to ~1 o'clock, in the
@@ -2518,5 +2541,33 @@
         [data-endfield-balance] [data-endfield-balance-window] {
           display: none;
         }
+      }
+      /* ---------- 防遮挡：停靠位变体与自动隐藏 ----------
+         停靠位由胶囊上的 data-endfield-balance-position 属性选择（center 是
+         基规则本身，不需要属性）：靠左贴着左栏外缘留 8px，靠右对称。位置
+         变体只动定位三件套，轮廓（渐变端盘 + stadium）与内部排版不动，所以
+         任何停靠位下胶囊都保持同一形状。 */
+      [data-endfield-balance][data-endfield-balance-position='left'] {
+        top: 6px;
+        left: 8px;
+        transform: none;
+      }
+      [data-endfield-balance][data-endfield-balance-position='right'] {
+        top: 6px;
+        left: auto;
+        right: 8px;
+        transform: none;
+      }
+      /* 自动隐藏（侧边栏展开 / 指针靠近）写成单属性渐隐：JS 只切换
+         data-endfield-balance-shade，视觉在 CSS 里完成。透明之外再向上收
+         6px 并关掉 hit-test 的余地（pointer-events 本来就是 none），过渡走
+         基规则已声明的 opacity/transform 通道，遮挡消失后原路淡回。boot
+         姿态期间被遮挡时同样收起——开场动画是装饰，遮挡是事实。 */
+      [data-endfield-balance][data-endfield-balance-shade] {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-6px);
+      }
+      [data-endfield-balance][data-endfield-balance-shade][data-endfield-balance-position] {
+        transform: translateY(-6px);
       }
 
