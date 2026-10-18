@@ -1,0 +1,392 @@
+/* dirtywork22/dsh-client-ui-skin-bayern — tools/patch-css.mjs
+   fetched 2026-10-18 from https://raw.githubusercontent.com/dirtywork22/dsh-client-ui-skin-bayern/main/tools/patch-css.mjs
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/* ---- club variables shared by every kit ---------------------------- */
+body[data-dsh-bayern] {
+  --dsh-bayern-accent: #dc052d;
+  --dsh-bayern-accent-hover: #f4183f;
+  --dsh-bayern-accent-soft: rgba(220, 5, 45, 0.18);
+  --dsh-bayern-accent-glow: rgba(220, 5, 45, 0.4);
+  --dsh-bayern-image: none;
+  --dsh-bayern-scrim: none;
+  --dsh-bayern-pane: rgba(10, 10, 16, 0.72);
+  --dsw-alias-bg-base: var(--dsh-bayern-pane);
+  --dsw-alias-bg-layer-1: #12121a;
+  --dsw-alias-bg-layer-2: #1a1a24;
+  --dsw-alias-bg-layer-3: #23232f;
+  --dsw-alias-bg-overlay: rgba(18, 18, 26, 0.94);
+  --dsw-alias-bg-module-platform: rgba(255, 255, 255, 0.06);
+  --dsw-alias-border-l1: #22222c;
+  --dsw-alias-border-l2: #2b2b37;
+  --dsw-alias-border-l2-darkmode-thin: #2b2b37;
+  --dsw-alias-border-l3: #353542;
+  --dsw-alias-brand-primary: var(--dsh-bayern-accent);
+  --dsw-alias-brand-text: #ffffff;
+  --dsw-alias-button-info-fill: var(--dsh-bayern-accent);
+  --dsw-alias-button-info-hover: var(--dsh-bayern-accent-hover);
+  --dsw-alias-button-elevated-fill: rgba(255, 255, 255, 0.08);
+  --dsw-alias-button-floating-fill: rgba(26, 26, 36, 0.9);
+  --dsw-alias-button-floating-hover: #23232f;
+  --dsw-alias-interactive-bg-active: var(--dsh-bayern-accent-soft);
+  --dsw-alias-interactive-bg-hover: rgba(255, 255, 255, 0.06);
+  --dsw-alias-interactive-bg-hover-solid: #23232f;
+  --dsw-alias-label-primary: #f6f6f9;
+  --dsw-alias-label-primary-bluish: #f6f6f9;
+  --dsw-alias-label-secondary: #b6b6c2;
+  --dsw-alias-label-tertiary: #8c8c9a;
+  --dsw-alias-label-caption: #6d6d7b;
+  --dsw-alias-label-dimmed: #6d6d7b;
+  --dsw-alias-link: #6ba9e0;
+  --dsw-alias-state-business-primary: var(--dsh-bayern-accent);
+  --dsw-alias-state-business-tertiary: var(--dsh-bayern-accent-soft);
+  --dsw-alias-markdown-inline-code: rgba(255, 255, 255, 0.08);
+  --dsw-alias-markdown-code-block: rgba(6, 6, 10, 0.62);
+  --dsw-alias-markdown-code-block-banner: rgba(255, 255, 255, 0.04);
+  --dsw-alias-settings-card-fill: rgba(255, 255, 255, 0.03);
+  --dsw-alias-settings-card-stroke: #26262f;
+  --dsw-specific-input-major: rgba(6, 6, 10, 0.72);
+  --dsw-specific-selector: #23232f;
+  --dsw-specific-sidebar-fill: rgba(10, 10, 16, 0.6);
+  --dsw-specific-sidebar-nav-item-active: var(--dsh-bayern-accent-soft);
+  --dsw-specific-sidebar-nav-item-hover: rgba(255, 255, 255, 0.05);
+  --dsw-specific-bubble: rgba(255, 255, 255, 0.06);
+  --dsw-specific-bubble-highlight: rgba(255, 255, 255, 0.1);
+  --dsw-specific-menu: rgba(20, 20, 28, 0.9);
+  --dsw-shadow-lv2: 0 18px 54px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.35);
+  --dsw-focus-ring-color: var(--dsh-bayern-accent);
+  color: #f6f6f9;
+  background-color: #0a0a10;
+}
+
+/* ---- accent colour variants ---------------------------------------- */
+body[data-dsh-bayern][data-dsh-bayern-accent="crimson"] {
+  --dsh-bayern-accent: #8b0f22;
+  --dsh-bayern-accent-hover: #ab142c;
+  --dsh-bayern-accent-soft: rgba(139, 15, 34, 0.24);
+  --dsh-bayern-accent-glow: rgba(170, 20, 45, 0.42);
+}
+
+body[data-dsh-bayern][data-dsh-bayern-accent="blue"] {
+  --dsh-bayern-accent: #0066b2;
+  --dsh-bayern-accent-hover: #1a82d4;
+  --dsh-bayern-accent-soft: rgba(0, 102, 178, 0.2);
+  --dsh-bayern-accent-glow: rgba(0, 122, 204, 0.42);
+}
+
+body[data-dsh-bayern][data-dsh-bayern-accent="gold"] {
+  --dsh-bayern-accent: #c9a227;
+  --dsh-bayern-accent-hover: #e0b93a;
+  --dsh-bayern-accent-soft: rgba(201, 162, 39, 0.22);
+  --dsh-bayern-accent-glow: rgba(214, 174, 45, 0.42);
+}
+
+/* ---- home red, light system theme ---------------------------------- */
+body[data-dsh-bayern][data-dsh-bayern-kit="red"]:not([data-ds-dark-theme]) {
+  --dsh-bayern-pane: rgba(252, 246, 244, 0.8);
+  --dsw-alias-bg-layer-1: #f7eeec;
+  --dsw-alias-bg-layer-2: #f1e5e2;
+  --dsw-alias-bg-layer-3: #e8d8d4;
+  --dsw-alias-bg-overlay: rgba(255, 252, 251, 0.96);
+  --dsw-alias-bg-module-platform: rgba(22, 22, 26, 0.05);
+  --dsw-alias-border-l1: #ecdcd8;
+  --dsw-alias-border-l2: #e4d2ce;
+  --dsw-alias-border-l2-darkmode-thin: #e4d2ce;
+  --dsw-alias-border-l3: #d6c1bd;
+  --dsw-alias-button-elevated-fill: rgba(255, 255, 255, 0.9);
+  --dsw-alias-button-floating-fill: rgba(255, 255, 255, 0.92);
+  --dsw-alias-button-floating-hover: #f7eeec;
+  --dsw-alias-interactive-bg-hover: rgba(22, 22, 26, 0.05);
+  --dsw-alias-interactive-bg-hover-solid: #f1e5e2;
+  --dsw-alias-label-primary: #1a1113;
+  --dsw-alias-label-primary-bluish: #1a1113;
+  --dsw-alias-label-secondary: #5a4a4d;
+  --dsw-alias-label-tertiary: #857174;
+  --dsw-alias-label-caption: #a99a9c;
+  --dsw-alias-label-dimmed: #a99a9c;
+  --dsw-alias-link: #b30525;
+  --dsw-alias-markdown-inline-code: rgba(22, 22, 26, 0.07);
+  --dsw-alias-markdown-code-block: rgba(255, 255, 255, 0.72);
+  --dsw-alias-markdown-code-block-banner: rgba(22, 22, 26, 0.04);
+  --dsw-alias-settings-card-fill: rgba(255, 255, 255, 0.6);
+  --dsw-alias-settings-card-stroke: #ecdcd8;
+  --dsw-specific-input-major: rgba(255, 255, 255, 0.88);
+  --dsw-specific-selector: #f1e5e2;
+  --dsw-specific-sidebar-fill: rgba(252, 246, 244, 0.66);
+  --dsw-specific-sidebar-nav-item-hover: rgba(22, 22, 26, 0.05);
+  --dsw-specific-bubble: rgba(255, 255, 255, 0.66);
+  --dsw-specific-bubble-highlight: #f1e5e2;
+  --dsw-specific-menu: rgba(255, 255, 255, 0.92);
+  color: #1a1113;
+  background-color: #fcf6f4;
+}
+
+/* ---- away white: a paper-white canvas whatever the system theme says - */
+body[data-dsh-bayern][data-dsh-bayern-kit="white"] {
+  --dsh-bayern-pane: rgba(255, 255, 255, 0.82);
+  --dsw-alias-bg-layer-1: #f4f4f3;
+  --dsw-alias-bg-layer-2: #ececeb;
+  --dsw-alias-bg-layer-3: #e2e2e1;
+  --dsw-alias-bg-overlay: rgba(255, 255, 255, 0.97);
+  --dsw-alias-bg-module-platform: rgba(20, 20, 22, 0.05);
+  --dsw-alias-border-l1: #e6e6e4;
+  --dsw-alias-border-l2: #dededc;
+  --dsw-alias-border-l2-darkmode-thin: #dededc;
+  --dsw-alias-border-l3: #cfcfcd;
+  --dsw-alias-button-elevated-fill: rgba(255, 255, 255, 0.94);
+  --dsw-alias-button-floating-fill: rgba(255, 255, 255, 0.95);
+  --dsw-alias-button-floating-hover: #f4f4f3;
+  --dsw-alias-interactive-bg-hover: rgba(20, 20, 22, 0.05);
+  --dsw-alias-interactive-bg-hover-solid: #ececeb;
+  --dsw-alias-label-primary: #141416;
+  --dsw-alias-label-primary-bluish: #141416;
+  --dsw-alias-label-secondary: #565658;
+  --dsw-alias-label-tertiary: #808082;
+  --dsw-alias-label-caption: #a4a4a6;
+  --dsw-alias-label-dimmed: #a4a4a6;
+  --dsw-alias-link: #b30525;
+  --dsw-alias-markdown-inline-code: rgba(20, 20, 22, 0.07);
+  --dsw-alias-markdown-code-block: rgba(255, 255, 255, 0.78);
+  --dsw-alias-markdown-code-block-banner: rgba(20, 20, 22, 0.04);
+  --dsw-alias-settings-card-fill: rgba(255, 255, 255, 0.7);
+  --dsw-alias-settings-card-stroke: #e6e6e4;
+  --dsw-specific-input-major: rgba(255, 255, 255, 0.92);
+  --dsw-specific-selector: #ececeb;
+  --dsw-specific-sidebar-fill: rgba(255, 255, 255, 0.7);
+  --dsw-specific-sidebar-nav-item-hover: rgba(20, 20, 22, 0.05);
+  --dsw-specific-bubble: rgba(255, 255, 255, 0.7);
+  --dsw-specific-bubble-highlight: #ececeb;
+  --dsw-specific-menu: rgba(255, 255, 255, 0.93);
+  color: #141416;
+  background-color: #fbfbfa;
+}
+
+/* ---- the backdrop layer: generated art or a real match photo -------- */
+body[data-dsh-bayern] {
+  background-image: var(--dsh-bayern-scrim), var(--dsh-bayern-image);
+  background-size: cover, cover;
+  background-position: center top, center center;
+  background-repeat: no-repeat, no-repeat;
+  background-attachment: fixed, fixed;
+}
+
+html:has(> body[data-dsh-bayern]) {
+  background-color: #0a0a10;
+}
+
+html:has(> body[data-dsh-bayern][data-dsh-bayern-kit="white"]),
+html:has(> body[data-dsh-bayern][data-dsh-bayern-kit="red"]:not([data-ds-dark-theme])) {
+  background-color: #fbfbfa;
+}
+
+/* club-colour hairline across the very top of the window */
+body[data-dsh-bayern]::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 3px;
+  z-index: 9999;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent 0%, var(--dsh-bayern-accent) 28%, var(--dsh-bayern-accent-hover) 52%, rgba(0, 102, 178, 0.9) 82%, transparent 100%);
+}
+
+/* ---- surfaces: let the photo read through, keep text crisp ---------- */
+body[data-dsh-bayern] :is([class*="sidebarCol"], [class*="centerCol"], [class*="frame"]) {
+  background-color: transparent;
+}
+
+body[data-dsh-bayern] [class*="sidebarCol"] {
+  position: relative;
+  backdrop-filter: blur(18px) saturate(1.05);
+  -webkit-backdrop-filter: blur(18px) saturate(1.05);
+  border-right: 1px solid var(--dsw-alias-border-l1);
+}
+
+body[data-dsh-bayern] [class*="sidebarCol"]::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--dsh-bayern-accent), transparent 62%);
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+body[data-dsh-bayern] [class*="composer"] {
+  background-color: transparent;
+}
+
+/* ---- club details --------------------------------------------------- */
+body[data-dsh-bayern] button[class*="brand"] {
+  color: var(--dsh-bayern-accent);
+}
+
+body[data-dsh-bayern] button[class*="newSession"],
+body[data-dsh-bayern] [data-slot="sidebar.settings"] > :is(button, [role="button"]) {
+  background: linear-gradient(135deg, var(--dsh-bayern-accent) 0%, var(--dsh-bayern-accent-hover) 100%);
+  color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 6px 20px -12px var(--dsh-bayern-accent-glow);
+}
+
+body[data-dsh-bayern] a {
+  color: var(--dsw-alias-link);
+}
+
+body[data-dsh-bayern] :is([class*="badge"], [class*="Badge"]) {
+  border-radius: 9999px;
+}
+
+body[data-dsh-bayern] :is([class*="caption"], [class*="sectionLabel"]) {
+  letter-spacing: 0.06em;
+}
+
+/* ---- scrollbars / selection / focus --------------------------------- */
+body[data-dsh-bayern] * {
+  scrollbar-width: thin;
+  scrollbar-color: var(--dsh-bayern-accent-soft) transparent;
+}
+
+body[data-dsh-bayern] ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+body[data-dsh-bayern] ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+body[data-dsh-bayern] ::-webkit-scrollbar-thumb {
+  background: var(--dsh-bayern-accent-soft);
+  border-radius: 9999px;
+}
+
+body[data-dsh-bayern] ::-webkit-scrollbar-thumb:hover {
+  background: var(--dsh-bayern-accent-glow);
+}
+
+body[data-dsh-bayern] ::selection {
+  background: var(--dsh-bayern-accent-soft);
+  color: inherit;
+}
+
+body[data-dsh-bayern] :is(button, input, textarea, select, [role="button"], [role="tab"], [role="treeitem"]):focus-visible {
+  outline: 2px solid var(--dsh-bayern-accent-glow);
+  outline-offset: 1px;
+}
+
+/* TurnStatus shimmer in club red */
+body[data-dsh-bayern] [role="status"][aria-live="polite"] {
+  color: #0000;
+  -webkit-text-fill-color: transparent;
+  background: linear-gradient(90deg, var(--dsh-bayern-accent) 0%, var(--dsh-bayern-accent) 40%, var(--dsh-bayern-accent-hover) 50%, var(--dsh-bayern-accent) 60%, var(--dsh-bayern-accent) 100%);
+  background-size: 250% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: 1.8s linear infinite dsh-bayern-turn-status-shimmer;
+}
+
+@keyframes dsh-bayern-turn-status-shimmer {
+  to { background-position: 0 0; }
+}
+
+/* ---- Settings rows (native row geometry, like the EnterBehavior row) - */
+body[data-dsh-bayern] .dsh-bayern-row {
+  border-bottom: 1px solid var(--dsw-alias-border-l2);
+  align-items: center;
+  gap: 8px;
+  padding: 16px 0;
+  display: flex;
+}
+
+body[data-dsh-bayern] .dsh-bayern-rowText {
+  flex-direction: column;
+  flex: 1;
+  gap: 4px;
+  min-width: 0;
+  padding-right: 48px;
+  display: flex;
+}
+
+body[data-dsh-bayern] .dsh-bayern-rowTitle {
+  color: var(--dsw-alias-label-primary);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+}
+
+body[data-dsh-bayern] .dsh-bayern-rowDesc {
+  color: var(--dsw-alias-label-tertiary);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+}
+
+body[data-dsh-bayern] .dsh-bayern-selector {
+  background: var(--dsw-alias-bg-module-platform);
+  height: 36px;
+  font: inherit;
+  color: var(--dsw-alias-label-primary);
+  cursor: pointer;
+  border: none;
+  border-radius: 18px;
+  align-items: center;
+  gap: 12px;
+  padding: 0 14px;
+  font-size: 14px;
+  line-height: 22px;
+  display: inline-flex;
+  white-space: nowrap;
+}
+
+body[data-dsh-bayern] .dsh-bayern-selector:hover {
+  background: var(--dsw-alias-interactive-bg-hover);
+}
+
+body[data-dsh-bayern] .dsh-bayern-chevron {
+  flex: none;
+}
+
+body[data-dsh-bayern] .dsh-bayern-imageBox {
+  align-items: center;
+  gap: 8px;
+  display: flex;
+}
+
+body[data-dsh-bayern] .dsh-bayern-input {
+  background: var(--dsw-alias-bg-module-platform);
+  height: 36px;
+  width: 240px;
+  color: var(--dsw-alias-label-primary);
+  border: none;
+  border-radius: 18px;
+  padding: 0 14px;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+body[data-dsh-bayern] .dsh-bayern-input::placeholder {
+  color: var(--dsw-alias-label-caption);
+}
+
+body[data-dsh-bayern] .dsh-bayern-miniButton {
+  background: var(--dsw-alias-bg-module-platform);
+  color: var(--dsw-alias-label-secondary);
+  cursor: pointer;
+  border: none;
+  border-radius: 18px;
+  height: 36px;
+  padding: 0 14px;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+body[data-dsh-bayern] .dsh-bayern-miniButton:hover {
+  background: var(--dsw-alias-interactive-bg-hover);
+  color: var(--dsw-alias-label-primary);
+}
+
+body[data-dsh-bayern] .dsh-bayern-miniButton[data-active="true"] {
+  background: var(--dsh-bayern-accent-soft);
+  color: var(--dsh-bayern-accent);
+}

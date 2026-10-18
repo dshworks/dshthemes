@@ -1,0 +1,349 @@
+/* yll86/dsh-theme-aemath — src/aemath-theme.css
+   fetched 2026-10-18 from https://raw.githubusercontent.com/yll86/dsh-theme-aemath/main/src/aemath-theme.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* ============================================================================
+ * 爱弥斯主题 · AEMEATH Theme
+ * 樱花晨光（浅色） × 樱夜（深色）
+ * 为 DeepSeek Harness Web 界面设计，通过覆盖 --dsw-* 设计令牌生效。
+ * 主题思想：渐湖边的晨光，粉发少女的温柔，雪绒海豹的软乎乎。
+ * ==========================================================================*/
+
+/* ── 立绘素材（把图片放进 aemath-theme/assets/ 并运行 apply-theme.ps1，
+ *    或直接复制到 dist/assets/ 后刷新页面即可；文件不存在时自动隐藏）────
+ * aemath-full.png.jpg = 对话界面背景图 → dist/assets/aemath-bg.jpg
+ * ------------------------------------------------------------------------- */
+:root {
+  /* 相对路径：构建期会被改写成插件自己的 host 路由 + 内容哈希
+     （url("https://raw.githubusercontent.com/yll86/dsh-theme-aemath/main/src/aemath-bg.jpg") → url("/aemath-assets/aemath-bg.jpg?v=<md5前6位>")）。
+     写成相对路径，这份 CSS 才能在插件版和 dist 预览版之间共用同一份源。 */
+  --aemath-art-full: url("https://raw.githubusercontent.com/yll86/dsh-theme-aemath/main/src/aemath-bg.jpg");
+  /* 背景叠加强度：越高图越明显，但整屏也会越「蒙一层」，0.42 是
+     看得清图案又不影响阅读的平衡点 */
+  --aemath-art-opacity: 0.42;
+  /* Q 版徽章：尺寸与位置集中在这里调。
+     left 让它精确居中于侧边栏：(侧边栏宽 - 尺寸) / 2
+     当前 280px 侧边栏 + 96px 徽章 → left = 92px。 */
+  --aemath-chibi-size: 96px;
+  --aemath-chibi-left: 92px;
+  --aemath-chibi-bottom: 170px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+ * 一、樱花晨光 · 浅色主题
+ * ══════════════════════════════════════════════════════════════════════════ */
+html body {
+  /* ── 背景层 ── */
+  --dsw-alias-bg-base: #fdf9fb;
+  --dsw-alias-bg-layer-1: #fffdfe;
+  --dsw-alias-bg-layer-2: #faf3f8;
+  --dsw-alias-bg-layer-3: #f6edf3;
+  --dsw-alias-bg-module-platform: #faf3f7;
+  --dsw-alias-bg-multi-select: #f6ecf2;
+  --dsw-alias-bg-overlay: #f1e6ec;
+  --dsw-alias-bg-skeleton: #e9dbe4;
+
+  /* ── 边框层 ── */
+  --dsw-alias-border-l1: #f0e4eb;
+  --dsw-alias-border-l2: #e8d9e2;
+  --dsw-alias-border-l2-darkmode-thin: #eadce4;
+  --dsw-alias-border-l3: #dfcfd9;
+  --dsw-alias-border-l4: #d5c1ce;
+  --dsw-alias-border-inverted: #ffffff;
+  --dsw-alias-border-inverted2: #ffffff;
+
+  /* ── 品牌色 · 深玫粉 ── */
+  --dsw-alias-brand-primary: #963f86;
+  --dsw-alias-brand-primary-invert: #ffffff;
+  --dsw-alias-brand-primary-new-colorprimary-new-color: #a34684;
+  --dsw-alias-brand-text: #ffffff;
+
+  /* ── 按钮 ── */
+  --dsw-alias-button-primary-fill: var(--dsw-alias-brand-primary);
+  --dsw-alias-button-primary-hover: #863775;
+  --dsw-alias-button-primary-dimmed: #e9bdd3;
+  --dsw-alias-button-contrast-fill: #7a264e;
+  --dsw-alias-button-elevated-fill: #ffffff;
+  --dsw-alias-button-floating-fill: #ffffff;
+  --dsw-alias-button-floating-hover: #fdf2f7;
+  --dsw-alias-button-info-fill: #a34684;
+  --dsw-alias-button-info-hover: #963f86;
+  --dsw-alias-button-ghost-active-fill: #f7e7ef;
+  --dsw-alias-button-ghost-active-hover: #f2dbe6;
+  --dsw-alias-button-ghost-active-border: #d5a0ba;
+  --dsw-alias-button-tool-bar-fill: #e8d5e0b3;
+  --dsw-alias-button-tool-bar-fill-invisible: #e8d5e04d;
+  --dsw-alias-button-tool-bar-hover: #e8d5e0cc;
+
+  /* ── 文字 ── */
+  --dsw-alias-label-primary: #43303c;
+  --dsw-alias-label-primary-bluish: #4a3645;
+  --dsw-alias-label-primary-dimmed: #2e2129;
+  --dsw-alias-label-primary-foreground: #ffffff;
+  --dsw-alias-label-primary-inverted: #ffffff;
+  --dsw-alias-label-secondary: #7d6876;
+  --dsw-alias-label-tertiary: #a08b99;
+  --dsw-alias-label-caption: #b7a4b1;
+  --dsw-alias-label-dimmed: #e3d5de;
+
+  /* ── 交互 ── */
+  --dsw-alias-interactive-bg-hover: #f6e8f0;
+  --dsw-alias-interactive-bg-active: #f0dce7;
+  --dsw-alias-interactive-bg-hover-accent: #f5e2ec;
+  --dsw-alias-interactive-bg-hover-danger: #fdeef0;
+  --dsw-alias-interactive-bg-hover-solid: #f3e4ec;
+
+  /* ── 状态色（语义保留 · 粉暖化）── */
+  --dsw-alias-state-business-primary: #963f86;
+  --dsw-alias-state-business-tertiary: #efc2d3;
+  --dsw-alias-state-error-primary: #d64560;
+  --dsw-alias-state-error-secondary: #e05a73;
+  --dsw-alias-state-success-primary: #3fa876;
+  --dsw-alias-state-success-secondary: #52b787;
+  --dsw-alias-state-success-tertiary: #e0f3ea;
+  --dsw-alias-state-warn-primary: #e09a3e;
+  --dsw-alias-state-warn-secondary: #e5a64f;
+  --dsw-alias-state-warn-tertiary: #fdf0dd;
+  --dsw-alias-state-warn-label: #c07f24;
+
+  /* ── 代码与 Markdown ── */
+  --dsw-alias-markdown-code-block: #fbf4f8;
+  --dsw-alias-markdown-code-block-banner: #f8eef4;
+  --dsw-alias-markdown-code-segment-selected: #ffffff;
+  --dsw-alias-markdown-code-segment-unselected: #f8eef4;
+  --dsw-alias-markdown-inline-code: #f7e9f0;
+  --dsw-alias-markdown-citation: #f9eef4;
+  --dsw-alias-markdown-placeholder: #f4e7ee;
+  --dsw-alias-markdown-tag: #f6e9f0;
+
+  /* ── 滚动条 ── */
+  --dsw-alias-scrollbar-bg-l1: #e9dbe4;
+  --dsw-alias-scrollbar-bg-l2: #e2d3dd;
+  --dsw-alias-scrollbar-hover-l1: #dcc9d6;
+  --dsw-alias-scrollbar-hover-l2: #d3bdcb;
+
+  /* ── 浮层 ── */
+  --dsw-alias-toast-bg: #5a4654;
+  --dsw-alias-tooltip-bg: #4a3a48;
+
+  /* ── 阴影换粉 ── */
+  --dsw-shadow-lv1: 0 2px 4px 0 #963f861f;
+  --dsw-shadow-lv2: 0 4px 12px 0 #963f8612, 0 2px 8px 0 #963f861a;
+  --dsw-shadow-lv3: 0 0 1px 0 #963f8633, 0 0 4px 0 #963f860f, 0 12px 32px 0 #963f8626;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+ * 二、樱夜 · 深色主题
+ * ══════════════════════════════════════════════════════════════════════════ */
+html body[data-ds-dark-theme] {
+  /* ── 背景层 ── */
+  --dsw-alias-bg-base: #17131b;
+  --dsw-alias-bg-layer-1: #1d1721;
+  --dsw-alias-bg-layer-2: #231c28;
+  --dsw-alias-bg-layer-3: #292130;
+  --dsw-alias-bg-module-platform: #221a26;
+  --dsw-alias-bg-multi-select: #2a2230;
+  --dsw-alias-bg-overlay: #332a3a;
+  --dsw-alias-bg-skeleton: #ffffff12;
+
+  /* ── 边框层 ── */
+  --dsw-alias-border-l1: #ffffff12;
+  --dsw-alias-border-l2: #ffffff1a;
+  --dsw-alias-border-l2-darkmode-thin: #ffffff12;
+  --dsw-alias-border-l3: #ffffff24;
+  --dsw-alias-border-l4: #ffffff2e;
+  --dsw-alias-border-inverted: #ffffff14;
+  --dsw-alias-border-inverted2: #ffffff12;
+
+  /* ── 品牌色 · 夜樱粉 ── */
+  --dsw-alias-brand-primary: #c96f9e;
+  --dsw-alias-brand-primary-invert: #17131b;
+  --dsw-alias-brand-primary-new-colorprimary-new-color: #d277a5;
+  --dsw-alias-brand-text: #ffffff;
+
+  /* ── 按钮 ── */
+  --dsw-alias-button-primary-fill: var(--dsw-alias-brand-primary);
+  --dsw-alias-button-primary-hover: #bf5586;
+  --dsw-alias-button-primary-dimmed: #4a2e3d;
+  --dsw-alias-button-contrast-fill: #ffb3d1;
+  --dsw-alias-button-elevated-fill: #2e2433;
+  --dsw-alias-button-floating-fill: #292030;
+  --dsw-alias-button-floating-hover: #33283a;
+  --dsw-alias-button-info-fill: #bf5586;
+  --dsw-alias-button-info-hover: #c96f9e;
+  --dsw-alias-button-ghost-active-fill: #382c3e;
+  --dsw-alias-button-ghost-active-hover: #413349;
+  --dsw-alias-button-ghost-active-border: #8a6f7f;
+  --dsw-alias-button-tool-bar-fill: #54405099;
+  --dsw-alias-button-tool-bar-fill-invisible: #5440505c;
+  --dsw-alias-button-tool-bar-hover: #544050b3;
+
+  /* ── 文字 ── */
+  --dsw-alias-label-primary: #f6eef3;
+  --dsw-alias-label-primary-bluish: #f8f0f5;
+  --dsw-alias-label-primary-dimmed: #ffffff;
+  --dsw-alias-label-primary-foreground: #2a1522;
+  --dsw-alias-label-primary-inverted: #2a1522;
+  --dsw-alias-label-secondary: #cbbcc6;
+  --dsw-alias-label-tertiary: #a28e9c;
+  --dsw-alias-label-caption: #8a7688;
+  --dsw-alias-label-dimmed: #4a3a48;
+
+  /* ── 交互 ── */
+  --dsw-alias-interactive-bg-hover: #ffffff14;
+  --dsw-alias-interactive-bg-active: #ffffff24;
+  --dsw-alias-interactive-bg-hover-accent: #c96f9e1f;
+  --dsw-alias-interactive-bg-hover-danger: #ff6b8a1f;
+  --dsw-alias-interactive-bg-hover-solid: #332a3a;
+
+  /* ── 状态色 ── */
+  --dsw-alias-state-business-primary: #c96f9e;
+  --dsw-alias-state-business-tertiary: #4a2e3d;
+  --dsw-alias-state-error-primary: #ff7a8f;
+  --dsw-alias-state-error-secondary: #ff8a9e;
+  --dsw-alias-state-success-primary: #5fce9a;
+  --dsw-alias-state-success-secondary: #4fbd8c;
+  --dsw-alias-state-success-tertiary: #1f3d30;
+  --dsw-alias-state-warn-primary: #f0b04f;
+  --dsw-alias-state-warn-secondary: #f5bc63;
+  --dsw-alias-state-warn-tertiary: #3d2f1a;
+  --dsw-alias-state-warn-label: #e8a33f;
+
+  /* ── 代码与 Markdown ── */
+  --dsw-alias-markdown-code-block: #201a26;
+  --dsw-alias-markdown-code-block-banner: #261d2b;
+  --dsw-alias-markdown-code-segment-selected: #2c2233;
+  --dsw-alias-markdown-code-segment-unselected: #221b28;
+  --dsw-alias-markdown-inline-code: #2b2230;
+  --dsw-alias-markdown-citation: #2c2331;
+  --dsw-alias-markdown-placeholder: #2a2230;
+  --dsw-alias-markdown-tag: #2e2534;
+
+  /* ── 滚动条 ── */
+  --dsw-alias-scrollbar-bg-l1: #3a2f40;
+  --dsw-alias-scrollbar-bg-l2: #453850;
+  --dsw-alias-scrollbar-hover-l1: #453850;
+  --dsw-alias-scrollbar-hover-l2: #524260;
+
+  /* ── 浮层 ── */
+  --dsw-alias-toast-bg: #382c3e;
+  --dsw-alias-tooltip-bg: #41334a;
+
+  /* ── 阴影换粉 ── */
+  --dsw-shadow-lv1: 0 2px 4px 0 #c96f9e24;
+  --dsw-shadow-lv2: 0 4px 12px 0 #c96f9e17, 0 2px 8px 0 #c96f9e1f;
+  --dsw-shadow-lv3: 0 0 1px 0 #c96f9e38, 0 0 4px 0 #c96f9e14, 0 12px 32px 0 #c96f9e2b;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+ * 三、品牌静态色 · 樱花粉（覆盖直接引用 static 令牌的组件）
+ * ══════════════════════════════════════════════════════════════════════════ */
+html body,
+html body[data-ds-dark-theme] {
+  /* 兜底：任何直接引用最深中性色作文字的地方，统一压成深紫棕 */
+  --dsw-static-neutral-bluish-1000: #43303c;
+  --dsw-static-deepseek-50: #f3dae7;
+  --dsw-static-deepseek-100: #ebbbd1;
+  --dsw-static-deepseek-200: #e192b9;
+  --dsw-static-deepseek-300: #d478a0;
+  --dsw-static-deepseek-400: #c96d89;
+  --dsw-static-deepseek-450: #c34e82;
+  --dsw-static-deepseek-500: #b84778;
+  --dsw-static-deepseek-600: #8f335d;
+  --dsw-static-deepseek-700-delete: #712a49;
+  --dsw-static-deepseek-800: #482040;
+  --dsw-static-deepseek-900: #321b2b;
+  --dsw-static-blue-50: #f3dae6;
+  --dsw-static-blue-75: #e9bccf;
+  --dsw-static-blue-100: #e3a9c5;
+  --dsw-static-blue-300: #d07ba3;
+  --dsw-static-blue-400: #c86894;
+  --dsw-static-blue-450: #c55d8e;
+  --dsw-static-blue-500: #bb4d7d;
+  --dsw-static-blue-600: #89365c;
+  --dsw-static-blue-800: #592341;
+  --dsw-static-blue-900: #3d1c2e;
+  --dsw-static-blue-950: #251120;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+ * 四、立绘与装饰
+ * ══════════════════════════════════════════════════════════════════════════ */
+
+/* 4.1 对话界面背景 · 半透明
+ * 用「全屏固定层 + 水平遮罩」实现：不依赖任何组件类名（组件的 class 带
+ * 构建期 hash，跨版本会变），左侧边栏区域用 mask 淡出，右侧对话区清晰，
+ * 视觉上就是「对话页面的背景大图」。
+ * z-index 高于内容 → 一定看得见；pointer-events:none → 不影响任何点击。
+ * 图：assets/aemath-full.png.jpg 经 process-bg.ps1 处理为 dist/assets/aemath-bg.jpg */
+html body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  /* 层级取值依据（扫描各客户端插件 CSS 得到）：
+     conversation/chat 内容层 1~10，layout/sidebar 11~30，弹层 100~1100。
+     50 位于「最高的内容层」之上、「最低的弹层」之下，既不会被内容盖住，
+     也不会盖住菜单与对话框。 */
+  z-index: 50;
+  pointer-events: none;
+  background-image: var(--aemath-art-full);
+  background-repeat: no-repeat;
+  background-position: center right;
+  background-size: cover;
+  opacity: var(--aemath-art-opacity);
+  transition: opacity 0.6s var(--ds-ease-in-out, ease);
+  /* 左侧（侧边栏）淡出，右侧（对话区）完整显示；上下边缘也柔化 */
+  -webkit-mask-image: linear-gradient(to right, #0000 0%, #000 24%, #000 100%);
+  mask-image: linear-gradient(to right, #0000 0%, #000 24%, #000 100%);
+}
+html body[data-ds-dark-theme]::before {
+  opacity: calc(var(--aemath-art-opacity) * 0.85);
+}
+
+/* 4.2 左下角 Q 版圆形徽章
+ * 固定定位，不依赖组件类名（侧边栏的 class 带构建 hash，跨版本会变）。
+ * z-index 取 999：高于全部内容层（≤30）与侧边栏底部按钮，低于最高弹层
+ * （conversation/chat 的 1100），因此既不会被盖住，也不会挡住对话框。
+ * pointer-events:none → 不挡点击。 */
+html body::after {
+  content: "";
+  position: fixed;
+  left: var(--aemath-chibi-left);
+  bottom: var(--aemath-chibi-bottom);
+  width: var(--aemath-chibi-size);
+  height: var(--aemath-chibi-size);
+  z-index: 999;
+  pointer-events: none;
+  /* 构建期这一行会被内联成 base64 data URI：内嵌图既不会 404，也躲得开
+     浏览器缓存——徽章以前恰好就栽在这两件事上。 */
+  background-image: url("https://raw.githubusercontent.com/yll86/dsh-theme-aemath/main/src/aemath-chibi.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  background-color: #ffffff;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 0 3px #963f8680, 0 6px 18px #963f8640;
+}
+
+/* 4.3 粉色选中拖影与高亮 */
+html body ::selection {
+  background: #963f8640;
+}
+html body[data-ds-dark-theme] ::selection {
+  background: #c96f9e66;
+}
+
+/* 4.4 滚动条微调（浅色整体更粉、深色更紫） */
+html body ::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+}
+html body[data-ds-dark-theme] ::-webkit-scrollbar-thumb {
+  border: 1px solid #0000004d;
+}
+
+/* 4.5 标题里的品牌名也可以染上粉色（聊天气泡/hero 处的品牌文字） */
+html body [class$="_hero"] [class$="_brand"],
+html body [class$="_hero"] svg {
+  filter: drop-shadow(0 0 6px #963f8655);
+}
+

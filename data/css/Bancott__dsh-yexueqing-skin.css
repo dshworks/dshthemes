@@ -1,0 +1,254 @@
+/* Bancott/dsh-yexueqing-skin — client.js
+   fetched 2026-10-18 from https://raw.githubusercontent.com/Bancott/dsh-yexueqing-skin/main/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/* ══ 皮肤画面：结构上保证「所有文字都在所有图片之上」 ════════════════
+
+   绘制顺序（自下而上）
+     body 背景                 不透明底色 + 原图
+     body::after   z-index:-2  晕影
+     body::before  z-index:-1  抠出的背景 + 抠出的人物
+     body 的正常流内容          应用外壳与**全部文字**
+
+   ── 为什么必须是 body，而不是 html ──────────────────────────────────
+   ui-theme 的 Host 半会把一段 head CSS 注入到任何脚本之前，其中有
+   body 的 background-color（深色下是 #151517）—— 也就是 body 有一个
+   不透明的背景色。它的高度是 100%，于是：
+     1. 挂在 html 背景上的画面会被它整片盖住；
+     2. html 的负 z-index 伪元素位于根堆叠上下文的负层，而 body 的背景
+        绘制在其后（正常流块级盒），因此同样被盖住。
+   两者叠起来的结果就是"立绘根本没有显示"（实测过）。
+
+   ── 为什么画面全部放进伪元素，而不是 body 的背景 ────────────────────
+   画面若挂在 body 自己的 background-image 上，就依赖"body 的背景不被
+   任何更高优先级的规则覆盖"。实测里这种依赖不可靠（ui-theme 注入的
+   head CSS 就动过 body 的背景）。所以原图与晕影一起放进 body::after
+   （同一元素的两个背景层），边饰放进 body::before —— 两者都是 body
+   堆叠上下文里的**负层子盒**，按规范必然绘制在 body 背景之上、全部
+   内容之下。body 的背景只留一个不透明底色兜底。 */
+
+html{background-color:var(--yxq-base-solid)}
+body{isolation:isolate;background-color:var(--yxq-base-solid)}
+
+/* 原图（下层）+ 晕影（中）+ 左侧护罩（上，保护文字密集的侧栏） */
+  body::after{
+    content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
+    background-image:linear-gradient(to bottom,var(--yxq-art-veil-core) 0%,transparent 15%),
+      linear-gradient(to top,var(--yxq-art-veil-core) 0%,transparent 19%),
+      linear-gradient(to right,var(--yxq-art-veil-core) 0%,transparent 22%),
+      radial-gradient(120% 95% at 50% 42%,
+        var(--yxq-art-veil-core) 0%, var(--yxq-art-veil-mid) 55%, var(--yxq-art-veil-edge) 100%),
+      var(--yxq-art-image);
+    background-size:100% 100%,100% 100%,100% 100%,100% 100%,cover;
+    background-position:center,center,center,center,var(--yxq-art-position);
+    background-repeat:no-repeat,no-repeat,no-repeat,no-repeat,no-repeat;
+    background-attachment:fixed,fixed,fixed,fixed,fixed}
+
+/* 边饰：原图经**四边带遮罩**只在画面四周显现，中心留白。
+   这就是 v1.0.0 的观感 —— 一整幅画在边缘自然收进去，而不是贴一个人物上去。
+   三条线性渐变按遮罩默认的 add（并集）合成：右侧一整条 + 上下两条 +
+   左侧极窄一抹；右侧加权是因为两张画的人物都在右边。 */
+body::before{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background-image:var(--yxq-art-image);
+  background-repeat:no-repeat;
+  background-size:cover;
+  background-position:var(--yxq-art-position);
+  opacity:var(--yxq-band-opacity);
+  -webkit-mask-image:linear-gradient(to left,#000 0%,rgba(0,0,0,0) 32%),
+    linear-gradient(to bottom,#000 0%,rgba(0,0,0,0) 17%,rgba(0,0,0,0) 83%,#000 100%),
+    linear-gradient(to right,rgba(0,0,0,0.40) 0%,rgba(0,0,0,0) 11%);
+  mask-image:linear-gradient(to left,#000 0%,rgba(0,0,0,0) 32%),
+    linear-gradient(to bottom,#000 0%,rgba(0,0,0,0) 17%,rgba(0,0,0,0) 83%,#000 100%),
+    linear-gradient(to right,rgba(0,0,0,0.40) 0%,rgba(0,0,0,0) 11%)}
+
+/* ── 右侧对话定位横线（turn rail）─────────────────────────────────────
+   DSH 把这排横线的颜色写死在两个 token 上，而且未激活态还额外被
+   scaleX(.6) 缩到 12px，压在同样深的晕影上几乎看不见：
+     .mark:before        { background: border-l4;  scaleX(.6) }
+     .markUnloaded:before{ opacity:.6;             scaleX(.4) }
+     .markActive:before  { background: label-primary; scaleX(1) }
+   border-l4 已在 token 层提亮，这里再补一层更明确的颜色与宽度。
+
+   选择器只用 **结构 + 后缀匹配**，不引用完整的哈希类名：
+   [class*="_marks"] 在全库里唯一命中这排横线的容器
+   （_mark / _marker / _markdownPayload / _marks 之类都不会误伤），
+   button 限定为按钮。哈希前缀随 DSH 版本变化也不影响命中；
+   万一本地类名被改名，这几条规则就静默失效 —— 只影响观感，不会坏界面。
+
+   刻意保留"当前 / 预览 / 历史"三档的宽度差异（1 / .9 / .75），
+   只提亮、加宽一点点，不把它们抹平。 */
+[class*="_marks"] button:before{
+  background:var(--yxq-rail-mark);
+  transform:translateY(-50%) scaleX(.75)}
+[class*="_marks"] button[class*="markUnloaded"]:before{
+  opacity:.85;
+  transform:translateY(-50%) scaleX(.55)}
+[class*="_marks"] button[class*="markPreview"]:before{
+  background:var(--yxq-rail-preview);
+  opacity:1;
+  transform:translateY(-50%) scaleX(.9)}
+[class*="_marks"] button[class*="markActive"]:before{
+  background:var(--yxq-rail-active);
+  transform:translateY(-50%) scaleX(1)}
+
+.yxq-stack{display:flex;flex-direction:column;gap:14px;padding:2px 0 8px}
+.yxq-row{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:32px}
+.yxq-row__text{display:flex;flex-direction:column;gap:3px;min-width:0}
+.yxq-row__title{color:var(--dsw-alias-label-primary);font-size:14px;line-height:20px}
+.yxq-row__hint{color:var(--dsw-alias-label-secondary);font-size:12px;line-height:18px}
+
+.yxq-switch{position:relative;flex:none;box-sizing:border-box;width:40px;height:22px;padding:0;
+  border:.5px solid var(--dsw-alias-border-l2);border-radius:999px;background:var(--dsw-alias-bg-layer-2);
+  cursor:pointer;transition:background-color .18s ease,border-color .18s ease}
+.yxq-switch:hover{border-color:var(--dsw-alias-border-l3)}
+.yxq-switch:focus-visible{outline:2px solid var(--dsw-focus-ring-color,var(--dsw-alias-brand-primary));outline-offset:2px}
+.yxq-switch[aria-checked="true"]{border-color:transparent;
+  background-image:linear-gradient(135deg,var(--yxq-accent),var(--dsw-alias-brand-primary))}
+.yxq-switch__thumb{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;
+  background:var(--dsw-alias-switch-thumb,#fff);box-shadow:0 1px 2px rgba(0,0,0,.20);
+  transition:transform .18s ease}
+.yxq-switch[aria-checked="true"] .yxq-switch__thumb{transform:translateX(18px)}
+
+.yxq-seg{display:inline-flex;padding:2px;gap:2px;border:.5px solid var(--dsw-alias-border-l2);
+  border-radius:var(--dsw-radius-sm,8px);background:var(--dsw-alias-bg-layer-2)}
+.yxq-seg__item{appearance:none;border:0;background:transparent;color:var(--dsw-alias-label-secondary);
+  font:inherit;font-size:13px;line-height:18px;padding:5px 12px;border-radius:6px;cursor:pointer;
+  transition:background-color .16s ease,color .16s ease}
+.yxq-seg__item:hover{color:var(--dsw-alias-label-primary)}
+.yxq-seg__item[aria-pressed="true"]{color:var(--dsw-alias-label-primary);
+  background:var(--dsw-alias-bg-layer-1);box-shadow:0 0 0 .5px var(--dsw-alias-border-l2)}
+.yxq-seg__item:focus-visible{outline:2px solid var(--dsw-focus-ring-color,var(--dsw-alias-brand-primary));outline-offset:1px}
+
+.yxq-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.yxq-card{position:relative;display:flex;flex-direction:column;gap:0;padding:0;overflow:hidden;
+  border:.5px solid var(--dsw-alias-border-l2);border-radius:var(--dsw-radius-md,12px);
+  background:var(--dsw-alias-settings-card-fill,var(--dsw-alias-bg-layer-2));cursor:pointer;text-align:left;
+  font:inherit;transition:border-color .16s ease,box-shadow .16s ease}
+.yxq-card:hover{border-color:var(--dsw-alias-border-l3)}
+.yxq-card:focus-visible{outline:2px solid var(--dsw-focus-ring-color,var(--dsw-alias-brand-primary));outline-offset:2px}
+.yxq-card[aria-pressed="true"]{border-color:var(--yxq-accent);
+  box-shadow:0 0 0 1px var(--yxq-accent),0 0 0 5px var(--yxq-accent-soft)}
+.yxq-card__art{position:relative;aspect-ratio:16/9;overflow:hidden;background:var(--dsw-alias-bg-layer-2)}
+.yxq-card__art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+/* 国风细线：卡片底边一条主题色渐变发丝线 */
+.yxq-card__art::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;
+  background-image:linear-gradient(90deg,transparent,var(--yxq-accent),transparent);
+  opacity:.9;pointer-events:none}
+.yxq-card__body{display:flex;flex-direction:column;gap:3px;padding:10px 12px 12px}
+.yxq-card__name{color:var(--dsw-alias-label-primary);font-size:14px;line-height:20px}
+.yxq-card__desc{color:var(--dsw-alias-label-secondary);font-size:12px;line-height:18px}
+.yxq-card__mark{position:absolute;top:8px;right:8px;width:18px;height:18px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:12px;line-height:1;
+  color:var(--dsw-alias-label-primary);background:var(--yxq-accent-soft);
+  border:.5px solid var(--yxq-accent);opacity:0;transition:opacity .16s ease}
+.yxq-card[aria-pressed="true"] .yxq-card__mark{opacity:1}
+
+.yxq-section{display:flex;flex-direction:column;gap:8px;padding-top:14px;
+  border-top:.5px solid var(--dsw-alias-border-l1)}
+.yxq-section__title{color:var(--dsw-alias-label-primary);font-size:13px;line-height:18px;font-weight:600}
+.yxq-note{color:var(--dsw-alias-label-secondary);font-size:12px;line-height:18px}
+.yxq-ghost{appearance:none;border:.5px solid var(--dsw-alias-border-l2);background:transparent;
+  color:var(--dsw-alias-label-secondary);font:inherit;font-size:13px;padding:5px 12px;
+  border-radius:var(--dsw-radius-sm,8px);cursor:pointer;transition:color .16s ease,border-color .16s ease}
+.yxq-ghost:hover{color:var(--dsw-alias-label-primary);border-color:var(--dsw-alias-border-l3)}
+.yxq-ghost:focus-visible{outline:2px solid var(--dsw-focus-ring-color,var(--dsw-alias-brand-primary));outline-offset:2px}
+.yxq-disabled{opacity:.5;pointer-events:none}
+
+
+
+@font-face{
+  font-style:normal;
+  font-weight:400;
+  font-display:swap;
+}
+
+
+::selection{background:var(--dsw-alias-bg-document-selection);color:var(--dsw-alias-label-primary)}
+*::-webkit-scrollbar-thumb{
+  background-image:linear-gradient(180deg,var(--yxq-accent),var(--dsw-alias-brand-primary));
+  background-clip:padding-box;border-radius:999px}
+*::-webkit-scrollbar-thumb:hover{
+  background-image:linear-gradient(180deg,var(--dsw-alias-brand-primary),var(--yxq-accent))}
+*::-webkit-scrollbar-track{background:transparent}
+
+
+input:focus-visible,textarea:focus-visible,select:focus-visible,
+[contenteditable="true"]:focus-visible,[contenteditable=""]:focus-visible{
+  border-color:var(--yxq-accent) !important;
+  box-shadow:0 0 0 1px var(--yxq-accent),0 0 0 4px var(--yxq-accent-soft) !important;
+  outline:none !important}
+
+
+[data-composer-card],[data-plan-card],[class*="_bubble"],
+pre,code,[data-single][class*="_card"],
+button[class*="_newSession"]{
+  backdrop-filter:blur(12px) saturate(140%);
+  -webkit-backdrop-filter:blur(12px) saturate(140%)}
+
+/* 计划卡的底色是元素本地的 --plan-card-fill / -hover，改这两个连 hover 一起接管 */
+[data-plan-card]{
+  --plan-card-fill:var(--yxq-glass-fill);
+  --plan-card-hover:var(--yxq-glass-fill-hover)}
+
+/* 交付物卡片的头部用本地的 --changes-fill / -hover。头部是卡片的子元素，
+   若也给它一层玻璃填色，就会与卡片那层叠加（0.48 x 0.48 ≈ 0.73 不透明），
+   而且它自己没有 backdrop-filter。所以这里把头部填色置为 transparent，
+   直接透出卡片那层已经模糊好的玻璃；hover 仍给一点染色作为反馈。
+   注意选择器前面加了 html + body 两个标签选择器：DSH 有一条
+   body[data-ds-dark-theme] .kuvljq_card{--changes-fill:…}，
+   优先级 (0,2,1) 会压掉单纯的属性选择器 (0,2,0) —— 实测头部因此仍是不透明的
+   #212123。加上 html + body 两个标签选择器提到 (0,2,2) 才稳。 */
+html body [data-single][class*="_card"]{
+  --changes-fill:transparent;
+  --changes-hover:var(--yxq-glass-fill-hover)}
+
+/* 交付物卡片主体的底来自 --dsw-alias-bg-layer-1（全局 token，动不得），
+   所以只在这一处覆盖成玻璃色 */
+html body [data-single][class*="_card"]{
+  background-color:var(--yxq-glass-fill)}
+
+[data-composer-card]{
+  box-shadow:inset 0 0 0 1px var(--yxq-glass-stroke),
+             var(--dsw-elevation-soft)}
+
+/* 刻意不含 code：行内 code 自己已有 .5px 边框，再叠一圈会变成明显的"框框"，
+   而玻璃效果由填色 + 模糊已经成立。 */
+[data-plan-card],[class*="_bubble"],pre,
+[data-single][class*="_card"],button[class*="_newSession"]{
+  box-shadow:inset 0 0 0 1px var(--yxq-glass-stroke)}
+
+/* 交付物「结果卡片」（ui-deliverables 的 flL80G 一族）。底色是元素本地变量
+   --deliverable-fill / --deliverable-hover，暗色下取 DSH 静态灰
+   （#2c2c2e / #353638），没跟皮肤走。
+
+   这两个变量声明在 .flL80G_root 上、优先级 (0,2,1)，但 root 是 _presented
+   网格的**祖先** —— 继承取最近的祖先声明，所以在网格上重新声明就能盖掉，
+   不需要拼优先级（与 --changes-fill 那次必须提权的情况不同）。
+   cardPreview 只是绝对定位的透明覆盖按钮，不需要处理。 */
+[class*="_presented"]{
+  --deliverable-fill:var(--yxq-glass-fill);
+  --deliverable-hover:var(--yxq-glass-fill-hover)}
+
+[class*="_presented"] [class*="_file"]{
+  backdrop-filter:blur(12px) saturate(140%);
+  -webkit-backdrop-filter:blur(12px) saturate(140%)}
+
+/* 对话条（右侧）悬停时弹出的预览框。它的底是 --dsw-alias-bg-layer-1（全局 token），
+   所以不能用 token 覆盖 —— 会波及所有卡片。
+   全库有 12 个含 _preview 的类，分属 6 个包（交付物卡片、计划卡、文档预览侧栏…），
+   因此必须限定作用域：nav:has(_marks) 在实测中唯一命中对话导航（1 个），
+   而预览框用 --turn-preview-center 定位、不可能走 portal，必在该 nav 内。
+   子元素 previewPrompt / previewResponse 只是文字容器，要排除掉，
+   否则会叠出三层填色。
+   --dsw-elevation-panel 是它原本的投影，必须一起写上，不然会被这行 box-shadow 顶掉。 */
+nav:has([class*="_marks"]) [class*="_preview"]:not([class*="previewPrompt"]):not([class*="previewResponse"]){
+  background-color:var(--yxq-glass-fill);
+  backdrop-filter:blur(12px) saturate(140%);
+  -webkit-backdrop-filter:blur(12px) saturate(140%);
+  box-shadow:inset 0 0 0 1px var(--yxq-glass-stroke),var(--dsw-elevation-panel)}
+
+/* 「新对话」按钮 hover 时原本取 --dsw-alias-button-floating-hover
+   （中性灰、不透明），一悬停玻璃感就没了。改成玻璃色；
+   模糊由上面的规则继续提供，不受影响。 */
+button[class*="_newSession"]:hover{
+  background-color:var(--yxq-glass-fill-hover)}

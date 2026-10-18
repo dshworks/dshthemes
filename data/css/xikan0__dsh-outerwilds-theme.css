@@ -1,0 +1,617 @@
+/* xikan0/dsh-outerwilds-theme — src/styles.css
+   fetched 2026-10-18 from https://raw.githubusercontent.com/xikan0/dsh-outerwilds-theme/main/src/styles.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* Every rule is scoped to a plugin-owned node or attribute. */
+/* Jost supplies Latin letters and numbers; missing CJK glyphs fall through to
+   the official Simplified Chinese Source Han Sans face. Keep native sizes,
+   weights and line heights, including those set by font shorthands. */
+body[data-dsh-campfire] {
+  --cf-font-family: 'DSH Outer Wilds Jost', 'DSH Outer Wilds Source Han Sans CN', sans-serif;
+  --dsw-font-family: var(--cf-font-family) !important;
+  --dsw-font-family-brand: var(--cf-font-family) !important;
+  --ds-font-family-code: var(--cf-font-family) !important;
+  font-family: var(--cf-font-family) !important;
+}
+body[data-dsh-campfire] :where(*):not(:where(svg, svg *, math, math *, .katex, .katex *, .xterm, .xterm *)) {
+  font-family: var(--cf-font-family) !important;
+}
+.cf-stage { position: fixed; z-index: 0; overflow: hidden; pointer-events: none !important; background: #000; contain: layout paint; }
+.cf-composition { position: absolute; inset: 0; filter: brightness(var(--cf-brightness, 1)); }
+.cf-sky { position: absolute; inset: 0; width: 100%; height: 100%; }
+.cf-camp-layer { position: absolute; inset: 0; }
+.cf-art { position: absolute; right: 0; bottom: 0; width: var(--cf-art-width); height: var(--cf-art-height); mask-image: linear-gradient(to right, transparent 49%, #000 61%), linear-gradient(to bottom, transparent 34%, #000 48%); mask-composite: intersect; }
+/* Both clients preserve the accepted sky in full as a fixed background. */
+.cf-stage[data-sky='refined'] .cf-art { mask-image: none; background-size: 100% 100%; background-repeat: no-repeat; }
+.cf-stage[data-sky='refined'] .cf-sky { background-size: 100% 100%; background-repeat: no-repeat; }
+.cf-art-image { display: block; width: 100%; height: 100%; max-width: none; user-select: none; }
+.cf-firelight { position: absolute; left: var(--cf-fire-x); top: var(--cf-fire-y); width: var(--cf-glow-size); height: var(--cf-glow-size); transform: translate(-50%, -65%); background: radial-gradient(ellipse, #ffc25344, #ff991918 35%, transparent 70%); mix-blend-mode: screen; opacity: 0; }
+.cf-living-camp { display: none; position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.cf-stage:not([data-motion='still']) .cf-living-camp { display: block; }
+.cf-flame-dance { transform-box: view-box; transform-origin: 1308px 715px; animation: cf-flame 2.7s ease-in-out infinite; }
+.cf-smoke-sway { transform-box: view-box; transform-origin: 1303px 695px; animation: cf-smoke 14s ease-in-out infinite alternate; }
+.cf-smoke-wisp { transform-box: view-box; transform-origin: 1295px 682px; opacity: 0; animation: cf-wisp 16s linear infinite; }
+.cf-wisp-two { animation-delay: -8s; }
+.cf-spark { opacity: 0; animation: cf-spark 8s linear infinite; }
+.cf-spark-two { animation-delay: -4.7s; animation-duration: 11s; }
+.cf-spark-three { display: none; animation-delay: -2.3s; }
+.cf-stage[data-motion='rich'] .cf-flame-dance { animation-duration: 1.7s; }
+.cf-stage[data-motion='rich'] .cf-smoke-sway { animation-duration: 9s; }
+.cf-stage[data-motion='rich'] .cf-spark-three { display: block; }
+.cf-stage[data-phase='active'] .cf-sparks, .cf-stage[data-phase='active'] .cf-smoke-wisp { visibility: hidden; }
+.cf-stage[data-phase='active'] .cf-camp-layer { opacity: .88; }
+.cf-stage[data-phase='active'] .cf-sky { opacity: .55; }
+/* The accepted Web sky is already subdued; the conversation shade below is
+   sufficient without an additional opacity reduction on the scene. */
+.cf-stage[data-sky='refined'][data-phase='active'] :is(.cf-camp-layer, .cf-sky) { opacity: 1; }
+.cf-stage[data-minimal='true'] .cf-camp-layer { display: none; }
+.cf-stage[data-motion='gentle'] .cf-firelight, .cf-stage[data-motion='rich'] .cf-firelight { animation: cf-glow 4s ease-in-out infinite alternate; }
+.cf-stage[data-paused='true'] * { animation-play-state: paused !important; }
+@keyframes cf-glow { from { opacity: .12; } to { opacity: .65; } }
+@keyframes cf-flame { 0%,100% { transform: scale(1,.98) skewX(0deg); } 19% { transform: scale(.97,1.06) skewX(-2deg); } 37% { transform: scale(1.03,.94) skewX(1.5deg); } 61% { transform: scale(.98,1.03) skewX(-1deg); } 83% { transform: scale(1.02,.97) skewX(1deg); } }
+@keyframes cf-smoke { from { transform: skewX(-.6deg) scaleY(.99); opacity: .88; } to { transform: skewX(.9deg) scaleY(1.02); opacity: .98; } }
+@keyframes cf-wisp { 0%,12% { transform: translate(0,0) scale(.7); opacity: 0; } 28% { opacity: .38; } 70% { opacity: .2; } 100% { transform: translate(-154px,-209px) scale(1.9); opacity: 0; } }
+@keyframes cf-spark { 0%,61%,100% { transform: translate(0,0); opacity: 0; } 65% { opacity: .7; } 85% { transform: translate(-10px,-37px); opacity: .35; } 98% { transform: translate(-19px,-62px); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .cf-stage * { animation: none !important; } .cf-stage .cf-living-camp { display: none !important; } }
+
+/* 0.2.0-rc.2 host adapter: exact owned markers, no hashed classes. */
+body[data-dsh-campfire] #root { position: relative; z-index: 1; }
+body[data-dsh-campfire] [data-cf-frame], body[data-dsh-campfire] [data-cf-conversation] { background: transparent !important; }
+body[data-dsh-campfire] [data-cf-conversation][data-phase='active'] { background: linear-gradient(90deg, #0002 0%, #0001 62%, #0000 100%) !important; }
+/* The host fades the composer seat to a solid base after 36px. Retain only
+   a light reading shade over the sky, independently of the input card fill. */
+body[data-dsh-campfire] [data-cf-conversation][data-phase='active'] [data-composer-seat] {
+  background: linear-gradient(180deg, rgba(44, 41, 39, 0) 0px, rgba(44, 41, 39, .08) 36px, rgba(44, 41, 39, .16) 100%) !important;
+}
+body[data-dsh-campfire] { --dsw-focus-ring-color: #e8a15b; --dsw-radius-panel: 20px; }
+/* Trajectory and Context keep their own reading surfaces over the shared sky.
+   Match the official conversation slot and Context's named roots, not hashes. */
+body[data-dsh-campfire] :is([data-slot='conversation.view']:has(> [data-conversation-composer-overlay]), [data-slot='conversation.view']:has(.lc-root), [data-slot='main'] .lc-ov-page) {
+  --dsw-alias-bg-base: #343130;
+  --dsw-alias-bg-layer-1: #343130eb;
+  --dsw-alias-bg-layer-2: #403c3af0;
+  --dsw-alias-bg-layer-3: #45413ff5;
+  --dsw-alias-bg-layer-4: #4d4946;
+  --dsw-alias-bg-overlay: #45413f;
+  --dsw-alias-bg-module-platform: #403c3a;
+  --dsw-alias-label-primary: #eee8d9;
+  --dsw-alias-label-primary-bluish: #e2dacd;
+  --dsw-alias-label-primary-dimmed: #d9cbb9;
+  --dsw-alias-label-dimmed: #a69e93;
+  --dsw-alias-label-secondary: #bcb3a7;
+  --dsw-alias-label-tertiary: #a69e93;
+  --dsw-alias-label-caption: #bcb3a7;
+  --dsw-alias-border-l1: #a9a4a01a;
+  --dsw-alias-border-l2: #a9a4a02e;
+  --dsw-alias-border-l3: #a9a4a03d;
+  --dsw-alias-border-l4: #a9a4a052;
+  --dsw-alias-interactive-bg-hover: #403c3ae8;
+  --dsw-alias-interactive-bg-active: #45413ff0;
+  --dsw-specific-sidebar-fill: #343130;
+}
+body[data-dsh-campfire] [data-slot='conversation.view'] > [data-conversation-composer-overlay],
+body[data-dsh-campfire] [data-slot='conversation.view'] > [data-conversation-composer-overlay] :is([class*='_split'], table),
+body[data-dsh-campfire] [data-slot='conversation.view'] .lc-root {
+  background: transparent !important;
+}
+/* Sticky controls stay solid so scrolling records do not show through them. */
+body[data-dsh-campfire] [data-slot='conversation.view'] > [data-conversation-composer-overlay] > div:first-child {
+  background: #343130 !important;
+}
+/* A light reading shade preserves the stars without leaving table text bare. */
+body[data-dsh-campfire] [data-slot='conversation.view'] > [data-conversation-composer-overlay] [class*='_tablePane'] {
+  background: #16141380;
+}
+/* DSH keeps a shared composer as an overlay on Trajectory. Hide only its normal
+   input surface; pending approvals, questions and plan reviews must stay usable. */
+body[data-dsh-campfire] [data-conversation-scroll]:has([data-slot='conversation.view'] > [data-conversation-composer-overlay]) > [data-composer-seat]:not(:has([data-approval-key], [data-question-key], [data-plan-review-key])) {
+  display: none;
+}
+/* Reclaim the overlay clearance only while there is no pending interaction. */
+body[data-dsh-campfire] [data-conversation-scroll]:has([data-slot='conversation.view'] > [data-conversation-composer-overlay]):not(:has(> [data-composer-seat] :is([data-approval-key], [data-question-key], [data-plan-review-key]))) [data-slot='conversation.view'] > [data-conversation-composer-overlay] > [class*='_ledger'] {
+  --dsh-trajectory-bottom-clearance: 16px;
+}
+/* Context Insights is a separate main panel, outside the conversation scene.
+   Reuse the accepted bitmap as one static underlay, with no extra scene nodes. */
+body[data-dsh-campfire] [data-slot='main'] .lc-ov-page {
+  position: relative;
+  isolation: isolate;
+  background: transparent !important;
+}
+body[data-dsh-campfire] [data-slot='main'] .lc-ov-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-color: #000;
+  background-image: linear-gradient(90deg, #0002, #0001 62%, #0000), var(--cf-view-art);
+  background-position: center, right bottom;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+/* Keep the host mark and action SVGs intact so disabling the theme restores them. */
+body[data-dsh-campfire] [data-slot='conversation.hero.brand.mark'] {
+  /* The host outlet anchor has inline display:contents. Give only this mark a box. */
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 56px;
+  height: 44px;
+  color: #e8a15b;
+  font-size: 0;
+}
+body[data-dsh-campfire] [data-slot='conversation.hero.brand.mark'] svg { display: none; }
+body[data-dsh-campfire] [data-slot='conversation.hero.brand.mark']::before {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: currentColor;
+  -webkit-mask: var(--cf-eye-icon) center / contain no-repeat;
+  mask: var(--cf-eye-icon) center / contain no-repeat;
+  pointer-events: none;
+}
+@media (max-width: 480px) {
+  body[data-dsh-campfire] [data-slot='conversation.hero.brand.mark'] { width: 44px; height: 35px; }
+}
+/* The composer keeps the user's opacity and the host's editor/attachment layout. */
+body[data-dsh-campfire] [data-composer-card] {
+  --dsw-radius-panel: 12px;
+  --dsw-elevation-stroke-color: transparent;
+  border: 1px solid #e8a15b30;
+  border-radius: 12px;
+  background: var(--dsw-specific-input-major) !important;
+  box-shadow: 0 4px 16px #0002;
+}
+body[data-dsh-campfire] [data-composer-card]:focus-within {
+  border-color: #e8a15b70;
+  box-shadow: 0 4px 16px #0002, 0 0 0 1px #e8a15b0d;
+}
+/* The last direct child is the host toolbar; never match attachment or approval cards. */
+body[data-dsh-campfire] [data-composer-card] > div:last-child:has(button[aria-label]) {
+  align-items: center;
+  column-gap: 10px;
+  row-gap: 8px;
+  padding: 2px 12px 8px;
+}
+body[data-dsh-campfire] [data-composer-card] > div:last-child:has(button[aria-label]) > div {
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+body[data-dsh-campfire] [data-composer-card] [data-composer-input] {
+  padding-inline-start: 16px;
+}
+body[data-dsh-campfire] [data-composer-card] [data-composer-placeholder] {
+  inset-inline-start: 16px;
+}
+body[data-dsh-campfire] [data-composer-card] :is([data-slot='conversation.input.permission'], [data-slot='conversation.input.model']) button {
+  min-height: 28px;
+  display: inline-flex;
+  align-items: center;
+}
+@media (max-width: 480px) {
+  body[data-dsh-campfire] [data-composer-card] > div:last-child:has(button[aria-label]) { column-gap: 8px; padding-inline: 10px; }
+  body[data-dsh-campfire] [data-composer-card] > div:last-child:has(button[aria-label]) > div { gap: 8px; }
+}
+/* Keep the native send hitbox; only the planet glyph carries the theme colour. */
+body[data-dsh-campfire] [data-composer-card] :is(button[aria-label='发送消息'], button[aria-label='排队发送'], button[aria-label='插话发送'], button[aria-label='Send message'], button[aria-label='Queue message'], button[aria-label='Steer message']) {
+  position: relative;
+  color: #e8a15b !important;
+  /* Empty input still disables sending, but the planet stays equally bright. */
+  opacity: 1 !important;
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  transform: none;
+}
+body[data-dsh-campfire] [data-composer-card] :is(button[aria-label='发送消息'], button[aria-label='排队发送'], button[aria-label='插话发送'], button[aria-label='Send message'], button[aria-label='Queue message'], button[aria-label='Steer message']):is(:hover, :focus-visible):not(:disabled) {
+  color: #ffd0a0 !important;
+}
+body[data-dsh-campfire] [data-composer-card] :is(button[aria-label='发送消息'], button[aria-label='排队发送'], button[aria-label='插话发送'], button[aria-label='Send message'], button[aria-label='Queue message'], button[aria-label='Steer message']) > svg {
+  visibility: hidden;
+}
+body[data-dsh-campfire] [data-composer-card] :is(button[aria-label='发送消息'], button[aria-label='排队发送'], button[aria-label='插话发送'], button[aria-label='Send message'], button[aria-label='Queue message'], button[aria-label='Steer message'])::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: calc(50% - 2px);
+  width: 32px;
+  height: 32px;
+  transform: translate(-50%, -50%);
+  background-color: currentColor;
+  -webkit-mask: var(--cf-giants-deep-icon) center / contain no-repeat;
+  mask: var(--cf-giants-deep-icon) center / contain no-repeat;
+  pointer-events: none;
+}
+body[data-dsh-campfire] :is([data-slot='conversation.input.permission'], [data-slot='conversation.input.model']) button,
+body[data-dsh-campfire] [data-slot='settings.launcher'] button[aria-label='设置'] { color: #e0ba88; }
+body[data-dsh-campfire] :is([data-slot='conversation.input.permission'], [data-slot='conversation.input.model']) button:hover:not(:disabled),
+body[data-dsh-campfire] [data-slot='settings.launcher'] button[aria-label='设置']:hover { color: #f3d3a4; }
+body[data-dsh-campfire] [data-variant='think'] { --dsw-alias-label-tertiary: #b7a184; --dsw-alias-label-secondary: #d1b893; --dsw-alias-label-caption: #baa58b; }
+/* Warm metadata colours also reach icons through the host's currentColor.
+   Slot/data markers keep these accents separate from message/code content. */
+body[data-dsh-campfire] [data-slot='conversation.session.header.actions'] {
+  --dsw-alias-label-tertiary: #d9bb98;
+  --dsw-alias-label-secondary: #e2c8a6;
+  --dsw-alias-label-caption: #c5b7a5;
+}
+body[data-dsh-campfire] [data-team-action] > button:is(:hover, :focus-visible, [aria-expanded='true']) {
+  color: #e8a15b;
+}
+/* User messages and fenced code keep independent translucent reading surfaces.
+   The host paints code on both the outer block and <pre>; clear the outer
+   fills so their alpha values do not stack and make the result nearly solid. */
+body[data-dsh-campfire] [data-cf-conversation] {
+  --dsw-specific-bubble: rgba(52, 49, 48, .55);
+}
+body[data-dsh-campfire] [data-cf-conversation] :has(> [data-code-block-content]) {
+  --dsl-code-block-background: rgba(52, 49, 48, .25);
+  --dsl-code-block-banner-background-color: rgba(69, 65, 63, .35);
+  background: transparent !important;
+}
+body[data-dsh-campfire] [data-cf-conversation] :has(> [data-code-block-content]) > :has(> [data-code-block-banner]) {
+  background: transparent !important;
+}
+body[data-dsh-campfire] [data-cf-conversation] :has(> [data-code-block-content]) [data-code-block-banner] {
+  background: var(--dsl-code-block-banner-background-color) !important;
+}
+body[data-dsh-campfire] [data-cf-conversation] [data-code-block-content] pre {
+  background: var(--dsl-code-block-background) !important;
+  font-size: calc(var(--dsw-font-markdown-code-block-font-size, 11px) + 2px);
+  line-height: calc(var(--dsw-font-markdown-code-block-line-height, 19px) + 2px);
+}
+body[data-dsh-campfire] [data-code-block-banner] {
+  --dsw-alias-label-tertiary: #d9bb98;
+  --dsw-alias-label-secondary: #bcb3a7;
+  color: #d9bb98;
+}
+body[data-dsh-campfire] [data-code-block-banner] button:is(:hover, :focus-visible):not(:disabled) {
+  color: #e8a15b;
+}
+body[data-dsh-campfire] [data-turn-tail] {
+  --dsw-alias-label-tertiary: #bcb3a7;
+  --dsw-alias-label-secondary: #d9cbb9;
+}
+body[data-dsh-campfire] [data-turn-tail] button:is(:hover, :focus-visible):not(:disabled):not([data-unavailable]),
+body[data-dsh-campfire] [data-turn-tail] button:is([data-active], [aria-pressed='true']):not(:disabled):not([data-unavailable]) {
+  color: #e8a15b;
+}
+body[data-dsh-campfire] [data-turn-tail] button:is(:disabled, [data-unavailable]) {
+  color: #958c7e;
+}
+body[data-dsh-campfire] [data-composer-stats] {
+  --dsw-alias-label-tertiary: #bcb3a7;
+  --dsw-alias-label-secondary: #d9cbb9;
+  --dsw-alias-separator-primary: #958c7e;
+  color: #bcb3a7;
+}
+body[data-dsh-campfire] [data-composer-stats] button:is(:hover, :focus-visible, [aria-expanded='true']):not(:disabled) {
+  color: #e8a15b;
+}
+body[data-dsh-campfire] :is([data-turn-usage-details], [data-session-stats-details], [data-session-stats-usage]) {
+  --dsw-alias-label-tertiary: #a69e93;
+  --dsw-alias-label-secondary: #d9cbb9;
+}
+/* Web and Desktop dialogs share the accepted warm-grey surfaces. The official
+   dialog role also covers model editors and shortcut dialogs outside settings. */
+body[data-dsh-campfire] :is([role='dialog'], [data-dsh-surface='settings']) {
+  --dsw-alias-bg-base: #343130;
+  --dsw-alias-bg-layer-1: #3d3937;
+  --dsw-alias-bg-layer-2: #403c3a;
+  --dsw-alias-bg-layer-3: #45413f;
+  --dsw-alias-bg-layer-4: #4d4946;
+  --dsw-alias-bg-overlay: #45413f;
+  --dsw-alias-bg-module-platform: #403c3a;
+  --dsw-alias-label-primary: #eee8d9;
+  --dsw-alias-label-primary-bluish: #e2dacd;
+  --dsw-alias-label-primary-dimmed: #d9cbb9;
+  --dsw-alias-label-dimmed: #a69e93;
+  --dsw-alias-label-secondary: #bcb3a7;
+  --dsw-alias-label-tertiary: #a69e93;
+  --dsw-alias-label-caption: #bcb3a7;
+  --dsw-alias-border-l1: #a9a4a01a;
+  --dsw-alias-border-l2: #a9a4a02e;
+  --dsw-alias-border-l3: #a9a4a03d;
+  --dsw-alias-border-l4: #a9a4a052;
+  --dsw-specific-sidebar-nav-item-active: #45413f;
+  --dsw-specific-sidebar-nav-item-hover: #403c3a;
+  /* Rebind derived aliases here: body already resolved them against its palette. */
+  --dsw-alias-settings-card-fill: var(--dsw-alias-bg-layer-2);
+  --dsw-alias-settings-card-stroke: var(--dsw-alias-border-l4);
+  background-color: #343130 !important;
+}
+/* Settings list cards share the button base colour; hover/selected use the lighter tone. */
+body[data-dsh-campfire] :is([data-shortcut-modal='settings'], [data-dsh-surface='settings'], [role='dialog']:has([data-slot='settings.section'])) :is(li[data-plugin-entry], li[data-agent-preset-id], li[class*='_rowCard']) {
+  background-color: var(--dsw-alias-settings-card-fill);
+}
+body[data-dsh-campfire] :is([data-shortcut-modal='settings'], [data-dsh-surface='settings'], [role='dialog']:has([data-slot='settings.section'])) :is(li[data-plugin-entry], li[data-agent-preset-id], li[class*='_rowCard']):hover,
+body[data-dsh-campfire] :is([data-shortcut-modal='settings'], [data-dsh-surface='settings'], [role='dialog']:has([data-slot='settings.section'])) :is(li[data-plugin-entry], li[data-agent-preset-id], li[class*='_rowCard']):is([aria-selected='true'], [aria-current='true'], [data-active='true']) {
+  background-color: #45413f;
+}
+/* DSH and installed settings sections share these outlined/secondary actions. */
+body[data-dsh-campfire] :is([data-shortcut-modal='settings'], [data-dsh-surface='settings'], [role='dialog']:has([data-slot='settings.section'])) :is(button[class*='_outline_'], button[class*='_secondaryButton'], button[class*='_addButton'], button[class*='_creatorButton']) {
+  background-color: #403c3a;
+}
+/* Tabs expose a stable role and selected state even when CSS-module names change. */
+body[data-dsh-campfire] :is([data-shortcut-modal='settings'], [data-dsh-surface='settings'], [role='dialog']:has([data-slot='settings.section'])) button[role='tab'][aria-selected='true'] {
+  background-color: #45413f !important;
+  color: #e8a15b !important;
+  border-color: #e8a15b !important;
+}
+/* Built-in plugin views use underline tabs, unlike the host's segmented tabs.
+   The sibling outlet identifies this tablist without CSS hashes or translations. */
+body[data-dsh-campfire] [data-slot='settings.section'] [role='tablist']:has(~ [role='tabpanel'] [data-slot='settings.plugins.tab']) {
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #ed94542b;
+}
+body[data-dsh-campfire] [data-slot='settings.section'] [role='tablist']:has(~ [role='tabpanel'] [data-slot='settings.plugins.tab']) > button[role='tab'] {
+  box-sizing: border-box;
+  min-height: 38px;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: #bcb3a7;
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+body[data-dsh-campfire] [data-slot='settings.section'] [role='tablist']:has(~ [role='tabpanel'] [data-slot='settings.plugins.tab']) > button[role='tab']:hover {
+  background-color: #403c3a;
+  color: #f6d9bf;
+}
+body[data-dsh-campfire] [data-slot='settings.section'] [role='tablist']:has(~ [role='tabpanel'] [data-slot='settings.plugins.tab']) > button[role='tab'][aria-selected='true'] {
+  background-color: #45413f !important;
+  color: #f6d9bf !important;
+}
+body[data-dsh-campfire] [data-slot='settings.section'] [role='tablist']:has(~ [role='tabpanel'] [data-slot='settings.plugins.tab']) > button[role='tab']::after {
+  content: none;
+}
+body[data-dsh-campfire] [data-slot='settings.section'] [role='tablist']:has(~ [role='tabpanel'] [data-slot='settings.plugins.tab']) > button[role='tab'][aria-selected='true']::after {
+  content: '';
+  position: absolute;
+  inset: auto 16px 0;
+  height: 2px;
+  border-radius: 2px;
+  background-color: #ed9454;
+}
+body[data-dsh-campfire] [data-slot='settings.section'] [role='tablist']:has(~ [role='tabpanel'] [data-slot='settings.plugins.tab']) > button[role='tab']:focus-visible {
+  outline: 2px solid #f6d9bf;
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  body[data-dsh-campfire] [data-slot='settings.section'] [role='tablist']:has(~ [role='tabpanel'] [data-slot='settings.plugins.tab']) > button[role='tab'] { transition: none; }
+}
+body[data-dsh-campfire] :is([data-shortcut-modal='settings'], [data-dsh-surface='settings'], [role='dialog']:has([data-slot='settings.section'])) nav button[aria-current='true'] {
+  background-color: #45413f !important;
+  color: #f6d9bf;
+}
+body[data-dsh-campfire][data-cf-density='compact'] [data-cf-conversation] { --cf-content-gap: 12px; }
+body[data-dsh-campfire][data-cf-density='compact'] [data-slot='main.conversation'] [data-slot] { --dsw-radius-xl: 14px; }
+body[data-dsh-campfire][data-cf-density='compact'] [data-slot='main.conversation'] p { margin-block: .55em; }
+body[data-dsh-campfire][data-cf-density='compact'] [data-slot='main.conversation'] li { margin-block: .15em; }
+body[data-dsh-campfire][data-cf-density='compact'] [data-slot='main.conversation'] pre { margin-block: .75em; }
+body[data-dsh-campfire][data-cf-density='compact'] [data-conversation-content] { row-gap: 12px; }
+
+/* Windows Desktop 0.2.0-rc.2 center-column adapter. */
+body[data-dsh-campfire][data-cf-desktop] [data-cf-center-column]:has([data-cf-conversation]) { background: transparent !important; }
+/* MenuSurface paints its own material child; keep its parent transparent. */
+body[data-dsh-campfire] :is([role='menu'], [role='group'])[data-menu-material] { background-color: transparent !important; }
+body[data-dsh-campfire] :is([role='menu'], [role='listbox']):not([data-menu-material]) { background-color: var(--dsw-menu-surface-fill) !important; }
+body[data-dsh-campfire] :is([role='menu'], [role='listbox'], [role='group'][data-menu-material]) {
+  --dsw-alias-bg-base: #343130;
+  --dsw-alias-bg-layer-1: #3d3937;
+  --dsw-alias-bg-layer-2: #403c3a;
+  --dsw-alias-bg-layer-3: #45413f;
+  --dsw-alias-label-secondary: #bcb3a7;
+  --dsw-alias-label-tertiary: #a69e93;
+  --dsw-alias-label-primary-dimmed: #d9cbb9;
+  --dsw-alias-label-dimmed: #a69e93;
+  --dsw-alias-border-l1: #a9a4a01a;
+  --dsw-alias-border-l2: #a9a4a02e;
+  --dsw-alias-border-l3: #a9a4a03d;
+  --dsw-alias-border-l4: #a9a4a052;
+}
+/* HoverCard sets this variable locally. Its official inline preview timing
+   property identifies the actual portal node without matching a hashed class. */
+body[data-dsh-campfire] [style*='--dsh-hover-preview-fade'] { --dsw-hovercard-bg: #343130; }
+/* These public controls consume static brand/white colors instead of aliases.
+   Match their semantic roles and the host toast timing marker, keeping status
+   icons and third-party alerts outside this narrow action-text override. */
+body[data-dsh-campfire] [role='tooltip'] { color: var(--dsw-alias-label-primary); }
+body[data-dsh-campfire] [role='alert'][style*='--dsh-toast-hold'] button { color: var(--dsw-alias-brand-primary); }
+body[data-dsh-campfire] :is(select, option, optgroup) {
+  color-scheme: dark;
+  background-color: #403c3a;
+  color: var(--dsw-alias-label-primary);
+}
+
+/* Outer Wilds-inspired navigation. Official slots and accessibility states keep
+   this independent of CSS-module hashes and third-party skin annotations.
+   The host still owns row heights, truncation, scrolling and the collapsed rail. */
+body[data-dsh-campfire] [data-slot='sidebar'] > div {
+  --cf-nav-orange: #e8a15b;
+  --cf-nav-cream: #f6d9bf;
+  --cf-nav-muted: #bcb3a7;
+  --cf-nav-line: #e8a15b1a;
+  --cf-nav-hover: #34302d;
+  --cf-nav-active: #e8a15b14;
+  --dsw-alias-label-primary: #d9cbb9;
+  --dsw-alias-label-secondary: var(--cf-nav-muted);
+  --dsw-alias-label-tertiary: #958d82;
+  --dsw-alias-label-caption: var(--cf-nav-muted);
+  --dsw-alias-interactive-bg-hover: var(--cf-nav-hover);
+  --dsw-alias-interactive-bg-active: var(--cf-nav-active);
+  --dsw-focus-ring-color: var(--cf-nav-cream);
+  --dsw-radius-md: 4px;
+  --dsw-radius-sm: 3px;
+  --dsh-scrollbar-thumb: #ed94542b;
+  --dsh-scrollbar-thumb-hover: #ed945461;
+  background-color: #2c2927 !important;
+  color: var(--dsw-alias-label-primary);
+  font-family: var(--cf-font-family);
+  border-inline-end: 1px solid #e8a15b1a;
+}
+body[data-dsh-campfire] [data-slot='sidebar'] :is(button, input) { font-family: inherit; }
+body[data-dsh-campfire] [data-slot='sidebar.brand.mark'] { color: var(--cf-nav-cream); }
+/* Direct child excludes the brand button, which also starts a new session. */
+body[data-dsh-campfire] [data-slot='sidebar'] > div > button {
+  color: var(--cf-nav-orange);
+  background: transparent;
+  border: 1px solid #e8a15b66;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: .03em;
+  box-shadow: none;
+}
+body[data-dsh-campfire] [data-slot='sidebar'] > div > button:is(:hover, :focus-visible) {
+  color: var(--cf-nav-cream);
+  background: var(--cf-nav-hover);
+  border-color: var(--cf-nav-cream);
+}
+body[data-dsh-campfire] [data-slot='sidebar'] > div > nav {
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--cf-nav-line);
+}
+body[data-dsh-campfire] [data-slot='sidebar'] > div > nav button {
+  position: relative;
+  color: var(--cf-nav-muted);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .015em;
+  border-radius: 6px;
+}
+body[data-dsh-campfire] [data-slot='sidebar'] > div > nav button > span:first-child {
+  color: var(--cf-nav-orange);
+  width: 22px;
+  flex: none;
+  justify-content: center;
+}
+body[data-dsh-campfire] [data-slot='sidebar'] > div > nav button:is(:hover, :focus-visible, [aria-current='page']) {
+  color: var(--cf-nav-cream);
+  background: var(--cf-nav-hover);
+}
+body[data-dsh-campfire] [data-slot='sidebar'] > div > nav button[aria-current='page'] {
+  background-color: var(--cf-nav-active) !important;
+  box-shadow: inset 2px 0 var(--cf-nav-orange);
+}
+/* A small menu chevron appears only in wide navigation; never covers rail icons. */
+body[data-dsh-campfire] [data-slot='sidebar'] > div > nav button:has(> span + span) { gap: 10px; padding-inline: 10px 24px; }
+body[data-dsh-campfire] [data-slot='sidebar'] > div > nav button:has(> span + span)::after {
+  content: '';
+  position: absolute;
+  inset-inline-end: 9px;
+  top: calc(50% - 4px);
+  width: 8px;
+  height: 8px;
+  background: currentColor;
+  clip-path: polygon(0 0, 55% 0, 100% 50%, 55% 100%, 0 100%, 45% 50%);
+  opacity: 0;
+  pointer-events: none;
+}
+body[data-dsh-campfire] [data-slot='sidebar'] > div > nav button:is(:hover, :focus-visible, [aria-current='page'])::after { opacity: 1; }
+body[data-dsh-campfire] [data-slot='sidebar.workspaces'] > div > div:first-child > span {
+  color: var(--cf-nav-cream);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .04em;
+}
+body[data-dsh-campfire] [data-slot='sidebar.workspaces'] > div > div:first-child {
+  margin-bottom: 6px;
+}
+body[data-dsh-campfire] [data-slot='sidebar'] [role='treeitem'] {
+  border-radius: 6px;
+  letter-spacing: .005em;
+  font-weight: 400;
+}
+body[data-dsh-campfire] [data-slot='sidebar'] [role='treeitem'][aria-expanded] { color: #eee8d9; font-weight: 600; }
+body[data-dsh-campfire] [data-slot='sidebar'] [role='treeitem']:hover { background-color: var(--cf-nav-hover); }
+body[data-dsh-campfire] [data-slot='sidebar'] [role='treeitem'][aria-selected='true'] {
+  color: var(--cf-nav-cream);
+  background-color: var(--cf-nav-active) !important;
+  box-shadow: inset 2px 0 var(--cf-nav-orange);
+}
+body[data-dsh-campfire] [data-slot='sidebar'] > div > div:has(> div > [data-slot='sidebar.settings']) {
+  padding-top: 8px;
+  border-top: 1px solid var(--cf-nav-line);
+}
+body[data-dsh-campfire] [data-slot='sidebar'] [data-slot='settings.launcher'] button {
+  color: var(--cf-nav-orange);
+  font-weight: 600;
+  letter-spacing: .04em;
+  border-radius: 3px;
+}
+body[data-dsh-campfire] [data-slot='sidebar'] [data-slot='settings.launcher'] button:is(:hover, :focus-visible) {
+  color: var(--cf-nav-cream);
+  background-color: var(--cf-nav-hover);
+}
+body[data-dsh-campfire] [data-slot='sidebar'] :is(button, input, [role='tree']):focus-visible {
+  outline: 1px solid var(--cf-nav-cream);
+  outline-offset: -2px;
+}
+/* Rail geometry, including Desktop caption buttons, stays under host control. */
+body[data-dsh-campfire] [data-sidebar-collapsed='true'] [data-slot='sidebar'] > div > button { border-color: transparent; letter-spacing: 0; }
+
+/* Keep the original settings surface and spacing. Game-inspired details are
+   limited to controls inside this plugin's settings section. */
+.cf-settings {
+  --dsw-alias-interactive-bg-hover: #403c3a;
+  --dsw-alias-interactive-bg-active: #45413f;
+  --cf-setting-orange: #ee9050;
+  --cf-setting-cream: #f6d7bc;
+  --cf-setting-ink: var(--cf-setting-orange);
+  --cf-setting-base: var(--dsw-alias-bg-base, #343130);
+  --cf-setting-track: #57514c;
+  container: cf-settings / inline-size;
+  color: var(--dsw-alias-label-primary);
+  font-family: 'DSH Outer Wilds Jost', 'DSH Outer Wilds Source Han Sans CN', sans-serif;
+}
+.cf-settings h2 { margin: 0 0 6px; font-size: 22px; font-weight: 600; letter-spacing: .02em; }
+.cf-settings p { color: var(--dsw-alias-label-secondary); font-size: 13px; line-height: 1.7; margin: 0 0 20px; }
+.cf-settings .cf-mini { position: relative; height: 160px; overflow: hidden; border: 1px solid var(--dsw-alias-border-l2); border-radius: 14px; background: #000; margin-bottom: 20px; }
+.cf-settings .cf-mini img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: right bottom; }
+.cf-settings .cf-row { display: flex; align-items: center; justify-content: space-between; gap: 20px; border-bottom: 1px solid var(--dsw-alias-border-l1); padding: 18px 0; }
+.cf-settings .cf-row-label { min-width: 0; font-size: 16px; font-weight: 700; color: var(--cf-setting-orange); }
+.cf-settings .cf-row small { display: block; font-size: 12px; font-weight: 400; color: var(--dsw-alias-label-secondary); margin-top: 5px; }
+.cf-settings .cf-segments { display: flex; flex-wrap: wrap; gap: 4px; }
+.cf-settings .cf-segments button { min-width: 52px; text-align: center; }
+.cf-settings .cf-range { display: flex; align-items: center; gap: 12px; width: 48%; min-width: 240px; }
+.cf-settings .cf-range:is(:hover, :focus-within) { --cf-setting-ink: var(--cf-setting-cream); }
+.cf-settings button { box-sizing: border-box; min-height: 36px; padding: 6px 12px; border: 2px solid var(--cf-setting-orange); border-radius: 0; background: #1b191880; color: var(--cf-setting-orange); font: inherit; font-size: 14px; font-weight: 600; line-height: 1.45; cursor: pointer; }
+.cf-settings button:is(:hover, :focus-visible):not(:disabled) { border-color: var(--cf-setting-cream); color: var(--cf-setting-cream); background: #f6d7bc0d; }
+.cf-settings button[aria-pressed='true'], .cf-settings button.cf-primary { border-color: var(--cf-setting-cream); background: var(--cf-setting-cream); color: #241d18; }
+.cf-settings button[aria-pressed='true']:is(:hover, :focus-visible):not(:disabled), .cf-settings button.cf-primary:is(:hover, :focus-visible):not(:disabled) { background: #ffe6ce; color: #241d18; }
+.cf-settings button:focus-visible, .cf-settings input:focus-visible { outline: 2px solid var(--cf-setting-cream); outline-offset: 2px; }
+.cf-settings button:disabled, .cf-settings input:disabled { opacity: .4; cursor: not-allowed; }
+.cf-settings .cf-range-track { position: relative; flex: 1; min-width: 0; padding-inline: 14px; color: var(--cf-setting-ink); }
+.cf-settings .cf-range .cf-range-step, .cf-settings .cf-range .cf-range-step:is(:hover, :focus-visible) { position: absolute; top: 50%; transform: translateY(-50%); width: 14px; min-height: 0; height: 28px; margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; color: inherit; }
+.cf-settings .cf-range-step::before { content: ''; position: absolute; top: 8px; width: 8px; height: 12px; background: currentColor; pointer-events: none; clip-path: polygon(0 50%, 58% 0, 100% 0, 44% 50%, 100% 100%, 58% 100%); }
+.cf-settings .cf-range-decrease { left: 0; }
+.cf-settings .cf-range-decrease::before { left: 0; }
+.cf-settings .cf-range-increase { right: 0; }
+.cf-settings .cf-range-increase::before { right: 0; transform: rotate(180deg); }
+.cf-settings .cf-range input[type='range'] { appearance: none; -webkit-appearance: none; display: block; width: 100%; min-width: 0; height: 28px; margin: 0; padding: 0; border: 0; background: transparent; color: var(--cf-setting-ink); cursor: pointer; }
+.cf-settings .cf-range input[type='range']::-webkit-slider-runnable-track { height: 6px; border: 0; border-radius: 0; background: repeating-linear-gradient(to right, transparent 0, transparent calc(20% - 3px), var(--cf-setting-base) calc(20% - 3px), var(--cf-setting-base) 20%), linear-gradient(to right, var(--cf-setting-ink) var(--cf-range-progress), var(--cf-setting-track) var(--cf-range-progress)); }
+.cf-settings .cf-range input[type='range']::-moz-range-track { height: 6px; border: 0; border-radius: 0; background: repeating-linear-gradient(to right, transparent 0, transparent calc(20% - 3px), var(--cf-setting-base) calc(20% - 3px), var(--cf-setting-base) 20%), linear-gradient(to right, var(--cf-setting-ink) var(--cf-range-progress), var(--cf-setting-track) var(--cf-range-progress)); }
+.cf-settings .cf-range input[type='range']::-webkit-slider-thumb { appearance: none; -webkit-appearance: none; box-sizing: border-box; width: 18px; height: 18px; margin-top: -6px; border: 2px solid var(--cf-setting-base); border-radius: 0; background: var(--cf-setting-ink); transform: rotate(45deg); }
+.cf-settings .cf-range input[type='range']::-moz-range-thumb { box-sizing: border-box; width: 18px; height: 18px; border: 2px solid var(--cf-setting-base); border-radius: 0; background: var(--cf-setting-ink); transform: rotate(45deg); }
+.cf-settings .cf-range-value { flex: 0 0 66px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; padding: 3px 7px; clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0 50%); background: var(--cf-setting-ink); color: #241d18; text-align: center; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.6; }
+.cf-settings .cf-range-value input { appearance: textfield; -moz-appearance: textfield; min-width: 0; margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; color: inherit; font: inherit; font-variant-numeric: inherit; text-align: right; }
+.cf-settings .cf-range-value input::-webkit-inner-spin-button, .cf-settings .cf-range-value input::-webkit-outer-spin-button { appearance: none; -webkit-appearance: none; margin: 0; }
+.cf-settings .cf-status { min-height: 22px; color: var(--dsw-alias-label-secondary); font-size: 12px; line-height: 1.6; margin-top: 12px; }
+.cf-settings .cf-status[data-error='true'] { color: var(--dsw-alias-state-error-primary, #f29a90); }
+@container cf-settings (max-width: 520px) {
+  .cf-settings .cf-row { flex-direction: column; align-items: stretch; gap: 12px; }
+  .cf-settings .cf-range { width: 100%; min-width: 0; }
+}
+

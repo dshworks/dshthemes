@@ -1,0 +1,161 @@
+/* Xiaoli-Asuna/dsh-theme-endfield-style — src/styles.css
+   fetched 2026-10-18 from https://raw.githubusercontent.com/Xiaoli-Asuna/dsh-theme-endfield-style/main/src/styles.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* Arknights: Endfield-style theme for DeepSeek Harness web (unofficial fan work). Scoped to html[data-endfield-theme="on"].
+   Component class hashes were verified against DSH 0.1.5-rc.3; stable data slots are preferred.
+   Semantic error/success/warning tokens and all app behavior remain untouched. */
+html[data-endfield-theme="on"] {
+  body {
+    --ef-signal: #f0ff00;
+    --ef-bg: #f8f9f6; --ef-side: #eff1ec; --ef-card: #fff;
+    --ef-ink: #222621; --ef-muted: #687164; --ef-line: #d5dad1;
+    --ef-selection: #e0e6cf; --ef-header: #ecefe8; --ef-word: #d4dacb;
+    --ef-accent-ink: #687300;
+    --ef-rail-muted: #8b9258; --ef-rail-muted-ink: #1e2417;
+    --dsw-font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+    --dsw-alias-bg-base: var(--ef-bg) !important;
+    --dsw-alias-bg-layer-1: var(--ef-card) !important;
+    --dsw-alias-bg-layer-2: var(--ef-card) !important;
+    --dsw-alias-bg-overlay: var(--ef-card) !important;
+    --dsw-alias-bg-module-platform: var(--ef-side) !important;
+    --dsw-alias-bg-module: var(--ef-side) !important;
+    --dsw-specific-sidebar-fill: var(--ef-side) !important;
+    --dsw-specific-input-major: var(--ef-card) !important;
+    --dsw-specific-bubble: var(--ef-side) !important;
+    --dsw-alias-label-primary: var(--ef-ink) !important;
+    --dsw-alias-label-secondary: var(--ef-muted) !important;
+    --dsw-alias-label-tertiary: var(--ef-muted) !important;
+    --dsw-alias-label-caption: var(--ef-muted) !important;
+    --dsw-alias-label-primary-inverted: var(--ef-bg) !important;
+    --dsw-alias-border-l1: var(--ef-line) !important;
+    --dsw-alias-border-l2: var(--ef-line) !important;
+    --dsw-alias-border-l3: var(--ef-line) !important;
+    --dsw-alias-border-l4: var(--ef-line) !important;
+    --dsw-alias-border-l2-darkmode-thin: var(--ef-line) !important;
+    --dsw-alias-interactive-bg-hover: color-mix(in srgb, var(--ef-ink) 6%, transparent) !important;
+    --dsw-alias-interactive-bg-active: var(--ef-selection) !important;
+    --dsw-alias-brand-primary: var(--ef-accent-ink) !important;
+    --dsw-alias-state-business-primary: var(--ef-accent-ink) !important;
+    --dsw-alias-markdown-code-block: var(--ef-side) !important;
+    --dsw-alias-button-elevated-fill: var(--ef-card) !important;
+    --dsw-alias-button-floating-hover: var(--ef-selection) !important;
+    --dsw-shadow-lv1: none; --dsw-shadow-lv2: none;
+    --dsw-corner-shape: round;
+    font-family: var(--dsw-font-family); background: var(--ef-bg); color: var(--ef-ink);
+  }
+  body[data-ds-dark-theme] {
+    --ef-bg: #151718; --ef-side: #1c1f20; --ef-card: #202425;
+    --ef-ink: #edefe8; --ef-muted: #a0a79f; --ef-line: #353b36;
+    --ef-selection: #343a24; --ef-header: #1d2221; --ef-word: #343d31;
+    --ef-accent-ink: #e1ee42;
+    --ef-rail-muted: #34391d; --ef-rail-muted-ink: #b8c27a;
+  }
+  button, input, textarea { font-family: inherit; }
+  button:focus-visible, [role="treeitem"]:focus-visible { outline: 2px solid var(--ef-accent-ink); outline-offset: 2px; }
+  button > svg, [role="button"] > svg { flex-shrink: 0; vertical-align: middle; }
+  .pI_x6G_frame { background: var(--ef-bg); }
+  .pI_x6G_centerCol { position: relative; padding-right: 48px; box-sizing: border-box; }
+  .pI_x6G_frame:not([data-rightbar-collapsed]) .pI_x6G_centerCol { padding-right: 0; }
+  .pI_x6G_frame:not([data-rightbar-collapsed]) .ef-signal-rail { display: none; }
+  .wSkVaW_root { height: auto; min-height: 0; flex: 1; }
+  .ef-masthead { position: relative; isolation: isolate; overflow: hidden; flex: 0 0 144px; box-sizing: border-box; padding: 24px 30px; background: var(--ef-header); border-bottom: 1px solid var(--ef-line); }
+  .ef-masthead::before { content: ""; position: absolute; inset: 0; background: var(--ef-topography) center / cover; opacity: .18; z-index: -1; pointer-events: none; }
+  .ef-background-word { position: absolute; right: 5%; top: 13px; font: 800 clamp(70px, 8.3vw, 130px)/1 "Arial",sans-serif; letter-spacing: -.055em; color: var(--ef-word); white-space: nowrap; z-index: -1; user-select: none; pointer-events: none; }
+  .ef-eyebrow, .ef-subtitle { display: block; font: 10px/16px Consolas, monospace; letter-spacing: .08em; color: var(--ef-muted); }
+  .ef-eyebrow { border-left: 3px solid var(--ef-accent-ink); padding-left: 10px; }
+  .ef-session-title { font-size: clamp(18px, 2vw, 27px); font-weight: 700; line-height: 1.4; margin: 13px 0 10px; max-width: 85%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .ef-signal-rail { position: absolute; right: 0; top: 0; bottom: 0; width: 48px; background: var(--ef-rail-muted); color: var(--ef-rail-muted-ink); display: flex; align-items: center; flex-direction: column; pointer-events: none; user-select: none; }
+  /* Only the new-session hero gets the fluorescent rail. Existing conversations,
+     settling and non-chat panels stay quiet; no JS state duplication or delays. */
+  .pI_x6G_centerCol:has(.wSkVaW_root[data-phase="hero"]) .ef-signal-rail { background: var(--ef-signal); color: #151814; }
+  .ef-rail-mark { display: grid; place-items: center; height: 65px; font: 800 27px/1 Arial,sans-serif; width: 26px; border-bottom: 1px solid color-mix(in srgb, currentColor 35%, transparent); }
+  .ef-rail-type { writing-mode: vertical-rl; font: 22px/1 Consolas,monospace; margin-top: 44px; letter-spacing: .03em; }
+  .ef-rail-end { margin-top: auto; height: 55px; display: grid; place-items: center; font: 26px/1 Consolas,monospace; }
+  /* The original navigation and collapse button stay functional. */
+  .hHd-Xa_root:not(.hHd-Xa_collapsed) { padding-top: 0; }
+  .hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_logoRow { background: var(--ef-signal); height: 198px; margin: 0 -12px 16px; padding: 24px; position: relative; color: #151814; align-items: flex-start; isolation: isolate; }
+  .hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_logoRow::before { content: ""; position: absolute; inset: 0; background: var(--ef-topography) 62% 45% / 820px; opacity: .18; z-index: -1; pointer-events: none; }
+  .hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_logoRow::after { content: "OVER THE FRONTIER / 01"; position: absolute; bottom: 22px; left: 24px; right: 24px; border-top: 1px solid #abb800; padding-top: 12px; font: 10px/16px Consolas,monospace; letter-spacing: .04em; pointer-events: none; }
+  .hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_brand { display: flex; flex-direction: column; align-items: flex-start; gap: 13px; color: #151814; }
+  .hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_brandIdentity { display: none; }
+  .hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_brand::before { content: "DSH / WORKSPACE"; font: 11px/18px Consolas,monospace; letter-spacing: .06em; }
+  .hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_brand::after { content: "// 工作终端"; font: 700 29px/44px "Segoe UI","Microsoft YaHei",sans-serif; white-space: nowrap; }
+  .hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_toggle { position: absolute; right: 14px; top: 16px; color: #151814; }
+  .hHd-Xa_newSession { border-radius: 3px; height: 42px; padding: 0 16px; gap: 9px; line-height: 20px; background: var(--ef-ink); color: var(--ef-bg); border: 1px solid transparent; margin-bottom: 14px; }
+  .hHd-Xa_newSession:hover { background: var(--ef-selection); color: var(--ef-ink); border-color: var(--ef-line); }
+  .hHd-Xa_newSessionLabel { display: inline-flex; align-items: center; line-height: 20px; }
+  .hHd-Xa_collapsed .hHd-Xa_newSession { color: var(--ef-ink); background: transparent; padding: 0; width: 36px; height: 36px; margin: 0 0 12px; gap: 0; }
+  .hHd-Xa_collapsed .hHd-Xa_newSession:hover { background: var(--ef-selection); }
+  .hHd-Xa_collapsed .ef-appearance { width: 36px; padding: 0; justify-content: center; }
+  .hHd-Xa_collapsed .ef-appearance span { display: none; }
+  .hHd-Xa_iconButton, .bhn1Oq_iconButton, .YDXeBa_iconButton, .hHd-Xa_panelRow { border-radius: 3px; }
+  .YDXeBa_sessionRow, .YDXeBa_projectRow { border-radius: 3px; }
+  .YDXeBa_sessionRow[aria-selected="true"] { background: var(--ef-selection); box-shadow: inset 3px 0 var(--ef-accent-ink); }
+  .YDXeBa_folderActive { color: var(--ef-accent-ink); }
+  .hHd-Xa_footArea { border-top: 1px solid var(--ef-line); padding-top: 8px; }
+  .ef-appearance { display: flex; align-items: center; justify-content: flex-start; gap: 9px; flex: none; box-sizing: border-box; width: 100%; height: 36px; padding: 0 10px; margin: 7px 0 3px; border: 1px solid var(--ef-line); border-radius: 3px; background: var(--ef-bg); color: var(--ef-muted); font-size: 12px; line-height: 18px; cursor: pointer; }
+  .ef-appearance:hover { background: var(--ef-selection); color: var(--ef-ink); }
+  .ef-appearance svg { display: block; }
+  .ef-appearance-options { margin-left: auto; font-size: 10px; }
+  /* Composer uses its native layout and hit targets; align, don't replace. */
+  [data-composer-card="true"] { border: 1px solid var(--ef-line); border-radius: 5px; box-shadow: none; background: var(--ef-card); }
+  [data-composer-card="true"]::before { content: ""; position: absolute; top: -1px; left: -1px; width: 20px; height: 20px; border-top: 2px solid var(--ef-accent-ink); border-left: 2px solid var(--ef-accent-ink); pointer-events: none; }
+  [data-composer-card="true"]:focus-within { border-color: var(--ef-accent-ink); }
+  .uV2eYG_row { align-items: center; }
+  .uV2eYG_primary { border-radius: 3px; width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; padding: 0; background: var(--ef-signal); color: #151814; }
+  .uV2eYG_primary:disabled { background: var(--ef-selection); color: var(--ef-muted); opacity: .65; }
+  .uV2eYG_primary:not(:disabled):hover { background: #dce900; }
+  .uV2eYG_add { border-radius: 3px; background: transparent; width: 30px; height: 30px; padding: 0; display: inline-flex; align-items: center; justify-content: center; }
+  .uV2eYG_row button { line-height: 20px; }
+  .pXSMma_previewBadge { border-radius: 2px; background: var(--ef-selection); color: var(--ef-accent-ink); border-color: var(--ef-line); }
+  .pXSMma_headline { gap: 12px; }
+  .pXSMma_titleGroup { font-weight: 600; }
+  .wSkVaW_header { background: var(--ef-bg); }
+  /* Let native messages, code and diff colors inherit the theme tokens. */
+  .Sixlwa_bubble, .Sixlwa_fileCard { border-radius: 5px; }
+  .xzv4MW_action { border-radius: 3px; }
+  .wSkVaW_header button, .wSkVaW_header [role="button"] { align-items: center; }
+  .wSkVaW_header { min-height: 68px; }
+  ._8HJdBW_themeCube { border-radius: 5px; padding: 20px; }
+  ._8HJdBW_themeCube[aria-pressed="true"] { border-color: var(--ef-accent-ink); background: var(--ef-selection); }
+  .VOzbGW_panel { border-radius: 8px; border: 1px solid var(--ef-line); }
+  .VOzbGW_navCell, .VOzbGW_trigger { border-radius: 4px; }
+  @media (max-height: 800px) {
+    .hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_logoRow { height: 155px; margin-bottom: 12px; padding-top: 18px; }
+    .hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_brand { gap: 5px; }
+    .hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_logoRow::after { bottom: 13px; padding-top: 7px; }
+    .ef-masthead { flex-basis: 112px; padding: 16px 24px; }
+    .ef-session-title { font-size: 23px; margin: 8px 0 6px; }
+    .ef-background-word { top: 4px; font-size: 100px; }
+  }
+  @media (max-height: 650px) {
+    .ef-masthead { flex-basis: 76px; padding: 12px 20px; }
+    .ef-subtitle { display: none; }
+    .ef-session-title { font-size: 18px; margin-top: 4px; }
+    .ef-background-word { font-size: 70px; }
+    .hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_logoRow { height: 108px; padding: 12px 20px; }
+    .hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_logoRow::after { display: none; }
+    .hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_brand::after { font-size: 25px; }
+  }
+  @media (max-width: 1050px) {
+    .ef-signal-rail { width: 20px; }
+    .ef-rail-type { font-size: 13px; }
+    .ef-rail-mark { font-size: 15px; width: 14px; }
+    .ef-rail-end { font-size: 18px; }
+    .pI_x6G_centerCol { padding-right: 20px; }
+    .ef-background-word { right: -15%; opacity: .65; }
+    .ef-session-title { max-width: 100%; }
+  }
+  @media (max-width: 800px) {
+    .ef-signal-rail { display: none; }
+    .pI_x6G_centerCol { padding-right: 0; }
+    .ef-masthead { flex-basis: 86px; padding: 12px 18px; }
+    .ef-session-title { font-size: 19px; }
+    .ef-subtitle { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pI_x6G_frame, .hHd-Xa_root *, .ef-masthead * { animation: none !important; transition: none !important; }
+  }
+}
+
+

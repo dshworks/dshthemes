@@ -1,0 +1,679 @@
+/* sujiu0616-art/DSH-CustomWallpapers-Glassmorphism-Theme — plugins/client.js
+   fetched 2026-10-18 from https://raw.githubusercontent.com/sujiu0616-art/DSH-CustomWallpapers-Glassmorphism-Theme/master/plugins/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/* ===== A. 极光背景 ===== */
+html {
+  --dshx-aurora-alpha: 1;
+  --dshx-aurora-hue: 232;
+  background-color: #e4e9fb;
+  background-image:
+    radial-gradient(1150px 780px at 8% -12%, hsl(calc(var(--dshx-aurora-hue) + 0) 90% 64% / calc(0.72 * var(--dshx-aurora-alpha))), transparent 62%),
+    radial-gradient(950px 720px at 94% 6%, hsl(calc(var(--dshx-aurora-hue) + 30) 90% 66% / calc(0.60 * var(--dshx-aurora-alpha))), transparent 60%),
+    radial-gradient(1050px 880px at 90% 97%, hsl(calc(var(--dshx-aurora-hue) - 64) 55% 48% / calc(0.52 * var(--dshx-aurora-alpha))), transparent 58%),
+    radial-gradient(900px 720px at 4% 94%, hsl(calc(var(--dshx-aurora-hue) - 220) 90% 70% / calc(0.44 * var(--dshx-aurora-alpha))), transparent 55%),
+    linear-gradient(160deg, #eef1ff 0%, #e6e3fb 48%, #edf0fa 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-attachment: fixed;
+}
+html:has(body[data-ds-dark-theme]) {
+  background-color: #09090b;
+  background-image:
+    radial-gradient(1150px 820px at 10% -10%, hsl(calc(var(--dshx-aurora-hue) + 0) 90% 62% / calc(0.42 * var(--dshx-aurora-alpha))), transparent 60%),
+    radial-gradient(950px 760px at 92% 8%, hsl(calc(var(--dshx-aurora-hue) + 30) 90% 64% / calc(0.34 * var(--dshx-aurora-alpha))), transparent 58%),
+    radial-gradient(1050px 880px at 88% 98%, hsl(calc(var(--dshx-aurora-hue) - 64) 75% 34% / calc(0.28 * var(--dshx-aurora-alpha))), transparent 56%),
+    radial-gradient(900px 720px at 4% 92%, hsl(calc(var(--dshx-aurora-hue) - 220) 90% 66% / calc(0.20 * var(--dshx-aurora-alpha))), transparent 55%),
+    linear-gradient(160deg, #101013 0%, #09090b 50%, #0e0e12 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+}
+
+/* ===== B. shadcn 语义别名层 ===== */
+body {
+  --radius: 0.625rem;
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --background: var(--dsw-alias-bg-base);
+  --foreground: var(--dsw-alias-label-primary);
+  --card: var(--dsw-alias-bg-layer-1);
+  --card-foreground: var(--dsw-alias-label-primary);
+  --popover: var(--dsw-specific-menu);
+  --popover-foreground: var(--dsw-alias-label-primary);
+  --primary: var(--dsw-alias-brand-primary);
+  --primary-foreground: var(--dsw-alias-label-primary-foreground);
+  --secondary: var(--dsw-alias-bg-layer-2);
+  --secondary-foreground: var(--dsw-alias-label-secondary);
+  --muted: var(--dsw-alias-interactive-bg-hover);
+  --muted-foreground: var(--dsw-alias-label-tertiary);
+  --accent: var(--dsw-alias-interactive-bg-hover);
+  --accent-foreground: var(--dsw-alias-label-primary);
+  --destructive: var(--dsw-alias-state-error-primary);
+  --destructive-foreground: #ffffff;
+  --border: var(--dsw-alias-border-l2);
+  --input: var(--dsw-alias-border-l2);
+  --ring: #3b82f6;
+  --sidebar: var(--dsw-specific-sidebar-fill);
+  --sidebar-foreground: var(--dsw-alias-label-primary);
+  --sidebar-border: var(--dsw-alias-border-l1);
+  --sidebar-ring: #3b82f6;
+  --selection: rgba(59, 130, 246, 0.30);
+  --selection-foreground: inherit;
+}
+
+/* ===== C. shadcn 基础规则 ===== */
+body {
+  text-rendering: optimizeLegibility;
+}
+::selection {
+  background: var(--selection);
+}
+:focus-visible {
+  outline-color: var(--ring);
+  outline-offset: 2px;
+}
+
+/* ===== D. 玻璃辅助变量（深浅各一套；组合变量与主题无关） ===== */
+body {
+  /* 高光内阴影 / 三档背景模糊：全文件统一引用，禁止重复写字面量 */
+  --dshx-inset-hl: inset 0 1px 0 0 var(--dshx-glass-highlight);
+  --dshx-blur-surface: blur(12px) saturate(1.4);
+  --dshx-blur-card: blur(14px) saturate(1.5);
+  --dshx-blur-panel: blur(18px) saturate(1.4);
+  --dshx-glass-pane: rgba(255, 255, 255, 0.34);
+  --dshx-glass-float: rgba(255, 255, 255, 0.90);
+  --dshx-glass-solid: rgba(250, 250, 250, 0.97);
+  --dshx-glass-panel: rgba(250, 250, 252, 0.76);
+  --dshx-glass-edge: rgba(170, 185, 215, 0.50);
+  --dshx-glass-highlight: rgba(255, 255, 255, 0.50);
+  --dshx-glass-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 46%);
+  --dshx-bubble-shadow: rgba(30, 40, 70, 0.10);
+  --dshx-float-shadow: 0 16px 40px -12px rgba(30, 40, 70, 0.18);
+  --dshx-dialog-ring: rgba(228, 228, 231, 0.55);
+}
+body[data-ds-dark-theme] {
+  --dshx-glass-pane: rgba(13, 13, 16, 0.46);
+  --dshx-glass-float: rgba(20, 20, 24, 0.90);
+  --dshx-glass-solid: rgba(12, 12, 14, 0.97);
+  --dshx-glass-panel: rgba(16, 18, 28, 0.80);
+  --dshx-glass-edge: rgba(255, 255, 255, 0.12);
+  --dshx-glass-highlight: rgba(255, 255, 255, 0.10);
+  --dshx-glass-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0) 46%);
+  --dshx-bubble-shadow: rgba(0, 0, 0, 0.42);
+  --dshx-float-shadow: 0 18px 48px -12px rgba(0, 0, 0, 0.66);
+  --dshx-dialog-ring: rgba(39, 39, 42, 0.55);
+}
+
+/* ===== E. 扩展 token：产品未覆盖的 --dsw-* 变量（深浅各一套） ===== */
+body {
+  --dsw-alias-border-l3: rgba(9, 9, 11, 0.24);
+  --dsw-alias-border-l4: rgba(9, 9, 11, 0.32);
+  --dsw-alias-border-inverted: rgba(9, 9, 11, 0.14);
+  --dsw-alias-border-inverted2: rgba(9, 9, 11, 0.06);
+  --dsw-alias-interactive-bg-active: rgba(9, 9, 11, 0.12);
+  --dsw-alias-interactive-bg-hover-accent: rgba(37, 99, 235, 0.12);
+  --dsw-alias-interactive-bg-hover-danger: rgba(220, 38, 38, 0.09);
+  --dsw-alias-markdown-inline-code: rgba(9, 9, 11, 0.08);
+  --dsw-alias-markdown-code-block-banner: rgba(255, 255, 255, 0.60);
+  --dsw-alias-markdown-code-segment-selected: rgba(255, 255, 255, 0.95);
+  --dsw-alias-markdown-code-segment-unselected: rgba(255, 255, 255, 0.72);
+  --dsw-alias-markdown-placeholder: rgba(255, 255, 255, 0.72);
+  --dsw-alias-markdown-citation: rgba(9, 9, 11, 0.07);
+  --dsw-alias-markdown-tag: rgba(255, 255, 255, 0.78);
+  --dsw-alias-button-primary-hover: rgba(12, 12, 14, 0.88);
+  --dsw-alias-button-primary-dimmed: rgba(9, 9, 11, 0.10);
+  --dsw-alias-button-ghost-active-fill: rgba(9, 9, 11, 0.10);
+  --dsw-alias-button-ghost-active-border: rgba(9, 9, 11, 0.40);
+  --dsw-alias-button-ghost-active-hover: rgba(9, 9, 11, 0.16);
+  --dsw-alias-button-elevated-fill: rgba(255, 255, 255, 0.92);
+  --dsw-alias-button-floating-hover: rgba(255, 255, 255, 0.96);
+  --dsw-alias-button-contrast-fill: rgba(24, 24, 27, 0.94);
+  --dsw-alias-tooltip-bg: rgba(24, 24, 27, 0.96);
+  --dsw-alias-toast-bg: rgba(24, 24, 27, 0.93);
+  --dsw-alias-bg-skeleton: rgba(9, 9, 11, 0.09);
+  --dsw-alias-scrollbar-bg-l1: rgba(9, 9, 11, 0.20);
+  --dsw-alias-scrollbar-bg-l2: rgba(9, 9, 11, 0.28);
+  --dsw-alias-scrollbar-hover-l1: rgba(9, 9, 11, 0.34);
+  --dsw-alias-scrollbar-hover-l2: rgba(9, 9, 11, 0.42);
+  --dsw-alias-separator-primary: rgba(9, 9, 11, 0.16);
+  --dsw-specific-sidebar-nav-item-hover: rgba(9, 9, 11, 0.06);
+  --dsw-specific-sidebar-nav-item-active: rgba(255, 255, 255, 0.80);
+  --dsw-specific-sidebar-nav-item-active-accent: rgba(37, 99, 235, 0.14);
+  --dsw-specific-bubble-highlight: rgba(37, 99, 235, 0.10);
+  --dsw-specific-login-input: rgba(255, 255, 255, 0.85);
+  --dsw-hovercard-bg: rgba(255, 255, 255, 0.94);
+  --dsw-shadow-lv1: 0 2px 8px rgba(9, 9, 11, 0.06);
+  --dsw-shadow-lv2: 0 8px 24px rgba(9, 9, 11, 0.08);
+  --dsw-shadow-lv3: 0 18px 48px -8px rgba(9, 9, 11, 0.20);
+}
+body[data-ds-dark-theme] {
+  --dsw-alias-border-l3: rgba(255, 255, 255, 0.22);
+  --dsw-alias-border-l4: rgba(255, 255, 255, 0.30);
+  --dsw-alias-border-inverted: rgba(255, 255, 255, 0.12);
+  --dsw-alias-border-inverted2: rgba(255, 255, 255, 0.06);
+  --dsw-alias-interactive-bg-active: rgba(255, 255, 255, 0.13);
+  --dsw-alias-interactive-bg-hover-accent: rgba(96, 165, 250, 0.16);
+  --dsw-alias-interactive-bg-hover-danger: rgba(248, 113, 113, 0.14);
+  --dsw-alias-markdown-inline-code: rgba(255, 255, 255, 0.10);
+  --dsw-alias-markdown-code-block-banner: rgba(255, 255, 255, 0.05);
+  --dsw-alias-markdown-code-segment-selected: rgba(255, 255, 255, 0.10);
+  --dsw-alias-markdown-code-segment-unselected: rgba(255, 255, 255, 0.04);
+  --dsw-alias-markdown-placeholder: rgba(255, 255, 255, 0.06);
+  --dsw-alias-markdown-citation: rgba(255, 255, 255, 0.07);
+  --dsw-alias-markdown-tag: rgba(255, 255, 255, 0.07);
+  --dsw-alias-button-primary-hover: rgba(250, 250, 250, 0.90);
+  --dsw-alias-button-primary-dimmed: rgba(255, 255, 255, 0.12);
+  --dsw-alias-button-ghost-active-fill: rgba(255, 255, 255, 0.14);
+  --dsw-alias-button-ghost-active-border: rgba(255, 255, 255, 0.40);
+  --dsw-alias-button-ghost-active-hover: rgba(255, 255, 255, 0.20);
+  --dsw-alias-button-elevated-fill: rgba(39, 39, 42, 0.92);
+  --dsw-alias-button-floating-hover: rgba(52, 52, 58, 0.95);
+  --dsw-alias-button-contrast-fill: rgba(244, 244, 245, 0.96);
+  --dsw-alias-tooltip-bg: rgba(13, 13, 16, 0.96);
+  --dsw-alias-toast-bg: rgba(244, 244, 245, 0.95);
+  --dsw-alias-bg-skeleton: rgba(255, 255, 255, 0.10);
+  --dsw-alias-scrollbar-bg-l1: rgba(255, 255, 255, 0.18);
+  --dsw-alias-scrollbar-bg-l2: rgba(255, 255, 255, 0.26);
+  --dsw-alias-scrollbar-hover-l1: rgba(255, 255, 255, 0.32);
+  --dsw-alias-scrollbar-hover-l2: rgba(255, 255, 255, 0.40);
+  --dsw-alias-separator-primary: rgba(255, 255, 255, 0.16);
+  --dsw-specific-sidebar-nav-item-hover: rgba(255, 255, 255, 0.08);
+  --dsw-specific-sidebar-nav-item-active: rgba(255, 255, 255, 0.12);
+  --dsw-specific-sidebar-nav-item-active-accent: rgba(96, 165, 250, 0.18);
+  --dsw-specific-bubble-highlight: rgba(96, 165, 250, 0.14);
+  --dsw-specific-login-input: rgba(12, 12, 14, 0.90);
+  --dsw-hovercard-bg: rgba(20, 20, 24, 0.94);
+  --dsw-shadow-lv1: 0 2px 8px rgba(0, 0, 0, 0.30);
+  --dsw-shadow-lv2: 0 8px 24px rgba(0, 0, 0, 0.36);
+  --dsw-shadow-lv3: 0 18px 48px -8px rgba(0, 0, 0, 0.62);
+}
+
+/* ===== F. 主框架磨砂 =====
+ *   ⚠ 头部刻意不模糊：「后台任务」下拉面板渲染在 headerActions 内，
+ *   backdrop-filter 的包含块会把面板困在头部、被会话区盖住。 */
+.pI_x6G_detailsCol {
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  backdrop-filter: blur(14px) saturate(1.4);
+  background: var(--dshx-glass-pane);
+}
+.wSkVaW_header {
+  background: var(--dshx-glass-pane);
+}
+
+/* ===== G. 浮层玻璃：菜单 / 列表 / 工具提示 ===== */
+._list_19372_8, ._submenu_19372_9, .h8S2Va_menu, .JObwrW_panel, .QsffPG_menu,
+[role="listbox"], [role="menu"], [role="tooltip"],
+._bubble_owhem_8, ._toast_fvpz7_7, ._card_1b2ny_13 {
+  -webkit-backdrop-filter: var(--dshx-blur-card);
+  backdrop-filter: var(--dshx-blur-card);
+  box-shadow: var(--dshx-inset-hl), var(--dshx-float-shadow);
+}
+/* 通用 dialog（设置大面板除外，它有专用规则）：模糊 + 玻璃阴影 */
+[role="dialog"]:not(.VOzbGW_panel) {
+  -webkit-backdrop-filter: var(--dshx-blur-surface);
+  backdrop-filter: var(--dshx-blur-surface);
+  box-shadow: var(--dshx-inset-hl), var(--dshx-float-shadow);
+}
+/* 小弹窗原语：shadcn dialog-ring 外圈（大面板不适用，避免怪异描边） */
+._dialog_15u5s_22 {
+  -webkit-backdrop-filter: var(--dshx-blur-surface);
+  backdrop-filter: var(--dshx-blur-surface);
+  box-shadow: var(--dshx-inset-hl),
+    var(--dshx-float-shadow),
+    0 0 0 4px var(--dshx-dialog-ring);
+}
+._onboardingStage_1cfrq_21 {
+  -webkit-backdrop-filter: var(--dshx-blur-surface);
+  backdrop-filter: var(--dshx-blur-surface);
+}
+
+/* ===== H. 表面磨砂：输入卡 / 气泡 / 卡片 / 代码块 ===== */
+.uV2eYG_card, .bqrRRG_card, .LVzXQa_card, .gdEzaW_bubble, .lXshSW_root,
+._wrap_1ao1y_1, .fV0t5q_search, ._pill_e3ygd_1,
+.md-code-block, ._block_178r4_4, ._block_10eou_7, ._block_biesw_7,
+._block_srovd_7, ._block_s66q0_7, ._block_d4nqi_7,
+.pC0e7a_body, .ydkMvW_code, ._Xvjua_body, .cvtE3a_output, .gNWCoW_output,
+.o3BgMG_ioCard, .xDAfVq_code, .Y0dWHa_payload,
+.VOzbGW_panel, .YyYd_a_card, .YyYd_a_cardOpen, .zGbnIq_rowCard,
+.At1oFq_input, .zGbnIq_input, ._7yHdaG_editor, ._7yHdaG_panel,
+.Y0dWHa_split, .Y0dWHa_details, .Y0dWHa_assistantOutput, .Y0dWHa_schema,
+._root_4qrvp_1, .Md3f7G_toBottom,
+.nLMEza_bar, .nLMEza_objectiveInput, .fNh4Da_image, .Y0dWHa_turnLabel {
+  -webkit-backdrop-filter: var(--dshx-blur-surface);
+  backdrop-filter: var(--dshx-blur-surface);
+}
+
+/* ===== I. 粘性表面：近实底、无模糊（性能 + 可读性） ===== */
+._bannerWrap_178r4_21,
+.fV0t5q_root,
+.Y0dWHa_historyLoadingBar,
+.Y0dWHa_table th {
+  background: var(--dshx-glass-solid);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* ===== I2. 设置大面板：高不透明度 + 强模糊，兼顾可读性与玻璃感 ===== */
+.VOzbGW_panel {
+  background: var(--dshx-glass-panel);
+  box-shadow: var(--dshx-inset-hl), var(--dshx-float-shadow);
+  -webkit-backdrop-filter: var(--dshx-blur-panel);
+  backdrop-filter: var(--dshx-blur-panel);
+}
+
+/* ===== J. 气泡 / 输入卡细节 + 滚动条 ===== */
+.uV2eYG_card, .bqrRRG_card, .LVzXQa_card {
+  border-color: var(--dshx-glass-edge);
+  box-shadow: 0 12px 32px -14px var(--dshx-bubble-shadow),
+    var(--dshx-inset-hl);
+}
+.gdEzaW_bubble {
+  border: 1px solid var(--dshx-glass-edge);
+  box-shadow: 0 6px 20px -8px var(--dshx-bubble-shadow),
+    var(--dshx-inset-hl);
+}
+body:not([data-ds-dark-theme]) .gdEzaW_bubble {
+  border-color: rgba(37, 99, 235, 0.26);
+}
+body[data-ds-dark-theme] .gdEzaW_bubble {
+  border-color: rgba(96, 165, 250, 0.20);
+}
+.lXshSW_root {
+  border-color: var(--dshx-glass-edge);
+}
+::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+/* ===== K. 壁纸图层 =====
+ *   三层 fixed + z-index:-1（body 背景之上、内容之下）；着色层按
+ *   body[data-ds-dark-theme] 纯 CSS 切换，无 JS 观察器。 */
+.dshx-wallpaper-layer,
+.dshx-wallpaper-frost,
+.dshx-wallpaper-tint {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.dshx-wallpaper-layer {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.dshx-wallpaper-frost {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 140px 140px;
+}
+.dshx-wallpaper-tint {
+  background: rgb(250, 250, 252);
+}
+body[data-ds-dark-theme] .dshx-wallpaper-tint {
+  background: rgb(9, 9, 11);
+}
+
+/* ===== L. 模块化玻璃：侧栏卡片 / 头部 tabs 胶囊 / 状态栏 =====
+ *   ⚠ 侧栏卡片禁用 backdrop-filter：footArea 内渲染 position:fixed
+ *     设置弹窗，模糊的包含块会把弹窗困在侧栏里。
+ *   ⚠ box-sizing 不继承：各模块显式 border-box，否则加边框后宽度不齐。 */
+.hHd-Xa_root {
+  gap: 8px;
+}
+.hHd-Xa_logoRow,
+.hHd-Xa_regionArea,
+.hHd-Xa_footArea,
+.hHd-Xa_newSession {
+  box-sizing: border-box;
+}
+.hHd-Xa_logoRow {
+  margin-bottom: 0;
+}
+.hHd-Xa_logoRow,
+.hHd-Xa_regionArea {
+  border-radius: 14px;
+}
+/* footArea 不套卡片：内部四项各自成胶囊，外层再罩一层就是双玻璃；
+ * 且它内含设置弹窗，本就不能模糊。仅保留布局。 */
+/* 磨砂：仅 logoRow / regionArea（footArea 因设置弹窗不能模糊）。 */
+.hHd-Xa_logoRow,
+.hHd-Xa_regionArea {
+  -webkit-backdrop-filter: var(--dshx-blur-card);
+  backdrop-filter: var(--dshx-blur-card);
+}
+.hHd-Xa_newSession {
+  margin: 0;
+  border-radius: 14px;
+  /* button 在 flex 中不自动拉伸，显式撑满与其它模块等宽 */
+  align-self: stretch;
+  width: 100%;
+}
+/* 工作区列表的节头负右边距会顶出卡片边界，归零保持内容在卡内 */
+.qDHVXG_sectionHeader {
+  margin-right: 0;
+}
+/* 产品展开态给 regionArea 设负边距（让滚动条贴栏缘），套卡后归零对齐；
+ * min-width:0 + overflow:hidden 防内容撑宽、滚动条留在卡内 */
+.hHd-Xa_regionArea {
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  min-width: 0;
+  overflow: hidden;
+}
+.qDHVXG_root,
+.qDHVXG_list {
+  min-width: 0;
+  max-width: 100%;
+}
+.qDHVXG_sectionHeader {
+  max-width: 100%;
+}
+/* 产品列表底部渐隐条（.qDHVXG_fade）终点引用侧栏底色，在玻璃卡上
+ * 显形为一条不随圆角的直角亮带，隐藏 */
+.qDHVXG_fade {
+  display: none;
+}
+/* 折叠栏：36px 搜索圆钮超出卡内容宽，缩至 28px 居中 */
+.hHd-Xa_collapsed .qDHVXG_search {
+  width: 28px;
+  height: 28px;
+  margin: 0 auto 12px;
+}
+/* 主题切换：低调幽灵按钮，胶囊感留给设置入口 */
+.dshx-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-sizing: border-box;
+  min-height: 32px;
+  padding: 4px 8px;
+  border: none;
+  border-radius: 14px;
+  background: transparent;
+  color: var(--dsw-alias-label-secondary);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 22px;
+  font-family: inherit;
+}
+.dshx-theme-toggle:hover {
+  background: var(--dsw-alias-interactive-bg-hover);
+  color: var(--dsw-alias-label-primary);
+}
+.dshx-theme-toggle-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+  line-height: 16px;
+}
+/* 折叠窄栏放不下第四个圆钮，隐藏切换、恢复产品 rail 布局 */
+.hHd-Xa_collapsed .dshx-theme-toggle {
+  display: none;
+}
+/* 设置入口：宽模式整行圆角钮居中，窄栏玻璃圆钮 */
+.hHd-Xa_root:not(.hHd-Xa_collapsed) .VOzbGW_trigger {
+  width: 100%;
+  margin: 0;
+  justify-content: center;
+  border-radius: 14px;
+}
+.hHd-Xa_root:not(.hHd-Xa_collapsed) .VOzbGW_trigger:hover {
+  background-color: var(--dsw-alias-interactive-bg-hover);
+  background-image: none;
+  color: var(--dsw-alias-label-primary);
+}
+.hHd-Xa_collapsed .VOzbGW_trigger {
+  background-color: var(--dshx-glass-pane);
+  background-image: var(--dshx-glass-sheen);
+  border: 1px solid var(--dshx-glass-edge);
+}
+/* 底部动作区纵向堆叠；slot 框架把条目包进无类名内联包装层，
+ * 余额卡按「包装层内第 2 层内联卡」定位 */
+.hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_footerActions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+/* 底部动作区与设置入口之间也要 8px 间隙（footArea 产品默认无 gap） */
+.hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_footArea {
+  gap: 8px;
+}
+.hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_footerActions > div[style] {
+  /* 条目包装层：透明、纵向堆叠，不套胶囊 */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_footerActions .Nqubda_layer {
+  /* cordis 面板层：显式统一圆角（若是 div 而非 button，兜底选择器抓不到） */
+  flex: none;
+  width: 100%;
+  border-radius: 14px;
+}
+.hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_footerActions > div[style] > div[style] {
+  /* 余额卡：内联圆角压过样式表，!important 是唯一反制手段 */
+  flex: none;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 14px !important;
+}
+.hHd-Xa_root:not(.hHd-Xa_collapsed) .dshx-theme-toggle {
+  flex: none;
+  width: 100%;
+  border-radius: 14px;
+}
+/* 侧栏按钮统一 14px 与模块卡同语言；折叠栏小尺寸圆形图标钮除外 */
+.hHd-Xa_root:not(.hHd-Xa_collapsed) button,
+.hHd-Xa_root:not(.hHd-Xa_collapsed) [role="button"] {
+  border-radius: 14px;
+}
+/* 会话头部 tabs：拆成独立玻璃胶囊 */
+.wSkVaW_tabs {
+  gap: 8px;
+}
+.wSkVaW_tab {
+  background: var(--dshx-glass-pane);
+  /* 本地声明 sheen：hover/激活用 background 简写即可整体复位 */
+  background-image: var(--dshx-glass-sheen);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 6px 14px 8px;
+}
+.wSkVaW_tab:hover {
+  background: var(--dsw-alias-interactive-bg-hover);
+}
+.wSkVaW_tabActive {
+  /* 激活态：实填充+描边代替产品的蓝字/蓝下划线 */
+  color: var(--dsw-alias-label-primary);
+  font-weight: 600;
+  background: var(--dshx-glass-float);
+  border-color: var(--dshx-glass-edge);
+  box-shadow: var(--dshx-inset-hl);
+}
+.wSkVaW_tabActive:after {
+  background: transparent;
+}
+/* 移除会话头部底部的 1px 发丝分隔线（玻璃头部下这条线非常刺眼） */
+.wSkVaW_header:after {
+  background: transparent;
+}
+/* 状态栏（会话统计行）：居中玻璃胶囊 */
+.FJxK0a_root {
+  width: max-content;
+  max-width: min(var(--dsh-chat-content-width), calc(100% - 32px));
+  margin: 0 auto;
+  padding: 4px 14px;
+  border-radius: 999px;
+}
+
+/* ===== M. 模块化玻璃补充：hero 芯片 / 工具控件 / 对话流气泡 ===== */
+/* 新会话 hero：工作区选择与 Agent 预设芯片 */
+.pXSMma_workspace,
+.cubgiG_seat {
+  border-radius: 999px;
+}
+/* 输入框工具行：访问模式下拉 / 模型选择 / 附件按钮 */
+.uV2eYG_select {
+  /* 只动背景色：原样保留右侧下拉箭头的 background-image */
+  background-color: var(--dshx-glass-pane);
+  border: 1px solid var(--dshx-glass-edge);
+  border-radius: 999px;
+  padding: 0 22px 0 12px;
+}
+.T1PP_q_selector {
+  border: 1px solid var(--dshx-glass-edge);
+  box-shadow: var(--dshx-inset-hl);
+}
+.uV2eYG_add {
+  border: 1px solid var(--dshx-glass-edge);
+}
+/* 对话流节点独立玻璃卡；嵌套子节点透明防套娃。
+ * 用 data-chat-flow-kind 选择，语义稳定、不依赖构建 hash */
+[data-chat-flow] [data-chat-flow-kind="assistant-step"],
+[data-chat-flow] [data-chat-flow-kind="tool-call"],
+[data-chat-flow] [data-chat-flow-kind="command"],
+[data-chat-flow] [data-chat-flow-kind="command-input"],
+[data-chat-flow] [data-chat-flow-kind="context"],
+[data-chat-flow] [data-chat-flow-kind="compaction"],
+[data-chat-flow] [data-chat-flow-kind="manual-compaction"],
+[data-chat-flow] [data-chat-flow-kind="model-retry"],
+[data-chat-flow] [data-chat-flow-kind="workflow-run"] {
+  background: var(--dshx-glass-pane);
+  background-image: var(--dshx-glass-sheen);
+  border-radius: 14px;
+  padding: 6px 10px;
+  box-shadow: var(--dshx-inset-hl);
+  -webkit-backdrop-filter: var(--dshx-blur-surface);
+  backdrop-filter: var(--dshx-blur-surface);
+}
+[data-chat-flow] [data-chat-flow-kind] [data-chat-flow-kind] {
+  background: transparent;
+  background-image: none;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* ===== N. 会话头部：标题胶囊 / 模式标签 / session log ===== */
+.wSkVaW_crumbs {
+  border-radius: 12px;
+  padding: 2px 8px;
+}
+.SVAs4q_label {
+  border-radius: 999px;
+  height: 24px;
+  padding: 0 10px 0 6px;
+}
+/* 产品悬停预览卡固定深色（浅色模式下也是深色的 bug），改为主题化玻璃浮层 */
+._card_1b2ny_13 {
+  --dsw-hovercard-bg: var(--dshx-glass-float);
+  border: 1px solid var(--dshx-glass-edge);
+}
+._card_1b2ny_13 .YDXeBa_hoverTitle {
+  color: var(--dsw-alias-label-primary);
+}
+._card_1b2ny_13 .YDXeBa_hoverPath,
+._card_1b2ny_13 .YDXeBa_hoverTime {
+  color: var(--dsw-alias-label-secondary);
+}
+._card_1b2ny_13 .YDXeBa_hoverStatus {
+  color: var(--dsw-alias-label-tertiary);
+}
+._card_1b2ny_13 ._copied_1b2ny_40 {
+  color: var(--dsw-alias-label-primary);
+}
+
+/* ===== O. 玻璃表面统一配方 =====
+ *   ⚠ 透明容器（如 footArea）不入组：挂 sheen 会留方角残影。
+ *   ⚠ .uV2eYG_select 不入组：须保留下拉箭头的 background-image。
+ *   ⚠ 折叠态设置圆钮不入组：rail 内无高光。 */
+.hHd-Xa_logoRow,
+.hHd-Xa_regionArea,
+.wSkVaW_crumbs,
+.SVAs4q_label,
+.FJxK0a_root,
+.pXSMma_workspace,
+.cubgiG_seat,
+.hHd-Xa_root:not(.hHd-Xa_collapsed) .VOzbGW_trigger,
+.hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_footerActions > div[style] > div[style],
+.hHd-Xa_root:not(.hHd-Xa_collapsed) .dshx-theme-toggle {
+  background-color: var(--dshx-glass-pane);
+  border: 1px solid var(--dshx-glass-edge);
+  box-shadow: var(--dshx-inset-hl);
+}
+/* 产品自带边框的成员只覆写颜色 */
+.hHd-Xa_newSession,
+.nL4_yW_sessionLogButton {
+  background-color: var(--dshx-glass-pane);
+  border-color: var(--dshx-glass-edge);
+  box-shadow: var(--dshx-inset-hl);
+}
+/* 镜面 sheen（tab 例外：其 hover/激活用 background 简写整体复位，故本地声明） */
+.hHd-Xa_logoRow, .hHd-Xa_regionArea, .hHd-Xa_newSession,
+.wSkVaW_crumbs, .SVAs4q_label, .nL4_yW_sessionLogButton,
+.FJxK0a_root, .pXSMma_workspace, .cubgiG_seat,
+.uV2eYG_card, .bqrRRG_card, .LVzXQa_card, .gdEzaW_bubble, .VOzbGW_panel,
+.hHd-Xa_root:not(.hHd-Xa_collapsed) .VOzbGW_trigger,
+.hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_footerActions > div[style] > div[style],
+.hHd-Xa_root:not(.hHd-Xa_collapsed) .dshx-theme-toggle {
+  background-image: var(--dshx-glass-sheen);
+}
+
+/* ===== P. 渐变鎏金 logo =====
+ *   仅图标做金色渐变+闪烁；文字字标保持主题色（金在浅玻璃上对比不足）。 */
+.hHd-Xa_brandMark,
+.hHd-Xa_railMark,
+.pXSMma_fish {
+  color: #d4af37;
+}
+.hHd-Xa_brandMark path,
+.hHd-Xa_railMark path,
+.pXSMma_fish path {
+  fill: url(#dshx-gold);
+}
+/* 新会话 hero 的「预览版」徽标：按需求隐藏 */
+.pXSMma_previewBadge {
+  display: none;
+}
+.pXSMma_headlineText {
+  background: linear-gradient(135deg, #f7e08a 0%, #d4af37 45%, #9a6b0f 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+/* 鎏金呼吸闪烁；prefers-reduced-motion 下关闭 */
+@keyframes dshx-gold-shimmer {
+  0%, 100% {
+    filter: brightness(1) drop-shadow(0 0 1px rgba(212, 175, 55, 0.30));
+  }
+  50% {
+    filter: brightness(1.12) drop-shadow(0 0 2px rgba(255, 220, 120, 0.28));
+  }
+}
+.hHd-Xa_brandMark svg,
+.hHd-Xa_railMark svg,
+.pXSMma_fish,
+.pXSMma_headlineText {
+  animation: dshx-gold-shimmer 2.6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hHd-Xa_brandMark svg,
+  .hHd-Xa_railMark svg,
+  .pXSMma_fish,
+  .pXSMma_headlineText {
+    animation: none;
+    filter: drop-shadow(0 0 1px rgba(212, 175, 55, 0.30));
+  }
+}

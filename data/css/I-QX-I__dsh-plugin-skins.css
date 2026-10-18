@@ -1,0 +1,1257 @@
+/* I-QX-I/dsh-plugin-skins — src/client/skin-styles.js
+   fetched 2026-10-18 from https://raw.githubusercontent.com/I-QX-I/dsh-plugin-skins/main/src/client/skin-styles.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+color-scheme: dark;
+	--dsw-alias-label-primary: var(--sk-ink) !important;
+	--dsw-alias-label-secondary: var(--sk-ink-secondary) !important;
+	--dsw-alias-label-tertiary: var(--sk-ink-muted) !important;
+	--dsw-alias-label-quaternary: var(--sk-ink-muted) !important;
+	--dsw-alias-label-caption: var(--sk-ink-muted) !important;
+	--dsw-alias-label-dimmed: var(--sk-ink-muted) !important;
+	--sk-link-ink: color-mix(in srgb, rgb(var(--sk-glow)) 35%, var(--sk-ink) 65%);
+	/* The host otherwise switches syntax ink back to its light-page palette. */
+	--shiki-foreground: var(--sk-ink) !important;
+	--shiki-token-constant: #4dabf7 !important;
+	--shiki-token-string: #69db7c !important;
+	--shiki-token-comment: var(--sk-ink-muted) !important;
+	--shiki-token-keyword: #faa2c1 !important;
+	--shiki-token-parameter: #ffa94d !important;
+	--shiki-token-function: #b197fc !important;
+	--shiki-token-string-expression: #8ce99a !important;
+	--shiki-token-punctuation: var(--sk-ink-secondary) !important;
+	--shiki-token-link: var(--sk-link-ink) !important;
+	color: var(--sk-ink) !important;
+	text-shadow: var(--sk-text-guard);
+	--sk-reading-sat: min(var(--sk-sat),112%);
+	/* The fill accent is a SEPARATE value from the halo's, and that separation is the
+	 * point. A glow is light added around an edge;
+	--sk-state-hover: rgba(var(--sk-glow), 0.10);
+	--sk-state-press: rgba(var(--sk-glow), 0.16);
+	--sk-motion-hover: 140ms;
+	--sk-motion-press: 70ms;
+	--sk-ease-settle: cubic-bezier(0.16, 1, 0.3, 1);
+	--sk-ease-release: cubic-bezier(0.22, 1, 0.36, 1);
+	/* The shell's own accent is a fixed blue, so every selected tab, indicator and
+	 * highlighted control stayed blue on every skin — including the one whose whole
+	 * identity is being grey. The accent is a token, so it can simply be repointed
+	 * at the skin's derived colour.
+	 *
+	 * Three more tokens carry the same blue and each one showed up as a separate
+	 * complaint: file links in the transcript, and the status line while a run is in
+	 * progress ("深度求索中..."). They are separate names, so overriding the accent
+	 * alone left both of them blue. */
+	--dsw-alias-state-business-primary: rgb(var(--sk-glow)) !important;
+	--dsw-alias-state-info-primary: rgb(var(--sk-glow)) !important;
+	--dsw-alias-label-link: var(--sk-link-ink) !important;
+	--dsw-alias-menu-icon: var(--sk-ink-secondary) !important;
+	--dsw-alias-text-link: var(--sk-link-ink) !important;
+	--dsw-alias-link: var(--sk-link-ink) !important;
+
+	/* Shared liquid material: a thin tint, directional specular edge and
+	 * a geometry-specific backdrop lens. Larger input surfaces scatter more
+	 * light;
+	--sk-code-banner: hsl(var(--sk-tint-lift) / .45);
+	--sk-work-label: var(--sk-ink-secondary);
+	--dsw-alias-label-deep-diving: var(--sk-work-label) !important;
+	--dsw-alias-label-deep-diving-shimmer: color-mix(in srgb, rgb(var(--sk-glow)) 30%, white 70%) !important;
+	--dsw-alias-label-shimmer: color-mix(in srgb, rgb(var(--sk-glow)) 30%, white 70%) !important;
+	--sk-mat-blur: var(--sk-liquid-filter, blur(var(--sk-control-blur))) saturate(var(--sk-sat));
+	--sk-session-cast-shadow: 0 5px 14px rgba(0,0,0,.18);
+	background-attachment: fixed !important;
+	background-repeat: no-repeat !important;
+	background-size: cover !important;
+	/* Without this the drift layers are invisible. In the root stacking context a
+	 * negative-z child paints before in-flow descendants' backgrounds, and body's
+	 * own background is one of those — so the pseudo-elements ended up behind the
+	 * wallpaper they are supposed to float on. Making body a stacking context puts
+	 * things back in the intuitive order: body's background, then the negative-z
+	 * layers, then the app. */
+	isolation: isolate;
+}
+	body[data-sk-active] {
+		--sk-a-bar: 0.98;
+		--sk-a-side: 0.99;
+		--sk-a-center: 0.99;
+		--sk-a-card: 0.99;
+		--sk-a-float: 1;
+		--sk-a-frame: 0.99;
+	}
+	body[data-sk-active] *,
+	body[data-sk-active]::before,
+	body[data-sk-active]::after {
+		-webkit-backdrop-filter: none !important;
+		backdrop-filter: none !important;
+	}
+}
+
+/* The opaque shell surfaces, turned into tinted glass.
+ *
+ * One caveat found the hard way: bg-base is not only the shell's own surface, it
+ * is also what the transcript sits on AND what the file-change card paints itself
+ * with. Turning it into a near-opaque surface fixed the card but flattened the
+ * whole conversation, so it stays on the preset alpha and the content cards get
+ * their own rule further down instead. markdown-code-block is a bounded box that
+ * only ever holds code, so it can be honest here. */
+body[data-sk-active] {
+	/* bg-base is the page itself and keeps the base tint; everything from layer-1 up
+	 * is a RAISED surface and takes the lifted one. That split is the whole fix for
+	 * the "too black" boxes: the panels were never too opaque, they were painted in
+	 * the page's own near-black violet. */
+	--dsw-alias-bg-base: hsl(var(--sk-tint) / var(--sk-a-center)) !important;
+	--dsw-alias-bg-layer-1: hsl(var(--sk-tint-lift) / var(--sk-a-card)) !important;
+	--dsw-alias-bg-overlay: hsl(var(--sk-tint-lift) / var(--sk-a-float)) !important;
+	--dsw-alias-bg-multi-select: hsl(var(--sk-tint-lift) / var(--sk-a-float)) !important;
+	--dsw-alias-bg-skeleton: rgba(255, 255, 255, 0.08) !important;
+
+	--dsw-specific-input-major: hsl(var(--sk-tint-lift) / var(--sk-a-card)) !important;
+	--dsw-specific-sidebar-fill: hsl(var(--sk-tint) / var(--sk-a-side)) !important;
+	--dsw-specific-selector: hsl(var(--sk-tint-lift) / 0.9) !important;
+	--dsw-specific-menu: hsl(var(--sk-tint-lift) / var(--sk-a-float)) !important;
+	--dsw-menu-surface-fill: hsl(var(--sk-tint-lift) / var(--sk-a-float)) !important;
+	/* The tip/notice surface was the last thing in this skin still built out of raw
+	 * white, and it showed. Measured on screen it renders as a light band under the
+	 * text — RGB(48,46,79) against RGB(31,28,64) around it, which is a uniform +17
+	 * on all three channels and nothing else: exactly a white 8% overlay. Every
+	 * other surface here is built from the skin's own tint;
+
+	/* The new-session pill and the changed-files card both ride this token. */
+	--dsw-alias-button-elevated-fill: rgba(255, 255, 255, 0.13) !important;
+	--dsw-alias-button-floating-fill: rgba(255, 255, 255, 0.12) !important;
+	--dsw-alias-button-contrast-fill: rgba(255, 255, 255, 0.20) !important;
+
+	--dsw-specific-sidebar-nav-item-hover: var(--sk-state-hover) !important;
+	--dsw-specific-sidebar-nav-item-active: var(--sk-state-press) !important;
+	--dsw-specific-sidebar-nav-item-active-accent: rgba(var(--sk-glow), 0.42) !important;
+
+	--dsw-alias-tooltip-bg: hsl(var(--sk-tint) / 0.96) !important;
+	--dsw-alias-toast-bg: hsl(var(--sk-tint) / 0.76) !important;
+	--dsw-alias-border-l1: rgba(255, 255, 255, 0.10) !important;
+	--dsw-alias-border-l2: rgba(255, 255, 255, 0.14) !important;
+	--dsw-alias-border-l3: rgba(255, 255, 255, 0.18) !important;
+	--dsw-alias-border-l4: rgba(255, 255, 255, 0.26) !important;
+	--dsw-alias-interactive-bg-hover: var(--sk-state-hover) !important;
+	--dsw-alias-interactive-bg-hover-solid: color-mix(in srgb, hsl(var(--sk-tint-lift)) 90%, rgb(var(--sk-glow)) 10%) !important;
+	--dsw-alias-interactive-bg-active: var(--sk-state-press) !important;
+
+	--dsw-alias-markdown-code-block: hsl(var(--sk-tint) / 0.44) !important;
+	--dsw-alias-markdown-code-block-banner: hsl(var(--sk-tint) / 0.56) !important;
+	/* Inline code, citations and tags were the last three white washes. They are small,
+	 * which is why they survived this long, but they are the same defect: a neutral
+	 * grey chip behind text that belongs to no surface. The inline-code one was clearly
+	 * visible in a transcript line right after the hover fix, which is what prompted
+	 * taking them too. */
+	--dsw-alias-markdown-inline-code: hsl(var(--sk-tint-lift) / 0.9) !important;
+	--dsw-alias-markdown-citation: hsl(var(--sk-tint-lift) / 0.82) !important;
+	--dsw-alias-markdown-tag: hsl(var(--sk-tint-lift) / 0.86) !important;
+}
+
+/* --- frame sheets -------------------------------------------------
+ * No backdrop-filter on the two big columns: an element with one becomes a
+ * backdrop root, and a nested filter inside it would then only ever sample the
+ * column's own flat tint — which is why the composer carries no blur of its
+ * transcript scrolling under it. Blurring a smooth wallpaper buys nothing, so
+ * the columns keep the tint and the rim, and the filters live only where
+ * something with detail actually passes behind: the composer and floating
+ * sheets. */
+[data-windows-titlebar] .BynINW_frame:before {
+	background: var(--sk-sheen), hsl(var(--sk-tint) / var(--sk-a-bar)) !important;
+	box-shadow: inset 0 1px 0 var(--sk-rim), inset 0 -1px 0 var(--sk-rim-soft) !important;
+}
+.BynINW_sidebarCol,
+[class*='_sidebarCol'] {
+	background: var(--sk-sheen), hsl(var(--sk-tint) / var(--sk-a-side)) !important;
+	/* Historical rationale: see docs/CSS-HISTORY.md, note 6. */
+	box-shadow: inset 0 1px 0 var(--sk-rim) !important;
+	/* Square on purpose now, not by omission. The whole story is written out on
+	 * .BynINW_frame below; the short version is that a 10px radius here is a SECOND
+	 * corner drawn inside the window's own corner, and the gap between the two arcs
+	 * is the raw wallpaper. */
+	border-bottom-left-radius: 0;
+	/* Historical rationale: see docs/CSS-HISTORY.md, note 7. */
+}
+.BynINW_centerCol,
+[class*='_centerCol'] {
+	background: hsl(var(--sk-tint) / var(--sk-a-center)) !important;
+	box-shadow: inset 0 0 0 0.5px var(--sk-rim-hair), inset 0 1px 0 var(--sk-rim) !important;
+	/* !important because the shell sets a radius on this element itself (it is the
+	 * one that rounds the reading pane), so a plain declaration here loses. The
+	 * bottom corner is squared rather than rounded: same measurement as
+	 * .BynINW_frame below, and this is the element whose arc the user was seeing. */
+	border-bottom-right-radius: 0 !important;
+}
+
+/* Historical rationale: see docs/CSS-HISTORY.md, note 8. */
+/* Frosted, not darker.
+ *
+ * Legibility on these surfaces comes from BLUR, not from opacity. A heavily blurred
+ * backdrop is a uniform wash, so text reads against it at almost any alpha;
+	background: hsl(var(--sk-tint) / 0.42) !important;
+	-webkit-backdrop-filter: blur(var(--sk-reading-blur)) saturate(var(--sk-reading-sat)) !important;
+	backdrop-filter: blur(var(--sk-reading-blur)) saturate(var(--sk-reading-sat)) !important;
+}
+/* Historical rationale: see docs/CSS-HISTORY.md, note 9. */
+::-webkit-scrollbar {
+	/* Keep the host gutter width: changing it shifts the centred composer. */
+	width: var(--dsh-scrollbar-width, 5px);
+	height: var(--dsh-scrollbar-width, 5px);
+}
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-track-piece,
+::-webkit-scrollbar-corner {
+	background: transparent !important;
+	box-shadow: none !important;
+	border: 0 !important;
+}
+/* The native sticky composer fades the transcript only up to the scrollbar
+ * gutter, exposing a brighter rail beside its lower half. The glass card and
+ * tray already carry their own material, so this extra veil is unnecessary. */
+body[data-sk-active] [class*='_composerSeat'] {
+	background: transparent !important;
+}
+::-webkit-scrollbar-thumb {
+	/* Historical rationale: see docs/CSS-HISTORY.md, note 10. */
+	background: rgba(255, 255, 255, 0.08) !important;
+	border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+	background: var(--sk-rim) !important;
+}
+
+/* The window sheet fills the seam and the rounded notch; it must stay
+ * filter-free, or it would become a backdrop root and its children would blur
+ * this flat tint instead of the wallpaper. */
+.BynINW_frame {
+	background: hsl(var(--sk-tint) / var(--sk-a-frame)) !important;
+	/* Historical rationale: see docs/CSS-HISTORY.md, note 11. */
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+	/* Historical rationale: see docs/CSS-HISTORY.md, note 12. */
+	transition: grid-template-columns var(--ds-transition-duration-slow) var(--ds-ease-in-out);
+}
+/* The host clamps the push panel to available space, but its grid target still
+ * contains the requested width. Interpolating that larger target makes the grid
+ * overrun the panel. Mirror only the host's resolved width; its original inline
+ * grid and resizing logic remain untouched. Closed and open tracks have identical
+ * minmax structure, and use the same clock as the panel's native slide. */
+.BynINW_frame[data-sk-push] {
+	grid-template-columns: var(--dsh-windows-sidebar-width, 0px) minmax(0px, 1fr) minmax(0px, var(--sk-right-width, 0px)) !important;
+}
+.BynINW_frame[data-rightbar-collapsed][data-sk-push] {
+	grid-template-columns: var(--dsh-windows-sidebar-width, 0px) minmax(0px, 1fr) minmax(0px, 0px) !important;
+}
+.BynINW_frame:is([data-dragging], [data-rightbar-instant], [data-rightbar-fullscreen]) {
+	transition: none !important;
+}
+/* Remove the short extra tint that ends abruptly above the account control. */
+[class*='_sidebarCol'] [class*='_regionArea'] [class$='_fade'] {
+	background: transparent !important;
+}
+[class*='_sidebarCol'] > [data-slot='sidebar'] > [class*='_root'] {
+	background: transparent !important;
+}
+/* Slide the full-width content into its grid track. This keeps each
+ * glass control inside the sampling boundary rather than clipping its lens. */
+.BynINW_sidebarCol { z-index: 2; }
+.BynINW_sidebarCol > [data-slot='sidebar'] > [class*='_root'] {
+ position: relative;
+ left: calc(100% - var(--sk-sidebar-native-width, 280px));
+}
+[data-sk-live-static] { position: relative; }
+[data-sk-liquid] > svg[data-sk-liquid-viewport] {
+ position: absolute !important;
+ inset: 0;
+ width: 100%;
+ height: 100%;
+ max-width: none;
+ margin: 0;
+ pointer-events: none;
+ overflow: visible;
+}
+/* Keep the session's soft cast shadow. Enlarge the scroll/region paint gutter
+ * without moving the rows, rather than cutting the shadow four pixels away. */
+[class*='_sidebarCol'] [class*='_regionArea'] {
+	margin-left: calc(-1 * var(--dsh-sidebar-inline-padding, 12px));
+	padding-left: var(--dsh-sidebar-inline-padding, 12px);
+}
+[class*='_sidebarCol'] [class*='_treeBody'] > :is([class$='_list'], [class*='_list ']) {
+	margin-left: calc(-1 * var(--dsh-sidebar-inline-padding, 12px));
+	padding-left: var(--dsh-sidebar-inline-padding, 12px);
+}
+
+/* --- the sidebar's selected panel row ---------------------------------
+ * The host marks the open panel with a _panelActive class (plus aria-current='page')
+ * and gives it a flat background from --dsw-alias-interactive-bg-hover — the SAME
+ * flat fill it gives the pointer hover state. So the row a user is actually standing on looked
+ * exactly like the row the pointer happened to be over, and neither of them was
+ * glass: that is the flat colour block in the sidebar.
+ *
+ * Selection is a resting state, not a passing one, so it does not answer
+ * :hover. It gets a real material layer on ::before, built from the same
+ * tokens as the selected document tab next to it — one shared surface token
+ * (--sk-mat-bg), one shared rim (--sk-mat-rim), one shared filter
+ * (--sk-mat-blur), so both materials and all six intensities arrive for free
+ * and liquid glass keeps its per-size SVG lens instead of a CSS blur.
+ *
+ * Two things are deliberately NOT done here. The native fill is cleared rather
+ * than stacked under the material, because painting host wash plus glass is the
+ * double background this plugin keeps having to remove;
+	position: relative;
+	z-index: 0;
+	background-color: transparent !important;
+	background-image: none !important;
+	box-shadow: none !important;
+}
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	border-radius: inherit;
+	pointer-events: none;
+	background: var(--sk-mat-bg);
+	box-shadow: var(--sk-mat-rim);
+	-webkit-backdrop-filter: var(--sk-mat-blur);
+	backdrop-filter: var(--sk-mat-blur);
+	transition: background-color var(--sk-motion-hover) var(--sk-ease-settle);
+}
+	background: color-mix(in srgb, var(--sk-mat-bg) 90%, rgb(var(--sk-glow)) 10%);
+}
+	background: color-mix(in srgb, var(--sk-mat-bg) 84%, rgb(var(--sk-glow)) 16%);
+	transition-duration: var(--sk-motion-press);
+}
+	background:transparent!important;
+	box-shadow:none!important;
+}
+
+/* A trace is a reading canvas, not a pile of opaque elevated cards.
+ * Keep the virtual ledger filter-free; only its small fixed controls carry a
+ * tint. Semantic anchors survive generated class-prefix changes. */
+[data-conversation-composer-overlay]:has([data-timeline-domain]),
+[data-conversation-composer-overlay]:has([data-timeline-domain]) :is([class$='_split'],[class$='_table']) {
+ background: transparent !important;
+ backdrop-filter: none !important;
+}
+[data-conversation-composer-overlay]:has([data-timeline-domain]) :is([role='toolbar'],[class$='_plot'],[class$='_search']) {
+ background: var(--sk-mat-bg) !important;
+ border-color: var(--sk-rim-soft) !important;
+}
+[data-conversation-composer-overlay]:has([data-timeline-domain]) :is([class$='_searchInput'],[class$='_contentText'],[class$='_resultRequest']) {
+ color: var(--sk-ink) !important;
+}
+[data-conversation-composer-overlay]:has([data-timeline-domain]) :is([class$='_inlineResult'],[class$='_inlineResultText']) {
+ color: var(--sk-ink-secondary) !important;
+}
+[data-conversation-composer-overlay]:has([data-timeline-domain]) [class$='_searchInput']::placeholder {
+ color: var(--sk-ink-muted) !important;
+ opacity: 1;
+}
+[data-conversation-composer-overlay]:has([data-timeline-domain]) [class$='_detailPane'] {
+ background: var(--sk-card-bg) !important;
+}
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+ [data-conversation-composer-overlay]:has([data-timeline-domain]) { background: hsl(var(--sk-tint)) !important; }
+}
+
+/* --- composer -----------------------------------------------------
+ * The transcript scrolls underneath this sheet, so its blur does the real work
+ * of a floating bar; the tint only tops it up enough to keep the placeholder
+ * and the controls legible. */
+/* Historical rationale: see docs/CSS-HISTORY.md, note 13. */
+[data-composer-card] {
+	/* Historical rationale: see docs/CSS-HISTORY.md, note 14. */
+	background: var(--sk-mat-bg) !important;
+	box-shadow: var(--sk-mat-rim), 0 10px 28px rgba(0, 0, 0, 0.20) !important;
+}
+
+/* Historical rationale: see docs/CSS-HISTORY.md, note 15. */
+body[data-sk-glass] [data-composer-card] {
+	position: relative !important;
+	/* z-index 0 makes the card a STACKING CONTEXT, which is what lets the
+	 * pseudo-element below sit at -1 without escaping behind the page.
+	 *
+	 * It has to be a stacking context, and it has to be this one: position plus
+	 * z-index creates one, while isolation: isolate would also work but is a
+	 * backdrop-root trigger — and a backdrop root here would make the blur sample
+	 * nothing but the card itself, which is the trap this file warns about twice. */
+	z-index: 0 !important;
+	background: none !important;
+	box-shadow: none !important;
+}
+/* Historical rationale: see docs/CSS-HISTORY.md, note 16. */
+body[data-sk-glass] [data-composer-card]::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	border-radius: inherit;
+	pointer-events: none;
+	background: var(--sk-mat-bg);
+	box-shadow: var(--sk-mat-rim), 0 10px 28px rgba(0, 0, 0, 0.20);
+	-webkit-backdrop-filter: var(--sk-mat-blur) !important;
+	backdrop-filter: var(--sk-mat-blur) !important;
+}
+
+/* Historical rationale: see docs/CSS-HISTORY.md, note 17. */
+[data-composer-stats] {
+	font-variant-numeric: tabular-nums;
+}
+
+/* Historical rationale: see docs/CSS-HISTORY.md, note 18. */
+[class*='_backdrop_'] > [class*='_close_'] {
+	top: 64px !important;
+}
+
+/* Historical rationale: see docs/CSS-HISTORY.md, note 19. */
+[data-composer-card] button[class$='_primary'],
+[data-composer-card] button[class*='_primary '] {
+	position: relative !important;
+	overflow: hidden !important;
+	/* Historical rationale: see docs/CSS-HISTORY.md, note 20. */
+	/* Historical rationale: see docs/CSS-HISTORY.md, note 21. */
+	/* Historical rationale: see docs/CSS-HISTORY.md, note 22. */
+	background: rgba(var(--sk-glow), var(--sk-control-tint)) !important;
+	/* The shadow list is not free-form: it is the same set of layers the working
+	 * animation's frame() emits, so that the retract can land on the resting state
+	 * without a pop. Change one and the seam test fails — correctly. The crystal
+	 * character therefore lives in the background gradients above, which the
+	 * animation does not touch, and the shadow keeps its layer set.
+	 *
+	 * (Do not put a backtick in any comment in this file. The stylesheet is one
+	 * template literal, so a single one ends it early. That happened here.) */
+	box-shadow:
+		inset 0 1px 0 rgba(255, 255, 255, 0.52),
+		inset 0 -1px 0 rgba(255, 255, 255, 0.12),
+		inset 0 0 0 1px rgba(255, 255, 255, 0.30),
+		inset 0 0 13px rgba(var(--sk-glow), 0.07),
+		inset 0 0 0 rgba(var(--sk-glow-2), 0),
+		inset 0 0 0 rgba(var(--sk-glow), 0),
+		0 0 0 0 rgba(255, 255, 255, 0),
+		0 0 14px rgba(var(--sk-glow), 0.16),
+		0 6px 16px rgba(0, 0, 0, 0.42),
+		0 1px 3px rgba(0, 0, 0, 0.30);
+	color: #fff !important;
+	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.42) !important;
+	/* background-color only. This list used to carry box-shadow and transform, and
+	 * that was the last flicker source on this control: animating a ten-layer shadow
+	 * — including a 16px and a 22px blur — interpolates it frame by frame, which is a
+	 * large repaint every frame inside a backdrop root. background-color is a plain
+	 * paint and has never flickered. */
+	transition: background-color 0.15s ease !important;
+}
+/* The specular: the image of the light source on the glass, and the only one.
+ *
+ * A soft white cloud is what a matte surface does with light; glass shows a small,
+ * hard-edged reflection of the source itself. So this is a short narrow oval with a
+ * crisp edge and no blur, which reads as a reflection rather than a smudge. The
+ * broad gradient that used to sit behind it in the background is gone: two
+ * highlights on one surface is what made the button look painted, and it is the
+ * same fault as two light sources anywhere else. */
+/* Historical rationale: see docs/CSS-HISTORY.md, note 23. */
+[data-composer-card] button[class$='_primary']::before,
+[data-composer-card] button[class*='_primary ']::before {
+	content: '';
+	position: absolute;
+	inset: -20% -40%;
+	pointer-events: none;
+	background: radial-gradient(closest-side circle at 50% 50%, rgba(var(--sk-glow-fill), 0.50), rgba(var(--sk-glow-fill), 0) 70%);
+	opacity: 0;
+	transform: translate3d(-130%, 0, 0) scale(0.55);
+}
+[data-composer-card] button[class$='_primary']:hover::before,
+[data-composer-card] button[class*='_primary ']:hover::before {
+	animation: sk-glint 420ms cubic-bezier(0.2, 0, 0.8, 1);
+}
+@keyframes sk-glint {
+	0% { opacity: 0; transform: translate3d(-130%, 0, 0) scale(0.55); }
+	38% { opacity: 0.8; }
+	100% { opacity: 0; transform: translate3d(130%, 0, 0) scale(1.15); }
+}
+@media (prefers-reduced-motion: reduce) {
+	[data-composer-card] button[class$='_primary']:hover::before,
+	[data-composer-card] button[class*='_primary ']:hover::before { animation: none !important; opacity: 0 !important; }
+}
+/* Idle: nothing here. The working state lights a rim light into this layer, so
+ * the same element crossfades between "a bead at rest" and "a bead with light
+ * running around it" without any second element appearing. */
+/* The bead's halo EXISTS only while a run is active.
+ *
+ * It used to be present at rest with opacity 0, which is the last flicker source on
+ * this control: opacity below 1 promotes the element to its own compositing layer,
+ * and a composited layer inside the composer's backdrop root makes the backdrop be
+ * re-rendered — so merely hovering, which repaints the button, dragged the whole
+ * window into a re-filter. Nothing was animating; the element simply existed.
+ *
+ * content: none removes it from rendering entirely when idle. The watcher writes
+ * the work/ending state on the BUTTON, so the internal light uses that same node. */
+[data-composer-card] button[class$='_primary']::after,
+[data-composer-card] button[class*='_primary ']::after {
+	content: none;
+}
+[data-composer-card] button[class$='_primary']:is([data-sk='work'], [data-sk='ending'])::after,
+[data-composer-card] button[class*='_primary ']:is([data-sk='work'], [data-sk='ending'])::after {
+	position: absolute;
+	inset: -25%;
+	border-radius: 50%;
+	opacity: 0;
+	transition: opacity 0.6s ease-out;
+	pointer-events: none;
+	background: conic-gradient(from 0deg,
+		rgba(255, 255, 255, 0) 0deg,
+		rgba(255, 255, 255, 0.34) 34deg,
+		rgba(var(--sk-glow), 0.12) 78deg,
+		rgba(255, 255, 255, 0) 132deg,
+		rgba(255, 255, 255, 0) 196deg,
+		rgba(var(--sk-glow), 0.26) 238deg,
+		rgba(255, 255, 255, 0) 300deg);
+	-webkit-mask: radial-gradient(closest-side, rgba(0, 0, 0, 0) 58%, #000 76%, #000 93%, rgba(0, 0, 0, 0) 100%);
+	mask: radial-gradient(closest-side, rgba(0, 0, 0, 0) 58%, #000 76%, #000 93%, rgba(0, 0, 0, 0) 100%);
+}
+/* Both selectors require BUTTON, and that is not decoration.
+ *
+ * The [class*='_primary '] form is a substring match, and a CSS-module name is a
+ * family: it reaches any ancestor or wrapper whose class happens to contain that
+ * fragment. Without the element type, hovering the send button lifted the ENTIRE
+ * composer card by 3px, because a wrapper matched too. This is the fourth time a
+ * substring class match has hit more than intended in this file; the guard is the
+ * cheap structural fix, since only a real button should ever be pressed. */
+[data-composer-card] button[class$='_primary']:hover:not(:disabled),
+[data-composer-card] button[class*='_primary ']:hover:not(:disabled) {
+	/* No transform. Inside a backdrop root a transform promotes a compositing layer,
+	 * which is the same mechanism that made this control flicker the window. The
+	 * hover answer is paint only: a lifted shadow and a brighter fill. */
+	background-color: rgba(var(--sk-glow), 0.20) !important;
+	box-shadow:
+		inset 0 1px 0 rgba(255, 255, 255, 0.62),
+		inset 0 -1px 0 rgba(255, 255, 255, 0.16),
+		inset 0 0 0 1px rgba(255, 255, 255, 0.38),
+		inset 0 0 15px rgba(var(--sk-glow), 0.10),
+		inset 0 0 0 rgba(var(--sk-glow-2), 0),
+		inset 0 0 0 rgba(var(--sk-glow), 0),
+		0 0 0 0 rgba(255, 255, 255, 0),
+		0 0 18px rgba(var(--sk-glow), 0.22),
+		0 10px 22px rgba(0, 0, 0, 0.48),
+		0 2px 6px rgba(0, 0, 0, 0.32) !important;
+}
+[data-composer-card] button[class$='_primary']:active:not(:disabled),
+[data-composer-card] button[class*='_primary ']:active:not(:disabled) {
+	background-color: rgba(var(--sk-glow), 0.25) !important;
+}
+/* Disabled means dimmer, not colourless.
+ *
+ * This used to be saturate(0.45), which threw away more than half the button's
+ * chroma — so the one control that carries the skin's accent turned grey the moment
+ * it went inactive, and the whole composer read as unthemed. Brightness is what
+ * signals "not available"; desaturating it just makes the control look broken. */
+[data-composer-card] button[class$='_primary']:disabled,
+[data-composer-card] button[class*='_primary ']:disabled {
+	filter: brightness(0.76);
+}
+}
+
+/* --- small glass pieces: bubbles, pills, window-chrome buttons -----
+ * The new-session pill and, once the sidebar is collapsed, the two 28px
+ * window-chrome buttons the sidebar moves into the title bar.
+ *
+ * The class match is anchored: newSession also prefixes the newSessionContent,
+ * newSessionLabel, newSessionLabelMask and newSessionShortcut classes, and a
+ * plain substring match painted those inner wrappers too — which is what put a
+ * stray lighter block inside the pill. */
+/* Historical rationale: see docs/CSS-HISTORY.md, note 26. */
+[class*='_bubble']:not([class*='_bubble_']) {
+	background: var(--sk-mat-bg) !important;
+	-webkit-backdrop-filter: var(--sk-mat-blur) !important;
+	backdrop-filter: var(--sk-mat-blur) !important;
+	box-shadow: var(--sk-mat-rim) !important;
+}
+
+/* The task panel takes the CONTENT material, not the lens.
+ *
+ * It was on the lens for one build and the user moved it back: a panel that holds a
+ * list of items is content, and content in this skin is the bubble/composer material
+ * — a flat tint with the backdrop sampled behind it. The lens (the send button's
+ * structure) belongs to controls, which is why the two are now separate rules rather
+ * than one list someone will later merge.
+ *
+ * Located by shape rather than by hash: a section that owns a collapsible header. */
+section:has(> [class*='_body'] > button[aria-expanded][class*='_header']) {
+	background: var(--sk-mat-bg) !important;
+	-webkit-backdrop-filter: var(--sk-mat-blur) !important;
+	backdrop-filter: var(--sk-mat-blur) !important;
+	box-shadow: var(--sk-mat-rim) !important;
+}
+
+/* Historical rationale: see docs/CSS-HISTORY.md, note 27. */
+[data-queue-dock] ul > li {
+	background: var(--sk-mat-bg) !important;
+	-webkit-backdrop-filter: var(--sk-mat-blur) !important;
+	backdrop-filter: var(--sk-mat-blur) !important;
+	box-shadow: var(--sk-mat-rim) !important;
+}
+
+/* Historical rationale: see docs/CSS-HISTORY.md, note 28. */
+[class*='_toBottom']:not([class*='_toBottomSlot']) {
+	background: var(--sk-mat-bg) !important;
+	-webkit-backdrop-filter: var(--sk-mat-blur) !important;
+	backdrop-filter: var(--sk-mat-blur) !important;
+	box-shadow: var(--sk-mat-rim) !important;
+}
+
+/* Historical rationale: see docs/CSS-HISTORY.md, note 29. */
+.md-code-block [class*='_bannerWrap'] {
+	/* The existing code-content clip keeps scrolled glyphs out of this glass. */
+	background: var(--sk-code-banner) !important;
+	background-image: linear-gradient(110deg,rgba(255,255,255,.035),transparent 45%) !important;
+	backdrop-filter:blur(24px) saturate(1.08)!important;
+	-webkit-backdrop-filter:blur(24px) saturate(1.08)!important;
+	border-bottom: .5px solid var(--sk-rim-soft);
+	border-top-left-radius: var(--dsl-code-block-border-radius, var(--dsw-radius-lg)) !important;
+	border-top-right-radius: var(--dsl-code-block-border-radius, var(--dsw-radius-lg)) !important;
+}
+/* The inner banner must not add another tint over the reading glass. */
+.md-code-block [class*='_bannerWrap'] > [class*='_banner_'] {
+	background:transparent!important;color:var(--sk-ink)!important;
+}
+.md-code-block [class*='_bannerWrap'] :is(button,[class*='_infostring']) {
+	color:var(--sk-ink)!important;
+}
+.md-code-block [class*='_bannerWrap'] button svg { color:inherit; }
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) {
+	.md-code-block [class*='_bannerWrap'] { background:hsl(var(--sk-tint-lift))!important; }
+}
+
+/* One surface per code block, not a tint on both the wrapper and every pre.
+ * The sticky banner uses its own stronger reading blur. */
+.md-code-block {
+	background: var(--sk-card-bg) !important;
+	background-image: var(--sk-liquid-sheen) !important;
+	-webkit-backdrop-filter: var(--sk-mat-blur) !important;
+	backdrop-filter: var(--sk-mat-blur) !important;
+	box-shadow: var(--sk-mat-rim);
+	/* overflow:hidden would break the sticky header. Clip the complete surface
+	 * at its current sticky edge, including the fill underneath the rounded header. */
+	clip-path: inset(var(--sk-code-clip-top, 0px) 0 0 round var(--dsl-code-block-border-radius, var(--dsw-radius-lg)));
+}
+.md-code-block pre {
+	background: transparent !important;
+}
+/* Long code/log surfaces can span many screens. Keep their clear reading
+ * material and curved outline without allocating a full-height refraction
+ * texture; navigation and compact cards retain the optical lens. */
+body[data-sk-glass] .md-code-block {
+ --sk-mat-blur: blur(min(var(--sk-reading-blur), 4px)) saturate(1.12);
+}
+/* The host's shimmer animates a separate text copy. Theme its existing
+ * highlight token and active label without filtering or replacing the text. */
+[data-slot='conversation.chat.node'] :is(button[aria-expanded], [data-turn-process]):has([data-shimmer-text]) {
+	color: var(--sk-work-label) !important;
+}
+	background: var(--sk-settings-bg) !important;
+	-webkit-backdrop-filter: var(--sk-liquid-filter,blur(max(var(--sk-reading-blur),calc(3.5px * var(--sk-readability-floor))))) saturate(1.12) !important;
+	backdrop-filter: var(--sk-liquid-filter,blur(max(var(--sk-reading-blur),calc(3.5px * var(--sk-readability-floor))))) saturate(1.12) !important;
+	box-shadow: var(--sk-mat-rim), 0 12px 32px rgba(0,0,0,.20) !important;
+} color:var(--sk-ink)!important; } color:var(--sk-ink-secondary)!important; }
+	position: relative;
+	z-index: 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	min-height: 28px;
+	padding: 4px 10px;
+	gap: 6px;
+	border-radius: var(--dsw-radius-md);
+	background: transparent !important;
+	text-align: center;
+}
+	position: relative;
+	z-index: 0;
+	background: transparent !important;
+	--sk-liquid-filter: initial;
+}
+	box-shadow: var(--sk-mat-rim), inset 0 1px 0 rgba(var(--sk-glow), .55);
+}
+	background: color-mix(in srgb, var(--sk-mat-bg) 90%, rgb(var(--sk-glow)) 10%);
+}
+	background: color-mix(in srgb, var(--sk-mat-bg) 84%, rgb(var(--sk-glow)) 16%);
+}
+	transition: background-color var(--sk-motion-hover) var(--sk-ease-settle);
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	border-radius: inherit;
+	pointer-events: none;
+	background: var(--sk-mat-bg);
+	box-shadow: var(--sk-mat-rim);
+	-webkit-backdrop-filter: var(--sk-mat-blur);
+	backdrop-filter: var(--sk-mat-blur);
+}
+	background: none !important;
+	background-image: none !important;
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+	box-shadow: none !important;
+}
+/* The dock begins exactly at the composer's lower edge. Its square upper
+ * corners attach to that edge;
+	box-shadow:
+		inset 0.5px 0 0 var(--sk-rim-soft),
+		inset -0.5px 0 0 var(--sk-rim-soft),
+		inset 0 -0.5px 0 var(--sk-rim-soft);
+}
+ position: relative;
+ z-index: 0;
+ --sk-mat-blur: var(--sk-liquid-filter,blur(var(--sk-control-blur))) saturate(var(--sk-reading-sat));
+}
+/* Expanded input keeps the native glass recipe without a full-area SVG pass.
+ * Geometry owns the marker;
+ --sk-mat-blur: blur(var(--sk-control-blur)) saturate(var(--sk-reading-sat));
+ --sk-mat-rim: var(--sk-reading-rim);
+}
+/* Native long-message glass keeps a quiet contour without SVG reflection. */
+body[data-sk-glass] [class*='_bubble']:not([class*='_bubble_']):not([data-sk-liquid]) {
+ --sk-mat-rim: var(--sk-reading-rim);
+}
+/* A local SVG viewport follows the same native CSS sizing as the glass layer.
+ * Its percentage image bounds resolve during paint, including the final frame
+ * of a sidebar transition;
+ position: absolute;
+ inset: 0 var(--dsh-composer-side-clearance, 16px) auto;
+ width: calc(100% - 2 * var(--dsh-composer-side-clearance, 16px));
+ height: var(--sk-composer-height, 120px);
+ max-width: var(--dsh-composer-card-max-width);
+ margin-inline: auto;
+ pointer-events: none;
+ overflow: visible;
+}
+/* Keep native nodes and event handlers in place. Removing this stylesheet
+ * immediately restores the host's original card-then-dock layout. */
+/* Historical rationale: see docs/CSS-HISTORY.md, note 30. */
+[data-composer-placeholder] { color: var(--sk-ink-muted) !important; }
+[data-composer-stats] {
+	font-variant-numeric: tabular-nums;
+}
+}
+ content: '';
+ position: absolute;
+ inset: 0 var(--dsh-composer-side-clearance, 16px) auto;
+ height: var(--sk-composer-height, 120px);
+ max-width: var(--dsh-composer-card-max-width);
+ margin-inline: auto;
+ z-index: -1;
+ pointer-events: none;
+ background: var(--sk-liquid-sheen), var(--sk-mat-bg);
+ /* One rounded rectangle, the card's own shape. The union path existed only to
+  * fuse the tray into the sheet; with the tray back in its own row the card's
+  * native corner radius is the whole silhouette. */
+ border-radius: var(--dsw-radius-panel, 28px);
+}
+ -webkit-backdrop-filter: var(--sk-mat-blur);
+ backdrop-filter: var(--sk-mat-blur);
+}
+ content: '';
+ position: absolute;
+ inset: 0 var(--dsh-composer-side-clearance, 16px) auto;
+ height: var(--sk-composer-height, 120px);
+ max-width: var(--dsh-composer-card-max-width);
+ margin-inline: auto;
+ z-index: -1;
+ pointer-events: none;
+ background: transparent;
+ box-shadow: var(--sk-mat-rim);
+ border-radius: var(--dsw-radius-panel, 28px);
+ /* Cast shadow is part of the shared rim, without an extra filter pass. */
+ filter: none;
+}
+ box-sizing: border-box;
+ padding: 1px;
+ background: linear-gradient(135deg,rgba(255,255,255,.30),rgba(255,255,255,.12) 30%,rgba(255,255,255,.06) 68%,rgba(255,255,255,.20));
+ box-shadow: none;
+ mask: linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+ mask-composite: exclude;
+ filter: none;
+}
+ background: transparent !important;
+ box-shadow: none !important;
+}
+ content: none !important;
+}
+ --sk-liquid-filter: initial;
+ --sk-mat-blur: var(--sk-liquid-filter,blur(var(--sk-control-blur))) saturate(var(--sk-sat));
+}
+ background: transparent !important;
+}
+/* A task panel is one floating surface; its native zero-radius header made
+ * the hover fill a rectangle inside the rounded shell. Keep nested curves. */
+:is([data-testid='todo-panel'], [data-turn-trigger]) {
+ background: var(--sk-mat-bg) !important;
+ -webkit-backdrop-filter: var(--sk-mat-blur) !important;
+ backdrop-filter: var(--sk-mat-blur) !important;
+ box-shadow: var(--sk-mat-rim),0 8px 22px rgba(0,0,0,.16) !important;
+}
+[data-goal-bar] > [class$='_bar']::before {
+ background: var(--sk-mat-bg) !important;
+ backdrop-filter: var(--sk-mat-blur) !important;
+ -webkit-backdrop-filter: var(--sk-mat-blur) !important;
+ box-shadow: var(--sk-mat-rim);
+}
+[data-testid='todo-panel'] > div > button[aria-expanded] {
+ border-radius: calc(var(--dsw-radius-lg) - 6px);
+ padding: 2px 6px;
+ margin-inline: -6px;
+ width: calc(100% + 12px);
+}
+ background-color: var(--sk-card-bg) !important;
+ -webkit-backdrop-filter: var(--sk-liquid-filter, blur(var(--sk-reading-blur))) saturate(1.12) !important;
+ backdrop-filter: var(--sk-liquid-filter, blur(var(--sk-reading-blur))) saturate(1.12) !important;
+ box-shadow: var(--sk-mat-rim), 0 8px 22px rgba(0,0,0,.16) !important;
+}
+/* Refraction belongs to the empty material layer, never the foreground text.
+ * The size-specific filter is inherited by the existing surface pseudo-element. */
+/* One optical contour. The host can use superellipse corners even when
+ * border-radius is unchanged; circular atlases must not sit over that shape.
+ * Scope normalization to active mapped glass, restoring native corners on off. */
+body[data-sk-active][data-sk-glass] [data-sk-liquid],
+body[data-sk-active][data-sk-glass] [data-sk-liquid]::before,
+body[data-sk-active][data-sk-glass] [data-sk-liquid]::after,
+body[data-sk-active][data-sk-glass] [data-sk-composer-surface][data-sk-liquid] > [data-composer-card] {
+ corner-shape: round !important;
+}
+[data-sk-liquid] {
+ --sk-mat-blur: var(--sk-liquid-filter, blur(var(--sk-control-blur))) saturate(var(--sk-sat));
+ --sk-glass: var(--sk-liquid-filter, blur(var(--sk-control-blur))) saturate(var(--sk-sat));
+ --sk-glass-read: var(--sk-liquid-filter, blur(var(--sk-control-blur))) saturate(var(--sk-sat));
+}
+/* A mapped lens owns its contour in the normal-field reflection texture.
+ * Keep only elevation here;
+ --sk-mat-rim: 0 3px 6px rgba(0,0,0,.04), 0 14px 28px -4px rgba(0,0,0,.13);
+}
+body[data-sk-glass] :is(.BynINW_sidebarCol,.BynINW_centerCol,.BynINW_rightbarCol)::before {
+ content: '';
+ position: absolute;
+ inset: 0;
+ z-index: -1;
+ pointer-events: none;
+ border-radius: inherit;
+ background: linear-gradient(125deg,rgba(var(--sk-glow),.045),transparent 20%,transparent 75%,rgba(var(--sk-glow),.025));
+	/* The authored ambient scene is already soft. Broad flush panes transmit
+	 * its color without resampling a full-window texture every frame. */
+	backdrop-filter: none;
+}
+/* Menus and cards use their established reading fill with the same polished
+ * bevel;
+ box-shadow: var(--sk-mat-rim), 0 12px 30px rgba(0,0,0,.20) !important;
+ -webkit-backdrop-filter: var(--sk-mat-blur) !important;
+ backdrop-filter: var(--sk-mat-blur) !important;
+}
+[data-sk-liquid]:is(.sk-card,.sk-seg,.sk-tile) {
+ box-shadow: var(--sk-mat-rim) !important;
+ backdrop-filter: var(--sk-mat-blur);
+}
+body[data-sk-pointer][data-sk-active] [class*='_tabs'] > button[role='tab']:hover::before {
+	background: color-mix(in srgb, var(--sk-mat-bg) 90%, rgb(var(--sk-glow)) 10%);
+	box-shadow: inset 1px 0 0 rgba(var(--sk-glow), 0.30), inset -1px 0 0 rgba(var(--sk-glow), 0.30), inset 0 1px 0 rgba(var(--sk-glow), 0.30);
+}
+body[data-sk-pointer][data-sk-active] [class*='_tabs'] > button[role='tab']:active::before {
+	background: color-mix(in srgb, var(--sk-mat-bg) 84%, rgb(var(--sk-glow)) 16%);
+}
+	background: var(--sk-state-hover) !important;
+}
+	background: var(--sk-state-press) !important;
+}
+[class*='_tabs'] {
+	gap: 10px;
+	margin-top: 7px;
+	padding-bottom: 0;
+	align-items: stretch;
+}
+	min-width: 58px;
+	padding: 6px 14px;
+	border-radius: var(--dsw-radius-sm) var(--dsw-radius-sm) 0 0;
+	--sk-tab-rim: inset 0.5px 0 0 var(--sk-rim-soft), inset -0.5px 0 0 var(--sk-rim-soft), inset 0 1px 0 var(--sk-rim);
+}
+	box-shadow: none;
+	clip-path: inset(0 round var(--dsw-radius-sm) var(--dsw-radius-sm) 0 0);
+}
+[class*='_tabs'] > button[role='tab'][aria-selected='true'] {
+	color: var(--dsw-alias-label-primary);
+}
+	box-shadow: var(--sk-tab-rim), inset 1px 0 0 rgba(var(--sk-glow), 0.55), inset -1px 0 0 rgba(var(--sk-glow), 0.55), inset 0 1px 0 rgba(var(--sk-glow), 0.55);
+} content:none!important; }
+/* The glass rim carries selection; symmetric padding centers the label. */
+[class*='_tabs'] > button[role='tab']::after {
+	content: none;
+}
+
+/* Inline links answer with an underline, never a rectangular surface.
+ * Do not touch box-shadow or outline: the host uses them for keyboard focus. */
+body[data-sk-active] :is(a[href], [class*='_fileLink'], [class*='_fileMention']) {
+	color: var(--sk-link-ink) !important;
+}
+body[data-sk-pointer][data-sk-active] :is(a[href], [class*='_fileLink'], [class*='_fileMention']):is(:hover, :active) {
+	background-color: transparent !important;
+	text-decoration-line: underline;
+	text-underline-offset: 3px;
+}
+body[data-sk-pointer][data-sk-active] button[class*='_cardPreview']:is(:hover, :active) {
+	background-color: transparent !important;
+}
+
+/* Historical rationale: see docs/CSS-HISTORY.md, note 31. */
+[data-composer-card] button[class*='_add'] {
+	background: rgba(var(--sk-glow), var(--sk-control-tint)) !important;
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+	box-shadow:
+		inset 0 1px 0 rgba(255, 255, 255, 0.57),
+		inset 0 -1px 0 rgba(255, 255, 255, 0.13),
+		inset 0 0 0 1px rgba(255, 255, 255, 0.333),
+		inset 0 0 13px rgba(255, 255, 255, 0.075),
+		inset 0.5px 0.5px 0 rgba(220, 170, 238, 0.1),
+		inset -0.5px -0.5px 0 rgba(var(--sk-glow), 0.22),
+		0 0 0 0.5px rgba(255, 255, 255, 0.314),
+		0 6px 16px rgba(0, 0, 0, 0.42),
+		0 1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+	position: relative;
+	z-index: 0;
+	background: transparent !important;
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+	box-shadow: none !important;
+}
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	pointer-events: none;
+	border-radius: inherit;
+	background: var(--sk-mat-bg);
+	-webkit-backdrop-filter: var(--sk-mat-blur);
+	backdrop-filter: var(--sk-mat-blur);
+	box-shadow: var(--sk-mat-rim), var(--sk-session-cast-shadow);
+} background: color-mix(in srgb,var(--sk-mat-bg) 90%,rgb(var(--sk-glow)) 10%); } background: color-mix(in srgb,var(--sk-mat-bg) 84%,rgb(var(--sk-glow)) 16%); }
+/* Selection motion belongs only to the material; transform-origin: 0 0; }
+/* One directional reflection layer is shared in flight and at rest. The pure
+ * preset keeps the centre tint-free;
+	background-image:var(--sk-liquid-sheen)!important;
+}
+/* One travelling lens paints above unselected labels. Its selected label
+ * stays above the lens; native row geometry and hit targets never move. */
+[data-sk-nav-lens] { position:absolute;z-index:2;pointer-events:none;overflow:visible;--sk-liquid-filter:initial; }
+[data-sk-nav-lens]::before { content:'';position:absolute;inset:0;pointer-events:none;border-radius:inherit;clip-path:var(--sk-nav-clip,none);transform-origin:0 0;background:var(--sk-nav-fill,var(--sk-mat-bg));box-shadow:var(--sk-nav-rim,var(--sk-mat-rim));backdrop-filter:var(--sk-mat-blur);-webkit-backdrop-filter:var(--sk-mat-blur); }
+/* Frosted navigation samples the scene below labels; liquid lenses pass above
+ * unselected labels so their optical refraction remains visible. */
+body:not([data-sk-glass]) [data-sk-nav-lens] { z-index:-1; }
+[data-sk-nav-lens][hidden] { display:none!important; }
+/* Pointer state is live, never a frozen press tint captured at selection. */
+body[data-sk-active] [data-sk-nav-lens] { --sk-nav-fill:var(--sk-mat-bg); } --sk-nav-fill:color-mix(in srgb,var(--sk-mat-bg) 90%,rgb(var(--sk-glow)) 10%); } --sk-nav-fill:color-mix(in srgb,var(--sk-mat-bg) 84%,rgb(var(--sk-glow)) 16%); } background:transparent!important;box-shadow:none!important; } background:transparent!important;box-shadow:none!important; } content:none!important; }
+body[data-sk-active] [data-sk-nav-foreground] { position:relative;z-index:3; }
+	color: var(--sk-ink) !important;
+	background: var(--sk-quiet-control) !important;
+	box-shadow: inset 0 0 0 .5px var(--sk-rim-hair);
+}
+	color: var(--sk-ink-secondary) !important;
+}
+.md-code-block [class*='_infostring'] { color: var(--sk-ink-secondary) !important; }
+:is([class*='_markdown'],[data-markdown]) :not(pre) > code {
+	color: var(--sk-ink) !important;
+	background: var(--sk-inline-code) !important;
+	box-shadow: inset 0 0 0 .5px var(--sk-rim-soft);
+}
+/* Theme the tile, preserving each file type's own coloured artwork. */
+[data-presented-file] > [class*='_fileIcon'] {
+	background: var(--sk-quiet-control) !important;
+	box-shadow: inset 0 0 0 .5px var(--sk-rim-hair);
+}
+/* Historical rationale: see docs/CSS-HISTORY.md, note 32. */
+[class$='_newSession'],
+[class*='_newSession '] {
+	background: var(--sk-mat-bg) !important;
+	-webkit-backdrop-filter: var(--sk-mat-blur) !important;
+	backdrop-filter: var(--sk-mat-blur) !important;
+}
+/* Historical rationale: see docs/CSS-HISTORY.md, note 33. */
+[class*='previewBadge'] {
+	background: rgba(var(--sk-glow), var(--sk-chip-tint)) !important;
+	border-color: rgba(var(--sk-glow), 0.30) !important;
+	box-shadow:
+		inset 0 1px 0 rgba(255, 255, 255, 0.24),
+		inset 0 0 0 0.5px rgba(255, 255, 255, 0.13) !important;
+}
+
+/* Historical rationale: see docs/CSS-HISTORY.md, note 34. */
+[class*='_iconButton'][class$='_toggle'] {
+	background: transparent !important;
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+	box-shadow: none !important;
+}
+/* Historical rationale: see docs/CSS-HISTORY.md, note 35. */
+[data-windows-titlebar] [class*='_root'][class*='_collapsed'] [class$='_newSession'],
+[data-windows-titlebar] [class*='_root'][class*='_collapsed'] [class*='_newSession '] {
+	background: transparent !important;
+	border: 0 !important;
+	border-radius: var(--dsw-radius-sm) !important;
+	box-shadow: none !important;
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+	color: var(--dsw-alias-label-secondary) !important;
+}
+/* The sidebar toggle is window chrome in both sidebar states — the host fixes it
+ * into the drag strip at --dsh-windows-titlebar-height — so it takes the pill and
+ * the compact silhouette unconditionally. */
+[class*='_iconButton'][class*='_toggle'] {
+	background: transparent !important;
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+	box-shadow: none !important;
+}
+[data-windows-titlebar] [class*='_iconButton'][class*='_toggle'] {
+	border-radius: var(--dsw-radius-sm) !important;
+}
+[data-windows-titlebar] [class*='_root'][class*='_collapsed'] [class*='_iconButton'] {
+	background: transparent !important;
+	border: 0 !important;
+	border-radius: var(--dsw-radius-sm) !important;
+	box-shadow: none !important;
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+	color: var(--dsw-alias-label-secondary) !important;
+}
+body[data-sk-pointer][data-sk-active] [data-windows-titlebar] [class*='_root'][class*='_collapsed'] :is([class*='_iconButton'],[class$='_newSession'],[class*='_newSession ']):hover {
+	background: var(--sk-state-hover) !important;
+}
+body[data-sk-pointer][data-sk-active] [data-windows-titlebar] [class*='_root'][class*='_collapsed'] :is([class*='_iconButton'],[class$='_newSession'],[class*='_newSession ']):active {
+	background: var(--sk-state-press) !important;
+}
+
+/* Historical rationale: see docs/CSS-HISTORY.md, note 36. */
+body[data-sk-active] :is(div, span, button, a, li, ul, ol, section, article, aside, header, footer, nav, form) {
+	--changes-fill: hsl(var(--sk-tint) / 0.44) !important;
+	--changes-hover: var(--sk-state-hover) !important;
+	--deliverable-fill: hsl(var(--sk-tint-lift) / 0.72) !important;
+	--deliverable-hover: var(--sk-state-hover) !important;
+	--plan-card-hover: var(--sk-state-hover) !important;
+	--card-hover: var(--sk-state-hover) !important;
+}
+
+/* --- shared interaction language ----------------------------------
+ * A bounded accent wash, the same one as the metrics tray, answers hover.
+ * Press is stronger and faster. No blur, filter or large shadow is animated.
+ * Outline remains the host's focus indicator;
+	transition:
+		background-color var(--sk-motion-hover) var(--sk-ease-settle),
+		border-color var(--sk-motion-hover) var(--sk-ease-settle),
+		color var(--sk-motion-hover) var(--sk-ease-settle),
+		opacity var(--sk-motion-hover) var(--sk-ease-settle);
+}
+/* Motion stays inside stable hit areas. Popup entrances preserve native anchors. */
+body[data-sk-pointer][data-sk-active] button[aria-label]:not([data-sk]):not([class*='_primary']) > svg {
+	transition: scale 250ms var(--sk-ease-release), opacity var(--sk-motion-hover) var(--sk-ease-settle);
+}
+body[data-sk-pointer][data-sk-active] button[aria-label]:not([data-sk]):not([class*='_primary']):active:not(:disabled) > svg { scale: .94; transition-duration: var(--sk-motion-press); transition-timing-function: var(--sk-ease-settle); }
+:is([role='menu'],[role='listbox']) { animation: sk-popup-appear 167ms var(--sk-ease-settle) both; }
+[role='dialog'] { animation: sk-popup-appear 220ms var(--sk-ease-settle) both; }
+[class*='_cards']:has(> [class*='_cardLink']) > [class*='_cardLink'] {
+	animation: sk-card-appear 220ms var(--sk-ease-settle) backwards;
+	animation-delay: calc(min(sibling-index(),8) * 8ms);
+}
+@keyframes sk-popup-appear { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sk-card-appear { from { opacity: .65; translate: 0 3px; } to { opacity: 1; translate: 0 0; } }
+@media (prefers-reduced-motion: reduce) {
+	:is([role='menu'],[role='listbox'],[role='dialog']),
+	[class*='_cards']:has(> [class*='_cardLink']) > [class*='_cardLink'] { animation: none !important; }
+	body[data-sk-pointer][data-sk-active] button[aria-label]:not([data-sk]):not([class*='_primary']) > svg { transition: none !important; scale: 1 !important; }
+}
+	background-color: var(--sk-state-hover) !important;
+}
+	background-color: var(--sk-state-press) !important;
+	transition-duration: var(--sk-motion-press);
+}
+	background: transparent !important;
+}
+/* The brand mark is a logo control, not a rectangular raised surface. */
+body [data-slot='sidebar'] button:is([class$='_brand'],[class*='_brand ']):is(:hover,:active) {
+ background: transparent !important;
+ box-shadow: none !important;
+}
+/* The logo badge is an inverted mark on a light plate, not body text. */
+body[data-sk-active] [data-slot='sidebar'] [class*='_brandName'] svg {
+	--dsw-alias-label-primary-inverted:#17202b;
+}
+/* Native contrast buttons start white with dark text. Their hovered glass
+ * uses the normal light label so the text stays readable during the fade. */
+body[data-sk-active] button:is([class^='_primary_'], [class*=' _primary_']) {
+	text-shadow: none;
+}
+body[data-sk-pointer][data-sk-active] button:is([class^='_primary_'], [class*=' _primary_']):is(:hover, :active):not(:disabled) {
+	color: var(--dsw-alias-label-primary) !important;
+	text-shadow: var(--sk-text-guard);
+}
+/* Glass controls keep their surface. The wash is mixed into that surface,
+ * rather than replacing it with the deep page tint or a white film. */
+body[data-sk-pointer][data-sk-active] :is([data-composer-card] button[class*='_add'], [class$='_newSession'], [class*='_newSession ']):hover:not(:disabled) {
+	background: color-mix(in srgb, var(--sk-mat-bg) 90%, rgb(var(--sk-glow)) 10%) !important;
+}
+body[data-sk-pointer][data-sk-active] :is([data-composer-card] button[class*='_add'], [class$='_newSession'], [class*='_newSession ']):active:not(:disabled) {
+	background: color-mix(in srgb, var(--sk-mat-bg) 84%, rgb(var(--sk-glow)) 16%) !important;
+	transition-duration: var(--sk-motion-press);
+}
+/* New-session controls compress;
+	transition: background-color var(--sk-motion-hover) var(--sk-ease-settle), color var(--sk-motion-hover) var(--sk-ease-settle), scale 250ms var(--sk-ease-release);
+}
+body[data-sk-pointer][data-sk-active] :is(button[class$='_newSession'],button[class*='_newSession ']):active:not(:disabled):not([aria-disabled='true']) {
+	scale: .985;
+	transition-duration: var(--sk-motion-press);
+	transition-timing-function: var(--sk-ease-settle);
+}
+@media(prefers-reduced-motion:reduce) { scale:1!important;transition:none!important; }
+}
+body[data-sk-pointer][data-sk-active] [class*='_root'][class*='_collapsed'] :is([class$='_newSession'], [class*='_newSession ']):hover {
+	background-color: var(--sk-state-hover) !important;
+}
+body[data-sk-pointer][data-sk-active] [class*='_root'][class*='_collapsed'] :is([class$='_newSession'], [class*='_newSession ']):active {
+	background-color: var(--sk-state-press) !important;
+}
+ -webkit-backdrop-filter: blur(var(--sk-reading-blur)) saturate(var(--sk-reading-sat)) !important;
+ backdrop-filter: blur(var(--sk-reading-blur)) saturate(var(--sk-reading-sat)) !important;
+ position: relative;
+	z-index: 0;
+	margin: 0;
+	box-shadow: inset 0 0 0 0.5px var(--sk-rim-soft), 0 3px 10px rgba(0,0,0,.14) !important;
+}
+[class*='_cards']:has(> [class*='_cardLink']) {
+	gap: 8px;
+}
+	padding: 12px;
+}
+	-webkit-line-clamp: 2;
+}
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	border-radius: inherit;
+	pointer-events: none;
+	background: var(--sk-state-hover);
+	box-shadow: inset 0 0 0 0.5px rgba(var(--sk-glow), 0.22);
+	opacity: 0;
+	transition: opacity var(--sk-motion-hover) var(--sk-ease-settle);
+}
+	opacity: 1;
+}
+	background: var(--sk-state-press);
+	transition-duration: var(--sk-motion-press);
+}
+	background: transparent !important;
+}
+	background: color-mix(in srgb, hsl(var(--sk-tint) / 0.42) 90%, rgb(var(--sk-glow)) 10%) !important;
+}
+body[data-sk-pointer][data-sk-active] > :has(> [class*='_hoverContent']):hover {
+	background: color-mix(in srgb, var(--sk-settings-bg) 95%, rgb(var(--sk-glow)) 5%) !important;
+}
+	background-color: color-mix(in srgb, hsl(var(--sk-tint-lift) / 0.72) 90%, rgb(var(--sk-glow)) 10%) !important;
+}
+/* Switches keep their on/off colors. A small bounded rim gives pointer feedback
+ * without making an enabled switch look disabled. */
+body[data-sk-pointer][data-sk-active] :is([role='switch'], [role='checkbox'], [role='radio']):hover:not(:disabled):not([aria-disabled='true']) {
+	box-shadow: inset 0 0 0 1px rgba(var(--sk-glow), 0.40);
+}
+	transition: none;
+	cursor: default;
+}
+@media (prefers-reduced-motion: reduce) {
+		transition-duration: 1ms !important;
+	}
+	.BynINW_frame,
+	.sk-knob {
+		transition: none !important;
+	}
+}
+
+/* Historical rationale: see docs/CSS-HISTORY.md, note 37. */
+.BynINW_sidebarCol,
+[class*='_sidebarCol'],
+.BynINW_centerCol,
+[class*='_centerCol'],
+.BynINW_rightbarCol,
+[class*='_rightbarCol'] {
+	position: relative;
+	z-index: 1;
+}
+
+.BynINW_sidebarCol { z-index: 2; }
+
+/* Historical rationale: see docs/CSS-HISTORY.md, note 38. */
+[data-windows-titlebar] .BynINW_centerCol,
+[data-windows-titlebar] [class*='_centerCol'] {
+	border-top-left-radius: 0 !important;
+	border-top-right-radius: 0 !important;
+}
+
+/* --- native caption buttons ---------------------------------------
+ * The desktop preload mirrors this probe's computed colours into
+ * mainWindow.setTitleBarOverlay(). Clearing its fill removes the opaque band
+ * the stock colour paints over the glass; the glyph colour stays light. */
+span[style*='--dsw-specific-sidebar-fill'] {
+	background-color: transparent !important;
+	color: #ffffff !important;
+}
+
+/* One lens is the only painted selection surface. Native button hover and
+ * selected fills must not appear underneath the moving material. */
+body[data-sk-active] .sk-seg[data-sk-seg] .sk-segBtn,
+body[data-sk-pointer][data-sk-active] .sk-seg[data-sk-seg] .sk-segBtn:is(:hover,:active) {
+ background: transparent !important;
+ box-shadow: none !important;
+}
+body[data-sk-pointer] .sk-seg[data-sk-seg]:has(.sk-segBtn:hover)::before { background-color: rgba(var(--sk-glow),.08); }
+body[data-sk-pointer] .sk-seg[data-sk-seg]:has(.sk-segBtn:active)::before { background-color: rgba(var(--sk-glow),.13); }
+/* Accessibility escape hatch: keep the tint, drop the transparency. */
+/* Settings use one readable translucent material;
+ background: var(--sk-settings-bg) !important;
+ -webkit-backdrop-filter: blur(var(--sk-settings-blur)) saturate(var(--sk-sat)) !important;
+ backdrop-filter: blur(var(--sk-settings-blur)) saturate(var(--sk-sat)) !important;
+}
+ background: var(--sk-settings-row) !important;
+ background-image: none !important;
+ -webkit-backdrop-filter: none !important;
+ backdrop-filter: none !important;
+ box-shadow: none !important;
+} corner-shape: round !important; } border-color: var(--sk-rim-hair); } font-weight: 500; } color: var(--sk-ink-muted); } box-shadow: inset 0 0 0 .5px var(--sk-rim-hair); } background: var(--sk-ink); } background: color-mix(in srgb, rgb(var(--sk-glow)) 58%, hsl(var(--sk-material-tint)) 42%); } filter: brightness(1.10); } scale: 1.04 .94; transition-duration: var(--sk-motion-press); } transition: transform 250ms var(--sk-ease-settle), scale 250ms var(--sk-ease-release); } outline: 1px solid rgba(var(--sk-glow),.70); outline-offset: -1px; }
+@media (prefers-reduced-motion: reduce) { transition: none !important; scale: 1 !important; } }
+
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+	body {
+		background-image: none !important;
+		--sk-mat-bg: hsl(var(--sk-tint));
+		--sk-settings-bg: hsl(var(--sk-tint-lift));
+		--sk-settings-row: hsl(var(--sk-tint-lift));
+	}
+	body[data-sk-active]::before,
+	body[data-sk-active]::after,
+	[data-sk-bokeh] { display: none !important; }
+		-webkit-backdrop-filter: none !important;
+		backdrop-filter: none !important;
+	}
+	body[data-sk-glass][data-sk-active] [data-composer-card]::before {
+		-webkit-backdrop-filter: none !important;
+		backdrop-filter: none !important;
+	}
+		background: hsl(var(--sk-tint)) !important;
+		-webkit-backdrop-filter: none !important;
+		backdrop-filter: none !important;
+	}
+		background: hsl(var(--sk-tint-lift)) !important;
+	}
+	[data-windows-titlebar] .BynINW_frame:before,
+	.BynINW_sidebarCol,
+	[class*='_sidebarCol'],
+	.BynINW_centerCol,
+	[class*='_centerCol'],
+	[data-composer-card] {
+		-webkit-backdrop-filter: none !important;
+		backdrop-filter: none !important;
+		background: hsl(var(--sk-tint)) !important;
+	}
+}

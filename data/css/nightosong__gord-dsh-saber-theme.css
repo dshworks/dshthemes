@@ -1,0 +1,54 @@
+/* nightosong/gord-dsh-saber-theme — theme/saber.css
+   fetched 2026-10-18 from https://raw.githubusercontent.com/nightosong/gord-dsh-saber-theme/main/theme/saber.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* Keep DSH's content fonts, semantic status colors and native window chrome. */
+body[data-dsh-saber] {
+  --saber-canvas: #eef7ff;
+  --saber-veil: rgba(238, 247, 255, .90);
+  --saber-edge: rgba(238, 247, 255, .48);
+  --saber-sidebar: #e5f1fb;
+  background-color: var(--saber-canvas);
+}
+body[data-dsh-saber][data-ds-dark-theme] {
+  --saber-canvas: #102131;
+  --saber-veil: rgba(16, 33, 49, .96);
+  --saber-edge: rgba(16, 33, 49, .70);
+  --saber-sidebar: #142a3e;
+}
+/* CSS module suffixes are checked against DSH 0.2.0-rc.2. */
+body[data-dsh-saber] [class*="_frame"] > [class*="_centerCol"] {
+  position: relative;
+  background-color: var(--saber-canvas);
+  background-image: linear-gradient(90deg, var(--saber-veil) 12%, var(--saber-veil) 45%, var(--saber-edge)), var(--saber-standing);
+  background-size: cover, auto 100%;
+  background-position: center, right bottom;
+  background-repeat: no-repeat;
+}
+body[data-dsh-saber] [class*="_frame"] > [class*="_centerCol"]:has([class*="_composerHero"]) {
+  background-image: linear-gradient(90deg, var(--saber-veil) 10%, var(--saber-edge)), var(--saber-home);
+  background-size: cover;
+  background-position: center, right center;
+}
+body[data-dsh-saber] [class*="_frame"] > [class*="_sidebarCol"] {
+  background: linear-gradient(155deg, var(--saber-sidebar), var(--dsw-specific-sidebar-fill) 70%);
+  border-right: 1px solid var(--dsw-alias-border-l3);
+}
+body[data-dsh-saber] [class*="_sidebarCol"] > [class*="_root"] {
+  background: transparent;
+}
+body[data-dsh-saber] [class*="_composer"] {
+  --dsw-elevation-stroke-color: var(--dsw-alias-border-l1);
+}
+body[data-dsh-saber] ::selection { background: #66a8dc55; }
+@media (max-width: 760px), (prefers-reduced-transparency: reduce) {
+  body[data-dsh-saber] [class*="_frame"] > [class*="_centerCol"],
+  body[data-dsh-saber] [class*="_frame"] > [class*="_centerCol"]:has([class*="_composerHero"]) {
+    background-image: linear-gradient(var(--saber-veil), var(--saber-veil)), var(--saber-standing);
+    background-size: cover, auto 100%;
+    background-position: center, right bottom;
+  }
+}
+@media print {
+  body[data-dsh-saber] [class*="_frame"] > [class*="_centerCol"] { background-image: none; }
+}
+

@@ -1,0 +1,172 @@
+/* RonnyJung2021/dsh-trae-skin — src/client/styles/page.ts
+   fetched 2026-10-18 from https://raw.githubusercontent.com/RonnyJung2021/dsh-trae-skin/main/src/client/styles/page.ts
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-sizing: border-box;
+  padding-inline: 16px;
+  background: var(--dsh-trae-page);
+  /* The reference draws every separator as a 1px line, never a thicker one. */
+  border-block-end: 1px solid var(--dsh-trae-rule-l3);
+  color: var(--dsh-trae-muted);
+  font-family: var(--dsh-trae-font-mono);
+  font-size: 12px;
+  line-height: 15.6px;
+  /* Read-only display: nothing on the band is clickable. */
+  user-select: none;
+  /* The shell subtracts every direct child of body from the window's drag region,
+     and the band now owns the top of the window — so it declares its own drag
+     region with the product's documented hook, and re-asserts it here because that
+     subtraction is what a body child gets by default. */
+  -webkit-app-region: drag !important;
+}
+  background: transparent;
+  border-block-end-color: transparent;
+}
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  max-inline-size: 60%;
+  block-size: 18px;
+  padding-inline: 4px;
+  border-radius: 2px;
+  overflow: hidden;
+  background: var(--dsh-trae-gradient-plate);
+}
+  font-family: var(--dsh-trae-font-mono);
+  font-size: 12px;
+  /* The reference's own label weight: its 400/500/600 all point at one Regular
+     file, so a heavier mono face does not exist — and is not faked here either. */
+  font-weight: 500;
+  line-height: 15.6px;
+  letter-spacing: 0.1px;
+  white-space: nowrap;
+  background: var(--dsh-trae-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+  position: relative;
+  flex: none;
+  border-radius: 50%;
+  /* The shell curves every rounded corner along a superellipse; a circle has to opt
+     back out of that, or the lamp is drawn as a squircle. */
+  corner-shape: round;
+  border: 1px solid var(--dsh-trae-accent-text);
+  background: transparent;
+  transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+  background: var(--dsh-trae-accent-text);
+}
+  background: var(--dsh-trae-accent-text);
+}
+  background: var(--dsh-trae-accent-text);
+}
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 50%;
+  corner-shape: round;
+  opacity: 0;
+  pointer-events: none;
+}
+  animation: dsh-trae-breathe var(--dsh-trae-pulse-period) cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes dsh-trae-breathe {
+  0% {
+    box-shadow: 0 0 0 0 var(--dsh-trae-pulse-color);
+    opacity: var(--dsh-trae-pulse-opacity);
+  }
+  70% {
+    opacity: 0;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+    opacity: 0;
+  }
+}
+
+/* Same period, no travel: a stopped light reads as a frozen one, so the
+   reduced-motion path fades in place instead of holding still. */
+@keyframes dsh-trae-breathe-still {
+  0%, 100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: var(--dsh-trae-pulse-opacity);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    animation-name: dsh-trae-breathe-still;
+  }
+    transition: none;
+  }
+}
+
+/* The light's state, in words, for assistive technology. The band is a status
+   region, so this is the text it announces;
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+  box-sizing: border-box;
+}
+  padding-block-start: 0;
+}
+  font-family: var(--dsh-trae-font-ui);
+  color: var(--dsh-trae-ink);
+  background-color: var(--dsh-trae-page);
+  /* The reference paints its page with a flat fill and never with an image. */
+  background-image: none;
+}
+  --dsw-elevation-panel: var(--dsh-trae-elevation) !important;
+  --dsw-elevation-prominent: var(--dsh-trae-elevation-prominent) !important;
+  --dsw-elevation-soft: var(--dsh-trae-elevation-soft) !important;
+}
+  font-family: inherit;
+}
+
+/* -------------------------------------------------------------- light shell -- */
+
+/* Written first;
+  color-scheme: light;
+  color-scheme: dark;
+  background: var(--dsh-trae-raised) !important;
+  border: 1px solid var(--dsh-trae-rule-l2) !important;
+  transition: border-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+  border-color: var(--dsh-trae-accent) !important;
+}
+  border: 1px solid var(--dsh-trae-rule-l2) !important;
+}
+  color: var(--dsh-trae-on-accent);
+}
+  background: var(--dsh-trae-accent) !important;
+}
+  background: var(--dsh-trae-rule-l1) !important;
+}
+  outline-offset: 2px;
+}
+  font-family: var(--dsh-trae-font-mono);
+  font-weight: 400;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
