@@ -1,12 +1,22 @@
 ---
 title: dsh 0.2.1 moves the font token to body, and reads engines.dsh first
-summary: dsh 0.2.1-rc.2 is on npm's next tag. It declares --dsw-font-family on body, so a skin that sets the token on :root or html stops reaching dsh's own components; 12 listed skins do. Its install check now reads engines.dsh before the dsh peers, and refuses 23 listed themes that 0.2.0-rc.2 installs. Everything else held: 403 tokens, and every hashed class a frozen sheet targets.
+summary: dsh 0.2.1-rc.2 has been npm's latest since 2026-10-19. It declares --dsw-font-family on body, so a skin that sets the token on :root or html stops reaching dsh's own components; 12 listed skins do. Its install check now reads engines.dsh before the dsh peers, and refused 23 listed themes that 0.2.0-rc.2 installs; 17 still are. Everything else held: 403 tokens, and every hashed class a frozen sheet targets.
 tags: how-themes-work, dsh-releases
 ---
 
+**Update, 2026-10-19:** 0.2.1-rc.2 is now npm's `latest`, so a plain
+`npx @deepseek-ai/dsh` runs it and both changes below apply to every new
+install. We read the manifests again today. Of the 23 themes named below, 6
+have changed their range since and install on 0.2.1-rc.2:
+[dsh-skin-abyssal](/t/dsh-skin-abyssal/), [dsh-skin-prts-tenebris](/t/dsh-skin-prts-tenebris/),
+[dsh-theme-prts](/t/dsh-theme-prts/), [dsh-eye-care](/t/dsh-eye-care/),
+[dsh-theme-studio](/t/dsh-theme-studio/) and [dsh-whale-pet-rongzi5](/t/dsh-whale-pet-rongzi5/).
+The other 17 are still refused. Across all 604 readable manifests of 652
+listed third-party themes, 0.2.0-rc.2 refuses 91 and 0.2.1-rc.2 refuses 104.
+
 dsh 0.2.1-rc.2 went to npm's `next` tag on 2026-10-17
-(`npm view @deepseek-ai/dsh dist-tags`). `latest` is still 0.2.0-rc.2. Two
-things change for a theme author before 0.2.1 reaches `latest`.
+(`npm view @deepseek-ai/dsh dist-tags`). When this note was first written,
+`latest` was still 0.2.0-rc.2. Two things change for a theme author on 0.2.1.
 
 ## Set the font token on body
 
