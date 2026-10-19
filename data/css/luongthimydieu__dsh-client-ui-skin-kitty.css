@@ -1,0 +1,294 @@
+/* luongthimydieu/dsh-client-ui-skin-kitty — theme.css
+   fetched 2026-10-19 from https://raw.githubusercontent.com/luongthimydieu/dsh-client-ui-skin-kitty/main/theme.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* ==========================================================================
+ * Hello Kitty Theme  —  dsh-client-ui-skin-kitty
+ * --------------------------------------------------------------------------
+ * DeepSeek Harness (DSH) Web UI 第三方皮肤。
+ * 机制：覆盖 --dsw-alias-* / --dsw-specific-* 语义 token（浅色 + 深色两套），
+ *       并用 .m45BUG_frame 覆盖主框架背景为壁纸。
+ * 关键：所有表面背景使用半透明 rgba，让底层壁纸透出来。
+ * 色系：凯蒂猫经典粉（#e75480 / #f48fb1）+ 奶白奶油底 + 深梅子暗色。
+ * ========================================================================== */
+
+/* ---------- 浅色（Light）调色板 ---------- */
+body {
+  /* 背景层（半透明，让壁纸透出） */
+  --dsw-alias-bg-base: rgba(255, 245, 248, 0.52) !important;
+  --dsw-alias-bg-layer-1: rgba(255, 251, 253, 0.60) !important;
+  --dsw-alias-bg-layer-2: rgba(255, 240, 245, 0.68) !important;
+  --dsw-alias-bg-layer-3: rgba(255, 235, 240, 0.76) !important;
+  --dsw-alias-bg-module-platform: rgba(255, 240, 245, 0.70) !important;
+  --dsw-alias-bg-multi-select: rgba(255, 240, 245, 0.70) !important;
+  --dsw-alias-bg-overlay: rgba(255, 235, 240, 0.88) !important;
+  --dsw-alias-bg-skeleton: rgba(231, 84, 128, 0.08) !important;
+  --dsw-alias-bg-mask-drop: rgba(255, 255, 255, 0.72) !important;
+
+  /* 边框 */
+  --dsw-alias-border-l1: rgba(231, 84, 128, 0.10) !important;
+  --dsw-alias-border-l2: rgba(231, 84, 128, 0.16) !important;
+  --dsw-alias-border-l2-darkmode-thin: rgba(231, 84, 128, 0.16) !important;
+  --dsw-alias-border-l3: rgba(231, 84, 128, 0.22) !important;
+  --dsw-alias-border-l4: rgba(231, 84, 128, 0.28) !important;
+
+  /* 品牌 */
+  --dsw-alias-brand-primary: #e75480 !important;
+  --dsw-alias-brand-text: #e75480 !important;
+  --dsw-alias-brand-primary-invert: #ffffff !important;
+  --dsw-alias-brand-primary-new-colorprimary-new-color: #e75480 !important;
+
+  /* 按钮 */
+  --dsw-alias-button-info-fill: #e75480 !important;
+  --dsw-alias-button-info-hover: #f06292 !important;
+  --dsw-alias-button-primary-fill: #e75480 !important;
+  --dsw-alias-button-primary-hover: #f06292 !important;
+  --dsw-alias-button-primary-dimmed: rgba(255, 228, 236, 0.85) !important;
+  --dsw-alias-button-contrast-fill: #5a1f33 !important;
+  --dsw-alias-button-elevated-fill: rgba(255, 255, 255, 0.92) !important;
+  --dsw-alias-button-floating-fill: rgba(255, 255, 255, 0.92) !important;
+  --dsw-alias-button-floating-hover: rgba(255, 240, 245, 0.85) !important;
+  --dsw-alias-button-ghost-active-border: #d4548a !important;
+  --dsw-alias-button-ghost-active-fill: rgba(255, 228, 236, 0.85) !important;
+  --dsw-alias-button-ghost-active-hover: rgba(255, 214, 224, 0.85) !important;
+  --dsw-alias-button-tool-bar-fill: rgba(231, 84, 128, 0.40) !important;
+  --dsw-alias-button-tool-bar-hover: rgba(231, 84, 128, 0.52) !important;
+  --dsw-alias-button-tool-bar-fill-invisible: rgba(231, 84, 128, 0.22) !important;
+
+  /* 交互态 */
+  --dsw-alias-interactive-bg-hover: rgba(231, 84, 128, 0.06) !important;
+  --dsw-alias-interactive-bg-hover-accent: rgba(231, 84, 128, 0.14) !important;
+  --dsw-alias-interactive-bg-active: rgba(231, 84, 128, 0.10) !important;
+  --dsw-alias-interactive-bg-hover-solid: rgba(255, 240, 245, 0.80) !important;
+
+  /* 文本 */
+  --dsw-alias-label-primary: #4a2233 !important;
+  --dsw-alias-label-secondary: #7a4358 !important;
+  --dsw-alias-label-tertiary: #a05f76 !important;
+  --dsw-alias-label-caption: #c97b98 !important;
+  --dsw-alias-label-dimmed: #ffd1dc !important;
+  --dsw-alias-label-primary-bluish: #e75480 !important;
+  --dsw-alias-label-primary-dimmed: #5a1f33 !important;
+  --dsw-alias-label-primary-foreground: #ffffff !important;
+  --dsw-alias-label-primary-inverted: #ffffff !important;
+
+  /* Markdown 代码 */
+  --dsw-alias-markdown-inline-code: rgba(255, 228, 236, 0.85) !important;
+  --dsw-alias-markdown-code-block: rgba(255, 245, 248, 0.90) !important;
+  --dsw-alias-markdown-code-block-banner: rgba(255, 245, 248, 0.90) !important;
+  --dsw-alias-markdown-code-segment-selected: rgba(255, 255, 255, 0.92) !important;
+  --dsw-alias-markdown-code-segment-unselected: rgba(255, 228, 236, 0.85) !important;
+  --dsw-alias-markdown-tag: rgba(255, 228, 236, 0.85) !important;
+  --dsw-alias-markdown-citation: rgba(255, 228, 236, 0.85) !important;
+  --dsw-alias-markdown-placeholder: rgba(255, 240, 245, 0.75) !important;
+
+  /* 滚动条 */
+  --dsw-alias-scrollbar-bg-l1: #ffd6e0 !important;
+  --dsw-alias-scrollbar-hover-l1: #f48fb1 !important;
+  --dsw-alias-scrollbar-bg-l2: #ffd6e0 !important;
+  --dsw-alias-scrollbar-hover-l2: #f48fb1 !important;
+
+  /* 语义状态 */
+  --dsw-alias-state-business-primary: #e75480 !important;
+  --dsw-alias-state-business-tertiary: rgba(255, 209, 220, 0.80) !important;
+  --dsw-alias-state-error-primary: #e0265a !important;
+  --dsw-alias-state-error-secondary: #f45b7a !important;
+  --dsw-alias-state-success-primary: #2fb864 !important;
+  --dsw-alias-state-success-secondary: #5bd692 !important;
+  --dsw-alias-state-success-tertiary: rgba(232, 248, 238, 0.85) !important;
+  --dsw-alias-state-warn-label: #d97706 !important;
+  --dsw-alias-state-warn-primary: #f59e0b !important;
+  --dsw-alias-state-warn-secondary: #fbbf24 !important;
+  --dsw-alias-state-warn-tertiary: rgba(254, 243, 226, 0.85) !important;
+
+  /* 浮层 */
+  --dsw-alias-toast-bg: #5a1f33 !important;
+  --dsw-alias-tooltip-bg: #5a1f33 !important;
+
+  /* 0.9.0 新增/改名的颜色 token（缺失时这些 UI 会退回默认色） */
+  --dsw-alias-bg-layer-4: rgba(255, 230, 238, 0.80) !important;
+  --dsw-alias-bg-mask-1: rgba(74, 34, 51, 0.32) !important;
+  --dsw-alias-bg-mask-2: rgba(74, 34, 51, 0.42) !important;
+  --dsw-alias-bg-mask-3: rgba(74, 34, 51, 0.52) !important;
+  --dsw-alias-bg-mask-photo: rgba(74, 34, 51, 0.45) !important;
+  --dsw-alias-border-inverted: rgba(255, 255, 255, 0.80) !important;
+  --dsw-alias-border-inverted2: rgba(255, 255, 255, 0.60) !important;
+  --dsw-alias-fill-l2: rgba(231, 84, 128, 0.10) !important;
+  --dsw-alias-fill-tertiary: rgba(231, 84, 128, 0.16) !important;
+  --dsw-alias-fill-tsp-secondary: rgba(231, 84, 128, 0.08) !important;
+  --dsw-alias-interactive-bg-hover-danger: rgba(224, 38, 90, 0.10) !important;
+  --dsw-alias-label-error: #d64550 !important;
+  --dsw-alias-label-quaternary: #b8788c !important;
+  --dsw-alias-link: #d4548a !important;
+  --dsw-alias-separator-primary: rgba(231, 84, 128, 0.20) !important;
+  --dsw-alias-state-warning-primary: #f59e0b !important;
+
+  /* 具体表面（半透明，让壁纸透出） */
+  --dsw-specific-sidebar-fill: rgba(255, 224, 233, 0.55) !important;
+  --dsw-specific-sidebar-nav-item-active: rgba(255, 214, 224, 0.75) !important;
+  --dsw-specific-sidebar-nav-item-active-accent: #f48fb1 !important;
+  --dsw-specific-sidebar-nav-item-hover: rgba(255, 235, 240, 0.70) !important;
+  --dsw-specific-bubble: rgba(255, 235, 240, 0.80) !important;
+  --dsw-specific-bubble-highlight: rgba(255, 214, 224, 0.80) !important;
+  --dsw-specific-selector: rgba(255, 240, 245, 0.75) !important;
+  --dsw-specific-tip: rgba(255, 240, 245, 0.75) !important;
+  --dsw-specific-input-major: rgba(255, 255, 255, 0.90) !important;
+  --dsw-specific-login-input: rgba(255, 245, 248, 0.90) !important;
+  --dsw-specific-menu: rgba(255, 235, 240, 0.90) !important;
+}
+
+/* ---------- 深色（Dark）调色板 ---------- */
+body[data-ds-dark-theme] {
+  --dsw-alias-bg-base: rgba(42, 26, 34, 0.70) !important;
+  --dsw-alias-bg-layer-1: rgba(51, 32, 42, 0.76) !important;
+  --dsw-alias-bg-layer-2: rgba(59, 39, 48, 0.82) !important;
+  --dsw-alias-bg-layer-3: rgba(66, 44, 54, 0.86) !important;
+  --dsw-alias-bg-module-platform: rgba(59, 39, 48, 0.82) !important;
+  --dsw-alias-bg-multi-select: rgba(59, 39, 48, 0.82) !important;
+  --dsw-alias-bg-overlay: rgba(66, 44, 54, 0.90) !important;
+  --dsw-alias-bg-skeleton: rgba(255, 255, 255, 0.08) !important;
+  --dsw-alias-bg-mask-drop: rgba(39, 27, 33, 0.72) !important;
+
+  --dsw-alias-border-l1: rgba(244, 143, 177, 0.10) !important;
+  --dsw-alias-border-l2: rgba(244, 143, 177, 0.16) !important;
+  --dsw-alias-border-l2-darkmode-thin: rgba(244, 143, 177, 0.16) !important;
+  --dsw-alias-border-l3: rgba(244, 143, 177, 0.22) !important;
+  --dsw-alias-border-l4: rgba(244, 143, 177, 0.28) !important;
+
+  --dsw-alias-brand-primary: #f48fb1 !important;
+  --dsw-alias-brand-text: #f48fb1 !important;
+  --dsw-alias-brand-primary-invert: #2a1a22 !important;
+  --dsw-alias-brand-primary-new-colorprimary-new-color: #f48fb1 !important;
+
+  --dsw-alias-button-info-fill: #e75480 !important;
+  --dsw-alias-button-info-hover: #f06292 !important;
+  --dsw-alias-button-primary-fill: #f48fb1 !important;
+  --dsw-alias-button-primary-hover: #f8bcd0 !important;
+  --dsw-alias-button-primary-dimmed: rgba(59, 39, 48, 0.85) !important;
+  --dsw-alias-button-contrast-fill: #fdeef4 !important;
+  --dsw-alias-button-elevated-fill: rgba(59, 39, 48, 0.88) !important;
+  --dsw-alias-button-floating-fill: rgba(59, 39, 48, 0.88) !important;
+  --dsw-alias-button-floating-hover: rgba(66, 44, 54, 0.88) !important;
+  --dsw-alias-button-ghost-active-border: #8a4a5e !important;
+  --dsw-alias-button-ghost-active-fill: rgba(74, 39, 51, 0.85) !important;
+  --dsw-alias-button-ghost-active-hover: rgba(66, 44, 54, 0.88) !important;
+  --dsw-alias-button-tool-bar-fill: rgba(244, 143, 177, 0.40) !important;
+  --dsw-alias-button-tool-bar-hover: rgba(244, 143, 177, 0.52) !important;
+  --dsw-alias-button-tool-bar-fill-invisible: rgba(244, 143, 177, 0.22) !important;
+
+  --dsw-alias-interactive-bg-hover: rgba(244, 143, 177, 0.08) !important;
+  --dsw-alias-interactive-bg-hover-accent: rgba(244, 143, 177, 0.18) !important;
+  --dsw-alias-interactive-bg-active: rgba(244, 143, 177, 0.12) !important;
+  --dsw-alias-interactive-bg-hover-solid: rgba(66, 44, 54, 0.85) !important;
+
+  --dsw-alias-label-primary: #fdeef4 !important;
+  --dsw-alias-label-secondary: #e8c3d1 !important;
+  --dsw-alias-label-tertiary: #c99bb0 !important;
+  --dsw-alias-label-caption: #a06b82 !important;
+  --dsw-alias-label-dimmed: #6b3a4a !important;
+  --dsw-alias-label-primary-bluish: #f48fb1 !important;
+  --dsw-alias-label-primary-dimmed: #f8bcd0 !important;
+  --dsw-alias-label-primary-foreground: #2a1a22 !important;
+  --dsw-alias-label-primary-inverted: #33202a !important;
+
+  --dsw-alias-markdown-inline-code: rgba(59, 39, 48, 0.85) !important;
+  --dsw-alias-markdown-code-block: rgba(51, 32, 42, 0.88) !important;
+  --dsw-alias-markdown-code-block-banner: rgba(51, 32, 42, 0.88) !important;
+  --dsw-alias-markdown-code-segment-selected: rgba(59, 39, 48, 0.88) !important;
+  --dsw-alias-markdown-code-segment-unselected: rgba(51, 32, 42, 0.88) !important;
+  --dsw-alias-markdown-tag: rgba(59, 39, 48, 0.85) !important;
+  --dsw-alias-markdown-citation: rgba(59, 39, 48, 0.85) !important;
+  --dsw-alias-markdown-placeholder: rgba(51, 32, 42, 0.85) !important;
+
+  --dsw-alias-scrollbar-bg-l1: #6b3a4a !important;
+  --dsw-alias-scrollbar-hover-l1: #8a4a5e !important;
+  --dsw-alias-scrollbar-bg-l2: #6b3a4a !important;
+  --dsw-alias-scrollbar-hover-l2: #8a4a5e !important;
+
+  --dsw-alias-state-business-primary: #f48fb1 !important;
+  --dsw-alias-state-business-tertiary: rgba(74, 39, 51, 0.85) !important;
+  --dsw-alias-state-error-primary: #f45b7a !important;
+  --dsw-alias-state-error-secondary: #e0265a !important;
+  --dsw-alias-state-success-primary: #5bd692 !important;
+  --dsw-alias-state-success-secondary: #2fb864 !important;
+  --dsw-alias-state-success-tertiary: rgba(31, 58, 42, 0.85) !important;
+  --dsw-alias-state-warn-label: #fbbf24 !important;
+  --dsw-alias-state-warn-primary: #f59e0b !important;
+  --dsw-alias-state-warn-secondary: #d97706 !important;
+  --dsw-alias-state-warn-tertiary: rgba(58, 46, 26, 0.85) !important;
+
+  --dsw-alias-toast-bg: rgba(66, 44, 54, 0.94) !important;
+  --dsw-alias-tooltip-bg: rgba(66, 44, 54, 0.94) !important;
+
+  /* 0.9.0 新增/改名的颜色 token（缺失时这些 UI 会退回默认色） */
+  --dsw-alias-bg-layer-4: rgba(59, 39, 48, 0.85) !important;
+  --dsw-alias-bg-mask-1: rgba(12, 6, 9, 0.45) !important;
+  --dsw-alias-bg-mask-2: rgba(12, 6, 9, 0.58) !important;
+  --dsw-alias-bg-mask-3: rgba(12, 6, 9, 0.68) !important;
+  --dsw-alias-bg-mask-photo: rgba(12, 6, 9, 0.55) !important;
+  --dsw-alias-border-inverted: rgba(255, 255, 255, 0.18) !important;
+  --dsw-alias-border-inverted2: rgba(255, 255, 255, 0.12) !important;
+  --dsw-alias-fill-l2: rgba(244, 143, 177, 0.14) !important;
+  --dsw-alias-fill-tertiary: rgba(244, 143, 177, 0.20) !important;
+  --dsw-alias-fill-tsp-secondary: rgba(244, 143, 177, 0.10) !important;
+  --dsw-alias-interactive-bg-hover-danger: rgba(248, 113, 113, 0.16) !important;
+  --dsw-alias-label-error: #ff8a95 !important;
+  --dsw-alias-label-quaternary: #b08a97 !important;
+  --dsw-alias-link: #f8bcd0 !important;
+  --dsw-alias-separator-primary: rgba(244, 143, 177, 0.24) !important;
+  --dsw-alias-state-warning-primary: #fbbf24 !important;
+
+  --dsw-specific-sidebar-fill: rgba(36, 19, 25, 0.70) !important;
+  --dsw-specific-sidebar-nav-item-active: rgba(59, 39, 48, 0.82) !important;
+  --dsw-specific-sidebar-nav-item-active-accent: #6b3a4a !important;
+  --dsw-specific-sidebar-nav-item-hover: rgba(51, 32, 42, 0.80) !important;
+  --dsw-specific-bubble: rgba(59, 39, 48, 0.85) !important;
+  --dsw-specific-bubble-highlight: rgba(66, 44, 54, 0.88) !important;
+  --dsw-specific-selector: rgba(59, 39, 48, 0.85) !important;
+  --dsw-specific-tip: rgba(59, 39, 48, 0.85) !important;
+  --dsw-specific-input-major: rgba(51, 32, 42, 0.90) !important;
+  --dsw-specific-login-input: rgba(42, 26, 34, 0.90) !important;
+  --dsw-specific-menu: rgba(66, 44, 54, 0.90) !important;
+}
+
+/* ==========================================================================
+ * 壁纸
+ * --------------------------------------------------------------------------
+ * DSH 的主框架类名是 CSS Module 哈希（0.7.1 = m45BUG_frame，0.9.0 =
+ * pI_x6G_frame，每次升级都可能变），写死哈希会在下次升级时静默失效。
+ * 因此这里分两层，任一层生效即可看到壁纸：
+ *   1) body 铺壁纸 —— 与版本无关的兜底（框架背景是半透明的 bg-base，
+ *      壁纸能透出来）；
+ *   2) 主框架元素本身铺壁纸 —— 用「已知哈希 + 只按 _frame 结尾且层级很浅」
+ *      的多重选择器匹配，不依赖具体哈希值。
+ * ========================================================================== */
+
+/* ---------- 浅色：壁纸铺满 ---------- */
+/* 壁纸只在这里写一次 URL，其余规则引用变量；theme.inline.css 因此只需内嵌一份 base64 */
+body {
+  --kitty-wallpaper: url("/kitty/wallpaper.jpg");
+  background: var(--kitty-wallpaper) center / cover no-repeat fixed !important;
+}
+
+.pI_x6G_frame,
+.m45BUG_frame,
+#root > [class$="_frame"],
+#root > div > [class$="_frame"] {
+  background: var(--kitty-wallpaper) center / cover no-repeat !important;
+}
+
+/* ---------- 深色：同一照片叠加暗色柔化，保证文字可读 ---------- */
+body[data-ds-dark-theme] {
+  background:
+    linear-gradient(rgba(30, 18, 24, 0.45), rgba(30, 18, 24, 0.45)),
+    var(--kitty-wallpaper) center / cover no-repeat fixed !important;
+}
+
+body[data-ds-dark-theme] .pI_x6G_frame,
+body[data-ds-dark-theme] .m45BUG_frame,
+body[data-ds-dark-theme] #root > [class$="_frame"],
+body[data-ds-dark-theme] #root > div > [class$="_frame"] {
+  background:
+    linear-gradient(rgba(30, 18, 24, 0.45), rgba(30, 18, 24, 0.45)),
+    var(--kitty-wallpaper) center / cover no-repeat !important;
+}
+

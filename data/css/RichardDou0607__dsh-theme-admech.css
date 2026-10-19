@@ -1,0 +1,1312 @@
+/* RichardDou0607/dsh-theme-admech — src/styles.css
+   fetched 2026-10-19 from https://raw.githubusercontent.com/RichardDou0607/dsh-theme-admech/main/src/styles.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* ============================================================
+   dsh-theme-admech — pure A: FORGE-CATHEDRAL
+   Black iron / brass / Mars red / parchment. Gothic choir,
+   cathedral-native icon set, forge-cathedral backdrop.
+   ============================================================ */
+
+html[data-dsh-admech] {
+  --admech-void: #0b0906;
+  --admech-iron: #141008;
+  --admech-iron-2: #1a140b;
+  --admech-brass: #c9a15a;
+  --admech-brass-bright: #e3c184;
+  --admech-brass-dim: rgba(201, 161, 90, 0.38);
+  --admech-mars: #8e1f1a;
+  --admech-mars-bright: #c2372b;
+  --admech-parchment: #ece2cc;
+  --admech-parchment-dim: #c3b394;
+  --admech-ash: #a5967a;
+  /* Ordered CJK-first so Han glyphs keep the serif voice, then fall through to
+     a Latin serif that actually exists on the platform. On Windows "Palatino"
+     is not installed and is not aliased to Palatino Linotype by the font
+     substituter, so the Latin face is named explicitly; SimSun and Microsoft
+     YaHei are repeated under their localized family names (宋体 / 微软雅黑)
+     because a Chinese Windows registers both and some DirectWrite lookups match
+     only the localized one. */
+  --admech-serif: "Noto Serif CJK SC", "Noto Serif SC", "Source Han Serif SC", "Songti SC", "Palatino Linotype", "Palatino", "Georgia", "SimSun", "NSimSun", "宋体", "新宋体", "Microsoft YaHei", "微软雅黑", serif;
+  --admech-mono: "Menlo", "SFMono-Regular", "Cascadia Mono", "Cascadia Code", "Consolas", "Noto Sans Mono CJK SC", "Microsoft YaHei", "微软雅黑", monospace;
+  /* Decorative rules are drawn as one device pixel. The client half rewrites
+     this on Windows at 125% / 150% display scaling, where a 1 CSS px border
+     would otherwise antialias into a 1.25 / 1.5 px haze. */
+  --admech-hairline: 1px;
+  --admech-bg: none;
+  --admech-corner-tl: none;
+  --admech-corner-tr: none;
+  --admech-corner-bl: none;
+  --admech-corner-br: none;
+  /* Density-corrected corner glyph set for the 20-26px card frames. */
+  --admech-corner-sm-tl: none;
+  --admech-corner-sm-tr: none;
+  --admech-corner-sm-bl: none;
+  --admech-corner-sm-br: none;
+  --admech-arch: none;
+  --admech-medallion: none;
+  --admech-seal: none;
+  --admech-divider: none;
+  --admech-shrine: none;
+  --admech-emblem-img: none;
+}
+
+html[data-dsh-admech] body {
+  background: #080503 !important;
+  color: var(--admech-parchment);
+}
+
+html[data-dsh-admech] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(1100px 620px at 50% -8%, rgba(201, 161, 90, 0.07), transparent 62%),
+    radial-gradient(900px 520px at 50% 112%, rgba(142, 31, 26, 0.06), transparent 60%);
+}
+
+/* ---------- startup splash: Forge-Cathedral ignition sequence ---------- */
+
+html[data-dsh-admech] .admech-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #060402;
+  background-image:
+    radial-gradient(620px 460px at 50% 46%, rgba(201, 161, 90, 0.13), transparent 68%),
+    radial-gradient(900px 700px at 50% 108%, rgba(142, 31, 26, 0.18), transparent 70%),
+    linear-gradient(180deg, rgba(4, 3, 2, 0.78) 0%, rgba(6, 4, 2, 0.46) 46%, rgba(3, 2, 1, 0.94) 100%),
+    var(--admech-bg, none);
+  background-size: cover, cover, cover, cover;
+  background-position: center, center, center, center bottom;
+  background-repeat: no-repeat;
+  color: var(--admech-parchment, #ece2cc);
+  animation: admechSplashVeil 420ms ease-out both;
+  cursor: default;
+  user-select: none;
+}
+html[data-dsh-admech] .admech-splash::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% 52%, transparent 32%, rgba(0, 0, 0, 0.62) 100%),
+    repeating-linear-gradient(180deg, rgba(201, 161, 90, 0.028) 0 1px, transparent 1px 3px);
+  mix-blend-mode: normal;
+}
+html[data-dsh-admech] .admech-splash::after {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  z-index: 3;
+  pointer-events: none;
+  border: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.20);
+  box-shadow: inset 0 0 0 var(--admech-hairline, 1px) rgba(0, 0, 0, 0.5), inset 0 0 90px rgba(0, 0, 0, 0.55);
+}
+html[data-dsh-admech] .admech-splash.is-out {
+  opacity: 0;
+  transform: scale(1.012);
+  transition: opacity 560ms ease, transform 560ms ease;
+  pointer-events: none;
+}
+
+html[data-dsh-admech] .admech-splash-atmo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+html[data-dsh-admech] .admech-splash-atmo i {
+  position: absolute;
+  bottom: 11%;
+  width: var(--s, 2px);
+  height: var(--s, 2px);
+  background: #e3c184;
+  box-shadow: 0 0 8px rgba(227, 193, 132, 0.7);
+  transform: rotate(45deg);
+  opacity: 0;
+  animation: admechEmber var(--d, 4s) linear infinite;
+  animation-delay: var(--delay, 0s);
+}
+html[data-dsh-admech] .admech-splash-ray {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  width: 120vmax;
+  height: 120vmax;
+  transform: translate(-50%, -50%);
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(227, 193, 132, 0.055) 12deg, transparent 24deg, transparent 52deg, rgba(227, 193, 132, 0.035) 62deg, transparent 76deg, transparent 120deg, rgba(227, 193, 132, 0.045) 130deg, transparent 145deg, transparent 190deg, rgba(227, 193, 132, 0.032) 200deg, transparent 214deg, transparent 268deg, rgba(227, 193, 132, 0.05) 278deg, transparent 292deg, transparent 330deg, rgba(227, 193, 132, 0.035) 340deg, transparent 355deg);
+  animation: admechRay 26s linear infinite;
+  opacity: 0.9;
+}
+html[data-dsh-admech] .admech-splash-scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  top: 12%;
+  background: linear-gradient(90deg, transparent, rgba(227, 193, 132, 0.45), transparent);
+  box-shadow: 0 0 18px rgba(227, 193, 132, 0.25);
+  opacity: 0.35;
+  animation: admechScan 5.4s linear infinite;
+}
+
+html[data-dsh-admech] .admech-splash-frameart {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  width: min(620px, 96vw);
+  height: min(820px, 95vh);
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 20px 60px rgba(0, 0, 0, 0.7));
+  opacity: 0.96;
+  animation: admechSplashFrame 900ms ease-out both;
+}
+
+html[data-dsh-admech] .admech-splash-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(420px, 82vw);
+  text-align: center;
+  animation: admechSplashContent 900ms ease-out both;
+}
+html[data-dsh-admech] .admech-splash-content::before {
+  content: "";
+  position: absolute;
+  inset: -50px -70px;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% 36%, rgba(5, 3, 2, 0.88) 0%, rgba(5, 3, 2, 0.56) 54%, transparent 76%),
+    radial-gradient(ellipse at 50% 38%, rgba(201, 161, 90, 0.10), transparent 64%);
+}
+html[data-dsh-admech] .admech-splash .kicker {
+  font-family: var(--admech-mono) !important;
+  font-size: 8px;
+  letter-spacing: 0.32em;
+  color: rgba(201, 161, 90, 0.65);
+  margin-bottom: 18px;
+}
+html[data-dsh-admech] .admech-splash .sigil {
+  width: 92px;
+  height: 92px;
+  margin: 0 auto 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 0 26px rgba(227, 193, 132, 0.38));
+  animation: admechSplashSigil 1000ms ease-out both, admechSigilPulse 3.4s ease-in-out 1s infinite;
+}
+html[data-dsh-admech] .admech-splash .sigil img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+html[data-dsh-admech] .admech-splash h1 {
+  font-family: var(--admech-serif) !important;
+  font-size: 38px !important;
+  line-height: 1.12 !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.16em;
+  color: #f3e7cd !important;
+  margin: 0 0 8px !important;
+  text-shadow: 0 0 26px rgba(201, 161, 90, 0.22), 0 2px 0 rgba(0, 0, 0, 0.6);
+  animation: admechFlicker 4.2s ease-in-out 1.2s infinite;
+}
+html[data-dsh-admech] .admech-splash .sub {
+  font-family: var(--admech-serif) !important;
+  font-size: 10px;
+  letter-spacing: 0.46em;
+  color: rgba(201, 161, 90, 0.82);
+  margin-left: 0.46em;
+  margin-bottom: 7px;
+}
+html[data-dsh-admech] .admech-splash .latin {
+  font-family: var(--admech-mono) !important;
+  font-size: 8px;
+  letter-spacing: 0.22em;
+  color: rgba(195, 179, 148, 0.55);
+  margin-bottom: 20px;
+}
+html[data-dsh-admech] .admech-splash .log {
+  list-style: none;
+  width: min(360px, 76vw);
+  margin: 0 0 14px;
+  padding: 0;
+  text-align: left;
+}
+html[data-dsh-admech] .admech-splash .log li {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--admech-mono) !important;
+  font-size: 9px;
+  line-height: 1.85;
+  letter-spacing: 0.045em;
+  color: rgba(195, 179, 148, 0.72);
+  opacity: 0;
+  animation: admechLogIn 480ms ease-out both;
+  animation-delay: calc(420ms + var(--i, 0) * 280ms);
+}
+html[data-dsh-admech] .admech-splash .log .dot {
+  width: 5px;
+  height: 5px;
+  flex: 0 0 5px;
+  transform: rotate(45deg);
+  border: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.6);
+  background: rgba(201, 161, 90, 0.18);
+}
+html[data-dsh-admech] .admech-splash .rail {
+  position: relative;
+  width: min(320px, 70vw);
+  height: 4px;
+  margin: 2px 0 7px;
+  background: rgba(201, 161, 90, 0.14);
+  border-top: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.30);
+  border-bottom: var(--admech-hairline, 1px) solid rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+html[data-dsh-admech] .admech-splash .rail::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(90deg, transparent 0 10px, rgba(0, 0, 0, 0.55) 10px 12px);
+  pointer-events: none;
+}
+html[data-dsh-admech] .admech-splash .rail i {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(142, 31, 26, 0.9), #c9a15a 55%, #f0d49a);
+  box-shadow: 0 0 14px rgba(201, 161, 90, 0.55);
+}
+html[data-dsh-admech] .admech-splash .status {
+  display: flex;
+  justify-content: space-between;
+  width: min(320px, 70vw);
+  font-family: var(--admech-mono) !important;
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  color: rgba(201, 161, 90, 0.64);
+}
+html[data-dsh-admech] .admech-splash .status .pct { color: rgba(227, 193, 132, 0.9); }
+
+html[data-dsh-admech] .admech-splash-footer {
+  position: absolute;
+  left: 50%;
+  bottom: 26px;
+  z-index: 2;
+  transform: translateX(-50%);
+  width: min(760px, 88vw);
+  text-align: center;
+  font-family: var(--admech-mono) !important;
+  font-size: 8px;
+  letter-spacing: 0.20em;
+  color: rgba(195, 179, 148, 0.40);
+  pointer-events: none;
+}
+html[data-dsh-admech] .admech-splash-footer .tiny {
+  margin-top: 7px;
+  font-size: 7px;
+  letter-spacing: 0.16em;
+  color: rgba(195, 179, 148, 0.26);
+}
+
+@keyframes admechSplashVeil { from { opacity: 0; } to { opacity: 1; } }
+@keyframes admechSplashFrame { from { opacity: 0; transform: translate(-50%, -50%) scale(0.985); } to { opacity: 0.96; transform: translate(-50%, -50%) scale(1); } }
+@keyframes admechSplashContent { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes admechSplashSigil { from { opacity: 0; transform: scale(0.88); } to { opacity: 1; transform: scale(1); } }
+@keyframes admechSigilPulse { 0%, 100% { filter: drop-shadow(0 0 22px rgba(227, 193, 132, 0.30)); } 50% { filter: drop-shadow(0 0 38px rgba(227, 193, 132, 0.55)); } }
+@keyframes admechLogIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes admechFlicker { 0%, 100% { opacity: 1; } 48% { opacity: 1; } 49% { opacity: 0.82; } 50% { opacity: 1; } 78% { opacity: 0.94; } 79% { opacity: 1; } }
+@keyframes admechEmber { 0% { opacity: 0; transform: translateY(0) rotate(45deg); } 12% { opacity: 0.85; } 80% { opacity: 0.28; } 100% { opacity: 0; transform: translateY(-88vh) rotate(45deg); } }
+@keyframes admechRay { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+@keyframes admechScan { 0% { top: 10%; opacity: 0; } 12% { opacity: 0.28; } 88% { opacity: 0.22; } 100% { top: 86%; opacity: 0; } }
+
+@media (max-width: 900px) {
+  html[data-dsh-admech] .admech-splash-frameart { width: 96vw; height: 92vh; }
+  html[data-dsh-admech] .admech-splash-side { display: none; }
+  html[data-dsh-admech] .admech-splash-content { width: 84vw; }
+  html[data-dsh-admech] .admech-splash h1 { font-size: 30px !important; letter-spacing: 0.12em; }
+  html[data-dsh-admech] .admech-splash .sigil { width: 76px; height: 76px; margin-bottom: 10px; }
+  html[data-dsh-admech] .admech-splash .kicker { font-size: 7px; letter-spacing: 0.22em; margin-bottom: 14px; }
+  html[data-dsh-admech] .admech-splash .latin { font-size: 7px; margin-bottom: 16px; }
+  html[data-dsh-admech] .admech-splash .log li { font-size: 8px; line-height: 1.75; }
+  html[data-dsh-admech] .admech-splash-footer { font-size: 7px; letter-spacing: 0.12em; bottom: 18px; }
+  html[data-dsh-admech] .admech-splash-footer .tiny { display: none; }
+}
+@media (max-height: 620px) {
+  html[data-dsh-admech] .admech-splash .kicker { display: none; }
+  html[data-dsh-admech] .admech-splash .sigil { width: 64px; height: 64px; margin-bottom: 8px; }
+  html[data-dsh-admech] .admech-splash h1 { font-size: 26px !important; }
+  html[data-dsh-admech] .admech-splash .log { margin-bottom: 8px; }
+  html[data-dsh-admech] .admech-splash .log li { font-size: 8px; line-height: 1.55; }
+  html[data-dsh-admech] .admech-splash-footer { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-dsh-admech] .admech-splash,
+  html[data-dsh-admech] .admech-splash *,
+  html[data-dsh-admech] .admech-splash *::before,
+  html[data-dsh-admech] .admech-splash *::after {
+    animation: none !important;
+  }
+  html[data-dsh-admech] .admech-splash .log li { opacity: 1; }
+  html[data-dsh-admech] .admech-splash .rail i { width: 100% !important; }
+}
+
+html[data-dsh-admech] ::selection { background: var(--admech-mars); color: #f7ecd5; }
+
+html[data-dsh-admech] *::-webkit-scrollbar { width: var(--dsh-scrollbar-width, 8px); height: var(--dsh-scrollbar-width, 8px); }
+html[data-dsh-admech] *::-webkit-scrollbar-thumb { background: rgba(201, 161, 90, 0.30); border-radius: 2px; }
+html[data-dsh-admech] *::-webkit-scrollbar-thumb:hover { background: rgba(227, 193, 132, 0.55); }
+html[data-dsh-admech] *::-webkit-scrollbar-track { background: transparent; }
+
+/* Native placeholder: keep text for assistive tech, but paint it through
+   a zero-size text box so it cannot overlap the contenteditable in layout audits. */
+html[data-dsh-admech] [data-composer-placeholder][data-admech-placeholder="true"] {
+  font-size: 0 !important;
+  line-height: 0 !important;
+  color: transparent !important;
+}
+html[data-dsh-admech] [data-composer-placeholder][data-admech-placeholder="true"]::before {
+  content: attr(data-admech-ph);
+  display: block;
+  font-family: var(--admech-serif) !important;
+  font-size: 14px;
+  line-height: 24px;
+  letter-spacing: 0.01em;
+  color: var(--admech-ash);
+  white-space: pre-wrap;
+  pointer-events: none;
+}
+
+/* ---------- main surface: the forge-cathedral backdrop ---------- */
+
+html[data-dsh-admech] [data-slot="main"] > div,
+html[data-dsh-admech] [data-slot="main.conversation"] > div {
+  background-color: transparent !important;
+}
+
+html[data-dsh-admech] [data-slot="main.conversation"] > div {
+  background-image:
+    linear-gradient(180deg, rgba(8, 6, 3, 0.52) 0%, rgba(8, 6, 3, 0.72) 46%, rgba(8, 6, 3, 0.92) 100%),
+    var(--admech-bg) !important;
+  background-size: cover !important;
+  background-position: center bottom !important;
+  background-repeat: no-repeat !important;
+}
+
+html[data-dsh-admech] [data-slot="main.conversation"] [data-conversation-content],
+html[data-dsh-admech] [data-slot="main.conversation"] [data-conversation-scroll],
+html[data-dsh-admech] [data-slot="main.conversation"] [class*="scrollBody"],
+html[data-dsh-admech] [data-slot="main.conversation"] [class*="body"] {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* ---------- sidebar ---------- */
+
+html[data-dsh-admech] [data-admech="sidebar"] {
+  position: relative;
+  background-image:
+    linear-gradient(180deg, rgba(11, 8, 5, 0.93) 0%, rgba(8, 6, 3, 0.98) 100%),
+    var(--admech-bg) !important;
+  background-size: cover !important;
+  background-position: 26% bottom !important;
+  border-right: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.34) !important;
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.7), 12px 0 30px rgba(0, 0, 0, 0.35) !important;
+}
+
+html[data-dsh-admech] [data-admech="sidebar"]::before {
+  content: "";
+  position: absolute;
+  inset: 0 9px;
+  border-left: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.08);
+  border-right: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.08);
+  pointer-events: none;
+}
+
+html[data-dsh-admech] [data-admech="brandrow"] {
+  border-bottom: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.30) !important;
+  background: linear-gradient(180deg, rgba(201, 161, 90, 0.07), transparent) !important;
+}
+
+html[data-dsh-admech] [data-admech="brandrow"] button { color: var(--admech-brass-bright); }
+html[data-dsh-admech] [data-admech="brandrow"] svg[data-admech-icon] {
+  color: var(--admech-brass-bright) !important;
+  filter: drop-shadow(0 0 7px rgba(201, 161, 90, 0.4));
+}
+
+html[data-dsh-admech] [data-admech="new-session"] {
+  border: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.46) !important;
+  border-radius: 2px !important;
+  background: linear-gradient(180deg, rgba(201, 161, 90, 0.15), rgba(201, 161, 90, 0.05)) !important;
+  color: var(--admech-parchment) !important;
+  font-family: var(--admech-serif) !important;
+  letter-spacing: 0.10em;
+  box-shadow: inset 0 1px 0 rgba(255, 235, 200, 0.08), 0 2px 10px rgba(0, 0, 0, 0.35);
+}
+html[data-dsh-admech] [data-admech="new-session"]:hover {
+  border-color: rgba(227, 193, 132, 0.8) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 235, 200, 0.12), 0 0 20px rgba(201, 161, 90, 0.18);
+}
+
+html[data-dsh-admech] [data-admech="nav"] {
+  color: var(--admech-parchment-dim) !important;
+  letter-spacing: 0.05em;
+  border-radius: 2px !important;
+}
+html[data-dsh-admech] [data-admech="nav"]:hover {
+  background: linear-gradient(90deg, rgba(201, 161, 90, 0.14), transparent 88%) !important;
+  color: var(--admech-parchment) !important;
+}
+
+html[data-dsh-admech] [data-admech="session"] {
+  border-left: 2px solid transparent !important;
+  border-radius: 2px !important;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+html[data-dsh-admech] [data-admech="session"]:hover {
+  background: linear-gradient(90deg, rgba(201, 161, 90, 0.11), transparent 90%) !important;
+  border-left-color: rgba(201, 161, 90, 0.55) !important;
+}
+html[data-dsh-admech] [data-admech="session"][data-admech-active="true"] {
+  background: linear-gradient(90deg, rgba(142, 31, 26, 0.28), rgba(142, 31, 26, 0.04) 72%, transparent) !important;
+  border-left: 2px solid var(--admech-mars-bright) !important;
+  box-shadow: inset 0 0 0 var(--admech-hairline, 1px) rgba(201, 161, 90, 0.10);
+}
+html[data-dsh-admech] [data-admech="session"] [class*="title"],
+html[data-dsh-admech] [data-admech="session"] [class*="label"] {
+  font-family: var(--admech-serif) !important;
+  font-size: 13px !important;
+  letter-spacing: 0.02em;
+  padding-right: 4px;
+  min-width: 0;
+}
+html[data-dsh-admech] [data-admech="session"] [class*="time"] {
+  margin-left: 15px;
+  flex: 0 0 auto;
+}
+
+html[data-dsh-admech] [data-admech="footer"] {
+  border-top: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.24) !important;
+  background: linear-gradient(0deg, rgba(201, 161, 90, 0.05), transparent) !important;
+}
+
+/* ---------- header ---------- */
+
+html[data-dsh-admech] [data-admech="header"] {
+  position: relative;
+  background: linear-gradient(180deg, rgba(20, 14, 8, 0.92), rgba(10, 7, 4, 0.96)) !important;
+  border-bottom: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.32) !important;
+  backdrop-filter: blur(7px);
+}
+html[data-dsh-admech] [data-admech="header"]::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -4px;
+  height: 1px;
+  background: rgba(201, 161, 90, 0.14);
+  pointer-events: none;
+}
+html[data-dsh-admech] [data-admech="header"] [class*="title"],
+html[data-dsh-admech] [data-admech="header"] [class*="Title"] {
+  font-family: var(--admech-serif) !important;
+  letter-spacing: 0.05em;
+  color: var(--admech-parchment) !important;
+}
+html[data-dsh-admech] [data-admech="header"] button { color: var(--admech-ash); }
+html[data-dsh-admech] [data-admech="header"] button:hover { color: var(--admech-brass-bright); }
+
+/* ---------- hero ---------- */
+
+html[data-dsh-admech] [data-admech="hero-headline"] {
+  font-family: var(--admech-serif) !important;
+  letter-spacing: 0.18em !important;
+  color: var(--admech-parchment) !important;
+  text-shadow: 0 0 26px rgba(201, 161, 90, 0.20);
+}
+html[data-dsh-admech] [data-admech-hero-mark="true"] {
+  width: 34px !important;
+  height: 34px !important;
+  filter: drop-shadow(0 0 14px rgba(201, 161, 90, 0.45)) !important;
+}
+html[data-dsh-admech] [data-admech="hero-headline"] svg[data-admech-icon] {
+  color: var(--admech-brass-bright) !important;
+  filter: drop-shadow(0 0 12px rgba(201, 161, 90, 0.45));
+}
+html[data-dsh-admech] [data-admech="hero-headline"]::after {
+  content: "FORGE-SANCTUM · MARS";
+  display: block;
+  /* The host headline row is a wrapping flex container: keep the caption on one
+     unbroken line so a wider Windows Latin face cannot fold it. */
+  flex: 0 0 auto;
+  white-space: nowrap;
+  font-family: var(--admech-mono) !important;
+  font-size: 9px !important;
+  letter-spacing: 0.36em;
+  color: rgba(201, 161, 90, 0.70) !important;
+  margin-top: 10px;
+  text-align: center;
+}
+
+html[data-dsh-admech] [aria-label="选择工作区"],
+html[data-dsh-admech] [aria-label^="访问模式"],
+html[data-dsh-admech] [aria-label="请选择模型"] {
+  font-family: var(--admech-mono) !important;
+  font-size: 10px !important;
+  letter-spacing: 0.06em;
+  color: var(--admech-parchment-dim) !important;
+}
+html[data-dsh-admech] [aria-label="选择工作区"]:hover,
+html[data-dsh-admech] [aria-label^="访问模式"]:hover,
+html[data-dsh-admech] [aria-label="请选择模型"]:hover { color: var(--admech-brass-bright) !important; }
+
+/* ---------- composer: reliquary with cathedral frame ---------- */
+
+html[data-dsh-admech] [data-composer-card] {
+  position: relative;
+  background-color: rgba(13, 9, 5, 0.95) !important;
+  background-image:
+    var(--admech-corner-tl), var(--admech-corner-tr), var(--admech-corner-bl), var(--admech-corner-br),
+    linear-gradient(180deg, rgba(28, 20, 11, 0.93) 0%, rgba(12, 8, 4, 0.97) 100%),
+    var(--admech-bg) !important;
+  background-position: left top, right top, left bottom, right bottom, center, center bottom !important;
+  background-size: 42px 42px, 42px 42px, 42px 42px, 42px 42px, cover, cover !important;
+  background-repeat: no-repeat !important;
+  border: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.58) !important;
+  border-radius: 2px !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 235, 200, 0.07),
+    inset 0 0 0 var(--admech-hairline, 1px) rgba(0, 0, 0, 0.62),
+    inset 0 0 44px rgba(201, 161, 90, 0.045),
+    0 20px 52px rgba(0, 0, 0, 0.55) !important;
+}
+html[data-dsh-admech] [data-composer-card]::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  z-index: 0;
+  border: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.16);
+  border-radius: 1px;
+  pointer-events: none;
+}
+html[data-dsh-admech] [data-composer-card]::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -76px;
+  width: 260px;
+  height: 110px;
+  transform: translateX(-50%);
+  background: var(--admech-shrine) center / contain no-repeat;
+  pointer-events: none;
+  opacity: 0.96;
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.55));
+}
+html[data-dsh-admech] [data-composer-card]:focus-within {
+  border-color: rgba(227, 193, 132, 0.88) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 235, 200, 0.09),
+    inset 0 0 0 var(--admech-hairline, 1px) rgba(0, 0, 0, 0.62),
+    inset 0 0 60px rgba(201, 161, 90, 0.06),
+    0 20px 52px rgba(0, 0, 0, 0.55),
+    0 0 34px rgba(201, 161, 90, 0.14) !important;
+}
+html[data-dsh-admech] [data-composer-card] > * { position: relative; z-index: 1; }
+
+html[data-dsh-admech] [data-composer-placeholder] {
+  font-family: var(--admech-serif) !important;
+  font-size: 14px !important;
+  letter-spacing: 0.04em;
+  color: rgba(195, 179, 148, 0.78) !important;
+}
+html[data-dsh-admech] [data-composer-input] {
+  caret-color: var(--admech-brass-bright) !important;
+  color: var(--admech-parchment) !important;
+}
+html[data-dsh-admech] [data-composer-card] button { color: var(--admech-ash); }
+html[data-dsh-admech] [data-composer-card] button:hover { color: var(--admech-brass-bright); }
+html[data-dsh-admech] [data-composer-card] button[aria-label="发送消息"] {
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle at 34% 28%, var(--admech-mars-bright), var(--admech-mars) 64%, #5c1411 100%) !important;
+  border: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.72) !important;
+  color: #f7ecd5 !important;
+  box-shadow: inset 0 1px 0 rgba(255, 220, 180, 0.28), 0 2px 9px rgba(0, 0, 0, 0.55), 0 0 0 var(--admech-hairline, 1px) rgba(0, 0, 0, 0.35);
+}
+html[data-dsh-admech] [data-composer-card] button[aria-label="发送消息"]:hover {
+  background: radial-gradient(circle at 34% 28%, #d24a37, var(--admech-mars-bright) 64%, var(--admech-mars) 100%) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 220, 180, 0.34), 0 0 20px rgba(194, 55, 43, 0.4);
+}
+
+html[data-dsh-admech] [data-composer-card] button[aria-label="停止生成"] {
+  position: relative;
+  width: 40px !important;
+  height: 40px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  border: 1.5px solid #f0d49a !important;
+  background: radial-gradient(circle at 34% 28%, #d24a37 0%, #a82d23 46%, #6d130f 100%) !important;
+  color: #fff3dd !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 235, 205, 0.3),
+    inset 0 0 0 3px rgba(90, 16, 12, 0.42),
+    0 0 0 3px rgba(194, 55, 43, 0.18),
+    0 0 26px rgba(194, 55, 43, 0.48) !important;
+  animation: admechStopPulse 2.2s ease-in-out infinite;
+}
+html[data-dsh-admech] [data-composer-card] button[aria-label="停止生成"]::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(168, 59, 42, 0.72);
+  border-radius: 50%;
+  pointer-events: none;
+}
+html[data-dsh-admech] [data-composer-card] button[aria-label="停止生成"] svg {
+  position: relative;
+  z-index: 1;
+  width: 17px !important;
+  height: 17px !important;
+  color: var(--admech-brass-bright) !important;
+  filter: drop-shadow(0 0 5px rgba(227, 193, 132, 0.55));
+}
+html[data-dsh-admech] [data-composer-card] button[aria-label="停止生成"]:hover {
+  border-color: #fff0cc !important;
+  background: radial-gradient(circle at 34% 28%, #e35b45 0%, #c2372b 48%, #7c1812 100%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 240, 215, 0.38),
+    inset 0 0 0 3px rgba(90, 16, 12, 0.38),
+    0 0 0 4px rgba(227, 193, 132, 0.22),
+    0 0 34px rgba(227, 193, 132, 0.55) !important;
+  animation-play-state: paused;
+}
+@keyframes admechStopPulse {
+  0%, 100% { box-shadow: inset 0 1px 0 rgba(255,235,205,.24), inset 0 0 0 3px rgba(90,16,12,.4), 0 0 0 3px rgba(194,55,43,.16), 0 0 20px rgba(194,55,43,.4); }
+  50% { box-shadow: inset 0 1px 0 rgba(255,240,215,.36), inset 0 0 0 3px rgba(90,16,12,.45), 0 0 0 5px rgba(227,193,132,.2), 0 0 34px rgba(227,193,132,.58); }
+}
+
+html[data-dsh-admech] [data-composer-card] button[aria-label="添加文件或调用指令"] {
+  border: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.24) !important;
+  border-radius: 2px !important;
+  background: rgba(201, 161, 90, 0.05) !important;
+}
+
+/* ---------- conversation frame: cathedral tracery around the chat ---------- */
+
+html[data-dsh-admech] [data-slot="main.conversation"] > div {
+  position: relative;
+}
+html[data-dsh-admech] [data-slot="main.conversation"] > div::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    var(--admech-conv-top),
+    var(--admech-conv-bottom),
+    var(--admech-conv-rail),
+    var(--admech-conv-rail);
+  background-position:
+    center 56px,
+    center calc(100% - 104px),
+    left 8px top 40px,
+    right 8px top 40px;
+  background-size:
+    min(660px, 100%) 130px,
+    min(660px, 100%) 72px,
+    64px 320px,
+    64px 320px;
+  background-repeat: no-repeat, no-repeat, repeat-y, repeat-y;
+  opacity: 0.9;
+}
+/* ---------- dialogs / menus: cathedral frame ---------- */
+
+html[data-dsh-admech] [role="dialog"] {
+  position: relative;
+  background-color: #0c0805 !important;
+  background-image:
+    var(--admech-corner-tl), var(--admech-corner-tr), var(--admech-corner-bl), var(--admech-corner-br),
+    linear-gradient(180deg, #171109 0%, #0b0805 100%) !important;
+  background-position: left top, right top, left bottom, right bottom, center !important;
+  background-size: 48px 48px, 48px 48px, 48px 48px, 48px 48px, cover !important;
+  background-repeat: no-repeat !important;
+  border: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.56) !important;
+  border-radius: 3px !important;
+  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.8), inset 0 0 0 var(--admech-hairline, 1px) rgba(0, 0, 0, 0.65) !important;
+  overflow: visible !important;
+}
+html[data-dsh-admech] [role="dialog"]::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.13);
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 0;
+}
+html[data-dsh-admech] [role="dialog"]::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -84px;
+  width: 84px;
+  height: 84px;
+  transform: translateX(-50%);
+  background: var(--admech-medallion) center / contain no-repeat;
+  pointer-events: none;
+  z-index: 2;
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.55));
+}
+html[data-dsh-admech] [role="dialog"] > * { position: relative; z-index: 1; }
+html[data-dsh-admech] [role="dialog"] h1,
+html[data-dsh-admech] [role="dialog"] h2 {
+  font-family: var(--admech-serif) !important;
+  letter-spacing: 0.12em;
+  color: var(--admech-brass-bright) !important;
+}
+html[data-dsh-admech] [role="dialog"] h1::after,
+html[data-dsh-admech] [role="dialog"] h2::after {
+  content: "";
+  display: block;
+  height: 14px;
+  margin-top: 7px;
+  background: var(--admech-divider) center / contain no-repeat;
+  opacity: 0.8;
+}
+html[data-dsh-admech] [role="dialog"] p { color: var(--admech-parchment-dim) !important; }
+html[data-dsh-admech] [role="dialog"] button { border-radius: 2px !important; }
+html[data-dsh-admech] [role="dialog"] button[class*="primary"] {
+  background: var(--admech-mars) !important;
+  border: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.58) !important;
+  color: #f7ecd5 !important;
+  box-shadow: inset 0 1px 0 rgba(255, 220, 180, 0.2);
+}
+html[data-dsh-admech] [role="dialog"] button[class*="primary"]:hover {
+  background: var(--admech-mars-bright) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 220, 180, 0.28), 0 0 20px rgba(194, 55, 43, 0.32);
+}
+html[data-dsh-admech] [role="dialog"] input,
+html[data-dsh-admech] [role="dialog"] textarea {
+  background: rgba(8, 6, 3, 0.9) !important;
+  border: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.32) !important;
+  border-radius: 2px !important;
+  color: var(--admech-parchment) !important;
+}
+html[data-dsh-admech] [role="dialog"] input:focus,
+html[data-dsh-admech] [role="dialog"] textarea:focus {
+  border-color: rgba(227, 193, 132, 0.8) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 var(--admech-hairline, 1px) rgba(201, 161, 90, 0.35), 0 0 20px rgba(201, 161, 90, 0.10) !important;
+}
+
+html[data-dsh-admech] [role="menu"],
+html[data-dsh-admech] [role="listbox"] {
+  background-color: rgba(15, 11, 6, 0.98) !important;
+  border: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.36) !important;
+  border-radius: 2px !important;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.6) !important;
+}
+/* Account / Platform entries must never inherit a decorative overlay's hit area. */
+html[data-dsh-admech] [role="menu"] a,
+html[data-dsh-admech] [role="menu"] button,
+html[data-dsh-admech] [role="dialog"] a,
+html[data-dsh-admech] [role="dialog"] button,
+html[data-dsh-admech] [data-slot*="account"] a,
+html[data-dsh-admech] [data-slot*="account"] button {
+  pointer-events: auto !important;
+  position: relative;
+  z-index: 2;
+}
+
+/* The native Platform page is hosted in a full-window WebContentsView. Never
+   apply the generic cathedral dialog frame to its DOM container (position /
+   inset / overflow changes move or collapse the native view bounds). */
+html[data-dsh-admech] [role="dialog"]:has(> header [data-window-drag]),
+html[data-dsh-admech] [role="dialog"][data-admech-platform-overlay="true"] {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 1001 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  background: var(--dsw-alias-bg-base) !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+html[data-dsh-admech] [role="dialog"]:has(> header [data-window-drag])::before,
+html[data-dsh-admech] [role="dialog"]:has(> header [data-window-drag])::after,
+html[data-dsh-admech] [role="dialog"][data-admech-platform-overlay="true"]::before,
+html[data-dsh-admech] [role="dialog"][data-admech-platform-overlay="true"]::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* ---------- chat surfaces ---------- */
+
+html[data-dsh-admech] [data-conversation-content] h1,
+html[data-dsh-admech] [data-conversation-content] h2,
+html[data-dsh-admech] [data-conversation-content] h3,
+html[data-dsh-admech] [data-conversation-content] h4 {
+  font-family: var(--admech-serif) !important;
+  letter-spacing: 0.06em;
+  color: var(--admech-parchment) !important;
+}
+html[data-dsh-admech] [data-conversation-content] blockquote {
+  border-left: 2px solid var(--admech-brass) !important;
+  background: rgba(201, 161, 90, 0.05) !important;
+  color: var(--admech-parchment-dim) !important;
+}
+html[data-dsh-admech] [data-conversation-content] :not(pre) > code {
+  color: var(--admech-brass-bright) !important;
+  background: rgba(201, 161, 90, 0.09) !important;
+}
+html[data-dsh-admech] [data-chat-flow-kind="user"] [class*="bubble"] {
+  position: relative;
+  background: linear-gradient(180deg, rgba(30, 22, 12, 0.98), rgba(18, 13, 7, 0.99)) !important;
+  border: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.42) !important;
+  border-radius: 2px !important;
+  color: var(--admech-parchment) !important;
+  font-family: var(--admech-serif) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 235, 200, 0.06), 0 4px 18px rgba(0, 0, 0, 0.4);
+  padding-right: 22px !important;
+}
+html[data-dsh-admech] [data-chat-flow-kind="user"] [class*="bubble"]::after {
+  content: "";
+  position: absolute;
+  right: -8px;
+  top: -8px;
+  width: 22px;
+  height: 22px;
+  background: var(--admech-seal) center / contain no-repeat;
+  pointer-events: none;
+}
+html[data-dsh-admech] [data-chat-flow-kind="turn-process"],
+html[data-dsh-admech] [data-chat-flow-kind="turn-tail"] {
+  border-left: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.16);
+}
+
+/* ---------- icons ---------- */
+
+html[data-dsh-admech] svg[data-admech-icon] {
+  color: var(--admech-brass);
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.55));
+  flex: 0 0 auto;
+  background-color: currentColor !important;
+  -webkit-mask: var(--admech-icon-mask) center / contain no-repeat !important;
+  mask: var(--admech-icon-mask) center / contain no-repeat !important;
+}
+html[data-dsh-admech] svg[data-admech-icon] > * {
+  opacity: 0 !important;
+}
+html[data-dsh-admech] svg[data-admech-icon][data-admech-brand] {
+  color: var(--admech-brass-bright);
+  width: 24px !important;
+  height: 24px !important;
+  filter: drop-shadow(0 0 9px rgba(201, 161, 90, 0.45));
+}
+html[data-dsh-admech] button[aria-label="发送消息"] svg[data-admech-icon] { color: #f7ecd5; filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.5)); }
+html[data-dsh-admech] [role="dialog"] button[aria-label="关闭"] svg[data-admech-icon] { color: var(--admech-parchment); }
+
+/* Never let the native glyph flash before the mask is attached; show our icon as soon as tagged. */
+html[data-dsh-admech] [data-chat-running] svg:not([data-admech-icon]),
+html[data-dsh-admech] [data-chat-running] img,
+html[data-dsh-admech] [data-process-activity] svg:not([data-admech-icon]),
+html[data-dsh-admech] [data-tool] [class*="leading"] svg:not([data-admech-icon]),
+html[data-dsh-admech] [data-variant="think"] [class*="leading"] svg:not([data-admech-icon]),
+html[data-dsh-admech] [data-composer-card] button[aria-label="停止生成"] svg:not([data-admech-icon]) {
+  visibility: hidden !important;
+}
+
+html[data-dsh-admech] svg:not([data-admech-icon]) {
+  filter: sepia(0.32) saturate(0.82) brightness(0.96) drop-shadow(0 1px 0 rgba(0, 0, 0, 0.35));
+}
+
+/* Conversation process + "deep diving" running status */
+html[data-dsh-admech] [data-chat-running] [class*="runningWhaleAnimated"] {
+  display: none !important;
+}
+html[data-dsh-admech] [data-chat-running] [class*="runningIcon"] svg[data-admech-icon] {
+  display: block !important;
+  color: var(--admech-brass-bright) !important;
+  filter: drop-shadow(0 0 6px rgba(227, 193, 132, 0.45)) !important;
+  transform-origin: 50% 50%;
+  animation: admechCogTurn 9s linear infinite;
+}
+html[data-dsh-admech] [data-chat-running] [class*="runningText"] {
+  font-family: var(--admech-serif) !important;
+  letter-spacing: 0.08em;
+  color: var(--admech-brass-bright) !important;
+}
+html[data-dsh-admech] [data-step-process-icon] svg[data-admech-icon] {
+  color: var(--admech-brass) !important;
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.45)) !important;
+}
+html[data-dsh-admech] [data-process-activity="thinking"] [data-step-process-icon] svg[data-admech-icon] {
+  animation: admechThinkPulse 2.8s ease-in-out infinite;
+}
+html[data-dsh-admech] [data-process-activity] {
+  font-family: var(--admech-serif) !important;
+  letter-spacing: 0.015em;
+}
+html[data-dsh-admech] [data-tool] [class*="leading"] svg[data-admech-icon],
+html[data-dsh-admech] [data-variant="think"] [class*="leading"] svg[data-admech-icon] {
+  color: var(--admech-brass) !important;
+  filter: drop-shadow(0 0 3px rgba(201, 161, 90, 0.2)) !important;
+}
+html[data-dsh-admech] [data-variant="think"] [class*="title"],
+html[data-dsh-admech] [data-variant="think"] [class*="summary"] {
+  font-family: var(--admech-serif) !important;
+  letter-spacing: 0.015em;
+}
+html[data-dsh-admech] [data-tool] [class*="title"],
+html[data-dsh-admech] [data-tool] [class*="summary"] {
+  font-family: var(--admech-serif) !important;
+  letter-spacing: 0.015em;
+}
+@keyframes admechCogTurn { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes admechThinkPulse {
+  0%, 100% { opacity: 0.82; filter: drop-shadow(0 0 2px rgba(201, 161, 90, 0.25)) !important; }
+  50% { opacity: 1; filter: drop-shadow(0 0 7px rgba(227, 193, 132, 0.55)) !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-dsh-admech] [data-chat-running] [class*="runningIcon"] svg[data-admech-icon],
+  html[data-dsh-admech] [data-process-activity="thinking"] [data-step-process-icon] svg[data-admech-icon] {
+    animation: none !important;
+  }
+}
+
+/* ---------- edited-files / deliverable cards: reliquary frames ---------- */
+
+html[data-dsh-admech] [data-changed-files] {
+  position: relative !important;
+  overflow: hidden !important;
+  border: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.55) !important;
+  border-radius: 3px !important;
+  background:
+    linear-gradient(180deg, rgba(30, 22, 12, 0.96) 0%, rgba(14, 10, 6, 0.98) 58%, rgba(8, 5, 3, 0.99) 100%) !important;
+  box-shadow:
+    inset 0 0 0 var(--admech-hairline, 1px) rgba(0, 0, 0, 0.72),
+    inset 0 0 0 2px rgba(201, 161, 90, 0.08),
+    0 12px 28px rgba(0, 0, 0, 0.45) !important;
+}
+html[data-dsh-admech] [data-changed-files]::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  z-index: 4;
+  border: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.16);
+  pointer-events: none;
+}
+html[data-dsh-admech] [data-changed-files]::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0.42;
+  background-image:
+    var(--admech-corner-sm-tl), var(--admech-corner-sm-tr),
+    var(--admech-corner-sm-bl), var(--admech-corner-sm-br);
+  background-position: left top, right top, left bottom, right bottom;
+  background-size: 26px 26px;
+  background-repeat: no-repeat;
+}
+html[data-dsh-admech] [data-changed-files] > button:first-child,
+html[data-dsh-admech] [data-changed-files] [class*="header"] {
+  position: relative !important;
+  z-index: 2;
+  min-height: 62px !important;
+  height: auto !important;
+  padding: 10px 16px !important;
+  background:
+    linear-gradient(180deg, rgba(201, 161, 90, 0.13) 0%, rgba(201, 161, 90, 0.035) 58%, rgba(0, 0, 0, 0.12) 100%) !important;
+  border-bottom: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.28) !important;
+}
+html[data-dsh-admech] [data-changed-files] [class*="tile"] {
+  border: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.46) !important;
+  border-radius: 2px !important;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(201, 161, 90, 0.16), transparent 68%),
+    rgba(9, 6, 3, 0.98) !important;
+  box-shadow: inset 0 0 0 var(--admech-hairline, 1px) rgba(0, 0, 0, 0.6), inset 0 0 0 3px rgba(201, 161, 90, 0.05) !important;
+  color: var(--admech-brass-bright) !important;
+}
+html[data-dsh-admech] [data-changed-files] [class*="tile"] svg {
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.45)) !important;
+  color: inherit !important;
+  opacity: 0.96;
+}
+html[data-dsh-admech] [data-changed-files] [class*="title"] {
+  font-family: var(--admech-serif) !important;
+  font-size: 14px !important;
+  letter-spacing: 0.04em;
+  color: var(--admech-parchment) !important;
+}
+html[data-dsh-admech] [data-changed-files] [class*="stat"],
+html[data-dsh-admech] [data-changed-files] [class*="counts"] {
+  font-family: var(--admech-mono) !important;
+  font-size: 10px !important;
+  letter-spacing: 0.03em;
+  color: var(--admech-ash) !important;
+}
+html[data-dsh-admech] [data-changed-files] [class*="added"] {
+  color: #a8b98a !important;
+  text-shadow: 0 0 8px rgba(168, 185, 138, 0.12);
+}
+html[data-dsh-admech] [data-changed-files] [class*="deleted"] {
+  color: #c47a69 !important;
+  text-shadow: 0 0 8px rgba(196, 122, 105, 0.12);
+}
+html[data-dsh-admech] [data-changed-files] [class*="list"] {
+  position: relative !important;
+  z-index: 2;
+  border-top: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.24) !important;
+  background: rgba(5, 3, 2, 0.24) !important;
+}
+html[data-dsh-admech] [data-changed-files] [class*="row"] {
+  min-height: 30px !important;
+  padding: 7px 18px 7px 16px !important;
+  border-bottom: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.10) !important;
+  color: var(--admech-ash) !important;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+html[data-dsh-admech] [data-changed-files] [class*="row"]:last-child {
+  border-bottom: 0 !important;
+}
+html[data-dsh-admech] [data-changed-files] [class*="row"]:hover {
+  background: linear-gradient(90deg, rgba(201, 161, 90, 0.13), rgba(201, 161, 90, 0.03)) !important;
+  color: var(--admech-parchment-dim) !important;
+}
+html[data-dsh-admech] [data-changed-files] [class*="path"] {
+  font-family: var(--admech-mono) !important;
+  font-size: 11px !important;
+  letter-spacing: 0.01em;
+  color: inherit !important;
+}
+html[data-dsh-admech] [data-changed-files] [class*="toggle"] {
+  position: relative !important;
+  z-index: 2;
+  padding: 9px 18px 9px 16px !important;
+  border-top: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.18) !important;
+  background: rgba(201, 161, 90, 0.035) !important;
+  font-family: var(--admech-serif) !important;
+  font-size: 12px !important;
+  letter-spacing: 0.04em;
+  color: var(--admech-brass) !important;
+}
+html[data-dsh-admech] [data-changed-files] [class*="toggle"]:hover {
+  background: rgba(201, 161, 90, 0.10) !important;
+}
+
+/* delivered file / image cards */
+html[data-dsh-admech] [data-presented-file] {
+  position: relative !important;
+  overflow: hidden !important;
+  border: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.44) !important;
+  border-radius: 3px !important;
+  background:
+    linear-gradient(180deg, rgba(28, 20, 11, 0.95) 0%, rgba(12, 8, 4, 0.98) 100%) !important;
+  box-shadow:
+    inset 0 0 0 var(--admech-hairline, 1px) rgba(0, 0, 0, 0.65),
+    inset 0 0 0 2px rgba(201, 161, 90, 0.06),
+    0 8px 20px rgba(0, 0, 0, 0.35) !important;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+html[data-dsh-admech] [data-presented-file]:hover {
+  border-color: rgba(227, 193, 132, 0.72) !important;
+  box-shadow:
+    inset 0 0 0 var(--admech-hairline, 1px) rgba(0, 0, 0, 0.65),
+    inset 0 0 0 2px rgba(201, 161, 90, 0.12),
+    0 10px 24px rgba(0, 0, 0, 0.48) !important;
+}
+html[data-dsh-admech] [data-presented-file]::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  z-index: 4;
+  border: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.13);
+  pointer-events: none;
+}
+html[data-dsh-admech] [data-presented-file]::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0.34;
+  background-image:
+    var(--admech-corner-sm-tl), var(--admech-corner-sm-tr),
+    var(--admech-corner-sm-bl), var(--admech-corner-sm-br);
+  background-position: left top, right top, left bottom, right bottom;
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+}
+html[data-dsh-admech] [data-presented-file] [class*="fileIcon"] {
+  border: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.42) !important;
+  border-radius: 2px !important;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(201, 161, 90, 0.17), transparent 66%),
+    rgba(8, 5, 3, 0.98) !important;
+  color: var(--admech-brass-bright) !important;
+  box-shadow: inset 0 0 0 var(--admech-hairline, 1px) rgba(0, 0, 0, 0.55) !important;
+}
+html[data-dsh-admech] [data-presented-file] [class*="fileIcon"] svg {
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.45)) !important;
+  color: inherit !important;
+  opacity: 0.96;
+}
+html[data-dsh-admech] [data-presented-file] [class*="fileName"] {
+  font-family: var(--admech-serif) !important;
+  font-size: 13px !important;
+  letter-spacing: 0.02em;
+  color: var(--admech-parchment) !important;
+}
+html[data-dsh-admech] [data-presented-file] [class*="description"],
+html[data-dsh-admech] [data-presented-file] [class*="secondaryText"] {
+  font-family: var(--admech-mono) !important;
+  font-size: 10px !important;
+  letter-spacing: 0.03em;
+  color: var(--admech-ash) !important;
+}
+html[data-dsh-admech] [data-presented-file] [class*="actions"] button {
+  border: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.40) !important;
+  border-radius: 2px !important;
+  background: rgba(201, 161, 90, 0.07) !important;
+  color: var(--admech-brass) !important;
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+html[data-dsh-admech] [data-presented-file] [class*="actions"] button:hover {
+  background: rgba(201, 161, 90, 0.16) !important;
+  border-color: rgba(227, 193, 132, 0.65) !important;
+}
+html[data-dsh-admech] [data-presented-files-row] {
+  gap: 10px !important;
+}
+
+/* ---------- generic typography ---------- */
+
+html[data-dsh-admech] [data-slot="main"] h1,
+html[data-dsh-admech] [data-slot="main"] h2,
+html[data-dsh-admech] [data-slot="main"] h3 {
+  font-family: var(--admech-serif) !important;
+  letter-spacing: 0.04em;
+  color: var(--admech-parchment) !important;
+}
+html[data-dsh-admech] [data-slot="main"] [class*="sectionTitle"],
+html[data-dsh-admech] [data-slot="main"] [class*="groupTitle"] {
+  font-family: var(--admech-serif) !important;
+  letter-spacing: 0.12em;
+  color: var(--admech-brass-bright) !important;
+}
+
+/* ---------- mobile ---------- */
+
+@media (max-width: 900px) {
+  html[data-dsh-admech] [data-composer-card] button[aria-label="发送消息"] { width: 30px !important; height: 30px !important; }
+  html[data-dsh-admech] [data-composer-card] button[aria-label="停止生成"] { width: 34px !important; height: 34px !important; }
+  html[data-dsh-admech] [data-composer-card] [data-tone="info"] { display: none !important; }
+  html[data-dsh-admech] [data-composer-card]::after { width: 200px; height: 84px; top: -58px; }
+  html[data-dsh-admech] [data-slot="main.conversation"] > div::before { display: none; }
+  html[data-dsh-admech] [role="dialog"]::after { width: 64px; height: 64px; top: -64px; }
+  html[data-dsh-admech] [data-slot="main.conversation"] > div { background-position: center !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-dsh-admech] * { scroll-behavior: auto !important; }
+  html[data-dsh-admech] [data-composer-card] button[aria-label="停止生成"] { animation: none !important; }
+  /* The ignition overlay is skipped in JS when motion is reduced; if it is on
+     screen anyway, do not fade it either. */
+  html[data-dsh-admech] .admech-splash,
+  html[data-dsh-admech] .admech-splash * { transition: none !important; }
+  html[data-dsh-admech] .admech-splash.is-reduced { animation: none !important; }
+}
+
+/* ---------- short viewports (Windows 150% on a 1080p panel = 720 CSS px) ---------- */
+
+@media (max-height: 760px) {
+  /* A dialog centred with 24px of top padding clips the 38px medallion. */
+  html[data-dsh-admech] [role="dialog"]::after { width: 64px; height: 64px; top: -64px; }
+}
+
+/* ---------- Windows platform corrections ---------- */
+/* The client half sets data-admech-os from the host marker, falling back to the
+   user agent. Rules here are corrections for the Windows compositor and window
+   chrome only; nothing below is a redesign. */
+
+/* The conversation header paints a 92-96% opaque gradient on top of its own
+   backdrop, so the blur is invisible while the Windows D3D path re-blurs the
+   scrolling transcript underneath every frame. */
+html[data-dsh-admech][data-admech-os="win"] [data-admech="header"] { backdrop-filter: none; }
+
+/* The exit animation scaled a full-viewport layer by 1.2%, forcing Chromium to
+   resample the entire splash bitmap (ornaments and text) at 125% / 150%. */
+html[data-dsh-admech][data-admech-os="win"] .admech-splash.is-out { transform: none; }
+
+/* ---------- Windows Contrast Themes (forced colors) ---------- */
+/* Windows high-contrast mode forces system colors onto text and borders but
+   keeps author background images, gradients and masks, which leaves the
+   cathedral backdrop behind system-colored glyphs. Strip the decoration and
+   restore the native icon geometry. */
+
+@media (forced-colors: active) {
+  html[data-dsh-admech] body::before,
+  html[data-dsh-admech] .admech-splash,
+  html[data-dsh-admech] [data-composer-card]::before,
+  html[data-dsh-admech] [data-composer-card]::after,
+  html[data-dsh-admech] [data-slot="main.conversation"] > div::before,
+  html[data-dsh-admech] [role="dialog"]::before,
+  html[data-dsh-admech] [role="dialog"]::after,
+  html[data-dsh-admech] [data-changed-files]::before,
+  html[data-dsh-admech] [data-changed-files]::after,
+  html[data-dsh-admech] [data-presented-file]::before,
+  html[data-dsh-admech] [data-presented-file]::after,
+  html[data-dsh-admech] [data-chat-flow-kind="user"] [class*="bubble"]::after {
+    display: none !important;
+    content: none !important;
+  }
+  html[data-dsh-admech] body,
+  html[data-dsh-admech] [data-admech="sidebar"],
+  html[data-dsh-admech] [data-admech="sidebar"]::before,
+  html[data-dsh-admech] [data-admech="header"],
+  html[data-dsh-admech] [data-composer-card],
+  html[data-dsh-admech] [data-slot="main.conversation"] > div,
+  html[data-dsh-admech] [role="dialog"],
+  html[data-dsh-admech] [data-changed-files],
+  html[data-dsh-admech] [data-presented-file] {
+    background-image: none !important;
+    box-shadow: none !important;
+    filter: none !important;
+  }
+  html[data-dsh-admech] * { text-shadow: none !important; }
+  /* Masked icons paint through background-color; restore the real SVG children. */
+  html[data-dsh-admech] svg[data-admech-icon] {
+    -webkit-mask: none !important;
+    mask: none !important;
+    background-color: transparent !important;
+    filter: none !important;
+  }
+  html[data-dsh-admech] svg[data-admech-icon] > * { opacity: 1 !important; }
+  html[data-dsh-admech] svg:not([data-admech-icon]) { filter: none !important; }
+  html[data-dsh-admech] [data-chat-running] [class*="runningWhaleAnimated"] { display: none !important; }
+  html[data-dsh-admech] [data-chat-running] [class*="runningIcon"] svg { animation: none !important; }
+}
+
