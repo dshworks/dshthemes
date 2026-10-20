@@ -1,5 +1,5 @@
 /* ash-qw/dsh-theme-prts — src/styles/prts.css
-   fetched 2026-10-12 from https://raw.githubusercontent.com/ash-qw/dsh-theme-prts/main/src/styles/prts.css
+   fetched 2026-10-20 from https://raw.githubusercontent.com/ash-qw/dsh-theme-prts/main/src/styles/prts.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* DSH P.R.T.S. // RHODES ISLAND DAILY OPERATIONS TERMINAL */
 html[data-dsh-prts] {
@@ -23,8 +23,6 @@ html[data-dsh-prts] {
   --prts-host-top-inset: 0px;
   --prts-rail-width: 52px;
   --prts-nav-width: 52px;
-  --prts-sessions-width: 286px;
-  --prts-sessions-compact: 54px;
   --prts-workspace-height: 38px;
   --prts-session-height: 36px;
   --prts-facility-gap: 7px;
@@ -49,15 +47,12 @@ html[data-dsh-prts] {
   --prts-glass-dense: rgba(7, 10, 12, .94);
   --prts-active-glass: var(--prts-glass-standard-surface);
   --prts-active-glass-filter: blur(18px) saturate(145%);
-  --prts-chat-user-surface: #3a3211;
-  --prts-chat-user-edge: #8c7718;
-  --prts-chat-assistant-surface: rgba(17, 24, 28, .97);
-  --prts-chat-assistant-edge: #34474f;
+  --prts-chat-user-surface: #efefed;
+  --prts-chat-assistant-surface: #454644;
   --prts-chat-avatar-surface: #151c20;
-  --prts-chat-shadow: rgba(0, 0, 0, .3);
+  --prts-avatar-ring-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='47' fill='none' stroke='%23c7cdca' stroke-width='3' pathLength='360' stroke-dasharray='98 24 96 24 98 20' transform='rotate(-80 50 50)'/%3E%3C/svg%3E");
   --prts-chat-backdrop: #0a0e11;
   --prts-chat-backdrop-edge: #0e1519;
-  --prts-chat-link: #4d7079;
   color-scheme: dark;
   accent-color: var(--prts-yellow);
 }
@@ -85,15 +80,12 @@ html[data-dsh-prts][data-prts-scheme="light"] {
   --prts-glass-clear-surface: rgba(244, 249, 251, .78);
   --prts-glass-dense: rgba(249, 251, 252, .97);
   --prts-shadow-glass-overlay: 0 18px 44px rgba(48, 63, 70, .18), inset 0 1px rgba(255, 255, 255, .86);
-  --prts-chat-user-surface: #fff0af;
-  --prts-chat-user-edge: #c9a610;
-  --prts-chat-assistant-surface: rgba(250, 252, 253, .97);
-  --prts-chat-assistant-edge: #c7d4da;
+  --prts-chat-user-surface: #fff;
+  --prts-chat-assistant-surface: #dfe3df;
   --prts-chat-avatar-surface: #e4e9ec;
-  --prts-chat-shadow: rgba(45, 59, 66, .16);
+  --prts-avatar-ring-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='47' fill='none' stroke='%23657069' stroke-width='3' pathLength='360' stroke-dasharray='98 24 96 24 98 20' transform='rotate(-80 50 50)'/%3E%3C/svg%3E");
   --prts-chat-backdrop: #edf1f3;
   --prts-chat-backdrop-edge: #e4ebee;
-  --prts-chat-link: #6b8d96;
   color-scheme: light;
 }
 
@@ -191,7 +183,8 @@ html[data-dsh-prts] [data-prts-theme-settings] button {
   color: inherit;
 }
 
-html[data-dsh-prts] :focus-visible {
+/* Focus decoration belongs to theme controls, not host or third-party pages. */
+html[data-dsh-prts] :is([data-prts-shell], [data-prts-theme-settings], [data-prts-plugin-settings]) :focus-visible {
   outline: 2px solid var(--prts-yellow) !important;
   outline-offset: 2px !important;
 }
@@ -846,7 +839,7 @@ html[data-dsh-prts] [data-prts-region="sessions"] :is(
   [data-rc7-sidebar-root], [data-slot="sidebar"] > :first-child) {
   box-sizing: border-box;
   width: 100% !important;
-  min-width: var(--prts-sessions-width);
+  min-width: 0;
   padding: 14px 10px;
   overflow: hidden auto;
   background: transparent !important;
@@ -914,12 +907,6 @@ html[data-dsh-prts] [data-prts-session-row]::before {
   inset: 0 auto 0 0;
   width: var(--prts-spine-width);
   background: var(--prts-line-strong);
-  clip-path: polygon(
-    3px 0, calc(100% - 3px) 0, 100% 3px,
-    100% calc(50% - 5px), calc(100% - 2px) calc(50% - 3px), calc(100% - 2px) calc(50% + 3px), 100% calc(50% + 5px),
-    100% calc(100% - 3px), calc(100% - 3px) 100%, 3px 100%, 0 calc(100% - 3px),
-    0 calc(50% + 5px), 2px calc(50% + 3px), 2px calc(50% - 3px), 0 calc(50% - 5px), 0 3px
-  );
   transform: scaleX(var(--prts-spine-rest));
   transform-origin: left center;
   transition: transform 220ms var(--prts-ease-spring), background-color 160ms ease;
@@ -931,7 +918,7 @@ html[data-dsh-prts] [data-prts-session-row]:is(:hover, :focus-within, [data-prts
   transform: scaleX(1);
 }
 
-html[data-dsh-prts] [data-prts-session-row][aria-selected="true"]::before {
+html[data-dsh-prts] [data-prts-session-row]:is([data-prts-selection-target="true"], [aria-selected="true"]:not([data-prts-selection-target="false"]))::before {
   background: var(--prts-yellow);
 }
 
@@ -945,9 +932,9 @@ html[data-dsh-prts] [data-prts-facility-face] {
     3px 0,
     calc(50% - 25px) 0, calc(50% - 20px) 3.333px, calc(50% + 20px) 3.333px, calc(50% + 25px) 0,
     calc(100% - 3px) 0, 100% 3px,
-    100% calc(50% - 5px), calc(100% - 2px) calc(50% - 3px), calc(100% - 2px) calc(50% + 3px), 100% calc(50% + 5px),
+    100% calc(50% - 5px), calc(100% - .824px) calc(50% - 3px), calc(100% - .824px) calc(50% + 3px), 100% calc(50% + 5px),
     100% calc(100% - 3px), calc(100% - 3px) 100%, 3px 100%, 0 calc(100% - 3px),
-    0 calc(50% + 5px), 2px calc(50% + 3px), 2px calc(50% - 3px), 0 calc(50% - 5px), 0 3px
+    0 calc(50% + 5px), .824px calc(50% + 3px), .824px calc(50% - 3px), 0 calc(50% - 5px), 0 3px
   );
   transform: translate3d(var(--prts-row-shift), 0, 0);
   transition: transform 220ms var(--prts-ease-spring), border-color 160ms ease, background-color 160ms ease;
@@ -959,8 +946,8 @@ html[data-dsh-prts] :is([data-prts-workspace-row], [data-prts-session-row]) [dat
 }
 
 html[data-dsh-prts] [data-prts-row-title],
-html[data-dsh-prts] [data-prts-session-row] > span:not([data-prts-facility-face]):not([data-prts-row-projection]):not([data-prts-session-actions]),
-html[data-dsh-prts] [data-prts-workspace-row] > span:not([data-prts-facility-face]):not([data-prts-row-projection]):not([data-prts-workspace-actions]) {
+html[data-dsh-prts] [data-prts-session-row] > span:not([data-prts-facility-face]):not([data-prts-facility-spine]):not([data-prts-row-projection]):not([data-prts-session-actions]),
+html[data-dsh-prts] [data-prts-workspace-row] > span:not([data-prts-facility-face]):not([data-prts-facility-spine]):not([data-prts-row-projection]):not([data-prts-workspace-actions]) {
   position: relative;
   z-index: 3;
   min-width: 0;
@@ -992,11 +979,11 @@ html[data-dsh-prts] [data-prts-session-row] [data-prts-row-title]::before {
   letter-spacing: .08em;
 }
 
-html[data-dsh-prts] [data-prts-session-row][aria-selected="true"] [data-prts-row-title] {
+html[data-dsh-prts] [data-prts-session-row]:is([data-prts-selection-target="true"], [aria-selected="true"]:not([data-prts-selection-target="false"])) [data-prts-row-title] {
   font-weight: 700;
 }
 
-html[data-dsh-prts] [data-prts-session-row][aria-selected="true"] [data-prts-row-title]::before {
+html[data-dsh-prts] [data-prts-session-row]:is([data-prts-selection-target="true"], [aria-selected="true"]:not([data-prts-selection-target="false"])) [data-prts-row-title]::before {
   color: var(--prts-yellow);
 }
 
@@ -1046,7 +1033,7 @@ html[data-dsh-prts] [data-prts-session-actions] button {
   border-radius: 0 !important;
   background: var(--prts-panel-raised) !important;
   color: var(--prts-muted) !important;
-  clip-path: polygon(3px 0, calc(100% - 3px) 0, 100% 3px, 100% calc(50% - 5px), calc(100% - 2px) calc(50% - 3px), calc(100% - 2px) calc(50% + 3px), 100% calc(50% + 5px), 100% calc(100% - 3px), calc(100% - 3px) 100%, 3px 100%, 0 calc(100% - 3px), 0 calc(50% + 5px), 2px calc(50% + 3px), 2px calc(50% - 3px), 0 calc(50% - 5px), 0 3px);
+  clip-path: polygon(3px 0, calc(100% - 3px) 0, 100% 3px, 100% calc(50% - 5px), calc(100% - .824px) calc(50% - 3px), calc(100% - .824px) calc(50% + 3px), 100% calc(50% + 5px), 100% calc(100% - 3px), calc(100% - 3px) 100%, 3px 100%, 0 calc(100% - 3px), 0 calc(50% + 5px), .824px calc(50% + 3px), .824px calc(50% - 3px), 0 calc(50% - 5px), 0 3px);
   cursor: pointer;
 }
 
@@ -1172,36 +1159,22 @@ html[data-dsh-prts][data-prts-conversation-style="deck-chat"] :is(
 ) {
   position: relative;
   box-sizing: border-box;
+  min-width: 0;
   overflow: visible;
 }
 
 html[data-dsh-prts][data-prts-conversation-style="deck-chat"] :is([data-chat-flow-kind="user"], [data-submission-echo]:not([data-pending-steering])) {
-  padding-inline-end: 54px;
+  padding-inline-end: 80px;
   color: var(--prts-ink);
 }
 
 html[data-dsh-prts][data-prts-conversation-style="deck-chat"] [data-chat-flow-kind="assistant-step"]:not([data-chat-group-part="reasoning"]) {
-  --prts-chat-link-x: 22px;
-  padding-inline-start: 56px;
+  padding-inline-start: 80px;
   color: var(--prts-ink);
 }
 
-html[data-dsh-prts][data-prts-conversation-style="deck-chat"] [data-chat-flow-kind="assistant-step"]:not([data-chat-group-part="reasoning"])::after,
-html[data-dsh-prts][data-prts-conversation-style="deck-chat"] [data-message-role="assistant"]::after {
-  content: "";
-  position: absolute;
-  z-index: 1;
-  top: 54px;
-  left: calc(var(--prts-chat-link-x) - 1px);
-  width: 2px;
-  height: 30px;
-  border-radius: 1px;
-  background: linear-gradient(to bottom,
-    color-mix(in srgb, var(--prts-chat-link) 56%, transparent),
-    color-mix(in srgb, var(--prts-chat-link) 20%, transparent) 72%,
-    transparent);
-  pointer-events: none;
-}
+
+
 
 html[data-dsh-prts][data-prts-conversation-style="deck-chat"] [data-chat-flow-kind="assistant-step"]:not([data-chat-group-part="reasoning"])::before,
 html[data-dsh-prts][data-prts-conversation-style="deck-chat"] :is([data-chat-flow-kind="user"], [data-submission-echo]:not([data-pending-steering]))::after,
@@ -1209,18 +1182,30 @@ html[data-dsh-prts][data-prts-conversation-style="deck-chat"] [data-message-role
 html[data-dsh-prts][data-prts-conversation-style="deck-chat"] [data-message-role="user"]::after {
   position: absolute;
   z-index: 2;
-  top: 2px;
+  top: -5px;
   display: grid;
   place-items: center;
   box-sizing: border-box;
-  width: 42px;
-  height: 42px;
-  border: 1px solid var(--prts-line);
-  border-radius: 14px;
-  background-color: var(--prts-chat-avatar-surface);
-  box-shadow:
-    inset 0 1px rgba(255, 255, 255, .08),
-    0 8px 20px var(--prts-chat-shadow);
+  --prts-portrait-size: 60px;
+  width: var(--prts-portrait-size);
+  height: var(--prts-portrait-size);
+  min-width: var(--prts-portrait-size);
+  max-width: var(--prts-portrait-size);
+  min-height: var(--prts-portrait-size);
+  max-height: var(--prts-portrait-size);
+  padding: 5px;
+  aspect-ratio: 1;
+  border: 0;
+  corner-shape: round;
+  border-radius: 50%;
+  outline: none;
+  background-color: transparent;
+  background-origin: border-box, content-box, content-box;
+  background-clip: border-box, content-box, content-box;
+  background-position: center;
+  background-size: 100% 100%, cover, auto;
+  background-repeat: no-repeat;
+  box-shadow: none;
   pointer-events: none;
 }
 
@@ -1228,96 +1213,81 @@ html[data-dsh-prts][data-prts-conversation-style="deck-chat"] [data-chat-flow-ki
 html[data-dsh-prts][data-prts-conversation-style="deck-chat"] [data-message-role="assistant"]::before {
   content: "";
   left: 0;
-  width: 44px;
-  height: 48px;
-  border-color: color-mix(in srgb, var(--prts-cyan) 42%, var(--prts-line));
-  border-radius: 14px 14px 16px 16px;
+
   background-image:
-    var(--prts-assistant-avatar-image, none),
-    linear-gradient(145deg, rgba(255, 255, 255, .08), transparent 56%);
-  background-repeat: no-repeat;
-  background-position: center, center;
-  background-size: cover, auto;
-  box-shadow:
-    inset 0 -2px color-mix(in srgb, var(--prts-cyan) 72%, transparent),
-    inset 0 1px rgba(255, 255, 255, .08),
-    0 8px 20px var(--prts-chat-shadow);
+    var(--prts-avatar-ring-image),
+    var(--prts-custom-assistant-avatar, var(--prts-assistant-avatar-image, none)),
+    linear-gradient(var(--prts-chat-avatar-surface), var(--prts-chat-avatar-surface));
+
 }
 
 html[data-dsh-prts][data-prts-conversation-style="deck-chat"] :is([data-chat-flow-kind="user"], [data-submission-echo]:not([data-pending-steering]))::after,
 html[data-dsh-prts][data-prts-conversation-style="deck-chat"] [data-message-role="user"]::after {
-  content: "我";
+  content: var(--prts-user-avatar-label, "我");
   right: 0;
-  border-color: color-mix(in srgb, var(--prts-yellow) 58%, var(--prts-line));
-  background:
-    linear-gradient(145deg, color-mix(in srgb, var(--prts-yellow) 18%, transparent), transparent 58%),
-    var(--prts-chat-avatar-surface);
-  color: color-mix(in srgb, var(--prts-yellow) 78%, var(--prts-ink));
+
+  background-image:
+    var(--prts-avatar-ring-image), var(--prts-custom-user-avatar, none),
+    linear-gradient(var(--prts-chat-avatar-surface), var(--prts-chat-avatar-surface));
+  color: var(--prts-ink);
   font: 500 13px/1 var(--prts-mono);
 }
 
 html[data-dsh-prts][data-prts-conversation-style="deck-chat"] :is([data-chat-flow-kind="user"], [data-submission-echo]:not([data-pending-steering])) [class$="_bubble"],
 html[data-dsh-prts][data-prts-conversation-style="deck-chat"] [data-message-role="user"] {
-  border: 1px solid var(--prts-chat-user-edge) !important;
-  border-radius: 18px 6px 18px 18px !important;
-  padding: 13px 18px !important;
-  background:
-    linear-gradient(145deg, color-mix(in srgb, var(--prts-yellow) 10%, transparent), transparent 54%),
-    var(--prts-chat-user-surface) !important;
+  position: relative;
+  --prts-ink: #191c19;
+  --prts-muted: #515851;
+  --prts-canvas: #e0e4e0;
+  --prts-cyan: #27616a;
+  border: 0 !important;
+  border-radius: 18px 0 18px 18px !important;
+  padding: 10px 18px !important;
+  background: var(--prts-chat-user-surface) !important;
   color: var(--prts-ink) !important;
   clip-path: none !important;
-  box-shadow:
-    inset 0 1px color-mix(in srgb, var(--prts-yellow) 22%, transparent),
-    0 9px 24px var(--prts-chat-shadow) !important;
+  box-shadow: none !important;
   overflow-wrap: anywhere;
 }
 
 html[data-dsh-prts][data-prts-conversation-style="deck-chat"] [data-message-role="user"] {
-  width: calc(100% - 54px);
+  width: calc(100% - 80px);
   margin-inline-start: auto;
 }
 
 html[data-dsh-prts][data-prts-conversation-style="deck-chat"] [data-message-role="user"]::after {
-  right: -54px;
+  right: -80px;
 }
 
 html[data-dsh-prts][data-prts-conversation-style="deck-chat"] [data-message-role="assistant"] {
-  --prts-chat-link-x: -34px;
   position: relative;
-  width: calc(100% - 56px);
-  margin-inline-start: calc((100% - min(var(--dsh-chat-content-width, 748px), 100%)) / 2 + 56px);
-  padding: 16px 22px !important;
-  border: 1px solid var(--prts-chat-assistant-edge) !important;
-  border-radius: 6px 18px 18px 18px !important;
-  background:
-    linear-gradient(118deg, color-mix(in srgb, var(--prts-cyan) 6%, transparent), transparent 44%),
-    var(--prts-chat-assistant-surface) !important;
+  width: calc(100% - 80px);
+  margin-inline-start: calc((100% - min(var(--dsh-chat-content-width, 748px), 100%)) / 2 + 80px);
+  padding: 12px 22px !important;
+  border: 0 !important;
+  border-radius: 0 18px 18px 18px !important;
+  background: var(--prts-chat-assistant-surface) !important;
   color: var(--prts-ink) !important;
-  box-shadow:
-    inset 0 1px color-mix(in srgb, var(--prts-cyan) 10%, transparent),
-    0 10px 28px var(--prts-chat-shadow) !important;
+  box-shadow: none !important;
   overflow-wrap: anywhere;
 }
 
 html[data-dsh-prts][data-prts-conversation-style="deck-chat"] [data-message-role="assistant"]::before {
-  left: -56px;
+  left: -80px;
 }
 
 html[data-dsh-prts][data-prts-conversation-style="deck-chat"] [data-chat-flow-kind="assistant-step"]:not([data-chat-group-part="reasoning"]) [class$="_body"]:has(:is([data-markdown], [data-slot*="markdown" i], .markdown-body)),
 html[data-dsh-prts][data-prts-conversation-style="deck-chat"] [data-prts-ai-surface] {
+  position: relative;
   box-sizing: border-box;
   width: fit-content;
   max-width: 100%;
-  padding: 16px 22px !important;
-  border: 1px solid var(--prts-chat-assistant-edge) !important;
-  border-radius: 6px 18px 18px 18px !important;
-  background:
-    linear-gradient(118deg, color-mix(in srgb, var(--prts-cyan) 6%, transparent), transparent 44%),
-    var(--prts-chat-assistant-surface) !important;
+  padding: 12px 22px !important;
+  border: 0 !important;
+  border-radius: 0 18px 18px 18px !important;
+  background: var(--prts-chat-assistant-surface) !important;
   color: var(--prts-ink) !important;
-  box-shadow:
-    inset 0 1px color-mix(in srgb, var(--prts-cyan) 10%, transparent),
-    0 10px 28px var(--prts-chat-shadow) !important;
+  box-shadow: none !important;
   overflow-wrap: anywhere;
 }
 
@@ -1373,11 +1343,37 @@ html[data-dsh-prts][data-prts-conversation-style="deck-chat"] :is(
   color: var(--prts-ink) !important;
 }
 
+/* Baker code cards and tables. */
 html[data-dsh-prts][data-prts-conversation-style="deck-chat"] :is(
-  [data-prts-ai-surface],
-  [data-message-role="assistant"]
-) blockquote {
-  border-inline-start: 3px solid var(--prts-cyan);
+[data-prts-ai-surface], [data-message-role="assistant"], [data-message-role="user"],
+:is([data-chat-flow-kind="user"], [data-submission-echo]:not([data-pending-steering])) [class$="_bubble"]
+) {
+/* Clip preserves header stickiness. */
+& :has(>[data-code-block-content]){
+box-sizing:border-box;max-width:100%;border:1px solid var(--prts-line);border-left:3px solid var(--prts-cyan);border-radius:12px;overflow:clip;
+& [data-code-block-banner]{border-radius:11px 11px 0 0;background:color-mix(in srgb,var(--prts-ink) 7%,var(--prts-canvas));border-bottom:1px solid var(--prts-line)}
+&>[data-code-block-content] pre{box-sizing:border-box;width:100%;border:0!important;border-radius:0 0 11px 11px;margin:0!important}
+}
+& :is(th,td){padding-inline:14px!important}
+& :is(.md-table-wide,[class*="_tableScroll_"]){
+box-sizing:border-box;width:100%;max-width:100%;min-width:0;
+margin-inline:0!important;padding:0!important;overflow:auto;
+border:1px solid color-mix(in srgb,var(--prts-cyan) 24%,var(--prts-line));
+border-radius:10px;corner-shape:round;
+background:color-mix(in srgb,var(--prts-canvas) 88%,transparent);
+& > table{border:0;background:transparent;margin:0;width:100%}
+}
+}
+
+/* Group process avatars without changing reply alignment or final-answer avatars. */
+html[data-dsh-prts][data-prts-conversation-style="deck-chat"] [data-prts-avatar-hidden]::before{content:none!important}
+
+/* Baker quote surfaces; classic prose retains the host styling. */
+html[data-dsh-prts][data-prts-conversation-style="deck-chat"] :is([data-chat-flow-kind],[data-message-role],[data-prts-ai-surface],[data-submission-echo]) blockquote {
+border-radius:10px;corner-shape:round;padding:8px 14px;
+border-inline-start:3px solid var(--prts-cyan)!important;
+& > :first-child{margin-top:0}
+& > :last-child{margin-bottom:0}
 }
 
 html[data-dsh-prts] [aria-invalid="true"],
@@ -1582,6 +1578,7 @@ html[data-dsh-prts] [data-prts-glass-control="preset"] {
   color: var(--prts-ink) !important;
 }
 
+html[data-dsh-prts] [data-menu-material][class*="_7KE1Ra_menu"],
 html[data-dsh-prts] [data-prts-glass-menu],
 html[data-dsh-prts] [data-prts-floating-glass="menu"],
 html[data-dsh-prts] [data-prts-floating-glass="listbox"],
@@ -1605,6 +1602,7 @@ html[data-dsh-prts] [data-prts-floating-glass="dialog"] {
   -webkit-backdrop-filter: none;
 }
 
+html[data-dsh-prts] [data-menu-material][class*="_7KE1Ra_menu"] :is([role="menuitem"], [role="menuitemradio"], [role="menuitemcheckbox"]),
 html[data-dsh-prts] [data-prts-floating-item] {
   min-height: 38px;
   border-radius: var(--prts-radius-control) !important;
@@ -1782,66 +1780,59 @@ html[data-dsh-prts-settings] :is(.prts-plugin-settings button[role='switch'], [d
 
 @media (max-width: 760px) {
   html[data-dsh-prts][data-prts-conversation-style="deck-chat"] :is([data-chat-flow-kind="user"], [data-submission-echo]:not([data-pending-steering])) {
-    padding-inline: 8px 50px;
+    padding-inline: 8px 74px;
   }
 
   html[data-dsh-prts][data-prts-conversation-style="deck-chat"] [data-chat-flow-kind="assistant-step"]:not([data-chat-group-part="reasoning"]) {
     padding-inline: 0 8px;
-    padding-inline-start: 50px;
+    padding-inline-start: 74px;
   }
 
   html[data-dsh-prts][data-prts-conversation-style="deck-chat"] [data-chat-flow-kind="assistant-step"]:not([data-chat-group-part="reasoning"])::before,
   html[data-dsh-prts][data-prts-conversation-style="deck-chat"] [data-message-role="assistant"]::before {
     left: 8px;
-    width: 34px;
-    height: 38px;
-    border-radius: 11px 11px 13px 13px;
+    --prts-portrait-size: 52px;
+    border-radius: 50%;
   }
 
   html[data-dsh-prts][data-prts-conversation-style="deck-chat"] :is([data-chat-flow-kind="user"], [data-submission-echo]:not([data-pending-steering]))::after,
   html[data-dsh-prts][data-prts-conversation-style="deck-chat"] [data-message-role="user"]::after {
     right: 8px;
-    width: 34px;
-    height: 34px;
-    border-radius: 11px;
+    --prts-portrait-size: 52px;
+    border-radius: 50%;
     font-size: 11px;
   }
 
   html[data-dsh-prts][data-prts-conversation-style="deck-chat"] :is([data-chat-flow-kind="user"], [data-submission-echo]:not([data-pending-steering])) [class$="_bubble"],
   html[data-dsh-prts][data-prts-conversation-style="deck-chat"] [data-message-role="user"] {
-    padding: 11px 15px !important;
-    border-radius: 16px 5px 16px 16px !important;
+    padding: 9px 15px !important;
+    border-radius: 16px 0 16px 16px !important;
   }
 
   html[data-dsh-prts][data-prts-conversation-style="deck-chat"] [data-chat-flow-kind="assistant-step"]:not([data-chat-group-part="reasoning"]) [class$="_body"]:has(:is([data-markdown], [data-slot*="markdown" i], .markdown-body)),
   html[data-dsh-prts][data-prts-conversation-style="deck-chat"] [data-prts-ai-surface],
   html[data-dsh-prts][data-prts-conversation-style="deck-chat"] [data-message-role="assistant"] {
-    padding: 13px 16px !important;
-    border-radius: 5px 16px 16px 16px !important;
+    padding: 10px 16px !important;
+    border-radius: 0 16px 16px 16px !important;
   }
 
   html[data-dsh-prts][data-prts-conversation-style="deck-chat"] [data-message-role="user"] {
-    width: calc(100% - 42px);
+    width: calc(100% - 66px);
   }
 
   html[data-dsh-prts][data-prts-conversation-style="deck-chat"] [data-message-role="user"]::after {
-    right: -42px;
+    right: -66px;
   }
 
   html[data-dsh-prts][data-prts-conversation-style="deck-chat"] [data-message-role="assistant"] {
-    --prts-chat-link-x: -25px;
-    width: calc(100% - 42px);
-    margin-inline-start: 42px;
+    width: calc(100% - 66px);
+    margin-inline-start: 66px;
   }
 
   html[data-dsh-prts][data-prts-conversation-style="deck-chat"] [data-message-role="assistant"]::before {
-    left: -42px;
+    left: -66px;
   }
 
-  html[data-dsh-prts][data-prts-conversation-style="deck-chat"] [data-chat-flow-kind="assistant-step"]:not([data-chat-group-part="reasoning"])::after,
-  html[data-dsh-prts][data-prts-conversation-style="deck-chat"] [data-message-role="assistant"]::after {
-    display: none;
-  }
 }
 
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
@@ -1911,5 +1902,107 @@ html[data-dsh-prts-settings] :is(.prts-plugin-settings button[role='switch'], [d
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
   }
+}
+
+html[data-dsh-prts][data-prts-conversation-style="deck-chat"] {
+  & :is([data-prts-ai-surface], [data-message-role="assistant"]) { --prts-bubble-surface: var(--prts-chat-assistant-surface); }
+  & [data-prts-ai-surface]::before,
+  & [data-message-role="assistant"]::after,
+  & :is([data-chat-flow-kind="user"], [data-submission-echo]:not([data-pending-steering])) [class$="_bubble"]::before,
+  & [data-message-role="user"]::before {
+    content: ""; position: absolute; top: 0; left: -9px; width: 10px; height: 18px; pointer-events: none;
+    background: var(--prts-bubble-surface, var(--prts-chat-user-surface));
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 18'%3E%3Cpath d='M0 0H10V18Q10 6 0 0Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  }
+  & :is([data-chat-flow-kind="user"], [data-submission-echo]:not([data-pending-steering])) [class$="_bubble"]::before,
+  & [data-message-role="user"]::before { left: auto; right: -9px; transform: scaleX(-1); }
+}
+
+/* The upstream component replaces only the composer's two background plates. */
+html[data-dsh-prts] :is([data-composer-card], [data-prts-composer-fallback])[data-prts-composer-glass-active]::before,
+html[data-dsh-prts] :is([data-composer-card], [data-prts-composer-fallback])[data-prts-composer-glass-active]::after {
+  content: none;
+}
+html[data-dsh-prts] :is([data-composer-card], [data-prts-composer-fallback]) > [data-prts-composer-glass-surface] {
+  position: absolute !important;
+  inset: -16px;
+  z-index: 0 !important;
+  pointer-events: none;
+}
+
+/* The host's sticky dock fades to opaque after 36px; let the glass see the chat. */
+html[data-dsh-prts] [data-composer-seat]:has([data-prts-composer-glass-active]) {
+  background: transparent !important;
+}
+
+
+/* Optional popup material changes neither popup geometry nor its border/shadow. */
+html[data-dsh-prts][data-prts-composer-enhanced] {
+  --prts-composer-menu-tint: rgba(25, 32, 38, .85);
+  --prts-composer-menu-filter: blur(16px) saturate(1.15);
+}
+html[data-dsh-prts][data-prts-composer-enhanced][data-prts-scheme="light"] {
+  --prts-composer-menu-tint: rgba(244, 249, 251, .85);
+}
+html[data-dsh-prts][data-prts-composer-enhanced] :is(
+  [data-prts-glass-menu],
+  [data-menu-material][class*="_7KE1Ra_menu"]
+) {
+  background: var(--prts-composer-menu-tint) !important;
+  backdrop-filter: var(--prts-composer-menu-filter) !important;
+  -webkit-backdrop-filter: var(--prts-composer-menu-filter) !important;
+}
+/* Reuse the host material plate when present; do not stack two blur filters. */
+html[data-dsh-prts][data-prts-composer-enhanced] :is(
+  [data-prts-glass-menu],
+  [data-menu-material][class*="_7KE1Ra_menu"]
+):has(> [aria-hidden="true"][class*="_material_"]) {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+html[data-dsh-prts][data-prts-composer-enhanced] :is(
+  [data-prts-glass-menu],
+  [data-menu-material][class*="_7KE1Ra_menu"]
+) > [aria-hidden="true"][class*="_material_"] {
+  background: var(--prts-composer-menu-tint) !important;
+  backdrop-filter: var(--prts-composer-menu-filter) !important;
+  -webkit-backdrop-filter: var(--prts-composer-menu-filter) !important;
+}
+html[data-dsh-prts][data-prts-composer-enhanced] [data-prts-glass-menu] [data-prts-glass-menu]:not([data-menu-material]) {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+}
+
+/* The live CSS outline owns geometry; asynchronously decoded artwork only refracts. */
+html[data-dsh-prts] [data-prts-composer-glass-active] > [data-prts-composer-glass-surface] > .glass-surface {
+  mask: none !important;
+  -webkit-mask: none !important;
+  opacity: 1 !important;
+  clip-path: polygon(19px 16px, calc(50% - 42px) 16px, calc(50% - 37px) 21px, calc(50% + 37px) 21px, calc(50% + 42px) 16px, calc(100% - 19px) 16px, calc(100% - 16px) 19px, calc(100% - 16px) calc(100% - 19px), calc(100% - 19px) calc(100% - 16px), 19px calc(100% - 16px), 16px calc(100% - 19px), 16px 19px);
+}
+html[data-dsh-prts] [data-prts-composer-glass-active] :is(.glass-surface__line, .glass-surface__glow) {
+  display: none;
+}
+html[data-dsh-prts] :is([data-composer-card], [data-prts-composer-fallback])[data-prts-composer-glass-active]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: var(--prts-line-strong);
+  clip-path: polygon(evenodd,
+    3px 0, calc(50% - 42px) 0, calc(50% - 37px) 5px, calc(50% + 37px) 5px, calc(50% + 42px) 0, calc(100% - 3px) 0, 100% 3px, 100% calc(100% - 3px), calc(100% - 3px) 100%, 3px 100%, 0 calc(100% - 3px), 0 3px, 3px 0,
+    3px 1px, 1px 3px, 1px calc(100% - 3px), 3px calc(100% - 1px), calc(100% - 3px) calc(100% - 1px), calc(100% - 1px) calc(100% - 3px), calc(100% - 1px) 3px, calc(100% - 3px) 1px, calc(50% + 42px) 1px, calc(50% + 37px) 6px, calc(50% - 37px) 6px, calc(50% - 42px) 1px, 3px 1px);
+}
+
+/* A restrained tint/sheen keeps the material legible over a blank backdrop too. */
+html[data-dsh-prts] [data-prts-composer-glass-active] > [data-prts-composer-glass-surface] > .glass-surface {
+  background: linear-gradient(135deg, rgba(255, 255, 255, .055), transparent 65%), rgba(31, 40, 47, .5);
+}
+html[data-dsh-prts][data-prts-scheme="light"] [data-prts-composer-glass-active] > [data-prts-composer-glass-surface] > .glass-surface {
+  background: linear-gradient(135deg, rgba(255, 255, 255, .2), transparent 65%), rgba(244, 249, 251, .5);
 }
 
