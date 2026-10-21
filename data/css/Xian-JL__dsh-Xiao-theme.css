@@ -1,5 +1,5 @@
 /* Xian-JL/dsh-Xiao-theme — src/client/styles.css
-   fetched 2026-10-13 from https://raw.githubusercontent.com/Xian-JL/dsh-Xiao-theme/main/src/client/styles.css
+   fetched 2026-10-21 from https://raw.githubusercontent.com/Xian-JL/dsh-Xiao-theme/main/src/client/styles.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* ==========================================================================
  * dsh-xiao-theme — authored layer
@@ -19,6 +19,24 @@ body[data-xiao-custom-background='true'] {
 }
 body[data-xiao-custom-background='true']:not([data-ds-dark-theme]) { --xiao-background-veil: rgba(242, 246, 245, .06); }
 body[data-xiao-custom-background='true'][data-ds-dark-theme] { --xiao-background-veil: rgba(10, 18, 20, .08); }
+
+/* Portaled dialogs and their descendants inherit solid surfaces at every visibility. */
+body[data-xiao-theme='on'] :is([role='dialog'],[role='alertdialog'],[aria-modal='true'],[role='menu'],[role='listbox'],[popover]) {
+  --dsw-alias-bg-base: var(--xiao-opaque-alias-bg-base, #F2F6F5);
+  --dsw-alias-bg-layer-1: var(--xiao-opaque-alias-bg-layer-1, #FAFCFB);
+  --dsw-alias-bg-layer-2: var(--xiao-opaque-alias-bg-layer-2, #E7EFED);
+  --dsw-alias-bg-layer-3: var(--xiao-opaque-alias-bg-layer-3, #DAE7E4);
+  --dsw-alias-bg-overlay: var(--xiao-opaque-alias-bg-overlay, #F8FBFA);
+  --dsw-alias-bg-module-platform: var(--xiao-opaque-alias-bg-module-platform, #E6EFEC);
+  --dsw-alias-bg-multi-select: var(--xiao-opaque-alias-bg-multi-select, #DFEAE6);
+  --dsw-specific-sidebar-fill: var(--xiao-opaque-specific-sidebar-fill, #E6EFEC);
+  --dsw-specific-bubble: var(--xiao-opaque-specific-bubble, #E6EFEC);
+  --dsw-specific-bubble-highlight: var(--xiao-opaque-specific-bubble-highlight, #E6EFEC);
+  --dsw-specific-menu: var(--xiao-opaque-specific-menu, #E6EFEC);
+  --dsw-specific-selector: var(--xiao-opaque-specific-selector, #E7F0ED);
+  background-color: var(--dsw-alias-bg-layer-2) !important;
+  background-image: none !important;
+}
 
 .xiao-overlay {
   --xiao-jade: var(--dsw-alias-brand-primary, #35c4a6);
@@ -53,17 +71,17 @@ body[data-xiao-custom-background='true'][data-ds-dark-theme] { --xiao-background
 
 /* --- quiet native enhancements ------------------------------------------- */
 
-[data-xiao-pressed='true'] {
+body[data-xiao-theme='on'] [data-xiao-pressed='true'] {
   filter: brightness(0.88) saturate(0.94);
   transition: filter 90ms ease-out;
 }
 
-[data-xiao-focus='true'] {
+body[data-xiao-theme='on'] [data-xiao-focus='true'] {
   outline: 1px solid color-mix(in srgb, var(--dsw-alias-brand-primary, #35c4a6) 34%, transparent);
   outline-offset: 0;
 }
 
-[data-xiao-nav-pulse] {
+body[data-xiao-theme='on'] [data-xiao-nav-pulse] {
   animation: xiao-nav-pulse 280ms ease-out;
 }
 
@@ -346,11 +364,11 @@ body[data-xiao-state='running'] .xiao-decoration,
 }
 
 /* Replace the native welcome headline only while the Xiao composition is up. */
-body:has([data-phase='hero']) [data-phase='hero'] [class$='_headline'] {
+body[data-xiao-theme='on']:has(.xiao-welcome) [data-phase='hero'] [class$='_headline'] {
   visibility: hidden;
 }
 
-body:has([data-phase='hero']) [data-phase='hero'] [class$='_composerHero'] {
+body[data-xiao-theme='on']:has(.xiao-welcome) [data-phase='hero'] [class$='_composerHero'] {
   transform: translateY(108px);
 }
 
@@ -1071,9 +1089,37 @@ body:has([data-phase='hero']) [data-phase='hero'] [class$='_composerHero'] {
   display: none;
 }
 
+.xiao-settings__navigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.xiao-settings__navigation button {
+  padding: 7px 11px;
+  border: 1px solid var(--dsw-alias-border-l3);
+  border-radius: 8px;
+  background: var(--dsw-alias-bg-layer-1);
+  color: var(--dsw-alias-label-primary);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.xiao-settings__navigation button:hover {
+  background: color-mix(in srgb, var(--xiao-jade) 12%, var(--dsw-alias-bg-layer-1));
+}
+
+.xiao-settings__navigation button:focus-visible,
+.xiao-settings__section:focus-visible {
+  outline: 2px solid var(--xiao-jade);
+  outline-offset: 3px;
+}
+
 .xiao-settings__section {
   display: grid;
   gap: 10px;
+  scroll-margin-block-start: 12px;
 }
 
 .xiao-settings__section--last {

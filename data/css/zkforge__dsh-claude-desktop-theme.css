@@ -1,5 +1,5 @@
 /* zkforge/dsh-claude-desktop-theme — src/client/features/conversation/conversation.css
-   fetched 2026-10-13 from https://raw.githubusercontent.com/zkforge/dsh-claude-desktop-theme/main/src/client/features/conversation/conversation.css
+   fetched 2026-10-21 from https://raw.githubusercontent.com/zkforge/dsh-claude-desktop-theme/main/src/client/features/conversation/conversation.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /*
  * Conversation page: header chrome, transcript column and message surfaces.
@@ -10,6 +10,191 @@
  */
 html[data-dsh-ccd-style="true"] .ST7X_W_root {
   container: ccd-conversation / inline-size;
+}
+
+/* ChangedFiles is the host's completed-turn summary, separate from explicitly
+   delivered files and the tool calls that performed the edits. */
+html[data-dsh-ccd-style="true"] [data-turn-tail] [data-changed-files] {
+  display: flex;
+  margin-top: 12px;
+  border: 1px solid var(--ccd-border);
+  border-radius: 10px;
+  background: var(--ccd-card);
+  color: var(--ccd-text);
+  overflow: hidden;
+}
+
+/* Keep message clocks and actions quiet, including the latest reply that the
+   host otherwise always reveals. The final assistant step and its turn tail
+   are adjacent flow items, so hovering the reply reveals only its own strip.
+   Only the action strip itself keeps the actions revealed in the tail; the
+   signature and the surrounding blank space must not reveal them. Keep the
+   occupied space and keyboard access; touch devices retain actions. */
+@media (hover: hover) {
+  html[data-dsh-ccd-style="true"] :is(.IzP3Va_userRow, [data-turn-tail]) [data-clock] {
+    opacity: 0;
+    pointer-events: auto;
+  }
+
+  html[data-dsh-ccd-style="true"] .IzP3Va_userRow:is(:hover, :focus-within) [data-clock],
+  html[data-dsh-ccd-style="true"] [data-turn-tail] [data-clock]:is(:hover, :focus-within),
+  html[data-dsh-ccd-style="true"] [data-chat-flow-kind="assistant-step"]:has(.gKv1-q_body:hover) + [data-chat-flow-kind="turn-tail"] [data-clock] {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+/* MessageIconActions exposes data-clock="end" on assistant action strips.
+   Keep the native actions and feedback slot, with Claude-sized icon seats. */
+html[data-dsh-ccd-style="true"] [data-turn-tail] [data-clock="end"] {
+  height: 24px;
+  gap: 0;
+  margin-top: 4px;
+  margin-left: -4px;
+}
+
+/* compat/reply-signature.ts seats this static mark only at the latest settled reply.
+   The mask is DSH's RunningWhaleTail REST_PATH (16 × 16). */
+html[data-dsh-ccd-style="true"] .ccd-reply-signature {
+  display: block;
+  flex: none;
+  align-self: flex-start;
+  width: 18px;
+  height: 18px;
+  margin-top: 8px;
+  pointer-events: none;
+}
+
+html[data-dsh-ccd-style="true"] .ccd-reply-signature::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--ccd-pet-blue);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M8.844 13.742C8.967 12.328 8.45 10.4 8.45 9.65C8.45 8.94 8.88 8.43 9.6 8.43C11.285 8.43 12.106 8.281 12.685 8.104C13.71 7.791 14.585 6.768 15.055 5.945C15.137 5.803 14.99 5.641 14.829 5.671C13.829 5.86 12.828 5.376 11.827 4.978C10.659 4.514 9.491 4.707 8.935 4.876C8.805 4.915 8.658 4.819 8.636 4.686C8.468 3.643 7.405 2.615 5.498 2.238C4.54 2.048 3.748 1.574 3.347 1.202C3.252 1.113 3.088 1.125 3.03 1.242C2.628 2.059 2.168 3.82 5.248 6.115C5.82 6.494 6.31 6.785 6.574 7.637C6.72 8.104 6.157 9.168 6.061 9.368C5.157 11.27 5.089 12.19 4.926 13.742' stroke='black' stroke-width='1'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+html[data-dsh-ccd-style="true"] .ccd-reply-signature-claude::before,
+html[data-dsh-ccd-style="true"] .ccd-running-star::before {
+  background: var(--ccd-claude-coral);
+  mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M4.709%2015.955l4.72-2.647.08-.23-.08-.128H9.2l-.79-.048-2.698-.073-2.339-.097-2.266-.122-.571-.121L0%2011.784l.055-.352.48-.321.686.06%201.52.103%202.278.158%201.652.097%202.449.255h.389l.055-.157-.134-.098-.103-.097-2.358-1.596-2.552-1.688-1.336-.972-.724-.491-.364-.462-.158-1.008.656-.722.881.06.225.061.893.686%201.908%201.476%202.491%201.833.365.304.145-.103.019-.073-.164-.274-1.355-2.446-1.446-2.49-.644-1.032-.17-.619a2.97%202.97%200%2001-.104-.729L6.283.134%206.696%200l.996.134.42.364.62%201.414%201.002%202.229%201.555%203.03.456.898.243.832.091.255h.158V9.01l.128-1.706.237-2.095.23-2.695.08-.76.376-.91.747-.492.584.28.48.685-.067.444-.286%201.851-.559%202.903-.364%201.942h.212l.243-.242.985-1.306%201.652-2.064.73-.82.85-.904.547-.431h1.033l.76%201.129-.34%201.166-1.064%201.347-.881%201.142-1.264%201.7-.79%201.36.073.11.188-.02%202.856-.606%201.543-.28%201.841-.315.833.388.091.395-.328.807-1.969.486-2.309.462-3.439.813-.042.03.049.061%201.549.146.662.036h1.622l3.02.225.79.522.474.638-.079.485-1.215.62-1.64-.389-3.829-.91-1.312-.329h-.182v.11l1.093%201.068%202.006%201.81%202.509%202.33.127.578-.322.455-.34-.049-2.205-1.657-.851-.747-1.926-1.62h-.128v.17l.444.649%202.345%203.521.122%201.08-.17.353-.608.213-.668-.122-1.374-1.925-1.415-2.167-1.143-1.943-.14.08-.674%207.254-.316.37-.729.28-.607-.461-.322-.747.322-1.476.389-1.924.315-1.53.286-1.9.17-.632-.012-.042-.14.018-1.434%201.967-2.18%202.945-1.726%201.845-.414.164-.717-.37.067-.662.401-.589%202.388-3.036%201.44-1.882.93-1.086-.006-.158h-.055L4.132%2018.56l-1.13.146-.487-.456.061-.746.231-.243%201.908-1.312-.006.006z%22%2F%3E%3C%2Fsvg%3E");
+}
+
+html[data-dsh-ccd-style="true"] [data-turn-tail] [data-clock="end"] button:has(> svg:only-child) {
+  box-sizing: border-box;
+  width: 24px;
+  min-width: 24px;
+  height: 24px;
+  padding: 4px;
+}
+
+html[data-dsh-ccd-style="true"] [data-turn-tail] [data-clock="end"] button:has(> svg:only-child) > svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* MessageIconActions' final span groups token usage and the completion time. */
+html[data-dsh-ccd-style="true"] [data-turn-tail] [data-clock="end"] > span:last-child {
+  gap: 6px;
+  margin-left: 6px;
+  font-size: 12px;
+  line-height: 20px;
+}
+
+html[data-dsh-ccd-style="true"] [data-turn-tail] [data-clock="end"] button[aria-haspopup="dialog"] {
+  box-sizing: border-box;
+  width: 24px;
+  min-width: 24px;
+  height: 24px;
+  justify-content: center;
+  gap: 0;
+  padding: 4px;
+  border-radius: 6px;
+}
+
+html[data-dsh-ccd-style="true"] [data-turn-tail] [data-clock="end"] button[aria-haspopup="dialog"] > svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Preserve the localized usage label as the button's accessible name. */
+html[data-dsh-ccd-style="true"] [data-turn-tail] [data-clock="end"] button[aria-haspopup="dialog"] > span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* TurnUsagePanel portals to body. Its details hook identifies this dialog
+   without touching session statistics or the host's anchored positioning. */
+html[data-dsh-ccd-style="true"] [role="dialog"]:has(> [data-turn-usage-details]) {
+  box-sizing: border-box;
+  width: min(340px, calc(100vw - 24px));
+  min-width: 0;
+  max-width: calc(100vw - 24px);
+  max-height: calc(100dvh - 24px);
+  overflow: auto;
+  padding: 14px 16px;
+  border: .5px solid var(--ccd-view-menu-border);
+  border-radius: 12px;
+  background: var(--ccd-card);
+  box-shadow: var(--ccd-view-menu-shadow);
+  backdrop-filter: none;
+  color: var(--ccd-text-secondary);
+  font: 400 12px/18px var(--ccd-font-ui);
+}
+
+html[data-dsh-ccd-style="true"] [role="dialog"]:has(> [data-turn-usage-details]) > div:first-child {
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  color: var(--ccd-text);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+html[data-dsh-ccd-style="true"] [role="dialog"]:has(> [data-turn-usage-details]) > div[aria-hidden="true"] {
+  margin-bottom: 12px;
+  border-top-color: var(--ccd-border);
+}
+
+html[data-dsh-ccd-style="true"] [data-turn-usage-details] {
+  grid-template-columns: minmax(76px, auto) minmax(0, 1fr);
+  gap: 8px 16px;
+  margin: 0;
+  color: var(--ccd-text-secondary);
+}
+
+html[data-dsh-ccd-style="true"] [data-turn-usage-details] > dd {
+  color: var(--ccd-text);
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+
+html[data-dsh-ccd-style="true"] [data-turn-usage-details] > dd > span {
+  display: block;
+  color: var(--ccd-text-muted);
+  font-size: 11px;
+  white-space: normal;
+}
+
+/* Process containers stay open via compat/conversation-process.ts. Only hide
+   their controls after expansion, so a failed adaptation stays operable. */
+html[data-dsh-ccd-style="true"] button[data-turn-process]:not([aria-expanded="false"]),
+html[data-dsh-ccd-style="true"] [data-step-process] > div:has(> button[data-process-activity][aria-expanded="true"]) {
+  display: none;
+}
+
+html[data-dsh-ccd-style="true"] [data-step-process-body]:not([hidden]) {
+  max-height: none;
+  overflow: visible;
+  scrollbar-gutter: auto;
+  mask-image: none;
 }
 
 /*
@@ -51,10 +236,6 @@ html[data-dsh-ccd-style="true"] .ST7X_W_root [data-width-handle] {
 html[data-dsh-ccd-style="true"] .ST7X_W_header {
   background: var(--ccd-canvas);
   color: var(--ccd-text);
-  /* The host marks this header as its window-drag surface. The compact flex
-     row replaces the host's two-row grid, so keep that surface explicit on
-     macOS; the host's header controls remain no-drag children. */
-  -webkit-app-region: drag;
   /*
    * The reference has no rule between the header and the transcript — the two
    * read as one page. The host draws a hairline here (`border-bottom: .5px
@@ -113,6 +294,13 @@ html[data-dsh-ccd-style="true"] .ST7X_W_headerSessionless {
  * Windows has no such row, so its header keeps the base rule, and the
  * sessionless header already centres on 25 with its own 10px bottom padding.
  */
+/* Only macOS shares the conversation header with the window drag surface.
+   The host excludes its controls from dragging only on darwin; Windows has a
+   separate caption strip, so making this row draggable swallows button clicks. */
+html[data-dsh-ccd-style="true"][data-platform="darwin"] .ST7X_W_header {
+  -webkit-app-region: drag;
+}
+
 html[data-dsh-ccd-style="true"][data-platform="darwin"] .ST7X_W_header:not(.ST7X_W_headerSessionless) {
   min-height: 40px;
   padding-bottom: 0;
@@ -158,13 +346,12 @@ html[data-dsh-ccd-style="true"] .ST7X_W_headerUtilities {
  *
  * That single cell's shipped occupant is `ui-sidebar-right`'s collapsed-panel
  * expand control, which this interface does not draw; the plugin shadows it with
- * an entry that renders nothing (`features/conversation/header-actions/entries.ts`)
- * and keeps the expand action in the Session menu instead. So the seat has no
+ * the blank page's view buttons and keeps the expand action in the Session menu
+ * instead. On active Sessions the corner is hidden, so the seat has no
  * box of its own to place — its own gap in front of the utilities would be 2px
  * of trailing space after the last control, and the reference measures the
- * cluster's inset from the header's own padding. A Blank Session renders the
- * same empty seat, which is why the host's `margin-left: auto` for that row
- * needs no answer here: there is nothing left in the corner to place either way.
+ * cluster's inset from the header's own padding. Blank Sessions place their
+ * three view buttons at the trailing edge through `header-actions.css`.
  */
 html[data-dsh-ccd-style="true"] .ST7X_W_headerCorner {
   margin: 0;
@@ -177,8 +364,8 @@ html[data-dsh-ccd-style="true"] .ST7X_W_headerCorner {
  * `compat/view-switch.ts`; the buttons keep their roles, labels and handlers,
  * and the host's own underline is dropped.
  *
- * Geometry is the reference's own pill (docs/issues/img/todo-sidebar-sessions-target.webp,
- * @2x): a 66 × 26 track — 131 × 52 device px, so two 33px segments — 6px
+ * Geometry is the reference's own pill (DESIGN.md §6.5, @2x): a 66 × 26 track
+ * — 131 × 52 device px, so two 33px segments — 6px
  * corner, with the raised thumb inset 1px top and bottom and carrying a 5px
  * corner, a 1px outline and the segment shadow. The two segments are the icon
  * buttons below, not text: `compat/view-switch.ts` swaps each shipped View's
@@ -563,10 +750,10 @@ html[data-dsh-ccd-style="true"] .ST7X_W_headerUtilities [data-ccd-open-mode="dir
   }
 }
 
-/* Transcript column keeps the reference's breathing room. */
+/* Leave room between the final message/signature and the Composer stack. */
 html[data-dsh-ccd-style="true"] .icaHSq_scroll {
   padding-top: 16px;
-  padding-bottom: 8px;
+  padding-bottom: 48px;
 }
 
 /* Center and size the host's jump-to-bottom control.
@@ -651,7 +838,7 @@ html[data-dsh-ccd-style="true"] .gKv1-q_root ._markdown_1ypvv_5:not([data-markdo
 html[data-dsh-ccd-style="true"] .gKv1-q_root ._markdown_1ypvv_5:not([data-markdown-variant="compact"]) :is(a, ._fileMention_1ypvv_85) {
   max-width: 100%;
   color: var(--ccd-link);
-  font-weight: inherit;
+  font-weight: 500;
   text-decoration-line: underline;
   text-decoration-style: solid;
   text-decoration-color: var(--ccd-link-underline);
@@ -664,15 +851,11 @@ html[data-dsh-ccd-style="true"] .gKv1-q_root ._markdown_1ypvv_5:not([data-markdo
 }
 
 /*
- * The host prefixes a URL link with a category glyph — `MarkdownText.module.css`
- * seats a `.linkIcon` globe inside the anchor (1.1em, -0.25em of optical
- * offset) — so "外链" draws as "⊕ 外链" where the reference draws the link text
- * alone. The glyph is not painted inside an anchor; the anchor keeps its text,
- * its underline and its hit area. The other two shapes that carry the class —
- * a file mention and URL-promoted inline code — are not anchors but file chips,
- * and keep their own glyph.
+ * Render URL and file links as text alone. The host uses `.linkIcon` for
+ * category glyphs inside anchors and file mentions; hiding it also removes
+ * its margin while preserving the link text, underline and click behavior.
  */
-html[data-dsh-ccd-style="true"] .gKv1-q_root ._markdown_1ypvv_5:not([data-markdown-variant="compact"]) a ._linkIcon_1ypvv_94 {
+html[data-dsh-ccd-style="true"] .gKv1-q_root ._markdown_1ypvv_5:not([data-markdown-variant="compact"]) :is(a, ._fileMention_1ypvv_85) ._linkIcon_1ypvv_94 {
   display: none;
 }
 
@@ -685,7 +868,7 @@ html[data-dsh-ccd-style="true"] .gKv1-q_root ._markdown_1ypvv_5:not([data-markdo
   vertical-align: baseline;
   font-family: var(--ccd-font-code);
   font-size: 0.95em !important;
-  font-weight: inherit;
+  font-weight: 500;
   line-height: 1.2;
   color: var(--ccd-inline-code-text);
   background: var(--ccd-inline-code-fill);
@@ -1000,5 +1183,254 @@ html[data-dsh-ccd-style="true"] .HiSsxa_root,
 html[data-dsh-ccd-style="true"] .-gRAhq_root {
   color: var(--ccd-text-secondary);
   font-size: var(--ccd-font-size-body);
+}
+
+/* Native clock keeps ticking behind the optional Claude presentation. */
+html[data-dsh-ccd-style="true"] [data-ccd-running-style="claude"] > :not(.ccd-running-content) {
+  display: none !important;
+}
+
+html[data-dsh-ccd-style="true"] .ccd-running-content {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  color: var(--ccd-text-secondary);
+  font: 400 12px/24px var(--ccd-font-ui);
+  font-variant-numeric: tabular-nums;
+  white-space: pre-wrap;
+}
+
+html[data-dsh-ccd-style="true"] .ccd-running-star {
+  display: inline-flex;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-inline-end: 14px;
+  align-items: center;
+  justify-content: center;
+}
+
+html[data-dsh-ccd-style="true"] .ccd-running-star::before {
+  content: '';
+  width: 16px;
+  height: 16px;
+  animation: ccd-star-breathe 1.2s cubic-bezier(.45, 0, .55, 1) infinite;
+}
+
+/* A quick 360ms contraction, followed by a gentler spread; no spin. */
+@keyframes ccd-star-breathe {
+  0%, 100% { transform: scale(1, 1); }
+  30% { transform: scale(.54, .62); }
+  72% { transform: scale(.9, .85); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-dsh-ccd-style="true"] .ccd-running-star::before { animation: none; }
+}
+
+/* Completed-turn file summary. The host owns file previews, review navigation,
+   localized counts and its list fold; the footer forwards the native header. */
+html[data-dsh-ccd-style="true"] [data-turn-tail] [data-changed-files] button[class*="_header"] {
+  height: auto;
+  min-height: 32px;
+  padding: 6px 12px;
+  background: transparent;
+  gap: 8px;
+}
+
+html[data-dsh-ccd-style="true"] [data-turn-tail] [data-changed-files] [class*="_title"] {
+  font: 400 13px/20px var(--ccd-font-ui);
+}
+
+html[data-dsh-ccd-style="true"] [data-turn-tail] [data-changed-files]:not([data-single="true"]) button[class*="_header"] :is([class*="_tile"], [class*="_stat"]) {
+  display: none;
+}
+
+html[data-dsh-ccd-style="true"] [data-turn-tail] [data-changed-files] > ul {
+  padding: 4px 0 0;
+  border-top: 1px solid var(--ccd-border);
+}
+
+html[data-dsh-ccd-style="true"] [data-turn-tail] [data-changed-files] ul button[class*="_row"] {
+  width: calc(100% - 6px);
+  margin-inline: 3px;
+  min-height: 28px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  gap: 8px;
+  color: var(--ccd-text);
+  font: 14px/20px var(--ccd-font-ui);
+}
+
+html[data-dsh-ccd-style="true"] [data-turn-tail] [data-changed-files] ul [class*="_path"] {
+  flex: 1;
+  font: inherit;
+}
+
+html[data-dsh-ccd-style="true"] [data-turn-tail] [data-changed-files] :is([data-ccd-changes-icon], [class*="_tile"]) {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+html[data-dsh-ccd-style="true"] [data-turn-tail] [data-changed-files] :is([data-ccd-changes-icon], [class*="_tile"]) svg {
+  width: 16px;
+  height: 16px;
+}
+
+html[data-dsh-ccd-style="true"] [data-turn-tail] [data-changed-files] :is([class*="_counts"], [class*="_statCounts"]) {
+  display: inline-flex;
+  flex: none;
+  gap: 4px;
+  font: 12px/20px var(--ccd-font-code);
+}
+
+html[data-dsh-ccd-style="true"] [data-turn-tail] [data-changed-files] [data-ccd-changes-review] {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  position: relative;
+  box-sizing: border-box;
+  width: calc(100% - 6px);
+  min-height: 28px;
+  margin: 0 3px 3px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ccd-text);
+  font: 14px/20px var(--ccd-font-ui);
+  text-align: start;
+  cursor: pointer;
+}
+
+html[data-dsh-ccd-style="true"] [data-turn-tail] [data-changed-files] [data-ccd-changes-review]:hover:not(:disabled) {
+  background: var(--ccd-hover);
+}
+
+html[data-dsh-ccd-style="true"] [data-turn-tail] [data-changed-files] [data-ccd-changes-review]:focus-visible {
+  outline: 2px solid var(--ccd-text-muted);
+  outline-offset: -3px;
+}
+
+html[data-dsh-ccd-style="true"] [data-turn-tail] [data-changed-files] [data-ccd-changes-review]:disabled {
+  cursor: progress;
+}
+
+html[data-dsh-ccd-style="true"] [data-turn-tail] [data-changed-files][data-single="true"] [class*="_titles"] {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+html[data-dsh-ccd-style="true"] [data-turn-tail] [data-changed-files][data-single="true"] [class*="_stat"] {
+  margin-inline-start: auto;
+}
+
+html[data-dsh-ccd-style="true"] [data-turn-tail] [data-changed-files] [class*="_previewHint"] {
+  display: none;
+}
+
+@media (pointer: coarse) {
+  html[data-dsh-ccd-style="true"] [data-turn-tail] [data-changed-files] :is(ul button[class*="_row"], [data-ccd-changes-review]) {
+    min-height: 44px;
+  }
+}
+
+/* Single-file summaries share the same heading / file row / footer layout.
+   The original header remains the file row, preserving its hover preview. */
+html[data-dsh-ccd-style="true"] [data-turn-tail] [data-changed-files] [data-ccd-changes-heading] {
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--ccd-border);
+  color: var(--ccd-text);
+  font: 400 13px/20px var(--ccd-font-ui);
+}
+
+html[data-dsh-ccd-style="true"] [data-turn-tail] [data-changed-files][data-ccd-changes-single] button[class*="_header"] {
+  width: calc(100% - 6px);
+  min-height: 28px;
+  margin: 4px 3px 0;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+html[data-dsh-ccd-style="true"] [data-turn-tail] [data-changed-files][data-ccd-changes-single] button[class*="_header"] > [class*="_titles"] {
+  display: none;
+}
+
+html[data-dsh-ccd-style="true"] [data-turn-tail] [data-changed-files] [data-ccd-changes-single-name] {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 14px/20px var(--ccd-font-ui);
+}
+
+/* The reference footer has an inset hover seat and a short, arrowless hint.
+   Its accessible description is supplied alongside the visual text. */
+html[data-dsh-ccd-style="true"] [data-turn-tail] [data-changed-files] [data-ccd-changes-review]::after {
+  content: attr(data-ccd-changes-tooltip);
+  position: absolute;
+  z-index: 2;
+  inset-inline-start: 50%;
+  bottom: calc(100% + 4px);
+  transform: translateX(-50%);
+  max-width: calc(100% - 16px);
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--ccd-text-strong);
+  color: var(--ccd-text-inverse);
+  box-shadow: var(--ccd-dialog-shadow);
+  font: 13px/20px var(--ccd-font-ui);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 100ms ease, visibility 100ms ease;
+}
+
+html[data-dsh-ccd-style="true"] [data-turn-tail] [data-changed-files] [data-ccd-changes-review]:is(:hover, :focus-visible):not(:disabled)::after {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 300ms;
+}
+
+/* File rows use the same inset rounded hover seat as the review footer. Native
+   row buttons and their hover-preview wrappers retain the original handlers. */
+html[data-dsh-ccd-style="true"] [data-turn-tail] [data-changed-files] ul button[class*="_row"]:is(:hover, :focus-visible):not(:disabled),
+html[data-dsh-ccd-style="true"] [data-turn-tail] [data-changed-files][data-ccd-changes-single] button[class*="_header"]:is(:hover, :focus-visible):not(:disabled) {
+  background: var(--ccd-hover);
+}
+
+@media (pointer: coarse) {
+  html[data-dsh-ccd-style="true"] [data-turn-tail] [data-changed-files][data-ccd-changes-single] button[class*="_header"] {
+    min-height: 44px;
+  }
+}
+
+/* ChangedFiles hover comparisons are portaled under body, outside the summary.
+   Hide both their content and outer surface so no empty floating card remains. */
+html[data-dsh-ccd-style="true"] [data-changes-hover-preview],
+html[data-dsh-ccd-style="true"] body > div:has(> [data-changes-hover-preview]) {
+  display: none;
+}
+
+html[data-dsh-ccd-style="true"] [data-changed-files] [data-ccd-changes-title-source] {
+  display: none;
+}
+
+html[data-dsh-ccd-style="true"] [data-changed-files] [data-ccd-changes-title] {
+  font: 400 13px/20px var(--ccd-font-ui);
 }
 
