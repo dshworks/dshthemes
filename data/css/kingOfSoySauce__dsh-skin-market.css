@@ -1,5 +1,5 @@
 /* kingOfSoySauce/dsh-skin-market — preview/preview.css
-   fetched 2026-10-15 from https://raw.githubusercontent.com/kingOfSoySauce/dsh-skin-market/main/preview/preview.css
+   fetched 2026-10-23 from https://raw.githubusercontent.com/kingOfSoySauce/dsh-skin-market/main/preview/preview.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 :root {
   font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -31,6 +31,7 @@
   --dsw-alias-button-floating-hover: #414247;
   --dsw-alias-bg-mask-photo: rgba(0, 0, 0, .88);
   --dsw-mask-blur: none;
+  --dsw-menu-backdrop-filter: blur(40px) saturate(150%);
   --dsw-elevation-panel: 0 0 0 .5px var(--dsw-alias-border-l2), 0 3px 8px #00000008, 0 0 16px #00000005;
   --dsw-alias-bg-mask-1: rgba(0,0,0,.72);
   --dsw-alias-bg-layer-1: #222326;
@@ -69,7 +70,7 @@ button, input { font: inherit; }
 /* The npm primitives omit DSH's host-injected CSS; keep preview dialogs usable. */
 body > [role="presentation"] { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; padding: 20px; }
 body > [role="presentation"] > [aria-hidden="true"] { position: absolute; inset: 0; background: var(--dsw-alias-bg-mask-1); }
-body > [role="presentation"] > [role="dialog"] { position: relative; width: min(520px, 100%); max-height: 90vh; overflow: auto; padding: 24px; border: 1px solid var(--dsw-alias-border-l2); border-radius: 16px; background: var(--dsw-alias-bg-layer-2); }
+:where(body > [role="presentation"] > [role="dialog"]) { position: relative; width: min(520px, 100%); max-height: 90vh; overflow: auto; padding: 24px; border: 1px solid var(--dsw-alias-border-l2); border-radius: 16px; background: var(--dsw-alias-bg-layer-2); }
 body > [role="presentation"] [role="dialog"] > div:first-child > div:first-child { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 body > [role="presentation"] h2 { margin: 0; font-size: 18px; }
 body > [role="presentation"] p { font-size: 13px; line-height: 1.6; }

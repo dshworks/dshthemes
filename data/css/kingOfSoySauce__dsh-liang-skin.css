@@ -1,9 +1,9 @@
 /* kingOfSoySauce/dsh-liang-skin — src/client/skin.css
-   fetched 2026-10-15 from https://raw.githubusercontent.com/kingOfSoySauce/dsh-liang-skin/main/src/client/skin.css
+   fetched 2026-10-23 from https://raw.githubusercontent.com/kingOfSoySauce/dsh-liang-skin/main/src/client/skin.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 .liang-skin-backdrop {
   position: fixed;
-  z-index: 0;
+  z-index: -1;
   inset: 0;
   overflow: hidden;
   pointer-events: none;
@@ -22,7 +22,7 @@ body[data-liang-skin="on"] .liang-skin-backdrop {
   right: 0;
   display: block;
   width: min(42vw, 720px);
-  height: 100vh;
+  height: 100%;
   object-fit: cover;
   object-position: 50% 42%;
   opacity: var(--liang-portrait-opacity, 0.45);
@@ -45,15 +45,11 @@ body[data-liang-skin="on"] .liang-skin-backdrop {
   display: none;
 }
 
-.liang-skin-backdrop::after {
-  position: absolute;
-  inset: 0;
-  content: "";
-  background: linear-gradient(90deg, var(--liang-page, transparent) 0 28%, transparent 57% 100%);
-}
-
 body[data-liang-skin="on"] {
-  --dsw-alias-bg-base: var(--liang-bg-base) !important;
+  /* Keep the backdrop above the canvas but below content and native portals.
+     The host owns root positioning, dimensions, and its own stacking order. */
+  isolation: isolate;
+  --dsw-alias-bg-base: transparent !important;
   --dsw-alias-bg-layer-1: var(--liang-layer-1) !important;
   --dsw-alias-bg-layer-2: var(--liang-layer-2) !important;
   --dsw-alias-bg-layer-3: var(--liang-layer-3) !important;
@@ -213,9 +209,21 @@ body[data-liang-skin="on"]:is(
 }
 
 body[data-liang-skin="on"] > #root {
-  position: relative;
-  z-index: 1;
   background: transparent !important;
+}
+
+body[data-liang-skin="on"]:is(
+  [data-dsh-desktop-mode="compatibility"],
+  [data-dsh-desktop-mode="extended"]
+) .liang-skin-backdrop {
+  top: var(--dsh-desktop-frame-height, 0px);
+}
+
+/* Native account pages are full-screen body portals. Their header and loading
+   surface must stay opaque when the chat background token is transparent. */
+body[data-liang-skin="on"] > [role="dialog"][aria-modal="true"][class*="_overlay"]:has(> header[data-window-drag] button[class*="_back"]):has(> [class*="_viewport"]) {
+  --dsw-alias-bg-base: var(--liang-page, #fff) !important;
+  background: var(--liang-page, #fff) !important;
 }
 
 /* Windows paints the sidebar fill across the host frame, covering the portrait.
@@ -454,7 +462,7 @@ body[data-liang-skin="on"] .liang-effort-control__range::-webkit-slider-thumb {
   display: flex;
 }
 
-[class*="_8HJdBW_cubeRow"]:has(.liang-appearance-choice) {
+[class*="_cubeRow"]:has(.liang-appearance-choice) {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
@@ -490,90 +498,14 @@ body[data-liang-skin="on"] .liang-effort-control__range::-webkit-slider-thumb {
 }
 
 .liang-appearance-binding {
-  box-sizing: border-box;
   display: flex;
-  width: 100%;
-  min-height: 28px;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 4px 0 0;
-  color: var(--dsw-alias-label-primary);
-  font: inherit;
+  gap: 24px;
+  padding: 16px 0;
+  border-bottom: 0.5px solid var(--dsw-alias-border-l2);
   font-size: 14px;
-  line-height: 22px;
-  cursor: pointer;
-}
-
-.liang-appearance-binding__label {
-  display: block;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.liang-appearance-binding__copy {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  gap: 1px;
-}
-
-.liang-appearance-binding__description {
-  display: block;
-  overflow: hidden;
-  color: var(--dsw-alias-label-secondary);
-  font-size: 12px;
-  line-height: 18px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.liang-appearance-binding__input {
-  position: relative;
-  flex: 0 0 36px;
-  width: 36px;
-  height: 20px;
-  margin: 0;
-  border: 1px solid var(--dsw-alias-border-l2);
-  border-radius: 999px;
-  outline: none;
-  cursor: pointer;
-  appearance: none;
-  background: var(--dsw-alias-interactive-bg-hover, var(--dsw-alias-bg-module-platform));
-}
-
-.liang-appearance-binding__input::before {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  content: "";
-  background: var(--dsw-alias-label-primary);
-  box-shadow: 0 1px 3px rgb(0 0 0 / 18%);
-  transition: transform 160ms ease, background-color 160ms ease;
-}
-
-.liang-appearance-binding__input:checked {
-  border-color: var(--dsw-static-neutral-bluish-400);
-  background: var(--dsw-static-neutral-bluish-400);
-}
-
-.liang-appearance-binding__input:checked::before {
-  background: var(--dsw-alias-bg-layer-1, #fff);
-  transform: translateX(16px);
-}
-
-.liang-appearance-binding__input:focus-visible {
-  box-shadow: 0 0 0 2px var(--dsw-alias-interactive-bg-hover);
-}
-
-.liang-appearance-binding__input:disabled {
-  cursor: progress;
-  opacity: 0.7;
+  line-height: 20px;
 }
 
 @media (max-width: 760px) {

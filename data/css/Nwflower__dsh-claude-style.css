@@ -1,5 +1,5 @@
 /* Nwflower/dsh-claude-style — packages/client/src/theme/sidebar.css
-   fetched 2026-10-15 from https://raw.githubusercontent.com/Nwflower/dsh-claude-style/master/packages/client/src/theme/sidebar.css
+   fetched 2026-10-23 from https://raw.githubusercontent.com/Nwflower/dsh-claude-style/master/packages/client/src/theme/sidebar.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* ---------- Claude Code layout: sidebar brand ---------- */
 /* The shipped whale and wordmark give way to the selected brand, each painted as
@@ -236,10 +236,19 @@ body[data-dsh-claude-style] [data-dsh-claude-part~="section-label"] {
 }
 
 /* Compact scale: shrunken heights, margins and paddings */
+/* The host indents rows through `--dsh-workspace-indent`, written inline on each
+   group container as `depth * 12px`; the shipped row rule carries
+   `padding-inline-start: calc(8px + var(--dsh-workspace-indent, 0px))`. This
+   rule's specificity is (0,2,1) where that rule's is (0,1,0), so the shorthand
+   below decides the whole padding family and the tree would draw every level at
+   the same x. The second declaration restores the indentation on the skin's own
+   6px base. The variable is unset in the flat list and `0px` in the
+   group-by-workspace list, so both keep the 6px row they have today. */
 body[data-dsh-claude-style] [data-dsh-claude-part~="project-row"] {
   height: 28px;
   min-height: 28px;
   padding: 0 6px;
+  padding-inline-start: calc(6px + var(--dsh-workspace-indent, 0px));
   gap: 4px;
   border-radius: 6px;
 }
@@ -247,6 +256,7 @@ body[data-dsh-claude-style] [data-dsh-claude-part~="session-row"] {
   height: 28px;
   min-height: 28px;
   padding: 0 6px;
+  padding-inline-start: calc(6px + var(--dsh-workspace-indent, 0px));
   gap: 0;
   border-radius: 6px;
 }
@@ -339,14 +349,15 @@ body[data-dsh-claude-style] [data-dsh-claude-part~="project-row"] [data-dsh-clau
 body[data-dsh-claude-style] [data-dsh-claude-part~="project-row"] [data-dsh-claude-part~="row-folder"] {
   display: none;
 }
-/* Title left, dropdown arrow beside it */
+/* Title left, dropdown arrow beside it. The label takes its content width and
+   yields past it, which keeps the hover actions inside the column. */
 body[data-dsh-claude-style] [data-dsh-claude-part~="project-row"] {
   display: flex;
   align-items: center;
 }
 body[data-dsh-claude-style] [data-dsh-claude-part~="project-row"] [data-dsh-claude-part~="row-project-text"] {
   order: 1;
-  flex: 0 0 auto;
+  flex: 0 1 auto;
   margin-right: 2px;
 }
 /* The chevron is a reveal-on-hover affordance. The shipped CSS gates it on
@@ -403,56 +414,72 @@ body[data-dsh-claude-style] [data-dsh-claude-part~="session-row"] [data-dsh-clau
 body[data-dsh-claude-style] [data-dsh-claude-part~="session-row"] [data-dsh-claude-part~="row-slot"] > [data-slot]:empty::after {
   content: "";
   display: inline-block;
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   corner-shape: round;
-  border: 1.2px solid var(--dsw-alias-label-caption, #a6a094);
+  border: 1px solid var(--dsw-alias-label-caption, #a6a094);
   box-sizing: border-box;
 }
 
-/* Session status ongoing indicator: a circular progress ring. Nothing here needs
-   weight: these selectors already outrank the host's class rules, and the light
-   overrides below outrank this rule by their `:not()` part alone. The track is a
-   plain shorthand on purpose: it sets all four sides, and the head the longhand
-   paints on top of it is what the rotation carries. */
-body[data-dsh-claude-style]:not([data-ds-dark-theme]) svg[data-state="ongoing"] {
-  border-color: rgba(20, 20, 19, 0.12);
-}
-body[data-dsh-claude-style] svg[data-state="ongoing"] {
-  width: 10px;
-  height: 10px;
+/* Session status ongoing indicator: the host's own spinner, repainted as the
+   mark the Motion tab picks. Its glyph is a `<g>` of two circles and is hidden
+   below, so the box itself is the whole paint. The idle seat's hollow circle
+   stays 6px, so the shipped look is a filled dot of the same size breathing in
+   place — filled against hollow is what reads a row as running, and the breath
+   is what tells it from a state the host paints filled and still. The other
+   look is the 10px ring the skin drew before the dot: a track with one lit head
+   turning through it. The settings page's two preview cards carry the same
+   looks on `.dsh-claude-ongoing-mark`, which is why every rule below names both
+   boxes. */
+body[data-dsh-claude-style] :is(svg[data-state="ongoing"], .dsh-claude-ongoing-mark) {
+  width: 6px;
+  height: 6px;
   box-sizing: border-box;
+  border: none;
   border-radius: 50%;
   corner-shape: round;
-  border: 1.5px solid rgba(255, 255, 255, 0.18);
-  border-top-color: var(--dsw-alias-label-primary);
-  animation: var(--dsh-claude-period-spin) linear infinite dsh-claude-win11-spin;
-  transform-origin: center center;
+  background: var(--dsw-alias-label-secondary);
+  /* The shared pulse, whose whole motion is opacity: a light that changes size
+     with its brightness reads as a growing dot, not as a lamp. */
+  animation: dsh-claude-pulse var(--dsh-claude-period-breathe) var(--dsh-claude-ease-in-out) infinite;
   display: inline-block;
   flex: none;
   color: transparent;
   fill: none;
-  background: transparent;
 }
-body[data-dsh-claude-style]:not([data-ds-dark-theme]) svg[data-state="ongoing"] {
+/* The ring, under the reader's choice on <body> (core/prefs.ts) or under the
+   preview card's own `data-look`. The track is the theme's own, kept apart from
+   the head on top of it, which is what the rotation carries. */
+body[data-dsh-claude-style] .dsh-claude-ongoing-mark[data-look="ring"],
+body[data-dsh-claude-style][data-dsh-claude-ongoing-indicator="ring"] svg[data-state="ongoing"] {
+  width: 10px;
+  height: 10px;
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  border-top-color: var(--dsw-alias-label-primary);
+  background: transparent;
+  animation: dsh-claude-ongoing-spin var(--dsh-claude-period-spin) linear infinite;
+  transform-origin: center center;
+}
+body[data-dsh-claude-style]:not([data-ds-dark-theme]) .dsh-claude-ongoing-mark[data-look="ring"],
+body[data-dsh-claude-style]:not([data-ds-dark-theme])[data-dsh-claude-ongoing-indicator="ring"] svg[data-state="ongoing"] {
+  border-color: rgba(20, 20, 19, 0.12);
   border-top-color: var(--dsw-alias-label-secondary);
+}
+@keyframes dsh-claude-ongoing-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 body[data-dsh-claude-style] svg[data-state="ongoing"] * {
   display: none;
 }
-@keyframes dsh-claude-win11-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-/* The ring spins in EVERY motion setting, deliberately: a 0.85s rotation is the
-   whole signal that background work is alive, and a frozen ring reads as broken
-   rather than as calm. Neither the system setting (D26) nor the settings page's
-   own choice governs it. */
-@media (prefers-reduced-motion: reduce) {
-  body[data-dsh-claude-style] svg[data-state="ongoing"] {
-    animation: var(--dsh-claude-period-spin) linear infinite dsh-claude-win11-spin !important;
-    animation-play-state: running !important;
-  }
+/* The reader's animation choice (D40): Reduced holds both looks still — the lit
+   dot and the ring's lit head still read a row as running — so neither needs the
+   exception the ring carried while it was the only mark. The system's own
+   setting reaches this rule through the resolved attribute, and the host's
+   reduced-motion block reaches its spinner's `<g>` and arc, hidden above, and
+   never this box. */
+body[data-dsh-claude-style][data-dsh-claude-motion="reduced"] :is(svg[data-state="ongoing"], .dsh-claude-ongoing-mark) {
+  animation: none;
 }
 

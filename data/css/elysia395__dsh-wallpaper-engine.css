@@ -1,5 +1,5 @@
 /* elysia395/dsh-wallpaper-engine — src/styles-shell.js
-   fetched 2026-10-15 from https://raw.githubusercontent.com/elysia395/dsh-wallpaper-engine/main/src/styles-shell.js
+   fetched 2026-10-23 from https://raw.githubusercontent.com/elysia395/dsh-wallpaper-engine/main/src/styles-shell.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 /* ── iOS liquid glass ──────────────────────────────────────────────────────
      The opaque conversation surfaces become translucent glass. The recipe is
@@ -71,7 +71,7 @@
        声明处解析），所以一次覆盖全应用，不需要逐个锚点补，也不碰任何类名哈希。
        色阶仍沿用宿主那一级（可视性不变），只把中性色的**色相**换成用户选的玻璃
        底色；浅色下取更暗一级的静态中性色，抵掉混色带来的提亮。
-       ⚠️ 权重 40% → 65%（2026-10-12）：40% 玻璃色 + 60% 灰阶在**深色低饱和**玻璃色
+       ⚠️ 权重 40% → 65%：40% 玻璃色 + 60% 灰阶在**深色低饱和**玻璃色
        （如藏青 #0d1524）下色相被灰阶洗光 —— 拇指复算 ≈#525659，与宿主原生灰
        （neutral-600 #545557）不可分，观感等于退回 #157 修复前（用户实测报回归）。
        65% 让色相在任何玻璃色下都存活；亮度台阶仍由中性色锚定档决定，锚不变。 */
@@ -105,12 +105,32 @@
      深底变浅底、白字不变 ⇒ 白字压浅底（实测 1.07–1.13:1，见 #161）。
      判据取宿主自己写在气泡上的 role="tooltip"（全 asar 仅出现一次，就是这一处），
      它同时免疫类名哈希漂移与浮层 DOM 位置，比 [data-chat-flow] 作用域更可靠。
-     ⇒ **本文件所有 [class*="_bubble"] 规则都必须带这道豁免**（当前 :613 / :622 / :945 / :3166 四条），
-     守卫：verify-readability「F2dN 每条 _bubble 规则都必须带 role="tooltip" 豁免」—— §11 A1-4：
+     ⇒ **本文件所有 [class*="_bubble"] 规则都必须带这道豁免**，
+     守卫：verify-readability「F2dN 每条 _bubble 规则都必须带 role="tooltip" 豁免」——
      这条判据以前还接受"头里有 [data-chat-flow] 就放行"，于是把某条的 :not(...) 摘掉仍全绿；
      作用域（在对话流里）与豁免（不是宿主 Tooltip 那个 _bubble）是两件事，现在分别钉住。 */
   body[data-we-glass-page][data-we-thinking-glass] [class*="_bubble"]:not([role="tooltip"]) {
     background-color: var(--we-chat-glass-fill) !important;
+  }
+  /* ── 三挡的一半：「关」挡的交付物文件卡是**半透明**（用户实测回归）─────────────
+     「思考块液态玻璃」三挡的产品语义是 **关 = 半透明 / 液态玻璃 = 磨砂玻璃 / 原生 = 实色**。
+     气泡与输入框在「关」挡下本来就吃 --we-chat-glass-fill（下面那组里带
+     :not([data-we-thinking-native]) 的规则），但**宿主交付物卡片（data-presented-file）漏了
+     这一档**：它只在 data-we-thinking-glass 门下才被清成 transparent，于是「关」挡下保留
+     宿主不透明的 --deliverable-fill（暗色主题 = --dsw-static-neutral-850）⇒ 屏上一块
+     实心深色卡，与旁边半透明气泡不是同一种材质（用户原话："关闭挡位时应该是半透明的"）。
+     这里补的就是缺的那一档：**同一份 chat 釉、不加霜**（"关" = 无磨砂）。
+     · 液态玻璃挡不受影响：那条 background: transparent !important 在更后面（同权重后胜），
+       仍然是既有的"清底"形态。
+     · 原生挡不匹配（:not([data-we-thinking-native])）⇒ 卡片保持宿主实色，正是该挡的定义。
+     · 宿主 hover 档（--deliverable-hover）在本挡会被 !important 压住、卡片悬停不变色 ——
+       刻意的取舍：底色正确优先（材质一致性 + 可读性），悬停反馈由边框/光标承担。
+     ⚠️ 本段不许出现反引号：整套样式文本是模板字符串（构建期拼接）。 */
+  body[data-we-glass-chat][data-we-glass-page]:not([data-we-thinking-glass]):not([data-we-thinking-native]) [data-presented-file] {
+    background-color: var(--we-chat-glass-fill) !important;
+    background-image: none !important;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
   /* ⚠️ 正文原生挡（data-we-thinking-native，见文件下方「正文原生挡」块）：只有**气泡**
      这一条带 :not() —— 原生挡下气泡退出霜釉（正文原生 = 无玻璃装饰）；**输入卡与工具
@@ -301,7 +321,7 @@
     -webkit-backdrop-filter: none !important;
     backdrop-filter: none !important;
   }
-  /* September 24 inline capsules: ten-percent white mist and independent 8px frost.
+  /* Inline capsules: ten-percent white mist and independent 8px frost.
      Host padding/radius and text colour stay intact; fences are excluded. */
   body[data-we-glass-page][data-we-thinking-glass] [data-chat-flow] :not(pre) > code,
   body[data-we-glass-page][data-we-thinking-glass] [data-vcp-rawhtml] :not(pre) > code {

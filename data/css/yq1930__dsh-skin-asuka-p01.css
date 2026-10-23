@@ -1,35 +1,11 @@
 /* yq1930/dsh-skin-asuka-p01 — lib/client.js
-   fetched 2026-10-15 from https://raw.githubusercontent.com/yq1930/dsh-skin-asuka-p01/master/lib/client.js
+   fetched 2026-10-23 from https://raw.githubusercontent.com/yq1930/dsh-skin-asuka-p01/master/lib/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
-/* Scoped reading tokens follow the host font setting; task-state colors stay native. */
+/* Scoped reading tokens follow the host font setting; task-state colors stay native.
+   Palette colors and the host token aliases are generated from palette.ts. */
 body[data-dsh-asuka-p01] {
-  --asuka-chrome: #23171c;
-  --asuka-chrome-raised: #3c202a;
-  --asuka-chrome-text: #fff1de;
-  --asuka-chrome-muted: #d7bbaa;
-  --asuka-copper: #bd9060;
-  --asuka-ruby: #a83337;
   --asuka-reading-background-factor: 0.4;
   --asuka-reading-inline: 32px;
-  --asuka-base: #f1ebe5;
-  --asuka-panel: #fffbf6;
-  --asuka-raised: #f1e4d9;
-  --asuka-overlay: #fffdf9;
-  --asuka-code: #f3ede4;
-  --asuka-text: #30272a;
-  --asuka-secondary: #6b5e58;
-  --asuka-muted: #6f6063;
-  --asuka-diff-add: #21633e;
-  --asuka-diff-delete: #a33339;
-  --asuka-primary: #a83337;
-  --asuka-primary-hover: #8b292d;
-  --asuka-on-primary: #ffffff;
-  --asuka-link: #88413e;
-  --asuka-border: #d8c1a6;
-  --asuka-control: #9d7e70;
-  --asuka-selected: #f3dad1;
-  --asuka-error: #b33535;
-  --asuka-notice: #895900;
   --asuka-body-size: var(--dsh-content-font-size, 16px);
   --asuka-process-size: calc(var(--dsh-content-font-size-secondary, 13px) + 1px);
   --asuka-code-size: calc(14px + var(--dsh-content-font-delta, 0px));
@@ -40,70 +16,22 @@ body[data-dsh-asuka-p01] {
      timestamps never sit flush against an edge. Matches the process activity row. */
   --asuka-plate-block: 6px;
   --asuka-plate-inline: 12px;
-
-  --dsw-alias-bg-base: var(--asuka-base);
-  --dsw-alias-bg-layer-1: var(--asuka-panel);
-  --dsw-alias-bg-layer-2: var(--asuka-raised);
-  --dsw-alias-bg-layer-3: var(--asuka-overlay);
-  --dsw-alias-bg-overlay: var(--asuka-overlay);
-  --dsw-alias-bg-module-platform: var(--asuka-panel);
-  --dsw-alias-border-l1: var(--asuka-border);
-  --dsw-alias-border-l2-darkmode-thin: var(--asuka-border);
-  --dsw-alias-border-l2: var(--asuka-control);
-  --dsw-alias-border-l3: var(--asuka-control);
-  --dsw-alias-border-l4: var(--asuka-control);
-  --dsw-alias-brand-primary: var(--asuka-primary);
-  --dsw-alias-brand-text: var(--asuka-text);
-  --dsw-alias-button-elevated-fill: var(--asuka-panel);
-  --dsw-alias-button-floating-fill: var(--asuka-overlay);
-  --dsw-alias-button-floating-hover: var(--asuka-raised);
-  --dsw-alias-button-info-fill: var(--asuka-primary);
-  --dsw-alias-button-info-hover: var(--asuka-primary-hover);
-  --dsw-alias-interactive-bg-active: var(--asuka-selected);
-  --dsw-alias-interactive-bg-hover: var(--asuka-raised);
-  --dsw-alias-interactive-bg-hover-solid: var(--asuka-raised);
-  --dsw-alias-label-primary: var(--asuka-text);
-  --dsw-alias-label-primary-bluish: var(--asuka-link);
-  --dsw-alias-label-secondary: var(--asuka-secondary);
-  --dsw-alias-label-tertiary: var(--asuka-muted);
-  --dsw-alias-label-caption: var(--asuka-muted);
-  --dsw-alias-label-primary-dimmed: var(--asuka-secondary);
-  --dsw-alias-label-dimmed: var(--asuka-muted);
-  --dsw-alias-label-primary-foreground: var(--asuka-on-primary);
-  --dsw-alias-label-primary-inverted: var(--asuka-panel);
-  --dsw-alias-state-business-primary: var(--asuka-link);
-  --dsw-alias-state-business-tertiary: var(--asuka-raised);
-  --dsw-alias-markdown-code-block: var(--asuka-code);
-  --dsw-alias-scrollbar-bg-l2: var(--asuka-control);
-  --dsw-alias-scrollbar-hover-l2: var(--asuka-secondary);
-  --dsw-specific-input-major: var(--asuka-panel);
-  --dsw-specific-menu: var(--asuka-overlay);
-  --dsw-specific-selector: var(--asuka-raised);
-  --dsw-specific-sidebar-fill: var(--asuka-base);
-  --dsw-specific-sidebar-nav-item-active-accent: var(--asuka-primary);
-
   color: var(--asuka-text);
   background-color: var(--asuka-base);
 }
 
-body[data-dsh-asuka-p01][data-ds-dark-theme] {
-  --asuka-base: #171b29;
-  --asuka-panel: #26232e;
-  --asuka-raised: #342c33;
-  --asuka-overlay: #42323b;
-  --asuka-code: #1e202c;
-  --asuka-text: #f6eada;
-  --asuka-secondary: #e2cfc5;
-  --asuka-muted: #c9b6af;
-  --asuka-diff-add: #8bd5a5;
-  --asuka-diff-delete: #ffada8;
-  --asuka-link: #ffc4a4;
-  --asuka-border: #68524e;
-  --asuka-control: #aa8474;
-  --asuka-selected: #4b2c33;
-  --asuka-error: #ffada8;
-  --asuka-notice: #f1c57a;
+/* The client marks the conversation column's width class; reading insets follow it. */
+body[data-dsh-asuka-p01] [data-asuka-density='compact'] {
+  --asuka-reading-inline: 24px;
 }
+
+body[data-dsh-asuka-p01] [data-asuka-density='narrow'] {
+  --asuka-reading-inline: 16px;
+}
+
+
+/* Character stage. The client inserts .asuka-stage first in the conversation column
+   and sizes each figure into a rectangle the reading column leaves unused. */
 
 /* No isolation, transform or z-index on the host column/root: fixed dialogs retain their host tier. */
 body[data-dsh-asuka-p01] :is([data-pane='conversation'], [class*='centerCol']) {
@@ -116,19 +44,6 @@ body[data-dsh-asuka-p01] :is([data-pane='conversation'], [class*='centerCol'])
   background-color: transparent;
 }
 
-/* 0.1.7 owns width tokens on the conversation body, below the phase root. */
-body[data-dsh-asuka-p01] :is([data-pane='conversation'], [class*='centerCol'])
-  [data-phase]:not(.asuka-stage) > [class*='_body'] {
-  --dsh-chat-content-width: var(--dsh-chat-user-width, clamp(620px, calc(var(--dsh-conversation-column-width, 0px) * 0.66), 920px));
-  --dsh-composer-card-max-width: var(--dsh-chat-content-width);
-}
-
-body[data-dsh-asuka-p01] :is([data-pane='conversation'], [class*='centerCol'])
-  [data-phase='hero']:not(.asuka-stage) > [class*='_body'] {
-  --dsh-composer-card-max-width: min(var(--dsh-chat-content-width), 800px);
-}
-
-/* The client inserts this first and calculates an unused rectangle for its character. */
 body[data-dsh-asuka-p01] .asuka-stage {
   position: absolute;
   inset: 0;
@@ -255,22 +170,42 @@ body[data-dsh-asuka-p01][data-asuka-mode='focus'] .asuka-stage {
   display: none;
 }
 
-/* Keep native scroll, width-dragging and input behavior. */
-body[data-dsh-asuka-p01] :is([data-composer-card], [data-composer-input]) {
-  background-color: var(--asuka-panel);
+@media (max-width: 1100px) {
+  /* Extra safeguard while the client recalculates a narrow conversation's free rectangle. */
+  body[data-dsh-asuka-p01] .asuka-stage[data-phase='active'] :is(.asuka-stage__character, .asuka-stage__companion),
+  body[data-dsh-asuka-p01] .asuka-stage__mark {
+    display: none;
+  }
 }
 
-body[data-dsh-asuka-p01] [data-composer-card] {
-  font-size: var(--asuka-body-size);
-  line-height: 1.75;
+@media (prefers-reduced-motion: reduce) {
+  body[data-dsh-asuka-p01] .asuka-stage,
+  body[data-dsh-asuka-p01] .asuka-stage * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto;
+  }
 }
 
-body[data-dsh-asuka-p01] [data-asuka-density='compact'] {
-  --asuka-reading-inline: 24px;
+@media (forced-colors: active) {
+  body[data-dsh-asuka-p01] .asuka-stage {
+    display: none;
+  }
 }
 
-body[data-dsh-asuka-p01] [data-asuka-density='narrow'] {
-  --asuka-reading-inline: 16px;
+
+/* Conversation reading surfaces. Native scroll, width-dragging and disclosure ownership stay with the host. */
+
+/* 0.1.7 owns width tokens on the conversation body, below the phase root. */
+body[data-dsh-asuka-p01] :is([data-pane='conversation'], [class*='centerCol'])
+  [data-phase]:not(.asuka-stage) > [class*='_body'] {
+  --dsh-chat-content-width: var(--dsh-chat-user-width, clamp(620px, calc(var(--dsh-conversation-column-width, 0px) * 0.66), 920px));
+  --dsh-composer-card-max-width: var(--dsh-chat-content-width);
+}
+
+body[data-dsh-asuka-p01] :is([data-pane='conversation'], [class*='centerCol'])
+  [data-phase='hero']:not(.asuka-stage) > [class*='_body'] {
+  --dsh-composer-card-max-width: min(var(--dsh-chat-content-width), 800px);
 }
 
 /* The native message flow stays intact; each rendered reply owns its surface. */
@@ -454,21 +389,6 @@ body[data-dsh-asuka-p01] [data-conversation-scroll] :has(> [data-chat-flow]):not
   padding-block: 24px;
 }
 
-/* Native session header seats: never target unrelated headers or dialog content. */
-body[data-dsh-asuka-p01] header:has(> [data-conversation-header-leading]) {
-  background-color: var(--asuka-panel);
-}
-
-body[data-dsh-asuka-p01] :is([data-phase='active'], [data-phase='settling']) [data-composer-seat] {
-  background: linear-gradient(180deg, color-mix(in srgb, var(--asuka-base) 80%, var(--asuka-panel)), var(--asuka-base) 36px);
-}
-
-/* Reserve the crest's strip next to its card, after any native queue, goal,
-   task or notice content. Seat-level padding would leave those rows exposed. */
-body[data-dsh-asuka-p01] :is([data-phase='active'], [data-phase='settling']) [data-composer-card] {
-  margin-top: 36px;
-}
-
 /* Wide tables normally break out into the full conversation width. Keep their
    native horizontal scroller, but contain it inside the reading panel. */
 body[data-dsh-asuka-p01] [data-chat-flow] .md-table-wide {
@@ -501,14 +421,149 @@ body[data-dsh-asuka-p01] [data-chat-flow] pre {
   /* Whitespace belongs to the native 0.1.7 code-wrap toggle. */
 }
 
-/* Keep the native centered flex row and its height; the paint-only surround avoids moving the composer. */
-body[data-dsh-asuka-p01] [data-phase='hero'] [class*='headline']:has(> [class*='fish']) {
+body[data-dsh-asuka-p01] :is([data-chat-flow], .asuka-settings) a[href] {
+  color: var(--asuka-link);
+  text-decoration-color: currentColor;
+}
+
+
+/* Composer card: an ornamented frame around the native input. Keep native scroll,
+   width-dragging and input behavior. */
+body[data-dsh-asuka-p01] :is([data-composer-card], [data-composer-input]) {
+  background-color: var(--asuka-panel);
+}
+
+/* The crest sits above the text field in a reserved strip. ::after remains the
+   host's no-workspace affordance; no icon, hit target or text is repainted. */
+body[data-dsh-asuka-p01] [data-composer-card] {
+  --asuka-crest-width: 180px;
+  --asuka-crest-height: 56px;
+  --asuka-crest-top: -52px;
+  border-radius: 20px;
+  border-color: var(--asuka-copper);
+  padding-top: 26px;
+  background-image: var(--asuka-trim-art, none);
+  background-position: left 10px top 5px;
+  background-size: 72px 20px;
+  background-repeat: repeat-x;
+  box-shadow: 0 0 0 1px var(--asuka-copper), inset 0 0 0 3px var(--asuka-panel), inset 0 0 0 4px color-mix(in srgb, var(--asuka-copper) 60%, transparent), 0 6px 18px #23171c1a;
+  font-size: var(--asuka-body-size);
+  line-height: 1.75;
+}
+
+body[data-dsh-asuka-p01] :is([data-phase='active'], [data-phase='settling']) [data-composer-seat] {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--asuka-base) 80%, var(--asuka-panel)), var(--asuka-base) 36px);
+}
+
+/* Reading phases use a smaller crest. Its strip is reserved next to the card, after
+   any native queue, goal, task or notice content: seat-level padding would leave
+   those rows exposed. */
+body[data-dsh-asuka-p01] :is([data-phase='active'], [data-phase='settling']) [data-composer-card] {
+  --asuka-crest-width: 136px;
+  --asuka-crest-height: 40px;
+  --asuka-crest-top: -36px;
+  margin-top: 36px;
+  padding-top: 20px;
+  background-size: 72px 14px;
+}
+
+body[data-dsh-asuka-p01] [data-composer-card]::before {
+  content: '';
+  position: absolute;
+  top: var(--asuka-crest-top);
+  left: calc(50% - var(--asuka-crest-width) / 2);
+  box-sizing: border-box;
+  width: var(--asuka-crest-width);
+  height: var(--asuka-crest-height);
+  background: var(--asuka-ribbon-art, var(--asuka-flourish-art, none)) center / contain no-repeat;
+  pointer-events: none;
+}
+
+body[data-dsh-asuka-p01] [data-phase='hero']:not(.asuka-stage) [data-composer-card] {
+  min-height: 160px;
+  justify-content: space-between;
+  margin-top: 46px;
+}
+
+body[data-dsh-asuka-p01] [data-composer-card]:focus-within {
+  outline: 2px solid color-mix(in srgb, var(--asuka-ruby) 70%, var(--asuka-copper));
+  outline-offset: 3px;
+}
+
+@media (max-width: 1100px) {
+  body[data-dsh-asuka-p01] [data-phase='hero']:not(.asuka-stage) [data-composer-card] {
+    --asuka-crest-width: 148px;
+    --asuka-crest-height: 46px;
+    --asuka-crest-top: -43px;
+    margin-top: 38px;
+  }
+}
+
+@media (forced-colors: active) {
+  body[data-dsh-asuka-p01] [data-composer-card]::before {
+    display: none;
+  }
+
+  body[data-dsh-asuka-p01] [data-composer-card] {
+    background-image: none;
+    box-shadow: none;
+  }
+
+  body[data-dsh-asuka-p01] [data-phase]:not(.asuka-stage) [data-composer-card] {
+    margin-top: 0;
+    padding-top: 8px;
+  }
+}
+
+
+/* Welcome page. Typography sits between two complete figures; text keeps an opaque
+   plate under its strokes. */
+
+body[data-dsh-asuka-p01] [data-phase='hero']:not(.asuka-stage) [class*='headline'] {
+  position: relative;
+  padding: 16px 22px;
+  border-block: 1px solid color-mix(in srgb, var(--asuka-copper) 72%, transparent);
+  background-image: var(--asuka-plaque-art, none);
+  background-position: center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  text-shadow: 0 1px var(--asuka-panel);
+}
+
+/* The emblem headline stacks the medallion over the title instead of a small
+   app-like title chip. Keep the native centered row height. */
+body[data-dsh-asuka-p01] [data-phase='hero']:not(.asuka-stage) [class*='headline']:has(> [class*='fish']) {
+  flex-direction: column;
   width: fit-content;
   max-width: 100%;
   align-self: center;
+  gap: 12px;
+  padding: 0;
+  border: 0;
   border-radius: 8px;
-  background-color: var(--asuka-panel);
-  box-shadow: 0 0 0 6px var(--asuka-panel);
+  background: transparent;
+  box-shadow: none;
+}
+
+body[data-dsh-asuka-p01] [data-phase='hero']:not(.asuka-stage) [class*='titleGroup'] {
+  padding: 8px 20px;
+  border-block: 1px solid var(--asuka-copper);
+  background: var(--asuka-panel);
+  box-shadow: 28px 0 25px -25px var(--asuka-panel), -28px 0 25px -25px var(--asuka-panel);
+}
+
+body[data-dsh-asuka-p01] [data-phase='hero']:not(.asuka-stage) [class*='titleGroup'] > span:first-child {
+  font-family: 'Songti SC', 'STSong', 'Noto Serif CJK SC', Georgia, serif;
+  font-size: clamp(28px, 2vw, 32px);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.35;
+}
+
+body[data-dsh-asuka-p01] [data-phase='hero']:not(.asuka-stage) [class*='previewBadge'] {
+  color: var(--asuka-secondary);
+  background: var(--asuka-panel);
+  border-color: var(--asuka-border);
 }
 
 body[data-dsh-asuka-p01] [data-phase='hero']:not(.asuka-stage) [class*='heroWorkspaceRow'] {
@@ -520,10 +575,15 @@ body[data-dsh-asuka-p01] [data-phase='hero']:not(.asuka-stage) [class*='heroWork
   background: var(--asuka-panel);
 }
 
-body[data-dsh-asuka-p01] :is([data-chat-flow], .asuka-settings) a[href] {
-  color: var(--asuka-link);
-  text-decoration-color: currentColor;
+@media (forced-colors: active) {
+  body[data-dsh-asuka-p01] [data-phase='hero']:not(.asuka-stage) [class*='headline'] {
+    background-image: none;
+    box-shadow: none;
+  }
 }
+
+
+/* Brand marks registered into the sidebar logo and welcome hero slots (brand.tsx). */
 
 body[data-dsh-asuka-p01] .asuka-brand-image,
 body[data-dsh-asuka-p01] .asuka-brand-number {
@@ -549,7 +609,39 @@ body[data-dsh-asuka-p01] .asuka-brand-number {
   font: 700 14px/1 ui-monospace, 'SF Mono', Menlo, monospace;
 }
 
-/* This layout belongs only to the theme's settings section. */
+body[data-dsh-asuka-p01] .asuka-hero-emblem {
+  display: grid;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+  color: #ffe9b5;
+  background: var(--asuka-medallion-art) center / contain no-repeat;
+  font: 600 22px/1 Georgia, serif;
+  letter-spacing: 0.06em;
+  text-shadow: 0 1px 2px #361018;
+}
+
+body[data-dsh-asuka-p01] .asuka-hero-emblem > span {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 55px;
+  border: 1px solid #dfbd7b;
+  border-radius: 50%;
+  background: linear-gradient(150deg, #8e2f43, #35101d);
+}
+
+@media (forced-colors: active) {
+  body[data-dsh-asuka-p01] .asuka-hero-emblem {
+    background: Canvas;
+    color: CanvasText;
+    border: 1px solid CanvasText;
+    text-shadow: none;
+  }
+}
+
+
+/* This layout belongs only to the theme's settings section (settings/). */
 body[data-dsh-asuka-p01] .asuka-settings {
   box-sizing: border-box;
   width: 100%;
@@ -595,31 +687,33 @@ body[data-dsh-asuka-p01] .asuka-settings__header p {
   line-height: 1.7;
 }
 
+/* Draft preview: scene, both figures and a reading card, scaled into one frame. */
 body[data-dsh-asuka-p01] .asuka-settings__preview {
+  position: relative;
   display: block;
   box-sizing: border-box;
   align-self: start;
   width: 100%;
   min-width: 0;
   aspect-ratio: 16 / 10;
-  object-fit: cover;
   border: 1px solid var(--asuka-border);
   border-radius: 10px;
   background-color: var(--asuka-raised);
   overflow: hidden;
 }
 
+/* Each figure supplies its own width, height and side inline. */
 body[data-dsh-asuka-p01] .asuka-settings__preview > img {
+  position: absolute;
+  bottom: 4%;
   display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 body[data-dsh-asuka-p01] .asuka-settings__preview-scene {
   position: absolute;
   inset: 0;
-  background: var(--asuka-preview-day) center / cover no-repeat;
+  background: var(--asuka-scene-day) center / cover no-repeat;
   pointer-events: none;
   opacity: var(--asuka-scene-opacity);
 }
@@ -627,6 +721,16 @@ body[data-dsh-asuka-p01] .asuka-settings__preview-scene {
 body[data-dsh-asuka-p01] .asuka-settings__preview[data-preview-phase='active'] .asuka-settings__preview-scene {
   opacity: calc(var(--asuka-scene-opacity) * var(--asuka-reading-background-factor));
   mask-image: linear-gradient(90deg, #000, #0005 36% 64%, #000);
+}
+
+body[data-dsh-asuka-p01][data-ds-dark-theme] .asuka-settings__preview-scene {
+  background-image: var(--asuka-scene-night);
+}
+
+body[data-dsh-asuka-p01] .asuka-settings__preview-badge {
+  display: grid;
+  place-items: center;
+  height: 100%;
 }
 
 body[data-dsh-asuka-p01] .asuka-settings__preview-tabs {
@@ -664,11 +768,6 @@ body[data-dsh-asuka-p01] .asuka-settings__preview-reading {
   font-size: 11px;
 }
 
-body[data-dsh-asuka-p01] .asuka-settings__preview[data-preview-side='right'] .asuka-settings__preview-reading {
-  right: 26%;
-  left: 26%;
-}
-
 body[data-dsh-asuka-p01] .asuka-settings__preview[data-preview-mode='focus'] .asuka-settings__preview-reading {
   right: 10%;
   left: 10%;
@@ -681,10 +780,6 @@ body[data-dsh-asuka-p01] .asuka-settings__preview-reading::after {
   margin-top: 16px;
   background: var(--asuka-border);
   box-shadow: 0 10px var(--asuka-border), 0 20px var(--asuka-border);
-}
-
-body[data-dsh-asuka-p01][data-ds-dark-theme] .asuka-settings__preview-scene {
-  background-image: var(--asuka-preview-night);
 }
 
 body[data-dsh-asuka-p01] .asuka-settings__controls {
@@ -826,17 +921,9 @@ body[data-dsh-asuka-p01] :is(.asuka-settings__notice, .asuka-settings__status)[d
     padding: 20px;
     gap: 20px;
   }
-
-  /* Extra safeguard while the client recalculates a narrow conversation's free rectangle. */
-  body[data-dsh-asuka-p01] .asuka-stage[data-phase='active'] :is(.asuka-stage__character, .asuka-stage__companion),
-  body[data-dsh-asuka-p01] .asuka-stage__mark {
-    display: none;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  body[data-dsh-asuka-p01] .asuka-stage,
-  body[data-dsh-asuka-p01] .asuka-stage *,
   body[data-dsh-asuka-p01] .asuka-settings,
   body[data-dsh-asuka-p01] .asuka-settings * {
     animation: none !important;
@@ -846,33 +933,6 @@ body[data-dsh-asuka-p01] :is(.asuka-settings__notice, .asuka-settings__status)[d
 }
 
 @media (forced-colors: active) {
-  body[data-dsh-asuka-p01],
-  body[data-dsh-asuka-p01][data-ds-dark-theme] {
-    --asuka-base: Canvas;
-    --asuka-panel: Canvas;
-    --asuka-raised: Canvas;
-    --asuka-overlay: Canvas;
-    --asuka-code: Canvas;
-    --asuka-text: CanvasText;
-    --asuka-secondary: CanvasText;
-    --asuka-muted: GrayText;
-    --asuka-primary: Highlight;
-    --asuka-primary-hover: Highlight;
-    --asuka-on-primary: HighlightText;
-    --asuka-link: LinkText;
-    --asuka-border: ButtonBorder;
-    --asuka-control: ButtonBorder;
-    --asuka-selected: Canvas;
-    --asuka-error: CanvasText;
-    --asuka-notice: CanvasText;
-    --asuka-diff-add: CanvasText;
-    --asuka-diff-delete: CanvasText;
-  }
-
-  body[data-dsh-asuka-p01] .asuka-stage {
-    display: none;
-  }
-
   body[data-dsh-asuka-p01] .asuka-settings :is(button, input, select):is(:disabled, .disabled, [aria-disabled='true']) {
     color: GrayText;
     border-color: GrayText;
@@ -880,76 +940,10 @@ body[data-dsh-asuka-p01] :is(.asuka-settings__notice, .asuka-settings__status)[d
   }
 }
 
-body[data-dsh-asuka-p01] :is(.asuka-stage, .asuka-stage__character, .asuka-settings, .asuka-settings__notice, .asuka-settings__status)[hidden] {
-  display: none;
-}
 
-/* Welcome typography sits between two complete figures rather than inside a
-   small app-like title chip. Text retains an opaque plate under its strokes. */
-body[data-dsh-asuka-p01][data-asuka-mode] [data-phase='hero']:not(.asuka-stage)
-  [class*='headline']:has(> [class*='fish']) {
-  position: relative;
-  flex-direction: column;
-  padding: 0;
-  gap: 12px;
-  border: 0;
-  background: transparent;
-  box-shadow: none;
-}
-
-body[data-dsh-asuka-p01] .asuka-hero-emblem {
-  display: grid;
-  place-items: center;
-  width: 76px;
-  height: 76px;
-  color: #ffe9b5;
-  background: var(--asuka-medallion-art) center / contain no-repeat;
-  font: 600 22px/1 Georgia, serif;
-  letter-spacing: 0.06em;
-  text-shadow: 0 1px 2px #361018;
-}
-
-body[data-dsh-asuka-p01] .asuka-hero-emblem > span {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 55px;
-  border: 1px solid #dfbd7b;
-  border-radius: 50%;
-  background: linear-gradient(150deg, #8e2f43, #35101d);
-}
-
-body[data-dsh-asuka-p01][data-asuka-mode] [data-phase='hero']:not(.asuka-stage) [class*='titleGroup'] {
-  padding: 8px 20px;
-  border-block: 1px solid var(--asuka-copper);
-  background: var(--asuka-panel);
-  box-shadow: 28px 0 25px -25px var(--asuka-panel), -28px 0 25px -25px var(--asuka-panel);
-}
-
-body[data-dsh-asuka-p01][data-asuka-mode] [data-phase='hero']:not(.asuka-stage) [data-composer-card] {
-  min-height: 160px;
-  justify-content: space-between;
-}
-
-@media (forced-colors: active) {
-  body[data-dsh-asuka-p01] .asuka-hero-emblem {
-    background: Canvas;
-    color: CanvasText;
-    border: 1px solid CanvasText;
-    text-shadow: none;
-  }
-}
-
-
-/* P01 salon: wine velvet, engraved champagne gold and ruby ribbon clasps.
-   Artwork decorates existing host surfaces; it never owns an overlay tier. */
-body[data-dsh-asuka-p01] {
-  --asuka-gold-light: #f4daa4;
-  --asuka-gold-shadow: #9a6b3c;
-  --asuka-velvet-glow: #592433;
-  --asuka-ivory-button: #fff5e4;
-  --asuka-ivory-button-ink: #512733;
-}
+/* P01 salon chrome for the sidebar and the session header: wine velvet, engraved
+   champagne gold and ruby ribbon clasps. Artwork decorates existing host surfaces;
+   it never owns an overlay tier. */
 body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol']),
 body[data-dsh-asuka-p01] header:has(> [data-conversation-header-leading]) {
   --dsw-specific-sidebar-fill: var(--asuka-chrome);
@@ -1008,6 +1002,7 @@ body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol']) {
   box-shadow: inset -1px 0 var(--asuka-copper), inset -4px 0 var(--asuka-chrome-raised);
 }
 
+/* Sidebar frame: the column wrapping the logo row, navigation and foot area. */
 body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol']) div:has(> [class*='logoRow']) {
   position: relative;
   background-color: var(--asuka-chrome);
@@ -1233,85 +1228,6 @@ body[data-dsh-asuka-p01] header:has(> [data-conversation-header-leading]) [role=
   background-color: var(--asuka-copper);
 }
 
-/* The crest sits above the text field in a reserved strip. ::after remains the
-   host's no-workspace affordance; no icon, hit target or text is repainted. */
-body[data-dsh-asuka-p01] [data-composer-card] {
-  --asuka-crest-width: 180px;
-  --asuka-crest-height: 56px;
-  --asuka-crest-top: -52px;
-  border-radius: 20px;
-  border-color: var(--asuka-copper);
-  padding-top: 26px;
-  background-image: var(--asuka-trim-art, none);
-  background-position: left 10px top 5px;
-  background-size: 72px 20px;
-  background-repeat: repeat-x;
-  box-shadow: 0 0 0 1px var(--asuka-copper), inset 0 0 0 3px var(--asuka-panel), inset 0 0 0 4px color-mix(in srgb, var(--asuka-copper) 60%, transparent), 0 6px 18px #23171c1a;
-}
-
-body[data-dsh-asuka-p01] :is([data-phase='active'], [data-phase='settling']) [data-composer-card] {
-  --asuka-crest-width: 136px;
-  --asuka-crest-height: 40px;
-  --asuka-crest-top: -36px;
-  padding-top: 20px;
-  background-size: 72px 14px;
-}
-
-body[data-dsh-asuka-p01] [data-composer-card]::before {
-  content: '';
-  position: absolute;
-  top: var(--asuka-crest-top);
-  left: calc(50% - var(--asuka-crest-width) / 2);
-  box-sizing: border-box;
-  width: var(--asuka-crest-width);
-  height: var(--asuka-crest-height);
-  background: var(--asuka-ribbon-art, var(--asuka-flourish-art, none)) center / contain no-repeat;
-  pointer-events: none;
-}
-
-body[data-dsh-asuka-p01] [data-phase='hero']:not(.asuka-stage) [data-composer-card] {
-  margin-top: 46px;
-}
-
-body[data-dsh-asuka-p01] [data-composer-card]:focus-within {
-  outline: 2px solid color-mix(in srgb, var(--asuka-ruby) 70%, var(--asuka-copper));
-  outline-offset: 3px;
-}
-
-body[data-dsh-asuka-p01] [data-phase='hero']:not(.asuka-stage) [class*='headline'] {
-  position: relative;
-  padding: 16px 22px;
-  border-block: 1px solid color-mix(in srgb, var(--asuka-copper) 72%, transparent);
-  background-image: var(--asuka-plaque-art, none);
-  background-position: center;
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  text-shadow: 0 1px var(--asuka-panel);
-}
-
-body[data-dsh-asuka-p01] [data-phase='hero']:not(.asuka-stage) [class*='titleGroup'] > span:first-child {
-  font-family: 'Songti SC', 'STSong', 'Noto Serif CJK SC', Georgia, serif;
-  font-size: clamp(28px, 2vw, 32px);
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  line-height: 1.35;
-}
-
-body[data-dsh-asuka-p01] [data-phase='hero']:not(.asuka-stage) [class*='previewBadge'] {
-  color: var(--asuka-secondary);
-  background: var(--asuka-panel);
-  border-color: var(--asuka-border);
-}
-
-@media (max-width: 1100px) {
-  body[data-dsh-asuka-p01] [data-phase='hero']:not(.asuka-stage) [data-composer-card] {
-    --asuka-crest-width: 148px;
-    --asuka-crest-height: 46px;
-    --asuka-crest-top: -43px;
-    margin-top: 38px;
-  }
-}
-
 /* A short window gives the navigation space back to its content. */
 @media (max-height: 700px) {
   body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol']) div:has(> [class*='logoRow'])::after {
@@ -1319,34 +1235,19 @@ body[data-dsh-asuka-p01] [data-phase='hero']:not(.asuka-stage) [class*='previewB
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  body[data-dsh-asuka-p01] [data-composer-card]::before {
-    animation: none;
-    transition: none;
-  }
-}
-
 @media (forced-colors: active) {
   body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol']) div:has(> [class*='logoRow'])::before,
   body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol']) div:has(> [class*='logoRow'])::after,
-  body[data-dsh-asuka-p01] [data-composer-card]::before,
   body[data-dsh-asuka-p01] [data-slot='sidebar.workspaces'] [class*='projectRow']::before {
     display: none;
   }
 
-  body[data-dsh-asuka-p01] [data-composer-card],
   body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol']),
   body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol']) :is(div:has(> [class*='logoRow']), [class*='logoRow'], button[class*='newSession']),
   body[data-dsh-asuka-p01] :is([data-pane='sidebar'], [class*='sidebarCol']) div:not([class*='collapsed']):has(> [class*='logoRow']) > [class*='footArea'],
   body[data-dsh-asuka-p01] [data-slot='sidebar.settings'] button,
-  body[data-dsh-asuka-p01] [data-phase='hero']:not(.asuka-stage) [class*='headline'],
   body[data-dsh-asuka-p01] header:has(> [data-conversation-header-leading]) {
     background-image: none;
     box-shadow: none;
-  }
-
-  body[data-dsh-asuka-p01] [data-phase]:not(.asuka-stage) [data-composer-card] {
-    margin-top: 0;
-    padding-top: 8px;
   }
 }

@@ -1,5 +1,5 @@
 /* NoNameLeGo/dsh-catppuccin-theme — src/client/glass/glass.module.css
-   fetched 2026-10-15 from https://raw.githubusercontent.com/NoNameLeGo/dsh-catppuccin-theme/main/src/client/glass/glass.module.css
+   fetched 2026-10-23 from https://raw.githubusercontent.com/NoNameLeGo/dsh-catppuccin-theme/main/src/client/glass/glass.module.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* ============================================================================
  * Catppuccin glass layer — a toggleable glassmorphism skin for the DeepSeek
@@ -52,9 +52,8 @@
      busy backdrop (the bare border-l2 token was too faint to carve the
      glass out of the page ground). `rim-strong` is the one step up,
      reserved for the MAIN INPUT SURFACE (the composer card — hero and
-     session views share the same rule): it sits flat on the SOLID page
-     ground with a
-     fill all but identical to it, so 18% measures as an invisible boundary
+     session views share the same rule): it sits flat on the page ground
+     with a fill all but identical to it, so 18% measures as an invisible boundary
      there (rim ≈ rgb(210,212,220) on the rgb(239,241,245) Latte ground,
      ΔRGB ≤ 31 at 1x — issue #22 follow-up, 2026-10-11 CDP evidence).
      30% measures ΔRGB ≈ 52 and still stays below the label text colour. */
@@ -77,6 +76,35 @@
   --dsh-glass-input-shadow:
     0 1px 2px color-mix(in srgb, var(--dsw-alias-bg-mask-2) 65%, transparent),
     0 8px 24px color-mix(in srgb, var(--dsw-alias-bg-mask-2) 80%, transparent);
+  /* Ground ambience (issue #25). The card fill above is layer-1 @ α over
+     bg-base — ΔRGB ≤ 2/255 on the dark flavours at the default frost and
+     EXACTLY 0 on Latte (layer-1 === bg-base there), so over the former
+     FLAT ground every pane read as "the same colour as the page". The
+     ground now carries a same-family wash plus two low-alpha glows, built
+     only from mapped tokens (all four flavours follow automatically) and
+     TRANSMITTED by the translucent fills. `--dsh-glass-ground` is the
+     brightness-mixed base — the one stop the knob moves;
+     `--dsh-glass-ambience` = 1 − |brightness − 50| / 50, purely in CSS:
+     exactly one of the two brightness fractions is non-zero (the layer
+     writes them, see glass-layer.ts), so at the extremes the ambience
+     fades out and the ground collapses back to the pure-white /
+     pure-black promise of 0.2.5. */
+  --dsh-glass-ground: color-mix(in srgb,
+    color-mix(in srgb, var(--dsw-alias-bg-base), #ffffff calc(var(--dsh-glass-brightness-white, 0) * 100%)),
+    #000000 calc(var(--dsh-glass-brightness-black, 0) * 100%));
+  --dsh-glass-ambience: calc(1 - var(--dsh-glass-brightness-white, 0) - var(--dsh-glass-brightness-black, 0));
+  /* The wash's light end (issue #25). Light scheme: the layer ladder
+     collapses to bg-base (layer-1 === base), so the end must be WHITE;
+     the dark flavours ride bg-layer-1 instead (see the dark block). Tint
+     and weight stay CONSTANT custom properties; the ambience-weighted mix
+     lives in the background rule itself — a wash going through an
+     intermediate custom property did NOT follow `--dsh-glass-ambience`
+     when the brightness knob moved (probed on the live GUI 2026-10-15,
+     .debug/issue-25/probe-amb.js: the property kept its folded 68% while
+     the glows — used directly in `background` — collapsed correctly).
+     Keep the mix in the background rule. */
+  --dsh-glass-wash-tint: #ffffff;
+  --dsh-glass-wash-mix: 22%;
 }
 
 [data-dsh-glass] body[data-ds-dark-theme] {
@@ -96,20 +124,75 @@
   --dsh-glass-input-shadow:
     0 1px 2px color-mix(in srgb, var(--dsw-alias-bg-mask-2) 65%, transparent),
     0 8px 24px color-mix(in srgb, var(--dsw-alias-bg-mask-2) 80%, transparent);
+  /* Ground wash, dark side (issue #25): bg-layer-1 is the tint (mantle
+     above the crust-toned bg-base on Mocha). The light block mixes white
+     instead — its layer ladder collapses to bg-base, this one does not.
+     The ambience-weighted mix itself lives in the background rule (see
+     the light block's note — do not move it back into a custom
+     property). */
+  --dsh-glass-wash-tint: var(--dsw-alias-bg-layer-1);
+  --dsh-glass-wash-mix: 68%;
 }
 
-/* Canvas: a SOLID ground — the theme's own base colour (方案 A: Latte
-   #eff1f5 / Frappé #303446 / Macchiato #24273a / Mocha #1e1e2e), so the
-   background always matches the active flavour with zero hardcoding and
-   text keeps the theme's native contrast. The brightness knob mixes
-   white (light scheme) or black (dark scheme) straight into this colour,
-   so the slider still works on the solid ground. The frame and the
-   conversation / details columns go transparent so the ground shows
-   through behind the glass. */
-[data-dsh-glass] body {
-  background: color-mix(in srgb,
-    color-mix(in srgb, var(--dsw-alias-bg-base), #ffffff calc(var(--dsh-glass-brightness-white, 0) * 100%)),
-    #000000 calc(var(--dsh-glass-brightness-black, 0) * 100%));
+/* Canvas: the AMBIENT ground.
+   Background:
+   (a) issue #25 (2026-10-15) replaced the flat colour — "same colour as the
+       page" everywhere, so the glass had nothing to TRANSMIT — with a
+       same-family WASH plus two low-alpha radial GLOWS.
+   (b) issue #26 (2026-10-16) removed the glows FROM THE DEFAULT VIEW and made
+       them opt-in. The reporter (same person as #25) measured what the glows do
+       to a multi-pane layout: they are fixed to screen coordinates while the
+       panes sit elsewhere, so every translucent pane transmits a different
+       slice of them — "三块玻璃读出三种底色". Measured on the live page, one
+       sidebar card read ΔRGB (12,15,21) between its own top and bottom with the
+       glows on, and ≤(4,4,5) across the whole window with the wash alone. The
+       WASH stays unconditional: its horizontal variation is ≤2/255 (a 165deg
+       gradient), so it keeps the "top lighter / bottom deeper" depth without
+       localising anything; the glows come back through the 光斑 switch
+       (`--dsh-glass-glow`, written by `glass-layer.ts`, default 0).
+   Every colour still comes from the active flavour's mapped tokens, so the four
+   flavours (and any future palette) follow with zero hardcoding, and text keeps
+   the theme's native contrast. The brightness knob rides inside
+   `--dsh-glass-ground` (see the variable blocks); the frame and the
+   conversation / details columns stay transparent so the ground shows through
+   behind the glass. */
+/* Painted for TWO consumers from ONE declaration: the page, and the ground
+   sample strip in the glass settings row. The strip exists because the two
+   knobs that move the ground (背景亮度 / 地面光斑) have no visible target on the
+   settings page — its own fill is the bluish ladder under
+   `[data-dsh-glass-settings]`, so the ground only leaks around the panel's
+   edges and neither knob could be judged without closing the dialog.
+   Sharing the selector list instead of copying the recipe is deliberate: the
+   #25 trap below (ambience weights inline in `background`) would otherwise
+   have to be duplicated, and two copies drift. The strip is a descendant of
+   <body> and inherits every `--dsh-glass-*` variable this rule reads; the
+   gradients resolve against its own box, i.e. it is a live thumbnail, not a
+   drawing of one. Guard: `tests/glass-css.spec.ts` › settings ground sample. */
+[data-dsh-glass] body,
+[data-dsh-glass] [data-dsh-glass-ground-sample] {
+  background:
+    /* Glow 1 — the brand accent, top-left (the "light source"). Gated by the
+       glow switch: `--dsh-glass-glow` is 0 unless the user opts in, which makes
+       this layer fully transparent (a no-op paint). The ambience weighting and
+       the knob both stay INLINE here — the #25 trap: a weight that travels
+       through an intermediate custom property does not recompute when the
+       brightness/glow variables change. */
+    radial-gradient(58% 46% at 18% 6%,
+      color-mix(in srgb, var(--dsw-alias-brand-primary-new-colorprimary-new-color)
+        calc(12% * var(--dsh-glass-ambience) * var(--dsh-glass-glow, 0)), transparent), transparent 68%),
+    /* Glow 2 — the success hue, top-right; gated the same way. */
+    radial-gradient(48% 42% at 86% 14%,
+      color-mix(in srgb, var(--dsw-alias-state-success-tertiary)
+        calc(10% * var(--dsh-glass-ambience) * var(--dsh-glass-glow, 0)), transparent), transparent 62%),
+    /* Wash — UNCONDITIONAL (the issue #26 answer): the same-family depth
+       gradient the translucent fills transmit. The ambience weighting must live
+       HERE, not in a custom property (see the wash-tint note in the light
+       variable block); it deliberately does NOT read `--dsh-glass-glow`. */
+    linear-gradient(165deg,
+      color-mix(in srgb, var(--dsh-glass-ground), var(--dsh-glass-wash-tint)
+        calc(var(--dsh-glass-wash-mix) * var(--dsh-glass-ambience))) 0%,
+      var(--dsh-glass-ground) 55%,
+      color-mix(in srgb, var(--dsh-glass-ground), #000000 calc(5% * var(--dsh-glass-ambience))) 100%);
 }
 
 [data-dsh-glass] [data-dsh-glass-frame] {
@@ -118,6 +201,35 @@
 
 [data-dsh-glass] [data-phase],
 [data-dsh-glass] [data-dsh-glass-details] {
+  background: transparent;
+}
+
+/* The layout's CENTER column is the last opaque painter in the chrome stack,
+   and it only exists on the DESKTOP shells. Upstream `AppFrame.module.css`
+   paints it with `--dsw-alias-bg-base` twice — `[data-windows-titlebar]
+   .…_centerCol` (plus the 16px content-corner radius under the title bar) and
+   `[data-platform=darwin] .…_centerCol` — while the web shell's center column
+   carries no background at all. So the web harness and the CI boot check never
+   see this pane, and the frame / sidebar column (its fill released above) /
+   conversation root are transparent: the page ground shows through everything
+   EXCEPT the transcript, which stayed a flat crust plate — i.e. it could not
+   transmit the #26 wash.
+   Measured on the real layout with the desktop marker simulated (Windows
+   shell, Mocha / mica / frost 20, 2026-10-16): at the top of the window the
+   sidebar area read rgb(19,20,31) and its card rgb(21,21,33), while the
+   transcript read exactly rgb(17,17,27) top to bottom — a hard left/right
+   step of up to (4,4,6) (the reporter's "还是有色差" screenshot), on a page
+   whose whole point is one continuous ground. After releasing this fill both
+   panes read the same ground: rgb(21,21,32) at the top, rgb(17,17,27) at
+   mid-height, rgb(16,16,26) at the bottom.
+   Scoped to the frame's own child (so no other package's `*centerCol` can
+   match; the doubled compound also outranks upstream's attribute+class
+   variants no matter which stylesheet lands last), and gated to float/mica:
+   compat keeps the official opaque sidebar, and an official sidebar beside a
+   ground-showing transcript would be the opposite mismatch. NO geometry
+   change — the corner radius stays exactly as upstream declares it; it simply
+   stops being visible once the pane is transparent. */
+[data-dsh-glass-float] [data-dsh-glass-frame] > [class*='centerCol'] {
   background: transparent;
 }
 
@@ -146,6 +258,83 @@
    entirely so the glass card reads as one piece over the backdrop. */
 [data-dsh-glass] [data-phase] [class*='composerSeat'][class*='composerSeat'] {
   background: none;
+}
+
+/* ---------- Composer dock backing (issue #28).
+   The rule above erases the seat's whole backing, including the stock gradient
+   that used to hide the transcript behind whatever sits at the bottom of the
+   seat (`linear-gradient(0 → var(--dsw-alias-bg-base) 36px)` on
+   `[data-phase=active] .composerSeat`, ui-conversation, 0.2.0-rc.2 and
+   0.2.1-rc.2 alike). That was harmless only while the card covered the seat;
+   the dock row (`InputBar`'s `.dock` — model pill, stats, context meter)
+   renders BELOW the card inside the same sticky/absolute seat at `z-index: 7`,
+   so the scrolling body read straight through it (the reporter's issue #28).
+   The fix paints the ground colour on the strip the dock occupies — NOT a slab
+   behind the card, which would kill the card's frost. Anchoring to the dock
+   (rather than to the seat's bottom edge) keeps the geometry honest: when the
+   dock is empty (`:empty` in the hero view) the band is a sliver over the bare
+   ground, i.e. invisible.
+   `[class*='dock']` is the direct child of the composer bar root in both
+   shells (`InputBar.module.css` `.dock`, hashed name; 0.2.1 adds the
+   `data-composer-dock` attribute, so both arms are listed).
+
+   ISSUE #29 — the strip is FROSTED, not opaque. The #28 pass painted the
+   ground at α1 and skipped the blur, which read as a solid block welded under
+   the composer card (the reporter's follow-up). Two constraints shape the
+   recipe:
+   - The fill must stay the GROUND colour (not `--dsh-glass-card`): this strip
+     is not a card, it bleeds to the seat's edges, so any fill that is lighter
+     than the page would draw a rectangle across the gutters — the exact seam
+     #28 decision 4 avoided. Ground-coloured at any alpha is invisible over
+     bare ground and only shows where content actually passes behind it.
+   - The alpha has a FLOOR (70%), because the shipped "clear" preset runs
+     `blur: 0`: below that the transcript reads through the dock labels again,
+     i.e. #28 comes back. It then climbs with the frost knob (+10% × frost),
+     the same direction every other pane takes.
+   The blur is legitimate here per issue #13's predicate (it covers moving
+   content — that is why the band exists at all); the earlier comment claiming
+   the opposite was wrong. `mask-image` fades the fill AND the blur output
+   (same mechanism as the page edge bands below), so the transcript melts into
+   the strip instead of being cut at its top edge; the ramp must reach past
+   the ~8px head that hides behind the card's bottom edge.
+   Blur rides the `::before` only — the dock element itself stays paint-free,
+   so it never becomes a backdrop root for a menu mounted inside it (#19).
+   ---------- */
+[data-dsh-glass] [data-phase] [data-dsh-glass-inputbar] > [class*='dock'],
+[data-dsh-glass] [data-phase] [data-dsh-glass-inputbar] > [data-composer-dock] {
+  position: relative;
+}
+
+[data-dsh-glass] [data-phase] [data-dsh-glass-inputbar] > [class*='dock']::before,
+[data-dsh-glass] [data-phase] [data-dsh-glass-inputbar] > [data-composer-dock]::before {
+  content: '';
+  position: absolute;
+  /* Full-bleed to the seat's edges — the bar root pads the row by the side
+     clearance — and 4px below, which covers the root's own bottom padding. */
+  left: calc(-1 * var(--dsh-composer-side-clearance, 16px));
+  right: calc(-1 * var(--dsh-composer-side-clearance, 16px));
+  bottom: -4px;
+  /* The dock's own box + the 4px pad below + an 8px head that rides up behind
+     the card's bottom edge, so the seam disappears under the card's shadow
+     instead of drawing a hard line across the gutters. */
+  height: calc(100% + 12px);
+  z-index: -1;
+  pointer-events: none;
+  /* Same end-stop as the page ground's own gradient tail (see the body rule)
+     — that is what keeps the strip from reading as a slightly-lighter
+     rectangle at the bottom — but carried at 70~84% alpha so the blur has
+     something to show through. The weighted mix stays INLINE in
+     `background` (issue #25's invalidation trap: an intermediate custom
+     property keeps its folded value while the brightness knob moves). */
+  background: color-mix(
+    in srgb,
+    color-mix(in srgb, var(--dsh-glass-ground), #000 calc(5% * var(--dsh-glass-ambience)))
+      calc(70% + 10% * var(--dsh-glass-frost, 1)),
+    transparent
+  );
+  backdrop-filter: blur(var(--dsh-glass-blur, 14px));
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, black 18px);
+  mask-image: linear-gradient(180deg, transparent 0, black 18px);
 }
 
 /* ---------- Page edge fades: 13px gradient blur bands pinned to the top
@@ -263,10 +452,20 @@
 
 /* New-session button: the same raised recipe as the "+" — always a touch
    more opaque than the surrounding cards so it reads as the primary action
-   on the glass sheet. */
+   on the glass sheet.
+   Rim step (2026-10-19, frame-language audit ② — docs/frame-language-
+   audit-2026-10-19.md): SOFT, i.e. one step BELOW the base rim. This seam is
+   stamped on the sidebar's new-session button (`glass-seams.ts`:
+   `button[class*="newSession"]`), a control that lives INSIDE the sidebar
+   card — and that card rides `--dsh-glass-rim-soft` since issue #26. At the
+   base step the button measured BRIGHTER than the frame around it
+   (peak rgb(61,63,78) vs rgb(51,52,67) on Mocha), an inverted hierarchy:
+   a container must never be dimmer than the control it holds. The raised
+   64% fill + the edge light already carry the "primary action" read; the rim
+   only has to separate the bead from the sheet. */
 [data-dsh-glass-float] [data-dsh-glass-surface] {
   background: var(--dsh-glass-card-raised);
-  border: 1px solid var(--dsh-glass-rim);
+  border: 1px solid var(--dsh-glass-rim-soft);
   box-shadow: var(--dsh-glass-edge);
   backdrop-filter: blur(var(--dsh-glass-blur, 14px));
 }
@@ -306,6 +505,190 @@
 /* Card family: hover cards, panels, plugin cards, tool cards, the composer. */
 [data-dsh-glass-float] [class*='card'] {
   border-radius: 14px;
+}
+
+/* ---------- Third-party transcript surface: dsh-better-display's reasoning
+   card (the 「思考」 panel; reported 2026-10-16 as "看着不适配").
+   The panel is NOT upstream DSH UI: it comes from the third-party
+   `dsh-better-display` bundle (`ReasoningCard`, its own public hooks
+   `data-reader-reasoning-card` / `-heading` / `-scroll` / `-text`). Its stock
+   material is the only OPAQUE slab in the whole transcript: it declares
+   `border: 1px solid var(--dsw-alias-border-l2)` (white 12% on the dark
+   flavours), `background: var(--dsw-alias-bg-module-platform)` (Mocha
+   #313244) and a 12px radius — against our 14px surfaces.
+   measured on the live page (0.2.0-rc.2, mica): rgb(49,50,68) opaque fill,
+   rgba(255,255,255,.12) hairline, no shadow, no blur — i.e. a plate glued
+   onto a skin whose every other transcript surface is translucent glass with
+   the themed rim, which is exactly what the reporter saw.
+   The seat below changes ALPHA / RIM / RADIUS only, never the hue: the fill is
+   mixed from the plugin's OWN token (rule 4 — the same ladder step it names),
+   so all four flavours follow automatically, and the frost knob keeps working
+   inside the panel. Both modes get the same recipe on purpose (the mode switch
+   is about LAYOUT, not about how much skin you get) and NEITHER adds a
+   `backdrop-filter`: the card is a block in the transcript flow, so its
+   backdrop is the low-frequency page ground — blurring it is an identity read
+   that still promotes every card to a compositing layer (issue #13's blur
+   budget; one card per reasoning step).
+   `:not([data-overflow='false'][data-expanded='false'])` is a REQUIRED guard,
+   not tidiness: the plugin itself degrades a short, collapsed reasoning into
+   inline text (its own sheet then drops the fill, the border and the radius)
+   and our seat would otherwise repaint it as a plate. React renders those
+   booleans as the strings "false", hence the quoted values.
+   Hook provenance: dsh-better-display 0.3.8 (`ReasoningCard.tsx` /
+   `lib/client.js`). If the plugin ever renames the hook this seat silently
+   stops matching — the panel then simply returns to its own stock material,
+   which is a soft failure; `tests/glass-css.spec.ts` locks the selector shape
+   so the drop is caught in CI rather than by eye. */
+[data-dsh-glass-float] [data-reader-reasoning-card]:not([data-overflow='false'][data-expanded='false']),
+[data-dsh-glass-compat] [data-reader-reasoning-card]:not([data-overflow='false'][data-expanded='false']) {
+  background: color-mix(in srgb, var(--dsw-alias-bg-module-platform) calc(52% * var(--dsh-glass-frost, 1)), transparent);
+  border-color: var(--dsh-glass-rim-soft);
+  border-radius: 14px;
+}
+
+/* ---------- Official artifacts: the deliverables rows (「已编辑 N 个文件」+
+   the presented-file cards; reported 2026-10-16 as "这个产物块是不是可以做成和
+   侧边栏一样的统一配色？").
+   These are NOT third-party: they come from the official
+   `@deepseek-ai/dsh-client-ui-deliverables` bundle (0.2.0-rc.2, the version
+   inside the desktop shell's app.asar). It paints the block as an OPAQUE
+   three-step stack — card root `background: var(--dsw-alias-bg-layer-1)`
+   (Mocha #181825), card header and presented-file cards
+   `background: var(--changes-fill)` / `var(--deliverable-fill)` =
+   `--dsw-static-neutral-850` (Mocha #1e1e2e, Latte #e6e9ef), the file rows
+   painting nothing so the root's darker plate shows through. The mica sidebar
+   is ONE 52% `--dsh-glass-card` sheet with the themed rim, so the artifacts read
+   as a separate plate — worst on Latte, where the header lands DARKER than the
+   near-white ground.
+   measured 2026-10-16 (reporter's 2x screenshot + the harness behind
+   .debug/ui-adapt/art-compare-<flavour>.png, real Chromium at 2x): stock header
+   #1e1e2e / #e6e9ef; after this seat the header, card body, rows and file cards
+   all read #141420 / #edeff3 — i.e. the same sheet as the sidebar
+   (#151520 / #eff0f4). Same token, no invented hue.
+   The fill is re-anchored through the plugin's OWN variables (its header and
+   hover states consume them, dark-scheme override included), so only alpha /
+   rim / radius move and the frost knob keeps driving the block. The card body
+   also takes `--dsh-glass-card` instead of the opaque layer-1, which is what
+   makes the header, the rows and the file cards read as ONE sheet rather than
+   two stacked tones.
+   NO backdrop-filter: these rows sit in the transcript flow over the
+   low-frequency page ground — the blur would be an identity read that still
+   promotes every one of them to a compositing layer (issue #13's blur budget;
+   one changed-files card plus one card per presented file).
+   Only float mode: the sidebar's glass exists only in mica mode, and compat
+   leaves the sidebar stock — thinning the artifacts there alone would read as
+   the opposite of the request. If compat should follow, move the sidebar with
+   it in the same change.
+   Hooks are upstream's own public data attributes (`data-changed-files` on the
+   card root, `data-presented-file` on each file card — written as literals in
+   the bundle's React tree). If upstream renames them this seat silently stops
+   matching and the block returns to stock material, which is a soft failure —
+   hence `tests/glass-css.spec.ts` locks the selector shape.
+   Two DOM shapes must hold: a single changed file renders NO list (the header
+   is then the direct first child), several files render `ul > li > button`.
+   The `ul` rule is load-bearing for shape B only; the header rule covers both.
+   ⚠️ The selectors anchor on `html`, not `body`: `GlassLayer.applySettings()`
+   writes the mode attributes with
+   `document.documentElement.toggleAttribute(GLASS_FLOAT_ATTRIBUTE, …)`, so a
+   `body[data-dsh-glass-float]` step NEVER matches — 0.6.3-beta.1 shipped this
+   seat with exactly that anchor and it was dead on the real app while the
+   acceptance fixture (which parked the attribute on <body>,
+   `.debug/ui-adapt/artifacts-page.mjs`) stayed green. Proven in real Chromium
+   with both placements: `.debug/ui-adapt/notice-lab.mjs`, variants 3 vs 4.
+   The `html` type selector keeps the weight the dark-scheme override needs: the
+   plugin's own `body[data-ds-dark-theme] .…_card` is (0,2,1), which
+   out-specifies a plain `[data-dsh-glass-float] [data-changed-files]` (0,2,0);
+   `html[data-dsh-glass-float] [data-changed-files]` is also (0,2,1) and wins on
+   source order (our <style> is appended after the app's own sheets). */
+html[data-dsh-glass-float] [data-changed-files],
+html[data-dsh-glass-float] [data-presented-file] {
+  --changes-fill: var(--dsh-glass-card);
+  --deliverable-fill: var(--dsh-glass-card);
+  border-color: var(--dsh-glass-rim-soft);
+  border-radius: 14px;
+}
+
+/* The changed-files card reaches the sidebar sheet through its ROOT rule, the
+   presented-file cards through their OWN `background: var(--deliverable-fill)`
+   declaration — and an element's own declaration is not overridden by
+   re-anchoring the variable it reads, so those need the fill written on the
+   element too (same (0,2,1) anchor discipline as above). */
+html[data-dsh-glass-float] [data-presented-file] {
+  background: var(--dsh-glass-card);
+}
+
+/* One sheet, not three: the card body reaches the sidebar's exact token, the
+   header stops painting its own opaque plate (its 60px geometry stays), and the
+   list's own stock divider becomes the themed hairline. */
+html[data-dsh-glass-float] [data-changed-files] {
+  background: var(--dsh-glass-card);
+}
+
+html[data-dsh-glass-float] [data-changed-files] > :first-child,
+html[data-dsh-glass-float] [data-changed-files] ul > li > :first-child,
+html[data-dsh-glass-float] [data-changed-files] ul {
+  background: transparent;
+}
+
+html[data-dsh-glass-float] [data-changed-files] ul {
+  border-top: 0.5px solid var(--dsh-glass-rim-soft);
+}
+
+/* The little tone tiles stay a step ABOVE the sheet (the raised share), the
+   same step the small controls use; the stock 5% white would read as holes
+   once the plate behind them is translucent. */
+html[data-dsh-glass-float] [data-changed-files] > :first-child > :first-child,
+html[data-dsh-glass-float] [data-presented-file] > :first-child {
+  background: var(--dsh-glass-card-raised);
+}
+
+/* ---------- Official transcript surface: the turn-trigger notice
+   (「继续执行目标」, `TurnTriggerNodeView` in `@deepseek-ai/dsh-client-ui-chat`
+   0.2.0-rc.2 — the bundle inside the desktop shell's app.asar; reported
+   2026-10-16 as 「没有被配色覆盖，也没有玻璃质感」).
+   The card is INSIDE the token system — the section carries upstream's own
+   `data-turn-trigger` hook — but the stock material is a colourless plate:
+   `background: var(--dsw-alias-turn-trigger-bg, …)`, and the official table
+   defines that alias as `--dsw-alias-interactive-bg-hover` on the DARK
+   flavours, i.e. a NEUTRAL white overlay: `rgba(255,255,255,.08)` at rest,
+   `.14` while hovered, over a `.5px` `border-l1` hairline (white 6%) at the
+   20px `--dsw-radius-xl`. Measured on the Mocha ground
+   (`--dsw-alias-bg-base` = #11111b): #24242d at rest, #32323b hovered — the
+   reporter's screenshot reads exactly #32323b / rgb(52,52,62), so it was taken
+   while the card was hovered (they had just expanded it). This is not a missing
+   token: the notice is the only transcript block this skin never seated.
+   The seat changes ALPHA / RIM / RADIUS only (rule 4 — the same ladder step the
+   sidebar and the deliverables block use), so the frost knob keeps driving the
+   card and all four flavours follow automatically. Same Mocha ground:
+   #141420 at frost 45 (#12121d at the shipped frost 20) with the
+   `--dsh-glass-rim-soft` hairline (#323342) instead of the neutral 6% white
+   (#1f1f29) — i.e. it joins the sidebar/artifact family (#151520 / #141420)
+   rather than floating on it as a grey plate. On Latte the fill lands back on
+   the ground (#eff1f5) and only the rim reads — the same behaviour as the
+   sidebar sheet there, so do not "fix" it by inventing a darker fill.
+   NO backdrop-filter: a block in the transcript FLOW has nothing but the
+   low-frequency page ground behind it — the blur would be an identity read that
+   still promotes the card to a compositing layer (issue #13's blur budget; the
+   same verdict as the deliverables rows and the reasoning card).
+   Only mica: compat deliberately keeps the official transcript material, the
+   same decision as the deliverables seat above (thin the notice there alone and
+   the official sidebar beside it reads as the opposite of the request). If
+   compat should follow, move the sidebar AND the artifacts in the same change.
+   Hook provenance: `data-turn-trigger` is written as a literal in the bundle's
+   React tree; if upstream renames it this seat stops matching and the card
+   returns to its own stock material — a soft failure, hence
+   `tests/glass-css.spec.ts` locks the selector shape and bans the `body[…]`
+   anchor the 0.6.3-beta.1 deliverables seat shipped with.
+   `:hover` is re-stated on purpose: our (0,2,1) seat out-specifies upstream's
+   `.oE-XyW_root:hover` (0,2,0), so without it the hover step would freeze. */
+html[data-dsh-glass-float] [data-turn-trigger] {
+  background: var(--dsh-glass-card);
+  border-color: var(--dsh-glass-rim-soft);
+  border-radius: 14px;
+}
+
+html[data-dsh-glass-float] [data-turn-trigger]:hover {
+  background: var(--dsh-glass-card-hover);
 }
 
 /* ---------- Settings dialog (设置 → 通用设置 / 插件 / Agent 预设) ----------
@@ -397,9 +780,94 @@
 
    Consequence for the page head, and ONLY there: it goes fully back to the
    stock box, i.e. it carries no glass at all — which is correct, it was
-   never meant to be a card. The conversation top bar keeps the whole recipe. */
-[data-dsh-glass-float] [data-phase] header {
-  margin: 12px 16px 0;
+   never meant to be a card. The conversation top bar keeps the whole recipe.
+
+   ⚠️ 2026-10-16 (reported: the hero / new-session view showed an EMPTY glass
+   frame hanging at the top of the conversation column). Upstream renders the
+   top bar in two states, and only one of them is a card:
+     subject  `[data-phase]`'s <header> carries `…_headerBlank` whenever the
+     session is absent OR the conversation is still blank — upstream's own
+     selector for "no chrome": `.…_headerBlank{border-bottom:none;
+     min-height:0;padding-bottom:0}` plus
+     `html:not([data-platform=darwin]) .…_headerSessionless{padding-top:0}`.
+     THE HERO HEADER IS AN EMPTY LAYOUT BOX: measured on the live page
+     (0.2.0-rc.2 + mica, 1280×800@2x) its children are a 30px
+     `…_headerLeading` slot holding only the corner toggle, plus an empty
+     title row. Our card recipe then measured 50px tall with
+     `background: color(srgb .094 .094 .145 / .208)`, a 1px rim, 20px radius
+     and `blur(5px)` — a visible empty card where stock paints nothing (A/B:
+     with `data-dsh-glass*` stripped the same box renders as flat background).
+   So every rule in this family reads upstream's OWN blank signal. The class
+   suffix is stable across both supported lines (verified 2026-10-16:
+   `dsh-client-ui-conversation` 0.1.7-rc.2 and 0.2.0-rc.2 both emit
+   `headerBlank`), and the same suffix idiom as `sidebarCol` / `composerSeat`.
+   If upstream ever renames it the guard silently stops matching — which is
+   why `tests/glass-css.spec.ts` locks the `:not()` AND
+   `scripts/e2e-boot-check.cjs` asserts the real hero header is unpainted
+   (that one goes red on an upstream bump, before a user sees the empty card).
+   The same guard rides the two sibling rules below (`::after` decoration and
+   the collapsed-rail step) so a blank header stays byte-identical to stock:
+   the rail must not nudge the corner toggle either. */
+[data-dsh-glass-float] [data-phase] header:not([class*='headerBlank']) {
+  /* Width (2026-10-19, frame-language audit ⑤ — docs/frame-language-audit-
+     2026-10-19.md). Upstream sizes the top bar and the composer with TWO
+     unrelated rules: the header fills the column minus its own 2×16px margin,
+     while the card is capped at `--dsh-composer-card-max-width` = the READING
+     column + 32px, and that reading column is a drag handle whose ceiling is
+     `column - 176px` (`resolveContentWidth()` in ui-conversation). Both got
+     rims from this skin, so the mismatch that stock hides became a visible
+     "two boxes that do not line up" — 56px per side at the reporter's window,
+     and 225px per side at the default (un-dragged) width.
+     The card is the hero surface (its rim stays the strong step on purpose),
+     so the HEADER follows the card, not the other way round: same cap, centred.
+     The expression is written INLINE in both consumers rather than through one
+     custom property — the issue #25 trap: a value that travels through an
+     intermediate property is not guaranteed to recompute when its inputs move,
+     and `--dsh-chat-user-width` moves on every drag frame.
+     `--dsh-chat-user-width` / `--dsh-conversation-column-width` are written
+     inline on THIS element's own box (`publishWidths()` uses
+     `container.parentElement`, i.e. the `[data-phase]` root), so the header
+     inherits them; `.body` is a SIBLING, which is why
+     `--dsh-composer-card-max-width` cannot be read here.
+     Fallback: 1500px as the sentinel column makes the clamp return 920 (the
+     design cap) when a host predates the width axis, and `min(…, 100% - 32px)`
+     keeps today's geometry on a narrow column.
+
+   ⚠️ 2026-10-21 (real device, official shell 0.2.1-rc.2): `margin-inline: auto`
+   DEMOTES a block box to fit-content — it stops stretching and shrink-wraps
+   its content. So the card was only as wide as its title row (measured 266px
+   at 1280x822, composer card 856px) and audit ⑤ only ever delivered half of
+   its goal: the `max-width` below is an upper bound, never a floor. Declaring
+   `width: 100%` restores the stretch and lets the existing `max-width` pull
+   the box back to the reading column, with `margin: auto` keeping it centred.
+   Stock (glass attributes stripped) measures 1000px — full column — which is
+   how we know the shrink is ours, not the host's.
+   Post-fix on the same device: 266px → 856px, header left 352 vs composer
+   card 349. The residual 3px is NOT the card's border/padding — a centred
+   border box cannot shift that way, and both boxes measure the SAME width
+   (856 then; 1283 at the 1427px column), so the host is border-box. It is the
+   scroll container: `scrollBody` is 1425.3 wide with clientWidth 1421
+   (`scrollbar-gutter: stable`), so the card centres in a ~6.3px narrower box
+   and sits 3.4px left of the header — measured on BOTH edges 2026-10-21
+   (header 352.2..1635.2, card 348.8..1631.8, Δ +3.4 each side). The width is
+   right, only the centring differs, and stock has the same offset relative to
+   the column; not chased further at 3.4px on a 1283px card.
+   Same session, same shell: the drag recompute (1283 → 732 → 1283), the
+   fallback branch with `--dsh-chat-user-width` removed (both boxes 945.3), and
+   the collapsed rail (1383.3 = column − 44, right edge −16, no overflow).
+   The collapsed-rail rule further down MUST reset this to `auto`: its margins
+   are fixed (28 / 16), so `100%` there would overflow the column by 44px. */
+  width: 100%;
+  margin: 12px auto 0;
+  max-width: min(
+    calc(
+      var(
+          --dsh-chat-user-width,
+          clamp(680px, calc(var(--dsh-conversation-column-width, 1500px) * 0.64), 920px)
+        ) + 32px
+    ),
+    calc(100% - 32px)
+  );
   padding: 10px 16px 8px;
   border: 1px solid var(--dsh-glass-rim);
   border-radius: 20px;
@@ -408,16 +876,27 @@
   backdrop-filter: blur(var(--dsh-glass-blur, 14px));
 }
 
-[data-dsh-glass-float] [data-phase] header::after {
+[data-dsh-glass-float] [data-phase] header:not([class*='headerBlank'])::after {
   display: none;
 }
 
 /* Collapsed: the floating rail reaches 12px into the chat gutter, so the
    header card steps right (28px inset = 16px clear of the rail's edge) —
    the sidebar keeps its geometry, the top bar does the adjusting (ported
-   from Aqua). */
-[data-dsh-glass-float] [data-dsh-glass-frame][data-sidebar-collapsed] [data-phase] header {
+   from Aqua).
+   ⚠️ The rail state keeps the OLD full-width box on purpose (2026-10-19,
+   audit ⑤ follow-up): at rail width the reading-column cap is indeterminate
+   (`--dsh-chat-user-width` only exists in the active phase) and the rail needs
+   a hard left inset, which `margin-inline: auto` cannot express. Reverting
+   `max-width` here means the rail behaves exactly as before this change. */
+[data-dsh-glass-float] [data-dsh-glass-frame][data-sidebar-collapsed] [data-phase] header:not([class*='headerBlank']) {
+  /* Reset the stretch added for the expanded state (2026-10-21): here the
+     margins are fixed (28 / 16), not `auto`, so the box already stretches and
+     `width: 100%` would add those 44px on top of the column width. */
+  width: auto;
   margin-left: 28px;
+  margin-right: 16px;
+  max-width: none;
 }
 
 /* ---------- Sidebar (侧边栏): header-style glass card; the token fill on
@@ -453,8 +932,17 @@
      read as a stray half-frame — the other three edges' 18% ink rim measures
      (210,212,220) against the (238,240,244) ground (invisible at 1x), while
      the right edge measured (155,186,245), and the corner arcs blend the two
-     neighbours, so the blue hooked around both right corners. */
-  border: 1px solid var(--dsh-glass-rim);
+     neighbours, so the blue hooked around both right corners.
+     ⚠️ 2026-10-16 (issue #26 follow-up): this card rides the SOFT step
+     (`--dsh-glass-rim-soft`) instead of the base 18% rim. The reporter's
+     complaint about the top-left corner was the arc reading as a pasted frame;
+     the decision was to soften the outline rather than un-float the card (the
+     alternatives — no rim, flush under the titlebar, no floating at all — were
+     rendered and compared first; the sheet is `.debug/ui-adapt/out/combo-CB-*`).
+     Measured on the live page (mocha, mica): the rendered rim pixel went
+     rgb(73,78,98) → rgb(51,52,67) once the glows were gone and the rim came off
+     the base step. Every OTHER rim consumer keeps `--dsh-glass-rim`. */
+  border: 1px solid var(--dsh-glass-rim-soft);
   border-radius: 20px;
   box-shadow: var(--dsh-glass-drop);
   overflow: hidden;
@@ -484,6 +972,52 @@
   transition: border-radius 150ms var(--ds-ease-in-out);
 }
 
+/* ---------- Native caption (Windows title bar): the SAME sheet ----------
+   The official desktop shell colours its native caption from
+   `--dsw-specific-sidebar-fill`: `syncWindowsAppearance()` in the shell's
+   `lib/preload-app.cjs` appends a hidden span to <body> whose
+   `background-color` is that token, reads it back through `getComputedStyle`
+   plus a 1x1 canvas into `rgba()`, and hands it to `setTitleBarOverlay`.
+   That token is what upstream paints the sidebar COLUMN with — the colour we
+   deliberately released in mica mode — so the caption kept reading mantle
+   (#181825) while the sidebar card right below it read the 52% frost sheet
+   over the ground (#151521): a 3-4/255 band along the seam at the top-left
+   that the reporter's screenshot shows.
+   The value here is the card's own colour built from the card's own
+   ingredients, so no colour is invented (rules 1/4): the sheet's fill mixed
+   into the wash's 0% stop — the ground directly under the caption — which is
+   exactly what the card composites to at its top edge. Verified on the live
+   layout (Mocha / mica / frost 20, desktop marker simulated): the probe's
+   computed colour becomes rgb(21,21,33), the shell's canvas conversion yields
+   rgba(21, 21, 33, 1), and the caption matches the card's top edge (delta 0)
+   where it used to differ by 4.
+   `!important` is REQUIRED and not a smell: the theme writes the entire
+   palette into <body>'s INLINE style attribute, and only an important author
+   declaration outranks an inline one (measured: without it the token stays
+   #181825 no matter how the rule is written). The scope stays on <body>
+   because the shell's probe is a body child and inherits from it; the sidebar
+   column re-declares the token as `transparent` for its own subtree, so the
+   card is untouched.
+   Same token, three other consumers outside the sidebar column, all now on
+   the mica sidebar tone instead of mantle (measured delta (3,3,4) on Mocha,
+   i.e. the same step the caption gains): the trajectory table header, the
+   schedule notice chip and the session-list bottom fade. Anything INSIDE the
+   sidebar column keeps the `transparent` release. The opt-in ground glows
+   (#26) are not modelled: with them on, the card's top edge lifts while the
+   caption keeps the wash floor. */
+[data-dsh-glass-float] body {
+  --dsw-specific-sidebar-fill: color-mix(
+      in srgb,
+      var(--dsw-alias-bg-layer-1) calc(52% * var(--dsh-glass-frost, 1)),
+      color-mix(
+        in srgb,
+        var(--dsh-glass-ground),
+        var(--dsh-glass-wash-tint) calc(var(--dsh-glass-wash-mix) * var(--dsh-glass-ambience))
+      )
+    )
+    !important;
+}
+
 /* Collapsed rail: floats too (mica mode) — same geometry as the original
    project: a 12px left margin plus a matching negative right margin (outer
    size unchanged, the main column does not move; the rail just reaches
@@ -511,8 +1045,22 @@
    composer-overlay])`), so the transcript is not behind it — its backdrop is
    the solid ground again. ---------- */
 [data-dsh-glass-float] [data-dsh-glass-trajectory] {
-  margin: 8px 16px 12px;
+  /* Same cap as the header card (2026-10-19, audit ⑤): the trajectory view is
+     the third box that floats in this column, so it follows the reading column
+     too — otherwise narrowing only the header would trade one misalignment for
+     another the moment the 轨迹 tab is opened. Same inline expression as the
+     header rule; see the note there for why it is not a custom property. */
+  margin: 8px auto 12px;
   width: calc(100% - 32px);
+  max-width: min(
+    calc(
+      var(
+          --dsh-chat-user-width,
+          clamp(680px, calc(var(--dsh-conversation-column-width, 1500px) * 0.64), 920px)
+        ) + 32px
+    ),
+    calc(100% - 32px)
+  );
   height: calc(100% - 20px);
   border: 1px solid var(--dsh-glass-rim);
   border-radius: 20px;
@@ -693,6 +1241,26 @@
   --dsw-menu-backdrop-filter: blur(var(--dsh-glass-blur, 14px));
 }
 
+/* ---------- Menu rim, DARK SCHEMES ONLY (2026-10-19 frame-language audit ⑦).
+   Round 3 (②a) took the 1px rim off this seat because in LATTE it read as a
+   solid frame pinching the provider names — that evidence still stands, so the
+   light schemes stay un-stroked. But dropping it EVERYWHERE left the two
+   floating layers disagreeing: the modal dialog keeps `--dsh-glass-rim`, the
+   menu has no edge at all, and over a dark ground the raised fill alone
+   (64% of layer-1) barely separates a popup from a dense transcript.
+   Dark gets the SOFT step back — one below the dialog's 24%, so the ladder
+   still reads dialog > menu — and nothing else changes.
+   Drawn with `outline` + negative offset, the repo's own menu idiom: a
+   `border` would move the host's box model (the surface sizes its material
+   plane with `inset: 0`, so a border would inset the fill by 1px) and a
+   `box-shadow` would clobber upstream's elevation, while an outline paints
+   ABOVE the negative-z plane and shifts nothing. `:not(:focus-visible)`
+   keeps the shared focus ring winning. */
+[data-dsh-glass-float] body[data-ds-dark-theme] [data-menu-material='translucent']:not(:focus-visible) {
+  outline: 1px solid var(--dsh-glass-rim-soft);
+  outline-offset: -1px;
+}
+
 /* Hand-rolled menus that never enter MenuSurface (dsh-client-ui-schedule's
    TaskMenu list renders its own `div[role='menu']`): they paint their whole
    box themselves, so the surface recipe stays on the element. Guarded twice —
@@ -754,7 +1322,19 @@
 [data-dsh-glass-float] [role='dialog'][aria-modal='true'] {
   background: var(--dsh-glass-card-raised);
   border: 1px solid var(--dsh-glass-rim);
-  box-shadow: var(--dsh-glass-edge);
+  /* Two fixes from the 2026-10-19 frame-language audit (docs/frame-language-
+     audit-2026-10-19.md ① and ③):
+     ① the modal carried the edge light but NO drop shadow, so the HIGHEST
+        layer on the page — it floats on the blurred mask — was the flattest
+        one it reads against the header / sidebar / composer cards, all of
+        which carry `--dsh-glass-drop`.
+     ② radius 14 (the generic `[role='dialog']` step in the corner language
+        above) made a near-full-height panel LESS round than the 20px header
+        card sitting above it in the same column. Modals now join the 20px
+        step; small `role=dialog` popups (the context meter) keep 14.
+     Both are paint-only: no box-model change, no descendant moves. */
+  border-radius: 20px;
+  box-shadow: var(--dsh-glass-edge), var(--dsh-glass-drop);
   backdrop-filter: blur(var(--dsh-glass-blur, 14px));
 }
 
@@ -800,6 +1380,23 @@
    0.085 (the reported "切换会闪一下"; controls are in
    tests/glass-css.spec.ts, which pins the gate).
 
+   ⚠️ issue #24 (2026-10-15): the conversation roots — `[data-phase='hero']`
+   and `[data-phase='active']` (the `div.wSkVaW_root` host) — carry NO entry
+   animation any more, and must never get one back. Upstream RE-MOUNTS that
+   whole subtree on every conversation switch: `main.conversation` is a
+   `session-maybe` slot and the renderer keys it by the session-generation
+   epoch (`useMaybeIncarnation(binding)`,
+   `dsh-client-ui-renderer/lib/client.js`; the 0.1.7 and 0.2.0 lines both do
+   this). A freshly-inserted element replays whatever animation it matches, so
+   the skin's 0.3s `dsh-glass-in` ran again on EVERY switch — measured on the
+   live GUI: `animationstart` 39~63 ms after the click and the whole column
+   (header card AND composer card included) fading in from opacity 0 over
+   300 ms, i.e. the reported glass "flicker" (both frosted cards blink).
+   Stock declares no animation on that element; keep it that way. The three
+   seams below only animate elements that genuinely mount on entry (view
+   switches, tool cards, dialogs) — the phase roots are switch-driven, not
+   entry-driven. Evidence: docs/issue-24-switch-flicker.md.
+
    Compat keeps today's look the other way: `--dsh-glass-entry-scale` is 1 in
    mica and 0 in compat, so the SAME shorthand is declared in both modes and
    only its computed duration moves (0.3s → 0s). Changing an animation property
@@ -809,7 +1406,7 @@
 
    Trade-off, deliberate: because the shorthand now matches in compat too, the
    zero-length recipe replaces whatever entry animation the HOST declared on
-   these five seams (the host Modal's `.dialog` carries its own 0.2s
+   these seams (the host Modal's `.dialog` carries its own 0.2s
    `modalEnter`; its mask keeps its own fade, which this sheet does not touch).
    The alternative — leaving compat without a declaration — is exactly the
    animation-name flip that makes the skin flash, so "compat has no skin motion"
@@ -824,14 +1421,9 @@
   --dsh-glass-entry-scale: 0;
 }
 
-[data-dsh-glass] [data-phase='hero'] {
-  animation: dsh-glass-in calc(0.32s * var(--dsh-glass-entry-scale, 1)) var(--ds-ease-in-out);
-}
-
-[data-dsh-glass] [data-phase='active'] {
-  animation: dsh-glass-in calc(0.3s * var(--dsh-glass-entry-scale, 1)) var(--ds-ease-in-out);
-}
-
+/* NO rules here for [data-phase='hero'] / [data-phase='active'] — see the
+   issue #24 note above: upstream re-mounts those roots per conversation
+   switch, so any animation on them replays on every switch. */
 [data-dsh-glass] [data-testid^='view-'] {
   animation: dsh-glass-in calc(0.26s * var(--dsh-glass-entry-scale, 1)) var(--ds-ease-in-out);
 }
@@ -1038,17 +1630,19 @@
    the "+" bead / new-session button. */
 
 /* Compatibility-mode modal panels: same live translucent fill as the float
-   mode (the generic blur above alone would sit behind an opaque panel). */
+   mode (the generic blur above alone would sit behind an opaque panel), and
+   since the 2026-10-19 frame-language audit the same edge + drop as well —
+   the material is mode-independent, only the LAYOUT is stock here, so the
+   radius stays whatever the host declares (no 20px step in compat). */
 [data-dsh-glass-compat] [role='dialog'][aria-modal='true'] {
   background: var(--dsh-glass-card-raised);
   border: 1px solid var(--dsh-glass-rim);
+  box-shadow: var(--dsh-glass-edge), var(--dsh-glass-drop);
   backdrop-filter: blur(var(--dsh-glass-blur, 12px));
 }
 
 /* ---------- Reduced motion: keep the static look, drop every effect. ---------- */
 @media (prefers-reduced-motion: reduce) {
-  [data-dsh-glass] [data-phase='hero'],
-  [data-dsh-glass] [data-phase='active'],
   [data-dsh-glass] [data-testid^='view-'],
   [data-dsh-glass] [data-tool],
   [data-dsh-glass] [role='dialog'] {
