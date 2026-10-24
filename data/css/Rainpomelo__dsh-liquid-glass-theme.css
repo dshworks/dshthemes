@@ -1,5 +1,5 @@
 /* Rainpomelo/dsh-liquid-glass-theme — src/client/liquid-glass.module.css
-   fetched 2026-10-16 from https://raw.githubusercontent.com/Rainpomelo/dsh-liquid-glass-theme/main/src/client/liquid-glass.module.css
+   fetched 2026-10-24 from https://raw.githubusercontent.com/Rainpomelo/dsh-liquid-glass-theme/main/src/client/liquid-glass.module.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 
 /* ============================================================================
@@ -247,7 +247,7 @@ html[data-dsh-liquid-glass] ::-webkit-scrollbar-thumb:active {
 
 
 /* ============================================================================
- * Layer 1: 独立侧边栏雾面磨砂玻璃底板 (自适应展开态 260px 与收起 Rail 态 56px)
+ * Layer 1: 独立侧边栏雾面磨砂玻璃底板 (自适应展开态 280px 与收起 Rail 态 56px / Windows 0px)
  * ========================================================================== */
 [data-dsh-liquid-glass] #dsh-sidebar-underlay,
 [data-dsh-liquid-glass] [data-dsh-sidebar-underlay] {
@@ -255,7 +255,7 @@ html[data-dsh-liquid-glass] ::-webkit-scrollbar-thumb:active {
   top: 0 !important;
   left: 0 !important;
   bottom: 0 !important;
-  width: var(--dsh-sidebar-width, 260px) !important;
+  width: var(--dsh-windows-sidebar-width, var(--dsh-sidebar-width, 280px)) !important;
   z-index: 0 !important;
   pointer-events: none !important;
   background: var(--dsh-l1-bg, rgba(10, 16, 28, 0.35)) !important;
@@ -263,20 +263,33 @@ html[data-dsh-liquid-glass] ::-webkit-scrollbar-thumb:active {
   -webkit-backdrop-filter: blur(var(--dsh-l1-blur, 20px)) !important;
   border-right: 1px solid var(--dsh-l1-border, rgba(255, 255, 255, 0.16)) !important;
   box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.08) !important;
-  transition: width 200ms cubic-bezier(0.16, 1, 0.3, 1), opacity 200ms ease !important;
+  transition: width 280ms cubic-bezier(0.16, 1, 0.3, 1), opacity 280ms ease !important;
 }
 
-/* CSS 级零延迟兜底：一旦检测到折叠属性，立即将底板宽度压到 56px */
-[data-dsh-liquid-glass]:has([data-sidebar-collapsed]) #dsh-sidebar-underlay,
-[data-dsh-liquid-glass]:has([class*="hHd-Xa_collapsed"]) #dsh-sidebar-underlay,
-[data-dsh-liquid-glass]:has([class*="SidebarRoot"][class*="collapsed"]) #dsh-sidebar-underlay {
+/* 非 Windows 平台折叠到 56px 导轨 */
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass]:has([data-sidebar-collapsed]) #dsh-sidebar-underlay,
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass]:has([class*="hHd-Xa_collapsed"]) #dsh-sidebar-underlay,
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass]:has([class*="_2H3hWW_collapsed"]) #dsh-sidebar-underlay,
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass]:has([class*="SidebarRoot"][class*="collapsed"]) #dsh-sidebar-underlay {
   width: 56px !important;
+}
+
+/* Windows 原生标题栏平台折叠到底板 0px 隐藏 */
+html[data-windows-titlebar] [data-dsh-liquid-glass]:has([data-sidebar-collapsed]) #dsh-sidebar-underlay,
+html[data-windows-titlebar] [data-dsh-liquid-glass]:has([class*="hHd-Xa_collapsed"]) #dsh-sidebar-underlay,
+html[data-windows-titlebar] [data-dsh-liquid-glass]:has([class*="_2H3hWW_collapsed"]) #dsh-sidebar-underlay,
+html[data-windows-titlebar] [data-dsh-liquid-glass]:has([class*="SidebarRoot"][class*="collapsed"]) #dsh-sidebar-underlay {
+  width: 0px !important;
+  opacity: 0 !important;
+  border-right-color: transparent !important;
 }
 
 /* 侧边栏 DOM 容器本身保持 100% 透明直通，无边框无包含块 */
 [data-dsh-liquid-glass] [class*='AppFrame_sidebarCol'],
+[data-dsh-liquid-glass] [class*='BynINW_sidebarCol'],
 [data-dsh-liquid-glass] [class*='sidebarCol'],
 [data-dsh-liquid-glass] [class*='SidebarRoot_root'],
+[data-dsh-liquid-glass] [class*='_2H3hWW_root'],
 [data-dsh-liquid-glass] [class*='SidebarRoot'],
 [data-dsh-liquid-glass] [data-dsh-sidebar-root] {
   background: transparent !important;
@@ -285,6 +298,95 @@ html[data-dsh-liquid-glass] ::-webkit-scrollbar-thumb:active {
   border: none !important;
   border-right: none !important;
   box-shadow: none !important;
+}
+
+/* ============================================================================
+ * 侧边栏平滑出入场动画 (280ms cubic-bezier(0.16, 1, 0.3, 1))
+ * 解决 DSH 原生 [data-animating] 状态与 React 批处理竞态导致的动画概率性失效 snap 闪现
+ * 当用户拖拽调节侧边栏宽度时，[data-dragging] 自动关闭过渡，保持零延迟即时跟手响应
+ * ========================================================================== */
+[data-dsh-liquid-glass] [class*='AppFrame_frame']:not([data-dragging]),
+[data-dsh-liquid-glass] [class*='BynINW_frame']:not([data-dragging]),
+[data-dsh-liquid-glass] [data-dsh-frame]:not([data-dragging]) {
+  transition: grid-template-columns 280ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+[data-dsh-liquid-glass] [class*='AppFrame_handle']:not([data-dragging]),
+[data-dsh-liquid-glass] [class*='BynINW_handle']:not([data-dragging]) {
+  transition: left 280ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* 侧边栏列外框作为滑动视窗容器：严格隐藏溢出，防止宽度缩进时内容外溢或触发展开抖动 */
+[data-dsh-liquid-glass] [class*='AppFrame_sidebarCol'],
+[data-dsh-liquid-glass] [class*='BynINW_sidebarCol'],
+[data-dsh-liquid-glass] [class*='sidebarCol'] {
+  overflow: hidden !important;
+  overflow-x: hidden !important;
+  contain: none !important;
+}
+
+/* 侧边栏内容画布永久锁定为标准 280px 宽度
+ * 侧边栏展开/收缩时仅由外部 grid 列执行平滑抽屉式裁切揭示，
+ * 内部 "工作区"、会话时间戳、图标与功能按钮永不换行、永不挤压变形 */
+[data-dsh-liquid-glass] [class*='AppFrame_sidebarCol'] > [class*='root'],
+[data-dsh-liquid-glass] [class*='BynINW_sidebarCol'] > [class*='root'],
+[data-dsh-liquid-glass] [class*='sidebarCol'] > [class*='root'],
+[data-dsh-liquid-glass] [class*='SidebarRoot_root'],
+[data-dsh-liquid-glass] [class*='_2H3hWW_root'],
+[data-dsh-liquid-glass] [class*='hHd-Xa_root'],
+[data-dsh-liquid-glass] [data-dsh-sidebar-root] {
+  width: var(--dsh-sidebar-width, 280px) !important;
+  min-width: var(--dsh-sidebar-width, 280px) !important;
+  max-width: var(--dsh-sidebar-width, 280px) !important;
+  flex-shrink: 0 !important;
+  box-sizing: border-box !important;
+  overflow-x: hidden !important;
+}
+
+/* Windows 原生标题栏模式折叠：平滑淡出并关闭交互，覆盖原生 display: none 导致的瞬时空白突变 */
+html[data-windows-titlebar] [data-dsh-liquid-glass] [class*='collapsed'] [class*='panelList'],
+html[data-windows-titlebar] [data-dsh-liquid-glass] [class*='_collapsed'] [class*='_panelList'],
+html[data-windows-titlebar] [data-dsh-liquid-glass] [class*='collapsed'] [class*='regionArea'],
+html[data-windows-titlebar] [data-dsh-liquid-glass] [class*='_collapsed'] [class*='_regionArea'],
+html[data-windows-titlebar] [data-dsh-liquid-glass] [class*='collapsed'] [class*='footArea'],
+html[data-windows-titlebar] [data-dsh-liquid-glass] [class*='_collapsed'] [class*='_footArea'] {
+  display: flex !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 180ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Windows 原生标题栏模式展开：平滑淡入并恢复交互 */
+html[data-windows-titlebar] [data-dsh-liquid-glass] [class*='root']:not([class*='collapsed']) [class*='panelList'],
+html[data-windows-titlebar] [data-dsh-liquid-glass] [class*='_root']:not([class*='_collapsed']) [class*='_panelList'],
+html[data-windows-titlebar] [data-dsh-liquid-glass] [class*='root']:not([class*='collapsed']) [class*='regionArea'],
+html[data-windows-titlebar] [data-dsh-liquid-glass] [class*='_root']:not([class*='_collapsed']) [class*='_regionArea'],
+html[data-windows-titlebar] [data-dsh-liquid-glass] [class*='root']:not([class*='collapsed']) [class*='footArea'],
+html[data-windows-titlebar] [data-dsh-liquid-glass] [class*='_root']:not([class*='_collapsed']) [class*='_footArea'] {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  transition: opacity 220ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* 严格抑制侧边栏与会话树在过渡动画期间出现水平滚动条 */
+[data-dsh-liquid-glass] [class*='AppFrame_sidebarCol'],
+[data-dsh-liquid-glass] [class*='BynINW_sidebarCol'],
+[data-dsh-liquid-glass] [class*='sidebarCol'],
+[data-dsh-liquid-glass] [class*='SidebarRoot_root'],
+[data-dsh-liquid-glass] [class*='_2H3hWW_root'],
+[data-dsh-liquid-glass] [class*='hHd-Xa_root'],
+[data-dsh-liquid-glass] [data-dsh-sidebar-root],
+[data-dsh-liquid-glass] [class*='treeBody'],
+[data-dsh-liquid-glass] [class*='listArea'] {
+  overflow-x: hidden !important;
+}
+
+[data-dsh-liquid-glass] [class*='sidebarCol']::-webkit-scrollbar:horizontal,
+[data-dsh-liquid-glass] [class*='SidebarRoot']::-webkit-scrollbar:horizontal,
+[data-dsh-liquid-glass] [class*='treeBody']::-webkit-scrollbar:horizontal,
+[data-dsh-liquid-glass] [class*='listArea']::-webkit-scrollbar:horizontal {
+  display: none !important;
+  height: 0 !important;
 }
 
 
@@ -691,9 +793,11 @@ html[data-dsh-liquid-glass] [class*='SettingsRoot_options'] {
  * ========================================================================== */
 [data-dsh-liquid-glass] [class*='Menu_list'],
 [data-dsh-liquid-glass] [class*='Menu_submenu'],
+[data-dsh-liquid-glass] [class*='MenuSurface_surface'],
 [data-dsh-liquid-glass] [class*='AgentPresetSeat_menu'],
 [data-dsh-liquid-glass] [class*='AgentPresetSeat_popover'],
-[data-dsh-liquid-glass] [class*='PresetMenu_menu'] {
+[data-dsh-liquid-glass] [class*='PresetMenu_menu'],
+[data-dsh-liquid-glass] div[role="menu"] {
   background: transparent !important;
   background-color: transparent !important;
   backdrop-filter: none !important;
@@ -702,18 +806,48 @@ html[data-dsh-liquid-glass] [class*='SettingsRoot_options'] {
   border-radius: 18px !important;
   box-shadow: inset 0 1px 1px var(--dsh-l1-rim, rgba(255, 255, 255, 0.28)), 0 24px 64px rgba(0, 0, 0, 0.55) !important;
   padding: 8px !important;
+  min-width: 172px !important;
+  width: max-content !important;
+  max-width: 360px !important;
+  box-sizing: border-box !important;
+  overflow-x: hidden !important;
 }
 
 [data-dsh-liquid-glass] [class*='Menu_viewport'] {
   background: transparent !important;
   background-color: transparent !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+/* 彻底隐藏与禁用所有下拉气泡菜单的横向滚动条 */
+[data-dsh-liquid-glass] [class*='Menu_list']::-webkit-scrollbar:horizontal,
+[data-dsh-liquid-glass] [class*='Menu_viewport']::-webkit-scrollbar:horizontal,
+[data-dsh-liquid-glass] [class*='MenuSurface']::-webkit-scrollbar:horizontal,
+[data-dsh-liquid-glass] [role='menu']::-webkit-scrollbar:horizontal,
+[data-dsh-liquid-glass] [role='listbox']::-webkit-scrollbar:horizontal {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+[data-dsh-liquid-glass] [class*='Menu_itemWrap'] {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 100% !important;
 }
 
 [data-dsh-liquid-glass] [class*='Menu_item'],
 [data-dsh-liquid-glass] [class*='MenuView_item'],
 [data-dsh-liquid-glass] [role='menuitem'] {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 100% !important;
   border-radius: 12px !important;
   color: rgba(255, 255, 255, 0.90) !important;
+  transform: none !important;
   transition: all 120ms ease !important;
 }
 
@@ -722,6 +856,19 @@ html[data-dsh-liquid-glass] [class*='SettingsRoot_options'] {
 [data-dsh-liquid-glass] [role='menuitem']:hover {
   background: rgba(255, 255, 255, 0.08) !important;
   color: #ffffff !important;
+  transform: none !important;
+}
+
+[data-dsh-liquid-glass] [class*='Menu_itemLabel'] {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+[data-dsh-liquid-glass] [class*='Menu_shortcut'] {
+  flex-shrink: 0 !important;
+  white-space: nowrap !important;
+  margin-inline-start: auto !important;
 }
 
 /* 内部折叠区：同步 L3 模态弹窗毛玻璃与暗化 */
@@ -904,6 +1051,17 @@ html[data-dsh-liquid-glass] .dsh-chevron-open {
   transform: rotate(180deg) !important;
 }
 
+@keyframes dshMenuPopupScale {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
 html[data-dsh-liquid-glass] .dsh-model-select-menu,
 html[data-dsh-liquid-glass] [class*="ModelSelect_menu"],
 html[data-dsh-liquid-glass] [class*="_7KE1Ra_menu"] {
@@ -916,6 +1074,7 @@ html[data-dsh-liquid-glass] [class*="_7KE1Ra_menu"] {
   max-height: min(640px, calc(100vh - 80px)) !important;
   overflow-y: auto !important;
   overflow-x: hidden !important;
+  overscroll-behavior: contain !important;
   padding: 6px !important;
   display: flex;
   flex-direction: column;
@@ -1017,8 +1176,11 @@ html[data-dsh-liquid-glass] [class*="modelInlinePanel"] {
   border-radius: 14px !important;
   box-shadow: inset 0 1px 0 var(--dsh-l1-rim, rgba(255, 255, 255, 0.20)), 0 4px 16px rgba(0, 0, 0, 0.25) !important;
   padding: 6px !important;
-  max-height: 240px;
-  overflow-y: auto;
+  max-height: 260px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  overscroll-behavior: contain !important;
+  touch-action: pan-y !important;
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -1062,6 +1224,8 @@ html[data-dsh-liquid-glass] .dsh-model-select-groups {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-height: 0;
+  width: 100%;
 }
 
 html[data-dsh-liquid-glass] .dsh-model-select-group {
@@ -1078,8 +1242,7 @@ html[data-dsh-liquid-glass] [class*="ModelSelect_groupTitle"] {
   text-transform: none !important;
   letter-spacing: 0.02em !important;
   padding: 4px 8px 2px 8px !important;
-  position: sticky;
-  top: 0;
+  position: static !important;
   background: var(--dsh-model-provider-bg, transparent) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
@@ -1757,6 +1920,10 @@ html[data-dsh-liquid-glass] [class*='inUse'] {
 [data-dsh-liquid-glass] [class*='WorkspaceBrowser'] [class*='_iconButton'],
 [data-dsh-liquid-glass] [class*='sectionHeader'] [class*='iconButton'],
 [data-dsh-liquid-glass] [class*='sectionHeader'] [class*='_iconButton'],
+[data-dsh-liquid-glass] [class*='logoRow'] [class*='iconButton'],
+[data-dsh-liquid-glass] [class*='_logoRow'] [class*='_iconButton'],
+[data-dsh-liquid-glass] button[class*='toggle'],
+[data-dsh-liquid-glass] button[class*='_toggle'],
 [data-dsh-liquid-glass] [class*='SidebarRoot'] [class*='iconButton'],
 [data-dsh-liquid-glass] [class*='SidebarRoot'] [class*='_iconButton'] {
   border: none !important;
@@ -1773,27 +1940,31 @@ html[data-dsh-liquid-glass] [class*='inUse'] {
 [data-dsh-liquid-glass] [class*='WorkspaceBrowser'] [class*='_iconButton']:hover,
 [data-dsh-liquid-glass] [class*='sectionHeader'] [class*='iconButton']:hover,
 [data-dsh-liquid-glass] [class*='sectionHeader'] [class*='_iconButton']:hover,
+[data-dsh-liquid-glass] [class*='logoRow'] [class*='iconButton']:hover,
+[data-dsh-liquid-glass] [class*='_logoRow'] [class*='_iconButton']:hover,
+[data-dsh-liquid-glass] button[class*='toggle']:hover,
+[data-dsh-liquid-glass] button[class*='_toggle']:hover,
 [data-dsh-liquid-glass] [class*='SidebarRoot'] [class*='iconButton']:hover,
 [data-dsh-liquid-glass] [class*='SidebarRoot'] [class*='_iconButton']:hover {
   background: rgba(255, 255, 255, 0.10) !important;
   color: #ffffff !important;
 }
 
-/* 侧边栏折叠 Rail 模式下所有图标按钮严格保持 36x36px 水平与垂直绝对居中对齐 */
-[data-dsh-liquid-glass] [class*='SidebarRoot'][class*='collapsed'] [class*='primaryActions'],
-[data-dsh-liquid-glass] [class*='SidebarRoot'][class*='_collapsed'] [class*='_primaryActions'] {
+/* 侧边栏折叠 Rail 模式下所有图标按钮严格保持 36x36px 水平与垂直绝对居中对齐 (仅限非 Windows 导轨平台，展开过渡期绝不生效) */
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass] [class*='SidebarRoot'][class*='collapsed'] [class*='primaryActions'],
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass] [class*='SidebarRoot'][class*='_collapsed'] [class*='_primaryActions'] {
   margin-bottom: 12px !important;
   gap: 12px !important;
 }
 
-[data-dsh-liquid-glass] [class*='collapsed'] [class*='regionArea'] [class*='sectionHeader'],
-[data-dsh-liquid-glass] [class*='_collapsed'] [class*='_regionArea'] [class*='_sectionHeader'],
-[data-dsh-liquid-glass] [class*='rail'] [class*='sectionHeader'],
-[data-dsh-liquid-glass] [class*='_rail'] [class*='_sectionHeader'],
-[data-dsh-liquid-glass] [class*='collapsed'] [class*='regionArea'] [class*='search'],
-[data-dsh-liquid-glass] [class*='_collapsed'] [class*='_regionArea'] [class*='_search'],
-[data-dsh-liquid-glass] [class*='rail'] [class*='search'],
-[data-dsh-liquid-glass] [class*='_rail'] [class*='_search'] {
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass] [class*='collapsed'] [class*='regionArea'] [class*='sectionHeader'],
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass] [class*='_collapsed'] [class*='_regionArea'] [class*='_sectionHeader'],
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass] [class*='rail']:not([class*='railIn']):not([class*='rail-in']) [class*='sectionHeader'],
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass] [class*='_rail']:not([class*='railIn']):not([class*='rail-in']) [class*='_sectionHeader'],
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass] [class*='collapsed'] [class*='regionArea'] [class*='search'],
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass] [class*='_collapsed'] [class*='_regionArea'] [class*='_search'],
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass] [class*='rail']:not([class*='railIn']):not([class*='rail-in']) [class*='search'],
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass] [class*='_rail']:not([class*='railIn']):not([class*='rail-in']) [class*='_search'] {
   justify-content: center !important;
   align-items: center !important;
   padding: 0 !important;
@@ -1804,18 +1975,20 @@ html[data-dsh-liquid-glass] [class*='inUse'] {
   box-sizing: border-box !important;
 }
 
-[data-dsh-liquid-glass] [class*='collapsed'] [class*='regionArea'] [class*='headerActions'],
-[data-dsh-liquid-glass] [class*='_collapsed'] [class*='_regionArea'] [class*='_headerActions'],
-[data-dsh-liquid-glass] [class*='rail'] [class*='headerActions'],
-[data-dsh-liquid-glass] [class*='_rail'] [class*='_headerActions'],
-[data-dsh-liquid-glass] [class*='collapsed'] [class*='regionArea'] [class*='iconButton'],
-[data-dsh-liquid-glass] [class*='_collapsed'] [class*='_regionArea'] [class*='_iconButton'],
-[data-dsh-liquid-glass] [class*='rail'] [class*='iconButton'],
-[data-dsh-liquid-glass] [class*='_rail'] [class*='_iconButton'],
-[data-dsh-liquid-glass] [class*='collapsed'] [class*='regionArea'] [class*='searchButton'],
-[data-dsh-liquid-glass] [class*='_collapsed'] [class*='_regionArea'] [class*='_searchButton'],
-[data-dsh-liquid-glass] [class*='rail'] [class*='searchButton'],
-[data-dsh-liquid-glass] [class*='_rail'] [class*='_searchButton'] {
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass] [class*='collapsed'] [class*='regionArea'] [class*='headerActions'],
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass] [class*='_collapsed'] [class*='_regionArea'] [class*='_headerActions'],
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass] [class*='rail']:not([class*='railIn']):not([class*='rail-in']) [class*='headerActions'],
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass] [class*='_rail']:not([class*='railIn']):not([class*='rail-in']) [class*='_headerActions'],
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass] [class*='collapsed'] [class*='regionArea'] [class*='iconButton']:not([class*='toggle']):not([class*='_toggle']),
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass] [class*='_collapsed'] [class*='_regionArea'] [class*='_iconButton']:not([class*='toggle']):not([class*='_toggle']),
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass] [class*='collapsed'] [class*='footArea'] [class*='iconButton'],
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass] [class*='_collapsed'] [class*='_footArea'] [class*='_iconButton'],
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass] [class*='rail']:not([class*='railIn']):not([class*='rail-in']) [class*='iconButton']:not([class*='toggle']):not([class*='_toggle']),
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass] [class*='_rail']:not([class*='railIn']):not([class*='rail-in']) [class*='_iconButton']:not([class*='toggle']):not([class*='_toggle']),
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass] [class*='collapsed'] [class*='regionArea'] [class*='searchButton'],
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass] [class*='_collapsed'] [class*='_regionArea'] [class*='_searchButton'],
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass] [class*='rail']:not([class*='railIn']):not([class*='rail-in']) [class*='searchButton'],
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass] [class*='_rail']:not([class*='railIn']):not([class*='rail-in']) [class*='_searchButton'] {
   width: 36px !important;
   max-width: 36px !important;
   height: 36px !important;
@@ -1829,20 +2002,106 @@ html[data-dsh-liquid-glass] [class*='inUse'] {
   box-sizing: border-box !important;
 }
 
-/* 保证折叠状态下 toggle 按钮中鲸鱼图标 (railFish) 与展开面板图标 (panelIcon) 严格互斥显隐 */
-[data-dsh-liquid-glass] [class*='collapsed'] [class*='toggle'] [class*='panelIcon'],
-[data-dsh-liquid-glass] [class*='_collapsed'] [class*='_toggle'] [class*='_panelIcon'] {
+/* 保证 macOS 折叠导轨模式下 toggle 按钮中鲸鱼图标 (railFish) 与展开面板图标 (panelIcon) 互斥显隐 (Windows 原生标题栏不参与) */
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass] [class*='collapsed'] [class*='toggle'] [class*='panelIcon'],
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass] [class*='_collapsed'] [class*='_toggle'] [class*='_panelIcon'] {
   display: none !important;
 }
 
-[data-dsh-liquid-glass] [class*='collapsed'] [class*='toggle']:hover [class*='panelIcon'],
-[data-dsh-liquid-glass] [class*='_collapsed'] [class*='_toggle']:hover [class*='_panelIcon'] {
-  display: block !important;
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass] [class*='collapsed'] [class*='toggle']:hover [class*='panelIcon'],
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass] [class*='_collapsed'] [class*='_toggle']:hover [class*='_panelIcon'] {
+  display: inline-flex !important;
 }
 
-[data-dsh-liquid-glass] [class*='collapsed'] [class*='toggle']:hover [class*='railFish'],
-[data-dsh-liquid-glass] [class*='_collapsed'] [class*='_toggle']:hover [class*='_railFish'] {
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass] [class*='collapsed'] [class*='toggle']:hover [class*='railFish'],
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass] [class*='_collapsed'] [class*='_toggle']:hover [class*='_railFish'],
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass] [class*='collapsed'] [class*='toggle']:hover [class*='railMark'],
+html:not([data-windows-titlebar]) [data-dsh-liquid-glass] [class*='_collapsed'] [class*='_toggle']:hover [class*='_railMark'] {
   display: none !important;
+}
+
+/* ============================================================================
+ * Windows 原生标题栏顶栏按钮尺寸与基线绝对居中锁定
+ * 确保侧边栏收起/展开时，Toggle 按钮 [ | ] 与 New Session 按钮 (+) 严格为 28x28px 圆形，
+ * 垂直位置恒定居中于 40px 高度的原生标题栏 (top: 6px)，并与 "应用"、"编辑" 菜单及系统控件完美对齐。
+ * ========================================================================== */
+[data-windows-titlebar] button[class*='toggle'],
+[data-windows-titlebar] button[class*='_toggle'],
+[data-windows-titlebar] [class*='logoRow'] button[class*='iconButton'],
+[data-windows-titlebar] [class*='_logoRow'] button[class*='_iconButton'],
+[data-windows-titlebar] [class*='collapsed'] button[class*='toggle'],
+[data-windows-titlebar] [class*='_collapsed'] button[class*='_toggle'],
+[data-windows-titlebar] [class*='collapsed'] button[class*='newSession'],
+[data-windows-titlebar] [class*='_collapsed'] button[class*='_newSession'],
+html[data-windows-titlebar] button[class*='toggle'],
+html[data-windows-titlebar] button[class*='_toggle'],
+html[data-windows-titlebar] [class*='logoRow'] button[class*='iconButton'],
+html[data-windows-titlebar] [class*='_logoRow'] button[class*='_iconButton'],
+html[data-windows-titlebar] [class*='collapsed'] button[class*='toggle'],
+html[data-windows-titlebar] [class*='_collapsed'] button[class*='_toggle'],
+html[data-windows-titlebar] [class*='collapsed'] button[class*='newSession'],
+html[data-windows-titlebar] [class*='_collapsed'] button[class*='_newSession'] {
+  width: 28px !important;
+  min-width: 28px !important;
+  max-width: 28px !important;
+  height: 28px !important;
+  min-height: 28px !important;
+  max-height: 28px !important;
+  top: calc((var(--dsh-windows-titlebar-height, 40px) - 28px) / 2) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 50% !important;
+  box-sizing: border-box !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 28px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+[data-windows-titlebar] button[class*='toggle']:hover,
+[data-windows-titlebar] button[class*='_toggle']:hover,
+[data-windows-titlebar] [class*='logoRow'] button[class*='iconButton']:hover,
+[data-windows-titlebar] [class*='_logoRow'] button[class*='_iconButton']:hover,
+[data-windows-titlebar] [class*='collapsed'] button[class*='toggle']:hover,
+[data-windows-titlebar] [class*='_collapsed'] button[class*='_toggle']:hover,
+[data-windows-titlebar] [class*='collapsed'] button[class*='newSession']:hover,
+[data-windows-titlebar] [class*='_collapsed'] button[class*='_newSession']:hover,
+html[data-windows-titlebar] button[class*='toggle']:hover,
+html[data-windows-titlebar] button[class*='_toggle']:hover,
+html[data-windows-titlebar] [class*='logoRow'] button[class*='iconButton']:hover,
+html[data-windows-titlebar] [class*='_logoRow'] button[class*='_iconButton']:hover,
+html[data-windows-titlebar] [class*='collapsed'] button[class*='toggle']:hover,
+html[data-windows-titlebar] [class*='_collapsed'] button[class*='_toggle']:hover,
+html[data-windows-titlebar] [class*='collapsed'] button[class*='newSession']:hover,
+html[data-windows-titlebar] [class*='_collapsed'] button[class*='_newSession']:hover {
+  background: rgba(255, 255, 255, 0.10) !important;
+  border-radius: 50% !important;
+  border: none !important;
+  transform: none !important;
+}
+
+/* 内部图标保持 16x16 严格居中对齐 */
+[data-windows-titlebar] button[class*='toggle'] svg,
+[data-windows-titlebar] button[class*='_toggle'] svg,
+[data-windows-titlebar] button[class*='toggle'] [class*='panelIcon'],
+[data-windows-titlebar] button[class*='_toggle'] [class*='_panelIcon'],
+[data-windows-titlebar] button[class*='newSession'] svg,
+html[data-windows-titlebar] button[class*='toggle'] svg,
+html[data-windows-titlebar] button[class*='_toggle'] svg,
+html[data-windows-titlebar] button[class*='toggle'] [class*='panelIcon'],
+html[data-windows-titlebar] button[class*='_toggle'] [class*='_panelIcon'],
+html[data-windows-titlebar] button[class*='newSession'] svg {
+  display: inline-flex !important;
+  width: 16px !important;
+  height: 16px !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  flex: none !important;
+  vertical-align: middle !important;
 }
 
 /* 3. 内框：表单输入框、密码框与下拉菜单 (Layer 1 雾面基底，严格限定在设置卡片与表单字段内部，绝不污染对话框 Composer) */
@@ -2649,12 +2908,16 @@ html[data-dsh-liquid-glass] [class*='RemotePanel_action']:not(:first-child):hove
 [data-dsh-liquid-glass] [role='option'],
 [data-dsh-liquid-glass] [class*='Menu_item'],
 [data-dsh-liquid-glass] [class*='CustomSelect_option'] {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 100% !important;
   border-radius: 9px !important;
-  padding: 8px 10px !important;
+  padding: 6px 10px !important;
   margin: 1px 0 !important;
   font-size: 13px !important;
   color: rgba(255, 255, 255, 0.90) !important;
   background: transparent !important;
+  transform: none !important;
   transition: all 120ms cubic-bezier(0.16, 1, 0.3, 1) !important;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.40) !important;
 }
@@ -2665,7 +2928,7 @@ html[data-dsh-liquid-glass] [class*='RemotePanel_action']:not(:first-child):hove
 [data-dsh-liquid-glass] [class*='CustomSelect_option']:hover {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(56, 189, 248, 0.10) 100%), rgba(255, 255, 255, 0.08) !important;
   color: #ffffff !important;
-  transform: translateX(2px) !important;
+  transform: none !important;
 }
 
 [data-dsh-liquid-glass] [class*='Menu_item'][class*='selected'],
