@@ -108,8 +108,9 @@ const themes = registry.themes.map((t) => {
     hasLive: Boolean(render),
     // A gone repository takes its screenshot with it: the URL still exists in
     // the registry row and 404s, which renders as a broken image rather than as
-    // the theme. Same for the install line, which cannot succeed.
-    hasShot: Boolean(t.preview) && t.status !== "broken",
+    // the theme. Same for the install line, which cannot succeed. A live repo
+    // that moved the file does the same, so enrich.mjs asks every run.
+    hasShot: Boolean(t.preview) && t.status !== "broken" && ![404, 410].includes(enrich.previews?.[t.preview]?.status),
     signature: pal ? pal[pal.leads] : null,
   };
 });
