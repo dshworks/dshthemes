@@ -1,0 +1,1023 @@
+/* seaison/dsh-plugin-eva-theme — lib/client.js
+   fetched 2026-10-26 from https://raw.githubusercontent.com/seaison/dsh-plugin-eva-theme/main/lib/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/* ============================================================================
+   0. 令牌表达不了的部分：形状、数字、明朝体
+   ============================================================================ */
+
+/* 角色色桥：宿主别名覆盖全部 UI；装饰也从同一套颜色取值。
+   变量挂在 body，保证 portal 菜单、开机序列和覆盖层均能继承。 */
+html[data-eva-magi] body{
+  --eva-accent:var(--dsw-alias-brand-primary);
+  --eva-ink:var(--dsw-alias-label-primary);
+  --eva-dim:var(--dsw-alias-label-tertiary);
+  --eva-hair:var(--dsw-alias-border-l2);--eva-line:var(--dsw-alias-border-l3);
+  --eva-on-accent:var(--dsw-alias-label-primary-foreground);
+  --eva-secondary:#a7425d;--eva-mark:#a7425d;
+  --eva-surface:var(--dsw-alias-bg-layer-1);
+  --eva-control:color-mix(in srgb,var(--eva-surface) 96%,transparent);
+  --eva-control-hover:color-mix(in srgb,var(--eva-accent) 9%,var(--eva-surface));
+  --eva-control-active:color-mix(in srgb,var(--eva-accent) 15%,var(--eva-surface));
+  --eva-shadow:rgba(29,66,88,.14);
+  --eva-ghost:color-mix(in srgb,var(--eva-accent) 9%,var(--eva-surface));
+  --eva-panel:color-mix(in srgb,var(--eva-surface) 96%,transparent);
+  --eva-pilot-font:"Songti SC","STSong","Noto Serif CJK SC",serif;
+  background-color:var(--dsw-alias-bg-base);color:var(--eva-ink);
+  accent-color:var(--eva-accent);
+}
+html[data-eva-magi] body[data-ds-dark-theme]{
+  --eva-secondary:#e5a24f;--eva-mark:#8dc358;--eva-shadow:rgba(3,5,9,.48);
+}
+
+/* 用户提供的 NERV 叶徽：静态矢量装饰，跟随角色配色，不进入辅助技术阅读流。 */
+.eva-nerv-logo{display:block;flex:0 0 auto;width:20px;height:23px;background:var(--eva-accent);
+body:not([data-ds-dark-theme]) .eva-nerv-logo{background:var(--eva-secondary)}
+.eva-cp-top .eva-nerv-logo{width:15px;height:17px}
+.eva-mp-crest{position:absolute;left:50%;top:50%;width:28px;height:32px;transform:translate(-50%,-50%)}
+
+/* 深度求索与活动过程沿用宿主动画，只将正文、鲸尾及扫光同步到当前角色。 */
+html[data-eva-magi] body [data-chat-running],
+html[data-eva-magi] body [data-process-activity]:has([data-shimmer]),
+html[data-eva-magi] body [data-turn-process]:has([data-shimmer]){
+  color:var(--eva-accent);
+  --dsw-alias-label-shimmer:var(--dsw-alias-label-deep-diving-shimmer);
+}
+
+/* 硬边：EVA 的世界里没有圆角 */
+html[data-eva-edges="hard"]{
+  --dsw-radius-xs:0px;--dsw-radius-sm:0px;--dsw-radius-md:0px;
+  --dsw-radius-lg:0px;--dsw-radius-xl:0px;--dsw-radius-panel:0px;
+}
+/* HUD 数字：等宽对齐，读数不会随内容跳动 */
+html[data-eva-nums="on"] body{font-variant-numeric:tabular-nums}
+/* 选区用主色 */
+html[data-eva-magi] ::selection{
+  background:var(--dsw-alias-bg-document-selection);
+  color:var(--dsw-alias-label-primary);
+}
+/* 标题走明朝体：拉丁仍吃系统无衬线，只有汉字落到明朝。
+   靠 font-family 的逐字符回退实现，且只作用于 h1~h3 —— 明朝体横画很细，
+   小字号在暗底会糊（这是 nerv-hud 实测到的教训）。 */
+html[data-eva-mincho="on"] :is(h1,h2,h3):not(:where(.eva-boot-title)){
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Helvetica,Arial,
+    "Hiragino Mincho ProN","Hiragino Mincho Pro",YuMincho,"Yu Mincho","Songti SC",serif;
+  letter-spacing:.01em;
+}
+html[data-eva-mincho="on"] :is(h1,h2,h3,strong){-webkit-text-stroke:.2px currentColor}
+  position:fixed;inset:0;pointer-events:none;z-index:2147483000;
+}position:absolute;display:block}display:none!important}visibility:hidden}animation-play-state:paused!important}
+.eva-corner-stack[data-fit="minimal"] .eva-tps,
+.eva-corner-stack[data-fit="minimal"] .eva-tags,
+.eva-corner-stack[data-fit="minimal"] .eva-pilot-status,
+.eva-corner-stack[data-fit="minimal"] .eva-pilot-en,
+.eva-corner-stack[data-fit="minimal"] .eva-hud-vlabel{display:none}
+.eva-corner-stack[data-fit="minimal"] .eva-hud-body{padding:7px 10px}
+.eva-corner-stack[data-fit="minimal"] .eva-pilot-name{font-size:12px;margin:0}
+.eva-corner-stack[data-fit="minimal"] .eva-hud::after{display:none}
+html[data-eva-hud="off"] .eva-corner-stack{display:none}
+
+html[data-eva-scan="off"] .eva-magi-scan,
+html[data-eva-beam="off"] .eva-magi-beam,
+html[data-eva-chrome="off"] .eva-frame,
+html[data-eva-chrome="off"] .eva-edge,
+html[data-eva-chrome="off"] .eva-hazard,
+html[data-eva-chrome="off"] .eva-tags,
+html[data-eva-hud="off"] .eva-hud{display:none}
+
+/* 扫描线：3px 周期、1px 暗线。深色下是 CRT 余晖，浅色下减半免得脏 */
+.eva-magi-scan{
+  inset:0;
+  background:repeating-linear-gradient(to bottom,rgba(0,0,0,0) 0 2px,rgba(0,0,0,.30) 2px 3px);
+  opacity:var(--eva-scan-strength,.5);mix-blend-mode:multiply;
+}
+body:not([data-ds-dark-theme]) .eva-magi-scan{opacity:calc(var(--eva-scan-strength,.5) * .45)}
+
+/* 走行的刷新带：老 CRT 的场同步条，9 秒扫一遍 */
+.eva-magi-beam{
+  inset:0 0 auto 0;height:150px;
+  background:linear-gradient(to bottom,rgba(0,0,0,0),rgba(255,255,255,.035),rgba(0,0,0,0));
+  animation:eva-beam 9s linear infinite;
+}
+@keyframes eva-beam{0%{transform:translateY(-160px)}100%{transform:translateY(100vh)}}
+
+/* ---- 框架：内嵌发丝线 + 四角 L 标 ---- */
+.eva-frame{position:absolute;inset:5px;border:1px solid var(--eva-hair)}
+.eva-corner{position:absolute;width:17px;height:17px;border:2px solid var(--eva-accent);opacity:.7}
+.eva-corner.tl{left:5px;top:5px;border-right:0;border-bottom:0}
+.eva-corner.tr{right:5px;top:5px;border-left:0;border-bottom:0}
+.eva-corner.bl{left:5px;bottom:5px;border-right:0;border-top:0}
+.eva-corner.br{right:5px;bottom:5px;border-left:0;border-top:0}
+
+/* ---- 左右刻度尺：每 8px 短刻度、每 40px 长刻度 ---- */
+.eva-edge{position:absolute;top:70px;bottom:74px;left:7px;width:8px;opacity:.5;
+  background:
+    repeating-linear-gradient(to bottom,var(--eva-line) 0 1px,rgba(0,0,0,0) 1px 8px) left/3px 100% no-repeat,
+    repeating-linear-gradient(to bottom,var(--eva-accent) 0 1px,rgba(0,0,0,0) 1px 40px) left/8px 100% no-repeat;}
+.eva-edge.r{left:auto;right:7px;background-position:right,right}
+
+/* ---- 底部危险条纹 ---- */
+.eva-hazard{
+  inset:auto 0 0 0;height:5px;opacity:.4;
+  background:repeating-linear-gradient(45deg,
+    var(--eva-secondary) 0 5px,rgba(0,0,0,0) 5px 10px);
+}
+
+/* ---- 右下角：计费标签／当前角色／TPS。保持用户倍率，允许覆盖输入框。 ---- */
+.eva-corner-stack{
+  position:absolute;right:18px;bottom:20px;z-index:3;min-width:0;
+  display:flex;flex-direction:column;align-items:stretch;gap:6px;
+  transform:scale(var(--eva-hud-scale,1));transform-origin:100% 100%;
+}
+.eva-corner-stack[data-fit="minimal"]{width:auto}
+.eva-corner-stack[data-fit="hidden"]{display:none}
+.eva-tags{
+  /* 用网格把两个面叠在同一个格子里：容器尺寸取较宽的一面，
+     所以翻转前后宽度不跳（避让逻辑也就不必跟着重算）。
+     3D 翻转 + backface-visibility 让两面不会同时露出来。 */
+  display:grid;transform-style:preserve-3d;
+  transition:transform .5s cubic-bezier(.2,.75,.2,1);
+  pointer-events:auto;cursor:pointer;
+}
+.eva-tags[data-face="back"]{transform:rotateX(180deg)}
+.eva-tags:focus-visible{outline:2px solid var(--eva-accent);outline-offset:2px}
+.eva-tags-face{
+  grid-area:1/1;display:flex;flex-direction:column;align-items:stretch;gap:5px;
+  backface-visibility:hidden;
+}
+/* 背面只有一个余额标签：整块高度由正面（两个标签）决定，
+   所以把它垂直居中，不然会贴在顶部、下面空一块。 */
+.eva-tags-back{transform:rotateX(180deg);justify-content:center}
+/* 余额是"钱"，要一眼看到。但**不能动位置和尺寸** ——
+   所以只改绘制类属性：底色、字色、字重、内描边（box-shadow 不占布局）、辉光。
+   字号、内外边距、行高全部保持原样，两个标签的位置和大小分毫不变。 */
+/* 用 .eva-tag.eva-tag--balance 提高权重：这条规则在基础 .eva-tag 之前，
+   同权重会被后者（background/color）盖掉 —— 实测底色仍是橙的，就是踩了这个。
+   写死权重就不怕以后规则顺序变动。 */
+.eva-tag.eva-tag--balance{
+  background:var(--eva-surface);color:var(--eva-accent);
+  box-shadow:inset 0 0 0 1px var(--eva-accent),
+    0 0 14px color-mix(in srgb,var(--eva-accent) 30%,transparent);
+}
+/* 背面只有一条余额，让它**占满正面两条标签的总高度**（44px 布局），
+   并把数字放大 —— 视觉上就是"一条顶两条"。
+   数字在上、名称在下，较长的余额也能容纳于组件的固定宽度。 */
+.eva-tags-back .eva-tag--balance{
+  flex:1 1 auto;flex-direction:column;justify-content:center;gap:3px;
+}
+.eva-tag.eva-tag--balance b{
+  font:700 22px/1 ui-monospace,Menlo,monospace;letter-spacing:.01em;
+  font-variant-numeric:tabular-nums;
+  text-shadow:0 0 12px color-mix(in srgb,var(--eva-accent) 80%,transparent);
+}
+.eva-tag--balance small{opacity:.9;letter-spacing:.14em}
+/* 反白标签块：nerv-hud 里那种橙底黑字 */
+.eva-tag{
+  /* space-between：宽度被拉齐之后，主文案贴左、副文案贴右，
+     和下方仪表的网格对齐方式一致，不至于是"左边挤一堆、右边空一片"。 */
+  display:flex;align-items:center;justify-content:space-between;gap:6px;
+  font:700 10px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  letter-spacing:.2em;text-transform:uppercase;
+  padding:4px 8px;background:var(--eva-accent);color:var(--eva-on-accent);
+  box-shadow:0 0 12px color-mix(in srgb,var(--eva-accent) 45%,transparent);
+}
+.eva-tag small{font:400 9px/1 ui-monospace,Menlo,monospace;letter-spacing:.1em;opacity:.72}
+.eva-tag.ghost{background:transparent;color:var(--eva-accent);box-shadow:none;
+  border:1px solid var(--eva-line)}
+
+/* ---- 中央教条区：只标识当前已载入的角色，也是显示设置入口。 ---- */
+.eva-hud{
+  position:relative;display:flex;align-items:stretch;min-width:0;
+  border:1px solid var(--eva-line);background:var(--eva-panel);
+  box-shadow:0 8px 24px var(--eva-shadow),inset 3px 0 0 var(--eva-accent);
+  font:9.5px/1.4 ui-monospace,Menlo,monospace;color:var(--eva-dim);
+  pointer-events:auto;cursor:pointer;
+}
+.eva-hud-vlabel{
+  writing-mode:vertical-rl;text-orientation:upright;
+  display:flex;align-items:center;justify-content:center;padding:7px 4px;
+  border-right:1px solid var(--eva-hair);color:var(--eva-accent);
+  font:10px/1.3 "Hiragino Mincho ProN","Songti SC",serif;letter-spacing:.16em;
+}
+.eva-hud-body{display:flex;flex:1;min-width:0;flex-direction:column;justify-content:center;padding:10px 9px}
+.eva-pilot-status{display:flex;align-items:center;gap:5px;font-size:7px;letter-spacing:.16em;color:var(--eva-dim)}
+.eva-pilot-status i{display:block;width:4px;height:4px;background:var(--eva-mark)}
+.eva-pilot-name{display:block;margin:5px 0 3px;color:var(--eva-accent);
+  font:700 21px/1.15 "Hiragino Mincho ProN","Songti SC",serif;letter-spacing:.16em;white-space:nowrap}
+.eva-pilot-en{font-size:7px;letter-spacing:.14em;color:var(--dsw-alias-label-secondary);white-space:nowrap}
+/* 启动标题和角色名共用中文字体，避免简体字与日文汉字回退到不同字库后错位。 */
+html[data-eva-magi] :is(.eva-pilot-name,.eva-pilot-info>b,.eva-boot-loading h2,.eva-boot-title){
+  font-family:var(--eva-pilot-font);text-align:start;
+}
+.eva-hud::after{content:"";position:absolute;right:5px;top:5px;width:14px;height:4px;
+  background:var(--eva-secondary);clip-path:polygon(0 0,40% 0,55% 100%,15% 100%,0 0,60% 0,85% 0,100% 100%,75% 100%)}
+body:not([data-ds-dark-theme]) .eva-hud::after{width:5px;height:5px;border-radius:50%;clip-path:none}
+.eva-hud:hover{border-color:var(--eva-accent)}
+.eva-hud:focus-visible{outline:2px solid var(--eva-accent);outline-offset:2px}
+@keyframes eva-blink{0%,58%{opacity:1}59%,100%{opacity:.1}}
+
+/* ---- 设置面板 ---- */
+.eva-panel{
+  box-sizing:border-box;position:absolute;z-index:10;
+  width:360px;max-height:640px;overflow:auto;overscroll-behavior:contain;pointer-events:auto;
+  border:1px solid var(--eva-accent);background:var(--eva-surface);
+  box-shadow:0 12px 36px var(--eva-shadow),inset 3px 0 0 var(--eva-accent);
+  font:12px/1.5 ui-monospace,Menlo,monospace;letter-spacing:.02em;color:var(--eva-dim);
+}
+.eva-panel[hidden]{display:none}
+.eva-panel-head{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:8px;padding:8px 12px;
+  background:var(--eva-accent);color:var(--eva-on-accent);font-weight:700;letter-spacing:.12em}
+.eva-panel-head small{margin-left:auto;font:400 8px/1 ui-monospace,Menlo,monospace;letter-spacing:.08em;opacity:.75}
+.eva-panel-close{flex:0 0 28px;height:28px;padding:0;border:1px solid currentColor;background:transparent;
+  color:inherit;cursor:pointer;font:20px/1 sans-serif}
+.eva-panel-body{padding:4px 12px 12px}
+.eva-panel-section+.eva-panel-section{margin-top:12px;padding-top:8px;border-top:1px solid var(--eva-hair)}
+.eva-group{margin:8px 0;color:var(--eva-accent);font-weight:700;font-size:11px;letter-spacing:.12em}
+.eva-advanced>summary{display:flex;align-items:center;justify-content:space-between;cursor:pointer;list-style:none}
+.eva-advanced>summary::-webkit-details-marker{display:none}
+.eva-advanced>summary::after{content:"展开 ＋";font-size:10px;font-weight:400}
+.eva-advanced[open]>summary::after{content:"收起 −"}
+.eva-row{display:flex;align-items:center;gap:8px;padding:7px 0}
+.eva-row-label{flex:1;min-width:0}
+.eva-row-label b{display:block;font-weight:400;font-size:12px;color:var(--eva-ink)}
+.eva-row-label i{display:block;font-style:normal;font-size:10px;color:var(--eva-dim)}
+.eva-row[data-dim="1"]{opacity:.45}
+.eva-sw{flex:0 0 auto;min-width:48px;min-height:28px;padding:5px 7px;cursor:pointer;border-radius:0;
+  border:1px solid var(--eva-line);background:transparent;color:var(--eva-dim);font:700 10px/1 ui-monospace,Menlo,monospace}
+.eva-sw:hover{border-color:var(--eva-accent);color:var(--eva-accent)}
+.eva-sw[aria-checked="true"]{background:var(--eva-accent);color:var(--eva-on-accent);border-color:var(--eva-accent)}
+.eva-sw[aria-checked="true"]:hover{color:var(--eva-on-accent);border-color:var(--eva-accent)}
+.eva-sw[aria-checked="false"]{color:var(--dsw-alias-state-error-primary);border-color:color-mix(in srgb,var(--dsw-alias-state-error-primary) 55%,transparent)}
+.eva-sw[aria-checked="false"]:hover{border-color:var(--dsw-alias-state-error-primary)}
+.eva-panel :is(button,input,summary):focus-visible{outline:2px solid var(--eva-accent);outline-offset:2px}
+.eva-range-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:6px 8px}
+.eva-val{font-size:12px;text-align:right;color:var(--eva-accent);font-variant-numeric:tabular-nums}
+.eva-range-controls{grid-column:1/-1;display:grid;grid-template-columns:28px minmax(0,1fr) 28px;align-items:center;gap:8px}
+.eva-range-button,.eva-range-reset{min-height:28px;border:1px solid var(--eva-line);background:transparent;
+  color:var(--eva-accent);cursor:pointer;font:12px/1 ui-monospace,Menlo,monospace}
+.eva-range-reset{padding:0 6px;font-size:10px}
+.eva-range-button:disabled,.eva-range-reset:disabled{opacity:.35;cursor:default}
+.eva-row input[type=range]{-webkit-appearance:none;appearance:none;box-sizing:border-box;min-width:0;width:100%;height:28px;margin:0;background:transparent;cursor:pointer}
+.eva-row input[type=range]::-webkit-slider-runnable-track{height:3px;background:var(--eva-line)}
+.eva-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:20px;margin-top:-8px;background:var(--eva-accent);border-radius:0}
+.eva-panel-foot{position:sticky;bottom:0;display:flex;gap:8px;padding:9px 12px;background:var(--eva-surface);border-top:1px solid var(--eva-hair);z-index:2}
+.eva-btn{flex:1;min-height:30px;padding:5px;cursor:pointer;border-radius:0;border:1px solid var(--eva-line);
+  background:transparent;color:var(--eva-accent);font:700 10px/1 ui-monospace,Menlo,monospace}
+.eva-btn:disabled{opacity:.4;cursor:default}
+.eva-btn:hover:not(:disabled){background:var(--eva-accent);color:var(--eva-on-accent);border-color:var(--eva-accent)}
+.eva-sound-previews .eva-btn[aria-pressed="true"]{background:var(--eva-accent);color:var(--eva-on-accent)}
+.eva-sound-previews{display:flex;gap:8px;padding:0 0 8px}
+.eva-panel-note{margin:8px 0 0;font-size:10px;color:var(--eva-dim)}
+
+/* ---- 两个标签块：峰谷状态 + 倒计时 ----
+   高峰为红字，空闲／周末／假日为绿字；中性底色保证两种主题都可读。 */
+.eva-tags{--eva-rate-color:var(--dsw-alias-state-success-primary)}
+.eva-tags[data-state="peak"]{--eva-rate-color:var(--dsw-alias-state-error-primary)}
+.eva-tags .eva-tag--state{background:var(--eva-surface);color:var(--eva-rate-color);
+  box-shadow:inset 3px 0 0 var(--eva-rate-color),0 0 12px color-mix(in srgb,var(--eva-rate-color) 16%,transparent)}
+.eva-tags .eva-tag--state small,.eva-tags .eva-tag--remain small{opacity:1}
+.eva-tags .eva-tag--remain{color:var(--eva-rate-color);border-color:color-mix(in srgb,var(--eva-rate-color) 45%,var(--eva-surface))}
+.eva-tag--remain b{font:400 11px/1 ui-monospace,Menlo,monospace;
+  letter-spacing:.06em;font-variant-numeric:tabular-nums}
+.eva-tag--state b{white-space:nowrap}
+/* 推算态：用样式而不是加字来标注（加字会撑宽整栈）。 */
+.eva-tag--state[data-inferred="1"] small{
+  text-decoration:underline;text-decoration-style:dotted;text-underline-offset:2px;
+  opacity:.55}
+.eva-tags[data-imminent="1"] .eva-tag--state{animation:eva-blink 1.15s steps(1) infinite}
+
+/* ============================================================================
+   TPS / 解码速度波形（中央教条区正下方）
+   ----------------------------------------------------------------------------
+   作为仪表栈的最后一个组件，与中央教条区同宽，统一由父级缩放。
+   受"仪表"开关控制：html[data-eva-hud="off"] 时一起隐藏。
+   ============================================================================ */
+.eva-tps{
+  position:relative;right:auto;top:auto;flex:0 0 auto;min-width:0;contain:inline-size;
+  width:100%;
+  /* 高度写死 + overflow:hidden：波形波动时读数位数会变（— / 258 / 1234），
+     不能让它把面板撑大或撑出第二行。1+21+37+18+1 = 78 */
+  height:78px;overflow:hidden;
+  /* border-box：否则 1px 边框会让它比下方仪表盘宽 2px，左边缘差 3px */
+  box-sizing:border-box;
+  transform:none;
+
+  border:1px solid var(--eva-hair);
+  background:var(--eva-panel);
+  box-shadow:0 0 22px var(--eva-shadow), inset 0 0 18px color-mix(in srgb,var(--eva-accent) 5%,transparent);
+  font:9px/1.4 ui-monospace,Menlo,monospace;letter-spacing:.06em;
+  color:var(--dsw-alias-label-tertiary);
+  pointer-events:none;
+}
+html[data-eva-hud="off"] .eva-tps{display:none}
+.eva-tps-head{
+  display:flex;align-items:center;gap:4px;padding:4px 6px;
+  line-height:13px;white-space:nowrap;overflow:hidden;
+  border-bottom:1px solid var(--eva-hair);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-weight:700;font-size:9px;letter-spacing:.22em;color:var(--eva-accent);
+}
+.eva-tps-head i{width:5px;height:5px;background:var(--eva-accent);display:block}
+.eva-tps-head small{margin-left:auto;font:400 8px/1 ui-monospace,Menlo,monospace;
+  letter-spacing:.1em;color:var(--eva-dim)}
+.eva-tps-now{margin-left:4px;
+  /* 固定槽位：数字位数变化时布局不动（否则"TPS / DECODE"会被挤来挤去） */
+  display:inline-block;min-width:3.4em;text-align:right;
+  font:700 13px/1 ui-monospace,Menlo,monospace;letter-spacing:0;
+  font-variant-numeric:tabular-nums;
+  color:var(--eva-accent);text-shadow:0 0 8px color-mix(in srgb,var(--eva-accent) 70%,transparent)}
+.eva-tps-scope{display:block;width:100%;height:34px;margin:3px 0 0;
+  background:
+    repeating-linear-gradient(90deg,var(--eva-hair) 0 1px,transparent 1px 20px),
+    repeating-linear-gradient(0deg,var(--eva-hair) 0 1px,transparent 1px 11px);
+}
+.eva-tps-base{stroke:var(--eva-hair);stroke-width:1}
+.eva-tps-line{fill:none;stroke:var(--eva-accent);stroke-width:1.6;
+  stroke-linejoin:round;stroke-linecap:round;
+  filter:drop-shadow(0 0 3px color-mix(in srgb,var(--eva-accent) 65%,transparent))}
+.eva-tps-foot{display:flex;justify-content:space-between;padding:3px 6px 4px;
+  border-top:1px solid var(--eva-hair);font-size:8px;letter-spacing:.1em;
+  line-height:11px;white-space:nowrap;overflow:hidden}
+.eva-tps-foot b{color:var(--eva-accent);font-weight:700;
+  display:inline-block;min-width:2.6em;text-align:right;font-variant-numeric:tabular-nums}
+
+/* 权限与模型选择器共用角色色、警戒条纹与全部交互状态；保持宿主尺寸。 */
+html[data-eva-magi] body [data-slot="conversation.input.permission"] button,
+html[data-eva-magi] body [data-slot="conversation.input.model"] button{
+  background-color:var(--eva-control);
+  background-image:repeating-linear-gradient(45deg,var(--eva-secondary) 0 3px,transparent 3px 6px);
+  background-size:5px 100%;background-position:left center;background-repeat:no-repeat;
+  color:var(--eva-accent);font-weight:700;letter-spacing:.06em;
+  box-shadow:inset 0 0 0 1px var(--eva-accent);
+  text-shadow:0 0 8px color-mix(in srgb,var(--eva-accent) 45%,transparent);
+  transition:background-color .18s ease,box-shadow .18s ease;
+}
+html[data-eva-magi] body [data-slot="conversation.input.permission"] button:hover:not(:disabled),
+html[data-eva-magi] body [data-slot="conversation.input.model"] button:hover:not(:disabled),
+html[data-eva-magi] body [data-slot="conversation.input.permission"] button[aria-expanded="true"]:not(:disabled),
+html[data-eva-magi] body [data-slot="conversation.input.model"] button[aria-expanded="true"]:not(:disabled){
+  background-color:var(--eva-control-hover);
+  box-shadow:inset 0 0 0 1px var(--eva-accent),0 0 12px color-mix(in srgb,var(--eva-accent) 32%,transparent);
+}
+html[data-eva-magi] body [data-slot="conversation.input.permission"] button:active:not(:disabled),
+html[data-eva-magi] body [data-slot="conversation.input.model"] button:active:not(:disabled){
+  background-color:var(--eva-control-active);
+}
+html[data-eva-magi] body [data-slot="conversation.input.permission"] button:focus-visible,
+html[data-eva-magi] body [data-slot="conversation.input.model"] button:focus-visible{
+  outline:1px solid var(--eva-accent);outline-offset:2px;
+}
+/* 图标和标签继承同一角色前景色。 */
+html[data-eva-magi] body [data-slot="conversation.input.permission"] button > span,
+html[data-eva-magi] body [data-slot="conversation.input.model"] button > span,
+html[data-eva-magi] body [data-slot="conversation.input.permission"] button svg,
+html[data-eva-magi] body [data-slot="conversation.input.model"] button svg{
+  color:inherit;
+}
+html[data-eva-magi] body [data-slot="conversation.input.model"] button > span:first-of-type{
+  text-transform:uppercase;font-family:ui-monospace,Menlo,monospace;letter-spacing:.07em;
+}
+/* 推理等级只保留文字，不再绘制独立徽章。 */
+html[data-eva-magi] body [data-slot="conversation.input.model"] button > span + span{
+  font-family:ui-monospace,Menlo,monospace;font-weight:700;letter-spacing:.06em;
+  text-shadow:none;
+}
+
+/* ============================================================================
+   2. 应用元素的装饰
+   只用「不会改变布局、不会与应用自身冲突」的属性：box-shadow / outline /
+   border-color / letter-spacing。刻意不用 ::before/:after（可能覆盖应用自己的
+   伪元素）与 background-image（可能覆盖应用自己的底纹）。
+   挂钩优先用 data-* 语义属性；少数内部节点通过 HOST_HOOKS 匹配可读后缀。
+   ============================================================================ */
+
+/* 会话列表：选中项左侧一条橙色标志条 —— 仪表盘式的选中态 */
+html[data-eva-magi] [role="treeitem"][aria-selected="true"],
+html[data-eva-magi] [role="treeitem"][data-selected="true"]{
+  box-shadow:inset 2px 0 0 var(--dsw-alias-brand-primary);
+}
+/* 顶栏：用 inset 阴影画分隔线，不占布局（改 border 宽度会挤动内容） */
+html[data-eva-magi] [data-conversation-header]{
+  box-shadow:inset 0 -1px 0 var(--dsw-alias-border-l2);
+}
+/* 主区域：一层极淡的橙色环境光，把中心区从纯黑里拉出来 */
+html[data-eva-magi] [data-conversation-region]:not([data-conversation-region="composer"]){
+  box-shadow:inset 0 0 140px color-mix(in srgb,var(--dsw-alias-brand-primary) 4%,transparent);
+}
+  background-color:var(--eva-control);
+  background-image:repeating-linear-gradient(45deg,
+    color-mix(in srgb, var(--eva-secondary) 40%, transparent) 0 5px,
+    rgba(0,0,0,0) 5px 10px);
+  background-size:5px 100%;
+  background-position:right center;
+  background-repeat:no-repeat;
+}
+/* 会话列表底部的宿主淡出层使用另一套侧栏底色，会在插件市场上方形成色块。 */
+html[data-eva-magi] body [data-slot="sidebar"] [class*="_regionArea"] [class*="_fade"]{
+  background:none;
+}
+/* 品牌标识使用角色主色。 */
+html[data-eva-magi] body [data-slot="sidebar.brand.mark"],
+html[data-eva-magi] body [data-slot="sidebar.brand.name"]{
+  color:var(--eva-accent);
+}
+html[data-eva-magi] body [data-slot="sidebar.brand.name"]{
+  text-transform:uppercase;
+  letter-spacing:.1em;
+  font-family:ui-monospace,Menlo,monospace;
+}
+  background-color:var(--eva-control);
+  color:var(--eva-accent);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--eva-accent) 60%,transparent);
+}
+  background-color:color-mix(in srgb,var(--eva-accent) 14%,transparent);
+}
+  outline:1px solid var(--eva-accent);outline-offset:2px;
+}
+  color:var(--eva-accent);
+  font-weight:700;
+  letter-spacing:.1em;
+}
+/* 面板行（插件那一行，含左侧图标）：角色主色，图标走 currentColor 一起变 */
+html[data-eva-magi] body [data-slot="sidebar"] [class*="_panelRow"],
+html[data-eva-magi] body [data-slot="sidebar"] [class*="_sectionHeader"]{
+  color:var(--eva-accent);
+}
+
+/* 底部「设置」与侧栏图标按钮：角色主色（稳定钩子） */
+html[data-eva-magi] body [data-slot="sidebar.settings"],
+html[data-eva-magi] body [data-slot="sidebar.footer.action"],
+html[data-eva-magi] body [data-slot="sidebar.panellist"] > * > button{
+  color:var(--eva-accent);
+}
+/* 会话前导标记弱化，标题保持正文可读性。 */
+html[data-eva-magi] body [data-slot="sidebar.session.row.leading"]{
+  color:var(--eva-dim);
+}
+html[data-eva-magi] body [data-slot="sidebar.session.row.leading"] *{
+  color:inherit;
+}
+/* 侧栏动作保持硬边。 */
+html[data-eva-magi] body [data-slot="sidebar.workspaces.session.row.action"] *{
+  border-radius:0;
+}
+
+/* ============================================================================
+   音声管制：NERV 外部音源终端。
+   角色面板、警戒条纹、机械双环；动画仅表示播放状态，不模拟真实频谱。
+   曲名、来源和进度均由系统媒体接口提供。停播、后台及减少动态效果时冻结。
+   ============================================================================ */
+.eva-mp{
+  --mp-accent:var(--eva-accent);--mp-ink:var(--eva-ink);--mp-dim:var(--eva-dim);--mp-line:var(--eva-line);--mp-active:var(--eva-mark);
+  position:absolute;left:0;top:0;box-sizing:border-box;
+  padding:10px 12px 12px;border:1px solid var(--mp-accent);background:var(--eva-surface);
+  color:var(--mp-ink);font-family:ui-monospace,Menlo,monospace;
+  box-shadow:0 8px 28px var(--eva-shadow),inset 0 0 24px color-mix(in srgb,var(--eva-accent) 3%,transparent);
+  pointer-events:auto;transform:scale(var(--eva-clock-scale,1));transform-origin:0 0;z-index:1;
+}
+.eva-mp::before{
+  content:"";position:absolute;left:-1px;top:-1px;width:4px;height:32px;background:var(--mp-accent);
+}
+.eva-mp::after{
+  content:"";position:absolute;right:4px;bottom:4px;width:10px;height:10px;
+  border-right:2px solid var(--mp-accent);border-bottom:2px solid var(--mp-accent);pointer-events:none;
+}
+.eva-mp-loading{position:absolute;inset:42px 12px 58px;z-index:2;display:none;pointer-events:none;
+  background:var(--eva-surface);color:var(--mp-accent);place-content:center;gap:7px;text-align:center;
+  border-block:1px solid var(--mp-line);font:700 17px/1.4 ui-monospace,Menlo,monospace;letter-spacing:.2em}
+.eva-mp-loading small{font-size:8px;font-weight:400;letter-spacing:.25em}
+.eva-mp-loading i{display:block;width:168px;height:4px;background:repeating-linear-gradient(90deg,var(--mp-accent) 0 12px,transparent 12px 15px);transform-origin:left;
+  animation:mp-connect-bar .6s steps(9,end) both}
+.eva-mp[data-entering="1"] .eva-mp-loading{display:grid;animation:mp-connect .65s linear both}
+.eva-mp[data-command] .eva-mp-hazard{animation:mp-command .6s linear infinite;background-size:12px 100%}
+@keyframes mp-connect{0%,65%{opacity:1}100%{opacity:0}}
+@keyframes mp-connect-bar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes mp-command{to{background-position:12px 0}}
+html[data-eva-music="off"] .eva-mp{display:none}
+.eva-mp-head{display:flex;align-items:center;gap:8px;padding-bottom:7px;border-bottom:1px solid var(--mp-line)}
+.eva-mp-head b{font-size:16px;line-height:1.1;letter-spacing:.18em;color:var(--mp-accent)}
+.eva-mp-head small{font-size:8px;letter-spacing:.18em;color:var(--mp-dim)}
+.eva-mp-hazard{margin-left:auto;width:45px;height:11px;background:repeating-linear-gradient(130deg,var(--eva-secondary) 0 4px,var(--eva-surface) 4px 8px)}
+.eva-mp-source{display:flex;align-items:center;gap:8px;margin-top:7px;min-width:0;
+  color:var(--mp-dim);font-size:8px;letter-spacing:.1em}
+.eva-mp-source>small{flex:0 0 auto;font-size:8px;color:var(--mp-accent)}
+.eva-mp-src{margin-left:auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:215px;font-size:10px;letter-spacing:0}
+.eva-mp-name{min-width:0;margin-top:7px}
+.eva-mp-title{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  font-size:16px;line-height:1.4;font-weight:700;letter-spacing:.015em;color:var(--mp-ink)}
+.eva-mp-artist{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  min-height:15px;color:var(--mp-dim);font-size:10px;line-height:1.5}
+.eva-mp-deck{display:grid;grid-template-columns:84px minmax(0,1fr);gap:12px;align-items:center;
+  margin:8px 0;padding:7px 0;border-top:1px solid var(--mp-line);border-bottom:1px solid var(--mp-line)}
+.eva-mp-rings{position:relative;width:84px;height:84px;overflow:hidden;
+  background:linear-gradient(transparent 49%,color-mix(in srgb,var(--eva-accent) 15%,transparent) 49% 50%,transparent 50%),linear-gradient(90deg,transparent 49%,color-mix(in srgb,var(--eva-accent) 15%,transparent) 49% 50%,transparent 50%)}
+.eva-mp-ring{position:absolute;inset:0;display:block;width:84px;height:84px;color:var(--mp-accent);
+  animation:mp-spin 18s steps(120) infinite;animation-play-state:paused;transform-origin:50% 50%}
+.eva-mp-ring--solid{color:var(--mp-active);animation-duration:11s;animation-direction:reverse}
+.eva-mp[data-playing="1"] .eva-mp-ring{animation-play-state:running}
+.eva-mp-core{position:absolute;inset:0;width:84px;height:84px;color:var(--mp-accent)}
+.eva-mp-core text{fill:var(--mp-ink);font:7px ui-monospace,Menlo,monospace;letter-spacing:1px}
+@keyframes mp-spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.eva-mp-signal{min-width:0;position:relative;overflow:hidden}
+.eva-mp-status{display:flex;align-items:center;justify-content:space-between;gap:6px;
+  color:var(--mp-accent);font-size:12px;font-weight:700;letter-spacing:.08em}
+.eva-mp-status small{font-size:8px;letter-spacing:.14em}
+.eva-mp[data-playing="1"] .eva-mp-status{color:var(--mp-active)}
+.eva-mp-eq{display:flex;gap:4px;align-items:flex-end;height:31px;margin:8px 0 5px;
+  background:repeating-linear-gradient(0deg,color-mix(in srgb,var(--eva-accent) 8%,transparent) 0 1px,transparent 1px 8px)}
+.eva-mp-eq i{display:block;flex:1;height:100%;transform:scaleY(.18);transform-origin:50% 100%;
+  background:repeating-linear-gradient(0deg,var(--mp-accent) 0 3px,transparent 3px 5px);
+  animation:mp-eq 1.4s steps(5,end) infinite alternate;animation-play-state:paused}
+.eva-mp-eq i:nth-child(3n){animation-duration:1.1s;animation-delay:-.6s}
+.eva-mp-eq i:nth-child(3n+1){animation-duration:1.7s;animation-delay:-1.1s}
+.eva-mp-eq i:nth-child(even){animation-direction:alternate-reverse}
+.eva-mp[data-playing="1"] .eva-mp-eq i{animation-play-state:running}
+.eva-mp-signal>small{display:block;color:var(--mp-dim);font-size:7px;letter-spacing:.1em}
+@keyframes mp-eq{0%{transform:scaleY(.18)}35%{transform:scaleY(.65)}70%{transform:scaleY(.4)}100%{transform:scaleY(1)}}
+.eva-mp-times{display:flex;align-items:baseline;justify-content:space-between;font-variant-numeric:tabular-nums}
+.eva-mp-times>span{display:flex;align-items:baseline;gap:6px}
+.eva-mp-times small{font-size:7px;letter-spacing:.08em;color:var(--mp-dim)}
+.eva-mp-times b{font-size:15px;font-weight:500;line-height:1.2}
+.eva-mp-cur{color:var(--mp-accent)}
+.eva-mp-tot{color:var(--mp-dim)}
+.eva-mp-bar{position:relative;height:6px;margin:5px 0 10px;background:color-mix(in srgb,var(--eva-accent) 11%,transparent);overflow:hidden}
+.eva-mp-bar::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 11px,var(--eva-surface) 11px 13px);pointer-events:none}
+.eva-mp-bar i{display:block;height:100%;width:0;background:var(--mp-accent);transition:width .35s linear}
+.eva-mp-btns{display:grid;grid-template-columns:1fr 1.45fr 1fr;gap:5px}
+.eva-mp-btn{min-width:0;height:36px;padding:0 4px;cursor:pointer;background:color-mix(in srgb,var(--eva-accent) 3%,transparent);
+  border:1px solid var(--mp-line);color:var(--mp-accent);font:700 9px ui-monospace,Menlo,monospace;letter-spacing:.05em;
+  display:flex;align-items:center;justify-content:center;gap:6px;transition:background-color .15s,color .15s}
+.eva-mp-btn svg{width:15px;height:15px;flex:0 0 auto;fill:currentColor}
+.eva-mp-btn[data-act="play"]{border-color:var(--mp-accent);background:var(--mp-accent);color:var(--eva-on-accent)}
+.eva-mp-btn:disabled{opacity:.45;cursor:default}
+.eva-mp-btn:not(:disabled):hover{background:color-mix(in srgb,var(--eva-accent) 15%,transparent);border-color:var(--mp-accent);color:var(--mp-ink)}
+.eva-mp-btn[data-act="play"]:not(:disabled):hover{background:var(--dsw-alias-button-primary-hover);color:var(--eva-on-accent)}
+.eva-mp-btn:not(:disabled):active{transform:translateY(1px)}
+.eva-mp-btn:focus-visible{outline:2px solid var(--mp-active);outline-offset:2px}
+.eva-mp-ico-pause{display:none}
+.eva-mp[data-playing="1"] .eva-mp-ico-pause{display:block}
+.eva-mp[data-playing="1"] .eva-mp-ico-play{display:none}
+
+/* ============================================================================
+   時刻管制：与音声管制共用当前角色的面板与硬边规格。
+   七段显示直接读取系统时间，秒刻度每秒推进，不表示网络校时状态。
+   日期、本地 UTC 偏移、UTC 时刻独立排版；底部仅显示实际解码状态。
+   ============================================================================ */
+.eva-clockpanel{
+  --cp-accent:var(--eva-accent);--cp-ink:var(--eva-accent);--cp-dim:var(--eva-dim);--cp-line:var(--eva-line);--cp-active:var(--eva-mark);
+  position:absolute;left:0;top:0;box-sizing:border-box;padding:10px 12px 12px;
+  background:var(--eva-surface);border:1px solid var(--cp-accent);color:var(--cp-ink);
+  box-shadow:0 8px 28px var(--eva-shadow),inset 0 0 24px color-mix(in srgb,var(--eva-accent) 3%,transparent);
+  font-family:ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums;z-index:0;
+  transform:scale(var(--eva-clock-scale,1));transform-origin:0 0;
+}
+.eva-clockpanel::before{content:"";position:absolute;left:-1px;top:-1px;width:4px;height:32px;background:var(--cp-accent)}
+.eva-clockpanel::after{content:"";position:absolute;right:4px;bottom:4px;width:10px;height:10px;
+  border-right:2px solid var(--cp-accent);border-bottom:2px solid var(--cp-accent)}
+html[data-eva-clock="off"] .eva-clockpanel{display:none}
+.eva-cp-top{display:flex;align-items:center;gap:8px;padding-bottom:7px;border-bottom:1px solid var(--cp-line)}
+.eva-cp-top b{font-size:16px;line-height:1.1;letter-spacing:.18em;color:var(--cp-accent)}
+.eva-cp-top small{font-size:8px;letter-spacing:.16em;color:var(--cp-dim)}
+.eva-cp-top i{margin-left:auto;width:45px;height:11px;background:repeating-linear-gradient(130deg,var(--eva-secondary) 0 4px,var(--eva-surface) 4px 8px)}
+.eva-cp-mode{display:flex;align-items:center;justify-content:space-between;margin-top:8px;
+  color:var(--cp-dim);font-size:8px;line-height:1;letter-spacing:.12em}
+.eva-cp-mode>span:last-child{color:var(--cp-active)}
+.eva-cp-main{padding:10px 0 9px;border-bottom:1px solid var(--cp-line)}
+.eva-cp-digits{display:flex;align-items:flex-end;justify-content:center;gap:8px}
+.eva-cp-pair>small{display:block;margin-bottom:5px;text-align:center;color:var(--cp-dim);font-size:7px;letter-spacing:.16em;line-height:1}
+.eva-cp-number{display:flex;align-items:flex-end;gap:5px}
+.eva-cp-dg{display:block;height:58px;width:34px}
+.eva-cp-dg use{stroke:var(--eva-surface);stroke-width:.35;stroke-linejoin:round}
+.eva-cp-ghost{fill:var(--eva-ghost)}
+.eva-cp-lit{fill:var(--cp-ink)}
+.eva-cp-pair--seconds .eva-cp-dg{height:44px;width:26px}
+.eva-cp-pair--seconds .eva-cp-lit{fill:var(--cp-accent)}
+.eva-cp-cl{display:block;width:8px;height:58px;fill:var(--cp-accent)}
+.eva-cp-cl--seconds{height:44px;opacity:.75}
+.eva-cp-side{display:grid;grid-template-columns:1.22fr 1fr 1fr;gap:7px;margin-top:9px}
+.eva-cp-block{min-width:0;padding:1px 0 2px 7px;border-left:1px solid var(--cp-line);overflow:hidden}
+.eva-cp-block small{display:flex;align-items:center;justify-content:space-between;gap:4px;margin-bottom:5px;
+  color:var(--cp-dim);font-size:7px;line-height:1;letter-spacing:.05em;white-space:nowrap}
+.eva-cp-weekday{font:inherit;color:var(--cp-accent)}
+.eva-cp-block>b{display:block;font-size:12px;font-weight:500;line-height:1.2;color:var(--cp-ink);white-space:nowrap}
+.eva-cp-block .eva-cp-tz{font-size:11px}
+.eva-cp-block .eva-cp-utc{color:var(--cp-active)}
+.eva-cp-second-head{display:flex;justify-content:space-between;align-items:center;margin-top:10px;
+  color:var(--cp-dim);font-size:7px;line-height:1;letter-spacing:.08em}
+.eva-cp-second-head b{color:var(--cp-accent);font-weight:400}
+.eva-cp-second-track{position:relative;height:4px;margin-top:5px;overflow:hidden;background:color-mix(in srgb,var(--eva-accent) 11%,transparent)}
+.eva-cp-second-track i{display:block;width:0;height:100%;background:var(--cp-accent)}
+.eva-cp-second-track::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 calc(100% / 60 - 2px),var(--eva-surface) calc(100% / 60 - 2px) calc(100% / 60))}
+.eva-cp-decode{display:flex;align-items:center;gap:9px;margin-top:9px;padding-top:7px;border-top:1px solid var(--cp-line)}
+.eva-cp-decode>small{font-size:7px;line-height:1.5;letter-spacing:.08em;color:var(--cp-dim);flex:0 0 auto}
+.eva-cp-lamps{display:flex;gap:3px;flex:1;min-width:0}
+.eva-cp-lamps span{flex:1;text-align:center;font-size:7px;line-height:1;font-weight:500;letter-spacing:.05em;
+  padding:4px 0;border:1px solid var(--eva-hair);color:var(--eva-dim)}
+.eva-cp-lamps span[data-on="1"]{background:color-mix(in srgb,var(--eva-accent) 10%,transparent);border-color:var(--cp-accent);color:var(--cp-accent)}
+.eva-cp-lamps span:nth-child(1)[data-on="1"]{border-color:var(--eva-dim);background:color-mix(in srgb,var(--eva-dim) 8%,transparent);color:var(--cp-dim)}
+.eva-cp-lamps span:nth-child(3)[data-on="1"]{border-color:var(--cp-active);background:color-mix(in srgb,var(--eva-mark) 8%,transparent);color:var(--cp-active)}
+
+/* 输入框与 portal 菜单：全模式角色配色，只修改绘制属性，保持宿主尺寸。 */
+/* 输入区外层横跨整个会话宽度；清除宿主铺底渐变与区域阴影，避免卡片两侧出现色块。 */
+html[data-eva-magi] body [data-composer-seat],
+html[data-eva-magi] body [data-conversation-region="composer"]{
+  background:none;box-shadow:none;
+}
+html[data-eva-magi] body [data-composer-card]{
+  background-color:var(--eva-control);
+  /* 右缘红黑危险条纹：卡片右端到发送按钮之间还有约 17px 空档，画条带进去。
+     带宽 5px —— 与权限块、侧栏两条统一（原来这里是 6px，是唯一不一致的一条）。 */
+  background-image:repeating-linear-gradient(45deg,var(--eva-secondary) 0 3px,rgba(0,0,0,0) 3px 6px);
+  background-size:5px 100%;
+  background-position:right center;
+  background-repeat:no-repeat;
+  box-shadow:inset 0 0 0 1px var(--eva-accent),
+    inset 0 0 34px color-mix(in srgb,var(--eva-accent) 5%,transparent);
+  transition:box-shadow .18s ease;
+}
+html[data-eva-magi] body [data-composer-card]:focus-within{
+  box-shadow:inset 0 0 0 1px var(--eva-accent),
+    inset 0 0 34px color-mix(in srgb,var(--eva-accent) 9%,transparent),
+    0 0 22px color-mix(in srgb,var(--eva-accent) 20%,transparent);
+}
+/* 正文使用阅读色，光标使用角色主色。 */
+html[data-eva-magi] body [data-composer-input]{
+  color:var(--eva-ink);
+  caret-color:var(--eva-accent);
+  text-shadow:none;
+}
+  color:var(--eva-dim);
+}
+  background-color:var(--eva-control);
+  color:var(--eva-accent);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--eva-accent) 70%,transparent);
+}
+  background-color:var(--eva-accent);
+  color:var(--eva-on-accent);
+  box-shadow:inset 0 0 0 1px var(--eva-accent), 0 0 14px color-mix(in srgb,var(--eva-accent) 30%,transparent);
+}background-color:var(--dsw-alias-button-primary-hover)}
+
+/* ---- 弹出菜单（模型 / 推理等级 / 权限 …）----
+   钩子是 role="menu" + data-menu-material（语义 + 官方属性；正文里的菜单共用，
+   对一套皮肤来说正好统一）。菜单里的「标签 / 值」读数行照参考图 CODE : 258 的排法：
+   标签使用角色主色、数值使用次级阅读色。 */
+/* ⚠️ 选择器里带上 [data-menu-material] 是**必须的**：
+   本项目更靠后还有一条 :is([role=dialog],[role=menu],[role=listbox]) 的弹层描边规则，
+   它与 [role=menu] 那条**特异性完全相同**（都是 0,2,1），靠源码顺序它会赢 ——
+   实测菜单描边被染成橙色 rgb(255,106,0)。加上这个官方属性后特异性升到 0,3,1，
+   与源码顺序无关地稳定生效。
+   （注意：本段 CSS 是 JS 模板字符串，注释里不能出现反引号，否则会提前截断字符串。） */
+html[data-eva-magi] body [role="menu"][data-menu-material]{
+  background-color:var(--eva-control);
+  box-shadow:inset 0 0 0 1px var(--eva-accent),
+    0 10px 30px var(--eva-shadow),
+    0 0 18px color-mix(in srgb,var(--eva-accent) 16%,transparent);
+  color:var(--eva-accent);
+}
+html[data-eva-magi] body [role="menu"][data-menu-material] [class*="_cellLabel"]{
+  color:var(--eva-accent);font-weight:700;letter-spacing:.08em;
+}
+html[data-eva-magi] body [role="menu"][data-menu-material] [class*="_cellValue"]{
+  color:var(--eva-dim);
+  font-family:ui-monospace,Menlo,monospace;letter-spacing:.04em;
+}
+html[data-eva-magi] body [role="menu"][data-menu-material] [role="menuitem"]:hover,
+html[data-eva-magi] body [role="menu"][data-menu-material] [role="option"]:hover,
+html[data-eva-magi] body [role="menu"][data-menu-material] button:hover{
+  background-color:color-mix(in srgb,var(--eva-accent) 14%,transparent);color:var(--eva-accent);
+}
+/* 右侧栏 / 停靠面板：刻意不加描边。
+   踩过的坑：早先这里给 [data-sidebar-right-panel] 加了 inset 1px 环，那个面板却是
+   全高透明层（x 从屏幕正中到右缘、y 全高），于是它的左边在屏幕正中画出一条竖线、
+   上边在顶端画出一条横线，拼成一个毫无意义的 L 形——用户的评价就是「多余的」。
+   教训：装饰只能画在真的会绘制出来的表面上。 */
+/* 按钮：加字距，悬停时内描一圈橙 —— 不设背景，避免盖掉应用的状态色 */
+html[data-eva-magi] button{letter-spacing:.08em}
+html[data-eva-magi] button:hover{
+  box-shadow:inset 0 0 0 1px var(--dsw-alias-border-l4);
+}
+/* 键帽：老终端的实体键 */
+html[data-eva-magi] kbd{
+  padding:1px 5px;border:1px solid var(--dsw-alias-border-l3);
+  background:var(--dsw-alias-bg-layer-3);
+  box-shadow:0 1px 0 var(--dsw-alias-border-l2);
+}
+/* 滚动条：细橙条，像仪表刻度 */
+html[data-eva-magi] ::-webkit-scrollbar{width:10px;height:10px}
+html[data-eva-magi] ::-webkit-scrollbar-track{background:transparent}
+html[data-eva-magi] ::-webkit-scrollbar-thumb{
+  background:var(--dsw-alias-scrollbar-bg-l1);border:0;
+  border-left:1px solid var(--dsw-alias-border-l2);
+}
+html[data-eva-magi] ::-webkit-scrollbar-thumb:hover{background:var(--dsw-alias-scrollbar-hover-l1)}
+html[data-eva-magi] ::-webkit-scrollbar-corner{background:transparent}
+/* 分隔线变危险条纹 */
+html[data-eva-magi] hr{
+  border:0;height:5px;opacity:.4;
+  background:repeating-linear-gradient(45deg,
+    var(--eva-secondary) 0 5px,rgba(0,0,0,0) 5px 10px);
+}
+  border-bottom-color:transparent;
+  background-image:repeating-linear-gradient(45deg,
+    color-mix(in srgb,var(--eva-secondary) 40%,transparent) 0 5px,transparent 5px 10px);
+  background-position:left bottom;background-size:100% 5px;background-repeat:no-repeat;
+}
+/* 代码块左侧主色竖线 */
+html[data-eva-magi] pre{box-shadow:inset 2px 0 0 var(--dsw-alias-brand-primary)}
+/* 浮层：橙色外环 + 冷光 */
+html[data-eva-magi] :is([role="dialog"],[role="menu"],[role="listbox"]){
+  box-shadow:0 0 0 1px var(--dsw-alias-brand-primary),
+    0 0 30px color-mix(in srgb,var(--dsw-alias-brand-primary) 14%,transparent);
+}
+/* 焦点环统一走主色（focus.css 的兜底色是 state-business-primary，这里显式固定） */
+html[data-eva-magi] :focus-visible{--dsw-focus-ring-color:var(--dsw-alias-brand-primary)}
+
+/* ============================================================================
+   2b. 追加的结构元素：雷达环 / 角编号 / 色散 / 扫描高光
+   ============================================================================ */
+
+/* 角色底纹：明日香的双斜切／绫波丽的细环，中心留给会话内容。 */
+.eva-emg{position:absolute;inset:0;z-index:0;opacity:var(--eva-wallpaper-strength,.5);pointer-events:none;overflow:hidden}
+html[data-eva-wallpaper="off"] .eva-emg{display:none}
+.eva-character-art{position:absolute;right:-100px;top:18%;width:min(52vw,680px);aspect-ratio:1;color:var(--eva-accent);opacity:.17}
+.eva-character-art svg{display:block;width:100%;height:100%;overflow:visible}
+.eva-character-art text{font:700 210px/1 ui-monospace,Menlo,monospace;letter-spacing:-18px;fill:currentColor;stroke:none}
+.eva-character-art .eva-art-label{font:500 10px/1 ui-monospace,Menlo,monospace;letter-spacing:2.2px}
+.eva-character-art .eva-art-micro{font:400 7px/1 ui-monospace,Menlo,monospace;letter-spacing:1.3px;opacity:.8}
+.eva-character-art .eva-art-fine{stroke-width:1;opacity:.7}
+.eva-character-art .eva-art-panel{fill:currentColor;fill-opacity:.06;stroke:none}
+.eva-character-art .eva-art-detail{color:var(--eva-mark)}
+.eva-character-art--asuka .eva-art-detail{color:var(--eva-secondary)}
+.eva-character-art--rei{display:none}
+body:not([data-ds-dark-theme]) .eva-character-art--asuka{display:none}
+body:not([data-ds-dark-theme]) .eva-character-art--rei{display:block;opacity:.19}
+/* 左侧半身线稿：外层轻羽化，内层使用透明 PNG 轮廓作为角色色蒙版。
+   与现有背景共用开关和强度；不产生点击区域，不修改宿主正文排版。 */
+.eva-character-portrait{position:absolute;left:var(--eva-portrait-left,24px);top:var(--eva-portrait-top,100px);
+  width:var(--eva-portrait-width,280px);height:var(--eva-portrait-height,420px);
+  color:var(--eva-accent);opacity:.52;pointer-events:none;overflow:hidden;
+  mask-image:linear-gradient(90deg,transparent,#000 8%,#000 74%,transparent)}
+.eva-character-portrait::before{content:"";position:absolute;inset:0;background:currentColor;
+  /* 对齐腰部轮廓，消除原图下方透明留白：明日香 50/1536，绫波丽 14/1536。 */
+  transform:translateY(3.2552083333%)}
+body:not([data-ds-dark-theme]) .eva-character-portrait{opacity:.48}
+body:not([data-ds-dark-theme]) .eva-character-portrait::before{
+  transform:translateY(.9114583333%)}
+@media(max-width:640px){.eva-character-portrait{opacity:.3}
+  body:not([data-ds-dark-theme]) .eva-character-portrait{opacity:.26}}
+.eva-character-caption{position:absolute;left:24px;top:43%;writing-mode:vertical-rl;
+  color:var(--eva-accent);opacity:.22;font:10px/1 ui-monospace,Menlo,monospace;letter-spacing:.38em}
+body[data-ds-dark-theme] .eva-character-caption{color:var(--eva-secondary)}
+@media (prefers-reduced-motion:reduce){animation:none!important;transition:none!important}
+}
+/* 四角编号：EVA 屏幕上到处是这种规格码（设施编号 / 机体番号 / 模式码）。
+   刻意压在 top:52px 而不是顶角 —— 顶栏两端分别是应用自己的徽标与侧栏折叠按钮，
+   第一版把编号放顶角时正好压在徽标上。 */
+.eva-id{
+  position:absolute;font:9px/1 ui-monospace,Menlo,monospace;
+  letter-spacing:.2em;color:var(--eva-accent);opacity:.55;padding:4px 6px;
+}
+.eva-id.tl{left:6px;top:52px}
+.eva-id.tr{right:6px;top:52px}
+
+/* CRT 色散：红/青两条线相对偏移 1px，模仿显像管的三枪不重合。
+   只作用在内嵌框架上，所以不会让正文发虚。 */
+.eva-frame::before,.eva-frame::after{
+  content:"";position:absolute;inset:-3px;border:1px solid;opacity:.3;
+}
+.eva-frame::before{border-color:var(--eva-secondary);transform:translate(-1px,-1px)}
+.eva-frame::after{border-color:var(--eva-mark);transform:translate(1px,1px)}
+
+/* 刻度尺上的扫描高光：像游标量规在滑 */
+.eva-edge{overflow:hidden}
+.eva-edge::after{
+  content:"";position:absolute;left:0;right:0;height:70px;opacity:.28;
+  background:linear-gradient(to bottom,rgba(0,0,0,0),var(--eva-accent),rgba(0,0,0,0));
+  animation:eva-ruler 6.5s linear infinite;
+}
+.eva-edge.r::after{animation-duration:7.8s;animation-delay:-2.5s}
+@keyframes eva-ruler{0%{top:-70px}100%{top:100%}}
+
+/* GIF → NERV 警报 → 黑底打字引导 → 全屏驾驶员认证舱 → 音声同步 → 聊天交接。 */
+.eva-boot{
+  position:fixed;inset:0;z-index:2147483100;pointer-events:auto;
+  display:grid;place-items:center;overflow:hidden;background:#000101;color:var(--boot-ink);
+  font-family:ui-monospace,Menlo,monospace;isolation:isolate}
+.eva-boot[data-pilot="rei"]{
+/* The macOS host subtracts body-level overlays from window drag regions.
+   Keep the boot background draggable, with the whole card-to-plug path interactive. */
+html[data-platform="darwin"] .eva-boot{-webkit-app-region:drag}
+html[data-platform="darwin"] .eva-boot :where(.eva-boot-grid,.eva-entry-bay,a,button,input,select,textarea,summary,
+  [contenteditable="true"],[tabindex],[role="button"],[role="link"],[role="tab"],[role="option"],
+  [role="checkbox"],[role="radio"],[role="switch"],[role="slider"],[role="combobox"],[role="textbox"],
+  [role="menu"],[role="menuitem"],[role="menuitemcheckbox"],[role="menuitemradio"],[role="listbox"],
+  [role="dialog"],[role="alertdialog"],[role="tooltip"]){-webkit-app-region:no-drag}
+.eva-boot *, .eva-boot *::before, .eva-boot *::after{box-sizing:border-box}
+.eva-boot:is([data-phase="select"],[data-phase="loading"]){transition:background-color .65s cubic-bezier(.2,.7,.2,1),color .65s ease}
+.eva-boot:is([data-phase="select"],[data-phase="loading"]) :is(.eva-boot-console,.eva-boot-title,.eva-boot-kicker,.eva-boot-kicker small,.eva-boot-hint,.eva-boot-header,.eva-boot-security,.eva-boot-security b,.eva-boot-exit,.eva-boot-resume,.eva-boot-sound,.eva-nerv-logo,.eva-entry-bay,.eva-entry-label,.eva-entry-label b,.eva-entry-spec,.eva-entry-spec b,.eva-entry-lock,.eva-entry-target,.eva-entry-machine,.eva-entry-window,.eva-entry-plug *,.eva-boot-footer,.eva-boot-status,.eva-boot-loading,.eva-boot-loading h2,.eva-boot-loading p,.eva-boot-code,.eva-sync-portrait,.eva-sync-orbit,.eva-sync-systems,.eva-sync-systems b,.eva-boot-meter,.eva-boot-meter i,.eva-boot-progress-label,.eva-boot-progress-label time,.eva-sync-caption,.eva-boot-magi,.eva-boot-magi span,.eva-boot-magi i){transition:color .65s ease,background-color .65s ease,border-color .65s ease,fill .65s ease,stroke .65s ease,box-shadow .65s ease}
+.eva-boot-theme-sweep{position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(105deg,transparent 35%,color-mix(in srgb,var(--boot-accent) 7%,transparent) 49%,color-mix(in srgb,var(--boot-accent) 22%,transparent) 50%,transparent 51%);animation:eva-theme-sweep .7s cubic-bezier(.2,.6,.2,1) both}
+@keyframes eva-theme-sweep{from{transform:translateX(-100%);opacity:0}15%,65%{opacity:1}to{transform:translateX(100%);opacity:0}}
+.eva-boot[data-phase="loading"] .eva-boot-loading{animation:eva-sync-reveal .5s ease-out both}
+@keyframes eva-sync-reveal{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.eva-boot [hidden]{display:none!important}
+.eva-boot-gif{display:block;width:min(512px,calc(100vw - 24px),calc(100dvh - 24px));
+  height:auto;aspect-ratio:1;object-fit:contain;image-rendering:auto}
+.eva-boot:not([data-phase="gif"]){display:block;background:var(--boot-surface)}
+.eva-boot[data-phase="emergency"]{background:#000}
+.eva-emergency{position:absolute;inset:0;overflow:hidden;background:#000;pointer-events:none}
+.eva-emergency>svg{display:block;width:100%;height:100%;animation:eva-alert-sequence 3s ease-in-out both}
+.eva-emergency .eva-alert-cell{animation:eva-alert-cell 1.25s ease-in-out infinite;animation-delay:var(--alert-lag,0s)}
+@keyframes eva-alert-sequence{0%{opacity:0}10%{opacity:.96}28%{opacity:.42}45%{opacity:.98}62%{opacity:.3}78%{opacity:.96}91%{opacity:.68}100%{opacity:0}}
+@keyframes eva-alert-cell{0%,100%{opacity:1}50%{opacity:.24}}
+.eva-emergency-next{position:absolute;right:24px;top:24px;border:1px solid #86191c;border-radius:0;padding:9px 12px;background:#080101;color:#ec6a6d;cursor:pointer;font:10px/1.5 ui-monospace,Menlo,monospace}
+.eva-boot-backdrop{position:absolute;inset:0;overflow:hidden;pointer-events:none;
+  background:radial-gradient(ellipse at 20% 35%,#d56c1810,transparent 65%),radial-gradient(ellipse at 90% 100%,#ef7d2112,transparent 55%)}
+.eva-boot-contours{position:absolute;inset:0;width:100%;height:100%;color:#f49344;opacity:.65}
+.eva-boot-watermark{position:absolute;right:-.035em;bottom:-.13em;color:#f49344;opacity:.035;font:800 clamp(260px,48vw,900px)/1 ui-monospace,Menlo,monospace;letter-spacing:-.1em}
+.eva-boot-rail{position:absolute;top:30%;bottom:12%;width:10px;opacity:.5;background:repeating-linear-gradient(0deg,#f49344 0 1px,transparent 1px 24px)}
+.eva-boot-rail.left{left:10px}.eva-boot-rail.right{right:10px}
+.eva-boot-console{position:relative;z-index:1;width:100%;height:100%;height:100dvh;margin:0;
+  padding:clamp(16px,3dvh,38px) clamp(24px,3.5vw,72px) clamp(12px,2dvh,24px);
+  display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:clamp(14px,2.5dvh,30px);min-height:0}
+.eva-boot-header{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;border-top:2px solid var(--boot-accent);padding-top:16px}
+.eva-boot-heading{min-width:0}.eva-boot-brand{display:flex;gap:12px;align-items:center;margin-bottom:10px}
+.eva-boot-brand .eva-nerv-logo{width:24px;height:28px}
+html[data-eva-magi] .eva-boot .eva-nerv-logo{background:var(--boot-accent)}
+.eva-boot-kicker{margin:0;color:var(--boot-accent);font:10px/1.6 ui-monospace,Menlo,monospace;letter-spacing:.22em}
+.eva-boot-kicker small{display:block;color:var(--boot-dim);font-size:8px;letter-spacing:.16em}
+.eva-boot-title{margin:0;font:500 clamp(26px,3.2vw,54px)/1.3 var(--eva-pilot-font);letter-spacing:.13em;color:var(--boot-ink);font-synthesis:none;-webkit-text-stroke:0}
+html[data-eva-magi] .eva-boot-title{-webkit-text-stroke:0}
+.eva-boot-hint{margin:10px 0 0;color:var(--boot-dim);font:11px/1.6 ui-monospace,Menlo,monospace}
+.eva-boot-header-side{display:flex;flex-direction:column;gap:10px;align-items:flex-end;text-align:right;flex-shrink:0}
+.eva-boot-actions{display:flex;align-items:center;gap:10px}
+.eva-boot-languages{display:flex;gap:2px;padding:3px;border:1px solid #774820;background:#100d09cc}
+.eva-boot-languages button{border:1px solid transparent;border-radius:0;padding:5px 7px;background:transparent;color:#b8a692;cursor:pointer;font:10px/1.4 ui-monospace,Menlo,monospace;white-space:nowrap}
+.eva-boot-languages button[aria-pressed="true"]{color:#ffbe82;background:#f493441a;border-color:#a45d2b}
+.eva-boot-languages button:hover{color:#ffe2c6}
+.eva-boot-security{color:var(--boot-dim);font:9px/1.7 ui-monospace,Menlo,monospace;letter-spacing:.13em}
+.eva-boot-security b{display:block;color:var(--boot-accent);font-weight:400}
+.eva-boot-exit,.eva-boot-resume{flex:0 0 auto;border:1px solid var(--boot-line);border-radius:0;padding:10px 13px;background:var(--boot-surface);color:var(--boot-ink);cursor:pointer;font:11px/1.4 ui-monospace,Menlo,monospace}
+.eva-boot button:focus-visible{outline:2px solid var(--boot-accent);outline-offset:4px}
+.eva-boot-exit:hover,.eva-boot-resume:hover{border-color:var(--boot-accent);color:var(--boot-accent)}
+.eva-boot-sound{display:grid;place-items:center;flex:0 0 auto;width:34px;height:34px;padding:7px;border:1px solid var(--boot-line);border-radius:0;background:var(--boot-surface);color:var(--boot-accent);cursor:pointer}
+.eva-boot-sound svg{width:18px;height:18px}.eva-boot-sound[aria-pressed="true"] .eva-sound-slash{display:none}
+.eva-boot:is([data-phase="gif"],[data-phase="emergency"]) .eva-boot-sound{position:absolute;right:24px;bottom:24px;color:#d1d9dc;border-color:#37464b;background:#000101}
+.eva-boot[data-phase="emergency"] .eva-boot-sound{color:#ec6a6d;border-color:#86191c;background:#080101}
+.eva-boot[data-phase="intro"]{background:#000101}
+.eva-boot[data-phase="intro"] .eva-boot-sound{position:absolute;right:24px;bottom:24px;color:#d1d9dc;border-color:#37464b;background:#000101;z-index:6}
+.eva-boot-intro{position:absolute;inset:0;z-index:5;display:grid;place-items:center;overflow:hidden;background:#000101;color:#e5e9e7;clip-path:inset(0);isolation:isolate}
+.eva-intro-copy{position:relative;z-index:1;max-width:calc(100% - 40px);text-align:center;animation:eva-intro-copy-in .45s ease-out both}
+.eva-intro-kicker{margin:0 0 24px;color:#81908f;font:10px/1.6 ui-monospace,Menlo,monospace;letter-spacing:.28em}
+.eva-intro-title{position:relative;width:max-content;max-width:100%;margin:0 auto;color:#e5e9e7;font:500 clamp(26px,4vw,62px)/1.5 var(--eva-pilot-font);letter-spacing:.12em;white-space:pre;font-synthesis:none;-webkit-text-stroke:0}
+html[data-eva-magi] .eva-intro-title{font-family:var(--eva-pilot-font);letter-spacing:.12em;-webkit-text-stroke:0}
+.eva-boot[lang="en"] .eva-intro-title{letter-spacing:.025em;font-size:clamp(24px,3.8vw,58px)}
+.eva-intro-measure{visibility:hidden}.eva-intro-typed{position:absolute;left:0;top:0}
+.eva-intro-typed::after{content:"";display:inline-block;width:2px;height:.85em;margin-left:.12em;background:#cbd9d8;vertical-align:-.03em;animation:eva-intro-caret .72s steps(1,end) infinite}
+.eva-intro-rule{display:block;width:90px;height:1px;margin:30px auto 0;transform-origin:center;animation:eva-intro-rule-in .7s ease-out both}
+.eva-intro-pilot{position:absolute;top:50%;width:clamp(80px,12vw,160px);transform:translateY(-50%);text-align:center;color:var(--intro-pilot);pointer-events:none;animation:eva-intro-pilot-in 1s ease-out both}
+.eva-intro-pilot[data-pilot="asuka"]{left:7vw}
+.eva-intro-pilot[data-pilot="rei"]{right:7vw}
+.eva-intro-face{display:block;width:100%;aspect-ratio:1/1.2;background:currentColor;mask:var(--intro-head) center/contain no-repeat;opacity:.3}
+.eva-intro-pilot b{display:block;margin-top:12px;font:400 23px/1.2 ui-monospace,Menlo,monospace;letter-spacing:.1em;opacity:.8}
+.eva-intro-pilot small{display:block;margin-top:8px;color:#81908f;font:8px/1.5 ui-monospace,Menlo,monospace;letter-spacing:.13em}
+.eva-intro-next{position:absolute;right:24px;top:24px;padding:9px 12px;border:1px solid #37464b;border-radius:0;background:#000101;color:#aabbbd;cursor:pointer;font:10px/1.5 ui-monospace,Menlo,monospace}
+.eva-intro-next:hover{color:#e5e9e7;border-color:#81908f}
+.eva-boot-intro[data-leaving]{animation:eva-intro-dissolve .82s ease-out both;pointer-events:none}
+.eva-boot-intro[data-leaving] .eva-intro-copy{visibility:hidden;animation:none}
+.eva-intro-flight{position:fixed;z-index:7;margin:0;pointer-events:none;white-space:pre;transform-origin:0 0;font-synthesis:none;-webkit-text-stroke:0}
+.eva-boot[data-arriving] .eva-boot-title{visibility:hidden}
+@keyframes eva-intro-copy-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes eva-intro-pilot-in{from{opacity:0}to{opacity:1}}
+@keyframes eva-intro-rule-in{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes eva-intro-caret{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes eva-intro-dissolve{from{opacity:1}to{opacity:0}}
+@media(max-width:600px){.eva-intro-pilot{top:calc(50% - 140px);width:72px}.eva-intro-pilot[data-pilot="asuka"]{left:calc(50% - 108px)}.eva-intro-pilot[data-pilot="rei"]{right:calc(50% - 108px)}.eva-intro-pilot b{font-size:18px;margin-top:6px}.eva-intro-pilot small{font-size:7px}.eva-intro-kicker{font-size:8px;letter-spacing:.15em;margin-bottom:18px}.eva-intro-rule{margin-top:22px}}
+@media(max-height:440px){.eva-intro-pilot{top:50%;width:70px}.eva-intro-pilot[data-pilot="asuka"]{left:5vw}.eva-intro-pilot[data-pilot="rei"]{right:5vw}.eva-intro-pilot small{display:none}.eva-intro-title{font-size:28px}.eva-intro-kicker{margin-bottom:12px}.eva-intro-rule{margin-top:16px}}
+.eva-boot-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(18px,3vw,56px);align-items:stretch;min-height:0}
+.eva-entry-bay{position:relative;display:flex;align-items:center;justify-content:center;min-height:0;min-width:0;container-type:size;border:1px solid var(--boot-line);background:var(--boot-panel);overflow:hidden}
+.eva-entry-bay::before{content:"";position:absolute;left:50%;top:50%;width:80%;aspect-ratio:1;border:1px solid var(--boot-line);border-radius:50%;outline:1px solid color-mix(in srgb,var(--boot-line) 70%,transparent);outline-offset:24px;transform:translate(-50%,-50%)}
+.eva-entry-bay::after{content:"";position:absolute;inset:72px 16px 46px;pointer-events:none;border-inline:1px solid var(--boot-line);background:repeating-linear-gradient(0deg,var(--boot-line) 0 1px,transparent 1px 28px) left/8px 100% no-repeat,repeating-linear-gradient(0deg,var(--boot-line) 0 1px,transparent 1px 28px) right/8px 100% no-repeat}
+.eva-entry-bay[data-over="1"]{border-color:var(--boot-accent);box-shadow:inset 0 0 90px color-mix(in srgb,var(--boot-accent) 13%,transparent)}
+.eva-entry-label{position:absolute;z-index:1;top:18px;left:18px;color:var(--boot-dim);font:9px/1.6 ui-monospace,Menlo,monospace;letter-spacing:.2em}
+.eva-entry-label b{display:block;color:var(--boot-accent);font-size:12px;letter-spacing:.12em}
+.eva-entry-spec{position:absolute;right:18px;top:20px;text-align:right;color:var(--boot-dim);font:8px/1.7 ui-monospace,Menlo,monospace;letter-spacing:.08em}
+.eva-entry-spec b{display:block;color:var(--boot-accent);font-weight:400}
+.eva-entry-machine{--plug-clearance:105px;--plug-width:144cqw;position:relative;flex:none;height:min(calc(100cqh - var(--plug-clearance)),var(--plug-width));aspect-ratio:1/2;color:var(--boot-dim)}
+.eva-entry-assembly{position:absolute;inset:0;transform:rotate(14deg)}
+.eva-entry-plug{display:block;width:100%;height:100%;color:inherit;overflow:visible}
+.eva-entry-plug .eva-plug-micro{font:7px ui-monospace,Menlo,monospace;letter-spacing:1px;stroke:none}
+.eva-entry-plug .eva-plug-stencil{font:500 33px ui-monospace,Menlo,monospace;letter-spacing:-1px;stroke:none}
+/* Surface markings roll around the long axis; shell, lighting and 14° assembly tilt stay fixed. */
+.eva-plug-roll{transform-box:view-box;transform-origin:200px 400px}
+.eva-plug-roll-back{opacity:0}
+.eva-boot[data-paused] .eva-plug-roll{animation-play-state:paused!important}
+.eva-boot[data-phase="select"] .eva-plug-roll{animation:eva-plug-roll 10s linear infinite}
+.eva-boot[data-phase="select"] .eva-plug-roll-back{animation-delay:-5s}
+@keyframes eva-plug-roll{
+ 0%,100%{transform:translateX(0) scaleX(1);opacity:1}
+ 12.5%{transform:translateX(45px) scaleX(.707);opacity:1}
+ 24.9%{transform:translateX(64px) scaleX(.006);opacity:0}
+ 25%,74.9%{transform:translateX(64px) scaleX(0);opacity:0}
+ 75%{transform:translateX(-64px) scaleX(0);opacity:0}
+ 87.5%{transform:translateX(-45px) scaleX(.707);opacity:1}
+}
+@media(prefers-reduced-motion:reduce){.eva-boot[data-phase="select"] .eva-plug-roll{animation:none}}
+.eva-entry-window{position:absolute;left:41.5%;right:41.5%;top:55.5%;height:11%;opacity:0;
+  background:var(--boot-accent);mask:var(--boot-head) center/contain no-repeat;pointer-events:none;filter:drop-shadow(0 0 3px var(--boot-accent))}
+.eva-entry-target{position:absolute;left:12px;right:12px;bottom:16px;margin:0;text-align:center;color:var(--boot-accent);font:10px/1.5 ui-monospace,Menlo,monospace;letter-spacing:.12em}
+.eva-entry-target::before{content:"";display:block;width:58px;height:3px;margin:0 auto 8px;background:repeating-linear-gradient(135deg,var(--boot-signal) 0 4px,transparent 4px 8px)}
+.eva-entry-lock{position:absolute;right:22px;top:42%;writing-mode:vertical-rl;color:var(--boot-dim);font:8px/1 ui-monospace,Menlo,monospace;letter-spacing:.18em}
+.eva-pilot-list{display:grid;grid-template-rows:minmax(0,1fr) minmax(0,1fr);gap:clamp(12px,2.3dvh,26px);min-width:0;min-height:0}
+.eva-pilot-card{display:grid;grid-template-columns:54% 1fr;align-items:center;text-align:left;min-width:0;min-height:0;
+  padding:24px 24px 18px 8px;background:var(--card-surface);border:1px solid var(--card-line);border-left:3px solid var(--card-accent);border-radius:0;color:var(--card-ink);cursor:grab;touch-action:none;user-select:none;overflow:hidden}
+.eva-pilot-card[data-pilot="rei"]{
+.eva-pilot-card:hover,.eva-pilot-card:focus-visible{background:var(--card-panel);border-color:var(--card-accent)}
+.eva-pilot-card:focus-visible{outline-color:var(--card-accent)}
+.eva-pilot-card:active{cursor:grabbing}
+.eva-pilot-card::before{content:attr(data-unit);position:absolute;right:-.04em;bottom:-.2em;color:var(--card-accent);font:800 clamp(100px,15vw,260px)/1 ui-monospace,Menlo,monospace;letter-spacing:-.1em;opacity:.055;pointer-events:none}
+.eva-pilot-card-top{position:absolute;top:10px;left:16px;right:16px;display:flex;justify-content:space-between;color:var(--card-accent);font:8px/1.4 ui-monospace,Menlo,monospace;letter-spacing:.13em}
+.eva-pilot-card-top i{font-style:normal;color:var(--card-dim)}
+.eva-pilot-face{display:block;width:100%;height:100%;min-height:0;background:var(--card-accent);mask:var(--pilot-head) center/contain no-repeat;pointer-events:none}
+.eva-pilot-card[data-pilot="asuka"]{
+.eva-pilot-card[data-pilot="rei"]{
+.eva-pilot-info{display:block;position:relative;min-width:0}
+.eva-pilot-number{display:block;color:var(--card-accent);font:700 clamp(34px,5vw,84px)/1 ui-monospace,Menlo,monospace;letter-spacing:-.06em}
+.eva-pilot-info b{display:block;margin-top:12px;color:var(--card-accent);font:500 clamp(18px,2.4vw,36px)/1.3 serif;letter-spacing:.1em}
+.eva-pilot-info small{display:block;margin-top:6px;color:var(--card-accent);font:9px/1.4 ui-monospace,Menlo,monospace;letter-spacing:.08em}
+.eva-pilot-info em{display:block;margin-top:14px;color:var(--card-accent);font:normal 9px/1.4 ui-monospace,Menlo,monospace;letter-spacing:.1em}
+.eva-pilot-card::after{content:"";position:absolute;right:8px;bottom:8px;width:14px;height:14px;border-right:1px solid var(--card-accent);border-bottom:1px solid var(--card-accent)}
+.eva-pilot-ghost{position:fixed;left:0;top:0;z-index:4;pointer-events:none;opacity:.85;transform-origin:center;box-shadow:0 12px 60px #0009;will-change:transform}
+.eva-boot-footer{display:flex;align-items:center;justify-content:space-between;gap:20px;border-top:1px solid var(--boot-line);padding-top:12px;min-width:0}
+.eva-boot-status{margin:0;display:flex;gap:12px;align-items:center;color:var(--boot-dim);min-height:20px;font:10px/1.5 ui-monospace,Menlo,monospace;letter-spacing:.1em}
+.eva-boot-status::before{content:"";width:6px;height:6px;flex:none;background:var(--boot-accent)}
+.eva-boot-magi{display:flex;align-items:center;gap:8px;color:var(--boot-dim);font:8px/1.3 ui-monospace,Menlo,monospace;letter-spacing:.08em}
+.eva-boot-magi span{border:1px solid var(--boot-line);padding:6px 10px}.eva-boot-magi i{display:inline-block;width:4px;height:4px;margin-right:6px;background:var(--boot-ok)}
+.eva-boot-loading{position:relative;display:flex;flex-direction:column;justify-content:center;min-height:0;min-width:0;overflow:hidden;border:1px solid var(--boot-line);padding:clamp(20px,3vw,56px);gap:clamp(14px,3dvh,34px);background:var(--boot-panel)}
+.eva-sync-portrait{position:absolute;inset:0 0 0 20%;background:var(--boot-accent);mask:var(--boot-head) right center/contain no-repeat;opacity:.1;pointer-events:none}
+.eva-boot-loading>*:not(.eva-sync-portrait){position:relative}
+.eva-boot-loading h2{margin:6px 0 0;color:var(--boot-accent);font:500 clamp(28px,4.5vw,72px)/1.3 serif;letter-spacing:.13em}
+.eva-boot-loading .eva-boot-code{color:var(--boot-dim);font:10px/1.6 ui-monospace,Menlo,monospace;letter-spacing:.15em}
+.eva-boot-loading p{margin:12px 0 0;color:var(--boot-dim);font:11px/1.9 ui-monospace,Menlo,monospace}
+.eva-sync-main{display:grid;grid-template-columns:minmax(0,1fr) minmax(90px,32%);align-items:center;gap:14px}
+.eva-sync-orbit{position:relative;aspect-ratio:1;color:var(--boot-accent)}
+.eva-sync-orbit svg{display:block;width:100%;height:100%}
+.eva-sync-ring-meter{stroke-dasharray:440;stroke-dashoffset:calc(440 * (1 - var(--sync-progress)));transform:rotate(-90deg);transform-origin:90px 90px}
+.eva-sync-readout{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.eva-sync-value{font:400 clamp(22px,3vw,48px)/1 ui-monospace,Menlo,monospace;letter-spacing:-.06em}
+.eva-sync-readout small{margin-top:9px;font:8px/1 ui-monospace,Menlo,monospace;letter-spacing:.16em}
+.eva-sync-systems{display:flex;justify-content:space-between;gap:8px;padding-block:12px;border-block:1px solid var(--boot-line);color:var(--boot-dim);font:8px/1.8 ui-monospace,Menlo,monospace;letter-spacing:.08em}
+.eva-sync-systems b{display:block;color:var(--boot-accent);font-weight:400}
+.eva-boot-meter{height:16px;overflow:hidden;border:1px solid var(--boot-line);padding:3px}
+.eva-boot-meter i{display:block;width:100%;height:100%;background:repeating-linear-gradient(90deg,var(--boot-accent) 0 7px,transparent 7px 10px);transform:scaleX(0);transform-origin:left}
+.eva-boot-progress-label{margin-top:10px;display:flex;justify-content:space-between;gap:10px;font:12px/1.5 ui-monospace,Menlo,monospace;color:var(--boot-accent)}
+.eva-boot-progress-label time{color:var(--boot-dim)}
+.eva-sync-caption{margin-top:10px;color:var(--boot-dim);font:8px/1.5 ui-monospace,Menlo,monospace;letter-spacing:.1em}
+.eva-boot[data-phase="loading"] .eva-entry-window{opacity:.9;animation:eva-pilot-insert .7s cubic-bezier(.2,.8,.2,1) both}
+.eva-boot[data-phase="loading"] .eva-entry-machine{color:var(--boot-accent)}
+.eva-boot[data-phase="loading"] .eva-plug-collar{animation:eva-collar-lock .7s ease-out both;transform-origin:200px 640px}
+@keyframes eva-pilot-insert{from{transform:translateY(-60px);opacity:0}to{transform:translateY(0);opacity:.9}}
+@keyframes eva-collar-lock{from{transform:scaleX(1.12)}to{transform:scaleX(1)}}
+/* 双侧舱门打开，真实聊天界面留在原位；最后以细边框交接输入焦点。 */
+.eva-boot[data-phase="handoff"]{background:transparent}
+.eva-boot[data-phase="handoff"] .eva-boot-backdrop{visibility:hidden}
+.eva-boot[data-phase="handoff"] .eva-boot-console{z-index:3;pointer-events:none;animation:eva-console-release .28s ease-out both}
+@keyframes eva-console-release{to{opacity:0;transform:translateY(-8px);visibility:hidden}}
+.eva-boot-gate{position:absolute;top:0;bottom:0;width:50.2%;z-index:2;pointer-events:none;overflow:hidden;background:var(--boot-surface);color:var(--boot-accent)}
+.eva-boot-gate::before{content:"";position:absolute;inset:20px;border:1px solid var(--boot-line);background:repeating-linear-gradient(135deg,transparent 0 18px,color-mix(in srgb,var(--boot-accent) 3%,transparent) 18px 19px)}
+.eva-boot-gate::after{content:"";position:absolute;top:0;bottom:0;width:3px;background:repeating-linear-gradient(0deg,var(--boot-accent) 0 12px,transparent 12px 20px);opacity:.7}
+.eva-boot-gate.left{left:0;border-right:1px solid var(--boot-accent);animation:eva-gate-left 1.6s cubic-bezier(.65,0,.2,1) both}
+.eva-boot-gate.right{right:0;border-left:1px solid var(--boot-accent);animation:eva-gate-right 1.6s cubic-bezier(.65,0,.2,1) both}
+.eva-boot-gate.left::after{right:10px}.eva-boot-gate.right::after{left:10px}
+.eva-boot-gate span{position:absolute;top:50%;font:9px/1 ui-monospace,Menlo,monospace;letter-spacing:.2em;writing-mode:vertical-rl}
+.eva-boot-gate.left span{right:32px}.eva-boot-gate.right span{left:32px}
+@keyframes eva-gate-left{0%,18%{transform:translateX(0)}90%,100%{transform:translateX(-102%)}}
+@keyframes eva-gate-right{0%,18%{transform:translateX(0)}90%,100%{transform:translateX(102%)}}
+.eva-boot-clearance{position:absolute;z-index:4;left:50%;top:50%;transform:translate(-50%,-50%);padding:14px 24px;background:var(--boot-surface);border-block:1px solid var(--boot-accent);color:var(--boot-accent);text-align:center;white-space:nowrap;pointer-events:none;animation:eva-clearance 1.6s ease-out both}
+.eva-boot-clearance b{display:block;font:400 clamp(16px,2vw,30px)/1.4 var(--eva-pilot-font);letter-spacing:.22em}
+.eva-boot-clearance small{font:8px/1.6 ui-monospace,Menlo,monospace;letter-spacing:.16em}
+@keyframes eva-clearance{0%{opacity:0}16%,32%{opacity:1}55%,100%{opacity:0}}
+.eva-boot-composer-frame{position:fixed;z-index:1;border:1px solid var(--boot-accent);box-shadow:0 0 16px color-mix(in srgb,var(--boot-accent) 22%,transparent);pointer-events:none;animation:eva-composer-arrival 1.6s ease-out both}
+@keyframes eva-composer-arrival{0%,58%{opacity:0}78%{opacity:.8}100%{opacity:0}}
+@media(max-width:900px){.eva-boot-security{display:none}.eva-boot-console{padding-inline:24px}.eva-entry-spec{display:none}.eva-boot-magi span{padding:5px}.eva-sync-main{grid-template-columns:minmax(0,1fr) 90px}.eva-boot-loading{padding:20px}.eva-boot-loading h2{font-size:34px}}
+@media(max-width:640px){
+ .eva-boot-console{padding:14px 14px 10px;gap:12px}.eva-boot-header{gap:8px;padding-top:10px}.eva-boot-title{font-size:24px;letter-spacing:.08em}
+ .eva-boot-brand{gap:8px;margin-bottom:8px}.eva-boot-brand .eva-nerv-logo{width:18px;height:21px}.eva-boot-kicker{font-size:7px;letter-spacing:.08em}.eva-boot-kicker small{font-size:6px}
+ .eva-boot-hint{font-size:9px;max-width:230px;margin-top:8px}.eva-boot-exit{padding:7px;font-size:9px}.eva-boot-header-side{gap:8px}.eva-boot-languages button{font-size:9px;padding:4px 5px}.eva-boot-actions{gap:6px}.eva-boot[lang="en"] .eva-boot-title{font-size:22px;letter-spacing:0}
+ .eva-boot-grid{grid-template-columns:minmax(0,.83fr) minmax(0,1.17fr);gap:10px}.eva-entry-machine{--plug-clearance:85px;--plug-width:240cqw}
+ .eva-entry-label{top:10px;left:8px;font-size:6px;letter-spacing:.08em}.eva-entry-label b{font-size:8px}.eva-entry-target{font-size:7px;letter-spacing:0;bottom:12px;left:6px;right:6px}.eva-entry-lock{display:none}.eva-entry-bay::after{inset:55px 5px 40px}
+ .eva-pilot-list{gap:10px}.eva-pilot-card{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto;padding:22px 10px 10px}.eva-pilot-face{min-height:0}.eva-pilot-info{padding-left:3px}
+ .eva-pilot-card-top{left:9px;right:9px;font-size:6px}.eva-pilot-card-top i{display:none}.eva-pilot-number{position:absolute;right:0;top:-28px;font-size:30px;opacity:.7}.eva-pilot-info b{font-size:17px;margin-top:3px}.eva-pilot-info small{font-size:7px}.eva-pilot-info em{font-size:7px;margin-top:5px}
+ .eva-boot-loading{gap:18px;padding:16px 12px}.eva-sync-main{grid-template-columns:1fr;gap:18px}.eva-sync-orbit{width:94px;justify-self:center;grid-row:1}.eva-boot-loading h2{font-size:25px}.eva-boot-loading p{font-size:9px}.eva-boot-code{font-size:8px!important;letter-spacing:.06em!important}.eva-sync-systems{gap:5px;font-size:6px}.eva-sync-value{font-size:24px}.eva-sync-readout small{font-size:6px}.eva-boot-progress-label{font-size:9px;gap:4px}.eva-sync-caption{font-size:6px;letter-spacing:0}
+ .eva-boot-footer{padding-top:8px;gap:8px}.eva-boot-status{font-size:8px;gap:7px;letter-spacing:0}.eva-boot-magi{gap:3px;font-size:5px}.eva-boot-magi span{padding:4px 3px}.eva-boot-magi i{display:none}
+}
+@media(max-height:560px){
+ .eva-boot-console{padding-top:12px;padding-bottom:8px;gap:10px}.eva-boot-header{padding-top:9px}.eva-boot-brand{margin-bottom:5px}.eva-boot-brand .eva-nerv-logo{width:16px;height:18px}.eva-boot-kicker small{display:none}.eva-boot-title{font-size:26px}.eva-boot-hint{margin-top:5px;font-size:9px}.eva-boot-footer{padding-top:7px}.eva-boot-status{font-size:8px}.eva-boot-magi span{padding:4px 7px}
+ .eva-entry-machine{--plug-clearance:55px}.eva-entry-label{top:8px;font-size:7px}.eva-entry-label b{font-size:9px}.eva-entry-target{font-size:8px;bottom:7px}.eva-entry-spec,.eva-entry-lock{display:none}.eva-entry-bay::after{inset:44px 8px 30px}
+ .eva-entry-target::before{display:none}
+ .eva-pilot-card{grid-template-columns:48% 1fr;grid-template-rows:1fr;padding:18px 12px 8px 4px}.eva-pilot-info b{font-size:18px;margin-top:4px}.eva-pilot-info small{font-size:7px}.eva-pilot-info em{font-size:7px;margin-top:6px}.eva-pilot-number{font-size:28px;position:static;opacity:1}.eva-pilot-card-top{font-size:6px;top:5px}
+ .eva-boot-loading{padding:14px 20px;gap:12px}.eva-sync-main{grid-template-columns:minmax(0,1fr) 80px;gap:12px}.eva-sync-orbit{width:auto;grid-row:auto}.eva-boot-loading h2{font-size:28px}.eva-boot-loading p{margin-top:5px;font-size:9px}.eva-sync-systems{display:none}.eva-boot-loading .eva-boot-code{font-size:8px}.eva-boot-meter{height:12px}.eva-boot-progress-label{font-size:10px;margin-top:5px}.eva-sync-caption{margin-top:5px;font-size:7px}.eva-sync-value{font-size:22px}
+}
+@media(max-height:380px){
+ .eva-boot-console{gap:8px}.eva-boot-title{font-size:22px}.eva-boot-brand{margin-bottom:4px}.eva-boot-hint{font-size:8px}.eva-boot-magi{font-size:6px}
+ .eva-pilot-number{display:none}.eva-pilot-card{padding:17px 10px 6px 4px}.eva-pilot-info b{font-size:17px;margin-top:0}.eva-pilot-info small{margin-top:3px}.eva-pilot-info em{margin-top:4px}
+ .eva-boot-loading{padding:8px 14px;gap:6px}.eva-sync-main{grid-template-columns:minmax(0,1fr) 60px}.eva-sync-orbit{width:60px}.eva-boot-loading h2{font-size:26px}.eva-boot-loading p{display:none}.eva-boot-resume{padding:6px;font-size:9px}.eva-sync-caption{font-size:6px}
+}

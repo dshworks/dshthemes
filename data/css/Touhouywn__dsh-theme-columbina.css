@@ -1,0 +1,506 @@
+/* Touhouywn/dsh-theme-columbina — dsh-theme-columbina/theme/theme.css
+   fetched 2026-10-26 from https://raw.githubusercontent.com/Touhouywn/dsh-theme-columbina/main/dsh-theme-columbina/theme/theme.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* ==========================================================================
+   Columbina · 月下摇篮  —  DeepSeek Harness theme layer
+   --------------------------------------------------------------------------
+   DSH is token-driven: the shell paints itself from `--dsw-*` alias tokens, so
+   this sheet re-expresses the night-blue lullaby palette as token overrides
+   plus a handful of narrowly scoped structural rules (canvas artwork, reading
+   veil, sidebar glass, ornament glyphs).
+
+   Scope: every rule is gated on `body[data-ds-dark-theme]`. The host half
+   forces that attribute while the plugin is mounted, so the theme is
+   dark-only by design and the page falls back to the stock look the moment the
+   plugin is disabled.
+
+   Load order: the sheet is injected at the top of <head>, before the design
+   token sheets, so overrides win by specificity:
+   `html body[data-ds-dark-theme]` = (0,1,2) beats `body[data-ds-dark-theme]`.
+   ========================================================================== */
+
+html { color-scheme: dark; }
+
+/* --------------------------------------------------------------------------
+   1. Palette — midnight, moon-silver, lilac, a rose that only shows up in
+   errors and the third lullaby.
+   -------------------------------------------------------------------------- */
+html body[data-ds-dark-theme] {
+  /* Marker the page-side self-check reads: proves this sheet applied. */
+  --columbina-theme: on;
+  /* How much glass the sidebar gets. 0 turns the blur off entirely; a 4K
+     window pays for this twice over, so it is a tunable, not a constant. */
+  --columbina-sidebar-blur: 8px;
+
+  /* --- canvas ----------------------------------------------------------- */
+  /* Transparent on purpose: the artwork is painted on the document canvas and
+     every surface that fills with this token must let it through. */
+  --dsw-alias-bg-base: transparent;
+  --dsw-alias-bg-document-preview: #070b18;
+  --dsw-alias-bg-document-selection: color-mix(in srgb, #cbb6ee 30%, transparent);
+
+  /* --- raised surfaces -------------------------------------------------- */
+  --dsw-alias-bg-layer-1: #0d1424;
+  --dsw-alias-bg-layer-2: #121a2e;
+  --dsw-alias-bg-layer-3: #182240;
+  --dsw-alias-bg-layer-4: #1d2949;
+  --dsw-alias-bg-module-platform: #111a2c;
+  --dsw-alias-bg-multi-select: #131d33;
+  --dsw-alias-bg-overlay: #18213b;
+  --dsw-alias-bg-skeleton: rgba(233, 238, 255, 0.06);
+
+  /* --- sidebar ---------------------------------------------------------- */
+  /* This token also paints the whole frame under the Windows custom-titlebar
+     variant (`[data-windows-titlebar] .frame`), so it has to stay see-through
+     or it would hide the canvas artwork everywhere. The sidebar column draws
+     its own gradient further down. */
+  --dsw-specific-sidebar-fill: rgba(7, 11, 24, 0);
+  --dsw-specific-sidebar-nav-item-hover: rgba(203, 182, 238, 0.09);
+  --dsw-specific-sidebar-nav-item-active: rgba(203, 182, 238, 0.16);
+  --dsw-specific-sidebar-nav-item-active-accent: rgba(159, 216, 245, 0.24);
+
+  /* --- composer, bubbles, selectors ------------------------------------- */
+  --dsw-specific-input-major: rgba(16, 24, 44, 0.88);
+  --dsw-specific-login-input: rgba(12, 19, 36, 0.94);
+  --dsw-specific-bubble: #16203a;
+  --dsw-specific-bubble-highlight: #22304f;
+  --dsw-specific-selector: #182240;
+  --dsw-specific-tip: #18213b;
+
+  /* --- text ------------------------------------------------------------- */
+  --dsw-alias-label-primary: #e9eeff;
+  --dsw-alias-label-primary-dimmed: #f4f7ff;
+  --dsw-alias-label-primary-bluish: #dce5ff;
+  --dsw-alias-label-primary-inverted: #0b1020;
+  --dsw-alias-label-primary-foreground: #0b1020;
+  --dsw-alias-label-secondary: #c6cee6;
+  --dsw-alias-label-tertiary: #98a2c2;
+  --dsw-alias-label-caption: #77809e;
+  --dsw-alias-label-dimmed: #4a5270;
+  --dsw-alias-label-shimmer: rgba(255, 255, 255, 0.42);
+  --dsw-alias-label-deep-diving: color-mix(in srgb, #9fd8f5 62%, #4a5270);
+  --dsw-alias-label-deep-diving-shimmer: color-mix(in srgb, #dce5ff 70%, #9fd8f5);
+  --dsw-alias-menu-icon: #a8b2d0;
+
+  /* --- lines ------------------------------------------------------------ */
+  --dsw-alias-border-l1: rgba(203, 182, 238, 0.1);
+  --dsw-alias-border-l2: rgba(203, 182, 238, 0.17);
+  --dsw-alias-border-l2-darkmode-thin: rgba(203, 182, 238, 0.12);
+  --dsw-alias-border-l3: rgba(203, 182, 238, 0.24);
+  --dsw-alias-border-l4: rgba(203, 182, 238, 0.34);
+  --dsw-alias-border-inverted: rgba(7, 11, 24, 0.5);
+  --dsw-alias-border-inverted2: rgba(7, 11, 24, 0.32);
+
+  /* --- brand & buttons -------------------------------------------------- */
+  --dsw-alias-brand-primary: #cbb6ee;
+  --dsw-alias-brand-primary-invert: #070b18;
+  --dsw-alias-brand-text: #dce5ff;
+  --dsw-alias-button-primary-fill: #cbb6ee;
+  --dsw-alias-button-primary-hover: #ddcdf6;
+  --dsw-alias-button-primary-dimmed: #5f5480;
+  --dsw-alias-button-contrast-fill: #1b2440;
+  --dsw-alias-button-elevated-fill: #182240;
+  --dsw-alias-button-floating-fill: rgba(13, 20, 36, 0.92);
+  --dsw-alias-button-floating-hover: rgba(24, 34, 64, 0.96);
+  --dsw-alias-button-ghost-active-fill: #1d2949;
+  --dsw-alias-button-ghost-active-hover: #263459;
+  --dsw-alias-button-ghost-active-border: #5f5480;
+  --dsw-alias-button-tool-bar-fill: rgba(9, 14, 28, 0.72);
+  --dsw-alias-button-tool-bar-fill-invisible: rgba(9, 14, 28, 0.4);
+  --dsw-alias-button-tool-bar-hover: rgba(24, 34, 64, 0.85);
+
+  /* --- interaction ------------------------------------------------------ */
+  --dsw-alias-interactive-bg-hover: rgba(203, 182, 238, 0.09);
+  --dsw-alias-interactive-bg-active: rgba(203, 182, 238, 0.16);
+  --dsw-alias-interactive-bg-hover-solid: #1a2440;
+  --dsw-alias-interactive-bg-hover-accent: rgba(159, 216, 245, 0.16);
+  --dsw-alias-interactive-bg-hover-danger: rgba(216, 143, 190, 0.18);
+  --dsw-alias-link: #9fd8f5;
+  --dsw-focus-ring-color: #9fd8f5;
+
+  /* --- state ------------------------------------------------------------ */
+  --dsw-alias-state-business-primary: #9fd8f5;
+  --dsw-alias-state-business-tertiary: rgba(159, 216, 245, 0.16);
+  --dsw-alias-state-success-primary: #7fc7a6;
+  --dsw-alias-state-success-secondary: #a5e3c6;
+  --dsw-alias-state-success-tertiary: rgba(127, 199, 166, 0.16);
+  --dsw-alias-state-error-primary: #e39ac0;
+  --dsw-alias-state-error-secondary: #b8658f;
+  --dsw-alias-state-warn-primary: #d9c48e;
+  --dsw-alias-state-warn-secondary: #e8dcb8;
+  --dsw-alias-state-warn-tertiary: rgba(217, 196, 142, 0.16);
+  --dsw-alias-state-warn-label: #d9c48e;
+  --dsw-alias-state-idle-primary: #414a68;
+
+  /* --- markdown & code -------------------------------------------------- */
+  --dsw-alias-markdown-code-block: #0a1020;
+  --dsw-alias-markdown-code-block-banner: #101a30;
+  --dsw-alias-markdown-code-segment-selected: #1c2745;
+  --dsw-alias-markdown-code-segment-unselected: #101a30;
+  --dsw-alias-markdown-inline-code: #131d33;
+  --dsw-alias-markdown-citation: #131d33;
+  --dsw-alias-markdown-placeholder: #131d33;
+  --dsw-alias-markdown-tag: #131d33;
+  --dsw-alias-code-diff-added: rgba(127, 199, 166, 0.14);
+  --dsw-alias-code-diff-deleted: rgba(227, 154, 192, 0.14);
+  --dsw-alias-file-diff-added-bg: #10241e;
+  --dsw-alias-file-diff-added-gutter: #0b1a16;
+  --dsw-alias-file-diff-added-marker: #6fd0a6;
+  --dsw-alias-file-diff-deleted-bg: #26141f;
+  --dsw-alias-file-diff-deleted-gutter: #1a0d15;
+  --dsw-alias-file-diff-deleted-marker: #e39ac0;
+
+  /* --- overlays & chrome ------------------------------------------------ */
+  --dsw-alias-bg-mask-1: rgba(2, 5, 12, 0.56);
+  --dsw-alias-bg-mask-2: rgba(2, 5, 12, 0.26);
+  --dsw-alias-bg-mask-3: rgba(2, 5, 12, 0.64);
+  --dsw-alias-bg-mask-drop: rgba(7, 11, 24, 0.74);
+  --dsw-menu-surface-fill: rgba(14, 21, 38, 0.94);
+  --dsw-alias-menu-group-header-fill: rgba(13, 20, 36, 0.96);
+  --dsw-specific-menu: var(--dsw-menu-surface-fill);
+  --dsw-hovercard-bg: rgba(18, 26, 46, 0.97);
+  --dsw-alias-toast-bg: #1a2440;
+  --dsw-alias-toast-label: #e9eeff;
+  --dsw-alias-tooltip-bg: #1a2440;
+  --dsw-alias-tooltip-key-bg: #273456;
+  --dsw-alias-turn-trigger-bg: #101a30;
+  --dsw-alias-turn-trigger-bg-hover: rgba(203, 182, 238, 0.1);
+  --dsw-alias-switch-thumb: #dce5ff;
+
+  /* --- scrollbars ------------------------------------------------------- */
+  --dsw-alias-scrollbar-bg-l1: #3d4566;
+  --dsw-alias-scrollbar-hover-l1: #5d6690;
+  --dsw-alias-scrollbar-bg-l2: #464f73;
+  --dsw-alias-scrollbar-hover-l2: #6a7499;
+
+  /* --- syntax (shiki) --------------------------------------------------- */
+  --shiki-foreground: #e4eaf9;
+  --shiki-background: #0a1020;
+  --shiki-token-constant: #9fd8f5;
+  --shiki-token-string: #a9e0d0;
+  --shiki-token-string-expression: #8fd3c2;
+  --shiki-token-comment: #6a7392;
+  --shiki-token-keyword: #cbb6ee;
+  --shiki-token-parameter: #d9c7f2;
+  --shiki-token-function: #b9d8ff;
+  --shiki-token-punctuation: #8b93ad;
+  --shiki-token-link: #9fd8f5;
+}
+
+/* --------------------------------------------------------------------------
+   2. Canvas artwork
+   The picture is painted on the document canvas rather than on any element:
+   the frame's base colour is transparent (see the palette block), so every
+   surface that would fill the window lets the canvas through. This survives
+   the shell's `display: contents` wrapper, which defeats "find the frame and
+   colour it" approaches.
+   -------------------------------------------------------------------------- */
+html body[data-ds-dark-theme] { background-color: transparent; }
+
+html {
+  background-color: #070b18;
+  background-image:
+    /* A single even veil: keeps the picture readable as atmosphere instead of
+       competing with the conversation underneath it. */
+    linear-gradient(rgba(7, 11, 24, 0.2), rgba(7, 11, 24, 0.2)),
+    /* Moon halo behind the character, upper right. */
+    radial-gradient(52% 46% at 78% 22%, rgba(159, 216, 245, 0.2), transparent 70%),
+    /* The legibility scrim: solid under the sidebar, nearly clear over the art. */
+    linear-gradient(
+      90deg,
+      #070b18 0%,
+      #070b18 12%,
+      rgba(7, 11, 24, 0.9) 22%,
+      rgba(7, 11, 24, 0.7) 31%,
+      rgba(7, 11, 24, 0.5) 42%,
+      rgba(7, 11, 24, 0.32) 55%,
+      rgba(7, 11, 24, 0.2) 70%,
+      rgba(7, 11, 24, 0.12) 86%,
+      rgba(7, 11, 24, 0.08) 100%
+    ),
+    /* A touch of night at the top and bottom, so the window has a frame. */
+    linear-gradient(180deg, rgba(7, 11, 24, 0.38) 0%, rgba(7, 11, 24, 0.06) 22%, rgba(7, 11, 24, 0.08) 64%, rgba(7, 11, 24, 0.52) 100%),
+    url("/theme-columbina/background.webp");
+  background-repeat: no-repeat;
+  background-size: cover, cover, cover, cover, 106% auto;
+  background-position: center, center, center, center, 16% 40%;
+}
+
+/* The reading veil: a soft ellipse under the conversation measure. The artwork
+   is bright, so this is the contrast budget; it stays soft enough that the
+   moon and the dress still read at the edges. */
+html body[data-ds-dark-theme] [class*="centerCol"] {
+  background:
+    radial-gradient(62% 64% at 38% 44%,
+      rgba(7, 11, 24, 0.58) 0%,
+      rgba(7, 11, 24, 0.46) 44%,
+      rgba(7, 11, 24, 0.2) 76%,
+      rgba(7, 11, 24, 0.04) 100%),
+    linear-gradient(180deg, rgba(7, 11, 24, 0.2), rgba(7, 11, 24, 0.04) 40%, rgba(7, 11, 24, 0.14) 82%, rgba(7, 11, 24, 0.32));
+}
+
+html body[data-ds-dark-theme] [class*="rightbarCol"] {
+  background: transparent;
+}
+
+/* Code blocks keep an opaque canvas: their sticky banner paints with the base
+   token, and a see-through banner would let covered lines show through. */
+html body[data-ds-dark-theme] pre,
+html body[data-ds-dark-theme] code {
+  --dsw-alias-bg-base: #0a1020;
+}
+
+/* Sidebar: night glass with a hairline silver-lilac edge. */
+html body[data-ds-dark-theme] [class*="sidebarCol"] {
+  background:
+    linear-gradient(180deg, rgba(8, 13, 27, 0.9), rgba(5, 9, 19, 0.86));
+  border-right: 1px solid rgba(203, 182, 238, 0.22);
+  box-shadow: inset -14px 0 30px -22px rgba(0, 0, 0, 0.95);
+  -webkit-backdrop-filter: blur(var(--columbina-sidebar-blur)) saturate(112%);
+  backdrop-filter: blur(var(--columbina-sidebar-blur)) saturate(112%);
+}
+
+/* --------------------------------------------------------------------------
+   3. Finishing touches
+   -------------------------------------------------------------------------- */
+html body[data-ds-dark-theme] [class*="composer"] {
+  border-color: rgba(203, 182, 238, 0.24);
+}
+
+html body[data-ds-dark-theme] [class*="composer"]:focus-within {
+  border-color: rgba(203, 182, 238, 0.5);
+}
+
+/* Moon-silver scrollbar. */
+html body[data-ds-dark-theme] ::-webkit-scrollbar-thumb {
+  background: rgba(203, 182, 238, 0.22);
+}
+
+html body[data-ds-dark-theme] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(203, 182, 238, 0.4);
+}
+
+html body[data-ds-dark-theme] ::selection {
+  background: rgba(203, 182, 238, 0.3);
+  color: #f6f9ff;
+}
+
+/* --------------------------------------------------------------------------
+   4. Sidebar glyphs
+   Paint only, never replace: the icons are drawn *over* each stock glyph with
+   a pseudo-element. Removing or swapping the nodes broke React's
+   reconciliation (whole sidebar sections unmounted), and a covering layer
+   cannot be beaten by whatever the shell renders underneath.
+   -------------------------------------------------------------------------- */
+html body[data-ds-dark-theme] [class*="sidebarCol"] svg {
+  color: #c9b7ea;
+  transition: color var(--ds-transition-duration-fast) var(--ds-ease-in-out);
+}
+
+html body[data-ds-dark-theme] [class*="sidebarCol"] svg:hover {
+  color: #e7dcff;
+}
+
+html body[data-ds-dark-theme] [class*="brandMark"],
+html body[data-ds-dark-theme] [class*="railMark"],
+html body[data-ds-dark-theme] [class*="panelIcon"],
+html body[data-ds-dark-theme] [class*="panelGlyph"] {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+html body[data-ds-dark-theme] [class*="folder"] {
+  position: relative;
+}
+
+html body[data-ds-dark-theme] [class*="brandMark"]::after,
+html body[data-ds-dark-theme] [class*="railMark"]::after,
+html body[data-ds-dark-theme] [class*="panelIcon"]::after,
+html body[data-ds-dark-theme] [class*="panelGlyph"]::after,
+html body[data-ds-dark-theme] [class*="folder"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 80%;
+  pointer-events: none;
+  z-index: 1;
+  filter: brightness(1.15) drop-shadow(0 0 3px rgba(203, 182, 238, 0.4));
+}
+
+html body[data-ds-dark-theme] [class*="brandMark"] {
+  width: 34px;
+  height: 34px;
+  flex: none;
+}
+
+html body[data-ds-dark-theme] [class*="brandMark"]::after,
+html body[data-ds-dark-theme] [class*="railMark"]::after {
+  background-image: url("/theme-columbina/icon.png");
+  background-size: contain;
+  border-radius: 50%;
+  filter: drop-shadow(0 0 7px rgba(203, 182, 238, 0.4));
+}
+
+/* The stock whale and the "deepseek HARNESS" lettering share one SVG; hiding
+   the mark hides the name too, so the name is restored as text. */
+html body[data-ds-dark-theme] [class*="brandIdentity"] > svg,
+html body[data-ds-dark-theme] [class*="brandName"] svg {
+  display: none;
+}
+
+html body[data-ds-dark-theme] [class*="brandIdentity"] {
+  display: inline-flex;
+  align-items: center;
+}
+
+html body[data-ds-dark-theme] [class*="brandIdentity"]::after {
+  content: "deepseek  HARNESS";
+  color: #e9eeff;
+  font-family: var(--dsw-font-family, system-ui, sans-serif);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  margin-left: 8px;
+}
+
+/* Navigation rows: one moonlit glyph each, at different sizes, so the column
+   never reads as a repeated stamp. */
+html body[data-ds-dark-theme] [class*="panelList"] > :nth-child(1) [class*="panelIcon"]::after,
+html body[data-ds-dark-theme] [class*="panelList"] > :nth-child(1) [class*="panelGlyph"]::after {
+  background-image: url("/theme-columbina/ornament-moon.png");
+  background-size: 84%;
+}
+
+html body[data-ds-dark-theme] [class*="panelList"] > :nth-child(2) [class*="panelIcon"]::after,
+html body[data-ds-dark-theme] [class*="panelList"] > :nth-child(2) [class*="panelGlyph"]::after {
+  background-image: url("/theme-columbina/ornament-star.png");
+  background-size: 76%;
+}
+
+html body[data-ds-dark-theme] [class*="panelList"] > :nth-child(3) [class*="panelIcon"]::after,
+html body[data-ds-dark-theme] [class*="panelList"] > :nth-child(3) [class*="panelGlyph"]::after {
+  background-image: url("/theme-columbina/ornament-feather.png");
+  background-size: 82%;
+}
+
+html body[data-ds-dark-theme] [class*="panelList"] > :nth-child(4) [class*="panelIcon"]::after,
+html body[data-ds-dark-theme] [class*="panelList"] > :nth-child(4) [class*="panelGlyph"]::after {
+  background-image: url("/theme-columbina/ornament-flower.png");
+  background-size: 80%;
+}
+
+html body[data-ds-dark-theme] [class*="panelList"] > :nth-child(5) [class*="panelIcon"]::after,
+html body[data-ds-dark-theme] [class*="panelList"] > :nth-child(5) [class*="panelGlyph"]::after {
+  background-image: url("/theme-columbina/ornament-bell.png");
+  background-size: 80%;
+}
+
+html body[data-ds-dark-theme] [class*="panelList"] > :nth-child(6) [class*="panelIcon"]::after,
+html body[data-ds-dark-theme] [class*="panelList"] > :nth-child(6) [class*="panelGlyph"]::after {
+  background-image: url("/theme-columbina/ornament-cradle.png");
+  background-size: 86%;
+}
+
+/* Workspace rows: one mark for every workspace, present and future.
+   `folder` is an SVG element: pseudo-elements never render on SVG and giving it
+   a display value reflowed the row, so the art is the element's own background
+   and its drawing is hidden. No layout change. */
+html body[data-ds-dark-theme] [class*="projectRow"] [class*="folder"] {
+  background: url("/theme-columbina/ornament-note.png") center / 82% no-repeat;
+}
+
+html body[data-ds-dark-theme] [class*="projectRow"] [class*="folder"] > * {
+  visibility: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   5. Title-bar sidebar toggle
+   The shell's own Ctrl+B control lives inside the sidebar column, and that
+   column sets `backdrop-filter` — which makes it the containing block for
+   `position: fixed` descendants and clips anything above its own top edge. So
+   the button is hidden and replaced by one mounted on <html> (a layer React
+   never reconciles), pinned to the title bar at the top-left, forwarding the
+   click to the shell's control. The shell still owns the state and Ctrl+B.
+   -------------------------------------------------------------------------- */
+html body[data-ds-dark-theme] button[aria-label="收起侧边栏"],
+html body[data-ds-dark-theme] button[aria-label="展开侧边栏"] {
+  visibility: hidden;
+}
+
+html [data-columbina-titlebar-toggle] {
+  position: fixed;
+  left: 8px;
+  top: 5px;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2147483000;
+  border: 1px solid rgba(203, 182, 238, 0.26);
+  border-radius: 7px;
+  background: rgba(9, 14, 29, 0.62);
+  color: #cbb6ee;
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+  transition: background 0.18s ease-out, color 0.18s ease-out, border-color 0.18s ease-out;
+  backdrop-filter: blur(8px);
+}
+
+html [data-columbina-titlebar-toggle]:hover {
+  background: rgba(203, 182, 238, 0.2);
+  border-color: rgba(203, 182, 238, 0.55);
+  color: #f0e9ff;
+}
+
+html [data-columbina-titlebar-toggle]:focus-visible {
+  outline: 1px solid rgba(159, 216, 245, 0.7);
+  outline-offset: 1px;
+}
+
+/* --------------------------------------------------------------------------
+   6. Lullaby player (the floating deck in lib/client.js)
+   The element is created on <html>, outside React's tree, and styled inline;
+   only hover/state rules live here.
+   -------------------------------------------------------------------------- */
+html [data-columbina-player] {
+  font-family: var(--dsw-font-family, "Segoe UI", system-ui, sans-serif);
+}
+
+html [data-columbina-player] button {
+  font-family: inherit;
+}
+
+html [data-columbina-player] [data-deck-track] {
+  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+html [data-columbina-player] [data-deck-track]:hover {
+  background: rgba(203, 182, 238, 0.12) !important;
+  border-color: rgba(203, 182, 238, 0.4) !important;
+}
+
+html [data-columbina-player] [data-deck-track][data-active="1"] {
+  background: linear-gradient(90deg, rgba(203, 182, 238, 0.2), rgba(159, 216, 245, 0.08)) !important;
+  border-color: rgba(203, 182, 238, 0.55) !important;
+}
+
+html [data-columbina-player] [data-deck-toggle]:hover {
+  background: rgba(203, 182, 238, 0.16) !important;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  html body[data-ds-dark-theme] [class*="sidebarCol"] {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: #080d1c;
+  }
+}
+

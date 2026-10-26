@@ -1,0 +1,885 @@
+/* TABmk/dsh-theme-ascetic — src/skin.css
+   fetched 2026-10-26 from https://raw.githubusercontent.com/TABmk/dsh-theme-ascetic/master/src/skin.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* dsh-theme-ascetic — terminal chrome layered over the token override.
+   Everything is gated on html[data-ascii] (set by the plugin, removed on
+   unload), and colours only reference --dsw-alias-* tokens, so the skin tracks
+   whichever palette layer is active, including the stock one ("host"). */
+
+/* ---- 1. type, geometry, materials --------------------------------------- */
+
+html[data-ascii] {
+  --ax-mono: "JetBrains Mono", "Berkeley Mono", "IBM Plex Mono", "SF Mono", "Cascadia Mono", Menlo, Consolas,
+    "PingFang SC", "Microsoft YaHei", monospace;
+  --dsh-font-family-text-default: var(--ax-mono);
+}
+
+html[data-ascii] body {
+  --dsh-font-family-text-default: var(--ax-mono);
+  --ax-ink: var(--dsw-alias-label-primary);
+  --ax-ink2: var(--dsw-alias-label-secondary);
+  --ax-ink3: var(--dsw-alias-label-tertiary);
+  --ax-bg: var(--dsw-alias-bg-base);
+  --ax-bg1: var(--dsw-alias-bg-layer-2);
+  --ax-accent: var(--dsw-alias-brand-primary);
+  /* Text on an accent fill. Not brand-primary-invert: the stock palette sets
+     that to the same ink as brand-primary, which made such text invisible. */
+  --ax-on-accent: var(--dsw-alias-bg-base);
+  --ax-line: var(--dsw-alias-border-l3);
+  --ax-line-soft: var(--dsw-alias-border-l2);
+  --ax-drop: var(--dsw-alias-border-l2);
+
+  --dsw-radius-xs: 0px;
+  --dsw-radius-sm: 0px;
+  --dsw-radius-md: 0px;
+  --dsw-radius-lg: 0px;
+  --dsw-radius-xl: 0px;
+  --dsw-radius-panel: 0px;
+  --dsl-code-block-border-radius: 0px;
+  --dsw-shadow-lv1: 0 0 #0000;
+  --dsw-shadow-lv2: 0 0 #0000;
+  --dsw-shadow-lv3: 0 0 #0000;
+  --dsw-elevation-stroke-color: var(--ax-line);
+  --dsw-menu-backdrop-filter: none;
+  --dsw-menu-surface-fill: var(--ax-bg1);
+  --dsh-scrollbar-width: 6px;
+
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0;
+}
+
+/* Square everything: box-drawing has no round corners. SVG artwork keeps its
+   own geometry. */
+html[data-ascii] *:not(svg, svg *),
+html[data-ascii] *::before,
+html[data-ascii] *::after {
+  border-radius: 0 !important;
+  corner-shape: initial !important;
+}
+
+html[data-ascii] ::selection {
+  background: var(--ax-accent);
+  color: var(--ax-bg);
+}
+
+html[data-ascii] :focus-visible {
+  outline-style: dashed !important;
+  outline-offset: 1px;
+}
+
+/* Floating surfaces: one hard line plus an offset block shadow, like a
+   window drawn with ░ characters. */
+html[data-ascii] :is([role="menu"], [role="listbox"], [role="tooltip"], [role="dialog"] > div:first-child) {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+html[data-ascii] :is([role="menu"], [role="listbox"]) {
+  box-shadow: 0 0 0 1px var(--ax-line), 4px 4px 0 0 var(--ax-drop) !important;
+  background: var(--ax-bg1) !important;
+}
+
+/* ---- 2. sidebar ---------------------------------------------------------- */
+
+/* macOS Desktop leaves the frame and sidebar see-through over the window's
+   native vibrancy, tinted 40-50% with a blue gradient, and gives New Session
+   a white wash. A palette paints flat, opaque surfaces instead; `host` keeps
+   the native material. */
+html[data-ascii]:not([data-ascii-palette="host"]) body {
+  background: var(--dsw-alias-bg-base);
+}
+html[data-ascii][data-platform]:not([data-ascii-palette="host"]) body {
+  --dsw-specific-menu: var(--dsw-alias-bg-layer-2);
+}
+html[data-ascii]:not([data-ascii-palette="host"]) [class*="_sidebarCol"] {
+  background: var(--dsw-specific-sidebar-fill) !important;
+}
+/* The expanded sidebar's top block: logo row, New Session, panel list. The
+   rail (collapsed) keeps its square icon buttons. */
+html[data-ascii] [class*="_root"]:has(> [class*="_logoRow"]):not([class*="_collapsed"]) > [class*="_logoRow"] {
+  height: auto !important;
+  min-height: 0 !important;
+  padding-block: calc(var(--ax-stack) / 2) !important;
+  margin-bottom: var(--ax-stack) !important;
+}
+html[data-ascii-no-brand] [class*="_root"]:has(> [class*="_logoRow"]):not([class*="_collapsed"]) > [class*="_logoRow"] {
+  justify-content: flex-end !important;
+}
+html[data-ascii-no-brand] [class*="_logoRow"] > [class*="_brand"] {
+  display: none !important;
+}
+/* On macOS the collapse toggle sits up in the traffic-light strip, so a
+   logo row without its logo has nothing left to show. */
+html[data-ascii-no-brand] [class*="_logoRow"]:not(:has([class*="_toggle"])) {
+  display: none !important;
+}
+html[data-ascii] [class*="_root"]:has(> [class*="_logoRow"]):not([class*="_collapsed"]) > button[class*="_newSession"]:not([data-ascii-ns]) {
+  height: var(--ax-nav) !important;
+  min-height: 0 !important;
+  padding: 0 8px !important;
+  margin-bottom: var(--ax-stack) !important;
+  justify-content: flex-start !important;
+}
+html[data-ascii] [class*="_root"]:has(> [class*="_logoRow"]):not([class*="_collapsed"]) > [class*="_panelList"] {
+  gap: 0 !important;
+  margin-bottom: var(--ax-stack) !important;
+}
+html[data-ascii] [class*="_root"]:has(> [class*="_logoRow"]):not([class*="_collapsed"]) > [class*="_panelList"] button[class*="_panelRow"] {
+  height: var(--ax-nav) !important;
+  min-height: 0 !important;
+  padding-block: 0 !important;
+}
+
+/* New Session as an ascii.rest link: `[+ new session]`, no box, inverted on
+   hover. The rail keeps its plus icon. */
+html[data-ascii] button[class*="_newSession"] {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  color: var(--dsw-alias-label-primary) !important;
+}
+html[data-ascii] button[class*="_newSession"]:is(:hover, :focus-visible) {
+  background: var(--dsw-alias-label-primary) !important;
+  color: var(--dsw-alias-bg-base) !important;
+}
+html[data-ascii] button[class*="_newSession"] :is([class*="_newSessionLabelMask"], [class*="_newSessionContent"]) {
+  justify-content: flex-start !important;
+}
+html[data-ascii] [class*="_root"]:not([class*="_collapsed"]) > button[class*="_newSession"] [class*="_newSessionContent"] > svg {
+  display: none !important;
+}
+html[data-ascii] button[class*="_newSession"] [class*="_newSessionContent"] > span {
+  text-transform: lowercase;
+}
+html[data-glyphs] button[class*="_newSession"] [class*="_newSessionContent"] > span::before { content: "[+ "; }
+html[data-glyphs] button[class*="_newSession"] [class*="_newSessionContent"] > span::after { content: "]"; }
+html[data-ascii] button[class*="_newSession"] [class*="_newSessionShortcut"] {
+  margin-left: auto;
+  opacity: .55;
+}
+html[data-ascii] button[class*="_newSession"] [class*="_newSessionShortcut"] kbd {
+  color: inherit !important;
+}
+
+/* With the framed piece attached (installNewSessionArt): the button is only
+   the frame, set apart from the panel rows by space and a dashed rule. */
+html[data-ascii] button[class*="_newSession"][data-ascii-ns] {
+  display: block !important;
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin-top: calc(var(--ax-stack) * 1.5) !important;
+  margin-bottom: calc(var(--ax-stack) * 2 + 2px) !important;
+  background: transparent !important;
+  color: var(--ax-ink2) !important;
+  overflow: hidden;
+}
+html[data-ascii] button[class*="_newSession"][data-ascii-ns]:is(:hover, :focus-visible) {
+  background: transparent !important;
+  color: var(--ax-accent) !important;
+  outline: none !important;
+}
+html[data-ascii] button[class*="_newSession"][data-ascii-ns]:active {
+  color: var(--ax-ink) !important;
+}
+html[data-ascii] button[class*="_newSession"][data-ascii-ns] > :not(.ax-ns) {
+  display: none !important;
+}
+html[data-ascii] button[class*="_newSession"][data-ascii-ns] + [class*="_panelList"] {
+  border-top: 1px dashed var(--ax-line-soft);
+  padding-top: var(--ax-stack) !important;
+}
+.ax-ns {
+  display: block;
+  width: 100%;
+  margin: 0;
+  font-size: 12px; /* sets the cell size: a cell is .6em wide, 1.2em tall */
+  pointer-events: none;
+}
+html[data-ascii-density="cozy"] .ax-ns { font-size: 13px; }
+html[data-ascii-density="dense"] .ax-ns { font-size: 11px; }
+
+html[data-ascii] body {
+  --dsh-sidebar-inline-padding: var(--ax-pad);
+}
+html[data-ascii] :is([class*="_sessionRow"], [class*="_projectRow"]) {
+  height: var(--ax-row) !important;
+  min-height: var(--ax-row) !important;
+}
+html[data-ascii] [class*="_sessionRow"][class*="_selected"] {
+  box-shadow: inset 2px 0 0 var(--ax-accent);
+}
+html[data-glyphs] [class*="_projectRow"] [class*="_name"]::before,
+html[data-glyphs] [class*="_projectRow"] [class*="_title"]::before {
+  content: "./";
+  color: var(--ax-ink3);
+}
+
+/* ---- 3. conversation column ---------------------------------------------- */
+
+html[data-ascii] [data-conversation-content] {
+  --dsh-chat-content-width: var(--dsh-chat-user-width,
+    clamp(640px, calc(var(--dsh-conversation-column-width, 0px) * var(--ax-col, .8)), var(--ax-maxw, 1040px)));
+}
+html[data-ascii] [data-chat-flow-kind] {
+  --dsh-chat-flow-gap: var(--ax-flow-gap) !important;
+}
+
+/* Two chat styles. `bubbles` follows the ascii.rest chat piece: your messages
+   in square boxes on the right (┌┐└┘), replies in rounded ones on the left
+   (╭╮╰╯), three dots while the reply is written, and the input as a rounded
+   box with a `>` prompt and a `send` word. `terminal` keeps a shell look:
+   prompts flush left in a dashed box behind `>`, replies as bare text. */
+
+html[data-ascii] [data-chat-flow-kind="user"] [class*="_bubble"] {
+  background: transparent !important;
+  color: var(--ax-ink);
+}
+
+/* -- terminal */
+html[data-ascii-chat="terminal"] [data-chat-flow-kind="user"] [class*="_userRow"] {
+  align-items: flex-start !important;
+}
+html[data-ascii-chat="terminal"] [data-chat-flow-kind="user"] [class*="_userStack"] {
+  align-items: flex-start !important;
+  max-width: 100% !important;
+}
+html[data-ascii-chat="terminal"] [data-chat-flow-kind="user"] [class*="_bubble"] {
+  border: 1px dashed var(--ax-line);
+  padding: 3px 10px !important;
+}
+html[data-ascii-chat="terminal"][data-glyphs] [data-chat-flow-kind="user"] [class*="_bubble"] {
+  padding-left: calc(10px + 2ch) !important;
+  position: relative;
+}
+html[data-ascii-chat="terminal"][data-glyphs] [data-chat-flow-kind="user"] [class*="_bubble"]::before {
+  content: ">";
+  position: absolute;
+  left: 10px;
+  top: 3px;
+  color: var(--ax-accent);
+  font-weight: 700;
+}
+
+/* -- bubbles */
+/* declared on body, where the palette tokens they read are resolved */
+html[data-ascii-chat="bubbles"] body {
+  --ax-box: var(--dsw-alias-border-l4);
+  --ax-round: 8px;
+}
+html[data-ascii-chat="bubbles"] [data-chat-flow-kind="user"] [class*="_bubble"] {
+  border: 1px solid var(--ax-box);
+  padding: 2px 1ch !important;
+}
+html[data-ascii-chat="bubbles"] [data-chat-flow-kind="user"] [class*="_userStack"] {
+  max-width: min(75%, 72ch) !important;
+}
+html[data-ascii-chat="bubbles"] [data-chat-flow-kind="assistant-step"] [data-slot="conversation.chat.node"] > [class*="_root"] {
+  width: fit-content;
+  max-width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--ax-box);
+  border-radius: var(--ax-round) !important;
+  padding: 3px 1.5ch;
+}
+/* Collapsed Think / preview rows contain a flex child with min-width:0 +
+   overflow:hidden + nowrap. Inside a fit-content parent that child shrinks to
+   0px, leaving a 27x32 empty square. Keep those rows full-width. */
+html[data-ascii-chat="bubbles"] [data-chat-flow-kind="assistant-step"] [data-slot="conversation.chat.node"] > [class*="_root"]:has([data-variant="think"]),
+html[data-ascii-chat="bubbles"] [data-chat-flow-kind="assistant-step"] [data-slot="conversation.chat.node"] > [class*="_root"]:has([data-preview="true"]) {
+  width: auto !important;
+  max-width: none !important;
+}
+/* the dots bubble while a reply is being written */
+html[data-ascii-chat="bubbles"] [data-chat-running="true"] :is([class*="_runningDivider"], [class*="_runningIcon"], [class*="_runningText"]) {
+  display: none !important;
+}
+html[data-ascii-chat="bubbles"] [data-chat-running="true"] [class*="_runningContent"] {
+  display: inline-block !important;
+  border: 1px solid var(--ax-box);
+  border-radius: var(--ax-round) !important;
+  padding: 0 1.5ch;
+  line-height: 22px;
+  color: var(--ax-ink2);
+}
+html[data-ascii-chat="bubbles"] [data-chat-running="true"] [class*="_runningContent"]::after {
+  content: "···";
+  display: inline-block;
+  width: 3ch;
+  animation: ax-dots .9s step-end infinite;
+}
+@keyframes ax-dots {
+  0% { clip-path: inset(0 2ch 0 0); }
+  33.333% { clip-path: inset(0 1ch 0 0); }
+  66.666% { clip-path: inset(0 0 0 0); }
+}
+
+/* ---- 4. markdown as it reads in a terminal ------------------------------ */
+
+html[data-ascii] [class*="_markdown_"] :is(h1, h2, h3, h4, h5, h6) {
+  color: var(--ax-ink);
+  margin-block: .9em .35em;
+}
+html[data-glyphs] [class*="_markdown_"] :is(h1, h2, h3, h4)::before {
+  color: var(--ax-accent);
+  font-weight: 700;
+}
+html[data-glyphs] [class*="_markdown_"] h1::before { content: "# "; }
+html[data-glyphs] [class*="_markdown_"] h2::before { content: "## "; }
+html[data-glyphs] [class*="_markdown_"] h3::before { content: "### "; }
+html[data-glyphs] [class*="_markdown_"] h4::before { content: "#### "; }
+
+html[data-ascii] [class*="_markdown_"] :is(p, ul, ol, blockquote, pre) {
+  margin-block: .4em;
+}
+html[data-glyphs] [class*="_markdown_"] ul > li::marker {
+  content: "- ";
+  color: var(--ax-ink3);
+}
+html[data-glyphs] [class*="_markdown_"] ul ul > li::marker { content: "+ "; }
+html[data-glyphs] [class*="_markdown_"] ul ul ul > li::marker { content: "* "; }
+html[data-ascii] [class*="_markdown_"] ol > li::marker {
+  color: var(--ax-ink3);
+}
+
+/* inline code keeps its backticks, dimmed */
+html[data-ascii] [class*="_markdown_"] :is(p, li, td, th, h1, h2, h3, h4, blockquote) > code {
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+  color: var(--ax-accent);
+}
+html[data-glyphs] [class*="_markdown_"] :is(p, li, td, th, h1, h2, h3, h4, blockquote) > code::before,
+html[data-glyphs] [class*="_markdown_"] :is(p, li, td, th, h1, h2, h3, h4, blockquote) > code::after {
+  content: "`";
+  color: var(--ax-ink3);
+}
+
+html[data-ascii] [class*="_markdown_"] blockquote {
+  border-left: 1px dashed var(--ax-accent) !important;
+  background: transparent !important;
+  padding: 0 0 0 1.5ch !important;
+  color: var(--ax-ink2);
+}
+
+html[data-ascii] [class*="_markdown_"] hr {
+  border: 0;
+  border-top: 1px dashed var(--ax-line);
+  height: 0;
+}
+
+html[data-ascii] [class*="_markdown_"] a {
+  text-decoration: underline dashed;
+  text-underline-offset: 3px;
+}
+
+/* tables drawn as an ASCII grid */
+html[data-ascii] [class*="_markdown_"] [class*="_tableScroll"] {
+  border: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+html[data-ascii] [class*="_markdown_"] table {
+  border-collapse: collapse !important;
+  border: 1px solid var(--ax-line) !important;
+}
+html[data-ascii] [class*="_markdown_"] :is(th, td) {
+  border: 1px solid var(--ax-line-soft) !important;
+  padding: 1px 1ch !important;
+  background: transparent !important;
+}
+html[data-ascii] [class*="_markdown_"] thead th {
+  border-bottom: 3px double var(--ax-line) !important;
+  color: var(--ax-ink);
+}
+
+/* code blocks: a framed panel with a dashed title rule */
+html[data-ascii] .md-code-block,
+html[data-ascii] [data-code-block-content] {
+  box-shadow: none !important;
+}
+html[data-ascii] .md-code-block {
+  border: 1px solid var(--ax-line) !important;
+  background: var(--dsw-alias-markdown-code-block) !important;
+}
+html[data-ascii] [data-code-block-banner] {
+  border-bottom: 1px dashed var(--ax-line-soft) !important;
+  min-height: 0 !important;
+  padding-block: 1px !important;
+}
+
+/* ---- 5. tool calls and turn process ------------------------------------- */
+
+html[data-ascii] [data-chat-flow-kind="tool-call"] [data-state] {
+  min-height: 0 !important;
+}
+html[data-ascii] [data-turn-process] {
+  letter-spacing: .02em;
+}
+html[data-glyphs] [data-turn-process]::before {
+  content: "[+]";
+  margin-right: 1ch;
+  color: var(--ax-ink3);
+}
+html[data-glyphs] [data-turn-process][data-open="true"]::before {
+  content: "[-]";
+}
+/* The "Edited N files" card paints its header from the static grey scale
+   (--changes-fill / --changes-hover), which no palette reaches. */
+html[data-ascii]:not([data-ascii-palette="host"]) [class*="_card"] {
+  --changes-fill: var(--dsw-alias-bg-layer-2);
+  --changes-hover: var(--dsw-alias-interactive-bg-hover-solid);
+}
+
+/* ---- 6. composer --------------------------------------------------------- */
+
+html[data-ascii] [data-composer-card] {
+  border: 1px solid var(--ax-line) !important;
+  box-shadow: 4px 4px 0 0 var(--ax-drop) !important;
+  background: var(--dsw-specific-input-major) !important;
+}
+html[data-ascii] [data-composer-card]:focus-within {
+  border-color: var(--ax-accent) !important;
+}
+html[data-ascii] [data-composer-input] {
+  caret-color: var(--ax-accent);
+  caret-shape: block;
+}
+html[data-ascii] body {
+  --dsh-composer-stack-gap: 4px;
+}
+html[data-ascii-chat="terminal"] [data-composer-card] button[class*="_primary"] {
+  background: var(--ax-accent) !important;
+  color: var(--ax-on-accent) !important;
+}
+html[data-ascii] [data-composer-card] button[class*="_primary"] svg {
+  color: inherit;
+}
+
+/* bubbles: the piece's input box, `╭─╮ │ > █ … send │ ╰─╯` */
+html[data-ascii-chat="bubbles"] [data-composer-card] {
+  border-color: var(--ax-box) !important;
+  border-radius: var(--ax-round) !important;
+  box-shadow: none !important;
+}
+html[data-ascii-chat="bubbles"] [data-composer-card]:focus-within {
+  border-color: var(--ax-ink) !important;
+}
+html[data-ascii-chat="bubbles"] [data-composer-card] [data-input-scroll] > [class*="_grow"]::before {
+  content: ">";
+  position: absolute;
+  left: 14px;
+  top: 4px;
+  line-height: 24px;
+  color: var(--ax-accent);
+  font-weight: 700;
+  pointer-events: none;
+}
+html[data-ascii-chat="bubbles"] [data-composer-card] [data-composer-input] {
+  padding-left: calc(14px + 2ch) !important;
+}
+html[data-ascii-chat="bubbles"] [data-composer-card] [data-composer-placeholder] {
+  box-sizing: border-box;
+  padding-left: 2ch !important;
+}
+html[data-ascii-chat="bubbles"] [data-composer-card] button[class*="_primary"] {
+  width: auto !important;
+  min-width: 0 !important;
+  padding: 0 1ch !important;
+  background: transparent !important;
+  color: var(--ax-ink) !important;
+  box-shadow: none !important;
+  font: 13px/24px var(--ax-mono, monospace) !important;
+}
+html[data-ascii-chat="bubbles"] [data-composer-card] button[class*="_primary"] svg {
+  display: none !important;
+}
+html[data-ascii-chat="bubbles"] [data-composer-card] button[class*="_primary"]::after {
+  content: "send";
+}
+/* the stop button carries a square glyph where send carries an arrow */
+html[data-ascii-chat="bubbles"] [data-composer-card] button[class*="_primary"]:has(svg rect)::after {
+  content: "stop";
+}
+html[data-ascii-chat="bubbles"] [data-composer-card] button[class*="_primary"]:is(:hover, :focus-visible):not(:disabled) {
+  background: var(--ax-ink) !important;
+  color: var(--ax-bg) !important;
+}
+html[data-ascii-chat="bubbles"] [data-composer-card] button[class*="_primary"]:disabled {
+  color: var(--ax-ink3) !important;
+  opacity: 1 !important;
+}
+html[data-ascii] [data-composer-dock] {
+  font-size: 11px;
+}
+/* The stats row under the composer is hidden while the status line carries
+   the same numbers (and opens the same popovers); it comes back when either
+   the "chat stats row" option is on or the status line is off. */
+html[data-ascii-no-dock]:not([data-ascii-no-status]) [data-composer-dock] {
+  display: none !important;
+}
+
+/* A stock popover or menu opened from the status line, pinned above it. */
+html[data-ascii] :is([role="dialog"], [role="menu"])[data-ascii-docked] {
+  top: auto !important;
+  bottom: calc(var(--ax-status-h, 20px) + 6px) !important;
+  left: clamp(4px, var(--ax-pop-x, 4px), calc(100vw - 360px)) !important;
+  right: auto !important;
+  transform: none !important;
+  box-shadow: 0 0 0 1px var(--ax-line), 4px 4px 0 0 var(--ax-drop) !important;
+}
+
+html[data-glyphs] [data-composer-stat] button::before {
+  content: "[";
+  color: var(--ax-ink3);
+}
+html[data-glyphs] [data-composer-stat] button::after {
+  content: "]";
+  color: var(--ax-ink3);
+}
+
+/* ---- 7. blank-session hero ---------------------------------------------- */
+
+html[data-ascii] [class*="_headline"]:has([data-ascii-hero]) {
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+html[data-ascii] [class*="_headline"]:has([data-ascii-hero]) [class*="_fishHitbox"] {
+  width: auto !important;
+  height: auto !important;
+}
+html[data-ascii] [class*="_headline"] [class*="_titleGroup"] {
+  font-size: 15px;
+  letter-spacing: .04em;
+}
+html[data-glyphs] [class*="_headline"] [class*="_titleGroup"] > span:first-child::before {
+  content: "> ";
+  color: var(--ax-accent);
+}
+html[data-glyphs] [class*="_headline"] [class*="_titleGroup"] > span:first-child::after {
+  content: "_";
+  color: var(--ax-accent);
+  animation: ax-blink 1.1s steps(1) infinite;
+}
+
+.ax-hero {
+  margin: 0;
+  font: 7px/1 var(--ax-mono, monospace);
+  letter-spacing: 0;
+  color: var(--dsw-alias-brand-primary);
+  white-space: pre;
+  user-select: none;
+  cursor: pointer;
+  outline: none;
+  transition: opacity .15s ease;
+}
+/* a click steps to the next art */
+.ax-hero:hover { opacity: .8; }
+.ax-hero:focus-visible { outline: 1px dashed var(--dsw-alias-brand-primary); outline-offset: 4px; }
+/* a long logo shrinks to keep the banner inside the column */
+.ax-hero[data-ascii-hero="banner"] { font-size: min(8px, calc(min(560px, 64vw) / var(--ax-hero-cols, 79) / .6)); }
+/* a canvas: mount() sizes it to 100% inline, so the width needs !important */
+.ax-hero[data-ascii-hero="chat"] { display: block; width: min(300px, 70vw) !important; }
+
+@keyframes ax-blink {
+  50% { opacity: 0; }
+}
+
+/* ---- 8. status line (shell.bottom) -------------------------------------- */
+
+.ax-status {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  height: var(--ax-status-h, 20px);
+  border-top: 1px solid var(--dsw-alias-border-l3);
+  background: var(--dsw-specific-sidebar-fill);
+  color: var(--dsw-alias-label-secondary);
+  font: 11px/var(--ax-status-h, 20px) var(--ax-mono, monospace);
+  white-space: nowrap;
+  /* the host's bottom row scrolls whatever overflows it: never give it any */
+  overflow: hidden;
+  user-select: none;
+  z-index: 5;
+}
+/* macOS rounds the window's corners into the bar: keep the gear and the
+   clock clear of them */
+html[data-platform="darwin"] .ax-status { padding: 0 12px; }
+:where(.ax-status, .ax-menu, .ax-settings) :where(button) {
+  all: unset;
+  cursor: pointer;
+}
+.ax-seg {
+  display: inline-flex;
+  align-items: center;
+  gap: 1ch;
+  padding: 0 1ch;
+  border-right: 1px solid var(--dsw-alias-border-l2);
+}
+.ax-seg:is(button):hover {
+  background: var(--dsw-alias-interactive-bg-hover);
+  color: var(--dsw-alias-label-primary);
+}
+.ax-seg.ax-right {
+  border-right: 0;
+  border-left: 1px solid var(--dsw-alias-border-l2);
+}
+/* the gear glyph is drawn small by its font: size it to the bar instead */
+.ax-gear {
+  padding: 0 5px;
+  font-size: calc(var(--ax-status-h, 20px) * .9);
+  line-height: 1; /* its fallback face runs taller than the bar at this size */
+  overflow: hidden;
+  color: var(--dsw-alias-label-secondary);
+}
+.ax-mode {
+  background: var(--dsw-alias-brand-primary);
+  color: var(--ax-on-accent) !important;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+.ax-mode:hover {
+  background: var(--dsw-alias-label-primary) !important;
+  color: var(--dsw-alias-bg-base) !important;
+}
+.ax-fill { flex: 1; min-width: 0; }
+@media (max-width: 1100px) {
+  .ax-status .ax-opt { display: none; }
+}
+@media (max-width: 820px) {
+  .ax-status .ax-opt2 { display: none; }
+}
+.ax-run { color: var(--dsw-alias-brand-primary); font-weight: 700; }
+.ax-wait { color: var(--dsw-alias-state-warn-primary); font-weight: 700; }
+.ax-idle { color: var(--dsw-alias-label-tertiary); }
+.ax-ok { color: var(--dsw-alias-state-success-primary); }
+.ax-err { color: var(--dsw-alias-state-error-primary); }
+.ax-dim { color: var(--dsw-alias-label-tertiary); }
+.ax-bar { color: var(--dsw-alias-brand-primary); letter-spacing: -.02em; }
+.ax-bar .ax-dim { color: var(--dsw-alias-border-l4); }
+.ax-bar.ax-hot { color: var(--dsw-alias-state-warn-primary); }
+.ax-bar.ax-full { color: var(--dsw-alias-state-error-primary); }
+/* RUN: an inverted segment, so a working agent reads from across the screen */
+.ax-state-run {
+  background: var(--dsw-alias-brand-primary);
+  color: var(--ax-on-accent);
+  font-weight: 700;
+}
+.ax-state-run .ax-dim { color: inherit; opacity: .7; }
+.ax-scan { display: inline-block; width: 8ch; margin: 0; font: inherit; letter-spacing: 0; white-space: pre; }
+.ax-toast { color: var(--dsw-alias-brand-primary); }
+
+/* The account menu at the sidebar's foot ("··· More") opens from the status
+   line's gear instead; it comes back when the status line is off. */
+html[data-ascii]:not([data-ascii-no-status]) [class*="_triggerRow"]:has(> [data-slot="settings.launcher"]) {
+  display: none !important;
+}
+html[data-ascii]:not([data-ascii-no-status]) [class*="_settingsArea"]:not(:has([data-slot="sidebar.settings"] > :not([class*="_triggerRow"]))) {
+  display: none !important;
+}
+
+/* quick menu above the status line */
+.ax-menu {
+  position: fixed;
+  left: 4px;
+  bottom: calc(var(--ax-status-h, 20px) + 6px);
+  pointer-events: auto;
+  min-width: 300px;
+  padding: 4px 0;
+  background: var(--dsw-alias-bg-layer-2);
+  color: var(--dsw-alias-label-primary);
+  box-shadow: 0 0 0 1px var(--dsw-alias-border-l3), 4px 4px 0 0 var(--dsw-alias-border-l2);
+  font: 12px/18px var(--ax-mono, monospace);
+  white-space: pre;
+  z-index: 50;
+}
+.ax-menu-title {
+  padding: 2px 1.5ch;
+  color: var(--dsw-alias-label-tertiary);
+}
+.ax-menu-row {
+  box-sizing: border-box;
+  width: 100%;
+  display: flex !important;
+  gap: 1ch;
+  padding: 0 1.5ch;
+  cursor: pointer;
+}
+.ax-menu-row:hover, .ax-menu-row:focus-visible {
+  background: var(--dsw-alias-brand-primary);
+  color: var(--ax-on-accent);
+}
+.ax-menu-row .ax-key { margin-left: auto; color: inherit; opacity: .6; }
+
+/* the logo text field, in the quick menu and the settings row */
+.ax-input {
+  all: unset;
+  box-sizing: border-box;
+  width: 14ch;
+  padding: 0 .8ch;
+  border: 1px solid var(--dsw-alias-border-l3);
+  background: var(--dsw-alias-bg-base);
+  color: var(--dsw-alias-label-primary);
+  font: inherit;
+  text-transform: uppercase;
+  cursor: text;
+}
+.ax-input::placeholder { color: var(--dsw-alias-label-tertiary); }
+.ax-input:focus { border-color: var(--dsw-alias-brand-primary); }
+.ax-menu-row.ax-menu-field { align-items: center; cursor: default; }
+.ax-menu-row.ax-menu-field:hover { background: none; color: inherit; }
+.ax-menu-field .ax-input { margin-left: auto; line-height: 16px; }
+.ax-settings .ax-input { justify-self: start; }
+
+/* palette / density pickers, right-aligned over their segment */
+.ax-menu.ax-pick {
+  left: auto;
+  min-width: 0;
+  max-height: calc(100vh - var(--ax-status-h, 20px) - 16px);
+  overflow-y: auto;
+}
+.ax-menu-group {
+  padding: 4px 1.5ch 0;
+  color: var(--dsw-alias-label-tertiary);
+}
+.ax-pick .ax-menu-row { gap: 1ch; padding-right: 1ch; }
+.ax-radio { color: var(--dsw-alias-label-tertiary); }
+.ax-menu-row[aria-checked="true"] .ax-radio { color: var(--dsw-alias-brand-primary); font-weight: 700; }
+.ax-menu-row:is(:hover, :focus-visible) :is(.ax-radio, .ax-dim) { color: inherit; }
+.ax-hint { margin-left: auto; padding-left: 2ch; }
+.ax-swatches { display: inline-flex; align-items: center; gap: 6px; }
+.ax-swatch {
+  display: inline-flex;
+  height: 14px;
+  box-shadow: 0 0 0 1px var(--dsw-alias-border-l4);
+}
+.ax-swatch > i { display: block; width: 11px; }
+.ax-swatch > i:last-child { width: 24px; }
+
+/* ---- 9. settings row (General) ------------------------------------------ */
+
+.ax-settings {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 6px 16px;
+  align-items: center;
+  padding: 10px 0;
+  font: 13px/20px var(--ax-mono, monospace);
+  color: var(--dsw-alias-label-primary);
+}
+.ax-settings-title {
+  grid-column: 1 / -1;
+  font-weight: 700;
+}
+.ax-settings-title small {
+  font-weight: 400;
+  color: var(--dsw-alias-label-tertiary);
+  margin-left: 1ch;
+}
+.ax-settings label { color: var(--dsw-alias-label-secondary); }
+.ax-choices { display: flex; flex-wrap: wrap; gap: 4px; }
+.ax-choice {
+  all: unset;
+  cursor: pointer;
+  padding: 0 .8ch;
+  border: 1px solid var(--dsw-alias-border-l2);
+  color: var(--dsw-alias-label-secondary);
+}
+.ax-choice:hover { border-color: var(--dsw-alias-border-l4); color: var(--dsw-alias-label-primary); }
+.ax-choice[aria-pressed="true"] {
+  background: var(--dsw-alias-brand-primary);
+  border-color: var(--dsw-alias-brand-primary);
+  color: var(--ax-on-accent);
+}
+.ax-choice:focus-visible { outline: 1px dashed var(--dsw-alias-brand-primary); outline-offset: 1px; }
+
+/* ---- 11. optional CRT ---------------------------------------------------- */
+
+html[data-ascii-crt] body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, .14) 0 1px, transparent 1px 3px),
+    radial-gradient(ellipse at center, transparent 62%, rgba(0, 0, 0, .28) 100%);
+  mix-blend-mode: multiply;
+}
+html[data-ascii-crt][data-ascii-scheme="dark"] body {
+  text-shadow: 0 0 3px color-mix(in srgb, var(--dsw-alias-brand-primary) 40%, transparent);
+}
+
+/* ---- 12. boot intro (intro.js) ------------------------------------------ */
+
+.ax-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483600;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #080b12;
+  color: #c9d4ff;
+  transition: opacity .6s ease;
+  user-select: none;
+}
+.ax-intro[data-phase="out"] { opacity: 0; }
+
+.ax-intro-logo {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+}
+.ax-intro-banner {
+  display: block;
+  /* 6.85px a banner column: DEEPSEEK (111 columns) comes out at 760px */
+  width: min(76vw, calc(var(--ax-logo-cols, 111) * 6.85px)) !important;
+}
+.ax-intro-sub {
+  font: 600 13px/1 var(--ax-mono, monospace);
+  letter-spacing: .5em;
+  color: #7f93d9;
+  opacity: 0;
+  transition: opacity .6s ease .15s;
+}
+.ax-intro[data-sub="on"] .ax-intro-sub { opacity: 1; }
+.ax-intro[data-phase="blink"] .ax-intro-logo {
+  animation: ax-intro-blink .9s step-end 1;
+}
+@keyframes ax-intro-blink {
+  0%, 33.33%, 66.66%, 100% { opacity: 1; }
+  16.66%, 50%, 83.33% { opacity: 0; }
+}
+
+.ax-intro-crt {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, .3) 0 1px, transparent 1px 3px),
+    radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, .6) 100%);
+  animation: ax-intro-flicker .16s steps(2) infinite;
+}
+@keyframes ax-intro-flicker {
+  0% { opacity: .94; }
+  100% { opacity: 1; }
+}
+
+.ax-intro-hint {
+  position: absolute;
+  bottom: 28px;
+  font: 600 11px/1 var(--ax-mono, monospace);
+  letter-spacing: .35em;
+  text-transform: uppercase;
+  color: rgba(201, 212, 255, .45);
+  animation: ax-blink 1.1s steps(1) infinite;
+}
+.ax-intro[data-phase="out"] .ax-intro-hint { visibility: hidden; }
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-ascii-chat="bubbles"] [data-chat-running="true"] [class*="_runningContent"]::after { animation: none; }
+  html[data-glyphs] [class*="_headline"] [class*="_titleGroup"] > span:first-child::after { animation: none; }
+}
+

@@ -1,0 +1,628 @@
+/* Tongnianbutongyang/dsh-clay-theme — clay.css
+   fetched 2026-10-26 from https://raw.githubusercontent.com/Tongnianbutongyang/dsh-clay-theme/main/clay.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* dsh-clay-theme — 软陶 light palette. Only applies when DSH is in light mode. */
+body:not([data-ds-dark-theme]){
+  --clay-cream:#f6efe4; --clay-cream-2:#fbf6ee; --clay-paper:#fffaf3;
+  --clay-ink:#4a3b2f; --clay-ink-2:#7a6656; --clay-ink-3:#a8937f;
+  --clay-terracotta:#c9785a; --clay-terracotta-2:#b5654a;
+  --clay-shadow-dark:rgba(166,135,100,.35); --clay-shadow-light:rgba(255,255,255,.85);
+  --clay-raise:-6px -6px 12px var(--clay-shadow-light),6px 6px 14px var(--clay-shadow-dark),inset 1px 1px 0 rgba(255,255,255,.7);
+  --clay-raise-sm:-3px -3px 7px var(--clay-shadow-light),3px 3px 8px var(--clay-shadow-dark),inset 1px 1px 0 rgba(255,255,255,.7);
+  --clay-raise-hover:-8px -8px 16px var(--clay-shadow-light),8px 8px 18px var(--clay-shadow-dark),inset 1px 1px 0 rgba(255,255,255,.8);
+  --clay-inset:inset 4px 4px 9px var(--clay-shadow-dark),inset -4px -4px 9px var(--clay-shadow-light);
+  --clay-inset-sm:inset 2px 2px 5px var(--clay-shadow-dark),inset -2px -2px 5px var(--clay-shadow-light);
+  --clay-grad:linear-gradient(145deg,#fbf5ec,#efe6d8);
+  --mac-pink:#f7c6d0; --mac-pink-d:rgba(196,120,140,.45);
+  --mac-mint:#bfe8d6; --mac-mint-d:rgba(100,160,130,.45);
+  --mac-lav:#d8cdf2;  --mac-lav-d:rgba(130,110,180,.42);
+  --mac-lemon:#fbeaa5; --mac-lemon-d:rgba(185,160,70,.42);
+  --mac-sky:#c4def5;  --mac-sky-d:rgba(100,140,185,.42);
+  --mac-peach:#fbd3b8; --mac-peach-d:rgba(200,135,95,.45);
+  --mac-ink:#4a3328;
+  --dsw-alias-bg-base:var(--clay-cream);
+  --dsw-alias-bg-layer-1:var(--clay-cream);
+  --dsw-alias-bg-layer-2:#f8f1e7;
+  --dsw-alias-bg-module-platform:#efe5d6;
+  --dsw-alias-bg-overlay:#f6efe4;
+  --dsw-alias-border-l1:#8a6a4a14; --dsw-alias-border-l2:#8a6a4a1f;
+  --dsw-alias-border-l3:#8a6a4a2b; --dsw-alias-border-l4:#8a6a4a14;
+  --dsw-alias-label-primary:var(--clay-ink); --dsw-alias-label-primary-dimmed:var(--clay-ink-2);
+  --dsw-alias-label-secondary:var(--clay-ink-2); --dsw-alias-label-tertiary:var(--clay-ink-3);
+  --dsw-alias-label-caption:var(--clay-ink-3);
+  --dsw-alias-brand-primary:var(--clay-ink);
+  --dsw-alias-link:var(--clay-terracotta-2);
+  --dsw-alias-state-business-primary:var(--clay-terracotta);
+  --dsw-focus-ring-color:#b9a6ea;
+  --dsw-alias-interactive-bg-hover:#b0835a14; --dsw-alias-interactive-bg-hover-solid:#f0e5d6;
+  --dsw-alias-button-primary-fill:var(--clay-terracotta); --dsw-alias-button-info-fill:var(--clay-terracotta); --dsw-alias-button-info-hover:var(--clay-terracotta-2); --dsw-alias-button-primary-dimmed:#e2b8a4; --dsw-alias-button-elevated-fill:var(--clay-cream); --dsw-alias-button-floating-fill:var(--clay-cream); --dsw-alias-button-primary-hover:var(--clay-terracotta-2);
+  --dsw-alias-markdown-code-block:#f3ebdf; --dsw-alias-markdown-inline-code:#efe3d2;
+  --dsw-alias-tooltip-bg:#5a4636; --dsw-alias-toast-bg:#5a4636;
+  --dsw-alias-scrollbar-bg-l1:#c9b29a66; --dsw-alias-scrollbar-hover-l1:#b8997b99;
+  --dsw-alias-settings-card-fill:var(--clay-cream);
+  --dsw-specific-menu:#f6efe4; --dsw-specific-sidebar-fill:linear-gradient(180deg,rgba(247,198,208,.32),rgba(250,244,236,.35) 50%,rgba(191,232,214,.38)); --dsw-specific-sidebar-nav-item-active:#f2e2f0; --dsw-specific-sidebar-nav-item-hover:#f6ebe3; --dsw-alias-state-business-tertiary:#ecd9c9; --dsw-alias-label-primary-bluish:var(--clay-terracotta-2);
+  --dsw-radius-sm:10px; --dsw-radius-md:14px; --dsw-radius-lg:18px; --dsw-radius-xl:20px; --dsw-radius-panel:28px;
+  --dsw-shadow-lv1:4px 4px 10px var(--clay-shadow-dark),-3px -3px 8px var(--clay-shadow-light);
+  --dsw-shadow-lv2:6px 6px 16px var(--clay-shadow-dark),-4px -4px 12px var(--clay-shadow-light);
+  --dsw-shadow-lv3:10px 12px 28px var(--clay-shadow-dark),-6px -6px 16px var(--clay-shadow-light);
+  --dsw-elevation-stroke-color:#8a6a4a1f;
+  background-color:var(--clay-cream);
+  color:var(--clay-ink);
+}
+
+/* ===== neumorphic clay relief ===== */
+/* raised */
+body:not([data-ds-dark-theme]) button:not([role=switch]):not([role=tab]):not([role=radio]):not([aria-pressed=true]):not([aria-checked=true]):not([aria-selected=true]):not(:disabled):not([class*=ghost i]):not([class*=icon i]):not([class*=Trigger]),
+body:not([data-ds-dark-theme]) [role=radio]:not([aria-checked=true]){
+  background-image:var(--clay-grad);border-color:transparent!important;box-shadow:var(--clay-raise-sm);border-radius:14px;
+  transition:box-shadow .18s ease,transform .18s ease}
+body:not([data-ds-dark-theme]) button:not([role=switch]):not(:disabled):hover{box-shadow:var(--clay-raise);transform:translateY(-1px)}
+body:not([data-ds-dark-theme]) button:not([role=switch]):not(:disabled):active{box-shadow:var(--clay-inset-sm);transform:translateY(0)}
+body:not([data-ds-dark-theme]) button[class*=primary i]:not(:disabled),body:not([data-ds-dark-theme]) button[class*=Primary]:not(:disabled){
+  background-image:linear-gradient(145deg,#d6896b,#b9664a);color:#fff;
+  box-shadow:-4px -4px 10px var(--clay-shadow-light),5px 5px 12px rgba(160,90,60,.45),inset 1px 1px 0 rgba(255,255,255,.35)}
+body:not([data-ds-dark-theme]) button[class*=primary i]:disabled{background-image:none;background:#e3c2b0;box-shadow:var(--clay-inset-sm);opacity:.8}
+/* panels / cards / menus */
+body:not([data-ds-dark-theme]) [role=dialog],body:not([data-ds-dark-theme]) [role=menu],body:not([data-ds-dark-theme]) [role=listbox],body:not([data-ds-dark-theme]) [data-menu-material]{
+  background-color:var(--clay-cream)!important;background-image:var(--clay-grad);border:0!important;border-radius:24px;
+  box-shadow:-10px -10px 24px rgba(255,255,255,.6),14px 16px 36px rgba(120,90,60,.35),inset 1px 1px 0 rgba(255,255,255,.8)!important}
+body:not([data-ds-dark-theme]) [class*=card i]:not([class*=cardHeader i]):not([class*=Trigger]){border-radius:22px;border-color:transparent;background-image:var(--clay-grad);box-shadow:var(--clay-raise)}
+/* pressed / inset */
+body:not([data-ds-dark-theme]) textarea,body:not([data-ds-dark-theme]) input[type=text],body:not([data-ds-dark-theme]) input:not([type]),body:not([data-ds-dark-theme]) input[type=search],body:not([data-ds-dark-theme]) input[type=number],body:not([data-ds-dark-theme]) select,body:not([data-ds-dark-theme]) [role=combobox],body:not([data-ds-dark-theme]) [contenteditable=true]{
+  border-radius:14px;background:#f1e8db!important;border-color:transparent!important;box-shadow:var(--clay-inset-sm)}
+body:not([data-ds-dark-theme]) [class*=cardWorkspaceTrigger]{background:#f3ebdf!important}
+body:not([data-ds-dark-theme]) [class*=cardWorkspaceTrigger]::after{border:0!important;box-shadow:var(--clay-inset)}
+body:not([data-ds-dark-theme]) [aria-pressed=true],body:not([data-ds-dark-theme]) [aria-checked=true]:not([role=switch]),body:not([data-ds-dark-theme]) [aria-selected=true],body:not([data-ds-dark-theme]) [aria-current=page],body:not([data-ds-dark-theme]) [aria-current=true]{
+  background:#efe5d6!important;background-image:none!important;box-shadow:var(--clay-inset-sm)!important;border-color:transparent!important}
+body:not([data-ds-dark-theme]) [role=switch]{box-shadow:var(--clay-inset-sm);border-color:transparent}
+body:not([data-ds-dark-theme]) [role=switch][aria-checked=true]{background:var(--clay-terracotta)!important}
+body:not([data-ds-dark-theme]) [role=tablist],body:not([data-ds-dark-theme]) [role=radiogroup]{border-radius:22px;padding:6px;background:#efe5d6;box-shadow:var(--clay-inset)}
+body:not([data-ds-dark-theme]) [role=tab],body:not([data-ds-dark-theme]) [role=radio]{border-radius:16px}
+body:not([data-ds-dark-theme]) [role=tab][aria-selected=true],body:not([data-ds-dark-theme]) [role=radio][aria-checked=true]{background:var(--clay-cream)!important;background-image:var(--clay-grad)!important;box-shadow:var(--clay-raise-sm)!important}
+body:not([data-ds-dark-theme]) [class*=previewBadge]{background:#ecd9c9!important;color:var(--clay-terracotta-2)!important;border-color:transparent!important;box-shadow:var(--clay-raise-sm)}
+body:not([data-ds-dark-theme]) ::selection{background:#e8b9a14d}
+body:not([data-ds-dark-theme]) button[class*=row i]:not(:hover),body:not([data-ds-dark-theme]) button[class*=item i]:not(:hover),body:not([data-ds-dark-theme]) button[class*=entry i]:not(:hover),body:not([data-ds-dark-theme]) [role=option]:not([aria-selected=true]),body:not([data-ds-dark-theme]) button[class*=brand i],body:not([data-ds-dark-theme]) button[class*=logo i]{box-shadow:none!important;background-image:none!important}
+body:not([data-ds-dark-theme]) button[class*=row i]:hover,body:not([data-ds-dark-theme]) button[class*=item i]:hover,body:not([data-ds-dark-theme]) button[class*=entry i]:hover{box-shadow:var(--clay-raise-sm)}
+
+/* ===== macaron palette (0.1.6) ===== */
+body:not([data-ds-dark-theme]) [class*=sidebar i][class*=root i],body:not([data-ds-dark-theme]) aside{background-image:linear-gradient(180deg,#f9eef1 0%,#f5efe6 50%,#edf4ee 100%)}
+/* primary / send: pink→peach */
+body:not([data-ds-dark-theme]) button[class*=primary i]:not(:disabled),body:not([data-ds-dark-theme]) button[class*=Primary]:not(:disabled){
+  background:linear-gradient(145deg,var(--mac-pink),var(--mac-peach))!important;color:var(--mac-ink)!important;
+  box-shadow:-5px -5px 11px rgba(255,255,255,.85),5px 6px 14px var(--mac-pink-d),inset 1px 1px 0 rgba(255,255,255,.7)!important}
+body:not([data-ds-dark-theme]) button[class*=primary i]:not(:disabled):hover{filter:saturate(1.15) brightness(1.02)}
+/* readable disabled */
+body:not([data-ds-dark-theme]) button:disabled,body:not([data-ds-dark-theme]) button[class*=primary i]:disabled{
+  background:#efe3dc!important;background-image:none!important;color:#8f7666!important;opacity:1!important;
+  box-shadow:var(--clay-inset-sm)!important;cursor:not-allowed}
+body:not([data-ds-dark-theme]) button[class*=primary i]:disabled svg{color:#a68a78}
+/* New Session: mint */
+body:not([data-ds-dark-theme]) button:is([aria-label="New session"],[aria-label="新会话"],[class*=newSession]):not([class*=icon i]):not([class*=brand i]):not([class*=logo i]):not(:has(> svg:only-child)):has(span, :not(svg)),body:not([data-ds-dark-theme]) button:has(> svg + span):is([class*=newSession i],[class*=new i]){background:var(--mac-mint)!important;background-image:linear-gradient(145deg,rgba(255,255,255,.45),rgba(255,255,255,0) 60%)!important;color:var(--mac-ink)!important;box-shadow:-5px -5px 11px rgba(255,255,255,.85),5px 6px 13px var(--mac-mint-d),inset 1px 1px 0 rgba(255,255,255,.75)!important;}
+/* settings nav: pastel icon chips + tinted active */
+body:not([data-ds-dark-theme]) [class*=navCell] svg{box-sizing:content-box;padding:5px;border-radius:10px;margin-right:2px;
+  box-shadow:-2px -2px 4px rgba(255,255,255,.8),2px 2px 5px rgba(120,90,60,.22)}
+body:not([data-ds-dark-theme]) [class*=navCell]:nth-child(6n+1) svg{background:var(--mac-pink)}
+body:not([data-ds-dark-theme]) [class*=navCell]:nth-child(6n+2) svg{background:var(--mac-mint)}
+body:not([data-ds-dark-theme]) [class*=navCell]:nth-child(6n+3) svg{background:var(--mac-lav)}
+body:not([data-ds-dark-theme]) [class*=navCell]:nth-child(6n+4) svg{background:var(--mac-lemon)}
+body:not([data-ds-dark-theme]) [class*=navCell]:nth-child(6n+5) svg{background:var(--mac-sky)}
+body:not([data-ds-dark-theme]) [class*=navCell]:nth-child(6n+6) svg{background:var(--mac-peach)}
+body:not([data-ds-dark-theme]) [class*=navCell]{box-shadow:none!important;background-image:none!important}
+body:not([data-ds-dark-theme]) [class*=navCell][class*=active]{background:#f3e6f0!important;box-shadow:inset 3px 3px 7px rgba(190,140,170,.35),inset -3px -3px 7px rgba(255,255,255,.85)!important}
+/* appearance tiles */
+body:not([data-ds-dark-theme]) [class*=themeCube]:nth-child(1){background:var(--mac-lemon)!important;background-image:linear-gradient(145deg,rgba(255,255,255,.45),rgba(255,255,255,0) 60%)!important;color:var(--mac-ink)!important;box-shadow:-5px -5px 11px rgba(255,255,255,.85),5px 6px 13px var(--mac-lemon-d),inset 1px 1px 0 rgba(255,255,255,.75)!important;}
+body:not([data-ds-dark-theme]) [class*=themeCube]:nth-child(2){background:var(--mac-lav)!important;background-image:linear-gradient(145deg,rgba(255,255,255,.45),rgba(255,255,255,0) 60%)!important;color:var(--mac-ink)!important;box-shadow:-5px -5px 11px rgba(255,255,255,.85),5px 6px 13px var(--mac-lav-d),inset 1px 1px 0 rgba(255,255,255,.75)!important;}
+body:not([data-ds-dark-theme]) [class*=themeCube]:nth-child(3){background:var(--mac-sky)!important;background-image:linear-gradient(145deg,rgba(255,255,255,.45),rgba(255,255,255,0) 60%)!important;color:var(--mac-ink)!important;box-shadow:-5px -5px 11px rgba(255,255,255,.85),5px 6px 13px var(--mac-sky-d),inset 1px 1px 0 rgba(255,255,255,.75)!important;}
+body:not([data-ds-dark-theme]) [class*=themeCube][class*=selected]{box-shadow:inset 4px 4px 9px rgba(90,70,60,.28),inset -4px -4px 9px rgba(255,255,255,.7),0 0 0 2px #fff!important;font-weight:600}
+/* toggles */
+body:not([data-ds-dark-theme]) [role=switch][aria-checked=true]{background:linear-gradient(145deg,#a9dcc5,var(--mac-mint))!important;box-shadow:inset 2px 2px 5px var(--mac-mint-d),inset -2px -2px 5px rgba(255,255,255,.7)!important}
+/* Preview tag */
+body:not([data-ds-dark-theme]) [class*=previewBadge]{background:var(--mac-lav)!important;background-image:linear-gradient(145deg,rgba(255,255,255,.45),rgba(255,255,255,0) 60%)!important;color:var(--mac-ink)!important;box-shadow:-5px -5px 11px rgba(255,255,255,.85),5px 6px 13px var(--mac-lav-d),inset 1px 1px 0 rgba(255,255,255,.75)!important;border:0!important;}
+/* selected / active tinted */
+body:not([data-ds-dark-theme]) [aria-selected=true]:not([class*=navCell]),body:not([data-ds-dark-theme]) [aria-current=page],body:not([data-ds-dark-theme]) [aria-current=true]{background:#efe8fa!important;box-shadow:inset 3px 3px 7px var(--mac-lav-d),inset -3px -3px 7px rgba(255,255,255,.8)!important}
+body:not([data-ds-dark-theme]) [aria-pressed=true]{background:#e3f4ec!important;box-shadow:inset 3px 3px 7px var(--mac-mint-d),inset -3px -3px 7px rgba(255,255,255,.8)!important}
+/* menu / list rows hover pastel (cycling) */
+body:not([data-ds-dark-theme]) button[class*=row i]:nth-child(5n+1):hover,body:not([data-ds-dark-theme]) button[class*=item i]:nth-child(5n+1):hover,body:not([data-ds-dark-theme]) [role=menuitem]:nth-child(5n+1):hover,body:not([data-ds-dark-theme]) [role=option]:nth-child(5n+1):hover{background:#fbe6eb!important}
+body:not([data-ds-dark-theme]) button[class*=row i]:nth-child(5n+2):hover,body:not([data-ds-dark-theme]) button[class*=item i]:nth-child(5n+2):hover,body:not([data-ds-dark-theme]) [role=menuitem]:nth-child(5n+2):hover,body:not([data-ds-dark-theme]) [role=option]:nth-child(5n+2):hover{background:#e2f4ec!important}
+body:not([data-ds-dark-theme]) button[class*=row i]:nth-child(5n+3):hover,body:not([data-ds-dark-theme]) button[class*=item i]:nth-child(5n+3):hover,body:not([data-ds-dark-theme]) [role=menuitem]:nth-child(5n+3):hover,body:not([data-ds-dark-theme]) [role=option]:nth-child(5n+3):hover{background:#ece6f9!important}
+body:not([data-ds-dark-theme]) button[class*=row i]:nth-child(5n+4):hover,body:not([data-ds-dark-theme]) button[class*=item i]:nth-child(5n+4):hover,body:not([data-ds-dark-theme]) [role=menuitem]:nth-child(5n+4):hover,body:not([data-ds-dark-theme]) [role=option]:nth-child(5n+4):hover{background:#fbf3d2!important}
+body:not([data-ds-dark-theme]) button[class*=row i]:nth-child(5n+5):hover,body:not([data-ds-dark-theme]) button[class*=item i]:nth-child(5n+5):hover,body:not([data-ds-dark-theme]) [role=menuitem]:nth-child(5n+5):hover,body:not([data-ds-dark-theme]) [role=option]:nth-child(5n+5):hover{background:#e3eefa!important}
+/* composer focus ring pastel */
+body:not([data-ds-dark-theme]) :focus-visible{outline-color:#b9a6ea}
+body:not([data-ds-dark-theme]) [class*=cardWorkspaceTrigger]:focus-within::after,body:not([data-ds-dark-theme]) textarea:focus{box-shadow:var(--clay-inset),0 0 0 3px rgba(216,205,242,.8)!important}
+
+/* ===== macaron multi-blob background (0.1.7) ===== */
+html:has(body:not([data-ds-dark-theme])),body:not([data-ds-dark-theme]){
+  background-color:#f6efe4!important;
+  background-image:
+    radial-gradient(42vw 42vw at 4% 2%,rgba(247,198,208,.78),rgba(247,198,208,0) 70%),
+    radial-gradient(40vw 40vw at 98% 4%,rgba(216,205,242,.78),rgba(216,205,242,0) 70%),
+    radial-gradient(44vw 44vw at 2% 98%,rgba(191,232,214,.8),rgba(191,232,214,0) 70%),
+    radial-gradient(38vw 38vw at 96% 96%,rgba(251,234,165,.75),rgba(251,234,165,0) 70%),
+    radial-gradient(30vw 30vw at 78% 70%,rgba(251,211,184,.6),rgba(251,211,184,0) 70%),
+    radial-gradient(34vw 30vw at 50% 42%,rgba(196,222,245,.55),rgba(196,222,245,0) 70%)!important;
+  background-attachment:fixed!important;background-repeat:no-repeat!important}
+body:not([data-ds-dark-theme]) [class*=_frame]:not([role]),body:not([data-ds-dark-theme]) [class*=_frame]:not([role]) > [class*=_root]:not([role]){background-color:transparent!important}
+body:not([data-ds-dark-theme]) aside,body:not([data-ds-dark-theme]) [class*=sidebar i][class*=root i]{
+  background-color:rgba(250,244,236,.45)!important;
+  background-image:linear-gradient(180deg,rgba(247,198,208,.35),rgba(251,234,165,.18) 50%,rgba(191,232,214,.38))!important;
+  backdrop-filter:blur(14px) saturate(1.1)}
+body:not([data-ds-dark-theme]) [role=dialog],body:not([data-ds-dark-theme]) [role=menu],body:not([data-ds-dark-theme]) [role=listbox],body:not([data-ds-dark-theme]) [data-menu-material]{
+  background-color:rgba(250,244,236,.72)!important;
+  background-image:linear-gradient(145deg,rgba(255,255,255,.5),rgba(255,255,255,.08))!important;
+  backdrop-filter:blur(22px) saturate(1.2)!important}
+body:not([data-ds-dark-theme]) [role=dialog] [role=dialog]{backdrop-filter:none!important}
+body:not([data-ds-dark-theme]) [class*=cardWorkspaceTrigger],body:not([data-ds-dark-theme]) [class*=card i]:has(textarea){
+  background-color:rgba(243,232,240,.62)!important;
+  background-image:linear-gradient(145deg,rgba(216,205,242,.30),rgba(251,211,184,.25))!important;
+  backdrop-filter:blur(12px)}
+body:not([data-ds-dark-theme]) [class*=wSkVaW_root],body:not([data-ds-dark-theme]) main,body:not([data-ds-dark-theme]) [class*=sidebarCol]{background-color:transparent!important}
+body:not([data-ds-dark-theme]) [class*=sidebarCol]{background-image:linear-gradient(180deg,rgba(255,250,243,.35),rgba(255,250,243,.2))!important;backdrop-filter:blur(14px)}
+
+/* ===== sessions & conversation (0.1.8) ===== */
+/* user bubble: pink→lavender raised */
+body:not([data-ds-dark-theme]) [class*=_bubble]:not([class*=Meme i]){
+  background:linear-gradient(145deg,#f9d3dc,#e0d5f5)!important;color:var(--mac-ink)!important;border:0!important;border-radius:20px 20px 8px 20px!important;
+  box-shadow:-5px -5px 11px rgba(255,255,255,.85),6px 7px 15px rgba(170,120,160,.38),inset 1px 1px 0 rgba(255,255,255,.7)!important}
+/* code block: inset cream */
+body:not([data-ds-dark-theme]) :has(> [class*=_content_] > div > pre.shiki),body:not([data-ds-dark-theme]) :has(> [class*=_content_] pre.shiki){
+  background:#f3eadd!important;background-image:none!important;border:0!important;border-radius:18px!important;
+  box-shadow:inset 4px 4px 10px rgba(166,135,100,.30),inset -4px -4px 10px rgba(255,255,255,.85)!important}
+body:not([data-ds-dark-theme]) pre.shiki{background:transparent!important}
+body:not([data-ds-dark-theme]) :not(pre) > code{background:#f6e3e8!important;color:#8a4a5a!important;border-radius:6px;padding:1px 5px}
+/* "Took Ns" thinking strip: flat, compact */
+body:not([data-ds-dark-theme]) button[class*=l_V-RG_root],body:not([data-ds-dark-theme]) [class*=flowItem] > div > button:disabled{
+  background:transparent!important;box-shadow:none!important;width:auto!important;color:var(--clay-ink-3)!important;padding:2px 6px!important}
+/* session rows */
+body:not([data-ds-dark-theme]) [class*=sessionRow]{border-radius:14px!important;transition:box-shadow .18s,background .18s}
+body:not([data-ds-dark-theme]) [class*=sessionRow]:not([class*=selected]):hover{background:rgba(255,250,243,.7)!important;
+  box-shadow:-3px -3px 7px rgba(255,255,255,.8),3px 4px 9px rgba(170,130,150,.3)!important}
+body:not([data-ds-dark-theme]) [class*=sessionRow][class*=selected]{background:linear-gradient(145deg,#ece3fa,#f6dde5)!important;
+  box-shadow:inset 3px 3px 7px rgba(150,120,180,.38),inset -3px -3px 7px rgba(255,255,255,.85)!important;font-weight:500}
+/* chat/trajectory tabs: compact pill group */
+body:not([data-ds-dark-theme]) [class*=wSkVaW_tabs]{background:rgba(239,229,214,.55)!important;box-shadow:inset 2px 2px 5px rgba(166,135,100,.28),inset -2px -2px 5px rgba(255,255,255,.8)!important;width:fit-content!important;border-radius:999px!important;padding:3px!important}
+body:not([data-ds-dark-theme]) [class*=wSkVaW_tab][aria-selected=true]{background:linear-gradient(145deg,var(--mac-pink),var(--mac-peach))!important;box-shadow:-2px -2px 5px rgba(255,255,255,.8),2px 3px 6px var(--mac-pink-d)!important;border-radius:999px!important}
+/* message action pills */
+body:not([data-ds-dark-theme]) [class*=flowItem] button{border-radius:999px}
+body:not([data-ds-dark-theme]) [data-menu-material],body:not([data-ds-dark-theme]) [data-menu-material] *:not(svg):not(path),body:not([data-ds-dark-theme]) [role=tooltip],body:not([data-ds-dark-theme]) [role=tooltip] *{color:var(--clay-ink)!important}
+body:not([data-ds-dark-theme]) [data-menu-material] [class*=time i],body:not([data-ds-dark-theme]) [data-menu-material] [class*=meta i],body:not([data-ds-dark-theme]) [data-menu-material] [class*=status i]{color:var(--clay-ink-2)!important}
+body:not([data-ds-dark-theme]) [class*=_card_]:has([class*=hoverContent]){background:rgba(252,246,238,.92)!important;background-image:linear-gradient(145deg,rgba(247,198,208,.25),rgba(216,205,242,.25))!important;backdrop-filter:blur(16px);color:var(--clay-ink)!important}
+body:not([data-ds-dark-theme]) [class*=hoverContent],body:not([data-ds-dark-theme]) [class*=hoverContent] *{color:var(--clay-ink)!important}
+body:not([data-ds-dark-theme]) [class*=hoverStatus],body:not([data-ds-dark-theme]) [class*=hoverContent] [class*=time i]{color:var(--clay-ink-2)!important}
+
+/* ===== 0.1.9: no nested emboss ===== */
+body:not([data-ds-dark-theme]) [class*=card i] [class*=card i],body:not([data-ds-dark-theme]) [class*=card i] [class*=card i]::before,body:not([data-ds-dark-theme]) [class*=card i] [class*=card i]::after,
+body:not([data-ds-dark-theme]) [class*=card i] button:not([role=switch]):not([class*=primary i]):not([class*=option i]):not([class*=Option]):not(:hover),
+body:not([data-ds-dark-theme]) [class*=_card] :is(div,span,section,header,footer,ul,li,p){
+  background:transparent!important;background-image:none!important;box-shadow:none!important;border-color:transparent!important;backdrop-filter:none!important}
+body:not([data-ds-dark-theme]) [class*=card i] button:not([role=switch]):not([class*=primary i]):not([class*=option i]):not([class*=Option]):hover{box-shadow:none!important;transform:none!important;background:transparent!important}
+body:not([data-ds-dark-theme]) :is([role=dialog],[role=menu],[data-menu-material]) [role=dialog]{box-shadow:none!important}
+/* outer preset card raised, active inset pastel */
+body:not([data-ds-dark-theme]) li[class*=card i]{border-radius:20px!important;border:0!important;background:rgba(252,246,238,.75)!important;background-image:var(--clay-grad)!important;box-shadow:var(--clay-raise-sm)!important;overflow:hidden}
+body:not([data-ds-dark-theme]) li[class*=card i][class*=Active]{background:linear-gradient(145deg,#f6e4ec,#ece5f8)!important;box-shadow:var(--clay-raise-sm),inset 0 0 0 2px rgba(216,205,242,.9)!important}
+/* tidy chips inside cards */
+body:not([data-ds-dark-theme]) [class*=card i] code,body:not([data-ds-dark-theme]) [class*=card i] [class*=badge i],body:not([data-ds-dark-theme]) [class*=card i] [class*=tag i],body:not([data-ds-dark-theme]) [class*=card i] [class*=chip i],body:not([data-ds-dark-theme]) [class*=card i] [class*=pill i]{
+  display:inline-block;background:#f7d6de!important;color:#8a4a5a!important;border-radius:999px!important;padding:1px 8px!important;
+  font-size:11px;line-height:18px;box-shadow:-1px -1px 2px rgba(255,255,255,.8),1px 1px 3px rgba(196,120,140,.3)!important;border:0!important}
+body:not([data-ds-dark-theme]) [class*=card i] [class*=builtin i],body:not([data-ds-dark-theme]) [class*=card i] [class*=default i]:not(button){background:#dff1e8!important;color:#3f6b56!important}
+body:not([data-ds-dark-theme]) [class*=cardFoot] a,body:not([data-ds-dark-theme]) [class*=cardFoot] button,body:not([data-ds-dark-theme]) [class*=cardHelp] *{background:transparent!important;box-shadow:none!important;color:var(--clay-ink-2)!important;padding:0!important}
+body:not([data-ds-dark-theme]) [class*=cardFoot] a:hover,body:not([data-ds-dark-theme]) [class*=cardFoot] button:hover{color:var(--clay-terracotta-2)!important;text-decoration:underline}
+/* ===== segmented Chat/Trajectory ===== */
+body:not([data-ds-dark-theme]) [role=tablist][class*=tabs]{display:inline-flex!important;gap:4px;width:fit-content!important;padding:4px!important;border-radius:999px!important;
+  background:rgba(236,226,212,.7)!important;box-shadow:inset 3px 3px 7px rgba(166,135,100,.32),inset -3px -3px 7px rgba(255,255,255,.85)!important;border:0!important}
+body:not([data-ds-dark-theme]) [role=tablist][class*=tabs] [role=tab]{padding:6px 16px!important;height:auto!important;border-radius:999px!important;border:0!important;
+  background:transparent!important;box-shadow:none!important;color:var(--clay-ink-2)!important;line-height:20px;text-decoration:none!important}
+body:not([data-ds-dark-theme]) [role=tablist][class*=tabs] [role=tab]::after,body:not([data-ds-dark-theme]) [role=tablist][class*=tabs] [role=tab]::before,body:not([data-ds-dark-theme]) [role=tablist][class*=tabs]::after{display:none!important;content:none!important}
+body:not([data-ds-dark-theme]) [role=tablist][class*=tabs] [role=tab][aria-selected=true]{
+  background:linear-gradient(145deg,var(--mac-pink),var(--mac-peach))!important;color:var(--mac-ink)!important;font-weight:600;
+  box-shadow:-3px -3px 6px rgba(255,255,255,.85),3px 4px 9px var(--mac-pink-d),inset 1px 1px 0 rgba(255,255,255,.7)!important}
+body:not([data-ds-dark-theme]) pre code,body:not([data-ds-dark-theme]) pre.shiki code,body:not([data-ds-dark-theme]) [class*=card i] pre code{display:block!important;background:transparent!important;color:inherit!important;padding:0!important;border-radius:0!important;box-shadow:none!important;font-size:inherit!important;line-height:inherit!important}
+
+/* ===== 0.1.10: never create a containing block on layout columns ===== */
+/* backdrop-filter/filter/transform on an ancestor traps position:fixed dialogs (e.g. dsh-session-manager) */
+body:not([data-ds-dark-theme]) aside,body:not([data-ds-dark-theme]) [class*=sidebar i][class*=root i],body:not([data-ds-dark-theme]) [class*=sidebarCol],body:not([data-ds-dark-theme]) [class*=_frame],body:not([data-ds-dark-theme]) [class*=wSkVaW_root]{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;filter:none!important}
+body:not([data-ds-dark-theme]) aside,body:not([data-ds-dark-theme]) [class*=sidebarCol]{background-color:rgba(250,244,236,.62)!important}
+/* sidebar footer entries: flat, raise on hover */
+body:not([data-ds-dark-theme]) [class*=footerActions] button,body:not([data-ds-dark-theme]) [class*=footArea] button{background-image:none!important;background-color:transparent!important;box-shadow:none!important}
+body:not([data-ds-dark-theme]) [class*=footerActions] button:hover,body:not([data-ds-dark-theme]) [class*=footArea] button:hover{background-color:rgba(255,250,243,.7)!important;box-shadow:var(--clay-raise-sm)!important}
+/* dsh-session-manager panel: solid clay surface, plugin layout untouched */
+body:not([data-ds-dark-theme]) .sm-nativeDialog{background:#f8f1e7!important;background-image:linear-gradient(145deg,rgba(247,198,208,.18),rgba(216,205,242,.18))!important;backdrop-filter:none!important}
+body:not([data-ds-dark-theme]) .sm-nativeDialog *{backdrop-filter:none!important}
+body:not([data-ds-dark-theme]) .sm-nativeDialog :is(.sm-panel,.sm-list,.sm-row,.sm-rowMain,.sm-rowSecondary,.sm-rowActions){background:transparent!important;box-shadow:none!important}
+body:not([data-ds-dark-theme]) .sm-row{border-radius:14px}
+body:not([data-ds-dark-theme]) .sm-row:hover{background:rgba(255,250,243,.8)!important;box-shadow:var(--clay-raise-sm)!important}
+body:not([data-ds-dark-theme]) .sm-nativeDialog .sm-rowBtn{background:transparent!important;background-image:none!important;box-shadow:none!important;padding:2px 6px!important;border-radius:8px!important}
+body:not([data-ds-dark-theme]) .sm-nativeDialog .sm-rowBtn:hover{background:#f3e6ee!important}
+body:not([data-ds-dark-theme]) .sm-nativeDialog select,body:not([data-ds-dark-theme]) .sm-nativeDialog input{background:#f1e8db!important;border-color:transparent!important;box-shadow:var(--clay-inset-sm)!important;border-radius:12px!important}
+
+/* ===== 0.1.11: ask-user question options — clear selected state ===== */
+/* DSH user-questions uses Mbwy4a_option / Mbwy4a_optionSelected */
+body:not([data-ds-dark-theme]) button[class*=_option],body:not([data-ds-dark-theme]) button[class*=option]:not([class*=Option]){
+  border-radius:16px!important;border:1px solid transparent!important;transition:background .12s,box-shadow .12s,border-color .12s}
+body:not([data-ds-dark-theme]) button[class*=_option]:hover:not(:disabled):not([class*=optionSelected]):not([class*=_optionSelected]),
+body:not([data-ds-dark-theme]) button[class*=option]:hover:not(:disabled):not([class*=optionSelected]):not([class*=_optionSelected]){
+  background:rgba(255,250,243,.85)!important;background-image:none!important;
+  box-shadow:-2px -2px 5px rgba(255,255,255,.8),2px 3px 7px rgba(170,130,150,.22)!important}
+body:not([data-ds-dark-theme]) button[class*=optionSelected],body:not([data-ds-dark-theme]) button[class*=_optionSelected]{
+  background:linear-gradient(145deg,#f6e4ec,#e8e0f8)!important;background-image:linear-gradient(145deg,#f6e4ec,#e8e0f8)!important;
+  border-color:rgba(196,160,220,.95)!important;
+  box-shadow:inset 3px 3px 8px rgba(150,120,180,.38),inset -3px -3px 8px rgba(255,255,255,.85),0 0 0 1px rgba(216,205,242,.7)!important;
+  color:var(--mac-ink)!important;font-weight:500}
+body:not([data-ds-dark-theme]) button[class*=optionSelected] [class*=_number],
+body:not([data-ds-dark-theme]) button[class*=_optionSelected] [class*=_number],
+body:not([data-ds-dark-theme]) button[class*=optionSelected] [class*=number],
+body:not([data-ds-dark-theme]) button[class*=_optionSelected] [class*=number]{
+  background:linear-gradient(145deg,var(--mac-pink),var(--mac-peach))!important;color:var(--mac-ink)!important;font-weight:700;
+  box-shadow:-2px -2px 4px rgba(255,255,255,.85),2px 2px 5px var(--mac-pink-d)!important}
+body:not([data-ds-dark-theme]) [class*=_number]:not([class*=optionSelected] *){
+  background:rgba(216,205,242,.55)!important;color:var(--clay-ink)!important}
+body:not([data-ds-dark-theme]) [class*=_description],body:not([data-ds-dark-theme]) [class*=option] [class*=description]{
+  color:var(--clay-ink-2)!important}
+body:not([data-ds-dark-theme]) [class*=_checkboxChecked]:before,body:not([data-ds-dark-theme]) [class*=checkboxChecked]:before{
+  background:linear-gradient(145deg,var(--mac-pink),var(--mac-peach))!important;border-color:transparent!important}
+body:not([data-ds-dark-theme]) [class*=customRowActive],body:not([data-ds-dark-theme]) [class*=_customRowActive]{
+  background:rgba(243,232,240,.55)!important;border-color:rgba(196,160,220,.7)!important}
+
+/* ===== 0.1.12: black-chocolate dark mode ===== */
+html:has(body[data-ds-dark-theme]),body[data-ds-dark-theme]{
+  --clay-cream:#0e0c0b; --clay-cream-2:#141110; --clay-paper:#1a1614;
+  --clay-ink:#f3ebe3; --clay-ink-2:#cbb9a8; --clay-ink-3:#8a7768;
+  --clay-terracotta:#e09272; --clay-terracotta-2:#d48060;
+  --clay-shadow-dark:rgba(0,0,0,.72); --clay-shadow-light:rgba(255,220,190,.04);
+  --clay-raise:-3px -3px 8px var(--clay-shadow-light),5px 6px 14px var(--clay-shadow-dark),inset 1px 1px 0 rgba(255,220,190,.06);
+  --clay-raise-sm:-2px -2px 5px var(--clay-shadow-light),3px 3px 8px var(--clay-shadow-dark),inset 1px 1px 0 rgba(255,220,190,.05);
+  --clay-raise-hover:-4px -4px 12px var(--clay-shadow-light),8px 8px 18px var(--clay-shadow-dark),inset 1px 1px 0 rgba(255,220,190,.08);
+  --clay-inset:inset 4px 4px 12px rgba(0,0,0,.75),inset -2px -2px 6px rgba(255,220,190,.03);
+  --clay-inset-sm:inset 2px 2px 7px rgba(0,0,0,.7),inset -1px -1px 4px rgba(255,220,190,.03);
+  --clay-grad:linear-gradient(145deg,#1f1a17,#141110);
+  --mac-pink:#f0a8b8; --mac-pink-d:rgba(240,168,184,.28);
+  --mac-mint:#9fdcc4; --mac-mint-d:rgba(159,220,196,.24);
+  --mac-lav:#c4b4ee;  --mac-lav-d:rgba(196,180,238,.26);
+  --mac-lemon:#f0d888; --mac-lemon-d:rgba(240,216,136,.22);
+  --mac-sky:#9ec8ee;  --mac-sky-d:rgba(158,200,238,.22);
+  --mac-peach:#f0b890; --mac-peach-d:rgba(240,184,144,.26);
+  --mac-ink:#120e0c;
+  --dsw-alias-bg-base:#0e0c0b;
+  --dsw-alias-bg-layer-1:#141110;
+  --dsw-alias-bg-layer-2:#1a1614;
+  --dsw-alias-bg-module-platform:#1f1a17;
+  --dsw-alias-bg-overlay:#181412;
+  --dsw-alias-border-l1:#ffffff08; --dsw-alias-border-l2:#ffffff10;
+  --dsw-alias-border-l3:#ffffff16; --dsw-alias-border-l4:#ffffff08;
+  --dsw-alias-label-primary:#f3ebe3; --dsw-alias-label-primary-dimmed:#cbb9a8;
+  --dsw-alias-label-secondary:#cbb9a8; --dsw-alias-label-tertiary:#8a7768;
+  --dsw-alias-label-caption:#8a7768;
+  --dsw-alias-brand-primary:#f3ebe3;
+  --dsw-alias-link:var(--mac-peach);
+  --dsw-alias-state-business-primary:var(--mac-peach);
+  --dsw-focus-ring-color:#c4b4ee;
+  --dsw-alias-interactive-bg-hover:#ffffff0c; --dsw-alias-interactive-bg-hover-solid:#221c19;
+  --dsw-alias-button-primary-fill:var(--mac-peach); --dsw-alias-button-info-fill:var(--mac-peach);
+  --dsw-alias-button-info-hover:#e0a878; --dsw-alias-button-primary-dimmed:#5a3a2c;
+  --dsw-alias-button-elevated-fill:#1a1614; --dsw-alias-button-floating-fill:#1a1614;
+  --dsw-alias-button-primary-hover:#e0a878;
+  --dsw-alias-markdown-code-block:#1a1614; --dsw-alias-markdown-inline-code:#221c19;
+  --dsw-alias-tooltip-bg:#2a221e; --dsw-alias-toast-bg:#2a221e;
+  --dsw-alias-scrollbar-bg-l1:#ffffff1a; --dsw-alias-scrollbar-hover-l1:#ffffff2a;
+  --dsw-alias-settings-card-fill:#141110;
+  --dsw-specific-menu:#141110;
+  --dsw-specific-sidebar-fill:linear-gradient(180deg,rgba(110,40,55,.22),rgba(14,12,11,.85) 45%,rgba(14,12,11,.9));
+  --dsw-specific-sidebar-nav-item-active:#2a2228; --dsw-specific-sidebar-nav-item-hover:#1f1a17;
+  --dsw-alias-state-business-tertiary:#2a221e; --dsw-alias-label-primary-bluish:var(--mac-peach);
+  --dsw-radius-sm:10px; --dsw-radius-md:14px; --dsw-radius-lg:18px; --dsw-radius-xl:20px; --dsw-radius-panel:28px;
+  --dsw-shadow-lv1:4px 5px 14px rgba(0,0,0,.6),-1px -1px 4px rgba(255,220,190,.03);
+  --dsw-shadow-lv2:7px 9px 22px rgba(0,0,0,.65),-2px -2px 6px rgba(255,220,190,.03);
+  --dsw-shadow-lv3:14px 16px 36px rgba(0,0,0,.7),-3px -3px 8px rgba(255,220,190,.03);
+  --dsw-elevation-stroke-color:#ffffff10;
+  color:var(--clay-ink);
+  background-color:#0e0c0b!important;
+  background-image:
+    radial-gradient(58vw 50vw at 0% -2%,rgba(130,45,60,.38),rgba(130,45,60,0) 70%),
+    radial-gradient(50vw 46vw at 100% 30%,rgba(110,40,55,.30),rgba(110,40,55,0) 68%),
+    radial-gradient(44vw 40vw at 8% 100%,rgba(95,35,50,.20),rgba(95,35,50,0) 70%)!important;
+  background-attachment:fixed!important;background-repeat:no-repeat!important;
+}
+
+/* raised controls */
+body[data-ds-dark-theme] button:not([role=switch]):not([role=tab]):not([role=radio]):not([aria-pressed=true]):not([aria-checked=true]):not([aria-selected=true]):not(:disabled):not([class*=ghost i]):not([class*=icon i]):not([class*=Trigger]),
+body[data-ds-dark-theme] [role=radio]:not([aria-checked=true]){
+  background-image:var(--clay-grad);border-color:transparent!important;box-shadow:var(--clay-raise-sm);border-radius:14px;
+  transition:box-shadow .18s ease,transform .18s ease;color:var(--clay-ink)}
+body[data-ds-dark-theme] button:not([role=switch]):not(:disabled):hover{box-shadow:var(--clay-raise);transform:translateY(-1px)}
+body[data-ds-dark-theme] button:not([role=switch]):not(:disabled):active{box-shadow:var(--clay-inset-sm);transform:translateY(0)}
+body[data-ds-dark-theme] button[class*=primary i]:not(:disabled),body[data-ds-dark-theme] button[class*=Primary]:not(:disabled){
+  background:linear-gradient(145deg,#e89aaa,#e8a878)!important;color:var(--mac-ink)!important;
+  box-shadow:-2px -2px 6px rgba(255,220,190,.08),5px 7px 16px rgba(180,90,80,.35),inset 1px 1px 0 rgba(255,255,255,.22)!important}
+body[data-ds-dark-theme] button[class*=primary i]:not(:disabled):hover{filter:saturate(1.1) brightness(1.05)}
+body[data-ds-dark-theme] button:disabled,body[data-ds-dark-theme] button[class*=primary i]:disabled{
+  background:#2a221e!important;background-image:none!important;color:#8a7768!important;opacity:1!important;
+  box-shadow:var(--clay-inset-sm)!important;cursor:not-allowed}
+
+/* panels */
+body[data-ds-dark-theme] [role=dialog],body[data-ds-dark-theme] [role=menu],body[data-ds-dark-theme] [role=listbox],body[data-ds-dark-theme] [data-menu-material]{
+  background-color:rgba(20,17,16,.92)!important;background-image:linear-gradient(145deg,rgba(255,220,190,.05),rgba(255,220,190,.01))!important;
+  border:0!important;border-radius:24px;color:var(--clay-ink)!important;
+  box-shadow:16px 20px 44px rgba(0,0,0,.7),inset 1px 1px 0 rgba(255,220,190,.06)!important}
+body[data-ds-dark-theme] [class*=card i]:not([class*=cardHeader i]):not([class*=Trigger]){
+  border-radius:22px;border-color:transparent;background:#1a1614;background-image:var(--clay-grad);box-shadow:var(--clay-raise)}
+
+/* inset fields */
+body[data-ds-dark-theme] textarea,body[data-ds-dark-theme] input[type=text],body[data-ds-dark-theme] input:not([type]),body[data-ds-dark-theme] input[type=search],body[data-ds-dark-theme] input[type=number],body[data-ds-dark-theme] select,body[data-ds-dark-theme] [role=combobox],body[data-ds-dark-theme] [contenteditable=true]{
+  border-radius:14px;background:#1a1614!important;border-color:transparent!important;box-shadow:var(--clay-inset-sm);color:var(--clay-ink)}
+body[data-ds-dark-theme] [class*=cardWorkspaceTrigger]{background:#1a1614!important}
+body[data-ds-dark-theme] [class*=cardWorkspaceTrigger]::after{border:0!important;box-shadow:var(--clay-inset)}
+body[data-ds-dark-theme] [aria-pressed=true],body[data-ds-dark-theme] [aria-checked=true]:not([role=switch]),body[data-ds-dark-theme] [aria-selected=true],body[data-ds-dark-theme] [aria-current=page],body[data-ds-dark-theme] [aria-current=true]{
+  background:#221c19!important;background-image:none!important;box-shadow:var(--clay-inset-sm)!important;border-color:transparent!important}
+body[data-ds-dark-theme] [role=switch]{box-shadow:var(--clay-inset-sm);border-color:transparent}
+body[data-ds-dark-theme] [role=switch][aria-checked=true]{
+  background:linear-gradient(145deg,#7ab89a,var(--mac-mint))!important;box-shadow:inset 2px 2px 5px rgba(0,0,0,.45)!important}
+body[data-ds-dark-theme] [role=tablist],body[data-ds-dark-theme] [role=radiogroup]{border-radius:22px;padding:6px;background:#1a1614;box-shadow:var(--clay-inset)}
+body[data-ds-dark-theme] [role=tab],body[data-ds-dark-theme] [role=radio]{border-radius:16px}
+body[data-ds-dark-theme] [role=tab][aria-selected=true],body[data-ds-dark-theme] [role=radio][aria-checked=true]{
+  background:linear-gradient(145deg,#e89aaa,#e8a878)!important;color:var(--mac-ink)!important;box-shadow:var(--clay-raise-sm)!important}
+body[data-ds-dark-theme] ::selection{background:#e89aaa55}
+body[data-ds-dark-theme] button[class*=row i]:not(:hover),body[data-ds-dark-theme] button[class*=item i]:not(:hover),body[data-ds-dark-theme] button[class*=entry i]:not(:hover),body[data-ds-dark-theme] [role=option]:not([aria-selected=true]),body[data-ds-dark-theme] button[class*=brand i],body[data-ds-dark-theme] button[class*=logo i]{box-shadow:none!important;background-image:none!important}
+body[data-ds-dark-theme] button[class*=row i]:hover,body[data-ds-dark-theme] button[class*=item i]:hover,body[data-ds-dark-theme] button[class*=entry i]:hover{box-shadow:var(--clay-raise-sm);background:#221c19!important}
+
+/* sidebar + layout */
+body[data-ds-dark-theme] [class*=sidebar i][class*=root i],body[data-ds-dark-theme] aside{
+  background-color:rgba(14,12,11,.55)!important;
+  background-image:linear-gradient(180deg,rgba(130,35,55,.42),rgba(14,12,11,.5) 48%,rgba(95,30,50,.28))!important}
+body[data-ds-dark-theme] [class*=wSkVaW_root],body[data-ds-dark-theme] main,body[data-ds-dark-theme] [class*=sidebarCol],body[data-ds-dark-theme] [class*=_frame]:not([role]),body[data-ds-dark-theme] [class*=_frame]:not([role]) > [class*=_root]:not([role]){background-color:transparent!important}
+body[data-ds-dark-theme] [class*=navCell] svg{box-sizing:content-box;padding:5px;border-radius:10px;margin-right:2px;
+  box-shadow:-1px -1px 3px rgba(255,220,190,.05),2px 2px 5px rgba(0,0,0,.45)}
+body[data-ds-dark-theme] [class*=navCell]:nth-child(6n+1) svg{background:rgba(240,168,184,.55)}
+body[data-ds-dark-theme] [class*=navCell]:nth-child(6n+2) svg{background:rgba(159,220,196,.5)}
+body[data-ds-dark-theme] [class*=navCell]:nth-child(6n+3) svg{background:rgba(196,180,238,.5)}
+body[data-ds-dark-theme] [class*=navCell]:nth-child(6n+4) svg{background:rgba(240,216,136,.5)}
+body[data-ds-dark-theme] [class*=navCell]:nth-child(6n+5) svg{background:rgba(158,200,238,.5)}
+body[data-ds-dark-theme] [class*=navCell]:nth-child(6n+6) svg{background:rgba(240,184,144,.5)}
+body[data-ds-dark-theme] [class*=navCell][class*=active]{background:#2a2228!important;box-shadow:var(--clay-inset-sm)!important}
+body[data-ds-dark-theme] [class*=themeCube]:nth-child(1){background:rgba(240,216,136,.55)!important;color:var(--mac-ink)!important;box-shadow:var(--clay-raise-sm)!important}
+body[data-ds-dark-theme] [class*=themeCube]:nth-child(2){background:rgba(196,180,238,.55)!important;color:var(--mac-ink)!important;box-shadow:var(--clay-raise-sm)!important}
+body[data-ds-dark-theme] [class*=themeCube]:nth-child(3){background:rgba(158,200,238,.55)!important;color:var(--mac-ink)!important;box-shadow:var(--clay-raise-sm)!important}
+body[data-ds-dark-theme] [class*=themeCube][class*=selected]{box-shadow:inset 4px 4px 9px rgba(0,0,0,.55),0 0 0 2px rgba(196,180,238,.7)!important;font-weight:600}
+body[data-ds-dark-theme] [class*=previewBadge]{background:rgba(196,180,238,.28)!important;color:var(--mac-lav)!important;border:0!important;box-shadow:var(--clay-raise-sm)}
+
+/* sessions & chat */
+body[data-ds-dark-theme] [class*=_bubble]:not([class*=Meme i]){
+  background:linear-gradient(145deg,rgba(232,154,170,.4),rgba(180,150,230,.35))!important;color:var(--clay-ink)!important;border:0!important;
+  border-radius:20px 20px 8px 20px!important;box-shadow:-2px -2px 6px rgba(255,220,190,.05),5px 7px 16px rgba(0,0,0,.45)!important}
+body[data-ds-dark-theme] :has(> [class*=_content_] > div > pre.shiki),body[data-ds-dark-theme] :has(> [class*=_content_] pre.shiki){
+  background:#1a1614!important;border:0!important;border-radius:18px!important;box-shadow:var(--clay-inset)!important}
+body[data-ds-dark-theme] pre.shiki{background:transparent!important}
+body[data-ds-dark-theme] :not(pre) > code{background:#2a2228!important;color:#f0a8b8!important;border-radius:6px;padding:1px 5px}
+body[data-ds-dark-theme] [class*=sessionRow]{border-radius:14px!important}
+body[data-ds-dark-theme] [class*=sessionRow]:not([class*=selected]):hover{background:rgba(34,28,25,.7)!important;box-shadow:var(--clay-raise-sm)!important}
+body[data-ds-dark-theme] [class*=sessionRow][class*=selected]{
+  background:linear-gradient(145deg,rgba(110,90,160,.32),rgba(180,90,110,.28))!important;
+  box-shadow:inset 3px 3px 8px rgba(0,0,0,.6),inset -2px -2px 5px rgba(255,220,190,.04)!important;font-weight:500}
+body[data-ds-dark-theme] [class*=wSkVaW_tabs]{background:rgba(26,22,20,.7)!important;box-shadow:var(--clay-inset)!important;width:fit-content!important;border-radius:999px!important;padding:3px!important}
+body[data-ds-dark-theme] [class*=wSkVaW_tab][aria-selected=true]{
+  background:linear-gradient(145deg,#e89aaa,#e8a878)!important;color:var(--mac-ink)!important;border-radius:999px!important;box-shadow:var(--clay-raise-sm)!important}
+body[data-ds-dark-theme] [data-menu-material],body[data-ds-dark-theme] [data-menu-material] *:not(svg):not(path),body[data-ds-dark-theme] [role=tooltip],body[data-ds-dark-theme] [role=tooltip] *{color:var(--clay-ink)!important}
+body[data-ds-dark-theme] [class*=_card_]:has([class*=hoverContent]){background:rgba(26,22,20,.95)!important;color:var(--clay-ink)!important;box-shadow:var(--clay-raise)!important}
+
+/* no nested emboss in cards (keep options) */
+body[data-ds-dark-theme] [class*=card i] [class*=card i],body[data-ds-dark-theme] [class*=card i] [class*=card i]::before,body[data-ds-dark-theme] [class*=card i] [class*=card i]::after,
+body[data-ds-dark-theme] [class*=card i] button:not([role=switch]):not([class*=primary i]):not([class*=option i]):not([class*=Option]):not(:hover),
+body[data-ds-dark-theme] [class*=_card] :is(div,span,section,header,footer,ul,li,p){
+  background:transparent!important;background-image:none!important;box-shadow:none!important;border-color:transparent!important;backdrop-filter:none!important}
+body[data-ds-dark-theme] [class*=card i] button:not([role=switch]):not([class*=primary i]):not([class*=option i]):not([class*=Option]):hover{box-shadow:none!important;transform:none!important;background:transparent!important}
+body[data-ds-dark-theme] li[class*=card i]{border-radius:20px!important;border:0!important;background:#1a1614!important;background-image:var(--clay-grad)!important;box-shadow:var(--clay-raise-sm)!important;overflow:hidden}
+body[data-ds-dark-theme] li[class*=card i][class*=Active]{background:linear-gradient(145deg,rgba(180,90,110,.28),rgba(110,90,160,.28))!important;box-shadow:var(--clay-raise-sm),inset 0 0 0 2px rgba(196,180,238,.55)!important}
+body[data-ds-dark-theme] [class*=card i] code,body[data-ds-dark-theme] [class*=card i] [class*=badge i],body[data-ds-dark-theme] [class*=card i] [class*=tag i],body[data-ds-dark-theme] [class*=card i] [class*=chip i],body[data-ds-dark-theme] [class*=card i] [class*=pill i]{
+  display:inline-block;background:rgba(232,154,170,.22)!important;color:#f0a8b8!important;border-radius:999px!important;padding:1px 8px!important;font-size:11px;line-height:18px;border:0!important}
+
+/* segmented tabs */
+body[data-ds-dark-theme] [role=tablist][class*=tabs]{display:inline-flex!important;gap:4px;width:fit-content!important;padding:4px!important;border-radius:999px!important;
+  background:rgba(26,22,20,.75)!important;box-shadow:var(--clay-inset)!important;border:0!important}
+body[data-ds-dark-theme] [role=tablist][class*=tabs] [role=tab]{padding:6px 16px!important;height:auto!important;border-radius:999px!important;border:0!important;
+  background:transparent!important;box-shadow:none!important;color:var(--clay-ink-2)!important}
+body[data-ds-dark-theme] [role=tablist][class*=tabs] [role=tab]::after,body[data-ds-dark-theme] [role=tablist][class*=tabs] [role=tab]::before,body[data-ds-dark-theme] [role=tablist][class*=tabs]::after{display:none!important;content:none!important}
+body[data-ds-dark-theme] [role=tablist][class*=tabs] [role=tab][aria-selected=true]{
+  background:linear-gradient(145deg,#e89aaa,#e8a878)!important;color:var(--mac-ink)!important;font-weight:600;box-shadow:var(--clay-raise-sm)!important}
+
+/* no containing block traps */
+body[data-ds-dark-theme] aside,body[data-ds-dark-theme] [class*=sidebar i][class*=root i],body[data-ds-dark-theme] [class*=sidebarCol],body[data-ds-dark-theme] [class*=_frame],body[data-ds-dark-theme] [class*=wSkVaW_root]{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;filter:none!important}
+body[data-ds-dark-theme] [class*=footerActions] button,body[data-ds-dark-theme] [class*=footArea] button{background-image:none!important;background-color:transparent!important;box-shadow:none!important}
+body[data-ds-dark-theme] [class*=footerActions] button:hover,body[data-ds-dark-theme] [class*=footArea] button:hover{background-color:rgba(34,28,25,.8)!important;box-shadow:var(--clay-raise-sm)!important}
+body[data-ds-dark-theme] .sm-nativeDialog{background:#141110!important;background-image:linear-gradient(145deg,rgba(110,45,55,.18),rgba(70,55,110,.16))!important;backdrop-filter:none!important}
+body[data-ds-dark-theme] .sm-nativeDialog *{backdrop-filter:none!important}
+body[data-ds-dark-theme] .sm-nativeDialog :is(.sm-panel,.sm-list,.sm-row,.sm-rowMain,.sm-rowSecondary,.sm-rowActions){background:transparent!important;box-shadow:none!important}
+body[data-ds-dark-theme] .sm-row{border-radius:14px}
+body[data-ds-dark-theme] .sm-row:hover{background:rgba(34,28,25,.85)!important;box-shadow:var(--clay-raise-sm)!important}
+body[data-ds-dark-theme] .sm-nativeDialog .sm-rowBtn{background:transparent!important;background-image:none!important;box-shadow:none!important;padding:2px 6px!important;border-radius:8px!important}
+body[data-ds-dark-theme] .sm-nativeDialog .sm-rowBtn:hover{background:#2a2228!important}
+body[data-ds-dark-theme] .sm-nativeDialog select,body[data-ds-dark-theme] .sm-nativeDialog input{background:#1a1614!important;border-color:transparent!important;box-shadow:var(--clay-inset-sm)!important;border-radius:12px!important;color:var(--clay-ink)}
+
+/* ask-user options */
+body[data-ds-dark-theme] button[class*=_option],body[data-ds-dark-theme] button[class*=option]:not([class*=Option]){
+  border-radius:16px!important;border:1px solid transparent!important;transition:background .12s,box-shadow .12s,border-color .12s;color:var(--clay-ink)}
+body[data-ds-dark-theme] button[class*=_option]:hover:not(:disabled):not([class*=optionSelected]):not([class*=_optionSelected]),
+body[data-ds-dark-theme] button[class*=option]:hover:not(:disabled):not([class*=optionSelected]):not([class*=_optionSelected]){
+  background:rgba(34,28,25,.85)!important;background-image:none!important;box-shadow:var(--clay-raise-sm)!important}
+body[data-ds-dark-theme] button[class*=optionSelected],body[data-ds-dark-theme] button[class*=_optionSelected]{
+  background:linear-gradient(145deg,rgba(180,90,110,.35),rgba(110,90,160,.32))!important;
+  border-color:rgba(196,180,238,.55)!important;
+  box-shadow:inset 3px 3px 10px rgba(0,0,0,.55),inset -2px -2px 5px rgba(255,220,190,.04),0 0 0 1px rgba(196,180,238,.35)!important;
+  color:var(--clay-ink)!important;font-weight:500}
+body[data-ds-dark-theme] button[class*=optionSelected] [class*=_number],
+body[data-ds-dark-theme] button[class*=_optionSelected] [class*=_number],
+body[data-ds-dark-theme] button[class*=optionSelected] [class*=number],
+body[data-ds-dark-theme] button[class*=_optionSelected] [class*=number]{
+  background:linear-gradient(145deg,#e89aaa,#e8a878)!important;color:var(--mac-ink)!important;font-weight:700;
+  box-shadow:var(--clay-raise-sm)!important}
+body[data-ds-dark-theme] [class*=_number]:not([class*=optionSelected] *){background:rgba(196,180,238,.18)!important;color:var(--clay-ink)!important}
+body[data-ds-dark-theme] [class*=_description],body[data-ds-dark-theme] [class*=option] [class*=description]{color:var(--clay-ink-2)!important}
+body[data-ds-dark-theme] [class*=_checkboxChecked]:before,body[data-ds-dark-theme] [class*=checkboxChecked]:before{
+  background:linear-gradient(145deg,#e89aaa,#e8a878)!important;border-color:transparent!important}
+body[data-ds-dark-theme] [class*=customRowActive],body[data-ds-dark-theme] [class*=_customRowActive]{
+  background:rgba(42,34,40,.55)!important;border-color:rgba(196,180,238,.45)!important}
+body[data-ds-dark-theme] [class*=_customBlock],body[data-ds-dark-theme] [class*=customBlock]{
+  background:#1a1614!important;border-color:transparent!important;box-shadow:var(--clay-inset-sm)!important}
+
+/* ===== 0.1.14: plugin inventory groups — wider embossed headers ===== */
+/* keep clay raise on groupToggle; give the pill more horizontal room */
+body:not([data-ds-dark-theme]) button[class*=groupToggle],body:not([data-ds-dark-theme]) button[class*=GroupToggle]{
+  display:inline-flex!important;align-items:center!important;gap:8px!important;
+  padding:10px 22px 10px 16px!important;min-height:40px!important;
+  border-radius:999px!important;width:auto!important;max-width:none!important;
+  box-sizing:border-box!important}
+body[data-ds-dark-theme] button[class*=groupToggle],body[data-ds-dark-theme] button[class*=GroupToggle]{
+  display:inline-flex!important;align-items:center!important;gap:8px!important;
+  padding:10px 22px 10px 16px!important;min-height:40px!important;
+  border-radius:999px!important;width:auto!important;max-width:none!important;
+  box-sizing:border-box!important}
+body:not([data-ds-dark-theme]) [class*=groupTitle],body[data-ds-dark-theme] [class*=groupTitle]{
+  font-weight:600!important;letter-spacing:.02em;white-space:nowrap!important}
+/* subtitle: more air under the wider pill */
+body:not([data-ds-dark-theme]) [class*=groupSub],body[data-ds-dark-theme] [class*=groupSub]{
+  margin:8px 0 10px 16px!important;line-height:20px!important}
+/* breathe between 会话插件 / 全局插件 blocks */
+body:not([data-ds-dark-theme]) [class*=_group]+[class*=_group],body[data-ds-dark-theme] [class*=_group]+[class*=_group],
+body:not([data-ds-dark-theme]) [class$=_group]+[class$=_group],body[data-ds-dark-theme] [class$=_group]+[class$=_group]{
+  margin-top:10px!important;padding-top:20px!important}
+body:not([data-ds-dark-theme]) [class*=_catalog],body[data-ds-dark-theme] [class*=_catalog]{
+  gap:18px!important}
+/* preset switcher: match pill height, don't crowd the title row */
+body:not([data-ds-dark-theme]) button[class*=switcher],body:not([data-ds-dark-theme]) [class*=switcher]:is(button){
+  background:rgba(252,246,238,.9)!important;background-image:var(--clay-grad)!important;
+  box-shadow:var(--clay-raise-sm)!important;border-radius:999px!important;
+  height:40px!important;padding:0 16px!important;gap:8px!important}
+body[data-ds-dark-theme] button[class*=switcher],body[data-ds-dark-theme] [class*=switcher]:is(button){
+  background:#1a1614!important;background-image:var(--clay-grad)!important;
+  box-shadow:var(--clay-raise-sm)!important;border-radius:999px!important;
+  height:40px!important;padding:0 16px!important;gap:8px!important;color:var(--clay-ink)!important}
+body:not([data-ds-dark-theme]) [class*=groupTitleRow],body[data-ds-dark-theme] [class*=groupTitleRow]{
+  gap:12px!important;align-items:center!important}
+
+
+/* ===== 0.1.18: wine glow without breaking menus (no body>* z-index, no ::before overlay) ===== */
+html:has(body[data-ds-dark-theme]),body[data-ds-dark-theme]{
+  background-color:#0e0c0b!important;
+  background-image:
+    radial-gradient(58vw 50vw at 0% -2%,rgba(130,45,60,.38),rgba(130,45,60,0) 70%),
+    radial-gradient(50vw 46vw at 100% 30%,rgba(110,40,55,.30),rgba(110,40,55,0) 68%),
+    radial-gradient(44vw 40vw at 8% 100%,rgba(95,35,50,.20),rgba(95,35,50,0) 70%)!important;
+  background-attachment:fixed!important;background-repeat:no-repeat!important}
+/* kill any leftover ::before wash from older builds if hot-reloaded oddly */
+body[data-ds-dark-theme]::before{content:none!important;display:none!important}
+/* panes stay transparent so body wash shows; light secondary wash ok */
+body[data-ds-dark-theme] [class*=wSkVaW_root],
+body[data-ds-dark-theme] main,
+body[data-ds-dark-theme] [class*=_frame]:not([role]),
+body[data-ds-dark-theme] [class*=_frame]:not([role]) > [class*=_root]:not([role]),
+body[data-ds-dark-theme] [class*=sidebarCol],
+body[data-ds-dark-theme] #root,
+body[data-ds-dark-theme] #app{
+  background-color:transparent!important;
+  background-image:none!important}
+body[data-ds-dark-theme] [class*=sidebar i][class*=root i],body[data-ds-dark-theme] aside{
+  background-color:rgba(14,12,11,.42)!important;
+  background-image:linear-gradient(180deg,rgba(120,45,60,.20),rgba(14,12,11,.50) 50%,rgba(14,12,11,.62))!important}
+/* menus / popovers must stay above chrome */
+body[data-ds-dark-theme] [role=menu],
+body[data-ds-dark-theme] [role=listbox],
+body[data-ds-dark-theme] [role=dialog],
+body[data-ds-dark-theme] [data-radix-popper-content-wrapper],
+body[data-ds-dark-theme] [class*=Popover],
+body[data-ds-dark-theme] [class*=Dropdown],
+body[data-ds-dark-theme] [class*=popup i],
+body[data-ds-dark-theme] [class*=Popup]{
+  z-index:10000!important}
+/* do not neuter foot "更多" hit target */
+body[data-ds-dark-theme] [class*=footArea] button,
+body[data-ds-dark-theme] [class*=footerActions] button{
+  pointer-events:auto!important;position:relative!important;z-index:5!important}
+
+/* ===== 0.1.19: opaque code blocks (stop body glow bleed) ===== */
+/* Nested emboss wipe + pre.shiki{transparent} let body fixed wine/macaron radials show through 「代码块」. */
+/* Late solid overrides — do not reintroduce body>* z-index or body::before. */
+
+/* Dark: solid chocolate on outer shell, pre, and common code wrappers */
+body[data-ds-dark-theme] :has(> [class*=_content_] > div > pre.shiki),
+body[data-ds-dark-theme] :has(> [class*=_content_] pre.shiki),
+body[data-ds-dark-theme] :has(> pre.shiki),
+body[data-ds-dark-theme] :has(> pre),
+body[data-ds-dark-theme] [class*=codeBlock i],
+body[data-ds-dark-theme] [class*=CodeBlock],
+body[data-ds-dark-theme] [class*=markdown i] pre,
+body[data-ds-dark-theme] [class*=_card] :is(div,section,header,footer):has(pre),
+body[data-ds-dark-theme] [class*=_card] :is(div,section,header,footer):has(pre.shiki),
+body[data-ds-dark-theme] [class*=card i] :is(div,section,header,footer):has(pre),
+body[data-ds-dark-theme] [class*=card i] :is(div,section,header,footer):has(pre.shiki),
+body[data-ds-dark-theme] pre,
+body[data-ds-dark-theme] pre.shiki{
+  background:#1a1614!important;
+  background-color:#1a1614!important;
+  background-image:none!important;
+  border:0!important;
+  border-radius:18px!important;
+  box-shadow:var(--clay-inset)!important;
+  backdrop-filter:none!important}
+
+/* Dark: 「代码块」 header bar slightly lighter */
+body[data-ds-dark-theme] :has(> [class*=_content_] > div > pre.shiki) > :first-child:not(pre):not(:has(pre)),
+body[data-ds-dark-theme] :has(> [class*=_content_] pre.shiki) > :first-child:not(pre):not(:has(pre)),
+body[data-ds-dark-theme] [class*=codeBlock i] > :first-child:not(pre),
+body[data-ds-dark-theme] [class*=CodeBlock] > :first-child:not(pre),
+body[data-ds-dark-theme] [class*=_card] :is(div,section,header):has(> pre) > :first-child:not(pre),
+body[data-ds-dark-theme] [class*=card i] :is(div,section,header):has(> pre) > :first-child:not(pre){
+  background:#221c19!important;
+  background-color:#221c19!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  border-radius:18px 18px 0 0!important}
+
+/* Light: solid cream — same bleed risk from macaron blobs */
+body:not([data-ds-dark-theme]) :has(> [class*=_content_] > div > pre.shiki),
+body:not([data-ds-dark-theme]) :has(> [class*=_content_] pre.shiki),
+body:not([data-ds-dark-theme]) :has(> pre.shiki),
+body:not([data-ds-dark-theme]) :has(> pre),
+body:not([data-ds-dark-theme]) [class*=codeBlock i],
+body:not([data-ds-dark-theme]) [class*=CodeBlock],
+body:not([data-ds-dark-theme]) [class*=markdown i] pre,
+body:not([data-ds-dark-theme]) [class*=_card] :is(div,section,header,footer):has(pre),
+body:not([data-ds-dark-theme]) [class*=_card] :is(div,section,header,footer):has(pre.shiki),
+body:not([data-ds-dark-theme]) [class*=card i] :is(div,section,header,footer):has(pre),
+body:not([data-ds-dark-theme]) [class*=card i] :is(div,section,header,footer):has(pre.shiki),
+body:not([data-ds-dark-theme]) pre,
+body:not([data-ds-dark-theme]) pre.shiki{
+  background:#f3eadd!important;
+  background-color:#f3eadd!important;
+  background-image:none!important;
+  border:0!important;
+  border-radius:18px!important;
+  box-shadow:inset 4px 4px 10px rgba(166,135,100,.30),inset -4px -4px 10px rgba(255,255,255,.85)!important;
+  backdrop-filter:none!important}
+
+body:not([data-ds-dark-theme]) :has(> [class*=_content_] > div > pre.shiki) > :first-child:not(pre):not(:has(pre)),
+body:not([data-ds-dark-theme]) :has(> [class*=_content_] pre.shiki) > :first-child:not(pre):not(:has(pre)),
+body:not([data-ds-dark-theme]) [class*=codeBlock i] > :first-child:not(pre),
+body:not([data-ds-dark-theme]) [class*=CodeBlock] > :first-child:not(pre),
+body:not([data-ds-dark-theme]) [class*=_card] :is(div,section,header):has(> pre) > :first-child:not(pre),
+body:not([data-ds-dark-theme]) [class*=card i] :is(div,section,header):has(> pre) > :first-child:not(pre){
+  background:#efe3d2!important;
+  background-color:#efe3d2!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  border-radius:18px 18px 0 0!important}
+
+/* Keep syntax text layer transparent (no nested chip paint on pre>code) */
+body[data-ds-dark-theme] pre code,
+body[data-ds-dark-theme] pre.shiki code,
+body[data-ds-dark-theme] [class*=card i] pre code,
+body:not([data-ds-dark-theme]) pre code,
+body:not([data-ds-dark-theme]) pre.shiki code,
+body:not([data-ds-dark-theme]) [class*=card i] pre code{
+  display:block!important;
+  background:transparent!important;
+  background-image:none!important;
+  color:inherit!important;
+  padding:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  font-size:inherit!important;
+  line-height:inherit!important}
+

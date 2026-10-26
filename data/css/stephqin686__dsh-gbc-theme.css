@@ -1,0 +1,229 @@
+/* stephqin686/dsh-gbc-theme — src/dsh-theme.css
+   fetched 2026-10-26 from https://raw.githubusercontent.com/stephqin686/dsh-gbc-theme/main/src/dsh-theme.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* =========================================================================
+   GBC / 空の箱 — DSH host integration
+   Loaded only while the plugin is active. Everything is scoped to
+   html.gbc-theme-on so disabling the plugin restores the stock shell.
+   ========================================================================= */
+
+html.gbc-theme-on,
+html.gbc-theme-on body {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+html.gbc-theme-on #root {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* the shell frame and central column become windows, not walls */
+html.gbc-theme-on .mP3x-q_frame,
+html.gbc-theme-on .mP3x-q_centerCol,
+html.gbc-theme-on [data-windows-titlebar] .mP3x-q_frame,
+html.gbc-theme-on [data-windows-titlebar] .mP3x-q_centerCol {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+html.gbc-theme-on [data-platform="darwin"] .mP3x-q_frame {
+  background: transparent !important;
+}
+
+/* the Windows caption bar keeps a readable glass strip */
+html.gbc-theme-on [data-windows-titlebar] .mP3x-q_frame::before {
+  background: linear-gradient(180deg, rgba(4, 7, 14, 0.82), rgba(4, 7, 14, 0.52)) !important;
+  backdrop-filter: blur(18px) saturate(1.15);
+  -webkit-backdrop-filter: blur(18px) saturate(1.15);
+}
+
+/* the left rail: smoked glass with a single cyan seam */
+html.gbc-theme-on .mP3x-q_sidebarCol {
+  position: relative;
+  background: linear-gradient(180deg, rgba(5, 8, 15, 0.74) 0%, rgba(6, 9, 17, 0.84) 62%, rgba(8, 7, 14, 0.92) 100%) !important;
+  border-right: 1px solid rgba(0, 217, 255, 0.16) !important;
+  backdrop-filter: blur(26px) saturate(1.22);
+  -webkit-backdrop-filter: blur(26px) saturate(1.22);
+  box-shadow: inset -1px 0 0 rgba(225, 18, 31, 0.08);
+}
+
+html.gbc-theme-on .mP3x-q_sidebarCol::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  pointer-events: none;
+  background: linear-gradient(90deg, var(--gbc-red, #e1121f), transparent 42%, var(--gbc-cyan, #00d9ff));
+  opacity: 0.55;
+}
+
+/* the right rail, when open */
+html.gbc-theme-on .mP3x-q_rightbarCol {
+  background: linear-gradient(180deg, rgba(5, 8, 15, 0.84), rgba(7, 9, 16, 0.94)) !important;
+  backdrop-filter: blur(26px) saturate(1.18);
+  -webkit-backdrop-filter: blur(26px) saturate(1.18);
+  border-left: 1px solid rgba(0, 217, 255, 0.12) !important;
+}
+
+/* dark palette: smoke instead of solid panels */
+html.gbc-theme-on body[data-ds-dark-theme] {
+  --gbc-red: #e1121f;
+  --gbc-cyan: #00d9ff;
+  --dsw-alias-bg-base: rgba(6, 9, 16, 0.46);
+  --dsw-alias-bg-layer-1: rgba(9, 13, 22, 0.7);
+  --dsw-alias-bg-layer-2: rgba(12, 17, 28, 0.8);
+  --dsw-alias-bg-layer-3: rgba(16, 22, 36, 0.9);
+  --dsw-specific-sidebar-fill: rgba(5, 8, 15, 0.78);
+  --dsw-alias-bg-overlay: rgba(8, 12, 20, 0.78);
+  --dsw-alias-border-l1: rgba(190, 245, 255, 0.08);
+  --dsw-alias-border-l2: rgba(190, 245, 255, 0.14);
+  --dsw-alias-border-l3: rgba(190, 245, 255, 0.2);
+  --dsw-alias-link: #55e6ff;
+  --dsw-alias-brand-primary: #f4f1e8;
+  --dsw-alias-button-info-fill: #c90f1b;
+  --dsw-alias-button-info-hover: #e1121f;
+  --dsh-scrollbar-thumb: rgba(0, 217, 255, 0.24);
+  --dsh-scrollbar-thumb-hover: rgba(0, 217, 255, 0.42);
+}
+
+/* light palette: warm paper glass over the SKY scene */
+html.gbc-theme-on body:not([data-ds-dark-theme]) {
+  --gbc-red: #e1121f;
+  --gbc-cyan: #087e9b;
+  --dsw-alias-bg-base: rgba(249, 245, 236, 0.5);
+  --dsw-alias-bg-layer-1: rgba(255, 252, 246, 0.74);
+  --dsw-alias-bg-layer-2: rgba(255, 252, 246, 0.84);
+  --dsw-alias-bg-layer-3: rgba(255, 252, 246, 0.92);
+  --dsw-specific-sidebar-fill: rgba(249, 245, 236, 0.84);
+  --dsw-alias-bg-overlay: rgba(249, 245, 236, 0.88);
+  --dsw-alias-border-l1: rgba(11, 16, 32, 0.08);
+  --dsw-alias-border-l2: rgba(11, 16, 32, 0.12);
+  --dsw-alias-border-l3: rgba(11, 16, 32, 0.18);
+  --dsw-alias-link: #086b82;
+  --dsh-scrollbar-thumb: rgba(11, 16, 32, 0.24);
+  --dsh-scrollbar-thumb-hover: rgba(11, 16, 32, 0.4);
+}
+
+html.gbc-theme-on body:not([data-ds-dark-theme]) .mP3x-q_sidebarCol {
+  background: linear-gradient(180deg, rgba(249, 245, 236, 0.86), rgba(244, 239, 229, 0.92)) !important;
+  border-right-color: rgba(8, 126, 155, 0.18) !important;
+}
+
+/* the conversation scroll root owns bg-base; keep it a touch clearer */
+html.gbc-theme-on .an3WzG_root {
+  background: transparent !important;
+}
+
+/* selection and links carry the GBC accents */
+html.gbc-theme-on ::selection {
+  background: rgba(225, 18, 31, 0.42);
+  color: #fff;
+}
+
+html.gbc-theme-on a {
+  text-underline-offset: 2px;
+}
+
+/* floating mode chip (the full HUD lives in the standalone wallpaper) */
+.gbc-dsh-chip {
+  position: fixed;
+  right: 14px;
+  bottom: 12px;
+  z-index: 2147483000;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 8px;
+  border: 1px solid rgba(190, 245, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(6, 9, 16, 0.62);
+  color: rgba(244, 241, 232, 0.72);
+  font-family: "Space Mono", Consolas, monospace;
+  font-size: 8px;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  cursor: pointer;
+  opacity: 0.62;
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.32);
+  transition: opacity 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.gbc-dsh-chip:hover {
+  opacity: 1;
+  border-color: rgba(0, 217, 255, 0.48);
+  transform: translateY(-1px);
+}
+
+.gbc-dsh-chip b {
+  color: #fff;
+  font-weight: 400;
+  font-size: 8px;
+  letter-spacing: 0.18em;
+}
+
+.gbc-dsh-chip i {
+  display: block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #e1121f;
+  box-shadow: 0 0 10px rgba(225, 18, 31, 0.9);
+}
+
+body:not([data-ds-dark-theme]) .gbc-dsh-chip {
+  background: rgba(255, 252, 246, 0.78);
+  border-color: rgba(11, 16, 32, 0.14);
+  color: rgba(11, 16, 32, 0.72);
+}
+
+body:not([data-ds-dark-theme]) .gbc-dsh-chip b {
+  color: #0b1020;
+}
+
+/* Keep the shell's project/session header legible on every wallpaper preset.
+   The scrim follows the resolved shell palette, so it also helps while a
+   theme write is still in flight or HMR is between two bundle revisions. */
+html.gbc-theme-on .gbc-wallpaper.is-dsh .gbc-scrim::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 82px;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(4, 7, 14, 0.72), rgba(4, 7, 14, 0) 100%);
+}
+
+html.gbc-theme-on .gbc-wallpaper.is-dsh[data-shell="light"] .gbc-scrim::before {
+  background: linear-gradient(180deg, rgba(249, 245, 236, 0.86), rgba(249, 245, 236, 0) 100%);
+}
+
+/* the wallpaper type is deliberately quieter behind the shell */
+html.gbc-theme-on .gbc-wallpaper.is-dsh .gbc-masthead {
+  /* The shell owns the top-left project/session title. Keeping the wordmark
+     here covers that text, so the in-shell version uses the giant 空の箱
+     title + the GBC chip as its identity instead. */
+  display: none !important;
+}
+
+html.gbc-theme-on .gbc-wallpaper.is-dsh .gbc-type {
+  filter: saturate(1.04);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  html.gbc-theme-on body[data-ds-dark-theme] {
+    --dsw-alias-bg-base: #151517;
+    --dsw-alias-bg-layer-1: #1b1b1c;
+    --dsw-alias-bg-layer-2: #212123;
+    --dsw-alias-bg-layer-3: #292929;
+  }
+  html.gbc-theme-on .mP3x-q_sidebarCol,
+  html.gbc-theme-on .mP3x-q_rightbarCol {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: #151517 !important;
+  }
+}
+

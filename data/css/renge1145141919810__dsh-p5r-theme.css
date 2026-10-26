@@ -1,0 +1,632 @@
+/* renge1145141919810/dsh-p5r-theme — client.js
+   fetched 2026-10-26 from https://raw.githubusercontent.com/renge1145141919810/dsh-p5r-theme/main/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/* ============================================================
+   P5R phantom skin -scoped to body[data-p5r]
+   ============================================================ */
+
+body[data-p5r] {
+  --p5-red: #e60012;
+  --p5-red-deep: #a3000d;
+  --p5-accent: #c8102e;
+  --p5-ink: #0a0a0b;
+  --p5-paper: #f0e9db;
+
+  /* Print geometry: nothing is rounded. */
+  --dsw-radius-xs: 0px;
+  --dsw-radius-sm: 0px;
+  --dsw-radius-md: 0px;
+  --dsw-radius-lg: 0px;
+  --dsw-radius-xl: 0px;
+  --dsw-radius-panel: 0px;
+
+  /* Editorial stack: a heavy grotesque leads, the app's own stack trails. */
+  --dsw-font-family: "HarmonyOS Sans SC", "MiSans", "PingFang SC",
+    "Microsoft YaHei", "Segoe UI", system-ui, sans-serif;
+
+  font-feature-settings: "tnum" 1, "pnum" 1;
+}
+
+body[data-p5r][data-ds-dark-theme] {
+  --p5-accent: #ff3b4e;
+}
+
+/* --- selection: red block, paper type ------------------------------- */
+body[data-p5r] ::selection {
+  background: var(--p5-red);
+  color: #fff;
+}
+
+/* --- scrollbars: thin, square, red on hover ------------------------- */
+body[data-p5r] ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+body[data-p5r] ::-webkit-scrollbar-track {
+  background: transparent;
+}
+body[data-p5r] ::-webkit-scrollbar-thumb {
+  background: rgba(128, 118, 108, 0.35);
+  border: 2px solid transparent;
+  background-clip: content-box;
+  border-radius: 0;
+}
+body[data-p5r] ::-webkit-scrollbar-thumb:hover {
+  background: var(--p5-red);
+  background-clip: content-box;
+}
+
+/* --- focus: a hard red rule, never a blue glow ---------------------- */
+body[data-p5r] :focus-visible {
+  outline: 2px solid var(--p5-red);
+  outline-offset: 2px;
+}
+
+/* --- type: heavy oblique display, like a magazine masthead ---------- */
+body[data-p5r] h1,
+body[data-p5r] h2,
+body[data-p5r] h3,
+body[data-p5r] h4,
+body[data-p5r] strong {
+  font-style: italic;
+  font-weight: 900;
+  letter-spacing: -0.015em;
+}
+
+body[data-p5r] a {
+  color: var(--p5-accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+body[data-p5r] hr {
+  border: 0;
+  border-top: 1px solid var(--p5-red);
+  opacity: 0.5;
+}
+
+/* --- controls: square, and hover inverts to a red block ------------- */
+body[data-p5r] button,
+body[data-p5r] [role="button"],
+body[data-p5r] input,
+body[data-p5r] textarea,
+body[data-p5r] [role="dialog"] {
+  border-radius: 0;
+}
+
+body[data-p5r] button:not(:disabled):not([aria-pressed="true"]):hover {
+  background-color: var(--p5-red);
+  border-color: var(--p5-red);
+  color: #fff;
+}
+
+body[data-p5r] button:not(:disabled):hover svg {
+  color: #fff;
+}
+
+/* --- chosen things carry a red spine -------------------------------- */
+body[data-p5r] [aria-selected="true"],
+body[data-p5r] [aria-current="page"],
+body[data-p5r] [aria-pressed="true"] {
+  box-shadow: inset 3px 0 0 var(--p5-red);
+}
+
+/* --- dialogs: printed card with a hard offset shadow ---------------- */
+body[data-p5r] [role="dialog"] {
+  border: 1px solid var(--p5-red);
+  box-shadow: 7px 7px 0 rgba(230, 0, 18, 0.18);
+}
+
+/* --- code: a red rule on the gutter --------------------------------- */
+body[data-p5r] pre {
+  border-left: 3px solid var(--p5-red);
+  border-radius: 0;
+}
+
+/* --- signature: halftone grain + slogan, painted above everything --- */
+body[data-p5r]::after {
+  content: "TAKE YOUR HEART";
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 0 20px 12px;
+  pointer-events: none;
+  font-family: var(--dsw-font-family);
+  font-style: italic;
+  font-weight: 900;
+  font-size: 11px;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: rgba(10, 10, 10, 0.16);
+  background-image: radial-gradient(rgba(10, 10, 10, 0.075) 1px, transparent 1.2px);
+  background-size: 5px 5px;
+}
+
+body[data-p5r][data-ds-dark-theme]::after {
+  color: rgba(255, 255, 255, 0.2);
+  background-image: radial-gradient(rgba(0, 0, 0, 0.11) 1px, transparent 1.2px);
+}
+
+/* --- a red hairline along the top of the frame, with a slow scan ----- */
+body[data-p5r]::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 2147483001;
+  pointer-events: none;
+  background-image: linear-gradient(
+    90deg,
+    var(--p5-red) 0%,
+    var(--p5-red) 6%,
+    transparent 12%,
+    transparent 100%
+  );
+  background-size: 260% 100%;
+  background-repeat: no-repeat;
+  animation: p5r-scan 9s linear infinite;
+}
+
+@keyframes p5r-scan {
+  from {
+    background-position: -6% 0;
+  }
+  to {
+    background-position: 100% 0;
+  }
+}
+
+/* --- rows of the transcript slap in like pasted paper --------------- */
+@keyframes p5r-slap {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0) skewX(-3.5deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+body[data-p5r] [data-chat-flow] > * {
+  animation: p5r-slap 0.34s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+/* --- controls tilt when touched ------------------------------------- */
+body[data-p5r] button,
+body[data-p5r] [role="button"] {
+  transition: transform 0.16s cubic-bezier(0.2, 0.8, 0.2, 1),
+    background-color 0.16s ease, color 0.16s ease, border-color 0.16s ease;
+}
+
+body[data-p5r] button:not(:disabled):hover,
+body[data-p5r] [role="button"]:hover {
+  transform: skewX(-4deg) translateY(-1px);
+}
+
+body[data-p5r] button:not(:disabled):active,
+body[data-p5r] [role="button"]:active {
+  transform: skewX(-4deg) translateY(1px) scale(0.985);
+}
+
+/* --- dialogs land rather than fade ---------------------------------- */
+@keyframes p5r-pop {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97) rotate(-0.6deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+body[data-p5r] [role="dialog"] {
+  animation: p5r-pop 0.26s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+/* --- full-frame phantom layer (shell.overlay) ----------------------- */
+.p5r-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 2147482999;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* the calling-card emblem, floated behind the reading column: big enough to
+   read as a mark, capped so it never reaches the sidebar or the composer */
+.p5r-emblem {
+  position: absolute;
+  left: 50%;
+  top: 41%;
+  width: min(46vw, 580px);
+  max-height: calc(100vh - 320px);
+  aspect-ratio: 1 / 1;
+  transform: translate(-50%, -50%) rotate(-4deg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.13;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+/* Speed lines. The layer is a large SQUARE centred on the frame and sized past
+   the viewport diagonal, so no edge of it can ever sweep into view while it
+   turns -that hard stop the rays used to end on was this element's own border.
+   The mask is a circle (not closest-side, which became an ellipse on a
+   rectangle) and fades out well before the square's edge, so the rays thin away
+   instead of stopping. */
+.p5r-lines {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 120vmax;
+  height: 120vmax;
+  margin: -60vmax 0 0 -60vmax;
+  background: repeating-conic-gradient(
+    from 0deg at 50% 50%,
+    rgba(10, 10, 10, 0.18) 0deg 1deg,
+    transparent 1deg 6.5deg
+  );
+  -webkit-mask-image: radial-gradient(
+    circle at 50% 50%,
+    transparent 0 24vmax,
+    #000 34vmax 52vmax,
+    transparent 62vmax
+  );
+  mask-image: radial-gradient(
+    circle at 50% 50%,
+    transparent 0 24vmax,
+    #000 34vmax 52vmax,
+    transparent 62vmax
+  );
+  animation: p5r-spin 34s linear infinite;
+  opacity: 0.42;
+  will-change: transform;
+}
+
+@keyframes p5r-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* the wipe: an ink blade with a red edge, crossing the frame */
+.p5r-slash {
+  position: absolute;
+  top: -12%;
+  bottom: -12%;
+  left: -50%;
+  width: 34%;
+  opacity: 0;
+  transform: skewX(-14deg);
+  background: linear-gradient(
+    100deg,
+    #0a0a0b 0%,
+    #0a0a0b 62%,
+    #e60012 62%,
+    #e60012 74%,
+    transparent 74%
+  );
+}
+
+.p5r-slash[data-on] {
+  animation: p5r-slash 0.52s cubic-bezier(0.7, 0, 0.3, 1) both;
+}
+
+@keyframes p5r-slash {
+  0% {
+    left: -45%;
+    opacity: 0.95;
+  }
+  70% {
+    opacity: 0.95;
+  }
+  100% {
+    left: 115%;
+    opacity: 0;
+  }
+}
+
+/* impact flash */
+.p5r-flash {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  opacity: 0;
+}
+
+.p5r-flash[data-on] {
+  animation: p5r-flash 0.3s ease-out both;
+}
+
+@keyframes p5r-flash {
+  0% {
+    opacity: 0;
+  }
+  16% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* the whole frame takes the hit */
+body[data-p5r].p5r-shake {
+  animation: p5r-shake 0.34s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes p5r-shake {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  15% {
+    transform: translate3d(-5px, 2px, 0) rotate(-0.25deg);
+  }
+  35% {
+    transform: translate3d(4px, -3px, 0) rotate(0.3deg);
+  }
+  55% {
+    transform: translate3d(-3px, 1px, 0) rotate(-0.2deg);
+  }
+  75% {
+    transform: translate3d(2px, 2px, 0);
+  }
+}
+
+/* --- sidebar: the spec sheet from the cover art ---------------------
+   Each row is an ink bar riding on a red jagged backing that peeks out on the
+   left and right, exactly like the spec rows on the P5 cover. The hooks are the
+   semantic tail of the app's CSS-module names (hIlkoa_sessionRow ->
+   [class*='_sessionRow']), so a rebuild that changes the hash keeps matching.
+   -------------------------------------------------------------------- */
+body[data-p5r] [data-slot='sidebar'] {
+  border-right: 2px solid var(--p5-red);
+}
+
+body[data-p5r] [class*='_sessionRow'],
+body[data-p5r] [class*='_projectRow'],
+body[data-p5r] [class*='_panelRow'] {
+  position: relative;
+  border-radius: 0 !important;
+  margin: 4px 10px 4px 2px;
+  padding-left: 10px;
+  font-weight: 700;
+  font-style: italic;
+  letter-spacing: 0.01em;
+  box-shadow: none !important;
+  transition: transform 0.16s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* No background or colour override on these rows. The app paints every row
+   state itself (idle / hover / chosen) and pairs that paint with matching text;
+   a forced pair here kept losing its label whenever the app repainted one half.
+   The theme only supplies the cut-out behind the row and the type. */
+
+body[data-p5r] [class*='_sessionRow']::before,
+body[data-p5r] [class*='_projectRow']::before,
+body[data-p5r] [class*='_panelRow']::before {
+  content: "";
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  left: -10px;
+  right: -10px;
+  background: var(--p5-red);
+  /* A true parallelogram: both vertical edges lean, so the backing reads as a
+     slanted cut rather than a rectangle with a nudge. */
+  clip-path: polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
+  /* A border cannot follow a clip-path, so the keyline is four zero-blur
+     drop-shadows of the clipped shape: a real outline around the cut-out,
+     corners included, with no extra element and no layout change. */
+  filter: drop-shadow(1.5px 0 0 #f7f1e3) drop-shadow(-1.5px 0 0 #f7f1e3)
+    drop-shadow(0 1.5px 0 #f7f1e3) drop-shadow(0 -1.5px 0 #f7f1e3);
+  z-index: -1;
+}
+
+body[data-p5r] [class*='_sessionRow']:nth-of-type(even)::before,
+body[data-p5r] [class*='_projectRow']:nth-of-type(even)::before,
+body[data-p5r] [class*='_panelRow']:nth-of-type(even)::before {
+  transform: translateX(5px);
+}
+
+/* Chosen row: only the cut-out behind it changes -the bar keeps the app's own
+   paint, so its label can never lose contrast. */
+body[data-p5r] [class*='_sessionRow'][class*='_selected']::before,
+body[data-p5r] [class*='_panelRow'][class*='_panelActive']::before {
+  background: #0a0a0b;
+  filter: drop-shadow(1.5px 0 0 #f7f1e3) drop-shadow(-1.5px 0 0 #f7f1e3)
+    drop-shadow(0 1.5px 0 #f7f1e3) drop-shadow(0 -1.5px 0 #f7f1e3);
+}
+
+/* hover: the bar lifts off the backing */
+body[data-p5r] [class*='_sessionRow']:hover,
+body[data-p5r] [class*='_projectRow']:hover,
+body[data-p5r] [class*='_panelRow']:hover {
+  transform: translateX(2px) skewX(-2deg);
+}
+
+/* the mark at the head of a panel row */
+body[data-p5r] [class*='_panelGlyph'] {
+  color: var(--p5-red);
+}
+
+body[data-p5r] [class*='_sessionRow'] {
+  height: 30px;
+}
+
+/* new-session button: plain ink plate, no keyline (a red outline here read as a
+   stray artefact next to the brand row), inverted on hover */
+body[data-p5r] [class*='_newSession'] {
+  background: #0a0a0b !important;
+  color: #f7f1e3 !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+body[data-p5r] [class*='_newSession']:hover {
+  background: var(--p5-red) !important;
+  color: #0a0a0b !important;
+}
+
+/* --- transcript: dialogue plates -----------------------------------
+   The flow item carries data-chat-flow-kind, which is a semantic, hash-free
+   hook: 'user' for the prompt, 'assistant-step' for one reply block. The plates
+   therefore survive any rebuild that keeps the node kinds.
+   -------------------------------------------------------------------- */
+body[data-p5r] [data-chat-flow-kind='user'] {
+  position: relative;
+  /* The keyline lives HERE, not on the bubble. A filter on the same element as
+     a clip-path is clipped by it, so a drop-shadow drawn on the bubble never
+     survived; on the parent the shadow is computed from the whole painted
+     subtree and lands outside the child's clip, which is exactly the frame. */
+  filter: drop-shadow(5px 0 0 #0a0a0b) drop-shadow(-5px 0 0 #0a0a0b)
+    drop-shadow(0 5px 0 #0a0a0b) drop-shadow(0 -5px 0 #0a0a0b);
+}
+
+body[data-p5r] [data-chat-flow-kind='user'] [class*='_bubble'] {
+  /* the player's line is the paper card: paper fill, ink type, ink frame */
+  background: #f7f1e3 !important;
+  color: #0a0a0b !important;
+  border-radius: 0 !important;
+  /* Room for the tail: it has to live inside the same box, because a clip-path
+     can never paint outside the element it belongs to. */
+  padding: 12px 130px 14px 20px !important;
+  /* One wedge, one apex, measured in PIXELS from the bottom edge. Percentages
+     made the spike stretch with the bubble, so a long message changed its angle;
+     fixed offsets keep the same slope no matter how many lines the message has.
+     The top of the tail is clamped with max() so a one-line bubble still gets a
+     valid shape instead of a negative coordinate. */
+  clip-path: polygon(
+    0 14px,
+    14px 0,
+    calc(100% - 110px) 4px,
+    calc(100% - 110px) max(4px, calc(100% - 152px)),
+    calc(100% - 96px) max(4px, calc(100% - 152px)),
+    calc(100% - 92px) max(10px, calc(100% - 128px)),
+    100% max(20px, calc(100% - 70px)),
+    calc(100% - 86px) max(26px, calc(100% - 44px)),
+    calc(100% - 96px) max(30px, calc(100% - 18px)),
+    calc(100% - 110px) calc(100% - 4px),
+    22px calc(100% - 2px),
+    0 calc(100% - 18px)
+  );
+}
+
+/* links inside the paper card keep a readable ink-red instead of the theme's
+   light-on-dark link colour */
+body[data-p5r] [data-chat-flow-kind='user'] [class*='_bubble'] a {
+  color: #b3000e;
+}
+
+body[data-p5r] [data-chat-flow-kind='assistant-step'] {
+  background: #0a0a0b !important;
+  border: 2px solid #f7f1e3;
+  padding: 12px 16px;
+  margin: 4px 0;
+}
+
+/* --- the composer plate ---------------------------------------------
+   The composer mounts through a stack of display:contents wrappers plus a
+   data-chain-overlay-fallback chain, so the seat is NOT a usable positioning
+   ancestor: everything between it and the card is display:contents and cannot
+   hold an absolute child. The data-composer-card attribute on the input card is
+   semantic and stable; its direct parent is the one real box, and that is where
+   the plate belongs.
+   -------------------------------------------------------------------- */
+body[data-p5r] div:has(> [data-composer-card]) {
+  position: relative;
+}
+
+body[data-p5r] div:has(> [data-composer-card])::before {
+  content: "";
+  position: absolute;
+  top: -9px;
+  bottom: -11px;
+  /* The wrapper is the full column width (padding + centred card capped by
+     --dsh-composer-card-max-width), so insetting from it drew a plate that ran
+     into the sidebar. Size the plate from the CARD instead: card width + the
+     11px overhang on each side, capped by the card's own max width. */
+  left: 50%;
+  /* card width + room for the spikes on the right (the shift below keeps the
+     left overhang modest so the plate still hugs the input) */
+  width: min(
+    calc(100% - 2 * var(--dsh-composer-side-clearance, 0px) + 110px),
+    calc(var(--dsh-composer-card-max-width, 100%) + 110px)
+  );
+  transform: translateX(calc(-50% + 26px));
+  background: #0a0a0b;
+  /* A manga panel: four straight edges whose corners sit at uneven angles (cut
+     by hand, not by a rectangle), plus the same folded wedge as the chat bubble,
+     scaled to the shorter plate. */
+  clip-path: polygon(
+    0 16px,
+    16px 0,
+    calc(100% - 88px) 4px,
+    calc(100% - 76px) 20%,
+    calc(100% - 72px) 30%,
+    100% 58%,
+    calc(100% - 68px) 78%,
+    calc(100% - 76px) 86%,
+    calc(100% - 88px) calc(100% - 4px),
+    26px calc(100% - 3px),
+    0 calc(100% - 22px)
+  );
+  filter: drop-shadow(4px 0 0 #f7f1e3) drop-shadow(-4px 0 0 #f7f1e3)
+    drop-shadow(0 4px 0 #f7f1e3) drop-shadow(0 -4px 0 #f7f1e3);
+  /* plate sits in flow and the card is lifted above it: no negative z-index, so
+     no ancestor background can swallow the frame */
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Optional drop-in: put a file named dialog.png next to client.js and it is
+   painted over the plate. The rule resolves to a 404 when the file is absent,
+   and a missing background layer simply paints nothing -so the CSS plate
+   above stays the default and nothing has to be switched off. */
+body[data-p5r] div:has(> [data-composer-card])::after {
+  content: "";
+  position: absolute;
+  top: -9px;
+  bottom: -11px;
+  left: 50%;
+  width: min(
+    calc(100% - 2 * var(--dsh-composer-side-clearance, 0px) + 64px),
+    calc(var(--dsh-composer-card-max-width, 100%) + 64px)
+  );
+  transform: translateX(calc(-50% + 10px));
+  background-image: url("/plugins/theme-p5r/dialog.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  z-index: 0;
+}
+
+body[data-p5r] [data-composer-card] {
+  position: relative;
+  z-index: 1;
+  background: #0a0a0b !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* --- reduce ---------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  body[data-p5r] *,
+  body[data-p5r]::before {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

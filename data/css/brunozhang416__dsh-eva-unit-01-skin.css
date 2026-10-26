@@ -1,0 +1,5349 @@
+/* brunozhang416/dsh-eva-unit-01-skin — src/skin.css
+   fetched 2026-10-26 from https://raw.githubusercontent.com/brunozhang416/dsh-eva-unit-01-skin/main/src/skin.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* =====================================================================
+   EVA UNIT-01 LAUNCH SKIN  ·  DeepSeek Harness Web GUI
+   Palette: void black / NERV violet / unit green / signal amber
+   Structure: this stylesheet ships inside the plugin's Client bundle and
+   is rendered by the HUD component, so unmounting the plugin removes it.
+   Host surfaces are re-coloured through --dsw-alias-* tokens (see
+   client.template.js TOKENS); literal colours below are artwork/ambience
+   for the EVA frame, brand marks and boot sequence.
+   ===================================================================== */
+
+:root {
+  --eva-void: #050409;
+  --eva-ink: #0a0616;
+  --eva-deep: #1a0b2e;
+  --eva-mid: #4b1d7a;
+  --eva-hot: #7a2fb0;
+  --eva-lilac: #b98be0;
+  --eva-bone: #e9e2f5;
+  --eva-steel: #6b5f80;
+  --eva-green: #9dff4a;
+  --eva-signal: #4dffb0;
+  --eva-acid: #c6ff00;
+  --eva-orange: #ff6b1a;
+  --eva-red: #ff2d2d;
+  --eva-hazard: #ffd400;
+  --eva-amber: #ffb347;
+  --eva-font-hud: ui-monospace, "SF Mono", SFMono-Regular, Menlo, "Cascadia Code", Consolas,
+    "Liberation Mono", "PingFang SC", "Hiragino Sans GB", monospace;
+  --eva-font-display: "DIN Condensed", "Avenir Next Condensed", "Arial Narrow", "Helvetica Neue",
+    "PingFang SC", "Hiragino Sans GB", sans-serif;
+  --eva-cut: 10px;
+}
+
+/* ---------- global ambience ---------- */
+
+::selection {
+  background: rgba(157, 255, 74, 0.85);
+  color: #050409;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(122, 47, 176, 0.8) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #4b1d7a, #7a2fb0);
+  border: 2px solid transparent;
+  background-clip: content-box;
+  border-radius: 9px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #7a2fb0, #9dff4a);
+  background-clip: content-box;
+}
+
+body {
+  background-color: var(--dsw-alias-bg-base);
+  background-attachment: fixed;
+}
+
+body[data-ds-dark-theme] {
+  background-image:
+    radial-gradient(1100px 640px at 16% -12%, rgba(122, 47, 176, 0.26), transparent 62%),
+    radial-gradient(820px 560px at 92% 112%, rgba(77, 255, 176, 0.07), transparent 64%),
+    repeating-linear-gradient(0deg, rgba(233, 226, 245, 0.026) 0 1px, transparent 1px 46px),
+    repeating-linear-gradient(90deg, rgba(233, 226, 245, 0.026) 0 1px, transparent 1px 46px);
+}
+
+body:not([data-ds-dark-theme]) {
+  background-image:
+    radial-gradient(1100px 640px at 16% -12%, rgba(106, 31, 168, 0.1), transparent 62%),
+    repeating-linear-gradient(0deg, rgba(75, 29, 122, 0.045) 0 1px, transparent 1px 46px),
+    repeating-linear-gradient(90deg, rgba(75, 29, 122, 0.045) 0 1px, transparent 1px 46px);
+}
+
+body {
+  --dsw-focus-ring-color: rgba(157, 255, 74, 0.9);
+}
+
+/* =====================================================================
+   FRAME HUD (shell.overlay)
+   ===================================================================== */
+
+.eva-hud {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  font-family: var(--eva-font-hud);
+  color: var(--eva-green);
+  -webkit-font-smoothing: antialiased;
+}
+
+.eva-corner {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 1px solid rgba(157, 255, 74, 0.5);
+  opacity: 0.5;
+}
+.eva-corner--tl {
+  top: 7px;
+  left: 7px;
+  border-right: 0;
+  border-bottom: 0;
+}
+.eva-corner--tr {
+  top: 7px;
+  right: 7px;
+  border-left: 0;
+  border-bottom: 0;
+}
+.eva-corner--bl {
+  bottom: calc(var(--eva-status-h) + 6px);
+  left: 7px;
+  border-right: 0;
+  border-top: 0;
+}
+.eva-corner--br {
+  bottom: calc(var(--eva-status-h) + 6px);
+  right: 7px;
+  border-left: 0;
+  border-top: 0;
+}
+
+.eva-hud__hr {
+  position: absolute;
+  left: 50%;
+  width: min(520px, 52vw);
+  height: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, rgba(157, 255, 74, 0.4), transparent);
+  opacity: 0.45;
+}
+.eva-hud__hr--top {
+  top: 0;
+}
+.eva-hud__hr--bottom {
+  bottom: var(--eva-status-h);
+}
+
+.eva-hud__scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.2) 0 1px,
+    transparent 1px 3px
+  );
+  opacity: 0.16;
+}
+
+.eva-hud__scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 140px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(157, 255, 74, 0.035) 45%,
+    rgba(157, 255, 74, 0.06) 50%,
+    rgba(157, 255, 74, 0.035) 55%,
+    transparent
+  );
+  animation: eva-scan 11s linear infinite;
+}
+
+.eva-hud__vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(125% 105% at 50% 45%, transparent 56%, rgba(5, 4, 9, 0.42) 100%);
+  opacity: 0.6;
+}
+
+.eva-hud[data-fx="lite"] .eva-hud__scanlines,
+.eva-hud[data-fx="lite"] .eva-hud__scan,
+.eva-hud[data-fx="lite"] .eva-hud__vignette {
+  display: none;
+}
+.eva-hud[data-fx="lite"] .eva-corner,
+.eva-hud[data-fx="lite"] .eva-hud__hr {
+  opacity: 0.25;
+}
+.eva-hud[data-fx="off"] .eva-hud__scanlines,
+.eva-hud[data-fx="off"] .eva-hud__scan,
+.eva-hud[data-fx="off"] .eva-hud__vignette,
+.eva-hud[data-fx="off"] .eva-corner,
+.eva-hud[data-fx="off"] .eva-hud__hr {
+  display: none;
+}
+
+/* =====================================================================
+   BOOT SEQUENCE — seven-scene Unit-01 launch console
+   boot → pilot entry → entry-plug lock → neural link → sync 100%
+   → activation → launch.  Full ~13.7s, quick (reload) ~2.7s.
+   ===================================================================== */
+
+.eva-launch {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  overflow: hidden;
+  pointer-events: auto;
+  background: #05040a;
+  color: #e9e2f5;
+  font-family: var(--eva-font-hud);
+  user-select: none;
+  -webkit-user-select: none;
+  animation: eva-fade-in 0.16s linear both;
+}
+.eva-launch[data-scene="leave"] {
+  animation: eva-launch-wipe 0.62s cubic-bezier(0.6, 0, 0.8, 0.2) both;
+}
+
+.eva-launch__bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(90% 70% at 50% 42%, rgba(122, 47, 176, 0.34), transparent 62%),
+    radial-gradient(60% 40% at 76% 18%, rgba(77, 255, 176, 0.06), transparent 70%),
+    linear-gradient(180deg, #05040a, #0a0616 58%, #05040a);
+}
+
+.eva-launch__slats {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.eva-launch__slat {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--eva-slat) * 14.2857%);
+  width: 14.2857%;
+  background:
+    linear-gradient(180deg, rgba(122, 47, 176, 0.26), rgba(26, 11, 46, 0.55) 42%, rgba(122, 47, 176, 0.2)),
+    #07050d;
+  border-left: 1px solid rgba(157, 255, 74, 0.13);
+  transform-origin: 50% 0;
+  animation: eva-slat-in 0.75s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(var(--eva-slat) * 55ms);
+}
+.eva-launch__slat:nth-child(even) {
+  background:
+    linear-gradient(180deg, rgba(26, 11, 46, 0.7), rgba(122, 47, 176, 0.2) 60%, rgba(26, 11, 46, 0.65)),
+    #06040c;
+}
+.eva-launch[data-scene="leave"] .eva-launch__slat {
+  animation: eva-slat-out 0.5s cubic-bezier(0.6, 0, 0.8, 0.2) both;
+}
+
+.eva-launch__grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(157, 255, 74, 0.06) 0 1px, transparent 1px 40px),
+    repeating-linear-gradient(90deg, rgba(157, 255, 74, 0.045) 0 1px, transparent 1px 40px);
+  -webkit-mask-image: radial-gradient(78% 78% at 50% 50%, #000 34%, transparent 100%);
+  mask-image: radial-gradient(78% 78% at 50% 50%, #000 34%, transparent 100%);
+}
+
+/* --- launch top / bottom chrome --- */
+.eva-launch__top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 54px;
+  padding: 0 18px;
+  border-bottom: 1px solid rgba(157, 255, 74, 0.2);
+  background: linear-gradient(180deg, rgba(5, 4, 10, 0.94), rgba(5, 4, 10, 0));
+}
+.eva-launch__brandmark {
+  display: inline-flex;
+  width: 28px;
+  height: 28px;
+}
+.eva-launch__brandmark svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.eva-launch__brand {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1;
+}
+.eva-launch__brand b {
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  color: #f3edff;
+}
+.eva-launch__brand em {
+  font-style: normal;
+  font-size: 8px;
+  letter-spacing: 0.24em;
+  color: rgba(157, 255, 74, 0.7);
+}
+.eva-launch__scenelabel {
+  margin-left: auto;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  color: rgba(157, 255, 74, 0.55);
+  white-space: nowrap;
+}
+.eva-launch__scenelabel b {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  color: #f3edff;
+}
+.eva-launch__skip {
+  pointer-events: auto;
+  appearance: none;
+  margin-left: 8px;
+  padding: 6px 13px;
+  border: 1px solid rgba(157, 255, 74, 0.45);
+  background: rgba(157, 255, 74, 0.08);
+  color: var(--eva-green);
+  font-family: var(--eva-font-hud);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  cursor: pointer;
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+}
+.eva-launch__skip:hover {
+  background: rgba(157, 255, 74, 0.18);
+}
+
+.eva-launch__stage {
+  position: absolute;
+  inset: 0;
+}
+.eva-scene {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(24px, 5vw, 72px);
+  padding: 96px clamp(24px, 6vw, 96px) 112px;
+  animation: eva-scene-in 0.3s ease-out both;
+}
+.eva-launch[data-scene="boot"] .eva-scene--boot,
+.eva-launch[data-scene="pilot"] .eva-scene--pilot,
+.eva-launch[data-scene="plug"] .eva-scene--plug,
+.eva-launch[data-scene="insert"] .eva-scene--insert,
+.eva-launch[data-scene="neural"] .eva-scene--neural,
+.eva-launch[data-scene="sync"] .eva-scene--sync,
+.eva-launch[data-scene="activate"] .eva-scene--activate,
+.eva-launch[data-scene="launch"] .eva-scene--launch {
+  display: flex;
+}
+
+.eva-launch__foot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 0 18px;
+}
+.eva-launch__track {
+  display: flex;
+  gap: 4px;
+}
+.eva-launch__seg {
+  flex: 1;
+  height: 3px;
+  background: rgba(157, 255, 74, 0.12);
+  overflow: hidden;
+}
+.eva-launch__seg i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(157, 255, 74, 0.45), var(--eva-green));
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.16s linear;
+}
+.eva-launch__seg[data-done="1"] i {
+  transform: scaleX(1);
+}
+.eva-launch__seg[data-active="1"] i {
+  transform: scaleX(var(--eva-p));
+}
+.eva-launch__overall {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 8.5px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(157, 255, 74, 0.55);
+}
+.eva-launch__hint {
+  color: rgba(157, 255, 74, 0.75);
+  letter-spacing: 0.2em;
+}
+.eva-launch__hazard {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 7;
+  height: 10px;
+  background: repeating-linear-gradient(45deg, #ffd400 0 8px, #0a0616 8px 16px);
+  opacity: 0.85;
+  animation: eva-hazard-slide 6s linear infinite;
+}
+.eva-launch__flash {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    60% 60% at 50% 50%,
+    rgba(233, 226, 245, 0.92),
+    rgba(157, 255, 74, 0.3) 45%,
+    transparent 72%
+  );
+}
+.eva-launch[data-scene="launch"] .eva-launch__flash {
+  animation: eva-flash 0.7s ease-out both;
+}
+.eva-launch[data-scene="leave"] .eva-launch__flash {
+  animation: none;
+  opacity: 0;
+}
+
+/* --- shared scene read-out --- */
+.eva-scene__side {
+  width: min(300px, 30vw);
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  text-align: left;
+}
+.eva-scene__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(185, 139, 224, 0.35);
+  margin-bottom: 4px;
+}
+.eva-scene__meta b {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: #f3edff;
+}
+.eva-scene__meta span {
+  font-size: 9px;
+  letter-spacing: 0.34em;
+  color: rgba(157, 255, 74, 0.7);
+}
+.eva-info__row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: rgba(233, 226, 245, 0.5);
+}
+.eva-info__row b {
+  margin-left: auto;
+  font-weight: 600;
+  color: var(--eva-green);
+}
+.eva-scene__big {
+  margin-top: 8px;
+  font-family: var(--eva-font-display);
+  font-size: clamp(28px, 3.4vw, 46px);
+  font-weight: 800;
+  letter-spacing: 0.24em;
+  color: #f3edff;
+  text-shadow: 0 0 26px rgba(157, 255, 74, 0.32);
+}
+
+/* --- scene 1: system boot --- */
+.eva-scene--boot {
+  justify-content: center;
+}
+.eva-boot {
+  display: flex;
+  align-items: center;
+  gap: clamp(28px, 5vw, 72px);
+}
+.eva-boot__term {
+  width: min(360px, 34vw);
+  display: grid;
+  gap: 6px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: rgba(157, 255, 74, 0.85);
+}
+.eva-boot__line {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  opacity: 0;
+  animation: eva-bootline 0.3s ease-out both;
+}
+.eva-boot__line:nth-child(1) { animation-delay: 0.10s; }
+.eva-boot__line:nth-child(2) { animation-delay: 0.24s; }
+.eva-boot__line:nth-child(3) { animation-delay: 0.38s; }
+.eva-boot__line:nth-child(4) { animation-delay: 0.52s; }
+.eva-boot__line:nth-child(5) { animation-delay: 0.66s; }
+.eva-boot__line:nth-child(6) { animation-delay: 0.80s; }
+.eva-boot__line:nth-child(7) { animation-delay: 0.94s; }
+.eva-boot__line:nth-child(8) { animation-delay: 1.10s; }
+.eva-boot__line span:last-child {
+  color: rgba(233, 226, 245, 0.45);
+}
+.eva-boot__dial {
+  position: relative;
+  width: 180px;
+  height: 180px;
+}
+.eva-boot__ring {
+  position: absolute;
+  inset: 0;
+  border: 1px dashed rgba(157, 255, 74, 0.32);
+  border-radius: 50%;
+  animation: eva-spin 7s linear infinite;
+}
+.eva-boot__ring--2 {
+  inset: 26px;
+  border-style: solid;
+  border-color: rgba(185, 139, 224, 0.3);
+  animation-direction: reverse;
+  animation-duration: 4.2s;
+}
+.eva-boot__core {
+  position: absolute;
+  inset: 62px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(157, 255, 74, 0.5);
+  font-family: var(--eva-font-display);
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--eva-green);
+  text-shadow: 0 0 18px rgba(157, 255, 74, 0.4);
+}
+
+/* --- scene 2: pilot entry / LCL --- */
+.eva-plug {
+  position: relative;
+  width: min(250px, 24vw);
+  height: min(330px, 46vh);
+}
+.eva-plug__shell {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(50% 0, 84% 10%, 100% 34%, 100% 100%, 0 100%, 0 34%, 16% 10%);
+  background: linear-gradient(180deg, rgba(122, 47, 176, 0.42), rgba(10, 6, 22, 0.92) 60%);
+  box-shadow: inset 0 0 0 1px rgba(185, 139, 224, 0.5);
+}
+.eva-plug__lcl {
+  position: absolute;
+  left: 16%;
+  right: 16%;
+  bottom: 9%;
+  height: 62%;
+  overflow: hidden;
+  border: 1px solid rgba(255, 178, 56, 0.35);
+  background: rgba(8, 4, 2, 0.68);
+}
+.eva-plug__lclFill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 82%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 154, 26, 0.62) 0%,
+    rgba(255, 212, 0, 0.26) 55%,
+    rgba(255, 106, 26, 0.14) 100%
+  );
+  box-shadow: 0 0 24px rgba(255, 170, 40, 0.35);
+  animation: eva-lcl-fill 2.2s cubic-bezier(0.3, 0.7, 0.3, 1) 0.15s both;
+}
+.eva-plug__lclFill::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: repeating-linear-gradient(90deg, rgba(255, 228, 128, 0.9) 0 7px, transparent 7px 14px);
+  animation: eva-surface 1.6s linear infinite;
+}
+.eva-plug__bubbles i {
+  position: absolute;
+  bottom: -4px;
+  left: calc(8% + var(--i) * 16%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255, 226, 110, 0.85);
+  animation: eva-bubble 2.3s linear infinite;
+  animation-delay: calc(var(--i) * -0.32s);
+}
+.eva-plug__seat {
+  position: absolute;
+  left: 50%;
+  bottom: 4%;
+  width: 34%;
+  height: 8%;
+  transform: translateX(-50%);
+  border: 1px solid rgba(255, 190, 70, 0.42);
+  background: rgba(26, 11, 46, 0.8);
+}
+.eva-plug__clamp {
+  position: absolute;
+  top: 38%;
+  width: 26%;
+  height: 26%;
+  background: linear-gradient(90deg, rgba(75, 29, 122, 0.95), rgba(20, 12, 36, 0.98));
+  box-shadow: inset 0 0 0 1px rgba(185, 139, 224, 0.5);
+}
+.eva-plug__clamp--l {
+  left: -18%;
+  clip-path: polygon(0 0, 100% 12%, 100% 88%, 0 100%);
+  animation: eva-clamp-left 1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.9s both;
+}
+.eva-plug__clamp--r {
+  right: -18%;
+  clip-path: polygon(0 12%, 100% 0, 100% 100%, 0 88%);
+  animation: eva-clamp-right 1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.9s both;
+}
+.eva-plug__label {
+  position: absolute;
+  left: -8%;
+  right: -8%;
+  bottom: -26px;
+  text-align: center;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: rgba(255, 200, 96, 0.9);
+}
+
+/* --- scene 3: entry-plug lock --- */
+.eva-insert {
+  position: relative;
+  width: min(320px, 30vw);
+  height: min(320px, 44vh);
+}
+.eva-insert__socket {
+  position: absolute;
+  left: 22%;
+  right: 22%;
+  top: 34%;
+  bottom: 6%;
+  border: 2px solid rgba(185, 139, 224, 0.45);
+  background: rgba(10, 6, 22, 0.85);
+  clip-path: polygon(50% 0, 100% 26%, 100% 100%, 0 100%, 0 26%);
+}
+.eva-insert__plug {
+  position: absolute;
+  left: 50%;
+  top: 2%;
+  width: 24%;
+  height: 52%;
+  transform: translate(-50%, 68%);
+  background: linear-gradient(180deg, rgba(122, 47, 176, 0.9), rgba(26, 11, 46, 0.96));
+  box-shadow: inset 0 0 0 1px rgba(185, 139, 224, 0.6);
+  clip-path: polygon(50% 0, 100% 16%, 86% 100%, 14% 100%, 0 16%);
+  animation: eva-plug-drop 1.9s cubic-bezier(0.32, 0.9, 0.24, 1) both;
+}
+.eva-insert__clamp {
+  position: absolute;
+  top: 44%;
+  width: 34%;
+  height: 30%;
+  background: linear-gradient(90deg, rgba(75, 29, 122, 0.95), rgba(20, 12, 36, 0.98));
+  box-shadow: inset 0 0 0 1px rgba(185, 139, 224, 0.5);
+}
+.eva-insert__clamp--l {
+  left: 0;
+  clip-path: polygon(0 0, 100% 14%, 100% 100%, 0 88%);
+  animation: eva-insert-clamp-left 1.9s cubic-bezier(0.5, 0, 0.2, 1) both;
+}
+.eva-insert__clamp--r {
+  right: 0;
+  clip-path: polygon(0 14%, 100% 0, 100% 88%, 0 100%);
+  animation: eva-insert-clamp-right 1.9s cubic-bezier(0.5, 0, 0.2, 1) both;
+}
+.eva-insert__lock {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  padding: 5px 16px;
+  border: 2px solid var(--eva-green);
+  background: rgba(5, 4, 10, 0.6);
+  color: var(--eva-green);
+  font-size: 16px;
+  letter-spacing: 0.3em;
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(-7deg);
+  animation: eva-lock-stamp 1.9s ease-out both;
+}
+
+/* --- scene 4: neural link --- */
+.eva-neural {
+  width: min(420px, 38vw);
+}
+.eva-neural svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.eva-neural__wave {
+  fill: none;
+  stroke: var(--eva-green);
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+  stroke-dasharray: 2000;
+  stroke-dashoffset: 2000;
+  filter: drop-shadow(0 0 6px rgba(157, 255, 74, 0.5));
+  animation: eva-draw 1.5s cubic-bezier(0.3, 0.7, 0.3, 1) 0.2s forwards;
+}
+.eva-neural__wave--b {
+  stroke: rgba(185, 139, 224, 0.75);
+  stroke-width: 1.1;
+  animation-delay: 0.45s;
+}
+
+/* --- scene 5: sync ratio --- */
+.eva-sync {
+  position: relative;
+  width: min(300px, 28vw);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+}
+.eva-sync__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from -90deg,
+    var(--eva-green) calc(var(--eva-sync) * 1%),
+    rgba(157, 255, 74, 0.1) 0
+  );
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 12px), #000 calc(100% - 11px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 12px), #000 calc(100% - 11px));
+}
+.eva-sync__pulse {
+  position: absolute;
+  inset: 12%;
+  border: 1px solid rgba(157, 255, 74, 0.35);
+  border-radius: 50%;
+  animation: eva-pulse-ring 1.8s ease-out infinite;
+}
+.eva-sync__pulse--2 {
+  animation-delay: 0.6s;
+}
+.eva-sync__value {
+  position: relative;
+  font-family: var(--eva-font-display);
+  font-size: clamp(34px, 4.6vw, 62px);
+  font-weight: 800;
+  color: #f3edff;
+  text-shadow: 0 0 26px rgba(157, 255, 74, 0.45);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+.eva-sync__label {
+  position: absolute;
+  bottom: 18%;
+  font-size: 9px;
+  letter-spacing: 0.4em;
+  color: rgba(157, 255, 74, 0.75);
+}
+
+/* --- scene 6: activation --- */
+.eva-activate {
+  position: relative;
+  width: min(300px, 28vw);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+}
+.eva-activate__head {
+  position: relative;
+  display: inline-flex;
+  width: 74%;
+  height: 74%;
+  filter: drop-shadow(0 0 26px rgba(122, 47, 176, 0.6)) drop-shadow(0 0 8px rgba(157, 255, 74, 0.4));
+  animation: eva-power-up 1.6s ease-out both;
+}
+.eva-activate__head svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.eva-activate__glow {
+  position: absolute;
+  inset: -10%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(157, 255, 74, 0.26), transparent 62%);
+  animation: eva-glow-pulse 1.6s ease-out both;
+}
+.eva-activate__eye {
+  position: absolute;
+  top: 39%;
+  left: 38%;
+  width: 9%;
+  height: 5%;
+  background: var(--eva-green);
+  box-shadow: 0 0 18px 4px rgba(157, 255, 74, 0.8);
+  opacity: 0;
+  animation: eva-eye-on 1.8s ease-out both;
+}
+.eva-activate__flap {
+  position: absolute;
+  top: 8%;
+  width: 34%;
+  height: 80%;
+  background: linear-gradient(90deg, rgba(75, 29, 122, 0.9), rgba(26, 11, 46, 0.96));
+  box-shadow: inset 0 0 0 1px rgba(185, 139, 224, 0.5);
+}
+.eva-activate__flap--l {
+  left: -24%;
+  clip-path: polygon(0 0, 100% 8%, 100% 92%, 0 100%);
+  animation: eva-flap-left 1.8s cubic-bezier(0.3, 0.7, 0.3, 1) both;
+}
+.eva-activate__flap--r {
+  right: -24%;
+  clip-path: polygon(0 8%, 100% 0, 100% 100%, 0 92%);
+  animation: eva-flap-right 1.8s cubic-bezier(0.3, 0.7, 0.3, 1) both;
+}
+
+/* --- scene 7: launch --- */
+.eva-launchscene {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.eva-launchscene__rails {
+  position: absolute;
+  inset: -40vh -30vw;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0 11.8%,
+    rgba(185, 139, 224, 0.1) 11.8% 12%,
+    transparent 12% 23.8%,
+    rgba(157, 255, 74, 0.06) 23.8% 24%
+  );
+  animation: eva-cage-rise 1.7s linear both;
+}
+.eva-launchscene__clamps {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(620px, 68vw);
+  height: 34px;
+  border-top: 2px solid rgba(157, 255, 74, 0.4);
+  border-bottom: 2px solid rgba(157, 255, 74, 0.4);
+  transform: translate(-50%, -50%);
+  animation: eva-clamps-release 1.6s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+.eva-launchscene__title {
+  position: relative;
+  font-family: var(--eva-font-display);
+  font-size: clamp(80px, 13vw, 168px);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.24em;
+  color: var(--eva-green);
+  text-shadow: 0 0 44px rgba(157, 255, 74, 0.5), 0 0 8px rgba(255, 255, 255, 0.5);
+  animation: eva-launch-title 1.8s cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+.eva-launchscene__sub {
+  font-size: 10px;
+  letter-spacing: 0.7em;
+  color: #f3edff;
+  opacity: 0.85;
+  animation: eva-fade-in 0.5s ease-out 0.4s both;
+}
+.eva-launchscene__bar {
+  width: min(560px, 64vw);
+  height: 5px;
+  background: linear-gradient(90deg, var(--eva-lilac), var(--eva-green));
+  box-shadow: 0 0 18px rgba(157, 255, 74, 0.5);
+  transform-origin: left center;
+  animation: eva-bar-grow 1.5s cubic-bezier(0.2, 0.9, 0.2, 1) 0.15s both;
+}
+
+/* --- launch keyframes --- */
+@keyframes eva-launch-wipe {
+  from {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+  to {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+  }
+}
+@keyframes eva-scene-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes eva-bootline {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes eva-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes eva-lcl-fill {
+  from {
+    height: 0;
+  }
+  to {
+    height: 82%;
+  }
+}
+@keyframes eva-surface {
+  to {
+    background-position: 28px 0;
+  }
+}
+@keyframes eva-bubble {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(-150px);
+    opacity: 0;
+  }
+}
+@keyframes eva-clamp-left {
+  from {
+    transform: translateX(-40px);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes eva-clamp-right {
+  from {
+    transform: translateX(40px);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes eva-plug-drop {
+  0% {
+    transform: translate(-50%, -120%);
+  }
+  62% {
+    transform: translate(-50%, 74%);
+  }
+  76% {
+    transform: translate(-50%, 64%);
+  }
+  100% {
+    transform: translate(-50%, 68%);
+  }
+}
+@keyframes eva-insert-clamp-left {
+  0%,
+  42% {
+    transform: translateX(-110%);
+  }
+  64%,
+  100% {
+    transform: translateX(0);
+  }
+}
+@keyframes eva-insert-clamp-right {
+  0%,
+  42% {
+    transform: translateX(110%);
+  }
+  64%,
+  100% {
+    transform: translateX(0);
+  }
+}
+@keyframes eva-lock-stamp {
+  0%,
+  58% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(-7deg) scale(1.9);
+  }
+  68% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(-7deg) scale(1);
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes eva-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes eva-pulse-ring {
+  0% {
+    transform: scale(0.82);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1.06);
+    opacity: 0;
+  }
+}
+@keyframes eva-power-up {
+  0% {
+    opacity: 0.3;
+    transform: scale(0.94);
+  }
+  45% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes eva-glow-pulse {
+  0% {
+    opacity: 0.2;
+    transform: scale(0.88);
+  }
+  50% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0.35;
+    transform: scale(1.02);
+  }
+}
+@keyframes eva-eye-on {
+  0%,
+  42% {
+    opacity: 0;
+  }
+  52% {
+    opacity: 1;
+  }
+  58% {
+    opacity: 0.25;
+  }
+  66%,
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes eva-flap-left {
+  0%,
+  30% {
+    transform: translateX(0);
+    opacity: 0.9;
+  }
+  70%,
+  100% {
+    transform: translateX(-14%);
+    opacity: 0.55;
+  }
+}
+@keyframes eva-flap-right {
+  0%,
+  30% {
+    transform: translateX(0);
+    opacity: 0.9;
+  }
+  70%,
+  100% {
+    transform: translateX(14%);
+    opacity: 0.55;
+  }
+}
+@keyframes eva-cage-rise {
+  from {
+    transform: translateY(40px);
+    opacity: 0.3;
+  }
+  to {
+    transform: translateY(-60px);
+    opacity: 1;
+  }
+}
+@keyframes eva-clamps-release {
+  0% {
+    opacity: 0.9;
+    transform: translate(-50%, -50%) scaleX(1);
+  }
+  60%,
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scaleX(1.6);
+  }
+}
+@keyframes eva-launch-title {
+  0% {
+    opacity: 0;
+    transform: scale(1.5);
+    letter-spacing: 0.6em;
+  }
+  25% {
+    opacity: 1;
+    transform: scale(1);
+    letter-spacing: 0.24em;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes eva-bar-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* =====================================================================
+   BRAND MARKS
+   ===================================================================== */
+
+.eva-brandmark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+.eva-brandmark svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 30px;
+  max-height: 30px;
+  filter: drop-shadow(0 0 5px rgba(157, 255, 74, 0.4));
+}
+
+.eva-brandname {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1px;
+  min-width: 0;
+}
+.eva-brandname__unit {
+  font-family: var(--eva-font-hud);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: 0.16em;
+  color: var(--dsw-alias-label-primary);
+  white-space: nowrap;
+}
+.eva-brandname__sub {
+  font-family: var(--eva-font-hud);
+  font-size: 8px;
+  line-height: 1;
+  letter-spacing: 0.2em;
+  color: var(--eva-green);
+  opacity: 0.7;
+  white-space: nowrap;
+}
+
+.eva-hero {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 2px 0 0;
+  vertical-align: middle;
+}
+.eva-hero__glow {
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  width: 74px;
+  height: 74px;
+  margin-top: -37px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(122, 47, 176, 0.5), transparent 70%);
+  filter: blur(5px);
+  pointer-events: none;
+}
+.eva-hero__mark {
+  position: relative;
+  display: inline-flex;
+  width: 30px;
+  height: 30px;
+  filter: drop-shadow(0 0 10px rgba(122, 47, 176, 0.6))
+    drop-shadow(0 0 3px rgba(157, 255, 74, 0.35));
+  animation: eva-float 7s ease-in-out infinite;
+}
+.eva-hero__mark svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.eva-hero__text {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1px;
+  padding-left: 8px;
+  border-left: 1px solid rgba(157, 255, 74, 0.4);
+  text-align: left;
+}
+.eva-hero__tag {
+  font-family: var(--eva-font-hud);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  line-height: 1.1;
+  color: var(--eva-green);
+  text-shadow: 0 0 10px rgba(157, 255, 74, 0.35);
+}
+.eva-hero__jp {
+  font-family: var(--eva-font-display);
+  font-size: 9px;
+  letter-spacing: 0.34em;
+  line-height: 1;
+  color: var(--eva-lilac);
+  opacity: 0.75;
+  white-space: nowrap;
+}
+
+/* =====================================================================
+   SIDEBAR FOOTER CONTROLS
+   ===================================================================== */
+
+.eva-foot {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+.eva-foot__btn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 28px;
+  min-width: 28px;
+  margin: 0;
+  padding: 0 5px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--dsw-alias-label-secondary);
+  font-family: var(--eva-font-hud);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+.eva-foot__btn:hover {
+  color: var(--eva-green);
+  border-color: rgba(157, 255, 74, 0.35);
+  background: rgba(157, 255, 74, 0.07);
+  box-shadow: 0 0 12px rgba(157, 255, 74, 0.12) inset;
+}
+.eva-foot__btn:active {
+  transform: translateY(0.5px);
+}
+.eva-foot__btn:focus-visible {
+  outline: 1px solid var(--eva-green);
+  outline-offset: 1px;
+}
+.eva-foot__btn[data-fx="off"] {
+  opacity: 0.55;
+}
+.eva-foot__btn[data-berserk="1"] {
+  color: var(--eva-alarm);
+  border-color: var(--eva-alarm);
+  background: var(--eva-alarm-soft);
+  box-shadow: 0 0 12px var(--eva-alarm-soft);
+}
+.eva-foot__btn[data-berserk="1"]:hover {
+  background: var(--eva-alarm);
+  color: var(--eva-on-accent);
+  box-shadow: 0 0 18px var(--eva-alarm-soft);
+}
+.eva-foot__glyph {
+  font-size: 10px;
+  line-height: 1;
+}
+.eva-foot__label {
+  font-size: 8px;
+}
+
+/* =====================================================================
+   COMPOSER SYNC RAIL
+   ===================================================================== */
+
+.eva-rail {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 19px;
+  margin: 0 0 4px;
+  padding: 0 18px;
+  pointer-events: none;
+  font-family: var(--eva-font-hud);
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(157, 255, 74, 0.5);
+  white-space: nowrap;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
+}
+.eva-rail__cap {
+  opacity: 0.8;
+}
+.eva-rail__value {
+  color: var(--eva-green);
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 8px rgba(157, 255, 74, 0.3);
+}
+.eva-rail__ticks {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 12px;
+}
+.eva-rail__ticks i {
+  display: block;
+  width: 1px;
+  height: calc(var(--eva-tick) * 1px);
+  background: linear-gradient(180deg, rgba(157, 255, 74, 0.85), rgba(157, 255, 74, 0.12));
+  animation: eva-tick 2.6s ease-in-out infinite;
+  animation-delay: calc(var(--eva-tick) * -70ms);
+}
+.eva-rail__sep {
+  width: 1px;
+  height: 9px;
+  background: rgba(185, 139, 224, 0.45);
+}
+.eva-rail__stat {
+  display: inline-flex;
+  gap: 4px;
+  opacity: 0.72;
+}
+.eva-rail__stat b {
+  font-weight: 600;
+  color: rgba(157, 255, 74, 0.8);
+}
+.eva-rail__hazard {
+  flex: 1;
+  min-width: 18px;
+  height: 4px;
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(255, 212, 0, 0.5) 0 4px,
+    rgba(5, 4, 9, 0.85) 4px 8px
+  );
+  opacity: 0.4;
+}
+.eva-rail__wave {
+  display: inline-flex;
+  width: 60px;
+  height: 12px;
+  opacity: 0.55;
+  color: rgba(157, 255, 74, 0.85);
+}
+.eva-rail__wave svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.eva-rail__clock {
+  color: rgba(233, 226, 245, 0.6);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.14em;
+}
+.eva-rail__date {
+  opacity: 0.45;
+}
+.eva-rail__cycle {
+  opacity: 0.4;
+  letter-spacing: 0.16em;
+}
+@media (max-width: 900px) {
+  .eva-rail__stat--power,
+  .eva-rail__stat--at,
+  .eva-rail__date,
+  .eva-rail__cycle {
+    display: none;
+  }
+}
+
+
+/* =====================================================================
+   SCHEME VARIABLES — one accent per light/dark, used by the EVA chrome and
+   the host-surface rules below. Dark = launch console, light = white hangar.
+   ===================================================================== */
+
+body {
+  --eva-status-h: 26px;
+  --eva-alarm: #c21212;
+  --eva-alarm-soft: rgba(194, 18, 18, 0.1);
+  --eva-alert-bg: rgba(255, 250, 248, 0.92);
+  --eva-pilot: #2f5fe0;
+  --eva-pilot-soft: rgba(47, 95, 224, 0.1);
+  --eva-pilot-glow: rgba(47, 95, 224, 0.2);
+  --eva-accent: #6a1fa8;
+  --eva-accent-strong: #4b1d7a;
+  --eva-accent-soft: rgba(106, 31, 168, 0.1);
+  --eva-glow: rgba(106, 31, 168, 0.18);
+  --eva-on-accent: #ffffff;
+  --eva-line: #d6c9ea;
+  --eva-hud-ink: rgba(75, 29, 122, 0.6);
+  --eva-hud-ink-dim: rgba(75, 29, 122, 0.34);
+  --eva-on-hazard: #1a0b2e;
+
+  --dsw-alias-bg-base: #f1ecf8;
+  --dsw-alias-bg-layer-1: #f8f4fd;
+  --dsw-alias-bg-layer-2: #fcfaff;
+  --dsw-alias-bg-layer-3: #ffffff;
+  --dsw-alias-bg-overlay: #ffffff;
+  --dsw-alias-bg-module-platform: #f3edfa;
+  --dsw-alias-bg-multi-select: #f3edfa;
+  --dsw-alias-border-l1: #d6c9ea;
+  --dsw-alias-border-l2: #b79bdc;
+  --dsw-alias-border-l3: #9e7fcb;
+  --dsw-alias-border-l4: #7e5fae;
+  --dsw-alias-brand-primary: #6a1fa8;
+  --dsw-alias-brand-primary-new-colorprimary-new-color: #6a1fa8;
+  --dsw-alias-brand-text: #1b0f2a;
+  --dsw-alias-label-primary: #1b0f2a;
+  --dsw-alias-label-secondary: #54446c;
+  --dsw-alias-label-tertiary: #7a6a92;
+  --dsw-alias-label-caption: #8b7ba0;
+  --dsw-alias-label-dimmed: #cfc4de;
+  --dsw-alias-state-business-primary: #6a1fa8;
+  --dsw-alias-state-business-tertiary: #e4d9f4;
+  --dsw-alias-state-success-primary: #1d7a4f;
+  --dsw-alias-state-warn-primary: #9a5300;
+  --dsw-alias-state-error-primary: #c41616;
+  --dsw-alias-state-idle-primary: #8b7ba3;
+  --dsw-alias-button-primary-fill: #6a1fa8;
+  --dsw-alias-button-primary-hover: #4b1d7a;
+  --dsw-alias-button-primary-dimmed: #e3d8f2;
+  --dsw-alias-button-contrast-fill: #7a2fb0;
+  --dsw-alias-button-elevated-fill: #ffffff;
+  --dsw-alias-button-floating-fill: #ffffff;
+  --dsw-alias-button-floating-hover: #f1eaf9;
+  --dsw-alias-button-ghost-active-fill: #e9e0f6;
+  --dsw-alias-button-ghost-active-hover: #ded2f0;
+  --dsw-alias-button-ghost-active-border: #b79bdc;
+  --dsw-alias-interactive-bg-hover: rgba(106, 31, 168, 0.07);
+  --dsw-alias-interactive-bg-active: rgba(106, 31, 168, 0.13);
+  --dsw-alias-interactive-bg-hover-solid: #ece4f7;
+  --dsw-alias-interactive-bg-hover-accent: rgba(106, 31, 168, 0.16);
+  --dsw-specific-sidebar-fill: #e9e1f5;
+  --dsw-specific-sidebar-nav-item-hover: #e4daf2;
+  --dsw-specific-sidebar-nav-item-active: #dacbee;
+  --dsw-specific-sidebar-nav-item-active-accent: #d2bfea;
+  --dsw-specific-bubble: #e7ddf6;
+  --dsw-specific-bubble-highlight: #d9c9ee;
+  --dsw-specific-input-major: #ffffff;
+  --dsw-specific-selector: #f0eaf8;
+  --dsw-specific-tip: #f0eaf8;
+  --dsw-specific-menu: rgba(255, 255, 255, 0.95);
+  --dsw-menu-surface-fill: rgba(250, 247, 254, 0.95);
+  --dsw-alias-menu-group-header-fill: rgba(243, 237, 250, 0.96);
+  --dsw-alias-menu-icon: #4b1d7a;
+  --dsw-alias-scrollbar-bg-l1: #d6c9ea;
+  --dsw-alias-scrollbar-bg-l2: #c3b0df;
+  --dsw-alias-scrollbar-hover-l1: #7a2fb0;
+  --dsw-alias-scrollbar-hover-l2: #6a1fa8;
+  --dsw-alias-settings-card-fill: #ffffff;
+  --dsw-alias-settings-card-stroke: rgba(106, 31, 168, 0.16);
+  --dsw-alias-markdown-code-block: #f5f0fb;
+  --dsw-alias-markdown-code-block-banner: #ede6f7;
+  --dsw-alias-markdown-inline-code: rgba(106, 31, 168, 0.08);
+  --dsw-alias-markdown-tag: rgba(106, 31, 168, 0.1);
+  --dsw-alias-markdown-placeholder: #ede6f7;
+  --dsw-alias-toast-bg: #2b1848;
+  --dsw-alias-toast-label: #f6f1fd;
+  --dsw-alias-tooltip-bg: #2b1848;
+  --dsw-alias-switch-thumb: #6a1fa8;
+  --dsw-alias-turn-trigger-bg: #f3edfa;
+  --dsw-alias-turn-trigger-bg-hover: rgba(106, 31, 168, 0.08);
+  --dsw-alias-bg-mask-1: rgba(75, 29, 122, 0.28);
+  --dsw-radius-xs: 2px;
+  --dsw-radius-sm: 2px;
+  --dsw-radius-md: 3px;
+  --dsw-radius-lg: 4px;
+  --dsw-radius-xl: 4px;
+  --dsw-radius-panel: 4px;
+  --dsw-font-family-brand: var(--eva-font-display);
+}
+
+body[data-ds-dark-theme] {
+  --eva-alarm: #ff3b3b;
+  --eva-alarm-soft: rgba(255, 59, 59, 0.12);
+  --eva-alert-bg: rgba(40, 5, 8, 0.82);
+  --eva-pilot: #6fa8ff;
+  --eva-pilot-soft: rgba(111, 168, 255, 0.12);
+  --eva-pilot-glow: rgba(111, 168, 255, 0.22);
+  --eva-accent: #9dff4a;
+  --eva-accent-strong: #c6ff00;
+  --eva-accent-soft: rgba(157, 255, 74, 0.08);
+  --eva-glow: rgba(157, 255, 74, 0.18);
+  --eva-on-accent: #08130a;
+  --eva-line: #33224d;
+  --eva-hud-ink: rgba(157, 255, 74, 0.5);
+  --eva-hud-ink-dim: rgba(157, 255, 74, 0.26);
+  --eva-on-hazard: #1a0b2e;
+
+  --dsw-alias-bg-base: #07050e;
+  --dsw-alias-bg-layer-1: #0e0919;
+  --dsw-alias-bg-layer-2: #140c24;
+  --dsw-alias-bg-layer-3: #1b1030;
+  --dsw-alias-bg-overlay: #241540;
+  --dsw-alias-bg-module-platform: #1b1030;
+  --dsw-alias-bg-multi-select: #140c24;
+  --dsw-alias-border-l1: #33224d;
+  --dsw-alias-border-l2: #4a2f70;
+  --dsw-alias-border-l3: #5e3d8a;
+  --dsw-alias-border-l4: #7a54a8;
+  --dsw-alias-brand-primary: #9dff4a;
+  --dsw-alias-brand-primary-new-colorprimary-new-color: #9dff4a;
+  --dsw-alias-brand-text: #efe7fb;
+  --dsw-alias-label-primary: #efe7fb;
+  --dsw-alias-label-secondary: #b4a6cc;
+  --dsw-alias-label-tertiary: #8d7ba8;
+  --dsw-alias-label-caption: #7a6a94;
+  --dsw-alias-label-dimmed: #3a2c50;
+  --dsw-alias-state-business-primary: #9dff4a;
+  --dsw-alias-state-business-tertiary: #22301a;
+  --dsw-alias-state-success-primary: #4dffb0;
+  --dsw-alias-state-warn-primary: #ffb347;
+  --dsw-alias-state-error-primary: #ff3b3b;
+  --dsw-alias-state-idle-primary: #7e6c9e;
+  --dsw-alias-button-primary-fill: #9dff4a;
+  --dsw-alias-button-primary-hover: #c6ff00;
+  --dsw-alias-button-primary-dimmed: #2a3a16;
+  --dsw-alias-button-contrast-fill: #c6ff00;
+  --dsw-alias-button-elevated-fill: #241540;
+  --dsw-alias-button-floating-fill: #1b1030;
+  --dsw-alias-button-floating-hover: #241540;
+  --dsw-alias-button-ghost-active-fill: #241540;
+  --dsw-alias-button-ghost-active-hover: #2a1a45;
+  --dsw-alias-button-ghost-active-border: #633d93;
+  --dsw-alias-interactive-bg-hover: rgba(157, 255, 74, 0.06);
+  --dsw-alias-interactive-bg-active: rgba(157, 255, 74, 0.12);
+  --dsw-alias-interactive-bg-hover-solid: #1b1030;
+  --dsw-alias-interactive-bg-hover-accent: rgba(157, 255, 74, 0.18);
+  --dsw-specific-sidebar-fill: #0a0614;
+  --dsw-specific-sidebar-nav-item-hover: #150d26;
+  --dsw-specific-sidebar-nav-item-active: #22123c;
+  --dsw-specific-sidebar-nav-item-active-accent: #2a1748;
+  --dsw-specific-bubble: #1f1236;
+  --dsw-specific-bubble-highlight: #2b1848;
+  --dsw-specific-input-major: #120b20;
+  --dsw-specific-selector: #1b1030;
+  --dsw-specific-tip: #1b1030;
+  --dsw-specific-menu: rgba(26, 15, 46, 0.94);
+  --dsw-menu-surface-fill: rgba(26, 15, 46, 0.94);
+  --dsw-alias-menu-group-header-fill: rgba(33, 20, 57, 0.95);
+  --dsw-alias-menu-icon: #d8c8f2;
+  --dsw-alias-scrollbar-bg-l1: #2a1748;
+  --dsw-alias-scrollbar-bg-l2: #3a2258;
+  --dsw-alias-scrollbar-hover-l1: #7a2fb0;
+  --dsw-alias-scrollbar-hover-l2: #9dff4a;
+  --dsw-alias-settings-card-fill: #120b20;
+  --dsw-alias-settings-card-stroke: rgba(157, 255, 74, 0.14);
+  --dsw-alias-markdown-code-block: #0a0614;
+  --dsw-alias-markdown-code-block-banner: #140c24;
+  --dsw-alias-markdown-inline-code: rgba(157, 255, 74, 0.1);
+  --dsw-alias-markdown-tag: rgba(157, 255, 74, 0.14);
+  --dsw-alias-markdown-placeholder: #1b1030;
+  --dsw-alias-toast-bg: #241540;
+  --dsw-alias-toast-label: #f6f1fd;
+  --dsw-alias-tooltip-bg: #241540;
+  --dsw-alias-switch-thumb: #9dff4a;
+  --dsw-alias-turn-trigger-bg: #140c24;
+  --dsw-alias-turn-trigger-bg-hover: rgba(157, 255, 74, 0.1);
+  --dsw-alias-bg-mask-1: rgba(5, 4, 9, 0.62);
+}
+
+/* =====================================================================
+   HOST SURFACES — app shell, sidebar, hero, composer, dialogs.
+   Anchors: [data-slot] / [data-*] / aria (stable) then CSS-module local
+   names as [class*="_local"] (skin degrades gracefully if the host renames
+   a local; colours above still carry the theme).
+   ===================================================================== */
+
+/* --- shell columns: let the body ambience show through --- */
+[class*="_frame"],
+[class*="_centerCol"] {
+  background-color: transparent;
+}
+
+[class*="_sidebarCol"] {
+  position: relative;
+  background-color: var(--dsw-specific-sidebar-fill);
+  background-image:
+    radial-gradient(120% 52% at 0% 0%, rgba(122, 47, 176, 0.18), transparent 62%),
+    linear-gradient(180deg, rgba(157, 255, 74, 0.03), transparent 30%);
+  border-right: 1px solid var(--dsw-alias-border-l1);
+}
+[class*="_sidebarCol"]::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 3px;
+  background: repeating-linear-gradient(
+    135deg,
+    var(--eva-hazard) 0 3px,
+    transparent 3px 6px
+  );
+  opacity: 0.26;
+  pointer-events: none;
+  z-index: 3;
+}
+[class*="_rightbarCol"] {
+  border-left: 1px solid var(--dsw-alias-border-l1);
+}
+
+/* --- sidebar brand row --- */
+[class*="_logoRow"] {
+  border-bottom: 1px solid var(--dsw-alias-border-l1);
+  padding-bottom: 8px;
+}
+[class*="_brand"] {
+  border-radius: 0;
+  gap: 9px;
+}
+[class*="_brand"]:hover {
+  background: transparent;
+}
+[class*="_brandMark"] svg,
+[data-slot="sidebar.brand.mark"] svg {
+  filter: drop-shadow(0 0 6px var(--eva-glow));
+}
+[class*="_brandName"] {
+  font-family: var(--eva-font-hud);
+}
+
+/* --- new session: the launch button --- */
+button[class*="_newSession"] {
+  position: relative;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 0;
+  background: linear-gradient(100deg, var(--dsw-alias-bg-layer-3), var(--dsw-alias-bg-layer-1));
+  color: var(--dsw-alias-label-primary);
+  font-family: var(--eva-font-hud);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  clip-path: polygon(
+    0 0,
+    calc(100% - 12px) 0,
+    100% 12px,
+    100% 100%,
+    12px 100%,
+    0 calc(100% - 12px)
+  );
+  box-shadow: none;
+  transition: color 0.16s, box-shadow 0.16s, border-color 0.16s;
+}
+button[class*="_newSession"]::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--eva-accent);
+  opacity: 0.9;
+}
+button[class*="_newSession"]:hover {
+  color: var(--eva-accent);
+  border-color: var(--eva-accent);
+  box-shadow: inset 0 0 0 1px var(--eva-accent), 0 0 18px var(--eva-glow);
+}
+button[class*="_newSession"]:focus-visible {
+  outline: 1px solid var(--eva-accent);
+  outline-offset: 2px;
+}
+[class*="_newSessionShortcut"] {
+  font-family: var(--eva-font-hud);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  opacity: 0.6;
+}
+
+/* --- global panel rows --- */
+[class*="_panelList"] {
+  gap: 2px;
+}
+button[class*="_panelRow"] {
+  border-radius: 0;
+  border-left: 2px solid transparent;
+  font-family: var(--eva-font-hud);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+}
+button[class*="_panelRow"]:hover {
+  border-left-color: var(--eva-accent);
+  background: linear-gradient(90deg, var(--eva-accent-soft), transparent 88%);
+  color: var(--eva-accent);
+}
+[class*="_panelTitle"] {
+  font-weight: 500;
+}
+[class*="_panelGlyph"] {
+  color: inherit;
+  opacity: 0.85;
+}
+
+/* --- workspace tree --- */
+[class*="_sectionHeader"] {
+  border-bottom: 1px solid var(--dsw-alias-border-l1);
+  padding-bottom: 4px;
+}
+[class*="_sectionLabel"] {
+  font-family: var(--eva-font-hud);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--dsw-alias-label-tertiary);
+}
+[class*="_iconButton"] {
+  border-radius: 2px;
+}
+[class*="_iconButton"]:hover {
+  color: var(--eva-accent);
+}
+
+div[class*="_sessionRow"],
+div[class*="_projectRow"] {
+  position: relative;
+  border-radius: 0;
+  border-left: 2px solid transparent;
+  transition: background 0.14s, border-color 0.14s, color 0.14s;
+}
+div[class*="_sessionRow"]:hover,
+div[class*="_projectRow"]:hover {
+  background: var(--dsw-alias-interactive-bg-hover);
+}
+div[class*="_sessionRow"][class*="_selected"] {
+  background: linear-gradient(
+    90deg,
+    var(--dsw-specific-sidebar-nav-item-active),
+    transparent 94%
+  );
+  border-left-color: var(--eva-accent);
+}
+div[class*="_sessionRow"][class*="_selected"]::after {
+  content: "";
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  margin-top: -2.5px;
+  background: var(--eva-accent);
+  transform: rotate(45deg);
+  box-shadow: 0 0 8px var(--eva-glow);
+  pointer-events: none;
+}
+div[class*="_sessionRow"] [class*="_title"],
+div[class*="_projectRow"] [class*="_title"] {
+  font-size: 13px;
+}
+div[class*="_sessionRow"] [class*="_time"] {
+  font-family: var(--eva-font-hud);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--dsw-alias-label-tertiary);
+}
+[class*="_folder"] {
+  color: var(--dsw-alias-label-tertiary);
+}
+[class*="_folderActive"] {
+  color: var(--eva-accent);
+}
+
+/* --- sidebar foot --- */
+[class*="_footArea"] {
+  border-top: 1px solid var(--dsw-alias-border-l1);
+  padding-top: 6px;
+}
+[class*="_footerActions"] {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+[class*="_avatar"] {
+  border-radius: 2px !important;
+  box-shadow: 0 0 0 1px var(--eva-accent), 0 0 10px var(--eva-glow);
+}
+
+/* --- conversation header --- */
+header[class*="_header"] {
+  border-bottom: 1px solid var(--dsw-alias-border-l1);
+  background: linear-gradient(180deg, var(--dsw-alias-bg-base), transparent);
+}
+[class*="_titleRow"] {
+  font-family: var(--eva-font-hud);
+  letter-spacing: 0.04em;
+}
+[data-slot="conversation.header"] button {
+  border-radius: 2px;
+}
+
+/* --- hero / empty state --- */
+[class*="_headline"] {
+  position: relative;
+  padding-bottom: 12px;
+}
+[class*="_headline"]::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--eva-accent) 18%,
+    var(--eva-accent) 82%,
+    transparent
+  );
+  opacity: 0.4;
+}
+[class*="_titleGroup"] > span:first-child {
+  font-family: var(--eva-font-display);
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--dsw-alias-label-primary);
+  text-shadow: 0 0 28px var(--eva-glow);
+}
+[class*="_previewBadge"] {
+  border: 0;
+  border-radius: 0;
+  padding: 1px 8px 0;
+  background: repeating-linear-gradient(
+    45deg,
+    var(--eva-hazard) 0 5px,
+    var(--eva-on-hazard) 5px 10px
+  );
+  color: var(--eva-on-hazard);
+  font-family: var(--eva-font-hud);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+[class*="_heroWorkspaceRow"] button {
+  border: 1px solid transparent;
+  border-radius: 0;
+  font-family: var(--eva-font-hud);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--dsw-alias-label-secondary);
+  transition: color 0.14s, border-color 0.14s, background 0.14s, box-shadow 0.14s;
+}
+[class*="_heroWorkspaceRow"] button:hover {
+  border-color: var(--eva-accent);
+  background: var(--eva-accent-soft);
+  color: var(--eva-accent);
+  box-shadow: 0 0 14px var(--eva-glow);
+}
+
+/* --- composer --- */
+[data-composer-card] {
+  position: relative;
+  border-radius: 0;
+  border: 1px solid var(--dsw-alias-border-l2);
+  background: var(--dsw-specific-input-major);
+  box-shadow:
+    0 0 0 1px rgba(5, 4, 9, 0.2),
+    0 18px 44px rgba(0, 0, 0, 0.28),
+    0 0 26px var(--eva-glow);
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+[data-composer-card]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 16px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--eva-accent), transparent 90%);
+  opacity: 0.55;
+  pointer-events: none;
+}
+[data-composer-card]:focus-within {
+  border-color: var(--eva-accent);
+  box-shadow:
+    0 0 0 1px var(--eva-accent),
+    0 18px 44px rgba(0, 0, 0, 0.32),
+    0 0 30px var(--eva-glow);
+}
+[data-lexical-editor] {
+  caret-color: var(--eva-accent);
+}
+[data-composer-placeholder] {
+  font-family: var(--eva-font-hud);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  opacity: 0.72;
+}
+[data-composer-card] > [class*="_row"] {
+  border-top: 1px solid var(--dsw-alias-border-l1);
+}
+[data-composer-card] button {
+  border-radius: 2px;
+}
+[data-slot="conversation.composer.bar"] button[class*="_primary"] {
+  background: var(--eva-accent) !important;
+  color: var(--eva-on-accent) !important;
+  border-radius: 0;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 7px 100%, 0 calc(100% - 7px));
+  box-shadow: 0 0 18px var(--eva-glow);
+}
+[data-slot="conversation.composer.bar"] button[class*="_primary"]:hover {
+  background: var(--eva-accent-strong) !important;
+}
+[data-slot="conversation.composer.bar"] button[class*="_primary"]:focus-visible {
+  outline: 1px solid var(--eva-accent);
+  outline-offset: 2px;
+}
+[data-slot="conversation.input.model"] button,
+[data-slot="conversation.input.permission"] button {
+  border-radius: 2px;
+  font-family: var(--eva-font-hud);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+[data-slot="conversation.input.model"] button:hover,
+[data-slot="conversation.input.permission"] button:hover {
+  color: var(--eva-accent);
+}
+[class*="_triggerEffort"] {
+  border-radius: 1px;
+  background: var(--eva-hazard);
+  color: var(--eva-on-hazard);
+  font-family: var(--eva-font-hud);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+[class*="_add"] {
+  border-radius: 2px;
+}
+
+/* --- dialogs / portalled surfaces --- */
+[role="dialog"] {
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 2px;
+}
+[class*="_mask"] {
+  backdrop-filter: blur(2px);
+}
+
+/* =====================================================================
+   KEYFRAMES
+   ===================================================================== */
+
+@keyframes eva-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes eva-syncbar {
+  from {
+    height: 25%;
+  }
+  to {
+    height: 100%;
+  }
+}
+@keyframes eva-tick {
+  0%,
+  100% {
+    transform: scaleY(0.55);
+    opacity: 0.45;
+  }
+  50% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+@keyframes eva-scan {
+  from {
+    top: -140px;
+  }
+  to {
+    top: 100%;
+  }
+}
+@keyframes eva-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+@keyframes eva-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes eva-launch-out {
+  from {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+  to {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+  }
+}
+@keyframes eva-slat-in {
+  from {
+    transform: scaleY(0);
+    opacity: 0.15;
+  }
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+@keyframes eva-slat-out {
+  from {
+    transform: scaleY(1);
+  }
+  to {
+    transform: scaleY(0);
+  }
+}
+@keyframes eva-row-in {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes eva-go {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) scale(1.5);
+    letter-spacing: 0.9em;
+  }
+  30% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+  72% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) scale(1.02);
+  }
+}
+@keyframes eva-hazard-slide {
+  to {
+    background-position: 64px 0;
+  }
+}
+@keyframes eva-flash {
+  0% {
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eva-hud *,
+  .eva-rail *,
+  .eva-hero__mark,
+  .eva-launch * {
+    animation: none !important;
+    transition: none !important;
+  }
+  .eva-hud__scan,
+  .eva-hud__scanlines {
+    display: none;
+  }
+}
+
+/* --- conversation transcript: bubbles, tabs, meta --- */
+div[class*="_bubble"] {
+  border-radius: 0;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-left: 2px solid var(--eva-accent);
+  background: linear-gradient(
+    135deg,
+    var(--dsw-specific-bubble),
+    var(--dsw-alias-bg-layer-2)
+  );
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.16), 0 0 18px var(--eva-glow);
+}
+button[class*="_tab"] {
+  border-radius: 0;
+  border-bottom: 2px solid transparent;
+  font-family: var(--eva-font-hud);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  transition: color 0.14s, border-color 0.14s;
+}
+button[class*="_tab"]:hover {
+  color: var(--eva-accent);
+}
+button[class*="_tab"][class*="_tabActive"] {
+  color: var(--eva-accent);
+  border-bottom-color: var(--eva-accent);
+  font-weight: 600;
+}
+[class*="_tablist"] {
+  border-bottom: 1px solid var(--dsw-alias-border-l1);
+}
+[class*="_markdown"] {
+  letter-spacing: 0.006em;
+}
+[class*="_chevron"],
+[class*="_arrow"] {
+  color: var(--dsw-alias-label-tertiary);
+}
+[class*="_rowActions"] button {
+  border-radius: 2px;
+}
+[class*="_rowActions"] button:hover {
+  color: var(--eva-accent);
+}
+
+/* --- menus / popovers (rendered beside <body>, outside #root) --- */
+[role="menu"],
+[role="listbox"] {
+  border: 1px solid var(--dsw-alias-border-l1);
+  border-radius: 2px;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(5, 4, 9, 0.16);
+}
+[role="menuitem"] {
+  border-radius: 2px;
+  font-family: var(--eva-font-hud);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+[role="menuitem"]:hover,
+[role="menuitem"][data-highlighted="true"] {
+  color: var(--eva-accent);
+}
+
+/* =====================================================================
+   MECHA CHROME — cockpit frame, status rail, unit tag, panel hardware.
+   These additions make the post-launch UI read as a machine interior:
+   a persistent bottom telemetry rail, edge frame rails with engraved
+   labels, a unit tag in the header, and bolts / hazard details on the
+   input hatch and message plates.
+   ===================================================================== */
+
+/* --- edge frame rails --- */
+.eva-frame-rail {
+  position: absolute;
+  top: 56px;
+  bottom: calc(var(--eva-status-h) + 46px);
+  width: 10px;
+  pointer-events: none;
+  opacity: 0.55;
+  background: repeating-linear-gradient(
+    180deg,
+    var(--eva-hud-ink) 0 1px,
+    transparent 1px 12px
+  );
+}
+.eva-frame-rail--l {
+  left: 4px;
+}
+.eva-frame-rail--r {
+  right: 4px;
+}
+.eva-frame-rail__text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  writing-mode: vertical-rl;
+  font-style: normal;
+  font-size: 7px;
+  letter-spacing: 0.5em;
+  white-space: nowrap;
+  color: var(--eva-hud-ink);
+}
+.eva-hud[data-fx="lite"] .eva-frame-rail {
+  opacity: 0.28;
+}
+.eva-hud[data-fx="off"] .eva-frame-rail {
+  display: none;
+}
+
+/* --- bottom status rail (shell.bottom, 26px, reduces column height) --- */
+.eva-status {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: var(--eva-status-h);
+  box-sizing: border-box;
+  padding: 0 14px;
+  overflow: hidden;
+  font-family: var(--eva-font-hud);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dsw-alias-label-tertiary);
+  background: var(--dsw-alias-bg-layer-1);
+  border-top: 1px solid var(--dsw-alias-border-l1);
+  pointer-events: none;
+}
+.eva-status::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: repeating-linear-gradient(45deg, var(--eva-hazard) 0 6px, transparent 6px 12px);
+  opacity: 0.32;
+}
+.eva-status__unit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--dsw-alias-label-primary);
+  font-weight: 700;
+  letter-spacing: 0.24em;
+}
+.eva-status__hex {
+  width: 10px;
+  height: 10px;
+  background: var(--eva-accent);
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  box-shadow: 0 0 9px var(--eva-glow);
+}
+.eva-status__rule {
+  width: 1px;
+  height: 12px;
+  background: var(--dsw-alias-border-l2);
+}
+.eva-status__tag {
+  color: var(--eva-accent);
+  opacity: 0.85;
+}
+.eva-status__sep {
+  width: 14px;
+  height: 1px;
+  background: var(--dsw-alias-border-l2);
+}
+.eva-status__metric {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.eva-status__metric b {
+  font-weight: 600;
+  color: var(--dsw-alias-label-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.eva-status__bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 1px;
+  height: 9px;
+}
+.eva-status__bars i {
+  display: block;
+  width: 2px;
+  height: 35%;
+  background: var(--eva-accent);
+  animation: eva-syncbar 1.6s ease-in-out infinite alternate;
+}
+.eva-status__bars i:nth-child(2n) {
+  animation-delay: 0.2s;
+}
+.eva-status__bars i:nth-child(3n) {
+  animation-delay: 0.42s;
+}
+.eva-status__bars i:nth-child(5n) {
+  animation-delay: 0.66s;
+}
+.eva-status__grow {
+  flex: 1;
+}
+.eva-status__wave {
+  display: inline-flex;
+  width: 54px;
+  height: 12px;
+  color: var(--eva-accent);
+  opacity: 0.7;
+}
+.eva-status__wave svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.eva-status__clock {
+  color: var(--dsw-alias-label-secondary);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.12em;
+}
+.eva-status__cycle {
+  color: var(--eva-accent);
+  opacity: 0.7;
+}
+.eva-status__hazard {
+  width: 30px;
+  height: 6px;
+  background: repeating-linear-gradient(45deg, var(--eva-hazard) 0 5px, transparent 5px 10px);
+  opacity: 0.45;
+}
+@media (max-width: 1180px) {
+  .eva-status__metric--wide {
+    display: none;
+  }
+}
+@media (max-width: 900px) {
+  .eva-status__tag,
+  .eva-status__wave,
+  .eva-status__hazard {
+    display: none;
+  }
+}
+
+/* --- header unit tag (conversation.header.leading) --- */
+.eva-headtag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 10px;
+  padding: 3px 8px;
+  border: 1px solid var(--dsw-alias-border-l1);
+  background: var(--dsw-alias-bg-layer-1);
+  font-family: var(--eva-font-hud);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  color: var(--dsw-alias-label-secondary);
+  clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+}
+.eva-headtag__led {
+  width: 5px;
+  height: 5px;
+  background: var(--eva-accent);
+  box-shadow: 0 0 6px var(--eva-glow);
+  animation: eva-pulse 2.4s ease-in-out infinite;
+}
+.eva-headtag__unit {
+  color: var(--dsw-alias-label-primary);
+  font-weight: 700;
+}
+.eva-headtag__sub {
+  opacity: 0.55;
+}
+
+/* --- panel hardware: input hatch bolts --- */
+[data-composer-card]::after {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  pointer-events: none;
+  opacity: 0.7;
+  background-image:
+    radial-gradient(circle at 1.5px 1.5px, var(--dsw-alias-border-l3) 1.2px, transparent 1.9px),
+    radial-gradient(circle at calc(100% - 1.5px) 1.5px, var(--dsw-alias-border-l3) 1.2px, transparent 1.9px),
+    radial-gradient(circle at 1.5px calc(100% - 1.5px), var(--dsw-alias-border-l3) 1.2px, transparent 1.9px),
+    radial-gradient(
+      circle at calc(100% - 1.5px) calc(100% - 1.5px),
+      var(--dsw-alias-border-l3) 1.2px,
+      transparent 1.9px
+    );
+}
+
+/* --- message plates: angular cut + inner hairline --- */
+div[class*="_bubble"] {
+  clip-path: polygon(
+    0 0,
+    calc(100% - 10px) 0,
+    100% 10px,
+    100% 100%,
+    10px 100%,
+    0 calc(100% - 10px)
+  );
+  box-shadow: inset 0 0 0 1px var(--eva-glow), 0 10px 26px rgba(0, 0, 0, 0.14);
+}
+
+/* --- workspace region: armour seam under the section header --- */
+[class*="_regionArea"] {
+  position: relative;
+}
+[class*="_regionArea"]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 12px;
+  right: 12px;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, var(--dsw-alias-border-l2), transparent);
+  opacity: 0.55;
+}
+
+/* =====================================================================
+   LIGHT ("white hangar") OVERRIDES — the launch console is dark; the light
+   scheme keeps the same geometry with violet ink and no CRT grain.
+   ===================================================================== */
+
+body:not([data-ds-dark-theme]) .eva-hud {
+  color: var(--eva-accent);
+}
+body:not([data-ds-dark-theme]) .eva-corner {
+  border-color: var(--eva-accent);
+  opacity: 0.3;
+}
+body:not([data-ds-dark-theme]) .eva-hud__hr {
+  background: linear-gradient(90deg, transparent, rgba(106, 31, 168, 0.4), transparent);
+  opacity: 0.4;
+}
+body:not([data-ds-dark-theme]) .eva-hud__scanlines,
+body:not([data-ds-dark-theme]) .eva-hud__scan,
+body:not([data-ds-dark-theme]) .eva-hud__vignette {
+  display: none;
+}
+body:not([data-ds-dark-theme]) .eva-rail {
+  color: rgba(75, 29, 122, 0.6);
+}
+body:not([data-ds-dark-theme]) .eva-rail__value,
+body:not([data-ds-dark-theme]) .eva-rail__stat b,
+body:not([data-ds-dark-theme]) .eva-rail__clock,
+body:not([data-ds-dark-theme]) .eva-rail__wave,
+body:not([data-ds-dark-theme]) .eva-rail__cycle {
+  color: #4b1d7a;
+  text-shadow: none;
+}
+body:not([data-ds-dark-theme]) .eva-rail__ticks i {
+  background: linear-gradient(180deg, rgba(75, 29, 122, 0.8), rgba(75, 29, 122, 0.12));
+}
+body:not([data-ds-dark-theme]) .eva-rail__sep {
+  background: rgba(75, 29, 122, 0.35);
+}
+body:not([data-ds-dark-theme]) .eva-foot__btn:hover {
+  color: #4b1d7a;
+  border-color: rgba(75, 29, 122, 0.4);
+  background: rgba(75, 29, 122, 0.06);
+  box-shadow: 0 0 12px rgba(75, 29, 122, 0.1) inset;
+}
+body:not([data-ds-dark-theme]) .eva-foot__btn:focus-visible {
+  outline-color: #4b1d7a;
+}
+body:not([data-ds-dark-theme]) .eva-brandname__sub {
+  color: #4b1d7a;
+  opacity: 0.75;
+}
+body:not([data-ds-dark-theme]) .eva-brandmark svg {
+  filter: drop-shadow(0 0 5px rgba(106, 31, 168, 0.3));
+}
+body:not([data-ds-dark-theme]) .eva-hero__glow {
+  background: radial-gradient(circle, rgba(106, 31, 168, 0.26), transparent 70%);
+}
+body:not([data-ds-dark-theme]) .eva-hero__tag {
+  color: #4b1d7a;
+  text-shadow: none;
+}
+body:not([data-ds-dark-theme]) .eva-hero__text {
+  border-left-color: rgba(75, 29, 122, 0.35);
+}
+body:not([data-ds-dark-theme]) .eva-hero__jp {
+  color: #7a2fb0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eva-hud__scan {
+    display: none;
+  }
+}
+
+
+/* =====================================================================
+   BERSERK MODE — Unit-01 loses control.
+   body[data-eva-berserk] is toggled by the status-rail switch.  It remaps
+   the whole palette (green → alarm red, calm violet → blood violet), turns
+   the frame into a warning display and overrides the few literal-green
+   details that the calm skin hard-codes.
+   ===================================================================== */
+
+body[data-eva-berserk] {
+  --eva-alarm: #c21212;
+  --eva-alarm-soft: rgba(194, 18, 18, 0.1);
+  --eva-alert-bg: rgba(255, 250, 248, 0.92);
+  --eva-green: #c21212;
+  --eva-green-signal: #d94a1e;
+  --eva-lilac: #b06a5f;
+  --eva-acid: #e0a800;
+  --eva-amber: #c26a00;
+  --eva-bone: #2a1110;
+  --eva-hud-ink: rgba(140, 15, 15, 0.6);
+  --eva-hud-ink-dim: rgba(140, 15, 15, 0.3);
+  --eva-accent: #c21212;
+  --eva-accent-strong: #8f0b0b;
+  --eva-accent-soft: rgba(194, 18, 18, 0.08);
+  --eva-glow: rgba(194, 18, 18, 0.18);
+  --eva-on-accent: #ffffff;
+  --eva-line: #e3c9c4;
+
+  --dsw-alias-bg-base: #f7efea;
+  --dsw-alias-bg-layer-1: #fbf5f1;
+  --dsw-alias-bg-layer-2: #fffdfc;
+  --dsw-alias-bg-layer-3: #ffffff;
+  --dsw-alias-bg-overlay: #ffffff;
+  --dsw-alias-bg-module-platform: #f6ebe5;
+  --dsw-alias-bg-multi-select: #f6ebe5;
+  --dsw-alias-border-l1: #e3c9c4;
+  --dsw-alias-border-l2: #cda6a0;
+  --dsw-alias-border-l3: #b8847c;
+  --dsw-alias-border-l4: #9c625a;
+  --dsw-alias-brand-primary: #c21212;
+  --dsw-alias-brand-primary-new-colorprimary-new-color: #c21212;
+  --dsw-alias-brand-text: #2a1110;
+  --dsw-alias-label-primary: #2a1110;
+  --dsw-alias-label-secondary: #6a4642;
+  --dsw-alias-label-tertiary: #8f6a64;
+  --dsw-alias-label-caption: #a07a72;
+  --dsw-alias-label-dimmed: #d8c0ba;
+  --dsw-alias-state-business-primary: #c21212;
+  --dsw-alias-state-business-tertiary: #f5ded9;
+  --dsw-alias-state-success-primary: #8a5300;
+  --dsw-alias-state-warn-primary: #8a5300;
+  --dsw-alias-state-error-primary: #a10d0d;
+  --dsw-alias-state-idle-primary: #a0807a;
+  --dsw-alias-button-primary-fill: #c21212;
+  --dsw-alias-button-primary-hover: #8f0b0b;
+  --dsw-alias-button-primary-dimmed: #f0dad5;
+  --dsw-alias-button-contrast-fill: #d94a1e;
+  --dsw-alias-button-elevated-fill: #ffffff;
+  --dsw-alias-button-floating-fill: #ffffff;
+  --dsw-alias-button-floating-hover: #f7ebe6;
+  --dsw-alias-button-ghost-active-fill: #f2e2dc;
+  --dsw-alias-button-ghost-active-hover: #ebd5ce;
+  --dsw-alias-button-ghost-active-border: #cda6a0;
+  --dsw-alias-interactive-bg-hover: rgba(194, 18, 18, 0.06);
+  --dsw-alias-interactive-bg-active: rgba(194, 18, 18, 0.12);
+  --dsw-alias-interactive-bg-hover-solid: #f4e6e1;
+  --dsw-alias-interactive-bg-hover-accent: rgba(194, 18, 18, 0.14);
+  --dsw-specific-sidebar-fill: #f1e4de;
+  --dsw-specific-sidebar-nav-item-hover: #ecdcd5;
+  --dsw-specific-sidebar-nav-item-active: #e6d1c9;
+  --dsw-specific-sidebar-nav-item-active-accent: #dfc6bd;
+  --dsw-specific-bubble: #f0e0da;
+  --dsw-specific-bubble-highlight: #e6cdc5;
+  --dsw-specific-input-major: #fffdfc;
+  --dsw-specific-selector: #f6ece7;
+  --dsw-specific-tip: #f6ece7;
+  --dsw-specific-menu: rgba(255, 253, 252, 0.95);
+  --dsw-menu-surface-fill: rgba(255, 251, 249, 0.95);
+  --dsw-alias-menu-group-header-fill: rgba(248, 238, 233, 0.96);
+  --dsw-alias-menu-icon: #6a1a16;
+  --dsw-alias-scrollbar-bg-l1: #e0cbc5;
+  --dsw-alias-scrollbar-bg-l2: #cfb3ac;
+  --dsw-alias-scrollbar-hover-l1: #c21212;
+  --dsw-alias-scrollbar-hover-l2: #8f0b0b;
+  --dsw-alias-settings-card-fill: #fffdfc;
+  --dsw-alias-settings-card-stroke: rgba(194, 18, 18, 0.18);
+  --dsw-alias-markdown-code-block: #faf2ee;
+  --dsw-alias-markdown-code-block-banner: #f2e4de;
+  --dsw-alias-markdown-inline-code: rgba(194, 18, 18, 0.08);
+  --dsw-alias-markdown-tag: rgba(194, 18, 18, 0.1);
+  --dsw-alias-markdown-placeholder: #f2e4de;
+  --dsw-alias-toast-bg: #35131a;
+  --dsw-alias-toast-label: #fbeeea;
+  --dsw-alias-tooltip-bg: #35131a;
+  --dsw-alias-switch-thumb: #c21212;
+  --dsw-alias-turn-trigger-bg: #f2e4de;
+  --dsw-alias-turn-trigger-bg-hover: rgba(194, 18, 18, 0.08);
+  --dsw-alias-bg-mask-1: rgba(70, 20, 16, 0.34);
+}
+
+body[data-ds-dark-theme][data-eva-berserk] {
+  --eva-alarm: #ff3b3b;
+  --eva-alarm-soft: rgba(255, 59, 59, 0.12);
+  --eva-alert-bg: rgba(40, 5, 8, 0.82);
+  --eva-green: #ff3b3b;
+  --eva-green-signal: #ff7a1a;
+  --eva-lilac: #ff9d94;
+  --eva-acid: #ffd400;
+  --eva-amber: #ffb347;
+  --eva-bone: #f6e4e4;
+  --eva-hud-ink: rgba(255, 59, 59, 0.55);
+  --eva-hud-ink-dim: rgba(255, 59, 59, 0.28);
+  --eva-accent: #ff3b3b;
+  --eva-accent-strong: #ff7a1a;
+  --eva-accent-soft: rgba(255, 59, 59, 0.1);
+  --eva-glow: rgba(255, 59, 59, 0.22);
+  --eva-on-accent: #160406;
+  --eva-line: #4a1a22;
+
+  --dsw-alias-bg-base: #0a0406;
+  --dsw-alias-bg-layer-1: #140608;
+  --dsw-alias-bg-layer-2: #1c0a0c;
+  --dsw-alias-bg-layer-3: #260d10;
+  --dsw-alias-bg-overlay: #2a0f13;
+  --dsw-alias-bg-module-platform: #1c0a0c;
+  --dsw-alias-bg-multi-select: #140608;
+  --dsw-alias-border-l1: #4a1a22;
+  --dsw-alias-border-l2: #6b2530;
+  --dsw-alias-border-l3: #8e2f3c;
+  --dsw-alias-border-l4: #b03a48;
+  --dsw-alias-brand-primary: #ff3b3b;
+  --dsw-alias-brand-primary-new-colorprimary-new-color: #ff3b3b;
+  --dsw-alias-brand-text: #f6e4e4;
+  --dsw-alias-label-primary: #f7e9e9;
+  --dsw-alias-label-secondary: #c9a6a6;
+  --dsw-alias-label-tertiary: #9a7777;
+  --dsw-alias-label-caption: #8a6868;
+  --dsw-alias-label-dimmed: #3a2626;
+  --dsw-alias-state-business-primary: #ff3b3b;
+  --dsw-alias-state-business-tertiary: #3a1418;
+  --dsw-alias-state-success-primary: #ffb347;
+  --dsw-alias-state-warn-primary: #ffd400;
+  --dsw-alias-state-error-primary: #ff2d2d;
+  --dsw-alias-state-idle-primary: #8a6a6a;
+  --dsw-alias-button-primary-fill: #ff3b3b;
+  --dsw-alias-button-primary-hover: #ff7a1a;
+  --dsw-alias-button-primary-dimmed: #3a1518;
+  --dsw-alias-button-contrast-fill: #ffd400;
+  --dsw-alias-button-elevated-fill: #2a0f13;
+  --dsw-alias-button-floating-fill: #1c0a0c;
+  --dsw-alias-button-floating-hover: #2a0f13;
+  --dsw-alias-button-ghost-active-fill: #2a0f13;
+  --dsw-alias-button-ghost-active-hover: #351216;
+  --dsw-alias-button-ghost-active-border: #8e2f3c;
+  --dsw-alias-interactive-bg-hover: rgba(255, 59, 59, 0.07);
+  --dsw-alias-interactive-bg-active: rgba(255, 59, 59, 0.14);
+  --dsw-alias-interactive-bg-hover-solid: #260d10;
+  --dsw-alias-interactive-bg-hover-accent: rgba(255, 59, 59, 0.2);
+  --dsw-specific-sidebar-fill: #120508;
+  --dsw-specific-sidebar-nav-item-hover: #200a0e;
+  --dsw-specific-sidebar-nav-item-active: #2c0f14;
+  --dsw-specific-sidebar-nav-item-active-accent: #37131a;
+  --dsw-specific-bubble: #241013;
+  --dsw-specific-bubble-highlight: #301418;
+  --dsw-specific-input-major: #180a0c;
+  --dsw-specific-selector: #200c0e;
+  --dsw-specific-tip: #200c0e;
+  --dsw-specific-menu: rgba(38, 13, 16, 0.94);
+  --dsw-menu-surface-fill: rgba(38, 13, 16, 0.94);
+  --dsw-alias-menu-group-header-fill: rgba(48, 18, 22, 0.95);
+  --dsw-alias-menu-icon: #f0c9c9;
+  --dsw-alias-scrollbar-bg-l1: #3a1418;
+  --dsw-alias-scrollbar-bg-l2: #4a1a22;
+  --dsw-alias-scrollbar-hover-l1: #ff3b3b;
+  --dsw-alias-scrollbar-hover-l2: #ff7a1a;
+  --dsw-alias-settings-card-fill: #180a0c;
+  --dsw-alias-settings-card-stroke: rgba(255, 59, 59, 0.18);
+  --dsw-alias-markdown-code-block: #120608;
+  --dsw-alias-markdown-code-block-banner: #1c0a0c;
+  --dsw-alias-markdown-inline-code: rgba(255, 59, 59, 0.12);
+  --dsw-alias-markdown-tag: rgba(255, 59, 59, 0.16);
+  --dsw-alias-markdown-placeholder: #260d10;
+  --dsw-alias-toast-bg: #2a0f13;
+  --dsw-alias-toast-label: #f6e4e4;
+  --dsw-alias-tooltip-bg: #2a0f13;
+  --dsw-alias-switch-thumb: #ff3b3b;
+  --dsw-alias-turn-trigger-bg: #1c0a0c;
+  --dsw-alias-turn-trigger-bg-hover: rgba(255, 59, 59, 0.1);
+  --dsw-alias-bg-mask-1: rgba(8, 2, 3, 0.66);
+}
+
+body[data-ds-dark-theme][data-eva-berserk] {
+  background-image:
+    radial-gradient(900px 560px at 18% -10%, rgba(255, 45, 45, 0.16), transparent 62%),
+    radial-gradient(760px 520px at 88% 112%, rgba(255, 122, 26, 0.08), transparent 64%),
+    repeating-linear-gradient(0deg, rgba(255, 220, 220, 0.028) 0 1px, transparent 1px 46px),
+    repeating-linear-gradient(90deg, rgba(255, 220, 220, 0.028) 0 1px, transparent 1px 46px);
+}
+body:not([data-ds-dark-theme])[data-eva-berserk] {
+  background-image:
+    radial-gradient(900px 560px at 18% -10%, rgba(194, 18, 18, 0.1), transparent 62%),
+    repeating-linear-gradient(0deg, rgba(194, 18, 18, 0.04) 0 1px, transparent 1px 46px),
+    repeating-linear-gradient(90deg, rgba(194, 18, 18, 0.04) 0 1px, transparent 1px 46px);
+}
+
+/* --- berserk HUD details --- */
+body[data-eva-berserk] .eva-corner {
+  border-color: var(--eva-alarm);
+  opacity: 0.6;
+}
+body[data-eva-berserk] .eva-hud__hr {
+  background: linear-gradient(90deg, transparent, var(--eva-alarm), transparent);
+  opacity: 0.55;
+}
+body[data-eva-berserk] .eva-hud__scan {
+  background: linear-gradient(
+    180deg,
+    transparent,
+    var(--eva-alarm-soft) 48%,
+    rgba(255, 212, 0, 0.05) 52%,
+    var(--eva-alarm-soft) 56%,
+    transparent
+  );
+  animation-duration: 5.5s;
+}
+body[data-eva-berserk] .eva-hud__scanlines {
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(60, 0, 0, 0.4) 0 1px,
+    transparent 1px 3px
+  );
+  opacity: 0.25;
+}
+body[data-eva-berserk] .eva-hud__vignette {
+  background: radial-gradient(125% 105% at 50% 45%, transparent 50%, rgba(40, 0, 4, 0.6) 100%);
+  opacity: 0.8;
+}
+body[data-eva-berserk] .eva-brandmark svg {
+  filter: drop-shadow(0 0 7px var(--eva-alarm));
+}
+body[data-eva-berserk] .eva-hero__mark {
+  filter: drop-shadow(0 0 16px rgba(255, 45, 45, 0.55)) drop-shadow(0 0 4px rgba(255, 212, 0, 0.3));
+  animation-duration: 2.4s;
+}
+body[data-eva-berserk] .eva-rail__ticks i {
+  background: linear-gradient(180deg, var(--eva-alarm), rgba(255, 59, 59, 0.12));
+}
+body[data-eva-berserk] .eva-rail__hazard {
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(255, 212, 0, 0.75) 0 4px,
+    rgba(90, 0, 0, 0.9) 4px 8px
+  );
+  opacity: 0.6;
+}
+body[data-eva-berserk] .eva-foot__btn:hover {
+  color: var(--eva-alarm);
+  border-color: var(--eva-alarm);
+  background: var(--eva-alarm-soft);
+  box-shadow: 0 0 12px var(--eva-alarm-soft) inset;
+}
+
+/* --- HUD warning edge + alert chip --- */
+.eva-hud__edge {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  box-shadow:
+    inset 0 0 0 1px var(--eva-alarm-soft),
+    inset 0 0 140px var(--eva-alarm-soft);
+}
+body[data-eva-berserk] .eva-hud__edge {
+  opacity: 1;
+  animation: eva-berserk-breathe 2.6s ease-in-out infinite;
+}
+.eva-hud__alert {
+  position: absolute;
+  top: 48px;
+  right: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 9px;
+  border: 1px solid var(--eva-alarm);
+  background: var(--eva-alert-bg);
+  color: var(--eva-alarm);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  box-shadow: 0 0 16px var(--eva-alarm-soft);
+  animation: eva-berserk-flicker 2.8s steps(1) infinite;
+}
+.eva-hud__alert b {
+  font-weight: 700;
+  letter-spacing: 0.26em;
+}
+.eva-hud__alert i {
+  font-style: normal;
+  color: var(--eva-hazard);
+}
+
+/* --- status rail switch --- */
+.eva-status__main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+.eva-status__berserk {
+  pointer-events: auto;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  height: 18px;
+  margin-left: 4px;
+  padding: 0 9px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  background: var(--dsw-alias-bg-layer-2);
+  color: var(--dsw-alias-label-secondary);
+  font-family: var(--eva-font-hud);
+  font-size: 8.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+  transition: color 0.15s, background 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+.eva-status__berserk:hover {
+  color: var(--eva-alarm);
+  border-color: var(--eva-alarm);
+  box-shadow: 0 0 12px var(--eva-alarm-soft);
+}
+.eva-status__berserk[data-on="1"] {
+  border-color: var(--eva-alarm);
+  background: var(--eva-alarm);
+  color: var(--eva-on-accent);
+  box-shadow: 0 0 16px var(--eva-alarm-soft);
+  animation: eva-berserk-pulse 1.2s ease-in-out infinite;
+}
+.eva-status__berserkLed {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 7px currentColor;
+}
+.eva-status__berserkLabel {
+  line-height: 1;
+}
+.eva-status[data-berserk="1"] .eva-status__tag,
+.eva-status[data-berserk="1"] .eva-status__metric b,
+.eva-status[data-berserk="1"] .eva-status__clock,
+.eva-status[data-berserk="1"] .eva-status__cycle {
+  color: var(--eva-alarm);
+}
+.eva-status[data-berserk="1"] .eva-status__hex {
+  background: var(--eva-alarm);
+  box-shadow: 0 0 10px var(--eva-alarm);
+}
+.eva-status[data-berserk="1"] .eva-status__bars i,
+.eva-status[data-berserk="1"] .eva-status__wave {
+  background: var(--eva-alarm);
+  color: var(--eva-alarm);
+  animation-duration: 0.5s;
+}
+.eva-status[data-berserk="1"] .eva-status__hazard {
+  background: repeating-linear-gradient(
+    45deg,
+    var(--eva-alarm) 0 5px,
+    transparent 5px 10px
+  );
+  opacity: 0.85;
+}
+
+/* --- header tag in berserk --- */
+.eva-headtag[data-berserk="1"] {
+  border-color: var(--eva-alarm);
+  color: var(--eva-alarm);
+}
+.eva-headtag[data-berserk="1"] .eva-headtag__led {
+  background: var(--eva-alarm);
+  box-shadow: 0 0 8px var(--eva-alarm);
+  animation-duration: 0.8s;
+}
+.eva-headtag[data-berserk="1"] .eva-headtag__unit {
+  color: var(--eva-alarm);
+}
+
+/* --- berserk activation burst --- */
+.eva-burst {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  overflow: hidden;
+  pointer-events: none;
+  animation: eva-fade-in 0.18s ease-out both;
+}
+.eva-burst[data-leave="1"] {
+  animation: eva-burst-out 0.55s ease-in both;
+}
+.eva-burst__flash {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    62% 62% at 50% 50%,
+    rgba(255, 59, 59, 0.85),
+    rgba(120, 0, 8, 0.35) 45%,
+    transparent 72%
+  );
+  animation: eva-burst-flash 1.9s ease-out both;
+}
+.eva-burst__grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255, 59, 59, 0.12) 0 1px, transparent 1px 26px),
+    repeating-linear-gradient(90deg, rgba(255, 59, 59, 0.1) 0 1px, transparent 1px 26px);
+  opacity: 0.55;
+  animation: eva-burst-grid 0.9s linear infinite;
+}
+.eva-burst__ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 68vmin;
+  height: 68vmin;
+  margin: -34vmin 0 0 -34vmin;
+  border: 2px solid rgba(255, 59, 59, 0.55);
+  border-radius: 50%;
+  animation: eva-burst-ring 1.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.eva-burst__ring--2 {
+  border-width: 1px;
+  animation-delay: 0.25s;
+}
+.eva-burst__core {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  animation: eva-burst-shake 0.42s steps(2) 4;
+}
+.eva-burst__tag {
+  font-family: var(--eva-font-hud);
+  font-size: 10px;
+  letter-spacing: 0.5em;
+  color: var(--eva-hazard);
+}
+.eva-burst__title {
+  font-family: var(--eva-font-display);
+  font-size: clamp(64px, 11vw, 150px);
+  font-weight: 900;
+  letter-spacing: 0.22em;
+  color: var(--eva-alarm);
+  text-shadow: 0 0 46px rgba(255, 59, 59, 0.65), 0 0 10px rgba(255, 255, 255, 0.4);
+}
+.eva-burst__sub {
+  font-family: var(--eva-font-hud);
+  font-size: 11px;
+  letter-spacing: 0.5em;
+  color: #f6e4e4;
+  opacity: 0.9;
+}
+.eva-burst__bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 26px;
+  margin-top: 6px;
+}
+.eva-burst__bars i {
+  display: block;
+  width: 3px;
+  height: calc(20% + var(--i) * 8%);
+  background: var(--eva-alarm);
+  animation: eva-burst-bar 0.5s ease-in-out infinite alternate;
+  animation-delay: calc(var(--i) * -0.08s);
+}
+.eva-burst__hazard {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 14px;
+  background: repeating-linear-gradient(45deg, #ffd400 0 10px, #12030a 10px 20px);
+  opacity: 0.9;
+  animation: eva-hazard-slide 4s linear infinite;
+}
+
+@keyframes eva-berserk-breathe {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes eva-berserk-flicker {
+  0%,
+  88%,
+  100% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 0.35;
+  }
+  92% {
+    opacity: 1;
+  }
+  94% {
+    opacity: 0.2;
+  }
+  96% {
+    opacity: 1;
+  }
+}
+@keyframes eva-berserk-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 10px var(--eva-alarm-soft);
+  }
+  50% {
+    box-shadow: 0 0 22px var(--eva-alarm-soft);
+  }
+}
+@keyframes eva-burst-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes eva-burst-flash {
+  0% {
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  38% {
+    opacity: 0.55;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes eva-burst-grid {
+  to {
+    background-position: 0 26px, 26px 0;
+  }
+}
+@keyframes eva-burst-ring {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.25);
+  }
+  70% {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.25);
+  }
+}
+@keyframes eva-burst-shake {
+  0% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(-3px, 2px);
+  }
+  50% {
+    transform: translate(3px, -2px);
+  }
+  75% {
+    transform: translate(-2px, -3px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+@keyframes eva-burst-bar {
+  from {
+    height: 18%;
+  }
+  to {
+    height: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eva-burst *,
+  body[data-eva-berserk] .eva-hud__edge,
+  body[data-eva-berserk] .eva-hud__alert,
+  body[data-eva-berserk] .eva-hero__mark,
+  .eva-status__berserk[data-on="1"] {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* berserk-only extra texture */
+body[data-eva-berserk] [class*="_sidebarCol"]::after {
+  background: repeating-linear-gradient(
+    135deg,
+    var(--eva-alarm) 0 3px,
+    rgba(255, 212, 0, 0.6) 3px 6px
+  );
+  opacity: 0.5;
+}
+body[data-eva-berserk] .eva-status::before {
+  background: repeating-linear-gradient(
+    45deg,
+    var(--eva-alarm) 0 6px,
+    transparent 6px 12px
+  );
+  opacity: 0.5;
+}
+body[data-eva-berserk] .eva-hud__edge {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 59, 59, 0.35),
+    inset 0 0 160px rgba(255, 59, 59, 0.28);
+}
+body[data-eva-berserk] .eva-hud__edge::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 46%,
+    rgba(255, 59, 59, 0.07) 50%,
+    transparent 54%
+  );
+  background-size: 280% 280%;
+  animation: eva-berserk-sweep 3.6s linear infinite;
+}
+@keyframes eva-berserk-sweep {
+  from {
+    background-position: 0% 0%;
+  }
+  to {
+    background-position: 100% 100%;
+  }
+}
+
+/* =====================================================================
+   BERSERK OVERLOAD — stronger frame shake + glitch tear stripes.
+   The frame transform makes the whole console shudder; horizontal RGB/tear
+   bands sweep across it at irregular intervals.  Both are disabled for
+   prefers-reduced-motion.
+   ===================================================================== */
+
+body[data-eva-berserk][data-eva-berserk-shake] #root > div[data-slot="root"] > [class*="_frame"] {
+  transform-origin: 50% 50%;
+  animation: eva-berserk-shake 1.15s steps(1, end) 4 forwards;
+  will-change: transform;
+}
+
+@keyframes eva-berserk-shake {
+  0% {
+    transform: scale(1.02) translate3d(0, 0, 0);
+  }
+  8% {
+    transform: scale(1.02) translate3d(-4px, 2px, 0);
+  }
+  16% {
+    transform: scale(1.02) translate3d(4px, -2px, 0);
+  }
+  24% {
+    transform: scale(1.02) translate3d(-3px, 3px, 0);
+  }
+  32% {
+    transform: scale(1.02) translate3d(3px, -3px, 0);
+  }
+  40% {
+    transform: scale(1.02) translate3d(-4px, -2px, 0);
+  }
+  52% {
+    transform: scale(1.02) translate3d(2px, 2px, 0);
+  }
+  64% {
+    transform: scale(1.02) translate3d(-11px, 5px, 0);
+  }
+  68% {
+    transform: scale(1.02) translate3d(11px, -6px, 0);
+  }
+  72% {
+    transform: scale(1.02) translate3d(-8px, 6px, 0);
+  }
+  76% {
+    transform: scale(1.02) translate3d(8px, -4px, 0);
+  }
+  80% {
+    transform: scale(1.02) translate3d(-4px, 2px, 0);
+  }
+  88% {
+    transform: scale(1.02) translate3d(2px, -2px, 0);
+  }
+  100% {
+    transform: scale(1.02) translate3d(0, 0, 0);
+  }
+}
+
+.eva-hud__glitch {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.eva-hud__glitch i {
+  position: absolute;
+  left: -12%;
+  right: -12%;
+  height: 2px;
+  opacity: 0;
+  mix-blend-mode: screen;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 45, 45, 0.92) 26%,
+    rgba(255, 212, 0, 0.55) 50%,
+    rgba(255, 59, 59, 0.8) 66%,
+    transparent 88%
+  );
+  box-shadow: 0 0 10px rgba(255, 59, 59, 0.55);
+  animation: eva-glitch-band 3.2s steps(1, end) infinite;
+}
+.eva-hud__glitch i:nth-child(1) {
+  top: 13%;
+  height: 3px;
+  animation-delay: 0.15s;
+  animation-duration: 2.9s;
+}
+.eva-hud__glitch i:nth-child(2) {
+  top: 28%;
+  height: 14px;
+  opacity: 0.5;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(255, 45, 45, 0.55) 0 2px,
+    transparent 2px 6px
+  );
+  animation-delay: 0.9s;
+  animation-duration: 3.7s;
+}
+.eva-hud__glitch i:nth-child(3) {
+  top: 44%;
+  height: 10px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(255, 45, 45, 0.75) 0 18px,
+    rgba(255, 212, 0, 0.35) 18px 26px,
+    transparent 26px 44px
+  );
+  animation-delay: 1.7s;
+  animation-duration: 4.3s;
+}
+.eva-hud__glitch i:nth-child(4) {
+  top: 61%;
+  height: 2px;
+  animation-delay: 2.4s;
+  animation-duration: 3.1s;
+}
+.eva-hud__glitch i:nth-child(5) {
+  top: 76%;
+  height: 5px;
+  animation-delay: 0.55s;
+  animation-duration: 3.9s;
+}
+.eva-hud__glitch i:nth-child(6) {
+  top: 88%;
+  height: 3px;
+  animation-delay: 1.25s;
+  animation-duration: 4.7s;
+}
+.eva-hud__glitch::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(255, 45, 45, 0.22) 0 2px,
+    rgba(255, 212, 0, 0.06) 2px 4px,
+    transparent 4px 9px
+  );
+  opacity: 0;
+  animation: eva-glitch-flash 4.2s steps(1, end) infinite;
+}
+.eva-hud__glitch::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -160px;
+  height: 160px;
+  background: linear-gradient(180deg, transparent, rgba(255, 45, 45, 0.16), transparent);
+  animation: eva-glitch-roll 4.2s linear infinite;
+}
+
+@keyframes eva-glitch-band {
+  0% {
+    opacity: 0;
+    transform: translateX(0) scaleY(1);
+  }
+  3% {
+    opacity: 1;
+    transform: translateX(-18px) scaleY(1.5);
+  }
+  6% {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  9% {
+    opacity: 0.85;
+    transform: translateX(-9px);
+  }
+  12% {
+    opacity: 0;
+  }
+  48% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.95;
+    transform: translateX(20px) scaleY(0.8);
+  }
+  53% {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes eva-glitch-flash {
+  0%,
+  84% {
+    opacity: 0;
+  }
+  86% {
+    opacity: 0.95;
+  }
+  88% {
+    opacity: 0;
+  }
+  90% {
+    opacity: 0.75;
+  }
+  92% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes eva-glitch-roll {
+  to {
+    transform: translateY(calc(100vh + 240px));
+  }
+}
+
+/* =====================================================================
+   COLLAPSED SIDEBAR — the 56 px rail puts the native window controls over
+   the header area, so the unit tag, the top-left bracket and the left frame
+   rail are removed there and the footer actions become a compact 2×2 pad.
+   ===================================================================== */
+
+body:has([data-collapsed="true"]) .eva-headtag {
+  display: none;
+}
+body:has([data-collapsed="true"]) .eva-corner--tl {
+  display: none;
+}
+body:has([data-collapsed="true"]) .eva-frame-rail--l {
+  display: none;
+}
+body:has([data-collapsed="true"]) .eva-brandmark svg {
+  max-width: 22px;
+  max-height: 22px;
+}
+body:has([data-collapsed="true"]) .eva-foot {
+  display: grid;
+  grid-template-columns: repeat(2, 16px);
+  gap: 3px;
+  justify-items: center;
+  align-items: center;
+}
+body:has([data-collapsed="true"]) .eva-foot__btn {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  padding: 0;
+  border-radius: 1px;
+}
+body:has([data-collapsed="true"]) .eva-foot__glyph {
+  font-size: 8px;
+}
+body:has([data-collapsed="true"]) .eva-foot__label {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-eva-berserk][data-eva-berserk-shake] #root > div[data-slot="root"] > [class*="_frame"],
+  .eva-hud__glitch i,
+  .eva-hud__glitch::after,
+  .eva-hud__glitch::before {
+    animation: none !important;
+  }
+}
+
+
+/* =====================================================================
+   PILOT LAYER — Shinji-style pilot authentication, portrait widget,
+   voice-caption bubble and the extra pilot scene inside the launch.
+   Original artwork only (art/pilot-*.svg); voice is system TTS.
+   ===================================================================== */
+
+/* --- pilot authentication gate (shown before the launch) --- */
+.eva-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  overflow: hidden;
+  pointer-events: auto;
+  background: #05040a;
+  color: #e9e2f5;
+  font-family: var(--eva-font-hud);
+  animation: eva-fade-in 0.2s ease-out both;
+}
+.eva-gate__bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(90% 70% at 24% 28%, rgba(47, 95, 224, 0.22), transparent 60%),
+    radial-gradient(70% 60% at 78% 76%, rgba(122, 47, 176, 0.24), transparent 62%),
+    linear-gradient(180deg, #05040a, #0a0616 58%, #05040a);
+}
+.eva-gate__grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(157, 255, 74, 0.06) 0 1px, transparent 1px 40px),
+    repeating-linear-gradient(90deg, rgba(157, 255, 74, 0.045) 0 1px, transparent 1px 40px);
+  -webkit-mask-image: radial-gradient(78% 78% at 50% 50%, #000 34%, transparent 100%);
+  mask-image: radial-gradient(78% 78% at 50% 50%, #000 34%, transparent 100%);
+}
+.eva-gate__top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 54px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 18px;
+  border-bottom: 1px solid rgba(157, 255, 74, 0.18);
+  background: linear-gradient(180deg, rgba(5, 4, 10, 0.94), rgba(5, 4, 10, 0));
+}
+.eva-gate__mark {
+  display: inline-flex;
+  width: 28px;
+  height: 28px;
+}
+.eva-gate__mark svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.eva-gate__brand {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1;
+}
+.eva-gate__brand b {
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  color: #f3edff;
+}
+.eva-gate__brand em {
+  font-style: normal;
+  font-size: 8px;
+  letter-spacing: 0.24em;
+  color: rgba(157, 255, 74, 0.7);
+}
+.eva-gate__audio {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 9px;
+  border: 1px solid rgba(111, 168, 255, 0.35);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: rgba(233, 226, 245, 0.6);
+}
+.eva-gate__audioLed {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--eva-pilot);
+  box-shadow: 0 0 8px var(--eva-pilot);
+  animation: eva-pilot-heart 1.6s ease-in-out infinite;
+}
+.eva-gate__body {
+  position: absolute;
+  inset: 54px 0 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(32px, 6vw, 96px);
+  padding: 0 6vw;
+}
+.eva-gate__pilot {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+.eva-gate__portraitFrame {
+  position: relative;
+  display: block;
+  width: min(220px, 20vw);
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border: 1px solid rgba(111, 168, 255, 0.4);
+  background: radial-gradient(80% 80% at 50% 30%, rgba(47, 95, 224, 0.28), rgba(5, 4, 10, 0.85));
+  clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+}
+.eva-gate__portrait {
+  display: block;
+  width: 100%;
+  height: 100%;
+  animation: eva-pilot-breathe 4.6s ease-in-out infinite;
+}
+.eva-gate__portrait svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.eva-gate__pilotMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.eva-gate__pilotMeta > b {
+  font-size: 22px;
+  letter-spacing: 0.12em;
+  color: #f3edff;
+}
+.eva-gate__pilotMeta > span {
+  font-size: 9px;
+  letter-spacing: 0.26em;
+  color: rgba(111, 168, 255, 0.85);
+}
+.eva-gate__rows {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+}
+.eva-gate__rows span {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  width: 192px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(185, 139, 224, 0.18);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: rgba(233, 226, 245, 0.45);
+}
+.eva-gate__rows b {
+  font-weight: 600;
+  color: var(--eva-pilot);
+}
+.eva-gate__main {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: 520px;
+}
+.eva-gate__eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  color: rgba(157, 255, 74, 0.8);
+}
+.eva-gate__title {
+  font-family: var(--eva-font-display);
+  font-size: clamp(44px, 5.4vw, 76px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  color: #f3edff;
+  text-shadow: 0 0 30px rgba(111, 168, 255, 0.25);
+}
+.eva-gate__sub {
+  font-size: 9px;
+  letter-spacing: 0.5em;
+  color: rgba(185, 139, 224, 0.85);
+}
+.eva-gate__line {
+  width: min(420px, 32vw);
+  height: 1px;
+  background: linear-gradient(90deg, var(--eva-pilot), transparent);
+  opacity: 0.6;
+}
+.eva-gate__start {
+  pointer-events: auto;
+  cursor: pointer;
+  appearance: none;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  margin-top: 8px;
+  padding: 14px 30px;
+  border: 1px solid var(--eva-pilot);
+  background: linear-gradient(180deg, rgba(47, 95, 224, 0.35), rgba(5, 4, 10, 0.9));
+  color: #f3edff;
+  font-family: var(--eva-font-hud);
+  font-size: 15px;
+  letter-spacing: 0.3em;
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+  box-shadow: 0 0 24px rgba(111, 168, 255, 0.2);
+  transition: background 0.15s, box-shadow 0.15s;
+}
+.eva-gate__start em {
+  font-style: normal;
+  font-size: 8px;
+  letter-spacing: 0.24em;
+  color: var(--eva-pilot);
+}
+.eva-gate__start[disabled],
+.eva-gate__muted[disabled] {
+  opacity: 0.35;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+.eva-gate__start:hover {
+  background: linear-gradient(180deg, rgba(47, 95, 224, 0.55), rgba(5, 4, 10, 0.9));
+  box-shadow: 0 0 30px rgba(111, 168, 255, 0.32);
+}
+.eva-gate__muted {
+  pointer-events: auto;
+  cursor: pointer;
+  appearance: none;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  color: rgba(233, 226, 245, 0.45);
+  font-family: var(--eva-font-hud);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+}
+.eva-gate__muted:hover {
+  color: var(--eva-pilot);
+}
+.eva-gate__hint {
+  font-size: 8px;
+  letter-spacing: 0.24em;
+  color: rgba(157, 255, 74, 0.5);
+}
+.eva-gate__foot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 44px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  border-top: 1px solid rgba(157, 255, 74, 0.16);
+  background: linear-gradient(0deg, rgba(5, 4, 10, 0.92), rgba(5, 4, 10, 0));
+  font-size: 8.5px;
+  letter-spacing: 0.24em;
+  color: rgba(157, 255, 74, 0.55);
+}
+
+/* --- pilot scene inside the launch --- */
+.eva-pilotbrief {
+  position: relative;
+  width: min(220px, 20vw);
+  aspect-ratio: 3 / 4;
+}
+.eva-pilotbrief__frame {
+  position: absolute;
+  inset: -10px;
+  border: 1px solid rgba(111, 168, 255, 0.35);
+  clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
+}
+.eva-pilotbrief__portrait {
+  position: absolute;
+  inset: 0;
+  display: block;
+  animation: eva-pilot-breathe 4.6s ease-in-out infinite;
+}
+.eva-pilotbrief__portrait svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.eva-pilotbrief__a10 {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -34px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: rgba(233, 226, 245, 0.55);
+}
+.eva-pilotbrief__clip {
+  display: inline-flex;
+  width: 14px;
+  height: 14px;
+  color: var(--eva-pilot);
+}
+.eva-pilotbrief__clip svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.eva-pilotbrief__a10 b {
+  margin-left: auto;
+  font-weight: 600;
+  color: var(--eva-pilot);
+}
+
+/* --- persistent pilot widget --- */
+.eva-pilotcard {
+  position: absolute;
+  top: 58px;
+  right: 18px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 210px;
+  padding: 8px 10px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  background: linear-gradient(120deg, var(--dsw-alias-bg-layer-1), var(--dsw-alias-bg-base));
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
+  pointer-events: none;
+}
+.eva-pilotcard::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(111, 168, 255, 0.2);
+  clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 7px 100%, 0 calc(100% - 7px));
+  pointer-events: none;
+}
+.eva-pilotcard__avatar {
+  position: relative;
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  animation: eva-pilot-breathe 4.6s ease-in-out infinite;
+}
+.eva-pilotcard__avatar svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.eva-pilotcard__body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.eva-pilotcard__name {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--dsw-alias-label-primary);
+}
+.eva-pilotcard__role {
+  font-size: 7.5px;
+  letter-spacing: 0.2em;
+  color: rgba(111, 168, 255, 0.85);
+}
+.eva-pilotcard__sync {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--dsw-alias-label-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.eva-pilotcard__sync i {
+  font-style: normal;
+  color: var(--eva-pilot);
+  animation: eva-pilot-heart 1.6s ease-in-out infinite;
+}
+.eva-pilotcard__bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 22px;
+  margin-left: auto;
+  flex: none;
+}
+.eva-pilotcard__bars i {
+  width: 2px;
+  height: calc(30% + var(--i) * 11%);
+  background: var(--eva-pilot);
+  opacity: 0.85;
+  animation: eva-pilot-bars 1.4s ease-in-out infinite alternate;
+  animation-delay: calc(var(--i) * -0.12s);
+}
+
+/* --- pilot voice captions --- */
+.eva-comm {
+  position: fixed;
+  z-index: 10001;
+  top: 128px;
+  right: 18px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 304px;
+  padding: 9px 12px;
+  border: 1px solid rgba(111, 168, 255, 0.45);
+  background: linear-gradient(180deg, rgba(10, 8, 22, 0.92), rgba(5, 4, 10, 0.95));
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  box-shadow: 0 0 24px rgba(111, 168, 255, 0.2);
+  animation: eva-comm-in 0.24s ease-out both;
+}
+.eva-comm__avatar {
+  display: inline-flex;
+  width: 26px;
+  height: 26px;
+  flex: none;
+}
+.eva-comm__systemIcon {
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+  flex: none;
+  color: var(--eva-pilot);
+}
+.eva-comm__systemIcon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.eva-comm__avatar svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.eva-comm__body {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  text-align: left;
+}
+.eva-comm__who {
+  font-size: 7.5px;
+  letter-spacing: 0.22em;
+  color: var(--eva-pilot);
+}
+.eva-comm__jp {
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  color: #f3edef;
+}
+.eva-comm__zh {
+  font-size: 9.5px;
+  letter-spacing: 0.03em;
+  color: rgba(233, 226, 245, 0.5);
+}
+
+/* --- status-bar pilot segment + sound switch --- */
+.eva-status__pilot {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--dsw-alias-label-secondary);
+}
+.eva-status__pilotAvatar {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+}
+.eva-status__pilotAvatar svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.eva-status__pilot b {
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--eva-pilot);
+}
+.eva-status__heart {
+  font-style: normal;
+  color: var(--eva-pilot);
+  animation: eva-pilot-heart 1.6s ease-in-out infinite;
+}
+.eva-foot__btn[data-sound="1"] .eva-foot__glyph {
+  color: var(--eva-pilot);
+}
+.eva-foot__btn[data-sound="0"] {
+  opacity: 0.55;
+}
+
+/* --- berserk variants --- */
+body[data-eva-berserk] .eva-pilotcard {
+  border-color: var(--eva-alarm);
+  box-shadow: 0 0 24px var(--eva-alarm-soft);
+}
+body[data-eva-berserk] .eva-pilotcard::before {
+  border-color: rgba(255, 59, 59, 0.35);
+}
+body[data-eva-berserk] .eva-pilotcard__role,
+body[data-eva-berserk] .eva-pilotcard__sync i,
+body[data-eva-berserk] .eva-pilotcard__bars i {
+  color: var(--eva-alarm);
+  background: var(--eva-alarm);
+}
+body[data-eva-berserk] .eva-pilotcard__avatar {
+  filter: hue-rotate(150deg) saturate(1.1) brightness(0.95);
+}
+body[data-eva-berserk] .eva-comm {
+  border-color: var(--eva-alarm);
+  box-shadow: 0 0 24px var(--eva-alarm-soft);
+}
+body[data-eva-berserk] .eva-status__pilot b,
+body[data-eva-berserk] .eva-status__heart {
+  color: var(--eva-alarm);
+}
+body[data-eva-berserk] .eva-foot__btn[data-sound="1"] .eva-foot__glyph {
+  color: var(--eva-alarm);
+}
+
+/* --- pilot motion --- */
+@keyframes eva-pilot-breathe {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-1.5px) scale(1.015);
+  }
+}
+@keyframes eva-pilot-heart {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  15% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+  30% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+}
+@keyframes eva-pilot-bars {
+  from {
+    height: 16%;
+    opacity: 0.4;
+  }
+  to {
+    height: 100%;
+    opacity: 0.95;
+  }
+}
+@keyframes eva-comm-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 1024px) {
+  .eva-pilotcard,
+  .eva-comm {
+    display: none;
+  }
+  .eva-gate__body {
+    flex-direction: column;
+    gap: 26px;
+  }
+  .eva-gate__pilot {
+    gap: 14px;
+  }
+  .eva-gate__portraitFrame {
+    width: 132px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eva-gate__portrait,
+  .eva-gate__audioLed,
+  .eva-pilotbrief__portrait,
+  .eva-pilotcard__avatar,
+  .eva-pilotcard__sync i,
+  .eva-pilotcard__bars i,
+  .eva-status__heart,
+  .eva-comm {
+    animation: none !important;
+  }
+}
+
+body:not(:has([data-slot="conversation.composer"])) .eva-pilotcard,
+body:not(:has([data-slot="conversation.composer"])) .eva-comm {
+  display: none;
+}
+
+/* pilot chip inside the sync rail (replaces the floating card) */
+.eva-rail__pilot {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding-right: 2px;
+  color: var(--dsw-alias-label-secondary);
+  flex: none;
+}
+.eva-rail__pilotAvatar {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+.eva-rail__pilotAvatar svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.eva-rail__pilot b {
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--dsw-alias-label-primary);
+}
+.eva-rail__heart {
+  font-style: normal;
+  color: var(--eva-pilot);
+  animation: eva-pilot-heart 1.6s ease-in-out infinite;
+}
+.eva-rail__pilotSync {
+  color: var(--eva-pilot);
+  font-variant-numeric: tabular-nums;
+}
+body[data-eva-berserk] .eva-rail__heart,
+body[data-eva-berserk] .eva-rail__pilotSync {
+  color: var(--eva-alarm);
+}
+
+/* NERV workbench strip above the composer */
+.eva-desk {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 30px;
+  margin: 0 0 5px;
+  padding: 0 10px;
+  overflow: hidden;
+  border: 1px solid var(--dsw-alias-border-l2);
+  background: linear-gradient(90deg, var(--dsw-alias-bg-layer-1), var(--dsw-alias-bg-base));
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  font-family: var(--eva-font-hud);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--dsw-alias-label-secondary);
+}
+.eva-desk__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--eva-accent);
+  white-space: nowrap;
+}
+.eva-desk__tag b {
+  letter-spacing: 0.3em;
+}
+.eva-desk__tag i {
+  font-style: normal;
+  font-size: 7px;
+  letter-spacing: 0.22em;
+  opacity: 0.55;
+}
+.eva-desk__cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 16px;
+  padding: 0 8px;
+  border: 0;
+  border-left: 1px solid var(--dsw-alias-border-l1);
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  white-space: nowrap;
+}
+.eva-desk__cell i {
+  font-style: normal;
+  font-size: 7px;
+  letter-spacing: 0.2em;
+  opacity: 0.45;
+}
+.eva-desk__value {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--dsw-alias-label-primary);
+  font-variant-numeric: tabular-nums;
+}
+.eva-desk__cell--balance .eva-desk__value {
+  color: var(--eva-accent);
+}
+.eva-desk__refresh {
+  appearance: none;
+  padding: 0 2px;
+  border: 0;
+  background: none;
+  color: var(--dsw-alias-label-secondary);
+  font-family: var(--eva-font-hud);
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.eva-desk__refresh:hover {
+  color: var(--eva-accent);
+}
+.eva-desk__cell--music {
+  cursor: pointer;
+  pointer-events: auto;
+}
+.eva-desk__cell--music:hover .eva-desk__value {
+  color: var(--eva-accent);
+}
+.eva-desk__bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 12px;
+  margin-left: 2px;
+}
+.eva-desk__bars i {
+  width: 2px;
+  height: 30%;
+  background: var(--eva-accent);
+  opacity: 0.75;
+  animation: eva-desk-bars 1.2s ease-in-out infinite alternate;
+  animation-delay: calc(var(--i) * -0.11s);
+}
+.eva-desk__bars--tps i {
+  background: var(--eva-pilot);
+}
+@keyframes eva-desk-bars {
+  from {
+    height: 20%;
+    opacity: 0.35;
+  }
+  to {
+    height: 100%;
+    opacity: 0.9;
+  }
+}
+@media (max-width: 900px) {
+  .eva-desk__tag,
+  .eva-desk__cell:nth-last-child(2) {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .eva-desk__bars i {
+    animation: none;
+  }
+}
+
+/* =====================================================================
+   PILOT-SPECIFIC UNIT PAGES — 01 Shinji / 02 Asuka / 03 Rei.
+   `data-eva-pilot` is set from the client module; token palettes swap in JS.
+   ===================================================================== */
+body[data-eva-pilot="02"] {
+  --eva-accent: #ff7a1a;
+  --eva-accent-deep: #c22a12;
+  --eva-pilot: #ff5a3c;
+  --eva-pilot-soft: rgba(255, 90, 60, 0.12);
+  --eva-pilot-glow: rgba(255, 90, 60, 0.22);
+}
+body[data-eva-pilot="02"][data-ds-dark-theme] {
+  --eva-accent: #ff8a2a;
+  --eva-accent-deep: #ff5a1a;
+  --eva-pilot: #ff7a6a;
+  --eva-pilot-soft: rgba(255, 122, 106, 0.12);
+  --eva-pilot-glow: rgba(255, 122, 106, 0.22);
+}
+body[data-eva-pilot="00"] {
+  --eva-accent: #2c6f96;
+  --eva-accent-deep: #1d4f6b;
+  --eva-pilot: #3d7ea6;
+  --eva-pilot-soft: rgba(61, 126, 166, 0.12);
+  --eva-pilot-glow: rgba(61, 126, 166, 0.22);
+}
+body[data-eva-pilot="00"][data-ds-dark-theme] {
+  --eva-accent: #8fd4f2;
+  --eva-accent-deep: #5aa9cc;
+  --eva-pilot: #bfe6ff;
+  --eva-pilot-soft: rgba(191, 230, 255, 0.12);
+  --eva-pilot-glow: rgba(191, 230, 255, 0.22);
+}
+
+body[data-eva-pilot="02"]:not([data-ds-dark-theme]) {
+  background-image:
+    radial-gradient(1100px 640px at 16% -12%, rgba(214, 41, 62, 0.16), transparent 62%),
+    repeating-linear-gradient(0deg, rgba(194, 42, 18, 0.04) 0 1px, transparent 1px 46px),
+    repeating-linear-gradient(90deg, rgba(194, 42, 18, 0.04) 0 1px, transparent 1px 46px);
+}
+body[data-eva-pilot="02"][data-ds-dark-theme] {
+  background-image:
+    radial-gradient(1100px 640px at 16% -12%, rgba(255, 90, 40, 0.22), transparent 62%),
+    radial-gradient(820px 560px at 92% 112%, rgba(255, 122, 26, 0.1), transparent 64%),
+    repeating-linear-gradient(0deg, rgba(255, 233, 227, 0.026) 0 1px, transparent 1px 46px),
+    repeating-linear-gradient(90deg, rgba(255, 233, 227, 0.026) 0 1px, transparent 1px 46px);
+}
+body[data-eva-pilot="00"]:not([data-ds-dark-theme]) {
+  background-image:
+    radial-gradient(1100px 640px at 16% -12%, rgba(61, 126, 166, 0.13), transparent 62%),
+    repeating-linear-gradient(0deg, rgba(44, 111, 150, 0.045) 0 1px, transparent 1px 46px),
+    repeating-linear-gradient(90deg, rgba(44, 111, 150, 0.045) 0 1px, transparent 1px 46px);
+}
+body[data-eva-pilot="00"][data-ds-dark-theme] {
+  background-image:
+    radial-gradient(1100px 640px at 16% -12%, rgba(90, 169, 204, 0.18), transparent 62%),
+    radial-gradient(820px 560px at 92% 112%, rgba(191, 230, 255, 0.08), transparent 64%),
+    repeating-linear-gradient(0deg, rgba(230, 244, 251, 0.024) 0 1px, transparent 1px 46px),
+    repeating-linear-gradient(90deg, rgba(230, 244, 251, 0.024) 0 1px, transparent 1px 46px);
+}
+
+body[data-eva-pilot="02"] .eva-gate__bg {
+  background:
+    radial-gradient(90% 70% at 24% 28%, rgba(214, 41, 62, 0.22), transparent 60%),
+    radial-gradient(70% 60% at 78% 76%, rgba(255, 122, 26, 0.18), transparent 62%),
+    linear-gradient(180deg, #0b0505, #160807 58%, #0b0505);
+}
+body[data-eva-pilot="00"] .eva-gate__bg {
+  background:
+    radial-gradient(90% 70% at 24% 28%, rgba(61, 126, 166, 0.22), transparent 60%),
+    radial-gradient(70% 60% at 78% 76%, rgba(191, 230, 255, 0.14), transparent 62%),
+    linear-gradient(180deg, #04080c, #08131a 58%, #04080c);
+}
+
+/* pilot roster on the authentication gate */
+.eva-gate__body {
+  gap: clamp(18px, 2.6vw, 42px);
+  padding: 0 3.4vw;
+}
+.eva-gate__roster {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: min(272px, 21vw);
+  flex: none;
+}
+.eva-gate__rosterHead {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 2px;
+}
+.eva-gate__rosterHead b {
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  color: rgba(157, 255, 74, 0.75);
+}
+.eva-gate__rosterHead em {
+  font-style: normal;
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  color: rgba(233, 226, 245, 0.4);
+}
+.eva-gate__card {
+  appearance: none;
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  min-height: 68px;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid rgba(185, 139, 224, 0.22);
+  background: rgba(8, 5, 16, 0.55);
+  color: #e9e2f5;
+  font-family: var(--eva-font-hud);
+  text-align: left;
+  cursor: pointer;
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+.eva-gate__card[data-selected="1"] {
+  border-color: var(--eva-pilot);
+  background: linear-gradient(90deg, var(--eva-pilot-soft), rgba(8, 5, 16, 0.72));
+  box-shadow: 0 0 18px var(--eva-pilot-glow);
+}
+.eva-gate__cardArt {
+  display: inline-flex;
+  width: 56px;
+  flex: none;
+  overflow: hidden;
+  border-right: 1px solid rgba(185, 139, 224, 0.18);
+  background: linear-gradient(180deg, rgba(18, 10, 30, 0.96), rgba(5, 4, 10, 0.96));
+}
+.eva-gate__cardArt svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.eva-gate__card[data-selected="1"] .eva-gate__cardArt {
+  border-right-color: var(--eva-pilot);
+  filter: saturate(1.08);
+}
+.eva-gate__cardBody {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1px;
+  min-width: 0;
+  padding: 8px 10px;
+  flex: 1;
+}
+.eva-gate__cardBody b {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+}
+.eva-gate__cardBody i {
+  font-style: normal;
+  font-size: 7.5px;
+  letter-spacing: 0.16em;
+  color: rgba(233, 226, 245, 0.45);
+}
+.eva-gate__cardBody em {
+  font-style: normal;
+  font-size: 7px;
+  letter-spacing: 0.18em;
+  color: var(--eva-pilot);
+}
+.eva-gate__cardLed {
+  width: 5px;
+  height: 5px;
+  margin-left: auto;
+  border-radius: 50%;
+  background: rgba(233, 226, 245, 0.2);
+}
+.eva-gate__card[data-selected="1"] .eva-gate__cardLed {
+  background: var(--eva-pilot);
+  box-shadow: 0 0 8px var(--eva-pilot);
+}
+
+/* pilot switch + unit chip in the workbench */
+.eva-desk__cell--pilot {
+  cursor: pointer;
+  pointer-events: auto;
+}
+.eva-desk__cell--pilot:hover .eva-desk__value {
+  color: var(--eva-pilot);
+}
+.eva-desk__unit {
+  font-style: normal;
+  font-size: 7.5px;
+  letter-spacing: 0.15em;
+  color: var(--eva-pilot);
+}
+
+@media (max-width: 1120px) {
+  .eva-gate__body {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 18px;
+  }
+  .eva-gate__roster {
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+  }
+  .eva-gate__rosterHead {
+    display: none;
+  }
+  .eva-gate__card {
+    flex: 1 1 160px;
+    max-width: 220px;
+  }
+}
+@media (max-width: 760px) {
+  .eva-gate__pilot {
+    display: none;
+  }
+}
+
+.eva-gate__atfield {
+  position: absolute;
+  top: 16%;
+  right: 4%;
+  width: 46vmin;
+  height: 46vmin;
+  color: var(--eva-pilot);
+  opacity: 0.09;
+  pointer-events: none;
+}
+.eva-gate__atfield svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ---------------------------------------------------------------------
+   ENTRY-PLUG PILOT SELECTION (reference-inspired layout, original build)
+   --------------------------------------------------------------------- */
+.eva-gate__body--select {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.9fr) minmax(430px, 1.1fr);
+  align-items: center;
+  gap: clamp(24px, 4vw, 64px);
+  padding: 0 4vw;
+}
+.eva-gate__plugScene {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 62vh;
+}
+.eva-gate__contours {
+  position: absolute;
+  inset: -4% -14%;
+  opacity: 0.6;
+  background:
+    repeating-radial-gradient(ellipse at 46% 56%,
+      transparent 0 15px,
+      rgba(255, 140, 40, 0.16) 16px 17px,
+      transparent 18px 33px);
+  -webkit-mask-image: radial-gradient(60% 60% at 50% 55%, #000 30%, transparent 78%);
+  mask-image: radial-gradient(60% 60% at 50% 55%, #000 30%, transparent 78%);
+  animation: eva-contour-drift 16s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+@keyframes eva-contour-drift {
+  from { transform: scale(1) rotate(-2deg); opacity: 0.42; }
+  to { transform: scale(1.06) rotate(2deg); opacity: 0.72; }
+}
+.eva-gate__plug {
+  position: relative;
+  width: min(300px, 25vw);
+  aspect-ratio: 1 / 2;
+  transform: rotate(14deg);
+}
+.eva-gate__plugImg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 30px rgba(255, 140, 40, 0.18));
+}
+.eva-gate__plugGlow {
+  position: absolute;
+  left: 20%;
+  right: 20%;
+  top: 30%;
+  bottom: 24%;
+  background: radial-gradient(50% 50% at 50% 50%, var(--eva-pilot-glow), transparent 70%);
+  filter: blur(8px);
+  animation: eva-plug-glow 3.2s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes eva-plug-glow {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+.eva-gate__plugPilot {
+  position: absolute;
+  left: 20%;
+  right: 20%;
+  top: 42%;
+  bottom: 34%;
+  overflow: hidden;
+  opacity: 1;
+  filter: drop-shadow(0 0 10px var(--eva-pilot-glow));
+  pointer-events: none;
+  z-index: 2;
+}
+.eva-gate__plugPilotImg {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+.eva-gate__plugPilot[data-inserting="1"] {
+  animation: eva-plug-insert 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes eva-plug-insert {
+  from { opacity: 0; transform: translateX(26px) scale(1.08); filter: blur(4px); }
+  to { opacity: 0.92; transform: translateX(0) scale(1); filter: none; }
+}
+.eva-gate__plugTag {
+  position: absolute;
+  left: -18%;
+  right: -18%;
+  font-family: var(--eva-font-hud);
+  font-size: 8px;
+  letter-spacing: 0.3em;
+  color: rgba(255, 179, 71, 0.75);
+  text-align: center;
+  pointer-events: none;
+}
+.eva-gate__plugTag--top { top: 8%; }
+.eva-gate__plugTag--bottom { bottom: 8%; }
+.eva-gate__plug::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 56%;
+  width: 82%;
+  height: 40%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(5, 4, 10, 0.62), transparent 72%);
+  pointer-events: none;
+}
+.eva-gate__ring {
+  position: absolute;
+  left: 50%;
+  top: 56%;
+  width: 80%;
+  height: auto;
+  transform: translate(-50%, -50%);
+  overflow: visible;
+  pointer-events: none;
+  z-index: 2;
+}
+.eva-gate__ringTrack,
+.eva-gate__ringFill {
+  fill: none;
+  stroke-width: 2.4;
+}
+.eva-gate__ringTrack { stroke: rgba(233, 226, 245, 0.28); }
+.eva-gate__ringFill {
+  stroke: var(--eva-pilot);
+  stroke-linecap: round;
+  stroke-dasharray: 326.7;
+  stroke-dashoffset: calc(326.7 - 326.7 * var(--sync));
+  filter: drop-shadow(0 0 6px var(--eva-pilot));
+  transform: rotate(-90deg);
+  transform-origin: 60px 60px;
+  transition: stroke-dashoffset 0.18s linear;
+}
+.eva-gate__sync {
+  position: absolute;
+  left: 50%;
+  top: 56%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  padding: 2px 7px;
+  background: rgba(5, 4, 10, 0.62);
+  font-family: var(--eva-font-hud);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #f3edff;
+  text-shadow: 0 0 12px var(--eva-pilot-glow);
+  pointer-events: none;
+}
+.eva-gate__syncLabel {
+  position: absolute;
+  left: 50%;
+  top: calc(56% + 22px);
+  z-index: 3;
+  transform: translateX(-50%);
+  font-family: var(--eva-font-hud);
+  font-size: 7px;
+  letter-spacing: 0.26em;
+  color: rgba(233, 226, 245, 0.42);
+  white-space: nowrap;
+  pointer-events: none;
+}
+.eva-gate__console {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 600px;
+}
+.eva-gate__pilots {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  margin: 12px 0 10px;
+}
+.eva-gate__pilotBtn {
+  appearance: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  padding: 10px 6px 9px;
+  border: 1px solid rgba(185, 139, 224, 0.22);
+  background: rgba(8, 5, 16, 0.6);
+  color: #e9e2f5;
+  font-family: var(--eva-font-hud);
+  cursor: pointer;
+  clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 9px 100%, 0 calc(100% - 9px));
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+.eva-gate__pilotBtn:hover {
+  border-color: rgba(255, 179, 71, 0.5);
+}
+.eva-gate__pilotBtn[data-selected="1"] {
+  border-color: var(--eva-pilot);
+  background: linear-gradient(180deg, var(--eva-pilot-soft), rgba(8, 5, 16, 0.78));
+  box-shadow: 0 0 22px var(--eva-pilot-glow);
+}
+.eva-gate__avatar {
+  display: inline-flex;
+  width: 86px;
+  height: 86px;
+  flex: none;
+  opacity: 0.9;
+  overflow: hidden;
+  border: 1px solid rgba(185, 139, 224, 0.22);
+  transition: opacity 0.15s, filter 0.15s, border-color 0.15s;
+}
+.eva-gate__pilotBtn[data-selected="1"] .eva-gate__avatar {
+  border-color: var(--eva-pilot);
+}
+.eva-gate__pilotBtn[data-selected="1"] .eva-gate__avatar {
+  opacity: 1;
+  filter: drop-shadow(0 0 10px var(--eva-pilot-glow));
+}
+.eva-gate__pilotInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.eva-gate__pilotInfo b {
+  font-size: 12px;
+  letter-spacing: 0.1em;
+}
+.eva-gate__pilotInfo i {
+  font-style: normal;
+  font-size: 7px;
+  letter-spacing: 0.14em;
+  color: rgba(233, 226, 245, 0.45);
+}
+.eva-gate__pilotInfo em {
+  font-style: normal;
+  font-size: 6.5px;
+  letter-spacing: 0.16em;
+  color: var(--eva-pilot);
+}
+.eva-gate__pilotLed {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(233, 226, 245, 0.16);
+}
+.eva-gate__pilotBtn[data-selected="1"] .eva-gate__pilotLed {
+  background: var(--eva-pilot);
+  box-shadow: 0 0 8px var(--eva-pilot);
+}
+.eva-gate__selectMeta {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 8px 0;
+  border-top: 1px solid rgba(185, 139, 224, 0.16);
+  border-bottom: 1px solid rgba(185, 139, 224, 0.16);
+  width: 100%;
+  font-family: var(--eva-font-hud);
+}
+.eva-gate__selectMeta b {
+  font-size: 18px;
+  letter-spacing: 0.1em;
+  color: #f3edff;
+}
+.eva-gate__selectMeta span {
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  color: rgba(233, 226, 245, 0.45);
+}
+.eva-gate__selectMeta i {
+  margin-left: auto;
+  font-style: normal;
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  color: var(--eva-pilot);
+}
+.eva-gate__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+  margin-top: 14px;
+}
+.eva-gate__actions .eva-gate__start {
+  margin-top: 0;
+}
+
+/* the old single-portrait layout can be hidden if both are rendered */
+.eva-gate__body--select .eva-gate__card,
+.eva-gate__body--select .eva-gate__roster {
+  display: none;
+}
+
+@media (max-width: 1120px) {
+  .eva-gate__body--select {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    overflow: auto;
+    padding: 12px 6vw 70px;
+  }
+  .eva-gate__plugScene {
+    min-height: 38vh;
+    width: 100%;
+  }
+  .eva-gate__plug {
+    width: 180px;
+  }
+  .eva-gate__console {
+    align-items: center;
+    text-align: center;
+  }
+  .eva-gate__selectMeta {
+    justify-content: center;
+  }
+  .eva-gate__actions {
+    align-items: center;
+  }
+  .eva-gate__pilotBtn {
+    flex: 0 1 150px;
+  }
+}
+
+/* ---------------------------------------------------------------------
+   PILOT IMAGE PRIMITIVES — supplied photo (Shinji) or line-art alpha mask
+   (Asuka / Rei) for every pilot surface.
+   --------------------------------------------------------------------- */
+.eva-pilot-img {
+  display: inline-flex;
+  overflow: hidden;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+.eva-pilot-img--photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.eva-pilot-img--photo {
+  background: #0a0616;
+}
+.eva-pilot-img--mask {
+  background: linear-gradient(180deg, #ffffff 8%, var(--eva-pilot) 92%);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+.eva-gate__avatar.eva-pilot-img {
+  width: 86px;
+  height: 86px;
+}
+.eva-rail__pilotAvatar.eva-pilot-img,
+.eva-status__pilotAvatar.eva-pilot-img,
+.eva-comm__avatar.eva-pilot-img {
+  width: 16px;
+  height: 16px;
+  border-radius: 2px;
+}
+.eva-comm__avatar.eva-pilot-img {
+  width: 26px;
+  height: 26px;
+}
+.eva-pilotbrief__portrait.eva-pilot-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.eva-pilotbrief__portrait.eva-pilot-img--mask {
+  background: linear-gradient(180deg, #ffffff 8%, var(--eva-pilot) 92%);
+}
+.eva-rail__pilotAvatar img,
+.eva-status__pilotAvatar img,
+.eva-comm__avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---------------------------------------------------------------------
+   NERV EMERGENCY — red broadcast before the pilot confirmation screen.
+   --------------------------------------------------------------------- */
+.eva-alarm {
+  position: fixed;
+  inset: 0;
+  z-index: 11000;
+  overflow: hidden;
+  background: #000;
+  color: #ff1a1a;
+  font-family: var(--eva-font-hud);
+  pointer-events: auto;
+}
+.eva-alarm__bg {
+  position: absolute;
+  inset: -4%;
+  width: 108%;
+  height: 108%;
+  object-fit: cover;
+  opacity: 0.9;
+  filter: contrast(1.08) brightness(0.86);
+  animation: eva-alarm-breathe 2.6s ease-in-out infinite;
+}
+.eva-alarm__flash {
+  position: absolute;
+  inset: 0;
+  background: rgba(210, 0, 0, 0.2);
+  mix-blend-mode: screen;
+  animation: eva-alarm-flash 0.62s steps(2) infinite;
+  pointer-events: none;
+}
+.eva-alarm__scan {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.5) 0 1px, transparent 1px 4px);
+  pointer-events: none;
+}
+.eva-alarm__center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
+  padding: 0 6vw;
+}
+.eva-alarm__eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.5em;
+  color: #ff6b6b;
+}
+.eva-alarm__nerv {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(120px, 22vw, 300px);
+  font-weight: 400;
+  line-height: 0.82;
+  letter-spacing: 0.02em;
+  color: #ff0606;
+  text-shadow: 0 0 26px rgba(255, 0, 0, 0.55), 0 2px 0 #3a0000;
+  animation: eva-alarm-flicker 1.15s steps(2) infinite;
+}
+.eva-alarm__quote {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(15px, 2.1vw, 28px);
+  color: #ff3b3b;
+  background: rgba(150, 0, 0, 0.22);
+  padding: 2px 18px;
+}
+.eva-alarm__quote--2 {
+  font-size: clamp(14px, 1.9vw, 24px);
+}
+.eva-alarm__clock {
+  margin-top: 4px;
+  font-size: clamp(38px, 6.4vw, 86px);
+  letter-spacing: 0.08em;
+  color: #ff1a1a;
+  text-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+  font-variant-numeric: tabular-nums;
+}
+.eva-alarm__jp {
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  color: rgba(255, 120, 120, 0.7);
+}
+.eva-alarm__foot {
+  position: absolute;
+  left: 18px;
+  bottom: 14px;
+  font-size: 8px;
+  letter-spacing: 0.26em;
+  color: rgba(255, 80, 80, 0.55);
+}
+@keyframes eva-alarm-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.035); }
+}
+@keyframes eva-alarm-flash {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 0.9; }
+}
+@keyframes eva-alarm-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.76; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .eva-alarm__bg,
+  .eva-alarm__flash,
+  .eva-alarm__nerv {
+    animation: none !important;
+  }
+}
+
+/* ---------------------------------------------------------------------
+   ANGEL ATTACK — TV-style title card, original cue on click.
+   --------------------------------------------------------------------- */
+.eva-angel {
+  position: fixed;
+  inset: 0;
+  z-index: 11000;
+  overflow: hidden;
+  background: #000;
+  color: #e9e2f5;
+  font-family: var(--eva-font-hud);
+  pointer-events: auto;
+}
+.eva-angel__frame {
+  position: absolute;
+  inset: 5%;
+  z-index: 4;
+  border: 1px solid rgba(255, 45, 45, 0.16);
+  clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+  pointer-events: none;
+}
+.eva-angel__grain {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  opacity: 0.18;
+  background-image: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.04) 0 1px, transparent 1px 3px);
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+.eva-angel__scan {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.5) 0 1px, transparent 1px 4px);
+  pointer-events: none;
+}
+.eva-angel__flash {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  background: rgba(255, 0, 0, 0.14);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  animation: eva-angel-flash 0.72s steps(2) infinite;
+}
+.eva-angel[data-started="0"] .eva-angel__flash {
+  animation: none;
+  opacity: 0;
+}
+.eva-angel__tv {
+  position: absolute;
+  top: 16px;
+  left: 22px;
+  right: 22px;
+  z-index: 7;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 8px;
+  letter-spacing: 0.26em;
+  color: rgba(255, 90, 90, 0.7);
+}
+.eva-angel__bug {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 18px;
+  letter-spacing: 0.14em;
+  color: #ff2d2d;
+  text-shadow: 0 0 12px rgba(255, 0, 0, 0.45);
+}
+.eva-angel__channel {
+  color: rgba(255, 255, 255, 0.5);
+}
+.eva-angel__time {
+  margin-left: auto;
+  color: rgba(255, 255, 255, 0.6);
+  font-variant-numeric: tabular-nums;
+}
+.eva-angel__rec {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ff2d2d;
+  box-shadow: 0 0 10px #ff2d2d;
+  animation: eva-angel-blink 1.1s steps(2) infinite;
+}
+.eva-angel__entity {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  width: min(300px, 24vw);
+  transform: translate(-50%, -50%) scale(0.9);
+  opacity: 0.13;
+  filter: drop-shadow(0 0 36px rgba(255, 0, 0, 0.25));
+}
+.eva-angel__entity svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.eva-angel[data-started="1"] .eva-angel__entity {
+  animation: eva-angel-rise 5s ease-out both;
+}
+.eva-angel__seismic {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 56%;
+  z-index: 1;
+  height: 120px;
+  opacity: 0.35;
+}
+.eva-angel__seismic svg {
+  width: 100%;
+  height: 100%;
+}
+.eva-angel[data-started="1"] .eva-angel__seismic path {
+  stroke-dasharray: 1900;
+  animation: eva-angel-scan 2.4s linear infinite;
+}
+.eva-angel__card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 2;
+  width: min(940px, 84vw);
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+.eva-angel__eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.5em;
+  color: #ff4b4b;
+}
+.eva-angel__jp {
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", "Songti SC", serif;
+  font-size: clamp(64px, 13vw, 176px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  color: #f2edf5;
+  text-shadow: 0 0 34px rgba(255, 0, 0, 0.28), 0 0 2px #ff2d2d;
+}
+.eva-angel[data-started="1"] .eva-angel__jp {
+  animation: eva-angel-glitch 1.5s steps(2) infinite;
+}
+.eva-angel__en {
+  font-family: var(--eva-font-display);
+  font-size: clamp(16px, 2.4vw, 34px);
+  font-weight: 700;
+  letter-spacing: 0.52em;
+  color: #ff2d2d;
+}
+.eva-angel__meta {
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  color: rgba(233, 226, 245, 0.45);
+}
+.eva-angel__meta--2 {
+  color: rgba(255, 80, 80, 0.62);
+}
+.eva-angel__status {
+  margin-top: 22px;
+  font-size: 9px;
+  letter-spacing: 0.26em;
+  color: rgba(255, 80, 80, 0.75);
+}
+.eva-angel__start {
+  appearance: none;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-top: 26px;
+  padding: 14px 30px;
+  border: 1px solid #ff2d2d;
+  background: linear-gradient(180deg, rgba(120, 0, 0, 0.55), rgba(10, 2, 2, 0.85));
+  color: #f3edff;
+  font-family: var(--eva-font-hud);
+  font-size: 15px;
+  letter-spacing: 0.3em;
+  cursor: pointer;
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+  box-shadow: 0 0 26px rgba(255, 0, 0, 0.24);
+}
+.eva-angel__start:hover {
+  background: linear-gradient(180deg, rgba(180, 0, 0, 0.6), rgba(10, 2, 2, 0.9));
+}
+.eva-angel__start em {
+  font-style: normal;
+  font-size: 8px;
+  letter-spacing: 0.22em;
+  color: #ff8a8a;
+}
+@keyframes eva-angel-flash {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.7; }
+}
+@keyframes eva-angel-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.15; }
+}
+@keyframes eva-angel-rise {
+  from { opacity: 0.05; transform: translate(-50%, -46%) scale(0.82); }
+  to { opacity: 0.3; transform: translate(-50%, -52%) scale(1.02); }
+}
+@keyframes eva-angel-scan {
+  from { stroke-dashoffset: 1900; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes eva-angel-glitch {
+  0%, 100% { transform: translate(0, 0); opacity: 1; }
+  12% { transform: translate(-2px, 1px); opacity: 0.85; }
+  24% { transform: translate(2px, -1px); }
+  36% { transform: translate(-1px, 0); }
+  48% { transform: translate(0, 1px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .eva-angel__flash,
+  .eva-angel__rec,
+  .eva-angel[data-started="1"] .eva-angel__entity,
+  .eva-angel[data-started="1"] .eva-angel__seismic path,
+  .eva-angel[data-started="1"] .eva-angel__jp {
+    animation: none !important;
+  }
+}
+
+/* ---------------------------------------------------------------------
+   BERSERK CUT-IN — supplied Unit-01 / Unit-02 artwork for ~4 seconds.
+   --------------------------------------------------------------------- */
+.eva-berserk-art {
+  position: fixed;
+  right: 2vw;
+  bottom: 3vh;
+  z-index: 3;
+  height: min(78vh, 980px);
+  display: flex;
+  align-items: flex-end;
+  pointer-events: none;
+  animation: eva-berserk-art 4.25s ease-out both;
+}
+.eva-berserk-art[data-unit="asuka"] {
+  right: 3vw;
+  height: min(66vh, 820px);
+}
+.eva-berserk-art img {
+  height: 100%;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 0 34px rgba(255, 0, 0, 0.35)) saturate(1.06) contrast(1.04);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%);
+}
+.eva-berserk-art__scan {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.35) 0 1px, transparent 1px 4px);
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+.eva-berserk-art__label {
+  position: absolute;
+  left: 8%;
+  bottom: 4%;
+  padding: 4px 10px;
+  border: 1px solid rgba(255, 59, 59, 0.6);
+  background: rgba(12, 2, 4, 0.75);
+  color: #ff6b6b;
+  font-family: var(--eva-font-hud);
+  font-size: 9px;
+  letter-spacing: 0.26em;
+  white-space: nowrap;
+}
+@keyframes eva-berserk-art {
+  0% { opacity: 0; transform: translateX(48px) scale(1.04); filter: blur(7px); }
+  9% { opacity: 0.92; transform: translateX(0) scale(1); filter: none; }
+  76% { opacity: 0.92; }
+  100% { opacity: 0; transform: translateX(0) scale(1); }
+}
+@media (max-width: 900px) {
+  .eva-berserk-art {
+    height: 48vh;
+    right: 1vw;
+    opacity: 0.55;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .eva-berserk-art {
+    animation: none;
+    opacity: 0.75;
+  }
+}
+
+/* ---------------------------------------------------------------------
+   FLOATING PILOT SWITCH — sits in the sidebar gap above "new conversation".
+   Hidden with the collapsed rail and while the gate / intro is open.
+   --------------------------------------------------------------------- */
+.eva-switch {
+  position: fixed;
+  left: 236px;
+  top: 62px;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--eva-accent);
+  cursor: pointer;
+  pointer-events: auto;
+  transition: color 0.15s, border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+.eva-switch:hover {
+  color: var(--eva-pilot);
+  border-color: var(--dsw-alias-border-l2);
+  background: var(--dsw-alias-bg-layer-1);
+  box-shadow: 0 0 12px var(--eva-pilot-glow);
+}
+.eva-switch__icon {
+  display: block;
+  width: 17px;
+  height: 17px;
+}
+body:has([data-collapsed="true"]) .eva-switch {
+  display: none;
+}
+@media (max-width: 900px) {
+  .eva-switch {
+    display: none;
+  }
+}
+

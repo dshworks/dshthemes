@@ -1,0 +1,108 @@
+/* zuoyunlai/dsh-theme-palette — client.js
+   fetched 2026-10-26 from https://raw.githubusercontent.com/zuoyunlai/dsh-theme-palette/main/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+.dsh-tp{display:flex;flex-direction:column;gap:14px;width:100%;color:var(--dsw-alias-label-primary);box-sizing:border-box}
+.dsh-tp-head{display:flex;align-items:center;gap:8px}
+.dsh-tp-head h2{margin:0;font-size:18px;font-weight:600;letter-spacing:.2px}
+.dsh-tp-badge{margin-left:auto;font:11px/1.7 ui-monospace,Consolas,monospace;color:var(--dsw-alias-label-tertiary);border:.5px solid var(--dsw-alias-border-l4);border-radius:999px;padding:0 8px}
+.dsh-tp-sub{margin:-6px 0 0;color:var(--dsw-alias-label-tertiary);font-size:12px;line-height:18px}
+.dsh-tp-notice{display:flex;align-items:flex-start;gap:10px;justify-content:space-between;padding:10px 12px;border-radius:12px;border:.5px solid var(--dsw-alias-border-l3);background:var(--dsw-alias-bg-layer-1)}
+.dsh-tp-notice p{margin:0;font-size:12px;line-height:18px;color:var(--dsw-alias-label-secondary)}
+.dsh-tp-explain{margin:0;display:flex;flex-direction:column;gap:4px;font-size:12px;line-height:18px;color:var(--dsw-alias-label-tertiary)}
+.dsh-tp-preview{display:flex;flex-direction:column;gap:8px;padding:10px 12px;border-radius:10px;border:.5px solid var(--dsw-alias-border-l3);background:var(--dsw-alias-bg-layer-1)}
+.dsh-tp-preview p{margin:0;font-size:12px;line-height:18px;color:var(--dsw-alias-label-secondary)}
+.dsh-tp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,196px),1fr));gap:10px}
+.dsh-tp-card{position:relative;display:flex;flex-direction:column;gap:8px;text-align:left;font:inherit;color:var(--dsw-alias-label-primary);cursor:pointer;padding:9px;border-radius:14px;border:.5px solid var(--dsw-alias-border-l4);background:transparent;transition:background .12s ease,border-color .12s ease}
+.dsh-tp-card:hover{background:var(--dsw-alias-interactive-bg-hover)}
+.dsh-tp-card:focus-visible{outline-offset:2px}
+/* 焦点环统一用宿主的主文字色（审计 3.11）：原来只写 outline-offset、颜色交给 UA，
+ * 在部分浏览器/系统主题下这一圈会低到 1.x:1。2px 实线 + 主文字色，任何配色下都够亮。 */
+.dsh-tp-card:focus-visible,.dsh-tp-seg button:focus-visible,.dsh-tp-mini:focus-visible,.dsh-tp-more:focus-visible,.dsh-tp-color:focus-visible,.dsh-tp-hexinput:focus-visible,.dsh-tp-matrix-scroll:focus-visible{outline:2px solid var(--dsw-alias-label-primary);outline-offset:2px}
+.dsh-tp-card.is-on{background:var(--dshtp-card-picked,var(--dsw-alias-bg-module-platform));border-color:var(--t-accent-l)}
+body[data-ds-dark-theme] .dsh-tp-card.is-on{border-color:var(--t-accent-d)}
+.dsh-tp-thumb{display:flex;height:56px;border-radius:9px;overflow:hidden;border:.5px solid rgba(128,128,128,.28)}
+.dsh-tp-thumb-side{width:34%;background:var(--t-side-l)}
+body[data-ds-dark-theme] .dsh-tp-thumb-side{background:var(--t-side-d)}
+.dsh-tp-thumb-main{flex:1;background:var(--t-canvas-l);display:flex;flex-direction:column;gap:4px;padding:9px 10px}
+body[data-ds-dark-theme] .dsh-tp-thumb-main{background:var(--t-canvas-d)}
+.dsh-tp-thumb-main b{display:block;height:4px;border-radius:2px;background:var(--t-text-l);opacity:.75}
+body[data-ds-dark-theme] .dsh-tp-thumb-main b{background:var(--t-text-d)}
+.dsh-tp-thumb-main b:nth-of-type(2){width:70%;opacity:.42}
+.dsh-tp-thumb-main b:nth-of-type(3){width:44%;background:var(--t-accent-l);opacity:.9}
+body[data-ds-dark-theme] .dsh-tp-thumb-main b:nth-of-type(3){background:var(--t-accent-d)}
+.dsh-tp-card-meta{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.dsh-tp-card-name{font-size:14px;font-weight:500}
+.dsh-tp-card-desc{font-size:12px;color:var(--dsw-alias-label-tertiary)}
+.dsh-tp-check{position:absolute;top:7px;right:7px;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;line-height:1;background:var(--t-accent-l);color:var(--t-canvas-l);opacity:0;transition:opacity .12s ease}
+body[data-ds-dark-theme] .dsh-tp-check{background:var(--t-accent-d);color:var(--t-canvas-d)}
+.dsh-tp-card.is-on .dsh-tp-check{opacity:1}
+.dsh-tp-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:.5px solid var(--dsw-alias-border-l2);flex-wrap:wrap}
+.dsh-tp-row-label{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.dsh-tp-row-label b{font-size:13.5px;font-weight:500}
+.dsh-tp-row-label span{font-size:11.5px;color:var(--dsw-alias-label-tertiary);line-height:16px}
+.dsh-tp-seg{display:inline-flex;flex-wrap:wrap;gap:2px;padding:2px;border-radius:10px;background:var(--dsw-alias-interactive-bg-hover);flex:none;max-width:100%}
+.dsh-tp-seg button{font:inherit;font-size:12.5px;line-height:20px;cursor:pointer;border:0;border-radius:8px;padding:5px 12px;background:transparent;color:var(--dsw-alias-label-secondary);white-space:nowrap;transition:background .12s,color .12s}
+.dsh-tp-seg button:hover{color:var(--dsw-alias-label-primary)}
+.dsh-tp-seg button.is-on{background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-primary);box-shadow:0 1px 2px rgba(0,0,0,.10)}
+.dsh-tp-seg button:focus-visible{outline-offset:2px}
+.dsh-tp-seg button[disabled]{opacity:.45;cursor:default}
+.dsh-tp-more{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:12.5px;color:var(--dsw-alias-label-tertiary);background:0 0;border:0;padding:6px 0 2px;cursor:pointer;align-self:flex-start;transition:color .12s}
+.dsh-tp-more:hover{color:var(--dsw-alias-label-primary)}
+.dsh-tp-adv{display:flex;flex-direction:column}
+.dsh-tp-input{flex:1 1 220px;min-width:0;font:12px/20px ui-monospace,Consolas,monospace;padding:5px 9px;border-radius:8px;border:1px solid var(--dshtp-border-control,var(--dsw-alias-border-l4));background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-primary)}
+.dsh-tp-input::placeholder{color:var(--dsw-alias-label-tertiary)}
+.dsh-tp-mini{font:inherit;font-size:12.5px;line-height:20px;padding:5px 12px;border-radius:8px;border:.5px solid var(--dsw-alias-border-l4);background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary);cursor:pointer}
+.dsh-tp-mini:hover{background:var(--dsw-alias-bg-layer-1)}
+.dsh-tp-custom{display:flex;flex-direction:column;gap:10px;padding:12px;border-radius:14px;border:.5px solid var(--dsw-alias-border-l3);background:var(--dsw-alias-bg-layer-1)}
+.dsh-tp-custom-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.dsh-tp-custom-head b{font-size:13.5px;font-weight:500}
+.dsh-tp-swatches{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,86px),1fr));gap:10px}
+.dsh-tp-swatch{display:flex;flex-direction:column;gap:6px;cursor:pointer}
+.dsh-tp-color{width:100%;height:44px;padding:0;border:.5px solid var(--dsw-alias-border-l4);border-radius:10px;background:transparent;cursor:pointer}
+.dsh-tp-color::-webkit-color-swatch-wrapper{padding:3px}
+.dsh-tp-color::-webkit-color-swatch{border:none;border-radius:8px}
+.dsh-tp-swatch-name{font-size:12px;color:var(--dsw-alias-label-secondary)}
+.dsh-tp-hex{font:11.5px/1 ui-monospace,Consolas,monospace;color:var(--dsw-alias-label-tertiary)}
+.dsh-tp-hexinput{width:100%;box-sizing:border-box;font:11.5px/16px ui-monospace,Consolas,monospace;padding:3px 6px;border-radius:6px;border:1px solid var(--dshtp-border-control,var(--dsw-alias-border-l4));background:var(--dsw-alias-bg-base);color:var(--dsw-alias-label-primary)}
+.dsh-tp-hexinput:focus-visible{outline-offset:1px}
+.dsh-tp-hexinput[aria-invalid="true"]{border-color:var(--dsw-alias-state-error-primary)}
+.dsh-tp-hexerror{font-size:11.5px;line-height:16px;color:var(--dsw-alias-state-error-primary)}
+.dsh-tp-hexnote{font-size:11.5px;line-height:16px;color:var(--dsw-alias-label-secondary)}
+.dsh-tp-custom-hint{margin:0;font-size:12px;line-height:18px;color:var(--dsw-alias-label-secondary)}
+.dsh-tp-note{font-size:11.5px;color:var(--dsw-alias-label-tertiary)}
+.dsh-tp-status{margin:0;font-size:11.5px;line-height:18px;color:var(--dsw-alias-label-tertiary)}
+.dsh-tp-status.is-bad{color:var(--dsw-alias-state-error-primary)}
+.dsh-tp-matrix{display:flex;flex-direction:column;gap:8px;padding:11px 0;border-top:.5px solid var(--dsw-alias-border-l2)}
+.dsh-tp-matrix-head{display:flex;align-items:center;gap:8px}
+.dsh-tp-matrix-title{font-size:13.5px;font-weight:500}
+.dsh-tp-matrix-sub{font-size:11.5px;line-height:16px;color:var(--dsw-alias-label-tertiary)}
+.dsh-tp-matrix-scroll{overflow-x:auto;max-width:100%;padding-bottom:2px}
+.dsh-tp-matrix-scroll:focus-visible{outline-offset:2px}
+.dsh-tp-matrix table{border-collapse:collapse;width:max-content;min-width:100%;font-size:11.5px;line-height:16px;font-variant-numeric:tabular-nums}
+.dsh-tp-matrix th,.dsh-tp-matrix td{padding:4px 6px;text-align:right;border-top:.5px solid var(--dsw-alias-border-l2);white-space:nowrap}
+.dsh-tp-matrix th:first-child,.dsh-tp-matrix td:first-child{text-align:left}
+.dsh-tp-matrix thead th{font-weight:500;color:var(--dsw-alias-label-tertiary);border-top:0}
+.dsh-tp-matrix td.is-ok{color:var(--dsw-alias-label-secondary)}
+.dsh-tp-matrix td.is-limited{color:var(--dsw-alias-label-tertiary)}
+.dsh-tp-matrix td.is-exempt{color:var(--dsw-alias-label-tertiary)}
+.dsh-tp-matrix td.is-na{color:var(--dsw-alias-label-tertiary);opacity:.55}
+.dsh-tp-matrix td.is-bad{color:var(--dsw-alias-state-error-primary);font-weight:500}
+.dsh-tp-matrix td .dsh-tp-matrix-mark{font-size:10px;margin-left:2px}
+.dsh-tp-field{display:flex;flex-direction:column;gap:8px;padding:11px 0;border-top:.5px solid var(--dsw-alias-border-l2)}
+.dsh-tp-field-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.dsh-tp-field-title{font-size:13.5px;font-weight:500}
+.dsh-tp-input{text-overflow:ellipsis}
+/* 面板区域显式声明配色方案（审计 3.11）：原生横向滚动条、取色器、数字控件按它决定明暗，
+ * 否则深色界面里「对比度表」的横向滚动条仍然是一条浅色的。 */
+.dsh-tp{color-scheme:light}
+body[data-ds-dark-theme] .dsh-tp{color-scheme:dark}
+/* 强制配色模式（Windows 高对比 / forced-colors）：
+ * 颜色本身会被系统接管，不用对抗；但「选中态」靠的是 box-shadow 与 opacity，
+ * 这两样不会被接管 —— 于是卡片与分段控件在强制配色下会分不出选中的是哪一个。这里补一个显式描边。 */
+@media (forced-colors:active){
+  .dsh-tp-card,.dsh-tp-seg,.dsh-tp-custom,.dsh-tp-color,.dsh-tp-hexinput,.dsh-tp-input,.dsh-tp-mini{border:1px solid ButtonBorder}
+  .dsh-tp-card.is-on,.dsh-tp-seg button.is-on{box-shadow:none;outline:2px solid Highlight;outline-offset:1px}
+  .dsh-tp-check{forced-color-adjust:none;background:Highlight;color:HighlightText}
+  .dsh-tp-status.is-bad,.dsh-tp-hexerror{color:LinkText}
+}
+@media (prefers-reduced-motion:reduce){.dsh-tp-card,.dsh-tp-seg button,.dsh-tp-more,.dsh-tp-check,.dsh-tp-mini{transition:none}}

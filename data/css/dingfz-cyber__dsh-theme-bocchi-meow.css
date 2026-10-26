@@ -1,0 +1,181 @@
+/* dingfz-cyber/dsh-theme-bocchi-meow — src/theme.css
+   fetched 2026-10-26 from https://raw.githubusercontent.com/dingfz-cyber/dsh-theme-bocchi-meow/main/src/theme.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* Every rule is removed when this plugin is disabled. Native controls remain native. */
+body[data-bocchi-meow] {
+  --bocchi-paper: #fffaf7;
+  --bocchi-accent: #b65373;
+  --bocchi-border: #edc9d5;
+  --bocchi-ink: #30303e;
+  --bocchi-wash: #fce7ee;
+  background: var(--bocchi-paper);
+}
+body[data-bocchi-meow][data-ds-dark-theme] {
+  --bocchi-paper: #231e27;
+  --bocchi-accent: #f1a4c2;
+  --bocchi-border: #68475d;
+  --bocchi-ink: #f8edf2;
+  --bocchi-wash: #493042;
+}
+
+/* Small accents decorate the real DSH brand; neither the logo nor account is replaced. */
+body[data-bocchi-meow] [data-slot="sidebar"] [class*="_logoRow"] {
+  padding-bottom: 12px;
+  border-bottom: 1px dashed var(--bocchi-border);
+}
+body[data-bocchi-meow] [data-slot="sidebar"] [class*="_newSession"]:not([class*="Shortcut"]) {
+  --dsw-alias-label-primary: #fffafc;
+}
+body[data-bocchi-meow] [data-slot="sidebar"] button[class*="_newSession"] {
+  background: #b65373;
+  color: #fffafc;
+  border-color: transparent;
+  border-radius: 15px;
+  box-shadow: 0 5px 16px #b6537317;
+}
+body[data-bocchi-meow] [data-slot="sidebar"] button[class*="_newSession"]:hover {
+  background: #9b3e5b;
+}
+body[data-bocchi-meow] [class*="_sessionRow"][class*="_selected"] {
+  border-radius: 12px;
+}
+body[data-bocchi-meow] [class*="_sessionRow"][class*="_selected"] [class$="_title"] {
+  color: var(--bocchi-accent);
+}
+
+/* The native footer slot reserves real space; decoration never covers chat titles. */
+body[data-bocchi-meow] [data-slot="sidebar.footer.action"]:has(.bocchi-meow-sidebar) {
+  width: 100%;
+}
+.bocchi-meow-sidebar {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  height: clamp(178px, 33vh, 290px);
+  position: relative;
+  pointer-events: none;
+  user-select: none;
+  overflow: hidden;
+}
+.bocchi-meow-sidebar img {
+  display: block;
+  width: 100%;
+  height: calc(100% - 18px);
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 4px 7px #693d4917);
+}
+.bocchi-meow-caption {
+  display: block;
+  font-size: 11px;
+  line-height: 18px;
+  color: var(--bocchi-accent);
+  text-align: center;
+  letter-spacing: 2px;
+}
+
+/* Conversation-root container: responsive artwork depends on available chat width,
+   so opening the native right panel automatically returns that space to content. */
+body[data-bocchi-meow] [data-slot="main"] [data-phase]:has(> [data-conversation-content]) {
+  container: bocchi-chat / inline-size;
+}
+body[data-bocchi-meow] [data-slot="main"] [data-conversation-content] {
+  box-sizing: border-box;
+  position: relative;
+  --bocchi-art-width: 0px;
+  background: radial-gradient(ellipse at right bottom, color-mix(in srgb, var(--bocchi-wash) 65%, transparent), transparent 62%);
+}
+body[data-bocchi-meow] [data-slot="main"] [data-conversation-content]::after {
+  content: "";
+  display: none;
+  position: absolute;
+  top: 18px;
+  right: calc(-1 * var(--bocchi-art-width));
+  bottom: 0;
+  width: var(--bocchi-art-width);
+  background-repeat: no-repeat;
+  background-position: right bottom;
+  background-size: contain;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+body[data-bocchi-meow] [data-slot="main"] [data-conversation-content]::before {
+  content: "";
+  display: none;
+  position: absolute;
+  right: calc(-1 * var(--bocchi-art-width));
+  top: 0;
+  width: calc(var(--bocchi-art-width) + 180px);
+  height: 290px;
+  background: var(--bocchi-decor) no-repeat right top / 100% auto;
+  opacity: .82;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+@container bocchi-chat (min-width: 880px) {
+  body[data-bocchi-meow] [data-slot="main"] [data-conversation-content] {
+    --bocchi-art-width: clamp(270px, 32cqw, 370px);
+    /* Native measurement is an absolute pixel value for this already-shrunk
+       column. Do not inherit cqw here: transcript subtrees establish their own
+       query containers, which would subtract the artwork reservation twice. */
+    --dsh-chat-content-width: min(var(--dsh-chat-user-width, clamp(680px, calc(var(--dsh-conversation-column-width, 680px) * .64), 920px)), calc(var(--dsh-conversation-column-width, 680px) - 52px));
+    --dsh-composer-card-max-width: calc(var(--dsh-chat-content-width) + 32px);
+    /* Native width controls measure offsetWidth. A real outer margin preserves
+       their coordinate system and read/write behavior; inner padding does not. */
+    margin-right: var(--bocchi-art-width);
+  }
+  body[data-bocchi-meow] [data-slot="main"] [data-conversation-content]::after,
+  body[data-bocchi-meow] [data-slot="main"] [data-conversation-content]::before {
+    display: block;
+  }
+  body[data-bocchi-meow] [data-conversation-scroll] {
+    z-index: 1;
+    position: relative;
+  }
+  body[data-bocchi-meow] [data-slot="main"] [data-width-handle] {
+    z-index: 2;
+    width: max(0px, min(10px, calc((100% - var(--dsh-chat-content-width)) / 2 - 48px)));
+  }
+  body[data-bocchi-meow] [data-slot="main"] [data-width-handle][data-dragging] {
+    z-index: 8;
+  }
+}
+
+/* Styles stay narrow: no global button sizing, editor changes, menu hiding, or motion loops. */
+body[data-bocchi-meow] [data-composer-card]:not([class*="cardWorkspaceTrigger"]) {
+  border: 1px solid var(--bocchi-border);
+  border-radius: 24px;
+  box-shadow: 0 5px 22px #70384c0c;
+}
+body[data-bocchi-meow] [class$="_userStack"] [class$="_bubble"] {
+  background: var(--dsw-specific-bubble);
+  border-radius: 18px 18px 5px 18px;
+}
+body[data-bocchi-meow] [class$="_timeStart"] {
+  color: var(--bocchi-accent);
+}
+body[data-bocchi-meow] [class$="_header"]:has([class$="_titleCluster"]) {
+  border-bottom-color: var(--bocchi-border);
+}
+body[data-bocchi-meow][data-ds-dark-theme] .bocchi-meow-sidebar img,
+body[data-bocchi-meow][data-ds-dark-theme] [data-conversation-content]::after {
+  filter: brightness(.85) saturate(.87);
+}
+@media (max-height: 690px) {
+  .bocchi-meow-sidebar { height: 155px; }
+}
+@media (max-height: 520px) {
+  .bocchi-meow-sidebar { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bocchi-meow-sidebar, .bocchi-meow-sidebar img { animation: none; transition: none; }
+}
+@media (forced-colors: active) {
+  .bocchi-meow-sidebar,
+  body[data-bocchi-meow] [data-slot="main"] [data-conversation-content]::before,
+  body[data-bocchi-meow] [data-slot="main"] [data-conversation-content]::after { display: none; }
+  body[data-bocchi-meow] [data-slot="main"] [data-conversation-content] { margin-right: 0; }
+}
+

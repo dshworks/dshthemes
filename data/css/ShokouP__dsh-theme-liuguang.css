@@ -1,0 +1,2415 @@
+/* ShokouP/dsh-theme-liuguang — liuguang/lib/liuguang.css
+   fetched 2026-10-26 from https://raw.githubusercontent.com/ShokouP/dsh-theme-liuguang/main/liuguang/lib/liuguang.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* =====================================================================
+   Liuguang — Liquid Glass.
+
+   A glassmorphism skin for the DeepSeek Harness GUI: tinted translucent
+   surfaces over a slowly drifting light field, specular rims, springy
+   motion — plus five knobs you can drive from the plugin entry config.
+
+   Knobs (plugin config, all optional):
+     accent   "#rrggbb"  primary accent                (default #6d7bff)
+     accent2  "#rrggbb"  secondary accent              (default #22d3ee)
+     blur     0..60      glass blur in px              (default 26)
+     glass    0..1       surface opacity multiplier    (default 1)
+     motion   full|subtle|none                         (default full)
+
+   The browser half fetches this file live from /liuguang/theme.css, so editing
+   it only needs a page refresh. Rules are scoped to `html body` to outrank the
+   palette rules the client bundle appends later in <head>.
+   ===================================================================== */
+
+/* ---------- Layer 0: knobs ----------
+   Declared on :root so a later :root block (plugin config) or an inline value
+   (the in-app controls) can override them. */
+:root {
+  --lg-accent: #4fb59a;
+  --lg-accent-2: #8ee0c8;
+  --lg-glass-blur: 26px;
+  --lg-glass: 1;
+  --lg-sheen: 0.16;
+  --lg-ease-spring: cubic-bezier(0.22, 1.4, 0.36, 1);
+  --lg-ease-glide: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ---------- Layer 1a: light palette ---------- */
+html body {
+  --dsw-alias-bg-base: #eef2fb;
+  --dsw-alias-bg-layer-1: #ffffff;
+  --dsw-alias-bg-layer-2: #ffffff;
+  --dsw-alias-bg-layer-3: #ffffff;
+  --dsw-alias-bg-overlay: #ffffff;
+  --dsw-alias-bg-module-platform: #e9eef9;
+  --dsw-alias-bg-multi-select: #e9eef9;
+  --dsw-alias-bg-skeleton: rgba(18, 26, 48, 0.05);
+  --dsw-specific-sidebar-fill: #e8eef9;
+  --dsw-specific-sidebar-nav-item-hover: #e2e9f6;
+  --dsw-specific-sidebar-nav-item-active: #dde6f8;
+  --dsw-specific-sidebar-nav-item-active-accent: #d3e1ff;
+  --dsw-specific-input-major: #ffffff;
+  --dsw-specific-selector: #e9eef9;
+  --dsw-specific-tip: #e6ecf7;
+  --dsw-specific-bubble: #e6eeff;
+  --dsw-specific-bubble-highlight: #d2e0ff;
+
+  --dsw-alias-label-primary: #0f1526;
+  --dsw-alias-label-primary-dimmed: #1a2340;
+  --dsw-alias-label-primary-bluish: #16357c;
+  --dsw-alias-label-secondary: #3d4861;
+  --dsw-alias-label-tertiary: #626d87;
+  --dsw-alias-label-caption: #96a0b6;
+  --dsw-alias-label-dimmed: #c9d1e1;
+  --dsw-alias-brand-primary: #121829;
+  --dsw-alias-brand-text: #121829;
+  --dsw-alias-link: #2f6bff;
+
+  --dsw-alias-border-l1: rgba(18, 26, 48, 0.06);
+  --dsw-alias-border-l2: rgba(18, 26, 48, 0.09);
+  --dsw-alias-border-l3: rgba(18, 26, 48, 0.13);
+  --dsw-alias-border-l4: rgba(18, 26, 48, 0.17);
+  --dsw-alias-border-l2-darkmode-thin: rgba(18, 26, 48, 0.09);
+
+  --dsw-alias-interactive-bg-hover: rgba(22, 34, 64, 0.05);
+  --dsw-alias-interactive-bg-active: rgba(22, 34, 64, 0.09);
+  --dsw-alias-interactive-bg-hover-solid: #e9eef9;
+  --dsw-alias-state-business-primary: var(--lg-accent);
+  --dsw-alias-state-business-tertiary: #e3eaff;
+  --dsw-alias-button-primary-fill: #141a2c;
+  --dsw-alias-button-primary-hover: #26314f;
+  --dsw-alias-button-primary-dimmed: #e5eaf6;
+  --dsw-alias-button-contrast-fill: #1b2540;
+  --dsw-alias-button-elevated-fill: #ffffff;
+  --dsw-alias-button-floating-hover: #eef2fb;
+  --dsw-alias-button-ghost-active-fill: #e7edf9;
+
+  --dsw-alias-markdown-code-block: #eff3fa;
+  --dsw-alias-markdown-code-block-banner: #e9eef7;
+  --dsw-alias-markdown-inline-code: #ecf1f9;
+  --dsw-alias-markdown-tag: #e6ecf7;
+  --dsw-alias-markdown-citation: #e9eef9;
+  --dsw-alias-markdown-placeholder: #e8edf7;
+
+  --dsw-alias-menu-surface-fill: rgba(255, 255, 255, 0.58);
+  --dsw-alias-menu-group-header-fill: rgba(244, 247, 253, 0.88);
+  --dsw-specific-menu: rgba(255, 255, 255, 0.66);
+  --dsw-menu-backdrop-filter: blur(30px) saturate(185%);
+  --dsw-alias-scrollbar-bg-l1: rgba(18, 26, 48, 0.1);
+  --dsw-alias-scrollbar-hover-l1: var(--lg-accent);
+  --dsw-alias-scrollbar-bg-l2: rgba(18, 26, 48, 0.12);
+  --dsw-alias-scrollbar-hover-l2: var(--lg-accent);
+  --dsw-shadow-lv1: 0 1px 2px rgba(16, 24, 48, 0.05), 0 2px 10px rgba(16, 24, 48, 0.05);
+  --dsw-shadow-lv2: 0 2px 6px rgba(16, 24, 48, 0.06), 0 10px 28px rgba(16, 24, 48, 0.07);
+  --dsw-shadow-lv3: 0 0 0 0.5px rgba(18, 26, 48, 0.06), 0 8px 24px rgba(16, 24, 48, 0.08), 0 24px 56px rgba(16, 24, 48, 0.1);
+}
+
+/* ---------- Layer 1b: dark palette ---------- */
+html body[data-ds-dark-theme] {
+  --dsw-alias-bg-base: #080b12;
+  --dsw-alias-bg-layer-1: #0f131d;
+  --dsw-alias-bg-layer-2: #131826;
+  --dsw-alias-bg-layer-3: #18202f;
+  --dsw-alias-bg-overlay: #141a26;
+  --dsw-alias-bg-module-platform: #111726;
+  --dsw-alias-bg-multi-select: #151b29;
+  --dsw-alias-bg-skeleton: rgba(210, 225, 255, 0.06);
+  --dsw-specific-sidebar-fill: #0c0f18;
+  --dsw-specific-sidebar-nav-item-hover: #141926;
+  --dsw-specific-sidebar-nav-item-active: #192133;
+  --dsw-specific-sidebar-nav-item-active-accent: #17203a;
+  --dsw-specific-input-major: #10141e;
+  --dsw-specific-selector: #151b29;
+  --dsw-specific-tip: #151b29;
+  --dsw-specific-bubble: #141a2a;
+  --dsw-specific-bubble-highlight: #1d2740;
+
+  --dsw-alias-label-primary: #e9edf9;
+  --dsw-alias-label-primary-dimmed: #dce2f1;
+  --dsw-alias-label-primary-bluish: #dbe6ff;
+  --dsw-alias-label-secondary: #a7b1c7;
+  --dsw-alias-label-tertiary: #7d89a0;
+  --dsw-alias-label-caption: #5a647f;
+  --dsw-alias-label-dimmed: #333c50;
+  --dsw-alias-brand-primary: #f2f5ff;
+  --dsw-alias-brand-text: #f2f5ff;
+  --dsw-alias-link: #86a9ff;
+
+  --dsw-alias-border-l1: rgba(208, 222, 255, 0.06);
+  --dsw-alias-border-l2: rgba(208, 222, 255, 0.09);
+  --dsw-alias-border-l3: rgba(208, 222, 255, 0.13);
+  --dsw-alias-border-l4: rgba(208, 222, 255, 0.17);
+  --dsw-alias-border-l2-darkmode-thin: rgba(208, 222, 255, 0.06);
+
+  --dsw-alias-interactive-bg-hover: rgba(198, 214, 255, 0.055);
+  --dsw-alias-interactive-bg-active: rgba(198, 214, 255, 0.09);
+  --dsw-alias-interactive-bg-hover-solid: #151b29;
+  --dsw-alias-state-business-primary: var(--lg-accent);
+  --dsw-alias-state-business-tertiary: #16203a;
+  --dsw-alias-button-primary-fill: #f2f5ff;
+  --dsw-alias-button-primary-hover: #ffffff;
+  --dsw-alias-button-primary-dimmed: #191f31;
+  --dsw-alias-button-contrast-fill: #e8ecf8;
+  --dsw-alias-button-elevated-fill: #161c2a;
+  --dsw-alias-button-floating-hover: #1a2130;
+  --dsw-alias-button-ghost-active-fill: #1a2234;
+
+  --dsw-alias-markdown-code-block: #0c1019;
+  --dsw-alias-markdown-code-block-banner: #101523;
+  --dsw-alias-markdown-inline-code: #181f2f;
+  --dsw-alias-markdown-tag: #181f2f;
+  --dsw-alias-markdown-citation: #151b29;
+  --dsw-alias-markdown-placeholder: #121826;
+
+  --dsw-alias-menu-surface-fill: rgba(20, 25, 38, 0.62);
+  --dsw-alias-menu-group-header-fill: rgba(24, 30, 45, 0.9);
+  --dsw-specific-menu: rgba(20, 25, 38, 0.68);
+  --dsw-menu-backdrop-filter: blur(32px) saturate(175%);
+  --dsw-alias-scrollbar-bg-l1: rgba(200, 216, 255, 0.12);
+  --dsw-alias-scrollbar-hover-l1: var(--lg-accent);
+  --dsw-alias-scrollbar-bg-l2: rgba(200, 216, 255, 0.14);
+  --dsw-alias-scrollbar-hover-l2: var(--lg-accent);
+  --dsw-shadow-lv1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 2px 10px rgba(0, 0, 0, 0.28);
+  --dsw-shadow-lv2: 0 4px 14px rgba(0, 0, 0, 0.34), 0 12px 32px rgba(0, 0, 0, 0.3);
+  --dsw-shadow-lv3: 0 0 0 0.5px rgba(208, 222, 255, 0.07), 0 10px 28px rgba(0, 0, 0, 0.42), 0 28px 64px rgba(0, 0, 0, 0.38);
+}
+
+/* ---------- Layer 2: the light field behind the glass ---------- */
+
+html body {
+  background-color: var(--dsw-alias-bg-base);
+  background-image:
+    radial-gradient(70% 55% at 50% 0%, color-mix(in srgb, var(--lg-accent) 7%, transparent), transparent 74%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+html body::before {
+  content: '';
+  position: fixed;
+  inset: -30%;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    radial-gradient(48% 42% at 18% 22%, rgba(255, 255, 255, 0.055), transparent 70%),
+    radial-gradient(42% 38% at 82% 16%, color-mix(in srgb, var(--lg-accent) 42%, transparent), transparent 72%),
+    radial-gradient(54% 46% at 74% 88%, color-mix(in srgb, var(--lg-accent) 26%, transparent), transparent 74%),
+    radial-gradient(36% 32% at 14% 88%, rgba(255, 255, 255, 0.04), transparent 72%);
+  filter: blur(48px) saturate(120%);
+  opacity: var(--lg-drift-opacity, 0.5);
+  animation-name: var(--lg-anim, liuguang-drift);
+  animation-duration: var(--lg-drift, 54s);
+  animation-timing-function: var(--lg-ease-glide);
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  will-change: transform;
+}
+
+html body[data-ds-dark-theme]::before {
+  opacity: calc(var(--lg-drift-opacity, 0.5) * 1.24);
+}
+
+@keyframes liuguang-drift {
+  0%   { transform: translate3d(-2%, -1%, 0) scale(1.02) rotate(0deg); }
+  50%  { transform: translate3d(2.5%, 1.5%, 0) scale(1.06) rotate(2deg); }
+  100% { transform: translate3d(4%, -2%, 0) scale(1.03) rotate(-2deg); }
+}
+
+html body [data-slot='root'] > div,
+html body div:has(> [data-conversation-content]) {
+  background-color: transparent;
+}
+
+/* ---------- Layer 3: glass surfaces ---------- */
+
+/* The sidebar column itself carries the app's opaque fill; make that pane
+   transparent so the light field can reach the frosted inner root. */
+html body div:has(> [data-slot='sidebar']) {
+  background-color: transparent;
+}
+
+html body [data-slot='sidebar'] > div {
+  background-color: color-mix(in srgb, var(--dsw-specific-sidebar-fill) calc(76% * var(--lg-glass, 1)), transparent);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0) 38%);
+  backdrop-filter: blur(var(--lg-glass-blur)) saturate(180%);
+  box-shadow:
+    inset -1px 0 0 rgba(255, 255, 255, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+html body[data-ds-dark-theme] [data-slot='sidebar'] > div {
+  background-color: color-mix(in srgb, var(--dsw-specific-sidebar-fill) calc(66% * var(--lg-glass, 1)), transparent);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0) 42%);
+}
+
+/* Desktop: the sidebar root hosts position:fixed titlebar controls. A
+   backdrop-filter there would re-parent and clip them, so drop the blur and
+   keep only the tint. */
+html[data-windows-titlebar] body [data-slot='sidebar'] > div {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+html body [data-slot='sidebar'] [class*='logoRow'] {
+  box-shadow: inset 0 -0.5px 0 color-mix(in srgb, var(--dsw-alias-label-primary) 9%, transparent);
+}
+html body [data-slot='sidebar'] [class*='footArea'] {
+  box-shadow: inset 0 0.5px 0 color-mix(in srgb, var(--dsw-alias-label-primary) 9%, transparent);
+}
+html body [data-slot='sidebar'] [class*='sectionHeader'] {
+  letter-spacing: 0.05em;
+}
+html body [data-slot='sidebar'] kbd {
+  border: 0.5px solid color-mix(in srgb, var(--dsw-alias-label-primary) 20%, transparent);
+  border-radius: 5px;
+  background-image: linear-gradient(180deg,
+    color-mix(in srgb, var(--dsw-alias-label-primary) 12%, transparent),
+    color-mix(in srgb, var(--dsw-alias-label-primary) 3%, transparent));
+  background-color: transparent;
+  padding: 0 4px;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 11px;
+  line-height: 15px;
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--dsw-alias-label-primary) 14%, transparent);
+}
+
+html body [role='treeitem'] {
+  border-radius: 10px;
+  transition: background-color 160ms var(--lg-ease-glide), box-shadow 160ms var(--lg-ease-glide), transform 160ms var(--lg-ease-spring);
+}
+html body [role='treeitem']:hover {
+  background-color: color-mix(in srgb, var(--dsw-alias-label-primary) 7%, transparent);
+}
+html body [role='treeitem'][aria-selected='true'] {
+  background-color: color-mix(in srgb, var(--lg-accent) 16%, transparent);
+  box-shadow: inset 2px 0 0 var(--lg-accent), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+html body [data-slot='sidebar'] button:has(kbd) {
+  background-color: rgba(255, 255, 255, 0.06);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.02));
+  backdrop-filter: blur(14px) saturate(160%);
+  box-shadow:
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24),
+    0 6px 18px rgba(4, 8, 20, 0.16);
+  transition: transform 220ms var(--lg-ease-spring), box-shadow 220ms var(--lg-ease-glide), background-color 220ms var(--lg-ease-glide);
+}
+html body [data-slot='sidebar'] button:has(kbd):hover {
+  transform: translateY(-1px) scale(1.006);
+  background-color: color-mix(in srgb, var(--lg-accent) 16%, transparent);
+  box-shadow:
+    inset 0 0 0 0.5px color-mix(in srgb, var(--lg-accent) 55%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 10px 24px color-mix(in srgb, var(--lg-accent) 26%, transparent);
+}
+
+html body [data-composer-card] {
+  border-radius: var(--dsw-radius-panel, 28px);
+  background-color: color-mix(in srgb, var(--dsw-specific-input-major) calc(76% * var(--lg-glass, 1)), transparent);
+  background-image:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0) 46%),
+    radial-gradient(120% 80% at 12% -20%, color-mix(in srgb, var(--lg-accent) 10%, transparent), transparent 62%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.1),
+    0 2px 4px rgba(6, 10, 24, 0.06),
+    0 18px 48px rgba(6, 10, 24, 0.18);
+  position: relative;
+  transition: box-shadow 260ms var(--lg-ease-glide);
+}
+html body [data-composer-card]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(172deg,
+    color-mix(in srgb, var(--lg-accent) 70%, white 10%),
+    color-mix(in srgb, var(--lg-accent-2) 26%, transparent) 36%,
+    transparent 62%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.9;
+  transition: opacity 240ms var(--lg-ease-glide);
+}
+html body [data-composer-card]:focus-within {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 0 0 0.5px color-mix(in srgb, var(--lg-accent) 45%, transparent),
+    0 4px 10px rgba(6, 10, 24, 0.08),
+    0 26px 64px color-mix(in srgb, var(--lg-accent) 22%, transparent);
+}
+html body [data-composer-card]:focus-within::before {
+  opacity: 1;
+}
+html body[data-ds-dark-theme] [data-composer-card] {
+  background-color: color-mix(in srgb, var(--dsw-specific-input-major) calc(68% * var(--lg-glass, 1)), transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.06),
+    0 2px 6px rgba(0, 0, 0, 0.4),
+    0 22px 56px rgba(0, 0, 0, 0.55);
+}
+html body[data-ds-dark-theme] [data-composer-card]:focus-within {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 0 0 0.5px color-mix(in srgb, var(--lg-accent) 50%, transparent),
+    0 26px 70px color-mix(in srgb, var(--lg-accent) 20%, transparent);
+}
+
+html body button[aria-label='发送消息'],
+html body button[aria-label='Send message'] {
+  background-image: linear-gradient(135deg,
+    color-mix(in srgb, var(--lg-accent) 92%, white 8%) 0%,
+    var(--lg-accent) 42%,
+    color-mix(in srgb, var(--lg-accent-2) 88%, white 4%) 100%);
+  color: #ffffff;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    0 8px 22px color-mix(in srgb, var(--lg-accent) 42%, transparent);
+  position: relative;
+  overflow: hidden;
+  transition: transform 240ms var(--lg-ease-spring), box-shadow 240ms var(--lg-ease-glide), filter 240ms var(--lg-ease-glide);
+}
+html body button[aria-label='发送消息']::after,
+html body button[aria-label='Send message']::after {
+  content: '';
+  position: absolute;
+  inset: -40% -60%;
+  background: linear-gradient(100deg, transparent 35%, rgba(255, 255, 255, var(--lg-sheen)) 50%, transparent 65%);
+  transform: translateX(-120%);
+  transition: transform 700ms var(--lg-ease-glide);
+  pointer-events: none;
+}
+html body button[aria-label='发送消息']:hover:not(:disabled),
+html body button[aria-label='Send message']:hover:not(:disabled) {
+  transform: translateY(-1px) scale(1.05);
+  filter: saturate(1.08) brightness(1.04);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    0 12px 30px color-mix(in srgb, var(--lg-accent) 52%, transparent);
+}
+html body button[aria-label='发送消息']:hover:not(:disabled)::after,
+html body button[aria-label='Send message']:hover:not(:disabled)::after {
+  transform: translateX(120%);
+}
+html body button[aria-label='发送消息']:disabled,
+html body button[aria-label='Send message']:disabled {
+  filter: saturate(0.25) brightness(0.95) opacity(0.75);
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.14);
+}
+html body[data-ds-dark-theme] button[aria-label='发送消息']:disabled,
+html body[data-ds-dark-theme] button[aria-label='Send message']:disabled {
+  filter: saturate(0.3) brightness(0.7) opacity(0.85);
+}
+
+/* Only a real session header: the app deliberately keeps the blank hero
+   header visually empty, and class-fragment matches are too broad. */
+html body [data-slot='conversation.header'] > header:not([class*='headerBlank']) {
+  background-color: color-mix(in srgb, var(--dsw-alias-bg-base) 40%, transparent);
+  backdrop-filter: blur(18px) saturate(160%);
+  box-shadow: inset 0 -0.5px 0 color-mix(in srgb, var(--dsw-alias-label-primary) 10%, transparent);
+}
+
+/* Right rail — paint only when the app says the dock is open. A closed rail
+   keeps a full-width 720px panel hanging over the thread; any background,
+   backdrop-filter or shadow on it would cover the composer. */
+html body [data-sidebar-right-panel][data-sidebar-right-open] {
+  background-color: color-mix(in srgb, var(--dsw-alias-bg-layer-2) calc(62% * var(--lg-glass, 1)), transparent);
+  backdrop-filter: blur(var(--lg-glass-blur)) saturate(170%);
+  box-shadow: inset 0.5px 0 0 rgba(255, 255, 255, 0.08), -12px 0 40px rgba(4, 8, 20, 0.28);
+}
+html body [data-sidebar-right-panel]:not([data-sidebar-right-open]) {
+  background-color: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+
+/* Modals only: popover dialogs keep the theme-owned menu material. */
+html body [role='dialog'][aria-modal='true'] {
+  border-radius: var(--dsw-radius-panel, 28px);
+  background-color: color-mix(in srgb, var(--dsw-alias-bg-layer-2) calc(72% * var(--lg-glass, 1)), transparent);
+  backdrop-filter: blur(34px) saturate(180%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.12),
+    0 32px 90px rgba(0, 0, 0, 0.45);
+}
+
+html body [data-menu-material] {
+  box-shadow:
+    var(--dsw-elevation-stroke, 0 0 0 0.5px var(--dsw-alias-border-l3)),
+    inset 0 1px 0 color-mix(in srgb, var(--dsw-alias-label-primary) 12%, transparent),
+    var(--dsw-shadow-lv3);
+}
+
+/* ---------- Layer 4: playful details ---------- */
+
+html body [class*='titleGroup'] > span:not([class*='previewBadge']) {
+  background-image: linear-gradient(96deg,
+    var(--dsw-alias-label-primary) 0%,
+    color-mix(in srgb, var(--lg-accent) 80%, var(--dsw-alias-label-primary)) 68%,
+    var(--lg-accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+html body[data-ds-dark-theme] [class*='titleGroup'] > span:not([class*='previewBadge']) {
+  background-image: linear-gradient(96deg, #ffffff 0%, #c6d6ff 46%, var(--lg-accent-2) 100%);
+}
+
+html body [class*='previewBadge'] {
+  background-image: linear-gradient(120deg,
+    color-mix(in srgb, var(--lg-accent) 92%, white 8%),
+    color-mix(in srgb, var(--lg-accent-2) 86%, white 6%));
+  color: var(--dsw-alias-label-primary-bluish);
+  border: 0.5px solid color-mix(in srgb, var(--dsw-alias-label-primary) 14%, transparent);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 3px 12px color-mix(in srgb, var(--lg-accent) 26%, transparent);
+}
+html body[data-ds-dark-theme] [class*='previewBadge'] {
+  color: #ffffff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 3px 12px color-mix(in srgb, var(--lg-accent) 34%, transparent);
+}
+
+html body button[class*='iconButton']:hover,
+html body button[class*='searchButton']:hover {
+  background-color: var(--dsw-alias-interactive-bg-hover);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--dsw-alias-label-primary) 10%, transparent);
+}
+
+html body [role='tab'] {
+  transition: color 160ms var(--lg-ease-glide);
+}
+html body [role='tab'][aria-selected='true'] {
+  color: var(--dsw-alias-label-primary);
+}
+html body [role='tab'][aria-selected='false'] {
+  color: var(--dsw-alias-label-tertiary);
+}
+
+html body::after {
+  content: '';
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: linear-gradient(90deg,
+    transparent 2%,
+    color-mix(in srgb, var(--lg-accent) 75%, transparent) 26%,
+    color-mix(in srgb, var(--lg-accent-2) 65%, transparent) 54%,
+    color-mix(in srgb, var(--lg-accent) 45%, transparent) 76%,
+    transparent 97%);
+  opacity: 0.8;
+  pointer-events: none;
+  z-index: 100;
+}
+
+html body ::selection {
+  background: color-mix(in srgb, var(--lg-accent) 30%, transparent);
+}
+
+/* Scrollbars inherit the app's own width and per-surface thumb tokens. */
+html body ::-webkit-scrollbar {
+  width: var(--dsh-scrollbar-width, 5px);
+  height: var(--dsh-scrollbar-width, 5px);
+}
+html body ::-webkit-scrollbar-track {
+  background: transparent;
+}
+html body ::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background-color: var(--dsh-scrollbar-thumb, var(--dsw-alias-scrollbar-bg-l1));
+}
+html body ::-webkit-scrollbar-thumb:hover {
+  background-color: var(--dsh-scrollbar-thumb-hover, var(--dsw-alias-scrollbar-hover-l1));
+}
+
+/* ---------- Layer 5: honour the OS preferences ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html body::before {
+    animation: none;
+  }
+  html body [role='treeitem'],
+  html body [data-composer-card],
+  html body button,
+  html body [data-slot='sidebar'] button:has(kbd) {
+    transition: none !important;
+  }
+  html body button:is([aria-label='发送消息'], [aria-label='Send message']):hover:not(:disabled),
+  html body [data-composer-card]:focus-within,
+  html body [data-slot='sidebar'] button:has(kbd):hover {
+    transform: none !important;
+  }
+  html body button:is([aria-label='发送消息'], [aria-label='Send message'])::after {
+    display: none;
+  }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  html body::before {
+    opacity: 0.35;
+    animation: none;
+  }
+  html body [data-slot='sidebar'] > div,
+  html body [data-composer-card],
+  html body [role='dialog'][aria-modal='true'],
+  html body [data-sidebar-right-panel][data-sidebar-right-open] {
+    background-color: var(--dsw-alias-bg-layer-2);
+  }
+}
+
+/* =====================================================================
+   Overlay: appearance controls + the DeepSeek-chan pet.
+   Mounted on the frame-wide `shell.overlay` slot by src/overlay.js.
+   ===================================================================== */
+
+.lg-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 55;
+  font-family: var(--dsw-font-family);
+}
+.lg-layer > * {
+  pointer-events: auto;
+}
+
+/* Launcher: a small glass chip in the bottom-right corner. */
+.lg-launcher {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  cursor: pointer;
+  color: var(--dsw-alias-label-secondary);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.04));
+  background-color: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(14px) saturate(160%);
+  box-shadow:
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24),
+    0 8px 24px rgba(4, 8, 20, 0.24);
+  font-size: 15px;
+  line-height: 34px;
+  transition: transform 240ms var(--lg-ease-spring), box-shadow 240ms var(--lg-ease-glide), color 160ms var(--lg-ease-glide);
+}
+.lg-launcher:hover,
+.lg-launcher.is-open {
+  color: var(--lg-accent);
+  transform: translateY(-1px) scale(1.04);
+  box-shadow:
+    inset 0 0 0 0.5px color-mix(in srgb, var(--lg-accent) 55%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 12px 28px color-mix(in srgb, var(--lg-accent) 26%, transparent);
+}
+
+/* Panel: frosted card with the same rim language as the composer. */
+.lg-panel {
+  position: fixed;
+  right: 22px;
+  bottom: 66px;
+  width: 254px;
+  padding: 14px 14px 12px;
+  border-radius: 18px;
+  color: var(--dsw-alias-label-primary);
+  background-color: color-mix(in srgb, var(--dsw-alias-bg-layer-2) 74%, transparent);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0) 52%);
+  backdrop-filter: blur(calc(var(--lg-glass-blur) * 1.1)) saturate(175%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.14),
+    0 24px 60px rgba(4, 8, 20, 0.32);
+  font-size: 12px;
+  line-height: 18px;
+  animation: liuguang-panel-in 220ms var(--lg-ease-spring);
+}
+@keyframes liuguang-panel-in {
+  from { opacity: 0; transform: translateY(6px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.lg-panel-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.lg-close {
+  width: 22px;
+  height: 22px;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--dsw-alias-label-tertiary);
+  background: transparent;
+  font-size: 15px;
+  line-height: 20px;
+}
+.lg-close:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--dsw-alias-label-primary);
+}
+.lg-swatches {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.lg-swatch {
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 9px;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 2px 8px rgba(0, 0, 0, 0.18);
+  transition: transform 200ms var(--lg-ease-spring), box-shadow 200ms var(--lg-ease-glide);
+}
+.lg-swatch:hover {
+  transform: translateY(-2px) scale(1.06);
+}
+.lg-swatch.is-active {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    0 0 0 2px color-mix(in srgb, var(--lg-accent) 70%, transparent),
+    0 4px 14px color-mix(in srgb, var(--lg-accent) 34%, transparent);
+}
+.lg-row {
+  display: grid;
+  grid-template-columns: 34px 1fr 38px;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+  color: var(--dsw-alias-label-secondary);
+}
+.lg-row-value {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--dsw-alias-label-tertiary);
+  font-size: 11px;
+}
+.lg-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--lg-accent) 75%, transparent),
+    rgba(255, 255, 255, 0.16));
+  outline: none;
+}
+.lg-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35), 0 0 0 3px color-mix(in srgb, var(--lg-accent) 35%, transparent);
+  cursor: pointer;
+}
+.lg-segment {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  padding: 3px;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.12);
+  margin: 10px 0 12px;
+}
+.lg-seg {
+  border: 0;
+  border-radius: 8px;
+  padding: 5px 0;
+  cursor: pointer;
+  color: var(--dsw-alias-label-tertiary);
+  background: transparent;
+  font-size: 11px;
+  transition: background-color 160ms var(--lg-ease-glide), color 160ms var(--lg-ease-glide);
+}
+.lg-seg.is-active {
+  color: var(--dsw-alias-label-primary);
+  background-color: rgba(255, 255, 255, 0.14);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+.lg-reset {
+  width: 100%;
+  border: 0;
+  border-radius: 10px;
+  padding: 7px 0;
+  cursor: pointer;
+  color: var(--dsw-alias-label-secondary);
+  background-color: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.12);
+  font-size: 11px;
+}
+.lg-reset:hover {
+  color: var(--dsw-alias-label-primary);
+  background-color: rgba(255, 255, 255, 0.11);
+}
+
+/* Pet. */
+.lg-pet {
+  position: fixed;
+  width: 120px;
+  height: 120px;
+  cursor: grab;
+  touch-action: none;
+  filter: drop-shadow(0 10px 22px rgba(4, 10, 24, 0.32));
+  animation: liuguang-pet-bob 4.6s var(--lg-ease-glide) infinite;
+  transition: opacity 180ms var(--lg-ease-glide), transform 220ms var(--lg-ease-spring);
+}
+.lg-pet.is-hidden {
+  opacity: 0;
+  transform: scale(0.9);
+  pointer-events: none;
+}
+.lg-pet:active {
+  cursor: grabbing;
+}
+@keyframes liuguang-pet-bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+.lg-pet-body {
+  width: 100%;
+  height: 100%;
+  animation: liuguang-pet-tilt 7s var(--lg-ease-glide) infinite;
+}
+@keyframes liuguang-pet-tilt {
+  0%, 100% { transform: rotate(-2deg); }
+  50%      { transform: rotate(2deg); }
+}
+.lg-pet-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.lg-pet-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.lg-pet-eyes {
+  transform-origin: 60px 50px;
+  animation: liuguang-pet-blink 5.2s infinite;
+}
+@keyframes liuguang-pet-blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95%           { transform: scaleY(0.1); }
+}
+.lg-pet-wave {
+  transform-origin: 31px 92px;
+  animation: liuguang-pet-wave 3.4s var(--lg-ease-glide) infinite;
+}
+@keyframes liuguang-pet-wave {
+  0%, 70%, 100% { transform: rotate(0deg); }
+  78%           { transform: rotate(-24deg); }
+  86%           { transform: rotate(-8deg); }
+  94%           { transform: rotate(-22deg); }
+}
+.lg-pet-tail {
+  transform-origin: 82px 88px;
+  animation: liuguang-pet-tail 5.6s var(--lg-ease-glide) infinite;
+}
+@keyframes liuguang-pet-tail {
+  0%, 100% { transform: rotate(-4deg); }
+  50%      { transform: rotate(6deg); }
+}
+.lg-bubble {
+  position: absolute;
+  right: 86%;
+  bottom: 62%;
+  max-width: 168px;
+  padding: 6px 10px;
+  border-radius: 12px 12px 4px 12px;
+  white-space: nowrap;
+  color: var(--dsw-alias-label-primary);
+  background-color: color-mix(in srgb, var(--dsw-alias-bg-layer-2) 82%, transparent);
+  backdrop-filter: blur(16px) saturate(160%);
+  box-shadow:
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.16),
+    0 8px 22px rgba(4, 10, 24, 0.24);
+  font-size: 11px;
+  line-height: 16px;
+  opacity: 0;
+  transform: translateY(4px) scale(0.96);
+  transition: opacity 180ms var(--lg-ease-glide), transform 220ms var(--lg-ease-spring);
+  pointer-events: none;
+}
+.lg-pet:hover .lg-bubble,
+.lg-pet:focus-visible .lg-bubble {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lg-pet,
+  .lg-pet-body,
+  .lg-pet-eyes,
+  .lg-pet-wave,
+  .lg-pet-tail,
+  .lg-panel {
+    animation: none !important;
+  }
+}
+
+/* =====================================================================
+   Layer 6: premium details + personalization panel.
+   ===================================================================== */
+
+/* Film grain: a whisper of texture so flat colour fields read as material. */
+html body {
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='0.26'/></svg>"),
+    radial-gradient(70% 55% at 50% 0%, color-mix(in srgb, var(--lg-accent) 7%, transparent), transparent 74%);
+  background-blend-mode: overlay, normal;
+}
+
+/* Specular highlight that follows the pointer across the composer glass. */
+html body [data-composer-card]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(240px 180px at var(--lg-mx, 50%) var(--lg-my, 0%),
+    rgba(255, 255, 255, 0.10), transparent 70%);
+  opacity: 0.9;
+  transition: opacity 240ms var(--lg-ease-glide);
+}
+html body[data-ds-dark-theme] [data-composer-card]::after {
+  background: radial-gradient(240px 180px at var(--lg-mx, 50%) var(--lg-my, 0%),
+    rgba(255, 255, 255, 0.07), transparent 70%);
+}
+
+/* Radius knob drives every skinned surface. */
+html body [data-composer-card] {
+  border-radius: calc(var(--lg-radius, 24px) + 4px);
+}
+.lg-panel {
+  border-radius: max(14px, calc(var(--lg-radius, 24px) * 0.75));
+}
+
+/* Panel chrome: tabs + sections. */
+.lg-panel {
+  max-height: min(72vh, 520px);
+  overflow: auto;
+  scrollbar-width: thin;
+}
+.lg-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  padding: 3px;
+  margin: 0 0 10px;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 0 0.5px color-mix(in srgb, var(--dsw-alias-label-primary) 12%, transparent);
+}
+.lg-tab {
+  border: 0;
+  border-radius: 8px;
+  padding: 5px 0;
+  cursor: pointer;
+  color: var(--dsw-alias-label-tertiary);
+  background: transparent;
+  font-size: 11px;
+}
+.lg-tab.is-active {
+  color: var(--dsw-alias-label-primary);
+  background-color: color-mix(in srgb, var(--lg-accent) 20%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--dsw-alias-label-primary) 14%, transparent);
+}
+.lg-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.lg-inline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 12px;
+}
+.lg-toggle {
+  width: 38px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 0 0 0.5px color-mix(in srgb, var(--dsw-alias-label-primary) 16%, transparent);
+  transition: background-color 180ms var(--lg-ease-glide);
+}
+.lg-toggle span {
+  display: block;
+  width: 16px;
+  height: 16px;
+  margin: 2px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 220ms var(--lg-ease-spring);
+}
+.lg-toggle.is-on {
+  background-color: color-mix(in srgb, var(--lg-accent) 72%, transparent);
+}
+.lg-toggle.is-on span {
+  transform: translateX(18px);
+}
+.lg-custom {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  color: var(--dsw-alias-label-tertiary);
+  font-size: 11px;
+}
+.lg-custom input {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  cursor: pointer;
+}
+.lg-expressions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin: 4px 0 2px;
+}
+.lg-expression {
+  padding: 2px;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 0 0.5px color-mix(in srgb, var(--dsw-alias-label-primary) 12%, transparent);
+  transition: transform 200ms var(--lg-ease-spring), box-shadow 200ms var(--lg-ease-glide);
+}
+.lg-expression img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: contain;
+  pointer-events: none;
+}
+.lg-expression:hover {
+  transform: translateY(-1px);
+}
+.lg-expression.is-active {
+  box-shadow: inset 0 0 0 1px var(--lg-accent), 0 4px 14px color-mix(in srgb, var(--lg-accent) 26%, transparent);
+}
+
+/* Drop-in skin packs (`<DSH_HOME>/liuguang-packs/<id>/`). */
+.liuguang-packs {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.liuguang-packs-label {
+  color: var(--dsw-alias-label-tertiary);
+  font-size: 11px;
+}
+.liuguang-packs-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.liuguang-pack-chip {
+  padding: 3px 9px;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  color: var(--dsw-alias-label-secondary);
+  background-color: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 0 0.5px color-mix(in srgb, var(--dsw-alias-label-primary) 12%, transparent);
+  font-size: 11px;
+}
+.liuguang-pack-chip.is-active {
+  color: var(--dsw-alias-label-primary);
+  background-color: color-mix(in srgb, var(--lg-accent) 24%, transparent);
+  box-shadow: inset 0 0 0 1px var(--lg-accent-fill, var(--lg-accent));
+}
+.lg-about p {
+  margin: 2px 0;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 11px;
+  line-height: 17px;
+}
+.lg-about .lg-dim {
+  color: var(--dsw-alias-label-tertiary);
+}
+
+/* Pet: size knob + sleepy state + always-on bubble when a line is shown. */
+.lg-pet {
+  width: calc(120px * var(--lg-pet-scale, 1));
+  height: calc(120px * var(--lg-pet-scale, 1));
+}
+.lg-pet.is-sleepy .lg-pet-body {
+  animation-duration: 8s;
+  filter: saturate(0.85) brightness(0.95);
+}
+.lg-bubble {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html body [data-composer-card]::after {
+    display: none;
+  }
+}
+
+/* =====================================================================
+   Layer 7: base styles (墨银 / 深海 / 暖砂), generated by tools/palette.mjs.
+   Authored in OKLCH, emitted as sRGB; run `node tools/palette.mjs --check`
+   to audit WCAG contrast for every text/UI pair.
+   ===================================================================== */
+
+/* >>> generated: palettes */
+/* 墨银 (graphite) */
+html[data-lg-style='graphite'] body[data-ds-dark-theme] {
+  --dsw-alias-bg-base: #0e0d0b;
+  --dsw-alias-bg-layer-1: #171614;
+  --dsw-alias-bg-layer-2: #201e1b;
+  --dsw-alias-bg-layer-3: #272522;
+  --dsw-alias-bg-overlay: #201e1b;
+  --dsw-alias-bg-module-platform: #201e1b;
+  --dsw-alias-bg-multi-select: #201e1b;
+  --dsw-specific-sidebar-fill: #141211;
+  --dsw-specific-input-major: #1b1917;
+  --dsw-specific-selector: #201e1b;
+  --dsw-specific-tip: #201e1b;
+  --dsw-specific-bubble: #201e1b;
+  --dsw-specific-bubble-highlight: #272522;
+  --dsw-alias-label-primary: #edebe7;
+  --dsw-alias-label-secondary: #bab7b2;
+  --dsw-alias-label-tertiary: #95928b;
+  --lg-accent: #d1b783;
+  --lg-accent-2: #e7d6b3;
+  --lg-accent-fill: #856b2f;
+}
+html[data-lg-style='graphite'] body:not([data-ds-dark-theme]) {
+  --dsw-alias-bg-base: #f6f4f1;
+  --dsw-alias-bg-layer-1: #ffffff;
+  --dsw-alias-bg-layer-2: #fbfaf8;
+  --dsw-alias-bg-layer-3: #ffffff;
+  --dsw-alias-bg-overlay: #fbfaf8;
+  --dsw-alias-bg-module-platform: #fbfaf8;
+  --dsw-alias-bg-multi-select: #fbfaf8;
+  --dsw-specific-sidebar-fill: #efece8;
+  --dsw-specific-input-major: #ffffff;
+  --dsw-specific-selector: #fbfaf8;
+  --dsw-specific-tip: #fbfaf8;
+  --dsw-specific-bubble: #fbfaf8;
+  --dsw-specific-bubble-highlight: #ffffff;
+  --dsw-alias-label-primary: #221f19;
+  --dsw-alias-label-secondary: #514c46;
+  --dsw-alias-label-tertiary: #75716b;
+  --lg-accent: #8d6b2d;
+  --lg-accent-2: #af9466;
+  --lg-accent-fill: #7b5600;
+}
+/* 深海 (ocean) */
+html[data-lg-style='ocean'] body[data-ds-dark-theme] {
+  --dsw-alias-bg-base: #050c14;
+  --dsw-alias-bg-layer-1: #0e1722;
+  --dsw-alias-bg-layer-2: #16202c;
+  --dsw-alias-bg-layer-3: #1d2734;
+  --dsw-alias-bg-overlay: #16202c;
+  --dsw-alias-bg-module-platform: #16202c;
+  --dsw-alias-bg-multi-select: #16202c;
+  --dsw-specific-sidebar-fill: #09111b;
+  --dsw-specific-input-major: #101924;
+  --dsw-specific-selector: #16202c;
+  --dsw-specific-tip: #16202c;
+  --dsw-specific-bubble: #16202c;
+  --dsw-specific-bubble-highlight: #1d2734;
+  --dsw-alias-label-primary: #e5ecf3;
+  --dsw-alias-label-secondary: #aeb9c4;
+  --dsw-alias-label-tertiary: #8794a1;
+  --lg-accent: #53b6eb;
+  --lg-accent-2: #91dbf2;
+  --lg-accent-fill: #0070ab;
+}
+html[data-lg-style='ocean'] body:not([data-ds-dark-theme]) {
+  --dsw-alias-bg-base: #eef4fb;
+  --dsw-alias-bg-layer-1: #ffffff;
+  --dsw-alias-bg-layer-2: #f6fbff;
+  --dsw-alias-bg-layer-3: #ffffff;
+  --dsw-alias-bg-overlay: #f6fbff;
+  --dsw-alias-bg-module-platform: #f6fbff;
+  --dsw-alias-bg-multi-select: #f6fbff;
+  --dsw-specific-sidebar-fill: #e2ecf7;
+  --dsw-specific-input-major: #ffffff;
+  --dsw-specific-selector: #f6fbff;
+  --dsw-specific-tip: #f6fbff;
+  --dsw-specific-bubble: #f6fbff;
+  --dsw-specific-bubble-highlight: #ffffff;
+  --dsw-alias-label-primary: #182230;
+  --dsw-alias-label-secondary: #455160;
+  --dsw-alias-label-tertiary: #6a7684;
+  --lg-accent: #1777b8;
+  --lg-accent-2: #54a2cd;
+  --lg-accent-fill: #005fa3;
+}
+/* 暖砂 (sand) */
+html[data-lg-style='sand'] body[data-ds-dark-theme] {
+  --dsw-alias-bg-base: #100b07;
+  --dsw-alias-bg-layer-1: #1b1510;
+  --dsw-alias-bg-layer-2: #241c17;
+  --dsw-alias-bg-layer-3: #2b241d;
+  --dsw-alias-bg-overlay: #241c17;
+  --dsw-alias-bg-module-platform: #241c17;
+  --dsw-alias-bg-multi-select: #241c17;
+  --dsw-specific-sidebar-fill: #16100c;
+  --dsw-specific-input-major: #1d1712;
+  --dsw-specific-selector: #241c17;
+  --dsw-specific-tip: #241c17;
+  --dsw-specific-bubble: #241c17;
+  --dsw-specific-bubble-highlight: #2b241d;
+  --dsw-alias-label-primary: #f1eae3;
+  --dsw-alias-label-secondary: #c0b5aa;
+  --dsw-alias-label-tertiary: #9b9084;
+  --lg-accent: #e1a263;
+  --lg-accent-2: #f0ca96;
+  --lg-accent-fill: #9a5a00;
+}
+html[data-lg-style='sand'] body:not([data-ds-dark-theme]) {
+  --dsw-alias-bg-base: #f9f3eb;
+  --dsw-alias-bg-layer-1: #ffffff;
+  --dsw-alias-bg-layer-2: #fef9f4;
+  --dsw-alias-bg-layer-3: #ffffff;
+  --dsw-alias-bg-overlay: #fef9f4;
+  --dsw-alias-bg-module-platform: #fef9f4;
+  --dsw-alias-bg-multi-select: #fef9f4;
+  --dsw-specific-sidebar-fill: #f3e9df;
+  --dsw-specific-input-major: #ffffff;
+  --dsw-specific-selector: #fef9f4;
+  --dsw-specific-tip: #fef9f4;
+  --dsw-specific-bubble: #fef9f4;
+  --dsw-specific-bubble-highlight: #ffffff;
+  --dsw-alias-label-primary: #282018;
+  --dsw-alias-label-secondary: #594e43;
+  --dsw-alias-label-tertiary: #7d7268;
+  --lg-accent: #a25f12;
+  --lg-accent-2: #c08d50;
+  --lg-accent-fill: #8f4800;
+}
+/* <<< generated: palettes */
+
+/* Motion preference scales the style's own glow instead of replacing it. */
+html[data-lg-motion='none'] body::before {
+  opacity: 0 !important;
+  animation: none !important;
+}
+html[data-lg-motion='subtle'] body::before {
+  opacity: calc(var(--lg-drift-opacity, 0.4) * 0.7);
+  animation-duration: 96s !important;
+}
+
+/* =====================================================================
+   Layer 8: flat glass.
+   No decorative gradients and no outer halos: every surface is a flat
+   translucent pane, and the light lives *inside* it — a specular line at
+   the top plus a soft inner glow, like light caught in a glass bead.
+   ===================================================================== */
+
+/* Flat canvas: the drifting light field and the gradient wash are gone. */
+html body::before {
+  display: none;
+}
+html body {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='0.18'/></svg>");
+  background-blend-mode: normal;
+}
+
+/* Typography and chips: solid ink instead of gradient text. */
+html body [class*='titleGroup'] > span:not([class*='previewBadge']) {
+  background-image: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  color: var(--dsw-alias-label-primary);
+  -webkit-text-fill-color: currentColor;
+}
+html body [class*='previewBadge'] {
+  background-image: none;
+  background-color: color-mix(in srgb, var(--lg-accent) 16%, transparent);
+  color: var(--lg-accent);
+  border: 0.5px solid color-mix(in srgb, var(--lg-accent) 45%, transparent);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+/* Sidebar: one flat pane with an inner top light and a hairline seam. */
+html body [data-slot='sidebar'] > div {
+  background-image: none;
+  background-color: color-mix(in srgb, var(--dsw-specific-sidebar-fill) 86%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--dsw-alias-label-primary) 8%, transparent),
+    inset -1px 0 0 color-mix(in srgb, var(--dsw-alias-label-primary) 8%, transparent);
+}
+html body [data-slot='sidebar'] button:has(kbd) {
+  background-image: none;
+  background-color: color-mix(in srgb, var(--dsw-alias-label-primary) 6%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 0 0 0.5px color-mix(in srgb, var(--dsw-alias-label-primary) 12%, transparent),
+    inset 0 0 28px -14px color-mix(in srgb, var(--lg-accent) 45%, transparent);
+}
+
+/* Composer: flat pane, inner glow, no rim gradient. */
+html body [data-composer-card] {
+  background-image: none;
+  background-color: color-mix(in srgb, var(--dsw-specific-input-major) 84%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 0 0 0.5px color-mix(in srgb, var(--dsw-alias-label-primary) 14%, transparent),
+    inset 0 0 46px -12px color-mix(in srgb, var(--lg-accent) 28%, transparent),
+    inset 0 -20px 34px -26px rgba(0, 0, 0, 0.55);
+}
+html body [data-composer-card]::before {
+  display: none;
+}
+html body [data-composer-card]:focus-within {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 0 0 0.5px color-mix(in srgb, var(--lg-accent) 55%, transparent),
+    inset 0 0 58px -10px color-mix(in srgb, var(--lg-accent) 42%, transparent);
+}
+
+/* Send button: a solid glass bead — no gradient, light trapped inside.
+   The fill is audited separately from the accent so white content keeps AA. */
+html body button:is([aria-label='发送消息'], [aria-label='Send message']) {
+  background-image: none;
+  background-color: var(--lg-accent-fill, var(--lg-accent));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 0 18px -2px rgba(255, 255, 255, 0.5),
+    inset 0 0 26px -8px color-mix(in srgb, var(--lg-accent) 85%, transparent);
+}
+html body button:is([aria-label='发送消息'], [aria-label='Send message'])::after {
+  display: none;
+}
+html body button:is([aria-label='发送消息'], [aria-label='Send message']):hover:not(:disabled) {
+  transform: translateY(-1px) scale(1.04);
+  filter: none;
+  background-color: color-mix(in srgb, var(--lg-accent-fill, var(--lg-accent)) 88%, white 12%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 0 22px -2px rgba(255, 255, 255, 0.55),
+    inset 0 0 30px -8px color-mix(in srgb, var(--lg-accent) 90%, transparent);
+}
+html body button:is([aria-label='发送消息'], [aria-label='Send message']):disabled {
+  filter: saturate(0.2) opacity(0.7);
+  box-shadow: inset 0 0 0 0.5px color-mix(in srgb, var(--dsw-alias-label-primary) 16%, transparent);
+}
+
+/* Panels, dialogs, launcher: same bead treatment. */
+.lg-panel,
+html body [role='dialog'][aria-modal='true'],
+.lg-launcher,
+.lg-expression,
+.lg-segment,
+.lg-tabs {
+  background-image: none;
+}
+.lg-panel {
+  background-color: color-mix(in srgb, var(--dsw-alias-bg-layer-2) 88%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 0 0 0.5px color-mix(in srgb, var(--dsw-alias-label-primary) 14%, transparent),
+    inset 0 0 40px -14px color-mix(in srgb, var(--lg-accent) 34%, transparent);
+}
+html body [role='dialog'][aria-modal='true'] {
+  background-color: color-mix(in srgb, var(--dsw-alias-bg-layer-2) 88%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 0 0 0.5px color-mix(in srgb, var(--dsw-alias-label-primary) 14%, transparent),
+    inset 0 0 52px -16px color-mix(in srgb, var(--lg-accent) 30%, transparent);
+}
+.lg-launcher {
+  background-color: color-mix(in srgb, var(--dsw-alias-bg-layer-2) 70%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 0 0 0.5px color-mix(in srgb, var(--dsw-alias-label-primary) 16%, transparent),
+    inset 0 0 22px -8px color-mix(in srgb, var(--lg-accent) 40%, transparent);
+}
+
+/* Session rows keep the flat selected pill (no glow halo). */
+html body [role='treeitem'][aria-selected='true'] {
+  box-shadow: inset 2px 0 0 var(--lg-accent);
+}
+
+/* The top seam was a gradient; drop it. */
+html body::after {
+  display: none;
+}
+
+/* Menus keep their theme material; only the specular line stays. */
+html body [data-menu-material] {
+  box-shadow:
+    var(--dsw-elevation-stroke, 0 0 0 0.5px var(--dsw-alias-border-l3)),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+/* Pet bubble: flat pane with an inner light. */
+.lg-bubble {
+  background-color: color-mix(in srgb, var(--dsw-alias-bg-layer-2) 90%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 0 0 0.5px color-mix(in srgb, var(--dsw-alias-label-primary) 14%, transparent);
+}
+
+/* Dark-mode parity: the original `body[data-ds-dark-theme]` rules outrank the
+   flat pass, so repeat the same overrides with the dark attribute. */
+html body[data-ds-dark-theme] [class*='titleGroup'] > span:not([class*='previewBadge']) {
+  background-image: none;
+  color: var(--dsw-alias-label-primary);
+  -webkit-text-fill-color: currentColor;
+}
+html body[data-ds-dark-theme] [class*='previewBadge'] {
+  background-image: none;
+  color: var(--lg-accent);
+}
+html body[data-ds-dark-theme] [data-slot='sidebar'] > div {
+  background-image: none;
+  background-color: color-mix(in srgb, var(--dsw-specific-sidebar-fill) 86%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--dsw-alias-label-primary) 8%, transparent),
+    inset -1px 0 0 color-mix(in srgb, var(--dsw-alias-label-primary) 8%, transparent);
+}
+html body[data-ds-dark-theme] [data-composer-card] {
+  background-image: none;
+  background-color: color-mix(in srgb, var(--dsw-specific-input-major) 84%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 0 0 0.5px color-mix(in srgb, var(--dsw-alias-label-primary) 14%, transparent),
+    inset 0 0 46px -12px color-mix(in srgb, var(--lg-accent) 30%, transparent),
+    inset 0 -20px 34px -26px rgba(0, 0, 0, 0.55);
+}
+html body[data-ds-dark-theme] [data-composer-card]:focus-within {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 0 0 0.5px color-mix(in srgb, var(--lg-accent) 55%, transparent),
+    inset 0 0 58px -10px color-mix(in srgb, var(--lg-accent) 44%, transparent);
+}
+html body[data-ds-dark-theme] button:is([aria-label='发送消息'], [aria-label='Send message']):disabled {
+  filter: saturate(0.2) opacity(0.7);
+  box-shadow: inset 0 0 0 0.5px color-mix(in srgb, var(--dsw-alias-label-primary) 16%, transparent);
+}
+
+/* =====================================================================
+   Layer 9: 苏联构成主义 / Soviet Constructivism design language.
+   A second, unrelated language: flat poster surfaces, cream + ink + red,
+   hard rectangles, heavy rules and solid offset shadows. No blur, no
+   gradient wash, no glow — the opposite of the glass language.
+   Namespaced by html[data-lg-language='constructivist'].
+   ===================================================================== */
+
+html[data-lg-language='constructivist'] {
+  --lg-red: #c0301c;
+  --lg-ochre: #d9a62e;
+  --lg-ink: #121110;
+  --lg-paper: #efe6d2;
+}
+
+/* The whole radius scale collapses: chips, menus, dialogs and cards square up
+   wherever the app reads its own radius tokens, not just in our own widgets. */
+html[data-lg-language='constructivist'] body {
+  --dsw-radius-xs: 1px;
+  --dsw-radius-sm: 2px;
+  --dsw-radius-md: 2px;
+  --dsw-radius-lg: 2px;
+  --dsw-radius-xl: 2px;
+  --dsw-radius-panel: 2px;
+  --dsh-windows-content-radius: 2px;
+}
+
+html[data-lg-language='constructivist'] body:not([data-ds-dark-theme]) {
+  --dsw-alias-bg-base: #efe6d2;
+  --dsw-alias-bg-layer-1: #f6efe0;
+  --dsw-alias-bg-layer-2: #efe6d2;
+  --dsw-alias-bg-layer-3: #faf5e9;
+  --dsw-alias-bg-overlay: #f6efe0;
+  --dsw-alias-bg-module-platform: #e7dcc5;
+  --dsw-alias-bg-multi-select: #e7dcc5;
+  --dsw-specific-sidebar-fill: #e7dcc5;
+  --dsw-specific-input-major: #f6efe0;
+  --dsw-specific-selector: #e7dcc5;
+  --dsw-specific-tip: #121110;
+  --dsw-specific-bubble: #f6efe0;
+  --dsw-specific-bubble-highlight: #e7dcc5;
+  --dsw-alias-label-primary: #121110;
+  --dsw-alias-label-secondary: #3d372b;
+  --dsw-alias-label-tertiary: #6b6252;
+  --dsw-alias-border-l3: rgba(18, 17, 16, 0.28);
+  --lg-accent: #c0301c;
+  --lg-accent-2: #d9a62e;
+  --lg-accent-fill: #a82615;
+}
+
+html[data-lg-language='constructivist'] body[data-ds-dark-theme] {
+  --dsw-alias-bg-base: #141210;
+  --dsw-alias-bg-layer-1: #1c1916;
+  --dsw-alias-bg-layer-2: #221e1a;
+  --dsw-alias-bg-layer-3: #29241f;
+  --dsw-alias-bg-overlay: #221e1a;
+  --dsw-alias-bg-module-platform: #1a1714;
+  --dsw-alias-bg-multi-select: #29241f;
+  --dsw-specific-sidebar-fill: #0f0e0c;
+  --dsw-specific-input-major: #1e1a16;
+  --dsw-specific-selector: #29241f;
+  --dsw-specific-tip: #f2e8d4;
+  --dsw-specific-bubble: #221e1a;
+  --dsw-specific-bubble-highlight: #29241f;
+  --dsw-alias-label-primary: #f2e8d4;
+  --dsw-alias-label-secondary: #cfc2a8;
+  --dsw-alias-label-tertiary: #9d9280;
+  --dsw-alias-border-l3: rgba(242, 232, 212, 0.3);
+  --lg-red: #e04a2f;
+  --lg-ochre: #e0b33a;
+  --lg-ink: #f2e8d4;
+  --lg-paper: #1e1a16;
+  --lg-accent: #e04a2f;
+  --lg-accent-2: #e0b33a;
+  --lg-accent-fill: #b5351f;
+}
+
+/* A printed grid on the page, not a gradient wash. */
+html[data-lg-language='constructivist'] body {
+  background-image: repeating-linear-gradient(0deg,
+    transparent 0 47px,
+    rgba(128, 112, 88, 0.055) 47px 48px);
+  background-blend-mode: normal;
+}
+
+/* Sidebar: cream block, heavy rule on the right. */
+html[data-lg-language='constructivist'] body [data-slot='sidebar'] > div {
+  background-image: none;
+  background-color: var(--dsw-specific-sidebar-fill);
+  border-radius: 0;
+  box-shadow: inset -3px 0 0 var(--lg-ink);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* New-session pill becomes a stamped block. */
+html[data-lg-language='constructivist'] body [data-slot='sidebar'] button:has(kbd) {
+  border-radius: 2px;
+  background-image: none;
+  background-color: var(--dsw-alias-bg-layer-1);
+  box-shadow:
+    inset 0 0 0 2px var(--lg-ink),
+    4px 4px 0 0 var(--lg-ink);
+}
+html[data-lg-language='constructivist'] body [data-slot='sidebar'] button:has(kbd):hover {
+  background-color: var(--lg-ochre);
+}
+
+/* Selected session: red poster block. */
+html[data-lg-language='constructivist'] body [role='treeitem'][aria-selected='true'] {
+  border-radius: 0;
+  background-color: var(--lg-red);
+  color: #f6efe0;
+  box-shadow: none;
+}
+html[data-lg-language='constructivist'] body [role='treeitem'][aria-selected='true'] * {
+  color: #f6efe0 !important;
+}
+
+/* Composer: the hero poster — cream block, 2px ink frame, solid offset shadow.
+   No decorative red stripe: the red only appears as a state signal (the frame
+   and the offset shadow turn red while the composer has focus). */
+html[data-lg-language='constructivist'] body [data-composer-card] {
+  border-radius: 2px;
+  background-image: none;
+  background-color: var(--dsw-specific-input-major);
+  position: relative;
+  box-shadow:
+    inset 0 0 0 2px var(--lg-ink),
+    10px 10px 0 0 var(--lg-ink);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+html[data-lg-language='constructivist'] body [data-composer-card]::before {
+  display: none;
+}
+html[data-lg-language='constructivist'] body [data-composer-card]::after {
+  display: none;
+}
+html[data-lg-language='constructivist'] body [data-composer-card]:focus-within {
+  box-shadow:
+    inset 0 0 0 2px var(--lg-red),
+    10px 10px 0 0 var(--lg-red);
+}
+
+/* Send button: red square with a hard shadow. */
+html[data-lg-language='constructivist'] body button:is([aria-label='发送消息'], [aria-label='Send message']) {
+  border-radius: 2px;
+  background-color: var(--lg-red);
+  color: #f6efe0;
+  box-shadow:
+    inset 0 0 0 2px var(--lg-ink),
+    3px 3px 0 0 var(--lg-ink);
+}
+html[data-lg-language='constructivist'] body button:is([aria-label='发送消息'], [aria-label='Send message']):hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+  background-color: var(--lg-ochre);
+  box-shadow:
+    inset 0 0 0 2px var(--lg-ink),
+    5px 5px 0 0 var(--lg-ink);
+}
+html[data-lg-language='constructivist'] body button:is([aria-label='发送消息'], [aria-label='Send message']):disabled {
+  background-color: var(--dsw-alias-bg-module-platform);
+  box-shadow: inset 0 0 0 2px var(--dsw-alias-label-tertiary);
+  filter: none;
+}
+
+/* Hero title: heavy, tight, poster-like; badge becomes a red stamp. */
+html[data-lg-language='constructivist'] body [class*='titleGroup'] > span:not([class*='previewBadge']) {
+  font-weight: 900;
+  letter-spacing: 0.01em;
+  text-transform: none;
+}
+html[data-lg-language='constructivist'] body [class*='previewBadge'],
+html[data-lg-language='constructivist'] body[data-ds-dark-theme] [class*='previewBadge'] {
+  border-radius: 0;
+  border: 2px solid var(--lg-ink);
+  background-color: var(--lg-red);
+  color: #f6efe0;
+  box-shadow: 3px 3px 0 0 var(--lg-ink);
+  letter-spacing: 0.08em;
+}
+
+/* Dialogs and menus: cut-paper panels. */
+html[data-lg-language='constructivist'] body [role='dialog'][aria-modal='true'] {
+  border-radius: 2px;
+  background-image: none;
+  background-color: var(--dsw-alias-bg-layer-1);
+  box-shadow:
+    inset 0 0 0 3px var(--lg-ink),
+    14px 14px 0 0 var(--lg-ink);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+html[data-lg-language='constructivist'] body [data-menu-material] {
+  border-radius: 2px;
+  background-color: var(--dsw-alias-bg-layer-1);
+  box-shadow:
+    inset 0 0 0 2px var(--lg-ink),
+    6px 6px 0 0 rgba(18, 17, 16, 0.55);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* Personalization panel: same language. */
+html[data-lg-language='constructivist'] .lg-panel {
+  border-radius: 2px;
+  background-image: none;
+  background-color: var(--dsw-alias-bg-layer-1);
+  box-shadow:
+    inset 0 0 0 3px var(--lg-ink),
+    10px 10px 0 0 var(--lg-ink);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+html[data-lg-language='constructivist'] .lg-panel-title {
+  border-bottom: 2px solid var(--lg-ink);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+html[data-lg-language='constructivist'] .lg-tabs {
+  border-radius: 0;
+  background-color: transparent;
+  box-shadow: none;
+  border-bottom: 2px solid var(--lg-ink);
+  padding: 0;
+  gap: 0;
+}
+html[data-lg-language='constructivist'] .lg-tab {
+  border-radius: 0;
+  padding: 6px 0;
+  letter-spacing: 0.1em;
+}
+html[data-lg-language='constructivist'] .lg-tab.is-active {
+  background-color: var(--lg-red);
+  color: #f6efe0;
+  box-shadow: none;
+}
+html[data-lg-language='constructivist'] .lg-segment,
+html[data-lg-language='constructivist'] .lg-tabs,
+html[data-lg-language='constructivist'] .lg-expression,
+html[data-lg-language='constructivist'] .lg-launcher,
+html[data-lg-language='constructivist'] .lg-swatch {
+  border-radius: 2px;
+}
+html[data-lg-language='constructivist'] .lg-segment {
+  background-color: var(--dsw-alias-bg-layer-2);
+  box-shadow: inset 0 0 0 2px var(--lg-ink);
+}
+html[data-lg-language='constructivist'] .lg-seg {
+  border-radius: 0;
+  letter-spacing: 0.06em;
+}
+html[data-lg-language='constructivist'] .lg-seg.is-active {
+  background-color: var(--lg-ink);
+  color: var(--dsw-alias-bg-base);
+  box-shadow: none;
+}
+html[data-lg-language='constructivist'] .lg-swatch {
+  border-radius: 0;
+  box-shadow: 0 0 0 2px var(--lg-ink);
+}
+html[data-lg-language='constructivist'] .lg-swatch.is-active {
+  box-shadow: 0 0 0 2px var(--lg-ink), 0 0 0 5px var(--lg-red);
+}
+html[data-lg-language='constructivist'] .lg-launcher {
+  border-radius: 2px;
+  background-color: var(--lg-red);
+  color: #f6efe0;
+  box-shadow:
+    inset 0 0 0 2px var(--lg-ink),
+    4px 4px 0 0 var(--lg-ink);
+}
+html[data-lg-language='constructivist'] .lg-expression {
+  border-radius: 2px;
+  background-color: var(--dsw-alias-bg-layer-2);
+  box-shadow: inset 0 0 0 2px var(--lg-ink);
+}
+html[data-lg-language='constructivist'] .lg-expression.is-active {
+  box-shadow: inset 0 0 0 2px var(--lg-red), 3px 3px 0 0 var(--lg-red);
+}
+html[data-lg-language='constructivist'] .lg-range {
+  accent-color: var(--lg-red);
+}
+html[data-lg-language='constructivist'] .lg-toggle {
+  border-radius: 2px;
+  background-color: var(--dsw-alias-bg-layer-2);
+  box-shadow: inset 0 0 0 2px var(--lg-ink);
+}
+html[data-lg-language='constructivist'] .lg-toggle span {
+  border-radius: 0;
+}
+html[data-lg-language='constructivist'] .lg-toggle.is-on {
+  background-color: var(--lg-red);
+}
+html[data-lg-language='constructivist'] .lg-pack-chip,
+html[data-lg-language='constructivist'] .lg-reset {
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 2px var(--lg-ink);
+}
+html[data-lg-language='constructivist'] .lg-pack-chip.is-active {
+  background-color: var(--lg-red);
+  color: #f6efe0;
+  box-shadow: inset 0 0 0 2px var(--lg-ink), 2px 2px 0 0 var(--lg-ink);
+}
+
+/* Pet bubble: paper note with a cut shadow. */
+html[data-lg-language='constructivist'] .lg-bubble {
+  border-radius: 2px;
+  background-color: var(--dsw-alias-bg-layer-1);
+  box-shadow:
+    inset 0 0 0 2px var(--lg-ink),
+    4px 4px 0 0 var(--lg-ink);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* Kill the remaining glass affordances in this language. */
+html[data-lg-language='constructivist'] body * {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+html[data-lg-language='constructivist'] body [data-composer-card],
+html[data-lg-language='constructivist'] body [data-slot='sidebar'] > div {
+  backdrop-filter: none !important;
+}
+
+/* Poster details: marker underline on the headline, ink-outline disabled state. */
+html[data-lg-language='constructivist'] body [class*='titleGroup'] > span:not([class*='previewBadge']) {
+  text-decoration: underline 6px var(--lg-red);
+  text-underline-offset: 8px;
+  text-decoration-skip-ink: none;
+}
+/* Disabled send: a muted red stamp, not an empty outline box. */
+html[data-lg-language='constructivist'] body button:is([aria-label='发送消息'], [aria-label='Send message']):disabled {
+  background-color: color-mix(in srgb, var(--lg-red) 42%, var(--dsw-alias-bg-module-platform));
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--lg-ink) 70%, transparent);
+  filter: none;
+  opacity: 1;
+}
+html[data-lg-language='constructivist'] .lg-pet-body,
+html[data-lg-language='constructivist'] .lg-pet {
+  filter: none;
+}
+
+/* ---------------------------------------------------------------------
+   Constructivism v2 — poster furniture.
+   Giant numeral, masthead stripe, annotated composer, paper code blocks,
+   hard focus ring, ruled title bar.
+   --------------------------------------------------------------------- */
+
+/* Poster index number, kept small: a caption above the pet corner, not a
+   watermark across the workspace. */
+html[data-lg-language='constructivist'] .lg-layer::before {
+  content: var(--lg-no, '01');
+  display: block;
+  position: fixed;
+  right: 26px;
+  bottom: calc(var(--lg-pet-scale, 1) * 120px + 40px);
+  font-size: 30px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  color: color-mix(in srgb, var(--lg-ink) 24%, transparent);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Masthead stripe across the top of the window. */
+html[data-lg-language='constructivist'] body::after {
+  content: '';
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: var(--lg-red);
+  z-index: 40;
+  pointer-events: none;
+}
+
+/* Red rule under the panel masthead. */
+html[data-lg-language='constructivist'] .lg-panel-title {
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--lg-red);
+}
+
+/* Corner stamp: a live clock or the model name (set by the browser half). */
+html[data-lg-language='constructivist'] body [data-composer-card]::after {
+  content: var(--lg-stamp, 'LIUGUANG');
+  display: block;
+  position: absolute;
+  inset: auto;
+  right: 12px;
+  top: -9px;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  padding: 1px 6px 2px;
+  background: var(--lg-ink);
+  background-image: none;
+  color: var(--lg-paper);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  line-height: 14px;
+  opacity: 1;
+  pointer-events: none;
+}
+
+/* Paper code blocks and inline code. */
+html[data-lg-language='constructivist'] body {
+  --dsw-alias-markdown-code-block: color-mix(in srgb, var(--dsw-alias-bg-module-platform) 88%, var(--lg-ink));
+  --dsw-alias-markdown-code-block-banner: var(--dsw-alias-bg-module-platform);
+  --dsw-alias-markdown-inline-code: var(--dsw-alias-bg-module-platform);
+  --dsw-alias-markdown-tag: var(--dsw-alias-bg-module-platform);
+  --dsw-alias-markdown-citation: var(--dsw-alias-bg-module-platform);
+  --dsw-specific-bubble: var(--dsw-alias-bg-layer-1);
+  --dsw-specific-bubble-highlight: color-mix(in srgb, var(--lg-ochre) 20%, var(--dsw-alias-bg-layer-1));
+}
+
+/* Hard focus language: no rounded glow, just a red outline.
+   Scoped to real controls so dialogs and headings do not get boxed. */
+html[data-lg-language='constructivist'] body :is(a, button, input, textarea, select, summary, [role='button'], [contenteditable='true']):focus-visible {
+  outline: 3px solid var(--lg-red);
+  outline-offset: 2px;
+}
+
+/* Sidebar and header controls: square hit areas. */
+html[data-lg-language='constructivist'] body [data-slot='sidebar'] button,
+html[data-lg-language='constructivist'] body [data-window-drag] button,
+html[data-lg-language='constructivist'] body [data-conversation-header-corner] button,
+html[data-lg-language='constructivist'] body [data-conversation-header-leading] button,
+html[data-lg-language='constructivist'] body [data-composer-card] button {
+  border-radius: 2px;
+}
+html[data-lg-language='constructivist'] body [data-slot='sidebar'] button:hover,
+html[data-lg-language='constructivist'] body [data-window-drag] button:hover,
+html[data-lg-language='constructivist'] body [data-composer-card] button:hover {
+  background-color: color-mix(in srgb, var(--lg-red) 16%, transparent);
+}
+
+/* The title bar sits on a ruled line instead of floating on glass. */
+html[data-lg-language='constructivist'] body [data-window-drag] {
+  border-bottom: 2px solid color-mix(in srgb, var(--lg-ink) 30%, transparent);
+}
+
+/* =====================================================================
+   Constructivism v3 — print-shop options.
+   The constructivist language owns its own knobs: paper stock, spot ink,
+   grid density, poster number, corner stamp, geometric motif and display
+   tracking. None of the glass material knobs apply here.
+   ===================================================================== */
+
+/* --- paper stock -------------------------------------------------- */
+html[data-lg-language='constructivist'][data-lg-paper='ash'] body:not([data-ds-dark-theme]) {
+  --dsw-alias-bg-base: #e9e7e2;
+  --dsw-alias-bg-layer-1: #f4f3ef;
+  --dsw-alias-bg-layer-2: #e9e7e2;
+  --dsw-alias-bg-layer-3: #fbfaf7;
+  --dsw-alias-bg-module-platform: #dedbd4;
+  --dsw-specific-sidebar-fill: #dedbd4;
+  --dsw-specific-input-major: #f4f3ef;
+  --dsw-specific-bubble: #f4f3ef;
+  --dsw-alias-label-primary: #121110;
+  --dsw-alias-label-secondary: #3d3a34;
+  --dsw-alias-label-tertiary: #6d6a62;
+  --lg-paper: #f4f3ef;
+}
+html[data-lg-language='constructivist'][data-lg-paper='ash'] body[data-ds-dark-theme] {
+  --dsw-alias-bg-base: #151517;
+  --dsw-alias-bg-layer-1: #1d1c1f;
+  --dsw-alias-bg-layer-2: #242327;
+  --dsw-alias-bg-module-platform: #1a191c;
+  --dsw-specific-sidebar-fill: #111113;
+  --dsw-specific-input-major: #1f1e21;
+  --dsw-specific-bubble: #242327;
+  --dsw-alias-label-primary: #f1efea;
+  --dsw-alias-label-secondary: #cbc7bf;
+  --dsw-alias-label-tertiary: #9a968d;
+  --lg-paper: #1f1e21;
+  --lg-ink: #f1efea;
+}
+html[data-lg-language='constructivist'][data-lg-paper='kraft'] body:not([data-ds-dark-theme]) {
+  --dsw-alias-bg-base: #e2cda6;
+  --dsw-alias-bg-layer-1: #eedbb8;
+  --dsw-alias-bg-layer-2: #e2cda6;
+  --dsw-alias-bg-layer-3: #f4e6c9;
+  --dsw-alias-bg-module-platform: #d6bf95;
+  --dsw-specific-sidebar-fill: #d6bf95;
+  --dsw-specific-input-major: #eedbb8;
+  --dsw-specific-bubble: #eedbb8;
+  --dsw-alias-label-primary: #221a10;
+  --dsw-alias-label-secondary: #4a3a26;
+  --dsw-alias-label-tertiary: #7a6448;
+  --lg-paper: #eedbb8;
+}
+html[data-lg-language='constructivist'][data-lg-paper='kraft'] body[data-ds-dark-theme] {
+  --dsw-alias-bg-base: #1b1510;
+  --dsw-alias-bg-layer-1: #241c14;
+  --dsw-alias-bg-layer-2: #2c2218;
+  --dsw-alias-bg-module-platform: #201810;
+  --dsw-specific-sidebar-fill: #150f0a;
+  --dsw-specific-input-major: #271e15;
+  --dsw-specific-bubble: #2c2218;
+  --dsw-alias-label-primary: #f2e6cf;
+  --dsw-alias-label-secondary: #cdbb9d;
+  --dsw-alias-label-tertiary: #9c8a6f;
+  --lg-paper: #271e15;
+  --lg-ink: #f2e6cf;
+}
+html[data-lg-language='constructivist'][data-lg-paper='blue'] body:not([data-ds-dark-theme]) {
+  --dsw-alias-bg-base: #dde6ee;
+  --dsw-alias-bg-layer-1: #e9f0f6;
+  --dsw-alias-bg-layer-2: #dde6ee;
+  --dsw-alias-bg-layer-3: #f2f7fb;
+  --dsw-alias-bg-module-platform: #cfdae5;
+  --dsw-specific-sidebar-fill: #cfdae5;
+  --dsw-specific-input-major: #e9f0f6;
+  --dsw-specific-bubble: #e9f0f6;
+  --dsw-alias-label-primary: #101820;
+  --dsw-alias-label-secondary: #33506a;
+  --dsw-alias-label-tertiary: #5f7590;
+  --lg-paper: #e9f0f6;
+}
+html[data-lg-language='constructivist'][data-lg-paper='blue'] body[data-ds-dark-theme] {
+  --dsw-alias-bg-base: #0f161c;
+  --dsw-alias-bg-layer-1: #16212a;
+  --dsw-alias-bg-layer-2: #1b2833;
+  --dsw-alias-bg-module-platform: #131c24;
+  --dsw-specific-sidebar-fill: #0a1015;
+  --dsw-specific-input-major: #182430;
+  --dsw-specific-bubble: #1b2833;
+  --dsw-alias-label-primary: #e6eef5;
+  --dsw-alias-label-secondary: #b9c9d6;
+  --dsw-alias-label-tertiary: #8b9daa;
+  --lg-paper: #182430;
+  --lg-ink: #e6eef5;
+}
+
+/* --- spot ink ----------------------------------------------------- */
+/* Scrollbars follow the spot ink, not the glass accent. */
+html[data-lg-language='constructivist'] body {
+  --dsw-alias-scrollbar-bg-l1: color-mix(in srgb, var(--lg-ink) 22%, transparent);
+  --dsw-alias-scrollbar-hover-l1: var(--lg-red);
+  --dsw-alias-scrollbar-bg-l2: color-mix(in srgb, var(--lg-ink) 26%, transparent);
+  --dsw-alias-scrollbar-hover-l2: var(--lg-red);
+}
+html[data-lg-language='constructivist'][data-lg-spot='vermilion'] { --lg-red: #d4542f; --lg-accent: #d4542f; --lg-accent-fill: #a93c1d; }
+html[data-lg-language='constructivist'][data-lg-spot='ochre'] { --lg-red: #b5721f; --lg-accent: #b5721f; --lg-accent-fill: #8a5413; }
+html[data-lg-language='constructivist'][data-lg-spot='prussian'] { --lg-red: #1f4e79; --lg-accent: #1f4e79; --lg-accent-fill: #143655; }
+html[data-lg-language='constructivist'][data-lg-spot='ink'] { --lg-red: #141414; --lg-accent: #141414; --lg-accent-fill: #000000; }
+html[data-lg-language='constructivist'][data-lg-spot='vermilion'] body[data-ds-dark-theme] { --lg-red: #e8734f; --lg-accent: #e8734f; }
+html[data-lg-language='constructivist'][data-lg-spot='ochre'] body[data-ds-dark-theme] { --lg-red: #d99a3a; --lg-accent: #d99a3a; }
+html[data-lg-language='constructivist'][data-lg-spot='prussian'] body[data-ds-dark-theme] { --lg-red: #5d9bcc; --lg-accent: #5d9bcc; }
+html[data-lg-language='constructivist'][data-lg-spot='ink'] body[data-ds-dark-theme] { --lg-red: #e8dfcd; --lg-accent: #e8dfcd; --lg-accent-fill: #f6efe0; }
+
+/* --- grid density ------------------------------------------------- */
+html[data-lg-language='constructivist'][data-lg-grid='none'] body {
+  background-image: none;
+}
+html[data-lg-language='constructivist'][data-lg-grid='bold'] body {
+  background-image:
+    repeating-linear-gradient(0deg,
+      transparent 0 95px,
+      color-mix(in srgb, var(--lg-ink) 10%, transparent) 95px 96px),
+    repeating-linear-gradient(90deg,
+      transparent 0 95px,
+      color-mix(in srgb, var(--lg-ink) 7%, transparent) 95px 96px);
+}
+
+/* --- poster number ------------------------------------------------ */
+html[data-lg-language='constructivist'] .lg-layer::before {
+  content: var(--lg-no, '01');
+}
+html[data-lg-language='constructivist'][data-lg-poster='off'] .lg-layer::before {
+  display: none;
+}
+
+/* --- corner stamp ------------------------------------------------- */
+html[data-lg-language='constructivist'][data-lg-stamp='off'] body [data-composer-card]::after {
+  display: none;
+}
+
+/* --- geometric motif --------------------------------------------- */
+html[data-lg-language='constructivist'][data-lg-motif='ring'] .lg-layer::after {
+  content: '';
+  position: fixed;
+  left: 2vw;
+  bottom: 7vh;
+  width: min(30vh, 22vw);
+  aspect-ratio: 1;
+  border: 3px solid var(--lg-red);
+  border-radius: 50%;
+  opacity: 0.35;
+  z-index: -1;
+  pointer-events: none;
+}
+html[data-lg-language='constructivist'][data-lg-motif='diagonal'] .lg-layer::after {
+  content: '';
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: 32vw;
+  z-index: -1;
+  pointer-events: none;
+  background: repeating-linear-gradient(112deg,
+    color-mix(in srgb, var(--lg-red) 8%, transparent) 0 14px,
+    transparent 14px 44px);
+}
+html[data-lg-language='constructivist'][data-lg-motif='none'] .lg-layer::after {
+  display: none;
+}
+
+/* --- display tracking -------------------------------------------- */
+html[data-lg-language='constructivist'][data-lg-tracking='tight'] body [class*='titleGroup'] > span:not([class*='previewBadge']) {
+  letter-spacing: -0.02em;
+}
+html[data-lg-language='constructivist'][data-lg-tracking='wide'] body [class*='titleGroup'] > span:not([class*='previewBadge']) {
+  letter-spacing: 0.08em;
+}
+
+/* --- panel rows for the print knobs ------------------------------ */
+.lg-row-label {
+  flex: 0 0 auto;
+  color: var(--dsw-alias-label-tertiary);
+  font-size: 11px;
+}
+.lg-row-value {
+  flex: 0 0 auto;
+  color: var(--dsw-alias-label-tertiary);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.lg-hint {
+  color: var(--dsw-alias-label-tertiary);
+  font-size: 11px;
+}
+.lg-swatch-flat {
+  box-shadow: inset 0 0 0 0.5px color-mix(in srgb, var(--dsw-alias-label-primary) 22%, transparent);
+}
+html[data-lg-language='constructivist'] .lg-inline {
+  gap: 8px;
+  align-items: center;
+}
+html[data-lg-language='constructivist'] .lg-segment {
+  flex: 1 1 auto;
+  display: flex;
+}
+html[data-lg-language='constructivist'] .lg-seg {
+  flex: 1 1 0;
+  padding: 4px 0;
+  font-size: 11px;
+}
+.lg-group-label {
+  margin: 6px 0 1px;
+  color: var(--dsw-alias-label-tertiary);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.lg-swatches-inline {
+  flex: 1 1 auto;
+  justify-content: flex-end;
+  gap: 6px;
+}
+.lg-swatches-inline .lg-swatch {
+  width: 20px;
+  height: 20px;
+}
+html[data-lg-language='constructivist'] .lg-group-label {
+  border-left: 3px solid var(--lg-red);
+  padding-left: 6px;
+  color: var(--dsw-alias-label-secondary);
+}
+html[data-lg-language='constructivist'] .lg-swatch {
+  width: 24px;
+  height: 24px;
+}
+
+/* =====================================================================
+   Constructivism v4 — measure, column rules, numeral face, red weight.
+   ===================================================================== */
+
+/* Measure guides: a code line-length ruler, not a decorative column grid.
+   Measured in `ch` from the start of the message column; the 120-column rule is
+   printed in the spot ink because past it lines start to wrap. */
+.lg-guides {
+  display: none;
+}
+html[data-lg-language='constructivist'][data-lg-rules='80'] .lg-guides,
+html[data-lg-language='constructivist'][data-lg-rules='120'] .lg-guides,
+html[data-lg-language='constructivist'][data-lg-rules='both'] .lg-guides {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+html[data-lg-language='constructivist'][data-lg-rules='80'] .lg-guides::before,
+html[data-lg-language='constructivist'][data-lg-rules='120'] .lg-guides::after,
+html[data-lg-language='constructivist'][data-lg-rules='both'] .lg-guides::before,
+html[data-lg-language='constructivist'][data-lg-rules='both'] .lg-guides::after {
+  content: '';
+  position: absolute;
+  /* Rulers span the message column only, measured by the browser half. */
+  top: var(--lg-guides-top, 96px);
+  height: var(--lg-guides-height, 60vh);
+  width: 1px;
+}
+html[data-lg-language='constructivist'][data-lg-rules='80'] .lg-guides::before,
+html[data-lg-language='constructivist'][data-lg-rules='both'] .lg-guides::before {
+  left: calc(20vw + 80ch);
+  background: color-mix(in srgb, var(--lg-ink) 18%, transparent);
+}
+html[data-lg-language='constructivist'][data-lg-rules='120'] .lg-guides::after,
+html[data-lg-language='constructivist'][data-lg-rules='both'] .lg-guides::after {
+  left: calc(20vw + 120ch);
+  background: color-mix(in srgb, var(--lg-red) 26%, transparent);
+}
+
+/* Measure: a narrower text column, as a printed page would have.
+   The scroll container ignores inline padding in this layout, so the column is
+   narrowed on the composer seat and the message column instead. */
+html[data-lg-language='constructivist'][data-lg-measure='mid'] body [data-composer-seat],
+html[data-lg-language='constructivist'][data-lg-measure='mid'] body [data-conversation-content] {
+  padding-inline: 7%;
+}
+html[data-lg-language='constructivist'][data-lg-measure='narrow'] body [data-composer-seat],
+html[data-lg-language='constructivist'][data-lg-measure='narrow'] body [data-conversation-content] {
+  padding-inline: 15%;
+}
+html[data-lg-language='constructivist'][data-lg-measure='narrow'] body [data-composer-card] {
+  max-width: 720px;
+  margin-inline: auto;
+}
+
+/* Numeral face: black letter, monospace, or didone serif. */
+html[data-lg-language='constructivist'][data-lg-num='mono'] .lg-layer::before {
+  font-family: ui-monospace, 'Cascadia Mono', Consolas, 'SF Mono', monospace;
+  letter-spacing: -0.08em;
+}
+html[data-lg-language='constructivist'][data-lg-num='serif'] .lg-layer::before {
+  font-family: 'Songti SC', 'SimSun', 'Georgia', serif;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+/* Red weight: how much ink the page spends. */
+html[data-lg-language='constructivist'][data-lg-weight='light'] body::after {
+  height: 3px;
+}
+html[data-lg-language='constructivist'][data-lg-weight='strong'] body::after {
+  height: 9px;
+}
+html[data-lg-language='constructivist'][data-lg-weight='light'] .lg-layer::before {
+  color: color-mix(in srgb, var(--lg-red) 9%, transparent);
+}
+html[data-lg-language='constructivist'][data-lg-weight='strong'] .lg-layer::before {
+  color: color-mix(in srgb, var(--lg-red) 26%, transparent);
+}
+html[data-lg-language='constructivist'][data-lg-weight='light'] .lg-layer::after {
+  opacity: 0.18;
+}
+html[data-lg-language='constructivist'][data-lg-weight='strong'] .lg-layer::after {
+  opacity: 0.5;
+}
+html[data-lg-language='constructivist'][data-lg-weight='light'] body [role='treeitem'][aria-selected='true'] {
+  background-color: color-mix(in srgb, var(--lg-red) 60%, var(--dsw-alias-bg-base));
+}
+html[data-lg-language='constructivist'][data-lg-weight='strong'] body [role='treeitem'][aria-selected='true'] {
+  box-shadow: 4px 4px 0 0 var(--lg-ink);
+}
+
+/* =====================================================================
+   Constructivism v5 — working marks.
+   The top rule turns into a moving hatch while the agent is working, which
+   is the only animation in this language and the only place red moves.
+   ===================================================================== */
+
+html[data-lg-language='constructivist'][data-lg-busy='on'] body::after {
+  height: 6px;
+  background-image: repeating-linear-gradient(45deg,
+    var(--lg-red) 0 7px,
+    transparent 7px 14px);
+  animation: lg-busy-hatch 1.1s linear infinite;
+}
+
+@keyframes lg-busy-hatch {
+  from { background-position: 0 0; }
+  to { background-position: 28px 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-lg-language='constructivist'][data-lg-busy='on'] body::after {
+    animation: none;
+  }
+}
+
+/* ---------------------------------------------------------------------
+   Run metrics, printed as marks on the surfaces they describe:
+   steps at the sidebar foot, speed on the composer edge, the context gauge
+   down the chat column, tokens/cache in the header corner.
+   --------------------------------------------------------------------- */
+.lg-marks {
+  display: none;
+}
+html[data-lg-language='constructivist'][data-lg-metrics='on'] .lg-marks {
+  display: block;
+}
+.lg-mark {
+  position: fixed;
+  z-index: 1;
+  pointer-events: none;
+  font-variant-numeric: tabular-nums;
+  color: var(--dsw-alias-label-primary);
+}
+.lg-mark-num {
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.lg-mark-label {
+  margin-left: 3px;
+  color: var(--dsw-alias-label-tertiary);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.lg-mark-sub {
+  display: block;
+  margin-top: 3px;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+/* Left of the composer: this session's step count, turn count as a caption.
+   The red tick sits on the composer-facing side, like a margin note. */
+.lg-mark-steps {
+  right: var(--lg-mark-steps-right, 240px);
+  top: var(--lg-mark-steps-top, 70vh);
+  text-align: right;
+  padding-right: 8px;
+  border-right: 3px solid var(--lg-red);
+}
+.lg-mark-steps .lg-mark-num {
+  font-size: 22px;
+}
+
+/* Composer edge: throughput, printed just above the frame. */
+.lg-mark-speed {
+  left: var(--lg-mark-speed-left, 20px);
+  top: var(--lg-mark-speed-top, 0);
+}
+.lg-mark-speed .lg-mark-num {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 12px;
+}
+.lg-mark-speed .lg-mark-label {
+  letter-spacing: 0.1em;
+}
+
+/* Header corner: session tokens, context and cache hit rate. */
+.lg-mark-tok {
+  right: var(--lg-mark-tok-right, 44px);
+  top: var(--lg-mark-tok-top, 96px);
+  text-align: right;
+  padding-bottom: 3px;
+  border-bottom: 2px solid var(--lg-red);
+}
+.lg-mark-tok .lg-mark-num {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 13px;
+}
+.lg-mark-tok .lg-mark-sub {
+  text-align: right;
+}
+
+/* ---------------------------------------------------------------------
+   Metric margin: one typeset column to the left of the composer.
+   --------------------------------------------------------------------- */
+.lg-mark-margin {
+  position: fixed;
+  right: var(--lg-margin-right, 240px);
+  bottom: var(--lg-margin-bottom, 140px);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-right: 10px;
+  border-right: 3px solid var(--lg-red);
+  text-align: right;
+  pointer-events: none;
+  font-variant-numeric: tabular-nums;
+  color: var(--dsw-alias-label-primary);
+}
+.lg-margin-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 4px;
+  line-height: 1.25;
+}
+.lg-margin-row + .lg-margin-row {
+  padding-top: 2px;
+  border-top: 1px solid color-mix(in srgb, var(--lg-ink) 14%, transparent);
+}
+.lg-margin-num {
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+}
+.lg-margin-label {
+  color: var(--dsw-alias-label-tertiary);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------------
+   Constructivism v6 — the text itself.
+   Rendered markdown gets print-shop chrome: ruled code blocks, red-link
+   accents, squared tables and a quote rule that means "quoted".
+   --------------------------------------------------------------------- */
+html[data-lg-language='constructivist'] body [data-conversation-content] :is(h1, h2, h3, h4) {
+  font-weight: 900;
+  letter-spacing: 0.01em;
+}
+html[data-lg-language='constructivist'] body [data-conversation-content] p {
+  line-height: 1.72;
+}
+html[data-lg-language='constructivist'] body [data-conversation-content] a {
+  color: var(--lg-red);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+}
+html[data-lg-language='constructivist'] body [data-conversation-content] :is(ul, ol) > li::marker {
+  color: var(--lg-red);
+  font-weight: 700;
+}
+html[data-lg-language='constructivist'] body [data-conversation-content] blockquote {
+  margin: 6px 0;
+  padding: 2px 0 2px 12px;
+  border-left: 4px solid var(--lg-red);
+  color: var(--dsw-alias-label-secondary);
+}
+html[data-lg-language='constructivist'] body [data-conversation-content] hr {
+  height: 0;
+  margin: 14px 0;
+  border: 0;
+  border-top: 2px solid var(--lg-ink);
+}
+html[data-lg-language='constructivist'] body [data-conversation-content] code {
+  padding: 1px 4px;
+  border: 1px solid color-mix(in srgb, var(--lg-ink) 24%, transparent);
+  border-radius: 2px;
+  font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  font-size: 0.92em;
+}
+html[data-lg-language='constructivist'] body [data-conversation-content] pre {
+  padding: 10px 12px;
+  border: 2px solid var(--lg-ink);
+  border-radius: 2px;
+  box-shadow: 6px 6px 0 0 var(--lg-ink);
+  background-color: var(--dsw-alias-markdown-code-block, var(--dsw-alias-bg-module-platform));
+  overflow: auto;
+}
+html[data-lg-language='constructivist'] body [data-conversation-content] pre code {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: 0.94em;
+}
+html[data-lg-language='constructivist'] body [data-conversation-content] table {
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+html[data-lg-language='constructivist'] body [data-conversation-content] :is(th, td) {
+  padding: 3px 9px;
+  border: 1px solid color-mix(in srgb, var(--lg-ink) 30%, transparent);
+}
+html[data-lg-language='constructivist'] body [data-conversation-content] th {
+  background-color: var(--lg-ink);
+  color: var(--lg-paper);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+/* Numerals in the metric margin read as a spec column. */
+.lg-mark-margin .lg-margin-num {
+  font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
