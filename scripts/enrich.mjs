@@ -278,6 +278,31 @@ for (const repo of repos) {
   if (!m) continue;
   cache.repos[repo] = { ...(cache.repos[repo] || {}), stars: m.stars, pushedAt: m.pushedAt, homepage: m.homepage, ghLicense: m.license, branch: m.branch, starsUpdated: today };
 }
+
+// ---- preview liveness, every run ---------------------------------------------
+// A registry `preview` is a raw URL into the theme's repo, and authors move
+// their screenshots. On 2026-10-26, 15 of 215 answered 404 and rendered as a
+// broken image with its alt text as the first thing on the theme's page. A
+// raw fetch costs no API budget, so every run asks again. Only a definite 404
+// or 410 is recorded; a timeout is a question that was never asked, and the
+// last answer stands.
+const previewUrls = [...new Set(registry.themes.map((t) => t.preview).filter(Boolean))];
+const previews = {};
+const pending = [...previewUrls];
+await Promise.all(Array.from({ length: CONCURRENCY }, async () => {
+  while (pending.length) {
+    const url = pending.shift();
+    try {
+      const res = await fetch(url, { method: "HEAD", headers: { "User-Agent": "dshthemes-enrich" } });
+      previews[url] = { status: res.status, checked: today };
+    } catch {
+      if (cache.previews?.[url]) previews[url] = cache.previews[url];
+    }
+  }
+}));
+cache.previews = previews;
+const gonePreviews = Object.values(previews).filter((p) => p.status === 404 || p.status === 410).length;
+console.error(`previews: ${previewUrls.length - gonePreviews}/${previewUrls.length} resolve, ${gonePreviews} gone`);
 cache.updated = today;
 writeFileSync(OUT, JSON.stringify(cache, null, 1) + "\n");
 
