@@ -1,5 +1,5 @@
 /* zxk175/dsh-model-select-skin — client.js
-   fetched 2026-10-18 from https://raw.githubusercontent.com/zxk175/dsh-model-select-skin/main/client.js
+   fetched 2026-10-26 from https://raw.githubusercontent.com/zxk175/dsh-model-select-skin/main/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 .mss-root { position: relative; min-width: 0; }
 .mss-trigger {
@@ -38,7 +38,10 @@
 .mss-menu {
   position: fixed; z-index: 1100;
   display: flex; flex-direction: column;
-  width: max-content; min-width: min(260px, calc(100vw - 32px)); max-width: min(440px, calc(100vw - 32px));
+  /* 固定宽度（受屏幕限制）：否则"全部收起"后模型行消失，
+     max-content 的菜单会缩到 min-width，展开/收起时宽度跟着变。 */
+  width: min(440px, calc(100vw - 32px)); min-width: min(360px, calc(100vw - 32px));
+  max-width: min(440px, calc(100vw - 32px));
   max-height: min(380px, calc(100vh - 96px)); overflow: hidden;
   padding: 6px;
   /* 官方 popupSelect 卡片的表面：半透明填充 + 40px 背景模糊，
@@ -62,14 +65,28 @@
   font-size: 12px; line-height: 18px; cursor: pointer;
 }
 .mss-chip:hover:not(:disabled) { background: var(--dsw-alias-interactive-bg-hover); }
+/* 未选中芯片悬浮时把文字提到主文字色：默认的 label-secondary 在深色
+   主题下是浅灰，配上微亮的 hover 背景仍然发飘。 */
+.mss-chip:not([data-on]):hover:not(:disabled) {
+  background: var(--dsw-alias-interactive-bg-hover-solid, var(--dsw-alias-interactive-bg-hover));
+  color: var(--dsw-alias-label-primary);
+}
 .mss-chip[data-on] {
   border-color: transparent;
   background: var(--dsw-alias-brand-primary);
   /* 官方的"实心品牌填充上的前景色"token：在两个主题下都是 brand-primary 的精确补色。 */
   color: var(--dsw-alias-label-primary-foreground);
 }
+/* 悬浮到已选中的芯片时，.mss-chip:hover:not(:disabled) 的特异性高于
+   [data-on]，背景会被换成中性 hover 色，但文字仍是 brand-primary 的
+   补色——深色主题下就变成深底深字。悬浮时改用官方的实心 hover 底色，
+   并把文字反转成品牌色，两个主题下都清晰。 */
+.mss-chip[data-on]:hover:not(:disabled) {
+  background: var(--dsw-alias-interactive-bg-hover-solid, var(--dsw-alias-interactive-bg-hover));
+  color: var(--dsw-alias-brand-primary);
+}
 .mss-chip:disabled { color: var(--dsw-alias-label-dimmed); cursor: default; }
-.mss-search { display: flex; margin: 2px 0 4px; }
+.mss-search { display: flex; align-items: center; gap: 6px; margin: 2px 0 4px; }
 .mss-search input {
   flex: 1; min-width: 0; height: 28px; padding: 0 8px;
   border: 1px solid var(--dsw-alias-border-l1); border-radius: var(--dsw-radius-md);
@@ -81,16 +98,39 @@
 .mss-scroll { min-height: 0; overflow-y: auto; }
 .mss-group {
   position: sticky; top: 0; z-index: 1;
+  box-sizing: border-box; width: 100%;
   display: flex; align-items: center; gap: 6px;
   padding: 6px 8px 4px;
   /* 分组标题用官方专用的不透明实心底：sticky 悬停时滚过的行不会从它下面
      透出来，分组之间的边界也比半透明表面清楚。 */
   background: var(--dsw-alias-menu-group-header-fill, var(--dsw-alias-bg-overlay));
-  border-top: 1px solid var(--dsw-alias-border-l1);
+  border: 0; border-top: 1px solid var(--dsw-alias-border-l1);
   color: var(--dsw-alias-label-tertiary);
-  font-size: 11px; line-height: 16px;
+  font: inherit; font-size: 11px; line-height: 16px; text-align: left;
+  cursor: pointer;
 }
-.mss-group-name { color: var(--dsw-alias-label-primary); font-weight: 600; }
+.mss-group:hover { color: var(--dsw-alias-label-secondary); }
+.mss-group:focus-visible { outline: none; box-shadow: inset 0 0 0 1px var(--dsw-alias-border-l2); }
+.mss-group-name { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--dsw-alias-label-primary); font-weight: 600; }
+/* 折叠箭头：展开时朝下，收起时朝右。 */
+.mss-group-caret {
+  flex: 0 0 auto; width: 10px; height: 10px;
+  color: var(--dsw-alias-label-caption);
+  transition: transform 120ms ease;
+}
+.mss-group[data-collapsed] .mss-group-caret { transform: rotate(-90deg); }
+@media (prefers-reduced-motion: reduce) { .mss-group-caret { transition: none; } }
+/* 分组标题里的整行按钮不抢焦点顺序，键盘走列表本身。 */
+/* 全部展开/收起：放在搜索行右侧，不额外占一行、不撑宽菜单。 */
+.mss-collapse-all {
+  display: flex; align-items: center; gap: 4px;
+  flex: 0 0 auto; white-space: nowrap;
+  padding: 2px 8px; border: 0; border-radius: var(--dsw-radius-md);
+  background: transparent; color: var(--dsw-alias-label-secondary);
+  font: inherit; font-size: 11px; line-height: 18px; cursor: pointer;
+}
+.mss-collapse-all:hover { background: var(--dsw-alias-interactive-bg-hover); }
+.mss-collapse-all:focus-visible { outline: none; box-shadow: inset 0 0 0 1px var(--dsw-alias-border-l2); }
 /* 没有背景模糊时，半透明表面会让页面透出来，因此退回不透明的 overlay 填充。 */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .mss-menu { background: var(--dsw-alias-bg-overlay); }

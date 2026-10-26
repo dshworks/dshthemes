@@ -1,5 +1,5 @@
 /* berhbro/dsh-cyrene-theme — lib/client.js
-   fetched 2026-10-18 from https://raw.githubusercontent.com/berhbro/dsh-cyrene-theme/main/lib/client.js
+   fetched 2026-10-26 from https://raw.githubusercontent.com/berhbro/dsh-cyrene-theme/main/lib/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 /* =====================================================================
    昔涟 · 粉白渐变毛玻璃主题
@@ -114,7 +114,11 @@ body[data-dsh-cyrene][data-cyrene-skin="on"][data-ds-dark-theme]{
   --dsw-alias-state-warn-primary:#eaa96f;
   --dsw-alias-state-warn-label:#f0b982;
   --dsw-alias-state-warn-tertiary:#43301f;
-  --dsw-alias-tooltip-bg:rgba(28,18,26,.94);
+  /* 深色模式下 tooltip / toast 的字色由宿主硬绑到 --dsw-static-neutral-bluish-00，
+     而这一档在本主题的深色块里是深色（#2a1a26）——深底 + 深字会看不清。
+     所以这两种"小浮层"在深色下改成浅底：字仍然是那个深色，对比度约 13:1。 */
+  --dsw-alias-tooltip-bg:rgba(255,246,251,.97);
+  --dsw-alias-toast-bg:rgba(255,246,251,.97);
   --dsw-specific-bubble:rgba(58,36,52,.5);
   --dsw-specific-input-major:rgba(54,34,50,.75);
   --dsw-specific-menu:rgba(40,26,38,.96);
@@ -446,7 +450,15 @@ body[data-dsh-cyrene][data-ds-dark-theme]{
 .cyre-hint{margin:0;font-size:11.5px;line-height:1.7;color:var(--cy-ui-soft)}
 
 .cyre-page{display:flex;flex-direction:column;gap:12px;max-width:820px;padding:4px 2px 16px}
+.cyre-page-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .cyre-page-title{margin:0;font-size:16px}
+/* 版本号只是"装的是哪一份"的标记，安静一点，别抢标题。 */
+.cyre-ver{
+  font-size:11px;line-height:1;letter-spacing:.02em;padding:4px 9px;border-radius:999px;
+  color:var(--cy-ui-soft);border:1px solid var(--cy-ui-line);background:rgba(255,255,255,.45);
+  white-space:nowrap;font-variant-numeric:tabular-nums;
+}
+[data-ds-dark-theme] .cyre-ver{background:rgba(255,255,255,.06)}
 .cyre-page-lead{margin:0;font-size:12.5px;line-height:1.75;color:var(--cy-ui-soft)}
 .cyre-page .cyre-text{min-height:42vh}
 
@@ -477,17 +489,37 @@ body[data-dsh-cyrene][data-ds-dark-theme]{
 .cyre-sticker em{max-width:100%;font-size:10.5px;font-style:normal;line-height:1.45;text-align:center;color:var(--cy-ui-soft);word-break:break-word}
 .cyre-empty{margin:0;font-size:11.5px;line-height:1.7;color:var(--cy-ui-soft)}
 
-/* ---- 背景：入口一行 + 缩略图条 + 轮换滑杆 ---- */
+/* ---- 背景：设置页一行入口 + 管理器里的缩略图卡片 ---- */
 .cyre-bg-strip{
-  display:flex;
-  flex-wrap:wrap;
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(112px, 1fr));
   gap:8px;
   min-width:0;
   max-width:100%;
 }
+.cyre-bg-card{display:flex;flex-direction:column;gap:4px;min-width:0;max-width:100%}
+.cyre-bg-actions{display:flex;gap:4px;justify-content:center;flex-wrap:wrap}
+.cyre-bg-actions button{
+  flex:0 0 auto;
+  padding:3px 8px;
+  border:1px solid var(--cy-ui-line);
+  border-radius:999px;
+  background:transparent;
+  color:var(--cy-ui-soft);
+  font:inherit;
+  font-size:10.5px;
+  line-height:1.2;
+  cursor:pointer;
+}
+.cyre-bg-actions button:hover{background:rgba(239,107,168,.12);color:var(--cy-ui-text)}
+.cyre-bg-actions button[data-on="1"]{
+  border-color:var(--cy-ui-accent);
+  background:rgba(239,107,168,.14);
+  color:var(--cy-ui-text);
+}
 .cyre-bg-thumb{
   flex:0 0 auto;
-  width:104px;
+  width:100%;
   max-width:100%;
   padding:4px;
   overflow:hidden;
@@ -543,6 +575,7 @@ body[data-dsh-cyrene][data-ds-dark-theme]{
 }
 /* 简约档下，跟图片有关的那些控件（轮换 / 间隔 / 淡化 / 下一张 / 缩略图）淡下去。 */
 [data-bg-mode="plain"] .cyre-bg-only{opacity:.4}
+.cyre-mode-note{font-size:11.5px;line-height:1.5;color:var(--cy-ui-soft)}
 
 /* ---- 表情包管理：大小滑杆 / 上传 / 删除 ---- */
 .cyre-stickers-tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin-bottom:10px}
@@ -703,6 +736,43 @@ body[data-dsh-cyrene][data-ds-dark-theme]{
 }
 @media (prefers-reduced-motion: reduce){
   .cyre-hero-note{animation:none}
+}
+/* ---- 窄屏（手机 / 分屏 / 桌面小窗）----
+   欢迎页那一行是「头像 + 32px 艺术字」，在 360px 宽的屏上会整行顶出去。
+   窄屏时缩字号、允许换行、把形象收小；覆盖层也用满可用宽度。 */
+@media (max-width: 620px){
+  body[data-dsh-cyrene][data-cyrene-skin="on"] .cyre-hero{
+    flex-wrap:wrap;
+    gap:6px 8px;
+    max-width:calc(100vw - 28px);
+    padding:0 4px;
+  }
+  body[data-dsh-cyrene][data-cyrene-skin="on"] .cyre-hero-mark{height:52px;max-width:64px}
+  body[data-dsh-cyrene][data-cyrene-skin="on"] .cyre-hero-title{
+    flex-wrap:wrap;
+    justify-content:center;
+    max-width:100%;
+    font-size:clamp(19px, 6.2vw, 26px);
+    line-height:1.32;
+    letter-spacing:.5px;
+  }
+  body[data-dsh-cyrene][data-cyrene-skin="on"] .cyre-hero-title-text{
+    -webkit-text-stroke:.8px #e8699f;
+    overflow-wrap:anywhere;
+  }
+  body[data-dsh-cyrene][data-cyrene-skin="on"] .cyre-hero-note{font-size:.8em}
+  .cyre-overlay{
+    width:calc(100vw - 20px);
+    max-width:calc(100vw - 20px);
+    max-height:calc(100vh - 28px);
+    padding:14px 12px;
+  }
+  .cyre-overlay--wide{width:calc(100vw - 20px)}
+}
+/* 横屏手机 / 很矮的窗口：欢迎页只留一句能看的话，不再和输入框抢高度。 */
+@media (max-height: 480px){
+  body[data-dsh-cyrene][data-cyrene-skin="on"] .cyre-hero-mark{height:44px;max-width:56px}
+  body[data-dsh-cyrene][data-cyrene-skin="on"] .cyre-hero-title{font-size:clamp(17px, 4.6vw, 22px);line-height:1.2}
 }
 
 /* ---- 输入框占位提示 ---- */

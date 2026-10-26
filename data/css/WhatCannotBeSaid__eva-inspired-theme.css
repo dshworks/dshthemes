@@ -1,5 +1,5 @@
 /* WhatCannotBeSaid/eva-inspired-theme — src/theme.css
-   fetched 2026-10-18 from https://raw.githubusercontent.com/WhatCannotBeSaid/eva-inspired-theme/main/src/theme.css
+   fetched 2026-10-26 from https://raw.githubusercontent.com/WhatCannotBeSaid/eva-inspired-theme/main/src/theme.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* EVA-Inspired-Theme — paint layer.
  *
@@ -1025,9 +1025,12 @@ body[data-eva-motion='reduced'] [data-row-key^='session:'][aria-selected] {
   position: relative;
   top: -1px;
   background-image: var(--cp-brand-mark);
-  background-size: contain;
+  /* Keep the 36px layout/click box so the text does not move. The supplied square
+     SVG has transparent space above its subject: a 28px canvas aligned to the top
+     gives roughly 21px of visible artwork beside the 16px wordmark. Preserve ratio. */
+  background-size: 28px auto;
   background-repeat: no-repeat;
-  background-position: center;
+  background-position: center top;
 }
 [data-slot='sidebar.brand.mark'] > svg {
   display: none;
@@ -1583,6 +1586,57 @@ html[data-windows-titlebar] body:not([data-ds-dark-theme]) {
 }
 
 /* --------------------------------------------------------------------------
+ * 导航区顶到顶栏带下沿：首枚导航按钮的中心与 main 区「对话 / 轨迹」标签行同轴
+ * （2026-10-20，第六十六轮，D100）
+ *
+ * 用户逐字：「定位导航区与 main 区标签行的盒模型并测量两者垂直基线。仅调整导航区
+ * 与顶栏之间的垂直间距，使第一个导航按钮与 main 区「对话」「轨迹」所在行对齐。
+ * 保持顶栏三个图标按钮之间的水平间距不变。」
+ *
+ * 真机读数（1600×1000、侧栏 280、深色、桌面壳、已打开一个真实会话）：
+ *   标签行 `[data-conversation-tabs]`      y 45.375 / 高 25 / 中心 **57.875**
+ *   导航区 `nav`（改前）                    y 98     / 高 36 / 中心 **116**
+ *   首枚导航按钮 `nav > button`（改前）      y 98     / 高 36 / 中心 **116**
+ *   ⇒ 改前中心差 **+58.125px**（导航比标签行低 58.125）
+ *
+ * 为什么必须同时改 `order`（这与「只改垂直间距」的字面要求不同，故写明）：
+ *   顶栏带下沿是 40，侧栏根容器 `padding-top` 是 6，内容区顶点即 46。导航中心要落在
+ *   57.875 就得 y = 40（高 36）—— 也就是「流内第一个孩子」那一格。而 D45 把「设置」
+ *   行定在 `order: 1`（46→98、高 52），整格占住了这一位置。只给 `nav` 加 `margin-top`
+ *   实测撞车：`nav` 落到 y 92、中心 110（仍差 **+52.125**），且与「设置」行 46→98 重叠。
+ *   故本轮在桌面壳里把两者换位：导航 `order: 1`、「设置」行 `order: 2` —— 设置行从
+ *   导航上方挪到导航正下方，这是本轮唯一的可见重排，不是纯间距微调。
+ *
+ * 为什么只在 `html[data-windows-titlebar]` 下生效：标签行落进 40px 顶栏带这件事本身
+ * 只发生在桌面壳（承 2026-10-08「会话头抬进顶栏带」那条）；Web 壳没有这条带，对齐
+ * 目标不存在，所以 Web 壳一字不动、D45 的「设置在导航上方」原样保留。
+ *
+ * `margin-top: -6px` 是抵消侧栏根容器自己的 `padding-top: 6px`（同一数值，不是凑像素
+ * 硬调的魔数），与表内会话头 `top: -4.625px`、dockkit 条 `top: -4.5px` 同一手法。
+ *
+ * 实测（改后，同一环境）：
+ *   导航区 / 首枚按钮   y 40 / 高 36 / 中心 **58**  ⇒ 与标签行中心差 **+0.125px**
+ *   设置行              46→98 变成 **84→136**（中心 72→110），仍在同一栏内
+ *   工作区 / 会话列表   142→**136**（高 852→**858**，吃掉设置行让出的 6px）
+ *   水平方向：`nav` 仍 x 12 / 宽 256，横竖零变化；无横向溢出（scrollW 280 = clientW 280）
+ *   顶栏图标：更多操作 [1384, 6.375, 28, 28]、打开右侧边栏 [1420, 6.375, 28, 28] —— 未动
+ *   125% 缩放：中心差 **−0.031px**；浅色档与深色档逐像素一致
+ *   0.125px 是全表既有残差（D80 基线取 20.50，实测图标中心 20.375），不再追。
+ *
+ * 回滚（三种粒度，任取一种即可回到改前）：
+ *   ① 只回中心差：删 `margin-top: -6px` 一行 —— 导航回到 y 46、中心 64（差 +6.125）。
+ *   ② 回排列：删掉本块两条规则 —— 回到 D45 的「设置 1 / 导航 2」，中心差回到 +58.125。
+ *   ③ 想让 Web 壳也照此排列：删掉两条选择器的前缀 `html[data-windows-titlebar] `。
+ * ------------------------------------------------------------------------ */
+html[data-windows-titlebar] [data-slot='sidebar'] > div > nav {
+  order: 1;
+  margin-top: -6px;
+}
+html[data-windows-titlebar] [data-slot='sidebar'] > div > nav + div ~ div > :nth-child(2) {
+  order: 2;
+}
+
+/* --------------------------------------------------------------------------
  * 「设置」行与导航页按钮左对齐（2026-10-07，第二十三轮，D62）
  *
  * 用户要求：「设置」按钮与导航页按钮位置不一致 —— 以导航页按钮的位置为基准调整
@@ -1646,6 +1700,103 @@ html[data-windows-titlebar] body:not([data-ds-dark-theme]) {
 }
 [data-slot='sidebar'] > div > nav[aria-label] > button:has([data-slot='sidebar.panellist'])[aria-label='插件'],
 [data-slot='sidebar'] > div > nav[aria-label] > button:has([data-slot='sidebar.panellist'])[aria-label='Plugins'] {
+  display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+ * 启用 DeepSeek 账号时，导航区的账号卡整枝收起（2026-10-20，第六十四轮，D101）
+ *
+ * 用户逐字：「在启用 DeepSeek 账号时隐藏导航区账号卡，且不占位、不留空白。」
+ * 「保留「SYSTEM」设置入口的原有渲染与功能。」
+ *
+ * 宿主真身（app.asar → @deepseek-ai/dsh-client-ui-settings-account/lib/client.js）：
+ * 该包 `ctx.slots.inject("settings.launcher", …)` 注册进 `settings.launcher` 这个
+ * single 槽，启用时**替换**掉官方回退的设置按钮。所以槽里长出来的是一棵账号卡，
+ * 不是按钮本身：
+ *
+ *   div[data-slot='sidebar.settings']            （display:contents 的槽锚）
+ *     div.triggerRow                              margin: 4px -2px / rail：8px 0 10px
+ *       div[data-slot='settings.launcher']        （display:contents 的槽锚）
+ *         div                                  账号卡根（flex:1; min-width:0）
+ *           span                               Menu 根（width:100%）
+ *             button[aria-haspopup='menu']     触发器（高 44px / 窄轨 36px）
+ *       连接状态指示 / 桌面更新指示（同行的另两枚，与本规则无关）
+ *
+ * 两条规则分别处理「藏」与「空」：
+ *   ① 藏账号卡：`:has(button[aria-haspopup='menu'])` 认的是**槽里有没有菜单触发器**。
+ *      官方回退按钮的 aria-haspopup 是 `dialog`（settings-general 的 JSX 写死），与
+ *      `menu` 互斥，所以这里不会误伤回退设置按钮 —— 未启用账号时这条规则一条都不命中，
+ *      该按钮仍归上面 D68 那条 `> button` 管，行为逐字节不变。也不用 `data-collapsed`
+ *      （trajectory 包也在用）或 `data-signed-out`（只描述登录态，不描述「是不是账号卡」）。
+ *      `display:none` 压过槽锚自己的 `display:contents`，账号卡整枝不再参与布局。
+ *   ② 收掉残留的空格：`triggerRow` 自带 `margin: 4px -2px`（窄轨 `8px 0 10px`），
+ *      账号卡藏净后这一行只剩上下外边距、没有内容，会留下 8px（窄轨 18px）垂直空白。
+ *      只收**垂直**外边距、横向下边距留着，行宽与缩进不变。选择器用 `:has(> …)` 认
+ *      同一个触发器，`>` 保证只命中「把 launcher 槽直接装进来的那一行」，不会牵连
+ *      设置面板里别的 div。
+ *
+ * 作用域：只在 `[data-slot='sidebar']` 内、只在这个槽、只在这一行。nav 的排列、工作区、
+ * 会话列表、连接指示与更新指示一个字节没动；其他账号形态（未启用账号插件、Web 壳、
+ * 收起态 rail）走的是各自原有规则。
+ *
+ * 回滚两种粒度：① 删 ① 号规则 → 账号卡重新出现且照旧占位；② 两条一起删 → 回到 D68
+ * 记录的旧世界（账号卡在导航区里露着、SYSTEM 第三区在桌面壳里点不动）。
+ * ------------------------------------------------------------------------ */
+[data-slot='sidebar'] [data-slot='settings.launcher']:has(button[aria-haspopup='menu']) {
+  display: none !important;
+}
+[data-slot='sidebar'] div:has(> [data-slot='settings.launcher'] button[aria-haspopup='menu']) {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* --------------------------------------------------------------------------
+ * 新版导航的三处「更多」：只藏触发器，菜单随入口一起消失（2026-10-24，第六十九轮，D102）
+ *
+ * 用户逐字：「隐藏 DSH 新版本导航中新增的「更多」及其下级「浏览更多插件」「创造你的插件」。
+ * 隐藏对话区域内「对话」「轨迹」右侧的「更多」及其下级同样两项。」并限定：只藏这些，
+ * 其他导航项与既有功能不动。
+ *
+ * 宿主真身（app.asar @ 0.2.1-rc.3，三处都是**另一种按钮**，不是同一条规则的三个实例）：
+ *   ① 左栏：`dsh-client-ui-sidebar` 的 `PanelMoreMenu`，是 `nav[aria-label='全局面板']`
+ *      的直系子按钮（与「插件」「自动化任务」并排），属性 `aria-haspopup='menu'`、
+ *      `aria-label` = `t('panels.more')`。真机实测它外面还套了一层 Tooltip 的 `span`
+ *      （`nav > span > button`），所以选择器必须写后代而不是 `>`。
+ *   ② 会话头：「对话 / 轨迹」那排视图的 `ViewsMoreMenu`，`aria-label` =
+ *      `t('session.moreViews')`；当前视图被折进菜单时文案变成
+ *      「更多会话视图 · {视图名}」⇒ 只能前缀匹配。它渲染在 `conversation.session.header`
+ *      槽内部（该槽由 `ConversationSessionHeader` 自己提供，槽锚是官方 SlotOutlet 加的
+ *      `data-slot` 包装，不是哈希类名）。
+ *   ③ 右栏：`dsh-client-ui-sidebar-right` 的 `GuideMoreMenu` 是**一张卡片**（`button.entry`），
+ *      挂在 `[data-sidebar-right-guide]` 根下，`aria-label` = `t('tab.guide.more')`。
+ * 三处菜单的内容都由 `dsh-client-ui-entry-customization` 注册进各自的 slot，行文案是
+ * 「浏览更多插件」「创建你的插件」；而**菜单只能由这三枚触发器打开**，没有快捷键、
+ * 没有第二条入口。
+ *
+ * 做法：只藏触发器（`display: none !important`），不碰菜单行、不碰 slot 注册、不碰
+ * 其他任何按钮。触发器不在 ⇒ 菜单没有入口 ⇒ 两项一起不可达，tab 键也进不去。
+ *
+ * 选择器身份：官方 `data-slot` / `data-sidebar-right-guide` 锚 + 官方 i18n 文案。
+ * 文案只有中英两本字典（其余语言回落英文），写全即覆盖全部取值；`aria-haspopup='menu'`
+ * 是第二道约束，保证即使未来某个按钮重名也不会误伤（「选择工作区」「选择 Shell」「账号菜单」
+ * 都在各自的容器里，一条都不命中）。
+ *
+ * 失配后果（写在明处）：DSH 将来改文案或改槽位 ⇒ 规则不命中 ⇒「更多」原样露出来，
+ * 即回到官方行为；代价是菜单重新可见，而不是某个点击变成死的，也不会误藏别的按钮。
+ * 与 D68 同一条纪律：槽失配只能让步，不能接管。
+ *
+ * 生效范围：左栏 + 会话头 + 右栏，整页不区分路由（左栏收起成 rail 时命中的是同一枚按钮）；
+ * 其他菜单、其他行、其他页面一个字节不改。
+ *
+ * 回滚：删掉本节六条规则 → 三处「更多」原样回来（菜单本就一直在，只是重新有了入口），
+ * 无需重建、无需重启，刷新页面即可。
+ * ------------------------------------------------------------------------ */
+[data-slot='sidebar'] nav button[aria-haspopup='menu'][aria-label='更多'],
+[data-slot='sidebar'] nav button[aria-haspopup='menu'][aria-label='More'],
+[data-slot='conversation.session.header'] button[aria-haspopup='menu'][aria-label^='更多会话视图'],
+[data-slot='conversation.session.header'] button[aria-haspopup='menu'][aria-label^='More conversation views'],
+[data-sidebar-right-guide] button[aria-haspopup='menu'][aria-label='更多工具'],
+[data-sidebar-right-guide] button[aria-haspopup='menu'][aria-label='More tools'] {
   display: none !important;
 }
 
@@ -1955,121 +2106,30 @@ body [data-composer-placeholder] {
   color: var(--dsw-alias-label-primary);
 }
 
-/* ---- 工作区行的那枚入口按钮（第 41 → 45 → 51 轮）· 又回到「微信会话」工作区的开关
+/* --------------------------------------------------------------------------
+ * 访问模式（权限）触发器右侧那枚 ⌄（2026-10-20，用户点名）
  *
- * 第 51 轮（2026-10-12）：用户原话（m01147）「DSH-IM不好用！把DSH-Wechat给我换回来，并且把
- * 工作区旁边的图标也改回来。」profile 从 @xmanrui/dsh-im 换回 dsh-wechat-plugin 0.37.0，于是
- * 第 49 轮为 dsh-im 做的那对渠道筛选入口（Telegram + 微信）连同渠道中性的 `data-eva-im-*`
- * 契约一起撤掉，恢复第 43–45 轮这套单枚入口 + 工作区开关：契约名回到 `data-eva-wx-*`，点亮
- * 时只剩 dsh-wechat-plugin 建出来的「微信会话」那一组。以下注释与规则是第 43–45 轮的原文，
- * 未改一字。 */
-
-/* ---- 工作区行的那枚入口按钮（第 41 → 45 轮）· 现为一个工作区的开关
+ * 用户原话：「另外去掉「权限」旁的「v」形标识。」
  *
- * 第 41 轮（2026-10-09）在这里放了一个 Telegram 会话筛选入口，第 42 轮（2026-10-10）在它
- * 右边又加了一个微信入口 —— 当时两个入口共用同一套契约名 `data-eva-tg-*`（tg = telegram），
- * 一行只持一个视图，是两个入口共用的三值状态（0 官方列表 / 1 Telegram / 2 微信）。
+ * 这个控件不是本主题的，是 dsh 官方的权限选择器：槽位
+ * `[data-slot='conversation.input.permission']` 里是一枚 button（`.dlU_AG_trigger`），
+ * 内部依次是图标 span、文字 span、以及一枚 `span.dlU_AG_chevron`（14×14，颜色
+ * `label-tertiary`）。它是 CSS Modules 的哈希类名，逐版本会变，所以这里按**槽位属性**
+ * 定位（本表 2026-10-08 的 `span[class*='fade']` 用的是同一套做法），不写死哈希。
  *
- * 第 43 轮起微信入口不再筛会话，改成管一个工作区；第 45 轮（2026-10-10）用户点名把 Telegram
- * 那一个整个删掉：「再去telegram按钮，毕竟现在不用了，可以删去这个功能了。」于是：
- *   - Telegram 入口、它的渠道表、标题前缀判定、逐帧点官方「展开其余会话」控件的展开机、以及
- *     行级过滤规则 `[data-eva-tg-tree='on'] [data-eva-tg-row='off']` 全部删除，一条不留；
- *   - 契约名从 `data-eva-tg-*` 改名为 `data-eva-wx-*` —— 按钮与状态两个（`data-eva-wx-button`
- *     值恒为 weixin、`data-eva-wx-state` 值 on|off），加上第 43/44 轮那三个（见下一段）。
- *     改名是为了不再留一个以已退役功能命名的契约。
+ * 只藏箭头、不动文字与图标：这个按钮开着时同样没有底色可替代（官方那枚触发器点开是
+ * 一个 listbox 弹层，触发器自身不变色），但它的**文字**本身就是状态（「工作区内修改」
+ * 会随档位改名），箭头只是重复「这里能点」。所以撤箭头不损失信息。
  *
- * 按钮仍由 `src/client.js` 的同一个 effect 插在官方工作区表头行里、搜索槽之前：那行 =
- * `[data-slot='sidebar.workspaces.directoryFlow']` 那个空标记的 parentElement，是 flex 行且
- * 搜索槽带 `margin-left: auto`，所以按钮正好落在「工作区」标签右边，官方「搜索」「视图选项」
- * 「添加工作区」三个按钮的像素一个不动。定位会话树用的是 `[data-slot='sidebar.workspaces']`
- * 里的 `[role='tree']` —— 全页只有一棵，官方各分组行与会话行都在里面。
- * 选择器里所以找不到任何 CSS-Modules 哈希类（css.6），也不含字面色值（css.8），
- * 令牌一律走 `var(...)`。
- *
- * 尺寸逐字照抄官方表头图标按钮（同文件 `…_iconButton` 逐字）：28×28、
- * `border-radius: var(--dsw-radius-sm)`、`background: transparent`、`border: none`、`padding: 0`，
- * 两级颜色同官方（静止 `--dsw-alias-label-secondary`，hover `--dsw-alias-label-primary`）。
- * 唯一的偏离是开启态：这里用 `--dsw-alias-brand-primary` 表达「这个工作区被举起中」。
- *
- * 不动：表头行的高度 / 内边距 / 圆角，官方那三个按钮的像素，以及暗色档 —— 不新增也不修改
- * 任何令牌（dark.1 冻结）。回滚 = 删本节两条规则。 */
-[data-eva-wx-button] {
-  box-sizing: border-box;
-  display: inline-flex;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  padding: 0;
-  border: none;
-  border-radius: var(--dsw-radius-sm);
-  background: transparent;
-  color: var(--dsw-alias-label-secondary);
-  cursor: pointer;
-}
-
-[data-eva-wx-button]:hover {
-  color: var(--dsw-alias-label-primary);
-}
-
-[data-eva-wx-state='on'] {
-  color: var(--dsw-alias-brand-primary);
-}
-
-/* ── 第 43–44 轮（2026-10-10）：微信入口改成一个工作区的开关 ───────────────────────────
- *
- * 用户原话（m00153）：「1 是那枚筛选按钮 2「微信会话」及其里面的会话一起搬。 3.点亮微信按钮时
- * 才出现。先去掉微信按钮先前的功能，然后加入我现在要求的功能。」所以这枚按钮不再筛会话，它管
- * 的是 dsh-wechat-plugin 建出来的那个工作区 —— 那正好是同一棵树上的一组。关着的时候这一组根本
- * 不在列表里；点亮时反过来，只剩这一组，它的会话标题直接顶到「工作区」标题行下方。
- *
- * 用户原话（m00496，第 44 轮的裁定）：「点亮微信按钮时，侧栏工作区列表内只显示「微信会话」下的
- * 会话条目，其他工作区不得保留，也不得以置顶方式出现；同时不显示「微信会话」这个工作区分组标题，
- * 只显示该分组下的会话标题。」第 43 轮只做了 `order: -1`，那是一次「提到最前」，不是过滤 ——
- * 用户看到的正是这个差额：其他工作区一个没少，只是被挤下去了。换成真过滤后才是他要的。
- *
- * 三条规则各管一件事，都只认本 effect 自己写的契约属性，所以既不和 React 的渲染抢节点，关掉
- * 也只是把属性改回去：组属性标记那一组、树属性切换开关、头属性摘掉分组标题。每条都写成
- * (0,2,0) 的两段式（树属性 + 目标属性），刻意压过 CSS-Modules 只管一层的类选择器 —— 本主题的
- * 样式表与宿主样式表同级，靠层叠顺序决定谁赢是不安全的。
- *
- * 真机实测（1256×821，第 44 轮）：关着时是官方的四组 34/68/232/232；点亮后树里只剩那一组，
- * 会话行落在表头行（下沿 124）下方的 y=130/164，树内容高从 687 收回这一组自己的高度。
- * 分组标题由 client.js 打在**它的容器**上（宿主把这一行包在一枚只含它的 SPAN 里），所以隐藏
- * 容器只摘标题、不动会话；头行不在这样的容器里时（未分组那种形状）才退化成标记行本身。
- *
- * 第 45 轮（2026-10-10）只删不改这里的逻辑：Telegram 那半连同行级过滤规则一起退役，本段三条
- * 一字未动（它们从来只认 `data-eva-wx-*`，与 telegram 无关），只是上面那个 Telegram 筛选规则
- * 没了之后，这棵树上的隐藏规则就只剩本段这三条，全部带 `data-eva-wx-tree=` 前缀。
- *
- * 不动：官方结构（零插入、零移动、零删除）、其他各组的内部结构、表头行、行高、圆角、颜色令牌，
- * 以及上面那两条入口尺寸规则（本段一律不碰 `data-eva-wx-button` / `data-eva-wx-state`）。
- * 回滚 = 删本段三条。 */
-[data-eva-wx-tree='off'] [data-eva-wx-group='on'] {
+ * 连带把右内边距补齐：官方给触发器的 `padding: 0 4px 0 8px` 右少左多，那 4px 是留给
+ * 箭头与 4px gap 的；箭头没了之后右 4px / 左 8px 会让文字偏左。改成两侧 8px。
+ * ------------------------------------------------------------------------ */
+[data-slot='conversation.input.permission'] span[class*='chevron'] {
   display: none;
 }
 
-[data-eva-wx-tree='on'] > :not([data-eva-wx-group='on']) {
-  display: none;
-}
-
-[data-eva-wx-tree='on'] [data-eva-wx-head='on'] {
-  display: none;
-}
-
-/* 标题摘掉后，紧跟其后的第一条会话仍带着宿主的 `.groupSection > * + *` 那 2px —— 那 2px 是
- * 「标题与第一条会话之间」的间隔，标题没了它就只是一条凭空多出来的缝；更要紧的是它会跟组的
- * 上边距发生折叠，把整组从表头下沿推下去 2px。两条一起收掉，会话标题就正好落在表头行下面。 */
-[data-eva-wx-tree='on'] [data-eva-wx-head='on'] + * {
-  margin-top: 0;
-}
-
-[data-eva-wx-tree='on'] [data-eva-wx-group='on'] {
-  /* 只剩这一组时它仍可能不是 DOM 里的长子（Yu 在前面），宿主的
-     .groupSection + .groupSection 照旧按 DOM 兄弟序收它 4px；那 4px 是给「它下面还有一组」
-     留的缝，而现在下面没有了，所以收掉。 */
-  margin-top: 0;
+[data-slot='conversation.input.permission'] button[class*='trigger'] {
+  padding-right: 8px;
 }
 
 
