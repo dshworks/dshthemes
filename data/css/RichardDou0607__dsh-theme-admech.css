@@ -1,5 +1,5 @@
 /* RichardDou0607/dsh-theme-admech — src/styles.css
-   fetched 2026-10-19 from https://raw.githubusercontent.com/RichardDou0607/dsh-theme-admech/main/src/styles.css
+   fetched 2026-10-27 from https://raw.githubusercontent.com/RichardDou0607/dsh-theme-admech/main/src/styles.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* ============================================================
    dsh-theme-admech — pure A: FORGE-CATHEDRAL
@@ -376,12 +376,23 @@ html[data-dsh-admech] *::-webkit-scrollbar-track { background: transparent; }
 
 /* Native placeholder: keep text for assistive tech, but paint it through
    a zero-size text box so it cannot overlap the contenteditable in layout audits. */
-html[data-dsh-admech] [data-composer-placeholder][data-admech-placeholder="true"] {
+html[data-dsh-admech] [data-composer-placeholder][data-admech-placeholder="true"],
+html[data-dsh-admech] [data-admech-placeholder="true"][class*="placeholder"] {
   font-size: 0 !important;
   line-height: 0 !important;
   color: transparent !important;
 }
-html[data-dsh-admech] [data-composer-placeholder][data-admech-placeholder="true"]::before {
+/* Deterministic first paint: even before the client tagging pass runs (web-mode
+   hero placeholders change text on state transitions), the native placeholder
+   must never be able to overlap the editable box in a layout audit. The themed
+   copy is painted by the ::before rule below once data-admech-ph is present. */
+html[data-dsh-admech] [data-composer-card] [class*="placeholder"] {
+  font-size: 0 !important;
+  line-height: 0 !important;
+  color: transparent !important;
+}
+html[data-dsh-admech] [data-composer-placeholder][data-admech-placeholder="true"]::before,
+html[data-dsh-admech] [data-admech-placeholder="true"][class*="placeholder"]::before {
   content: attr(data-admech-ph);
   display: block;
   font-family: var(--admech-serif) !important;
@@ -640,7 +651,14 @@ html[data-dsh-admech] [data-composer-input] {
 }
 html[data-dsh-admech] [data-composer-card] button { color: var(--admech-ash); }
 html[data-dsh-admech] [data-composer-card] button:hover { color: var(--admech-brass-bright); }
-html[data-dsh-admech] [data-composer-card] button[aria-label="发送消息"] {
+/* The composer's single primary button changes its label between send, queue
+   ("排队发送"), steer ("插话发送") and stop while a turn runs. Style the host's
+   primary slot itself, not only the idle "发送消息" label: otherwise queue /
+   steer states fall back to the host's --button-info-fill, which the theme maps
+   to brass, leaving a plain gold disc whose masked brass glyph is invisible. */
+html[data-dsh-admech] [data-composer-card] button.yhfFVG_primary,
+html[data-dsh-admech] [data-composer-card] button[aria-label="发送消息"],
+html[data-dsh-admech] [data-composer-card] button[aria-label="Send message"] {
   width: 34px !important;
   height: 34px !important;
   border-radius: 50% !important;
@@ -649,9 +667,28 @@ html[data-dsh-admech] [data-composer-card] button[aria-label="发送消息"] {
   color: #f7ecd5 !important;
   box-shadow: inset 0 1px 0 rgba(255, 220, 180, 0.28), 0 2px 9px rgba(0, 0, 0, 0.55), 0 0 0 var(--admech-hairline, 1px) rgba(0, 0, 0, 0.35);
 }
-html[data-dsh-admech] [data-composer-card] button[aria-label="发送消息"]:hover {
+html[data-dsh-admech] [data-composer-card] button.yhfFVG_primary:hover:not(:disabled),
+html[data-dsh-admech] [data-composer-card] button[aria-label="发送消息"]:hover:not(:disabled),
+html[data-dsh-admech] [data-composer-card] button[aria-label="Send message"]:hover:not(:disabled) {
   background: radial-gradient(circle at 34% 28%, #d24a37, var(--admech-mars-bright) 64%, var(--admech-mars) 100%) !important;
   box-shadow: inset 0 1px 0 rgba(255, 220, 180, 0.34), 0 0 20px rgba(194, 55, 43, 0.4);
+}
+html[data-dsh-admech] [data-composer-card] button.yhfFVG_primary svg,
+html[data-dsh-admech] [data-composer-card] button.yhfFVG_primary svg[data-admech-icon] {
+  color: #f7ecd5 !important;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.5)) !important;
+}
+/* Queue / steer are ritual "insertions" into a running turn: add an amber ring
+   so the running-turn intent is readable without changing the red seal. */
+html[data-dsh-admech] [data-composer-card] button.yhfFVG_primary[aria-label="排队发送"],
+html[data-dsh-admech] [data-composer-card] button.yhfFVG_primary[aria-label="插话发送"],
+html[data-dsh-admech] [data-composer-card] button.yhfFVG_primary[aria-label="Queue message"],
+html[data-dsh-admech] [data-composer-card] button.yhfFVG_primary[aria-label="Steer message"] {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 220, 180, 0.28),
+    0 0 0 2px rgba(224, 163, 58, 0.5),
+    0 2px 12px rgba(0, 0, 0, 0.55),
+    0 0 18px rgba(224, 163, 58, 0.28) !important;
 }
 
 html[data-dsh-admech] [data-composer-card] button[aria-label="停止生成"] {
@@ -737,8 +774,11 @@ html[data-dsh-admech] [data-slot="main.conversation"] > div::before {
   opacity: 0.9;
 }
 /* ---------- dialogs / menus: cathedral frame ---------- */
+/* Portaled popovers (composer statistics, context meter, turn usage) are
+   position:fixed panels with their own anchoring. Exclude them from the modal
+   cathedral frame, otherwise the forced position:relative hides the panel. */
 
-html[data-dsh-admech] [role="dialog"] {
+html[data-dsh-admech] [role="dialog"]:not([class*="_panel"]) {
   position: relative;
   background-color: #0c0805 !important;
   background-image:
@@ -752,7 +792,7 @@ html[data-dsh-admech] [role="dialog"] {
   box-shadow: 0 30px 100px rgba(0, 0, 0, 0.8), inset 0 0 0 var(--admech-hairline, 1px) rgba(0, 0, 0, 0.65) !important;
   overflow: visible !important;
 }
-html[data-dsh-admech] [role="dialog"]::before {
+html[data-dsh-admech] [role="dialog"]:not([class*="_panel"])::before {
   content: "";
   position: absolute;
   inset: 6px;
@@ -761,7 +801,7 @@ html[data-dsh-admech] [role="dialog"]::before {
   pointer-events: none;
   z-index: 0;
 }
-html[data-dsh-admech] [role="dialog"]::after {
+html[data-dsh-admech] [role="dialog"]:not([class*="_panel"])::after {
   content: "";
   position: absolute;
   left: 50%;
@@ -774,15 +814,15 @@ html[data-dsh-admech] [role="dialog"]::after {
   z-index: 2;
   filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.55));
 }
-html[data-dsh-admech] [role="dialog"] > * { position: relative; z-index: 1; }
-html[data-dsh-admech] [role="dialog"] h1,
-html[data-dsh-admech] [role="dialog"] h2 {
+html[data-dsh-admech] [role="dialog"]:not([class*="_panel"]) > * { position: relative; z-index: 1; }
+html[data-dsh-admech] [role="dialog"]:not([class*="_panel"]) h1,
+html[data-dsh-admech] [role="dialog"]:not([class*="_panel"]) h2 {
   font-family: var(--admech-serif) !important;
   letter-spacing: 0.12em;
   color: var(--admech-brass-bright) !important;
 }
-html[data-dsh-admech] [role="dialog"] h1::after,
-html[data-dsh-admech] [role="dialog"] h2::after {
+html[data-dsh-admech] [role="dialog"]:not([class*="_panel"]) h1::after,
+html[data-dsh-admech] [role="dialog"]:not([class*="_panel"]) h2::after {
   content: "";
   display: block;
   height: 14px;
@@ -790,27 +830,27 @@ html[data-dsh-admech] [role="dialog"] h2::after {
   background: var(--admech-divider) center / contain no-repeat;
   opacity: 0.8;
 }
-html[data-dsh-admech] [role="dialog"] p { color: var(--admech-parchment-dim) !important; }
-html[data-dsh-admech] [role="dialog"] button { border-radius: 2px !important; }
-html[data-dsh-admech] [role="dialog"] button[class*="primary"] {
+html[data-dsh-admech] [role="dialog"]:not([class*="_panel"]) p { color: var(--admech-parchment-dim) !important; }
+html[data-dsh-admech] [role="dialog"]:not([class*="_panel"]) button { border-radius: 2px !important; }
+html[data-dsh-admech] [role="dialog"]:not([class*="_panel"]) button[class*="primary"] {
   background: var(--admech-mars) !important;
   border: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.58) !important;
   color: #f7ecd5 !important;
   box-shadow: inset 0 1px 0 rgba(255, 220, 180, 0.2);
 }
-html[data-dsh-admech] [role="dialog"] button[class*="primary"]:hover {
+html[data-dsh-admech] [role="dialog"]:not([class*="_panel"]) button[class*="primary"]:hover {
   background: var(--admech-mars-bright) !important;
   box-shadow: inset 0 1px 0 rgba(255, 220, 180, 0.28), 0 0 20px rgba(194, 55, 43, 0.32);
 }
-html[data-dsh-admech] [role="dialog"] input,
-html[data-dsh-admech] [role="dialog"] textarea {
+html[data-dsh-admech] [role="dialog"]:not([class*="_panel"]) input,
+html[data-dsh-admech] [role="dialog"]:not([class*="_panel"]) textarea {
   background: rgba(8, 6, 3, 0.9) !important;
   border: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.32) !important;
   border-radius: 2px !important;
   color: var(--admech-parchment) !important;
 }
-html[data-dsh-admech] [role="dialog"] input:focus,
-html[data-dsh-admech] [role="dialog"] textarea:focus {
+html[data-dsh-admech] [role="dialog"]:not([class*="_panel"]) input:focus,
+html[data-dsh-admech] [role="dialog"]:not([class*="_panel"]) textarea:focus {
   border-color: rgba(227, 193, 132, 0.8) !important;
   outline: none !important;
   box-shadow: 0 0 0 var(--admech-hairline, 1px) rgba(201, 161, 90, 0.35), 0 0 20px rgba(201, 161, 90, 0.10) !important;
@@ -826,8 +866,8 @@ html[data-dsh-admech] [role="listbox"] {
 /* Account / Platform entries must never inherit a decorative overlay's hit area. */
 html[data-dsh-admech] [role="menu"] a,
 html[data-dsh-admech] [role="menu"] button,
-html[data-dsh-admech] [role="dialog"] a,
-html[data-dsh-admech] [role="dialog"] button,
+html[data-dsh-admech] [role="dialog"]:not([class*="_panel"]) a,
+html[data-dsh-admech] [role="dialog"]:not([class*="_panel"]) button,
 html[data-dsh-admech] [data-slot*="account"] a,
 html[data-dsh-admech] [data-slot*="account"] button {
   pointer-events: auto !important;
@@ -837,9 +877,13 @@ html[data-dsh-admech] [data-slot*="account"] button {
 
 /* The native Platform page is hosted in a full-window WebContentsView. Never
    apply the generic cathedral dialog frame to its DOM container (position /
-   inset / overflow changes move or collapse the native view bounds). */
-html[data-dsh-admech] [role="dialog"]:has(> header [data-window-drag]),
-html[data-dsh-admech] [role="dialog"][data-admech-platform-overlay="true"] {
+   inset / overflow changes move or collapse the native view bounds). The host
+   puts data-window-drag on the <header> itself, so the bare-header selector is
+   the one that matches before the JS compatibility marker runs; the nested form
+   stays for older DOM. */
+html[data-dsh-admech] [role="dialog"]:not([class*="_panel"]):has(> header[data-window-drag]),
+html[data-dsh-admech] [role="dialog"]:not([class*="_panel"]):has(> header [data-window-drag]),
+html[data-dsh-admech] [role="dialog"]:not([class*="_panel"])[data-admech-platform-overlay="true"] {
   position: fixed !important;
   inset: 0 !important;
   z-index: 1001 !important;
@@ -852,10 +896,12 @@ html[data-dsh-admech] [role="dialog"][data-admech-platform-overlay="true"] {
   box-shadow: none !important;
   overflow: visible !important;
 }
-html[data-dsh-admech] [role="dialog"]:has(> header [data-window-drag])::before,
-html[data-dsh-admech] [role="dialog"]:has(> header [data-window-drag])::after,
-html[data-dsh-admech] [role="dialog"][data-admech-platform-overlay="true"]::before,
-html[data-dsh-admech] [role="dialog"][data-admech-platform-overlay="true"]::after {
+html[data-dsh-admech] [role="dialog"]:not([class*="_panel"]):has(> header[data-window-drag])::before,
+html[data-dsh-admech] [role="dialog"]:not([class*="_panel"]):has(> header[data-window-drag])::after,
+html[data-dsh-admech] [role="dialog"]:not([class*="_panel"]):has(> header [data-window-drag])::before,
+html[data-dsh-admech] [role="dialog"]:not([class*="_panel"]):has(> header [data-window-drag])::after,
+html[data-dsh-admech] [role="dialog"]:not([class*="_panel"])[data-admech-platform-overlay="true"]::before,
+html[data-dsh-admech] [role="dialog"]:not([class*="_panel"])[data-admech-platform-overlay="true"]::after {
   display: none !important;
   content: none !important;
 }
@@ -924,7 +970,7 @@ html[data-dsh-admech] svg[data-admech-icon][data-admech-brand] {
   filter: drop-shadow(0 0 9px rgba(201, 161, 90, 0.45));
 }
 html[data-dsh-admech] button[aria-label="发送消息"] svg[data-admech-icon] { color: #f7ecd5; filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.5)); }
-html[data-dsh-admech] [role="dialog"] button[aria-label="关闭"] svg[data-admech-icon] { color: var(--admech-parchment); }
+html[data-dsh-admech] [role="dialog"]:not([class*="_panel"]) button[aria-label="关闭"] svg[data-admech-icon] { color: var(--admech-parchment); }
 
 /* Never let the native glyph flash before the mask is attached; show our icon as soon as tagged. */
 html[data-dsh-admech] [data-chat-running] svg:not([data-admech-icon]),
@@ -1202,6 +1248,637 @@ html[data-dsh-admech] [data-presented-files-row] {
   gap: 10px !important;
 }
 
+
+/* ============================================================
+   COMPOSER INSTRUMENTS (v0.8.0)
+   Cogitator telemetry rail under the composer, themed usage /
+   context popovers, reasoning-effort slider and the cogitation
+   depth gauge that lives inside the composer.
+   ============================================================ */
+
+/* ---------- telemetry rail: 速率 / 命中率 / 上下文 ---------- */
+
+html[data-dsh-admech] [data-composer-dock] {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 0;
+  min-height: 36px;
+  margin-top: 2px;
+  padding: 2px 8px 2px;
+  background:
+    linear-gradient(180deg, rgba(8, 5, 3, 0) 0%, rgba(8, 5, 3, 0.38) 100%);
+}
+html[data-dsh-admech] [data-composer-dock]::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: min(640px, 88%);
+  height: var(--admech-hairline, 1px);
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, rgba(201, 161, 90, 0.42), transparent);
+  pointer-events: none;
+}
+html[data-dsh-admech] [data-composer-dock]::after {
+  content: "◆";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translate(-50%, -52%);
+  font-size: 6px;
+  line-height: 1;
+  color: rgba(201, 161, 90, 0.55);
+  pointer-events: none;
+}
+html[data-dsh-admech] [data-composer-dock] [data-composer-stat] {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  margin: 0;
+  padding: 0;
+}
+html[data-dsh-admech] [data-composer-dock] [data-composer-stat] + [data-composer-stat],
+html[data-dsh-admech] [data-composer-dock] > .y0jqnG_root { margin-left: 4px; }
+html[data-dsh-admech] [data-composer-dock] [data-composer-stat] + [data-composer-stat]::before,
+html[data-dsh-admech] [data-composer-dock] > [data-slot="conversation.composer.dock"] + .y0jqnG_root::before {
+  content: "◆";
+  position: absolute;
+  left: -8px;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 6px;
+  line-height: 1;
+  color: rgba(201, 161, 90, 0.38);
+  pointer-events: none;
+}
+html[data-dsh-admech] [data-composer-dock] .OpZ85W_pill,
+html[data-dsh-admech] [data-composer-dock] .y0jqnG_trigger {
+  position: relative;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: 9px auto 2px;
+  column-gap: 7px;
+  align-items: center;
+  min-height: 31px;
+  padding: 1px 8px 4px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--admech-parchment-dim);
+  font-family: var(--admech-mono) !important;
+  font-size: 10.5px !important;
+  line-height: 13px;
+  letter-spacing: 0.015em;
+  cursor: pointer;
+  transition: color 160ms ease, background-color 160ms ease;
+}
+html[data-dsh-admech] [data-composer-dock] .OpZ85W_pill::before,
+html[data-dsh-admech] [data-composer-dock] .y0jqnG_trigger::before {
+  content: attr(data-admech-caption);
+  grid-column: 2;
+  grid-row: 1;
+  font-family: var(--admech-serif) !important;
+  font-size: 7px !important;
+  line-height: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(201, 161, 90, 0.66);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 160ms ease;
+}
+html[data-dsh-admech] [data-composer-dock] .OpZ85W_pill > svg,
+html[data-dsh-admech] [data-composer-dock] .y0jqnG_trigger > svg {
+  grid-column: 1;
+  grid-row: 1 / span 3;
+  align-self: center;
+  width: 17px !important;
+  height: 17px !important;
+  color: rgba(201, 161, 90, 0.74);
+  filter: drop-shadow(0 0 5px rgba(201, 161, 90, 0.16));
+  transition: color 160ms ease;
+}
+html[data-dsh-admech] [data-composer-dock] .OpZ85W_label {
+  grid-column: 2;
+  grid-row: 2;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0;
+  font-family: var(--admech-mono) !important;
+  font-size: 10.5px !important;
+  line-height: 13px;
+  color: var(--admech-parchment) !important;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+html[data-dsh-admech] [data-composer-dock] .OpZ85W_sep {
+  padding: 0 3px;
+  color: rgba(201, 161, 90, 0.5) !important;
+}
+html[data-dsh-admech] [data-composer-dock] .y0jqnG_trigger > span:not(.y0jqnG_track) {
+  grid-column: 2;
+  grid-row: 2;
+  font-family: var(--admech-mono) !important;
+  font-size: 10.5px !important;
+  line-height: 13px;
+  color: var(--admech-parchment) !important;
+  font-variant-numeric: tabular-nums;
+}
+html[data-dsh-admech] [data-composer-dock] .OpZ85W_pill::after,
+html[data-dsh-admech] [data-composer-dock] .y0jqnG_trigger::after {
+  content: "";
+  grid-column: 1 / -1;
+  grid-row: 3;
+  align-self: end;
+  height: 2px;
+  margin-top: 3px;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(201, 161, 90, 0.3) 0 1px, transparent 1px 25%),
+    linear-gradient(90deg, transparent 0 var(--admech-pct, 0%), var(--admech-signal, #7cffa0) var(--admech-pct, 0%), var(--admech-signal, #7cffa0) calc(var(--admech-pct, 0%) + 3px), transparent calc(var(--admech-pct, 0%) + 3px) 100%),
+    linear-gradient(90deg, var(--admech-signal, #7cffa0) 0 var(--admech-pct, 0%), rgba(201, 161, 90, 0.12) var(--admech-pct, 0%) 100%);
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  background-size: 100% 6px, 100% 100%, 100% 100%;
+  background-position: left bottom, left bottom, left bottom;
+  opacity: 0.9;
+}
+html[data-dsh-admech] [data-composer-dock] .OpZ85W_pill:hover,
+html[data-dsh-admech] [data-composer-dock] .y0jqnG_trigger:hover {
+  color: var(--admech-brass-bright) !important;
+  background: radial-gradient(130% 140% at 50% 130%, rgba(201, 161, 90, 0.12), transparent 72%);
+}
+html[data-dsh-admech] [data-composer-dock] .OpZ85W_pill:hover::before,
+html[data-dsh-admech] [data-composer-dock] .y0jqnG_trigger:hover::before { color: rgba(227, 193, 132, 0.92); }
+html[data-dsh-admech] [data-composer-dock] .OpZ85W_pill:hover > svg,
+html[data-dsh-admech] [data-composer-dock] .y0jqnG_trigger:hover > svg { color: var(--admech-brass-bright); }
+html[data-dsh-admech] [data-composer-dock] .OpZ85W_pill:focus-visible,
+html[data-dsh-admech] [data-composer-dock] .y0jqnG_trigger:focus-visible {
+  outline: var(--admech-hairline, 1px) solid rgba(227, 193, 132, 0.8);
+  outline-offset: 2px;
+}
+html[data-dsh-admech] [data-composer-dock] [data-composer-stat][data-admech-active="true"] .OpZ85W_pill > svg {
+  color: #7cffa0;
+  animation: admechTelemetryPulse 1.8s ease-in-out infinite;
+}
+html[data-dsh-admech] [data-composer-dock] .y0jqnG_track { stroke: rgba(201, 161, 90, 0.42) !important; }
+html[data-dsh-admech] [data-composer-dock] .y0jqnG_fill {
+  stroke: var(--admech-signal, #7cffa0) !important;
+  filter: drop-shadow(0 0 3px rgba(124, 255, 160, 0.45));
+  transition: stroke 200ms ease;
+}
+html[data-dsh-admech] [data-composer-dock] [data-admech-level="danger"] .y0jqnG_fill { filter: drop-shadow(0 0 4px rgba(194, 55, 43, 0.65)); }
+html[data-dsh-admech] [data-composer-dock] [data-admech-level="warn"] .y0jqnG_fill { filter: drop-shadow(0 0 4px rgba(224, 163, 58, 0.6)); }
+@keyframes admechTelemetryPulse {
+  0%, 100% { opacity: 0.72; filter: drop-shadow(0 0 4px rgba(124, 255, 160, 0.25)); }
+  50% { opacity: 1; filter: drop-shadow(0 0 9px rgba(124, 255, 160, 0.55)); }
+}
+
+/* turn footer usage readout (inside the transcript) */
+html[data-dsh-admech] .sZXytW_trigger {
+  color: rgba(195, 179, 148, 0.74) !important;
+  font-family: var(--admech-mono) !important;
+  font-size: 11px !important;
+  letter-spacing: 0.02em;
+}
+html[data-dsh-admech] .sZXytW_trigger:hover { color: var(--admech-brass-bright) !important; }
+html[data-dsh-admech] .sZXytW_trigger svg { color: rgba(201, 161, 90, 0.7); }
+
+/* ---------- telemetry popovers: instrument panels ---------- */
+
+html[data-dsh-admech] [role="dialog"]:is([class*="-Fl-UW_panel"], [class*="y0jqnG_panel"]) {
+  background-color: #0c0805 !important;
+  background-image: linear-gradient(180deg, #171109 0%, #0a0704 100%) !important;
+  border: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.58) !important;
+  border-radius: 2px !important;
+  box-shadow:
+    0 22px 60px rgba(0, 0, 0, 0.74),
+    inset 0 0 0 var(--admech-hairline, 1px) rgba(0, 0, 0, 0.62),
+    inset 0 0 34px rgba(201, 161, 90, 0.04) !important;
+  color: var(--admech-parchment-dim) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  overflow: visible !important;
+}
+html[data-dsh-admech] [role="dialog"]:is([class*="-Fl-UW_panel"], [class*="y0jqnG_panel"])::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.14);
+  border-radius: 1px;
+  pointer-events: none;
+}
+html[data-dsh-admech] [role="dialog"]:is([class*="-Fl-UW_panel"], [class*="y0jqnG_panel"])::after {
+  content: "◆";
+  position: absolute;
+  right: 9px;
+  top: 9px;
+  font-size: 6px;
+  line-height: 1;
+  color: rgba(201, 161, 90, 0.5);
+  pointer-events: none;
+}
+html[data-dsh-admech] [role="dialog"][class*="-Fl-UW_panel"] { padding: 10px 13px 12px !important; }
+html[data-dsh-admech] [role="dialog"] .-Fl-UW_title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 0 6px;
+}
+html[data-dsh-admech] [role="dialog"] .-Fl-UW_titleLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--admech-serif) !important;
+  font-size: 11px !important;
+  letter-spacing: 0.16em;
+  color: var(--admech-brass-bright) !important;
+}
+html[data-dsh-admech] [role="dialog"] .-Fl-UW_titleLabel svg { width: 14px; height: 14px; color: rgba(201, 161, 90, 0.8); }
+html[data-dsh-admech] [role="dialog"] .-Fl-UW_titleValue {
+  font-family: var(--admech-mono) !important;
+  font-size: 11px !important;
+  color: rgba(124, 255, 160, 0.88) !important;
+  font-variant-numeric: tabular-nums;
+}
+html[data-dsh-admech] [role="dialog"] .-Fl-UW_titleRule {
+  height: var(--admech-hairline, 1px) !important;
+  margin: 0 0 8px !important;
+  background: linear-gradient(90deg, transparent, rgba(201, 161, 90, 0.5), transparent) !important;
+}
+html[data-dsh-admech] [role="dialog"] .-Fl-UW_details {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 5px 16px;
+  margin: 0;
+  padding: 0;
+}
+html[data-dsh-admech] [role="dialog"] .-Fl-UW_details dt {
+  position: relative;
+  font-family: var(--admech-serif) !important;
+  font-size: 10.5px !important;
+  letter-spacing: 0.05em;
+  color: var(--admech-ash) !important;
+  white-space: nowrap;
+}
+html[data-dsh-admech] [role="dialog"] .-Fl-UW_details dd {
+  margin: 0;
+  font-family: var(--admech-mono) !important;
+  font-size: 10.5px !important;
+  color: var(--admech-parchment) !important;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+html[data-dsh-admech] [role="dialog"] .y0jqnG_header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 0 0 6px;
+}
+html[data-dsh-admech] [role="dialog"] .y0jqnG_headline {
+  font-family: var(--admech-serif) !important;
+  font-size: 11px !important;
+  letter-spacing: 0.16em;
+  color: var(--admech-brass-bright) !important;
+}
+html[data-dsh-admech] [role="dialog"] .y0jqnG_percent {
+  font-family: var(--admech-mono) !important;
+  font-size: 17px !important;
+  line-height: 1;
+  color: var(--admech-signal, #7cffa0) !important;
+  font-variant-numeric: tabular-nums;
+}
+html[data-dsh-admech] [role="dialog"] .y0jqnG_figures {
+  margin-left: auto;
+  font-family: var(--admech-mono) !important;
+  font-size: 10px !important;
+  color: var(--admech-ash) !important;
+}
+html[data-dsh-admech] [role="dialog"] .y0jqnG_bar {
+  position: relative;
+  display: flex;
+  gap: 1px;
+  height: 5px;
+  margin: 2px 0 9px;
+  background: rgba(0, 0, 0, 0.55);
+  border: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.22);
+  overflow: hidden;
+}
+html[data-dsh-admech] [role="dialog"] .y0jqnG_segment { height: 100%; }
+html[data-dsh-admech] [role="dialog"] .y0jqnG_colorSystem { background: linear-gradient(180deg, #e3c184, #8a682f) !important; }
+html[data-dsh-admech] [role="dialog"] .y0jqnG_colorTools { background: linear-gradient(180deg, #c2372b, #6d1a15) !important; }
+html[data-dsh-admech] [role="dialog"] .y0jqnG_colorMessages { background: linear-gradient(180deg, #7cffa0, #2c7a45) !important; }
+html[data-dsh-admech] [role="dialog"] .y0jqnG_rows {
+  display: grid;
+  gap: 5px;
+  margin: 0;
+  padding: 0;
+}
+html[data-dsh-admech] [role="dialog"] .y0jqnG_row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+html[data-dsh-admech] [role="dialog"] .y0jqnG_row dt {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--admech-serif) !important;
+  font-size: 10.5px !important;
+  color: var(--admech-ash) !important;
+}
+html[data-dsh-admech] [role="dialog"] .y0jqnG_row dd {
+  margin: 0;
+  font-family: var(--admech-mono) !important;
+  font-size: 10.5px !important;
+  color: var(--admech-parchment) !important;
+  font-variant-numeric: tabular-nums;
+}
+html[data-dsh-admech] [role="dialog"] .y0jqnG_swatch {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
+  transform: rotate(45deg);
+  border: 0;
+  border-radius: 0;
+}
+
+/* ---------- model menu: instrument panel + reasoning slider ---------- */
+
+html[data-dsh-admech] [role="menu"].cl2Rlq_menu {
+  min-width: 236px;
+  padding: 4px;
+  border: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.52);
+  border-radius: 2px !important;
+  box-shadow:
+    0 18px 44px rgba(0, 0, 0, 0.7),
+    inset 0 0 0 var(--admech-hairline, 1px) rgba(0, 0, 0, 0.6) !important;
+}
+html[data-dsh-admech] [role="menu"].cl2Rlq_menu > [aria-hidden="true"] {
+  background: linear-gradient(180deg, #17110a 0%, #0a0704 100%) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  border-radius: 1px !important;
+}
+html[data-dsh-admech] [role="menu"].cl2Rlq_menu .cl2Rlq_cell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+  padding: 8px 9px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--admech-parchment-dim);
+  text-align: left;
+  cursor: pointer;
+}
+html[data-dsh-admech] [role="menu"].cl2Rlq_menu .cl2Rlq_cell + .cl2Rlq_cell {
+  border-top: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.14);
+}
+html[data-dsh-admech] [role="menu"].cl2Rlq_menu .cl2Rlq_cell:hover,
+html[data-dsh-admech] [role="menu"].cl2Rlq_menu .cl2Rlq_cell[data-highlighted] {
+  background: linear-gradient(90deg, rgba(201, 161, 90, 0.12), rgba(201, 161, 90, 0.02)) !important;
+}
+html[data-dsh-admech] [role="menu"].cl2Rlq_menu .cl2Rlq_cellLabel {
+  font-family: var(--admech-serif) !important;
+  font-size: 11px !important;
+  letter-spacing: 0.12em;
+  color: var(--admech-ash);
+}
+html[data-dsh-admech] [role="menu"].cl2Rlq_menu .cl2Rlq_cellValue {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--admech-mono) !important;
+  font-size: 11px !important;
+  color: var(--admech-parchment);
+  font-variant-numeric: tabular-nums;
+}
+html[data-dsh-admech] [role="menu"].cl2Rlq_menu .cl2Rlq_cellChevron { color: rgba(201, 161, 90, 0.62); }
+html[data-dsh-admech] [role="menu"].cl2Rlq_menu .cl2Rlq_cell:hover .cl2Rlq_cellChevron { color: var(--admech-brass-bright); }
+html[data-dsh-admech] [role="menu"].cl2Rlq_menu .cl2Rlq_cell:last-of-type .cl2Rlq_cellValue {
+  padding-right: 2px;
+  color: var(--admech-brass-bright);
+}
+
+/* model list drill-in */
+html[data-dsh-admech] [role="menu"].cl2Rlq_groups {
+  padding: 4px;
+  border: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.52);
+  border-radius: 2px !important;
+  background-color: #0c0805 !important;
+  background-image: linear-gradient(180deg, #17110a 0%, #0a0704 100%) !important;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.7) !important;
+}
+html[data-dsh-admech] [role="menu"].cl2Rlq_groups ._heading_121p8_19 {
+  padding: 6px 8px 3px !important;
+  font-family: var(--admech-serif) !important;
+  font-size: 8px !important;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(201, 161, 90, 0.78) !important;
+}
+html[data-dsh-admech] [role="menu"].cl2Rlq_groups .cl2Rlq_modelOption {
+  border-radius: 0;
+  color: var(--admech-parchment-dim);
+}
+html[data-dsh-admech] [role="menu"].cl2Rlq_groups .cl2Rlq_modelOption:hover,
+html[data-dsh-admech] [role="menu"].cl2Rlq_groups .cl2Rlq_modelOption[data-highlighted] {
+  background: linear-gradient(90deg, rgba(201, 161, 90, 0.12), rgba(201, 161, 90, 0.02)) !important;
+}
+html[data-dsh-admech] [role="menu"].cl2Rlq_groups .cl2Rlq_modelName {
+  font-family: var(--admech-mono) !important;
+  font-size: 11px !important;
+}
+html[data-dsh-admech] [role="menu"].cl2Rlq_groups .cl2Rlq_check { color: var(--admech-brass-bright); }
+
+/* the reasoning drill-in becomes a discrete slider */
+html[data-dsh-admech] [role="menu"].cl2Rlq_menu.admech-effort-slider {
+  --admech-track-left: 20px;
+  --admech-track-width: 200px;
+  --admech-track-top: 48px;
+  --admech-stop-top: 12px;
+  --admech-effort-fill: 0px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  min-width: 274px;
+  max-width: min(360px, calc(100vw - 24px));
+  padding: 34px 10px 9px;
+  border: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.6);
+  border-radius: 2px;
+  overflow: visible;
+  touch-action: none;
+}
+html[data-dsh-admech] .admech-effort-slider::before {
+  content: "COGITATION DEPTH · 思考程度";
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  top: 8px;
+  padding-bottom: 5px;
+  border-bottom: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.26);
+  font-family: var(--admech-serif);
+  font-size: 7.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(201, 161, 90, 0.82);
+  white-space: nowrap;
+  pointer-events: none;
+}
+html[data-dsh-admech] .admech-effort-slider::after {
+  content: "";
+  position: absolute;
+  left: var(--admech-track-left);
+  top: var(--admech-track-top);
+  width: var(--admech-track-width);
+  height: 2px;
+  transform: translateY(-1px);
+  background: linear-gradient(90deg, #7cffa0 0 var(--admech-effort-fill), rgba(201, 161, 90, 0.22) var(--admech-effort-fill) 100%);
+  box-shadow: 0 0 8px rgba(124, 255, 160, 0.18);
+  pointer-events: none;
+}
+html[data-dsh-admech] .admech-effort-slider > .cl2Rlq_option {
+  position: relative;
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  min-width: 0;
+  padding: 26px 2px 2px;
+  border: 0;
+  border-radius: 0;
+  background: transparent !important;
+  color: var(--admech-ash) !important;
+  font-family: var(--admech-serif) !important;
+  cursor: pointer;
+  touch-action: none;
+}
+html[data-dsh-admech] .admech-effort-slider > .cl2Rlq_option:hover,
+html[data-dsh-admech] .admech-effort-slider > .cl2Rlq_option[data-highlighted],
+html[data-dsh-admech] .admech-effort-slider > .cl2Rlq_option.cl2Rlq_optionActive {
+  background: transparent !important;
+  color: var(--admech-brass-bright) !important;
+}
+html[data-dsh-admech] .admech-effort-slider .cl2Rlq_optionCopy { display: block; }
+html[data-dsh-admech] .admech-effort-slider .cl2Rlq_modelName {
+  font-family: var(--admech-serif) !important;
+  font-size: 9px !important;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+html[data-dsh-admech] .admech-effort-slider .cl2Rlq_check { display: none !important; }
+html[data-dsh-admech] .admech-effort-slider > .cl2Rlq_option::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: var(--admech-stop-top);
+  width: 9px;
+  height: 9px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  background: #0a0704;
+  border: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.55);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.7);
+  transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+}
+html[data-dsh-admech] .admech-effort-slider > .cl2Rlq_option:hover::before { border-color: rgba(227, 193, 132, 0.9); }
+html[data-dsh-admech] .admech-effort-slider > .cl2Rlq_option[aria-checked="true"]::before,
+html[data-dsh-admech] .admech-effort-slider > .cl2Rlq_option[data-admech-preview="true"]::before {
+  background: var(--admech-brass-bright);
+  border-color: var(--admech-brass-bright);
+  box-shadow: 0 0 10px rgba(227, 193, 132, 0.55);
+}
+html[data-dsh-admech] .admech-effort-slider > .cl2Rlq_option[aria-checked="true"] { color: var(--admech-parchment) !important; }
+html[data-dsh-admech] .admech-effort-slider > .cl2Rlq_option[aria-checked="true"] .cl2Rlq_modelName { color: var(--admech-brass-bright); }
+html[data-dsh-admech] .admech-effort-slider > .cl2Rlq_option[data-admech-preview="true"] { color: var(--admech-brass-bright) !important; }
+html[data-dsh-admech] .admech-effort-slider > .cl2Rlq_option[aria-checked="true"]::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: var(--admech-stop-top);
+  width: 5px;
+  height: 5px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  background: #7cffa0;
+  box-shadow: 0 0 8px rgba(124, 255, 160, 0.8);
+  pointer-events: none;
+}
+html[data-dsh-admech] .admech-effort-slider > .cl2Rlq_option[data-admech-preview="true"]::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: var(--admech-stop-top);
+  width: 5px;
+  height: 5px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  background: var(--admech-brass-bright);
+  box-shadow: 0 0 8px rgba(227, 193, 132, 0.8);
+  pointer-events: none;
+}
+
+/* ---------- question card: recommendation badge ---------- */
+
+/* The host paints the recommendation badge with the sidebar-active accent as
+   background and --dsw-alias-button-info-fill as text colour. Both tokens are
+   brass in this theme, so "推荐" was invisible gold-on-gold. Give the badge an
+   explicit themed pair instead of relying on those two tokens. */
+html[data-dsh-admech] [class*="_optionLine"] > [class*="_badge"],
+html[data-dsh-admech] [class*="QuestionComposer"] [class*="_badge"] {
+  background: rgba(201, 161, 90, 0.16) !important;
+  color: var(--admech-brass-bright) !important;
+  border: var(--admech-hairline, 1px) solid rgba(201, 161, 90, 0.46);
+  border-radius: 2px !important;
+  padding: 0 5px !important;
+  font-family: var(--admech-serif) !important;
+  font-size: 10px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.12em;
+  line-height: 16px !important;
+}
+
+/* ---------- startup hand-off: prelude -> ignition splash ---------- */
+
+html[data-dsh-admech] .admech-splash.is-continue { animation: none; opacity: 1; }
+html[data-dsh-admech] .admech-splash.is-continue .admech-splash-content { animation: none; opacity: 1; transform: none; }
+html[data-dsh-admech] .admech-splash.is-continue .admech-splash-frameart { animation: admechSplashFrame 900ms ease-out both; }
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 900px) {
+  html[data-dsh-admech] [data-composer-dock] { padding: 2px 4px; }
+  html[data-dsh-admech] [data-composer-dock] .OpZ85W_pill,
+  html[data-dsh-admech] [data-composer-dock] .y0jqnG_trigger { padding: 1px 6px 4px; column-gap: 5px; }
+}
+@media (max-width: 700px) {
+  html[data-dsh-admech] [data-composer-dock] { min-height: 30px; }
+  html[data-dsh-admech] [data-composer-dock] .OpZ85W_pill,
+  html[data-dsh-admech] [data-composer-dock] .y0jqnG_trigger {
+    grid-template-rows: 0 auto 2px;
+    row-gap: 1px;
+    min-height: 26px;
+    padding-bottom: 3px;
+  }
+  html[data-dsh-admech] [data-composer-dock] .OpZ85W_pill::before,
+  html[data-dsh-admech] [data-composer-dock] .y0jqnG_trigger::before { display: none; }
+  html[data-dsh-admech] [data-composer-dock] .OpZ85W_pill > svg,
+  html[data-dsh-admech] [data-composer-dock] .y0jqnG_trigger > svg { grid-row: 1 / span 3; width: 14px !important; height: 14px !important; }
+  html[data-dsh-admech] [data-composer-dock] .OpZ85W_label,
+  html[data-dsh-admech] [data-composer-dock] .y0jqnG_trigger > span:not(.y0jqnG_track) { font-size: 10px !important; }
+  html[data-dsh-admech] .admech-effort-slider { min-width: 244px; }
+}
+
 /* ---------- generic typography ---------- */
 
 html[data-dsh-admech] [data-slot="main"] h1,
@@ -1226,7 +1903,7 @@ html[data-dsh-admech] [data-slot="main"] [class*="groupTitle"] {
   html[data-dsh-admech] [data-composer-card] [data-tone="info"] { display: none !important; }
   html[data-dsh-admech] [data-composer-card]::after { width: 200px; height: 84px; top: -58px; }
   html[data-dsh-admech] [data-slot="main.conversation"] > div::before { display: none; }
-  html[data-dsh-admech] [role="dialog"]::after { width: 64px; height: 64px; top: -64px; }
+  html[data-dsh-admech] [role="dialog"]:not([class*="_panel"])::after { width: 64px; height: 64px; top: -64px; }
   html[data-dsh-admech] [data-slot="main.conversation"] > div { background-position: center !important; }
 }
 
@@ -1244,7 +1921,7 @@ html[data-dsh-admech] [data-slot="main"] [class*="groupTitle"] {
 
 @media (max-height: 760px) {
   /* A dialog centred with 24px of top padding clips the 38px medallion. */
-  html[data-dsh-admech] [role="dialog"]::after { width: 64px; height: 64px; top: -64px; }
+  html[data-dsh-admech] [role="dialog"]:not([class*="_panel"])::after { width: 64px; height: 64px; top: -64px; }
 }
 
 /* ---------- Windows platform corrections ---------- */
@@ -1273,8 +1950,8 @@ html[data-dsh-admech][data-admech-os="win"] .admech-splash.is-out { transform: n
   html[data-dsh-admech] [data-composer-card]::before,
   html[data-dsh-admech] [data-composer-card]::after,
   html[data-dsh-admech] [data-slot="main.conversation"] > div::before,
-  html[data-dsh-admech] [role="dialog"]::before,
-  html[data-dsh-admech] [role="dialog"]::after,
+  html[data-dsh-admech] [role="dialog"]:not([class*="_panel"])::before,
+  html[data-dsh-admech] [role="dialog"]:not([class*="_panel"])::after,
   html[data-dsh-admech] [data-changed-files]::before,
   html[data-dsh-admech] [data-changed-files]::after,
   html[data-dsh-admech] [data-presented-file]::before,
@@ -1289,7 +1966,7 @@ html[data-dsh-admech][data-admech-os="win"] .admech-splash.is-out { transform: n
   html[data-dsh-admech] [data-admech="header"],
   html[data-dsh-admech] [data-composer-card],
   html[data-dsh-admech] [data-slot="main.conversation"] > div,
-  html[data-dsh-admech] [role="dialog"],
+  html[data-dsh-admech] [role="dialog"]:not([class*="_panel"]),
   html[data-dsh-admech] [data-changed-files],
   html[data-dsh-admech] [data-presented-file] {
     background-image: none !important;
