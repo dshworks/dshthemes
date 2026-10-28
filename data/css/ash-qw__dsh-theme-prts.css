@@ -1,5 +1,5 @@
 /* ash-qw/dsh-theme-prts — src/styles/prts.css
-   fetched 2026-10-20 from https://raw.githubusercontent.com/ash-qw/dsh-theme-prts/main/src/styles/prts.css
+   fetched 2026-10-28 from https://raw.githubusercontent.com/ash-qw/dsh-theme-prts/main/src/styles/prts.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* DSH P.R.T.S. // RHODES ISLAND DAILY OPERATIONS TERMINAL */
 html[data-dsh-prts] {
@@ -1545,7 +1545,7 @@ html[data-dsh-prts] [data-prts-conversation-control] {
 
 html[data-dsh-prts] [data-composer-card] button:not([data-slot="conversation.input.attachments"] *):not([data-prts-glass-menu] *):not([data-prts-floating-glass] *):not([role="menu"] *):not([role="listbox"] *):is(:hover, :focus-visible),
 html[data-dsh-prts] [data-prts-conversation-control]:is(:hover, :focus-visible) {
-  border-color: var(--prts-yellow) !important;
+  border-color: var(--prts-line) !important;
 }
 
 html[data-dsh-prts] [data-composer-card] button[aria-label*="send" i],
@@ -1609,7 +1609,9 @@ html[data-dsh-prts] [data-prts-floating-item] {
   color: var(--prts-ink) !important;
 }
 
-html[data-dsh-prts] [data-prts-floating-item]:is(:hover, [data-highlighted]) {
+/* Native material menus own their item states, including body portals without
+   aria-controls or composer markers. Keep generic fallback styling separate. */
+html[data-dsh-prts] [data-prts-floating-item]:not([data-menu-material] *, [data-prts-glass-menu] *, [data-slot="conversation.input.overlay"] *):is(:hover, [data-highlighted]) {
   background: var(--prts-panel-muted) !important;
 }
 
@@ -1910,12 +1912,12 @@ html[data-dsh-prts][data-prts-conversation-style="deck-chat"] {
   & [data-message-role="assistant"]::after,
   & :is([data-chat-flow-kind="user"], [data-submission-echo]:not([data-pending-steering])) [class$="_bubble"]::before,
   & [data-message-role="user"]::before {
-    content: ""; position: absolute; top: 0; left: -9px; width: 10px; height: 18px; pointer-events: none;
+    content: ""; position: absolute; top: 0; left: -10px; width: 10px; height: 18px; pointer-events: none;
     background: var(--prts-bubble-surface, var(--prts-chat-user-surface));
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 18'%3E%3Cpath d='M0 0H10V18Q10 6 0 0Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
   }
   & :is([data-chat-flow-kind="user"], [data-submission-echo]:not([data-pending-steering])) [class$="_bubble"]::before,
-  & [data-message-role="user"]::before { left: auto; right: -9px; transform: scaleX(-1); }
+  & [data-message-role="user"]::before { left: auto; right: -10px; transform: scaleX(-1); }
 }
 
 /* The upstream component replaces only the composer's two background plates. */
