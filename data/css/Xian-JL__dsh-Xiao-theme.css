@@ -1,5 +1,5 @@
 /* Xian-JL/dsh-Xiao-theme — src/client/styles.css
-   fetched 2026-10-21 from https://raw.githubusercontent.com/Xian-JL/dsh-Xiao-theme/main/src/client/styles.css
+   fetched 2026-10-29 from https://raw.githubusercontent.com/Xian-JL/dsh-Xiao-theme/main/src/client/styles.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* ==========================================================================
  * dsh-xiao-theme — authored layer
@@ -1569,5 +1569,50 @@ body[data-xiao-theme='on']:has(.xiao-welcome) [data-phase='hero'] [class$='_comp
   .xiao-overlay[data-page-phase='hero'] .xiao-hero-frame {
     transform: translate3d(calc(var(--xiao-parallax-x) - 2vw), calc(var(--xiao-parallax-y) - 26vh), 0) scale(1.04);
   }
+}
+
+/* Read-only light/dark samples use the live theme's emitted colour tokens. */
+.xiao-color-preview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  gap: 10px;
+  min-width: 0;
+}
+
+.xiao-color-preview__scheme {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--preview-text) 22%, transparent);
+  border-radius: 10px;
+  background: var(--preview-bg);
+  color: var(--preview-text);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.xiao-color-preview__message {
+  margin: 0;
+  padding: 10px;
+  border-radius: 7px;
+  background: var(--preview-bubble);
+  color: var(--preview-text);
+}
+
+.xiao-color-preview__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.xiao-color-preview__caption { color: var(--preview-muted); font-size: 12px; }
+.xiao-color-preview__action {
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--preview-fill);
+  color: var(--preview-on-fill);
 }
 

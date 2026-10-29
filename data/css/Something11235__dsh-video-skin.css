@@ -1,5 +1,5 @@
 /* Something11235/dsh-video-skin — runtime/skin.css
-   fetched 2026-10-21 from https://raw.githubusercontent.com/Something11235/dsh-video-skin/main/runtime/skin.css
+   fetched 2026-10-29 from https://raw.githubusercontent.com/Something11235/dsh-video-skin/main/runtime/skin.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /*
  * dsh-video-skin — 注入到 index.html <head> 的样式（结构化注入行的 kind:'style'）。
@@ -273,29 +273,48 @@ body[data-ds-dark-theme] #dsvs-backdrop-veil {
   background: rgba(0, 0, 0, var(--dsvs-veil, 0.14));
 }
 
-/* 表面半透明化。
+/* 表面半透明化 —— **只动"画布"和"侧栏"，不动"浮起来的表面"**。
  *
- * **暗色和亮色的表面值刻意不同**：文字在暗主题是浅色、在亮主题是深色，而这条素材整体偏暗
- * （实测 YAVG≈0.25），所以同样薄的白色表面会让深色文字掉到 3:1 以下，而深色表面不会。
- * 两边都用一个值的结果就是"亮主题没法读"。实测数据见 README §3。
+ * 分成两类是有原因的（这是用户报障之后才分清的一条界线）：
+ *
+ *   ① 画布 / 侧栏（bg-base、sidebar-fill）：视频就在它们后面，半透明才能看见画面。
+ *   ② 抬起来的表面（bg-layer-1/2/3）：对话框、弹层、菜单、卡片、设置页。
+ *      **它们必须保持内核原生的不透明色**，否则背后正在滚动/闪动的正文会透进对话框里，
+ *      两段文字叠在一起就没法读了。设置页和「预览版说明」模态用的都是
+ *      `_dialog_*{ background: var(--dsw-alias-bg-layer-2) }`，同一个 token。
+ *
+ * 早先的实现把 ①②一起半透明化（layer2 = surface+0.16，暗主题只有 0.36），于是
+ * 一调低"面板不透明度"，设置页就变成一张玻璃纸。现在 ② 不再跟着滑块走。
  *
  * 每一层的不透明度都是 JS 先算好再写成独立变量，不在 `rgba()` 里写 `calc(var(...) + .14)`：
  * 自定义属性是 token 流，`calc()` 会被原样替换进颜色函数，能不能解析取决于实现；
  * 算好再写就没有这层不确定性，而且值本身可以直接被断言。 */
 html[data-dsvs="on"] body {
   --dsw-alias-bg-base: rgba(255, 255, 255, var(--dsvs-l-surface, 0.6)) !important;
-  --dsw-alias-bg-layer-1: rgba(255, 255, 255, var(--dsvs-l-layer1, 0.7)) !important;
-  --dsw-alias-bg-layer-2: rgba(255, 255, 255, var(--dsvs-l-layer2, 0.76)) !important;
-  --dsw-alias-bg-layer-3: rgba(255, 255, 255, var(--dsvs-l-layer3, 0.8)) !important;
   --dsw-specific-sidebar-fill: rgba(249, 250, 251, var(--dsvs-l-sidebar, 0.66)) !important;
 }
 
 html[data-dsvs="on"] body[data-ds-dark-theme] {
   --dsw-alias-bg-base: rgba(21, 21, 23, var(--dsvs-surface, 0.2)) !important;
-  --dsw-alias-bg-layer-1: rgba(35, 35, 36, var(--dsvs-layer1, 0.3)) !important;
-  --dsw-alias-bg-layer-2: rgba(41, 41, 41, var(--dsvs-layer2, 0.36)) !important;
-  --dsw-alias-bg-layer-3: rgba(47, 47, 49, var(--dsvs-layer3, 0.4)) !important;
   --dsw-specific-sidebar-fill: rgba(27, 27, 28, var(--dsvs-sidebar, 0.26)) !important;
+}
+
+/* 抬起来的表面（对话框/弹层/菜单/卡片/设置页）的可选半透明。
+ *
+ * **默认不生效**：只有 `data-dsvs-panel` 挂上（滑块从 100% 往下拖）时才覆盖这三层。
+ * 不挂属性时保留内核原生色 —— 那是最准的，也是"设置页看不清"修好之后的行为。
+ *
+ * 想玩磨砂玻璃的人自己往下调，但要清楚代价：弹层背后正在滚动的内容会透进来。 */
+html[data-dsvs="on"][data-dsvs-panel] body {
+  --dsw-alias-bg-layer-1: rgba(255, 255, 255, var(--dsvs-panel-1, 1)) !important;
+  --dsw-alias-bg-layer-2: rgba(255, 255, 255, var(--dsvs-panel-2, 1)) !important;
+  --dsw-alias-bg-layer-3: rgba(255, 255, 255, var(--dsvs-panel-3, 1)) !important;
+}
+
+html[data-dsvs="on"][data-dsvs-panel] body[data-ds-dark-theme] {
+  --dsw-alias-bg-layer-1: rgba(35, 35, 36, var(--dsvs-panel-1, 1)) !important;
+  --dsw-alias-bg-layer-2: rgba(41, 41, 41, var(--dsvs-panel-2, 1)) !important;
+  --dsw-alias-bg-layer-3: rgba(47, 47, 49, var(--dsvs-panel-3, 1)) !important;
 }
 
 /* reduced-motion 下不播背景视频（只剩蒙版+半透明表面，观感仍然成立）。 */
@@ -349,6 +368,8 @@ body:not([data-ds-dark-theme]) #dsvs-knobs-pill {
 }
 
 #dsvs-knobs {
+  max-height: min(78vh, 640px);
+  overflow-y: auto;
   position: fixed;
   right: 16px;
   bottom: 58px;
@@ -551,3 +572,227 @@ body:not([data-ds-dark-theme]) .dsvs-knobs-reset {
   text-align: right;
 }
 
+/* ─────────────── ④ 主题联动的一次性提示（左下角） ───────────────
+ *
+ * 宿主把浅色用户切到深色之后弹一次，带「恢复浅色」。放在左下角是因为右下角
+ * 已经有透明度圆钮，两个控件不抢位置。层级在圆钮之上、模态之下（和圆钮同一个规矩）。 */
+#dsvs-theme-notice {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 902;
+  box-sizing: border-box;
+  width: min(360px, calc(100vw - 32px));
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #e6eef8;
+  background: rgba(14, 20, 30, 0.94);
+  border: 1px solid rgba(198, 220, 246, 0.24);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  pointer-events: auto;
+  -webkit-user-select: none;
+  user-select: none;
+  animation: dsvs-notice-in 260ms ease;
+}
+
+body:not([data-ds-dark-theme]) #dsvs-theme-notice {
+  color: #1e2734;
+  background: rgba(252, 253, 255, 0.97);
+  border-color: rgba(20, 30, 45, 0.14);
+  box-shadow: 0 18px 48px rgba(20, 32, 48, 0.22);
+}
+
+@keyframes dsvs-notice-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.dsvs-theme-title {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.dsvs-theme-body {
+  opacity: 0.82;
+}
+
+.dsvs-theme-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.dsvs-theme-action {
+  cursor: pointer;
+  padding: 5px 12px;
+  border-radius: 8px;
+  white-space: nowrap;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.dsvs-theme-action:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.dsvs-theme-keep,
+.dsvs-theme-primary {
+  font-weight: 600;
+  color: #cfe4ff;
+  border-color: rgba(158, 203, 255, 0.4);
+  background: rgba(64, 110, 170, 0.28);
+}
+
+.dsvs-theme-keep:hover,
+.dsvs-theme-primary:hover {
+  background: rgba(64, 110, 170, 0.42);
+}
+
+body:not([data-ds-dark-theme]) .dsvs-theme-action {
+  border-color: rgba(20, 30, 45, 0.12);
+  background: rgba(20, 30, 45, 0.05);
+}
+
+body:not([data-ds-dark-theme]) .dsvs-theme-action:hover {
+  background: rgba(20, 30, 45, 0.1);
+}
+
+body:not([data-ds-dark-theme]) .dsvs-theme-keep,
+body:not([data-ds-dark-theme]) .dsvs-theme-primary {
+  color: #1b4f8a;
+  border-color: rgba(27, 79, 138, 0.35);
+  background: rgba(27, 79, 138, 0.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #dsvs-theme-notice {
+    animation: none;
+  }
+}
+
+/* ─────────────── ⑤ 素材区（面板里换/关掉开机动画与聊天背景） ───────────────
+ *
+ * 放在面板顶部：这两行决定"有没有东西可调"，比滑块更先被看到。
+ * 面板里内容变多了，所以这里也给面板加了最大高度 + 滚动（见文件开头的 #dsvs-knobs 规则补充）。 */
+.dsvs-media {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+body:not([data-ds-dark-theme]) .dsvs-media {
+  border-bottom-color: rgba(20, 30, 45, 0.1);
+}
+
+.dsvs-media-row {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.dsvs-media-row[data-busy="1"] {
+  opacity: 0.6;
+}
+
+.dsvs-media-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dsvs-media-name {
+  flex: 0 0 auto;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.dsvs-media-note {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  opacity: 0.66;
+}
+
+.dsvs-media-actions {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.dsvs-media-toggle {
+  cursor: pointer;
+  min-width: 34px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  text-align: center;
+  font-size: 11px;
+  background: rgba(96, 165, 250, 0.28);
+  border: 1px solid rgba(147, 197, 253, 0.5);
+  color: #dbeafe;
+}
+
+.dsvs-media-toggle[aria-checked="false"] {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: inherit;
+  opacity: 0.75;
+}
+
+.dsvs-media-btn {
+  cursor: pointer;
+  padding: 3px 8px;
+  border-radius: 7px;
+  font-size: 11px;
+  white-space: nowrap;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dsvs-media-btn:hover,
+.dsvs-media-toggle:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+body:not([data-ds-dark-theme]) .dsvs-media-btn {
+  background: rgba(20, 30, 45, 0.05);
+  border-color: rgba(20, 30, 45, 0.1);
+}
+
+body:not([data-ds-dark-theme]) .dsvs-media-toggle {
+  background: rgba(27, 79, 138, 0.14);
+  border-color: rgba(27, 79, 138, 0.4);
+  color: #1b4f8a;
+}
+
+/* 文件选择框只是为了点按钮时能弹系统对话框，不参与布局。 */
+.dsvs-media-input {
+  display: none;
+}
+
+/* 背景关掉时，上面那三行滑块没有意义 —— 灰掉，别让人误以为能调。 */
+#dsvs-knobs[data-media-off="1"] .dsvs-knobs-row,
+#dsvs-knobs[data-media-off="1"] .dsvs-knobs-presets {
+  opacity: 0.4;
+  pointer-events: none;
+}

@@ -1,5 +1,5 @@
 /* Longxiangjunlin/dsh-endfield-theme — client/theme.css
-   fetched 2026-10-21 from https://raw.githubusercontent.com/Longxiangjunlin/dsh-endfield-theme/main/client/theme.css
+   fetched 2026-10-29 from https://raw.githubusercontent.com/Longxiangjunlin/dsh-endfield-theme/main/client/theme.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* ==========================================================================
    dsh-endfield-theme — 终末地 / ENDFIELD
@@ -200,6 +200,73 @@ html[data-ef-crt='off'] #ef-crt {
   --ef-power-low: #ff9b21;
   --ef-power-empty: #ff3b30;
   --ef-power-accent: var(--ef-power-nominal);
+}
+
+/* The panel is fixed at the bottom-left, over the sidebar's scrollable list. While docked, its
+   height is reserved as margin on that list (see reserveSidebarSpace in the script), so a long
+   workspace list scrolls above it instead of disappearing beneath it. */
+/* Folded. The title strip is the control; everything that is not the one-line readout goes
+   away, and the panel's own height (and therefore the list's reserved margin) follows. */
+#ef-power .ef-power__head {
+  cursor: pointer;
+  user-select: none;
+}
+
+#ef-power .ef-power__head::after {
+  content: '▾';
+  flex: none;
+  font-size: 10px;
+  line-height: 18px;
+  color: rgb(173, 178, 184);
+}
+
+html[data-ef-power-fold='off'] #ef-power .ef-power__head::after {
+  content: '▸';
+}
+
+#ef-power .ef-power__mini {
+  display: none;
+  align-items: baseline;
+  gap: 6px;
+  margin-left: auto;
+  margin-right: 8px;
+  font-weight: 400;
+}
+
+html[data-ef-power-fold='off'] #ef-power .ef-power__head > span,
+html[data-ef-power-fold='off'] #ef-power .ef-power__head > i {
+  display: none;
+}
+
+html[data-ef-power-fold='off'] #ef-power .ef-power__meter,
+html[data-ef-power-fold='off'] #ef-power .ef-power__foot,
+html[data-ef-power-fold='off'] #ef-power .ef-power__spend {
+  display: none;
+}
+
+html[data-ef-power-fold='off'] #ef-power .ef-power__mini {
+  display: flex;
+  margin-left: 0;
+}
+
+#ef-power .ef-power__miniFigure {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 22px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ef-power-accent);
+}
+
+#ef-power .ef-power__miniMeta {
+  font-style: normal;
+  font-size: 12px;
+  line-height: 18px;
+  color: rgb(173, 178, 184);
+}
+
+#ef-power .ef-power__head:focus-visible {
+  outline: 1px solid var(--ef-y-45);
+  outline-offset: 2px;
 }
 
 /* Collapsed to a 55px rail there is no room for a gauge, and the rail already flags itself. */
