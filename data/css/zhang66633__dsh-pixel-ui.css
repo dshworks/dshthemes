@@ -1,7 +1,7 @@
 /* zhang66633/dsh-pixel-ui — src/client/pixel.css
-   fetched 2026-10-23 from https://raw.githubusercontent.com/zhang66633/dsh-pixel-ui/main/src/client/pixel.css
+   fetched 2026-10-31 from https://raw.githubusercontent.com/zhang66633/dsh-pixel-ui/main/src/client/pixel.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
-/* dsh-pixel-ui — 星露谷风像素皮肤（木屋/羊皮纸/暖阳/终端绿四主题）
+/* dsh-pixel-ui — 星露谷风像素皮肤（木屋/羊皮纸/暖阳/终端绿/全息/南瓜灯/便签本）
  *
  * 设计原则（v1.5.0 重写，依据是桌面端实测）：
  *
@@ -29,7 +29,14 @@
  * 4. **1px 细线只在内容层出现**（表格内线），装饰框一律 2px 起：
  *    像素风里 1px 装饰线在非整数缩放下必然糊成灰线。
  *
- * 作用域 html[data-pixel-ui]：任一像素主题激活时生效，data-pixel-theme 区分配色。
+ * 5. **动效是像素动效（v1.6.0）**：只用 `steps()` 阶梯、逐帧闪烁和 sprite
+ *    位移；不做平滑插值、不做 width/height 动画、不移动布局。所有动画都在
+ *    `prefers-reduced-motion: reduce` 下关掉。动效只表达「状态正在变化」
+ *    （思考中/运行中/选中/按下/提示进入），不拿来做装饰。
+ *
+ * 作用域 html[data-pixel-ui]：任一像素主题激活时生效，data-pixel-theme 区分配色；
+ * data-pixel-asset 只在三套真素材主题（全息/南瓜灯/便签本）出现，驱动共用
+ * 9-slice 层。前四套仍是零素材、零阴影的纯平面皮肤。
  */
 
 @font-face {
@@ -69,6 +76,11 @@ html[data-pixel-ui] {
   --px-input-text: #FFFDF5;
   --px-input-caret: #F4D03F;
   --px-input-ph: #B08A5E;
+  /* 勾/点：暗色主题用深木色；纸面/便签本用预置的纸白版本（--px-*-light） */
+  --px-check: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' shape-rendering='crispEdges'%3E%3Cg fill='%231A0F06'%3E%3Crect x='0' y='4' width='2' height='2'/%3E%3Crect x='0' y='6' width='2' height='2'/%3E%3Crect x='2' y='6' width='2' height='2'/%3E%3Crect x='2' y='8' width='2' height='2'/%3E%3Crect x='4' y='4' width='2' height='2'/%3E%3Crect x='4' y='6' width='2' height='2'/%3E%3Crect x='4' y='8' width='2' height='2'/%3E%3Crect x='4' y='10' width='2' height='2'/%3E%3Crect x='6' y='2' width='2' height='2'/%3E%3Crect x='6' y='4' width='2' height='2'/%3E%3Crect x='6' y='6' width='2' height='2'/%3E%3Crect x='6' y='8' width='2' height='2'/%3E%3Crect x='8' y='0' width='2' height='2'/%3E%3Crect x='8' y='2' width='2' height='2'/%3E%3Crect x='8' y='4' width='2' height='2'/%3E%3Crect x='8' y='6' width='2' height='2'/%3E%3Crect x='10' y='0' width='2' height='2'/%3E%3Crect x='10' y='2' width='2' height='2'/%3E%3Crect x='10' y='4' width='2' height='2'/%3E%3C/g%3E%3C/svg%3E");
+  --px-radio: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='8' height='8' fill='%231A0F06'/%3E%3C/svg%3E");
+  --px-check-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' shape-rendering='crispEdges'%3E%3Cg fill='%23FFFDF5'%3E%3Crect x='0' y='4' width='2' height='2'/%3E%3Crect x='0' y='6' width='2' height='2'/%3E%3Crect x='2' y='6' width='2' height='2'/%3E%3Crect x='2' y='8' width='2' height='2'/%3E%3Crect x='4' y='4' width='2' height='2'/%3E%3Crect x='4' y='6' width='2' height='2'/%3E%3Crect x='4' y='8' width='2' height='2'/%3E%3Crect x='4' y='10' width='2' height='2'/%3E%3Crect x='6' y='2' width='2' height='2'/%3E%3Crect x='6' y='4' width='2' height='2'/%3E%3Crect x='6' y='6' width='2' height='2'/%3E%3Crect x='6' y='8' width='2' height='2'/%3E%3Crect x='8' y='0' width='2' height='2'/%3E%3Crect x='8' y='2' width='2' height='2'/%3E%3Crect x='8' y='4' width='2' height='2'/%3E%3Crect x='8' y='6' width='2' height='2'/%3E%3Crect x='10' y='0' width='2' height='2'/%3E%3Crect x='10' y='2' width='2' height='2'/%3E%3Crect x='10' y='4' width='2' height='2'/%3E%3C/g%3E%3C/svg%3E");
+  --px-radio-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='8' height='8' fill='%23FFFDF5'/%3E%3C/svg%3E");
   /* 代码 */
   --px-code-bg: #241408;
   --px-code-ink: #FFE066;
@@ -84,6 +96,14 @@ html[data-pixel-ui] {
   --px-dither: #241408;
   /* 暗角（CRT 只保留暗角，扫描线在非整数 DPR 上必糊） */
   --px-vignette: rgba(0, 0, 0, 0.2);
+  /* 宿主额外别称的兜底：这些 token 不在 23 个里，但宿主组件会读；
+   * 不映射的话会露出宿主默认蓝/灰，主题看起来“漏了一块”。 */
+  --dsw-alias-bg-layer-3: var(--px-wood-warm);
+  --dsw-alias-label-tertiary: var(--px-text-light);
+  --dsw-alias-border-l3: var(--px-wood-pale);
+  --dsw-alias-border-l4: var(--px-wood-pale);
+  --dsw-alias-interactive-bg-hover: var(--px-wood-dark);
+  --dsw-alias-menu-group-header-fill: var(--px-wood-mid);
   /* 内容列宽：宿主把 --dsh-conversation-column-width 写死成 0，
    * clamp(680px, 0 * .64, 920px) 恒取 680px 下限 → 宽屏上正文只占中间一条
    * （踩坑 #7）。这里补上那个变量应有的值：正文随视口撑开。 */
@@ -94,6 +114,23 @@ html[data-pixel-ui] {
   /* 字体栈 */
   --px-font: 'Fusion Pixel 12', 'Press Start 2P', monospace;
   --px-mono: 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+  /* 像素光标：默认箭头 / 手 / I-beam / 禁止 / 抓取 / 忙碌 */
+  --px-cursor-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' shape-rendering='crispEdges'%3E%3Cpath d='M3 2 L3 19 L7 15 L10 22 L13 21 L10 14 L16 14 Z' fill='%23FFFDF5' stroke='%231A0F06' stroke-width='1.5'/%3E%3C/svg%3E") 3 2, auto;
+  --px-cursor-pointer: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M8.5 1.5c-1.1 0-2 .9-2 2v8.6L5.2 10.8c-.8-.8-2.1-.8-2.9 0-.8.8-.8 2.1 0 2.9l5.6 5.6c.4.4.9.6 1.5.6h6.4c1.1 0 2-.9 2-2v-5.6c0-.8-.5-1.6-1.2-1.9l-5.2-2.2V3.5c0-1.1-.9-2-2-2z' fill='%23FFFDF5' stroke='%231A0F06' stroke-width='1.4' stroke-linejoin='round'/%3E%3C/svg%3E") 9 2, pointer;
+  --px-cursor-text: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' shape-rendering='crispEdges'%3E%3Cpath d='M7 3h10v3h-3v12h3v3H7v-3h3V6H7z' fill='%23FFFDF5' stroke='%231A0F06' stroke-width='2'/%3E%3C/svg%3E") 12 12, text;
+  --px-cursor-blocked: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' shape-rendering='crispEdges'%3E%3Ccircle cx='12' cy='12' r='9' fill='none' stroke='%231A0F06' stroke-width='2'/%3E%3Ccircle cx='12' cy='12' r='8' fill='none' stroke='%23E74C3C' stroke-width='3'/%3E%3Cpath d='M6 6l12 12' stroke='%23E74C3C' stroke-width='3'/%3E%3C/svg%3E") 12 12, not-allowed;
+  --px-cursor-grab: grab;
+  --px-cursor-grabbing: grabbing;
+  --px-cursor-busy: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' shape-rendering='crispEdges'%3E%3Cpath d='M6 3h12v3l-4 4 4 4v3H6v-3l4-4-4-4z' fill='%23FFFDF5' stroke='%231A0F06' stroke-width='2'/%3E%3C/svg%3E") 12 12, progress;
+  /* 动效：像素动画只走阶梯，不使用平滑曲线（v1.6.0） */
+  --px-t-fast: 80ms;
+  --px-t-mid: 140ms;
+  --px-t-slow: 220ms;
+  --px-step-2: steps(2, end);
+  --px-step-4: steps(4, end);
+  --px-step-8: steps(8, end);
+  /* 主按钮悬停底色；与 --px-accent-bg / --px-accent-ink 配对做对比度审计 */
+  --px-accent-hover: #FFE066;
 }
 
 /* ── 四主题配色（Agent Xi 同款） ─────────────────────────────────── */
@@ -115,6 +152,9 @@ html[data-pixel-theme='pixel-paper'] {
   --px-input-text: #3A2A10;
   --px-input-caret: #8A6400;
   --px-input-ph: #8B7040;
+  /* 深金底上的深木色勾看不清，纸面主题改成纸白勾/点 */
+  --px-check: var(--px-check-light);
+  --px-radio: var(--px-radio-light);
   --px-code-bg: #E0D4BC;
   --px-code-ink: #5C4400;
   --px-tooltip-bg: #2A1B08;
@@ -126,6 +166,11 @@ html[data-pixel-theme='pixel-paper'] {
   --px-vignette: rgba(0, 0, 0, 0.07);
   --px-sidebar-fill: #E8DCC8;
   --px-topbar-fill: #E8DCC8;
+  --px-accent-hover: #5C4400;
+  /* 浅色纸面：光标改深填充 + 纸白描边 */
+  --px-cursor-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' shape-rendering='crispEdges'%3E%3Cpath d='M3 2 L3 19 L7 15 L10 22 L13 21 L10 14 L16 14 Z' fill='%233A2A10' stroke='%23FFFDF5' stroke-width='1.5'/%3E%3C/svg%3E") 3 2, auto;
+  --px-cursor-pointer: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M8.5 1.5c-1.1 0-2 .9-2 2v8.6L5.2 10.8c-.8-.8-2.1-.8-2.9 0-.8.8-.8 2.1 0 2.9l5.6 5.6c.4.4.9.6 1.5.6h6.4c1.1 0 2-.9 2-2v-5.6c0-.8-.5-1.6-1.2-1.9l-5.2-2.2V3.5c0-1.1-.9-2-2-2z' fill='%238A6400' stroke='%23FFFDF5' stroke-width='1.4' stroke-linejoin='round'/%3E%3C/svg%3E") 9 2, pointer;
+  --px-cursor-text: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' shape-rendering='crispEdges'%3E%3Cpath d='M7 3h10v3h-3v12h3v3H7v-3h3V6H7z' fill='%233A2A10' stroke='%23FFFDF5' stroke-width='2'/%3E%3C/svg%3E") 12 12, text;
 }
 html[data-pixel-theme='pixel-warm'] {
   --px-wood-darkest: #1E0E04;
@@ -155,6 +200,7 @@ html[data-pixel-theme='pixel-warm'] {
   --px-dither: #2A1308;
   --px-sidebar-fill: #2A1308;
   --px-topbar-fill: #34180A;
+  --px-accent-hover: #FFA64D;
 }
 html[data-pixel-theme='pixel-retro'] {
   --px-wood-darkest: #0A0E0A;
@@ -184,6 +230,7 @@ html[data-pixel-theme='pixel-retro'] {
   --px-dither: #101A10;
   --px-sidebar-fill: #0C100C;
   --px-topbar-fill: #0E140E;
+  --px-accent-hover: #66FF66;
 }
 
 /* ── 内容列宽（桌面端「一半一半」的修正，踩坑 #7） ──────────────────
@@ -227,6 +274,27 @@ html[data-pixel-ui] :focus-visible {
   outline: 2px solid var(--px-gold) !important;
   outline-offset: 1px;
 }
+html[data-pixel-ui] {
+  accent-color: var(--px-gold);
+}
+
+/* 像素动效：闪烁 / 思考条 / 提示进入 / 运行中。全部走 steps 或离散帧。 */
+@keyframes px-blink {
+  0%, 55% { opacity: 1; }
+  56%, 100% { opacity: 0.35; }
+}
+@keyframes px-toast-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes px-toast-out {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(4px); }
+}
+@keyframes px-running {
+  0%, 100% { border-left-color: var(--px-gold); }
+  50% { border-left-color: var(--px-wood-light); }
+}
 
 /* 暗角：只保留径向暗角（扫描线在 1.25 DPR 上必糊成灰膜）。 */
 html[data-pixel-ui] body::after {
@@ -242,6 +310,11 @@ html[data-pixel-ui] body::after {
     transition: none !important;
     animation: none !important;
   }
+  html[data-pixel-ui] *::before,
+  html[data-pixel-ui] *::after {
+    transition: none !important;
+    animation: none !important;
+  }
 }
 
 /* ── 像素滚动条：方、10px、木色 ─────────────────────────────────── */
@@ -249,19 +322,27 @@ html[data-pixel-ui] {
   scrollbar-color: var(--px-wood-light) var(--px-wood-darkest);
 }
 html[data-pixel-ui] ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
 }
 html[data-pixel-ui] ::-webkit-scrollbar-track {
   background: var(--px-wood-darkest);
   border-left: 2px solid var(--px-wood-dark);
 }
 html[data-pixel-ui] ::-webkit-scrollbar-thumb {
-  background: var(--px-wood-light);
+  background-color: var(--px-wood-light);
   border: 2px solid var(--px-wood-darkest);
+  /* 4×2 的握把，比整条渐变更像像素滚动条 */
+  background-image: linear-gradient(var(--px-wood-pale), var(--px-wood-pale));
+  background-size: 4px 2px;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 html[data-pixel-ui] ::-webkit-scrollbar-thumb:hover {
-  background: var(--px-wood-pale);
+  background-color: var(--px-wood-pale);
+}
+html[data-pixel-ui] ::-webkit-scrollbar-thumb:active {
+  background-color: var(--px-gold-dark);
 }
 html[data-pixel-ui] ::-webkit-scrollbar-corner {
   background: var(--px-wood-darkest);
@@ -281,6 +362,7 @@ html[data-pixel-ui] [role='menuitem'],
 html[data-pixel-ui] [role='tooltip'],
 html[data-pixel-ui] [role='switch'] {
   font-family: var(--px-font) !important;
+  font-variant-ligatures: none;
 }
 html[data-pixel-ui] h1,
 html[data-pixel-ui] h2,
@@ -303,6 +385,19 @@ html[data-pixel-ui] p,
 html[data-pixel-ui] li {
   overflow-wrap: anywhere;
 }
+html[data-pixel-ui] li::marker {
+  color: var(--px-gold);
+}
+html[data-pixel-ui] kbd {
+  color: var(--px-text-light) !important;
+  font-family: var(--px-font) !important;
+  font-size: 11px;
+  font-variant-ligatures: none;
+}
+html[data-pixel-ui] mark {
+  background: var(--px-gold) !important;
+  color: var(--px-accent-ink) !important;
+}
 
 /* ── 按钮：默认只继承宿主的底与形（宿主大量图标按钮本来就是透明的），
  * 只把方角、像素字与「按下去掉一档」的反馈补齐；实心块只在悬停/选中时出现。
@@ -312,48 +407,143 @@ html[data-pixel-ui] button {
   font-size: 12px;
   letter-spacing: 0;
   border: none !important;
-  transition: background-color 0.06s steps(2), transform 0.06s steps(2);
+  font-variant-ligatures: none;
+  transition:
+    background-color var(--px-t-fast) var(--px-step-2),
+    color var(--px-t-fast) var(--px-step-2),
+    transform var(--px-t-fast) var(--px-step-2);
 }
-html[data-pixel-ui] button:not(:disabled):hover {
-  background-color: var(--px-wood-dark) !important;
+/* 主按钮/危险按钮的底色由宿主 token 负责，这里不能再把它们刷成木色，
+ * 否则 hover 时深字落在深底上（v1.5.0 的 generic hover 就踩过这个）。
+ * 只给「普通按钮」用木色 hover。用 wood-mid 而不是 wood-dark：
+ * 纸面主题的 wood-dark 和 sidebar 同色，hover 会完全看不见。 */
+html[data-pixel-ui] button:not(:disabled):not([class*='primary']):not([class*='Primary']):not([class*='danger']):not([class*='Danger']):hover {
+  background-color: var(--px-wood-mid) !important;
 }
-/* 实心块按钮（工具栏/主按钮）才用整圈 2px bevel，列表行只用金色左条 */
-html[data-pixel-ui] button[class*='primary']:hover,
-html[data-pixel-ui] button[class*='Primary']:hover,
-html[data-pixel-ui] button[class*='danger']:hover,
-
+/* 主按钮：实心块 + 2px 描边；hover 由 --dsw-alias-button-primary-hover 控制，
+ * dither 是叠加的 2px 棋盘（不改变底色）。 */
+html[data-pixel-ui] button[class*='primary']:hover:not(:disabled),
+html[data-pixel-ui] button[class*='Primary']:hover:not(:disabled) {
+  background-image: repeating-conic-gradient(
+    color-mix(in srgb, var(--px-accent-ink) 10%, transparent) 0 25%,
+    transparent 0 50%
+  ) !important;
+  background-size: 4px 4px !important;
+}
+/* 按下去只做 1px 的整像素位移，不改布局尺寸；松开即回。 */
 html[data-pixel-ui] button:not(:disabled):active {
-  transform: translateY(1px);
+  transform: translate(1px, 1px);
+  transition-duration: 0s;
 }
-/* 宿主已经画成「实心块」的按钮（主按钮/危险按钮）才补像素描边 */
+/* 已经按下的切换按钮用木色底 + 金色字，和普通 hover 区分开。
+ * 设置页的像素主题按钮自己管理选中态，不能被这条刷掉。 */
+html[data-pixel-ui] button[aria-pressed='true']:not(.px-theme-btn) {
+  background-color: var(--px-wood-mid) !important;
+  color: var(--px-gold-bright) !important;
+}
+/* 宿主的 primary token 已能上色；这里再兜一层，保证 token 缺失/第三方按钮
+ * 也跟随主题，不把宿主默认蓝带进木屋/羊皮纸。 */
 html[data-pixel-ui] button[class*='primary'],
-html[data-pixel-ui] button[class*='Primary'],
-html[data-pixel-ui] button[class*='danger'],
-html[data-pixel-ui] button[class*='Danger'] {
+html[data-pixel-ui] button[class*='Primary'] {
+  background-color: var(--px-accent-bg) !important;
+  background-image: none !important;
+  color: var(--px-accent-ink) !important;
   border: 2px solid var(--px-line) !important;
+  /* 上/左提亮、下/右压暗：2px 像素浮雕，不靠阴影 */
+  border-top-color: color-mix(in srgb, var(--px-accent-bg) 72%, white) !important;
+  border-left-color: color-mix(in srgb, var(--px-accent-bg) 72%, white) !important;
+}
+html[data-pixel-ui] button[class*='primary']:hover:not(:disabled),
+html[data-pixel-ui] button[class*='Primary']:hover:not(:disabled) {
+  background-color: var(--px-accent-hover) !important;
+}
+html[data-pixel-ui] button[class*='danger']:not([role='menuitem']),
+html[data-pixel-ui] button[class*='Danger']:not([role='menuitem']) {
+  border: 2px solid var(--dsw-alias-state-error-primary) !important;
+  background-color: transparent !important;
+  color: var(--dsw-alias-state-error-primary) !important;
+}
+html[data-pixel-ui] button[class*='danger']:not([role='menuitem']):hover:not(:disabled),
+html[data-pixel-ui] button[class*='Danger']:not([role='menuitem']):hover:not(:disabled) {
+  background-color: color-mix(in srgb, var(--dsw-alias-state-error-primary) 16%, transparent) !important;
 }
 html[data-pixel-ui] button:disabled {
   opacity: 0.55;
-  cursor: not-allowed;
+  cursor: var(--px-cursor-blocked);
+}
+html[data-pixel-ui] [aria-disabled='true'] {
+  opacity: 0.55;
+  cursor: var(--px-cursor-blocked);
+}
+/* 宿主自己的按钮都有 class/token；没有 class 的第三方面板按钮不能落回
+ * 浏览器默认的浅灰面（暗色主题会突然出现一块白）。只兜“纯文字、无角色”的
+ * 按钮，图标按钮和菜单/页签不碰。 */
+html[data-pixel-ui] button:not([class]):not([role]):not(:has(> svg:only-child)):not(:disabled) {
+  background-color: transparent !important;
+  color: var(--px-text-on-dark) !important;
+  border: 2px solid var(--px-wood-warm) !important;
+  padding: 4px 10px;
+}
+html[data-pixel-ui] button:not([class]):not([role]):not(:has(> svg:only-child)):not(:disabled):hover {
+  background-color: var(--px-wood-mid) !important;
+  border-color: var(--px-gold-dark) !important;
+}
+/* 宿主 0.2.1 的“新会话”按钮是独立 CSS-module class（wtg9ga_newSession），
+ * 自带灰底；真实宿主截图里它是唯一没被皮肤覆盖的大块面。 */
+html[data-pixel-ui] body button[class*='newSession'] {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 2px solid var(--px-wood-warm) !important;
+  border-radius: 0 !important;
+  color: var(--px-text-on-dark) !important;
+}
+html[data-pixel-ui] body button[class*='newSession']:hover {
+  background: var(--px-wood-mid) !important;
+  border-color: var(--px-gold-dark) !important;
 }
 
 /* ── 页签（对话/轨迹/记忆）：文字 + 金下沿，**不加边框**
  * v1.4 给页签套了 2px 黑框，整条读起来像凹陷的输入框（用户报「凹陷了」）。
  * 平面皮肤里「选中」只用颜色 + 一条整像素下边线表达，不做凹凸。 */
 html[data-pixel-ui] [role='tab'] {
+  position: relative;
   font-size: 13px;
+  font-variant-ligatures: none;
   border: none !important;
   border-bottom: 3px solid transparent !important;
   background-color: transparent !important;
   color: var(--px-text-light) !important;
+  transition: color var(--px-t-fast) var(--px-step-2);
+}
+html[data-pixel-ui] [role='tab']::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 2px;
+  background: var(--px-gold);
+  pointer-events: none;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition:
+    transform var(--px-t-mid) var(--px-step-4),
+    height var(--px-t-fast) var(--px-step-2);
 }
 html[data-pixel-ui] [role='tab']:hover {
   color: var(--px-text-on-dark) !important;
 }
+html[data-pixel-ui] [role='tab']:hover::after {
+  transform: scaleX(1);
+}
 html[data-pixel-ui] [role='tab'][aria-selected='true'] {
   color: var(--px-gold-bright) !important;
   background-color: transparent !important;
-  border-bottom-color: var(--px-gold) !important;
+  border-bottom-color: transparent !important;
+}
+html[data-pixel-ui] [role='tab'][aria-selected='true']::after {
+  height: 3px;
+  transform: scaleX(1);
 }
 
 /* ── 输入件：黑木底 + 羊皮纸字 + 金框，聚焦金环 ───────────────────
@@ -364,11 +554,24 @@ html[data-pixel-ui] textarea,
 html[data-pixel-ui] [contenteditable='true'] {
   font-size: 12px;
   letter-spacing: 0;
+  font-variant-ligatures: none;
   color: var(--px-input-text) !important;
   -webkit-text-fill-color: var(--px-input-text) !important;
   caret-color: var(--px-input-caret) !important;
+  caret-shape: block;
   background-color: var(--px-input-bg) !important;
   border: 2px solid var(--px-gold-deep) !important;
+  /* 上/左压暗、下/右提亮：2px 内凹斜面，不靠 box-shadow */
+  border-top-color: var(--px-line) !important;
+  border-left-color: var(--px-line) !important;
+  border-bottom-color: var(--px-wood-pale) !important;
+  border-right-color: var(--px-wood-pale) !important;
+  transition: border-color var(--px-t-fast) var(--px-step-2);
+}
+html[data-pixel-ui] input:not([type='checkbox']):not([type='radio']):hover:not(:focus),
+html[data-pixel-ui] textarea:hover:not(:focus),
+html[data-pixel-ui] [contenteditable='true']:hover:not(:focus) {
+  border-color: var(--px-gold-dark) !important;
 }
 html[data-pixel-ui] input:focus,
 html[data-pixel-ui] textarea:focus,
@@ -380,12 +583,39 @@ html[data-pixel-ui] select {
   color: var(--px-input-text) !important;
   background-color: transparent !important;
   border: 2px solid var(--px-gold-deep) !important;
+  transition: border-color var(--px-t-fast) var(--px-step-2);
+}
+html[data-pixel-ui] select:hover:not(:focus) {
+  border-color: var(--px-gold-dark) !important;
 }
 html[data-pixel-ui] select:focus {
   border-color: var(--px-gold) !important;
   outline: none !important;
 }
+/* focus 只换边框在键盘操作时不够显眼；focus-visible 再补一圈深色外环，
+ * 边框同时提到 gold-bright，明暗主题都有一层高对比。 */
+html[data-pixel-ui] input:focus-visible,
+html[data-pixel-ui] textarea:focus-visible,
+html[data-pixel-ui] select:focus-visible,
+html[data-pixel-ui] [contenteditable='true']:focus-visible {
+  outline: 2px solid var(--px-line) !important;
+  outline-offset: 2px !important;
+}
+html[data-pixel-ui] input:disabled,
+html[data-pixel-ui] textarea:disabled,
+html[data-pixel-ui] select:disabled {
+  opacity: 0.55;
+  cursor: var(--px-cursor-blocked);
+  color: var(--px-text-light) !important;
+  -webkit-text-fill-color: var(--px-text-light) !important;
+  background-color: color-mix(in srgb, var(--px-input-bg) 75%, var(--px-wood-dark)) !important;
+}
 html[data-pixel-ui] input::placeholder,
+html[data-pixel-ui] [data-placeholder]::before,
+html[data-pixel-ui] [data-placeholder]::after {
+  color: var(--px-input-ph) !important;
+  opacity: 1 !important;
+}
 html[data-pixel-ui] textarea::placeholder {
   color: var(--px-input-ph) !important;
   -webkit-text-fill-color: var(--px-input-ph) !important;
@@ -401,34 +631,43 @@ html[data-pixel-ui] input[type='checkbox'],
 html[data-pixel-ui] input[type='radio'] {
   appearance: none;
   -webkit-appearance: none;
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   padding: 0;
   flex-shrink: 0;
   background-color: var(--px-input-bg) !important;
-  border: 2px solid var(--px-line) !important;
+  border: 2px solid var(--px-wood-pale) !important;
+  transition:
+    background-color var(--px-t-fast) var(--px-step-2),
+    border-color var(--px-t-fast) var(--px-step-2);
+}
+html[data-pixel-ui] input[type='checkbox']:not(:checked):hover,
+html[data-pixel-ui] input[type='radio']:not(:checked):hover {
+  border-color: var(--px-gold-dark) !important;
 }
 html[data-pixel-ui] input[type='checkbox']:checked {
   background-color: var(--px-gold) !important;
-  /* 12×12 手绘像素对勾（2px 阶梯），定位取整像素 */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' shape-rendering='crispEdges'%3E%3Cg fill='%231A0F06'%3E%3Crect x='0' y='4' width='2' height='2'/%3E%3Crect x='0' y='6' width='2' height='2'/%3E%3Crect x='2' y='6' width='2' height='2'/%3E%3Crect x='2' y='8' width='2' height='2'/%3E%3Crect x='4' y='4' width='2' height='2'/%3E%3Crect x='4' y='6' width='2' height='2'/%3E%3Crect x='4' y='8' width='2' height='2'/%3E%3Crect x='4' y='10' width='2' height='2'/%3E%3Crect x='6' y='2' width='2' height='2'/%3E%3Crect x='6' y='4' width='2' height='2'/%3E%3Crect x='6' y='6' width='2' height='2'/%3E%3Crect x='6' y='8' width='2' height='2'/%3E%3Crect x='8' y='0' width='2' height='2'/%3E%3Crect x='8' y='2' width='2' height='2'/%3E%3Crect x='8' y='4' width='2' height='2'/%3E%3Crect x='8' y='6' width='2' height='2'/%3E%3Crect x='10' y='0' width='2' height='2'/%3E%3Crect x='10' y='2' width='2' height='2'/%3E%3Crect x='10' y='4' width='2' height='2'/%3E%3C/g%3E%3C/svg%3E") !important;
+  /* 12×12 手绘像素对勾（2px 阶梯），颜色由 --px-check 按主题切换 */
+  background-image: var(--px-check) !important;
   background-repeat: no-repeat !important;
-  background-position: 3px 1px !important;
+  background-size: 12px 12px !important;
+  background-position: 0 0 !important;
   border: 2px solid var(--px-line) !important;
 }
 html[data-pixel-ui] input[type='radio']:checked {
   background-color: var(--px-gold) !important;
-  /* 平色时代没有 inset 灰阶可用：8×8 手绘像素方点，整像素定位 */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='8' height='8' fill='%231A0F06'/%3E%3C/svg%3E") !important;
+  /* 平色时代没有 inset 灰阶可用：8×8 手绘像素方点，颜色由 --px-radio 切换 */
+  background-image: var(--px-radio) !important;
   background-size: 6px 6px !important;
-  background-position: 2px 2px !important;
+  background-position: 3px 3px !important;
   background-repeat: no-repeat !important;
+  border-color: var(--px-line) !important;
 }
 html[data-pixel-ui] select {
   appearance: none;
   -webkit-appearance: none;
   padding-right: 28px !important;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='8' height='2'/%3E%3Crect x='1' y='2' width='6' height='2'/%3E%3Crect x='2' y='4' width='4' height='2'/%3E%3Crect x='3' y='6' width='2' height='2'/%3E%3C/svg%3E") !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8' shape-rendering='crispEdges'%3E%3Cg fill='%23F5E6C8'%3E%3Crect x='0' y='0' width='8' height='2'/%3E%3Crect x='1' y='2' width='6' height='2'/%3E%3Crect x='2' y='4' width='4' height='2'/%3E%3Crect x='3' y='6' width='2' height='2'/%3E%3C/g%3E%3Cg fill='%231A0F06'%3E%3Crect x='2' y='2' width='4' height='2'/%3E%3Crect x='3' y='4' width='2' height='2'/%3E%3C/g%3E%3C/svg%3E") !important;
   background-repeat: no-repeat !important;
   background-position: right 8px center !important;
 }
@@ -439,6 +678,10 @@ html[data-pixel-ui] select option {
 html[data-pixel-ui] [role='switch'] {
   border: 2px solid var(--px-line) !important;
   background-color: var(--px-wood-dark) !important;
+  transition: border-color var(--px-t-fast) var(--px-step-2), background-color var(--px-t-fast) var(--px-step-2);
+}
+html[data-pixel-ui] [role='switch']:hover {
+  border-color: var(--px-gold-dark) !important;
 }
 html[data-pixel-ui] input[type='range'] {
   appearance: none;
@@ -460,6 +703,10 @@ html[data-pixel-ui] input[type='range']::-webkit-slider-thumb {
   margin-top: -5px;
   background-color: var(--px-gold);
   border: 2px solid var(--px-line);
+  transition: background-color var(--px-t-fast) var(--px-step-2);
+}
+html[data-pixel-ui] input[type='range']::-webkit-slider-thumb:hover {
+  background-color: var(--px-gold-bright);
 }
 html[data-pixel-ui] input[type='range']::-moz-range-track {
   height: 8px;
@@ -479,6 +726,24 @@ html[data-pixel-ui] pre {
   background: var(--px-code-bg) !important;
   color: var(--px-text-on-dark) !important;
   border: 2px solid var(--px-wood-light) !important;
+  border-left: 4px solid var(--px-gold-deep) !important;
+}
+/* 代码块顶栏：像终端窗口的 title bar，2px 底线 + 左侧金色方块。 */
+html[data-pixel-ui] [data-code-block-banner] {
+  background-color: var(--px-wood-mid) !important;
+  color: var(--px-text-light) !important;
+  border-bottom: 2px solid var(--px-line) !important;
+  border-left: 4px solid var(--px-gold) !important;
+  font-family: var(--px-font) !important;
+  font-size: 11px;
+  letter-spacing: 0;
+  font-variant-ligatures: none;
+}
+html[data-pixel-ui] [data-code-block-banner] button {
+  background: transparent !important;
+  color: var(--px-text-on-dark) !important;
+  border: none !important;
+  padding: 0 4px;
 }
 html[data-pixel-ui] code {
   background: var(--px-code-bg) !important;
@@ -490,21 +755,39 @@ html[data-pixel-ui] pre code {
   background: transparent !important;
   color: inherit !important;
   padding: 0;
+  tab-size: 2;
 }
 html[data-pixel-ui] blockquote {
+  border: 2px solid var(--px-wood-light) !important;
   border-left: 4px solid var(--px-gold) !important;
   background-color: var(--px-wood-dark) !important;
+  background-image: repeating-conic-gradient(
+    color-mix(in srgb, var(--px-gold) 5%, transparent) 0 25%,
+    transparent 0 50%
+  ) !important;
+  background-size: 4px 4px !important;
   color: var(--px-text-on-dark) !important;
   padding: 6px 10px;
 }
 html[data-pixel-ui] hr {
   border: none !important;
   height: 2px;
-  background: var(--px-wood-light) !important;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--px-wood-light) 0 2px,
+    transparent 2px 4px
+  ) !important;
 }
 html[data-pixel-ui] table {
   border: 2px solid var(--px-wood-warm) !important;
   border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+html[data-pixel-ui] tbody tr:nth-child(even) td {
+  background-color: color-mix(in srgb, var(--px-wood-mid) 32%, transparent) !important;
+}
+html[data-pixel-ui] tbody tr:hover td {
+  background-color: var(--px-wood-mid) !important;
 }
 html[data-pixel-ui] th {
   background-color: var(--px-wood-warm) !important;
@@ -518,43 +801,334 @@ html[data-pixel-ui] td {
 }
 html[data-pixel-ui] a {
   color: var(--px-gold-bright) !important;
+  text-decoration-color: var(--px-gold-dark);
   text-decoration-thickness: 2px;
   text-underline-offset: 3px;
+  transition: color var(--px-t-fast) var(--px-step-2);
+}
+html[data-pixel-ui] a:hover {
+  color: var(--px-gold) !important;
 }
 html[data-pixel-ui] summary {
   cursor: pointer;
   color: var(--px-gold-bright) !important;
+  transition: color var(--px-t-fast) var(--px-step-2);
+}
+html[data-pixel-ui] summary:hover {
+  color: var(--px-gold) !important;
 }
 
-/* ── 工具提示 ───────────────────────────────────────────────────── */
+/* ── 工具提示 / 菜单 / 状态条 ──────────────────────────────────── */
 html[data-pixel-ui] [role='tooltip'] {
   font-size: 11px;
   line-height: 1.6;
   color: var(--px-parchment) !important;
   background: var(--px-tooltip-bg) !important;
   border: 2px solid var(--px-gold-deep) !important;
+  background-image:
+    linear-gradient(var(--px-gold), var(--px-gold)),
+    linear-gradient(var(--px-gold), var(--px-gold)) !important;
+  background-size: 6px 2px, 2px 6px !important;
+  background-position: 0 0, 0 0 !important;
+  background-repeat: no-repeat !important;
+}
+html[data-pixel-ui] [data-menu-material],
+html[data-pixel-ui] [role='menu'] {
+  border: 2px solid var(--px-line) !important;
+  /* 2px 描边不能再把固定宽度的菜单撑出 4px 横向滚动条 */
+  box-sizing: border-box !important;
+  overflow-x: hidden !important;
+}
+/* 菜单的滚动容器在 role=menu 的内部（宿主 _viewport_），只给外层
+ * overflow-x:hidden 拦不住内部那一条；菜单不需要横向滚动，一律 clip。 */
+html[data-pixel-ui] [role='menu'] *,
+html[data-pixel-ui] [data-menu-material] * {
+  overflow-x: clip !important;
+}
+html[data-pixel-ui] [role='dialog'] {
+  /* dialog 默认 content-box 时，2px 边框同样会撑出内部横向滚动条 */
+  box-sizing: border-box !important;
+}
+html[data-pixel-ui] [role='dialog'] nav,
+html[data-pixel-ui] [role='dialog'] [role='tablist'] {
+  overflow-x: hidden !important;
+}
+/* 设置页左侧导航是“列 flex + 按钮”的结构：按钮的 min-width:auto 会把
+ * 像素字体的 min-content 宽度顶出去，navList 就会出现横向滚动条。 */
+html[data-pixel-ui] [role='dialog'] button {
+  min-width: 0;
+}
+/* 设置对话框的底色正好是 wood-mid；通用 hover 也是 wood-mid，等于没变。
+ * 对话框内普通按钮改用 wood-warm，至少和面板底色差一档明度。 */
+html[data-pixel-ui] [role='dialog'] button:not(:disabled):not([class*='primary']):not([class*='Primary']):not([class*='danger']):not([class*='Danger']):hover {
+  background-color: var(--px-wood-warm) !important;
+}
+/* 设置页左导航是 div.navList（直接子级全是 button，其中一个是 aria-current），
+ * overflow-y:auto 会把 overflow-x 也算成 auto；内容只要宽 1px 就冒横向滚动条。 */
+html[data-pixel-ui] [role='dialog'] div:has(> button[aria-current]) {
+  overflow-x: hidden !important;
 }
 html[data-pixel-ui] [role='menuitem']:hover,
-html[data-pixel-ui] [role='option']:hover {
+html[data-pixel-ui] [role='option']:hover,
+html[data-pixel-ui] [role='treeitem']:hover {
   background-color: var(--px-wood-mid) !important;
 }
+/* 菜单项即使不在 [role=menu] 外壳里（宿主 portal/自定义菜单）也要有
+ * 可见的文字色变化 + 金色左条，不能只赌底色和菜单面不同。 */
+html[data-pixel-ui] [role='menuitem']:hover {
+  color: var(--px-gold-bright) !important;
+  background-image:
+    linear-gradient(var(--px-gold), var(--px-gold)),
+    repeating-conic-gradient(
+      color-mix(in srgb, var(--px-gold) 8%, transparent) 0 25%,
+      transparent 0 50%
+    ) !important;
+  background-size: 3px 100%, 4px 4px !important;
+  background-position: 0 0, 0 0 !important;
+  background-repeat: no-repeat, repeat !important;
+}
+html[data-pixel-ui] [role='option']:hover {
+  color: var(--px-gold-bright) !important;
+}
+/* 菜单项（设置/意见反馈/退出登录…）在宿主里是 button[role=menuitem]，
+ * 菜单表面本身可能是 wood-mid 或宿主灰；只换底色仍然可能看不见。
+ * 这里固定叠 3px 金色左条 + 2px dither，并把文字提到 gold-bright。 */
+html[data-pixel-ui] [role='menu'] [role='menuitem']:hover,
+html[data-pixel-ui] [data-menu-material] [role='menuitem']:hover,
+html[data-pixel-ui] [role='menu'] button:hover,
+html[data-pixel-ui] [data-menu-material] button:hover {
+  background-color: var(--px-wood-mid) !important;
+  color: var(--px-gold-bright) !important;
+  background-image:
+    linear-gradient(var(--px-gold), var(--px-gold)),
+    repeating-conic-gradient(
+      color-mix(in srgb, var(--px-gold) 8%, transparent) 0 25%,
+      transparent 0 50%
+    ) !important;
+  background-size: 3px 100%, 4px 4px !important;
+  background-position: 0 0, 0 0 !important;
+  background-repeat: no-repeat, repeat !important;
+}
+/* 菜单项是 <button>，宿主不给底时浏览器会塞一块浅灰按钮面；这里统一透明，
+ * 当前项/悬停由下面的金条规则叠加。 */
+html[data-pixel-ui] [role='menuitem'],
+html[data-pixel-ui] [role='option'] {
+  background-color: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  color: var(--px-text-on-dark) !important;
+}
+html[data-pixel-ui] [role='listbox'] {
+  border: 2px solid var(--px-line) !important;
+  background-color: var(--dsw-specific-menu, var(--px-wood-dark)) !important;
+  padding: 4px;
+}
+html[data-pixel-ui] [role='option'] {
+  padding: 5px 8px;
+}
+html[data-pixel-ui] [role='option'][aria-selected='true'] {
+  background-color: var(--px-wood-mid) !important;
+  color: var(--px-gold-bright) !important;
+}
+html[data-pixel-ui] [role='menuitem'] {
+  transition:
+    background-color var(--px-t-fast) var(--px-step-2),
+    color var(--px-t-fast) var(--px-step-2);
+}
+/* 危险菜单项（退出登录等）保留红色语义，不跟着菜单 hover 变金。 */
+html[data-pixel-ui] button[role='menuitem'][class*='danger']:hover {
+  color: var(--px-state-error, var(--dsw-alias-state-error-primary, #E74C3C)) !important;
+  background-image: linear-gradient(
+    var(--px-state-error, var(--dsw-alias-state-error-primary, #E74C3C)),
+    var(--px-state-error, var(--dsw-alias-state-error-primary, #E74C3C))
+  ) !important;
+  background-size: 3px 100% !important;
+  background-repeat: no-repeat !important;
+}
+html[data-pixel-ui] [role='treeitem'][aria-selected='true'] {
+  background-color: var(--px-wood-dark) !important;
+  background-image: linear-gradient(var(--px-gold), var(--px-gold));
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: 2px 100%;
+  color: var(--px-gold-bright) !important;
+}
+/* 已选中的会话行也要有 hover 反馈：宿主把 selected 和 hover 写成同一个背景，
+ * 我们的 selected 规则又在 hover 之后，不补这一条就会出现「悬停完全没反应」。 */
+html[data-pixel-ui] [role='treeitem'][aria-selected='true']:hover {
+  background-color: var(--px-wood-mid) !important;
+}
+/* 未选中的会话/项目行：hover 时补 2px 金色左侧条，别只靠一档底色。 */
+html[data-pixel-ui] [role='treeitem']:hover:not([aria-selected='true']) {
+  background-image: linear-gradient(var(--px-gold-deep), var(--px-gold-deep));
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: 2px 100%;
+  color: var(--px-parchment) !important;
+}
+html[data-pixel-ui] [role='menuitem'][aria-current='page'] {
+  background-color: var(--px-wood-dark) !important;
+  background-image: linear-gradient(var(--px-gold), var(--px-gold));
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: 3px 100%;
+  color: var(--px-gold-bright) !important;
+}
+/* 侧栏/列表的当前项：3px 金色左条，不占布局。 */
+html[data-pixel-ui] [aria-current='page'] {
+  background-color: var(--px-wood-mid) !important;
+  color: var(--px-gold-bright) !important;
+  background-image: linear-gradient(var(--px-gold), var(--px-gold));
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: 3px 100%;
+}
+html[data-pixel-ui] [aria-current='page']:hover {
+  background-color: var(--px-wood-mid) !important;
+  background-image:
+    linear-gradient(var(--px-gold), var(--px-gold)),
+    repeating-conic-gradient(
+      color-mix(in srgb, var(--px-gold) 8%, transparent) 0 25%,
+      transparent 0 50%
+    ) !important;
+  background-size: 3px 100%, 4px 4px !important;
+  background-position: 0 0, 0 0 !important;
+  background-repeat: no-repeat, repeat !important;
+}
+/* 吸顶分组标题：粘住时补 2px 底线，和滚动内容分开。 */
+html[data-pixel-ui] [data-stuck] {
+  border-bottom: 2px solid var(--px-wood-light) !important;
+  background-image: repeating-conic-gradient(
+    color-mix(in srgb, var(--px-gold) 5%, transparent) 0 25%,
+    transparent 0 50%
+  ) !important;
+  background-size: 4px 4px !important;
+}
+/* 终端块 / diff 卡片：左侧运行条 + 代码块同款描边。 */
+html[data-pixel-ui] [data-terminal] {
+  border: 2px solid var(--px-wood-light) !important;
+}
+html[data-pixel-ui] [data-terminal][data-running] {
+  border-left: 3px solid var(--px-gold) !important;
+  animation: px-running 1.1s steps(2, end) infinite;
+}
+html[data-pixel-ui] [data-diff] {
+  border-left: 4px solid var(--px-gold-deep) !important;
+}
+/* 标签：左侧 2px 色条代替圆角/渐变；色条落在原有 8px 内边距里，不改宽。 */
+html[data-pixel-ui] [data-tone] {
+  border-radius: 0 !important;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 center;
+  background-size: 2px calc(100% - 4px);
+}
 
-/* ── 像素光标（SVG data-URI 阶梯箭头） ──────────────────────────── */
+/* ── 反馈层：toast / dialog / 思考中 / 状态点 ───────────────────── */
+html[data-pixel-ui] [role='alert'] {
+  border: 2px solid var(--px-line) !important;
+  border-left: 4px solid var(--px-gold) !important;
+  background-color: var(--px-tooltip-bg) !important;
+  color: var(--px-parchment) !important;
+  animation: px-toast-in var(--px-t-slow) steps(3, end) both;
+}
+html[data-pixel-ui] [role='alert'][data-closing] {
+  animation: px-toast-out 120ms steps(2, end) both;
+}
+html[data-pixel-ui] [role='dialog'] {
+  border: 2px solid var(--px-line) !important;
+  background-image:
+    linear-gradient(var(--px-gold), var(--px-gold)),
+    linear-gradient(var(--px-gold), var(--px-gold)),
+    linear-gradient(var(--px-gold), var(--px-gold)),
+    linear-gradient(var(--px-gold), var(--px-gold)) !important;
+  background-size: 10px 2px, 2px 10px, 10px 2px, 2px 10px !important;
+  background-position: 0 0, 0 0, 100% 100%, 100% 100% !important;
+  background-repeat: no-repeat !important;
+  /* 里侧再压一道暗线：外框 + 内衬，对话框不再是一块平底 */
+  outline: 2px solid var(--px-wood-darkest) !important;
+  outline-offset: -4px !important;
+}
+/* 思考中的行：保留宿主文字，但把 1.5s 的平滑扫光改成 4 帧阶梯，
+ * 并在左侧补一条 2px 的闪烁光标（位置由宿主 decoration 承担，不加布局）。 */
+html[data-pixel-ui] [data-shimmer] {
+  position: relative;
+}
+html[data-pixel-ui] [data-shimmer] > [aria-hidden='true'] {
+  background-image: linear-gradient(var(--px-gold), var(--px-gold));
+  background-size: 2px 100%;
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  animation: px-blink 1.2s steps(1, end) infinite;
+}
+html[data-pixel-ui] [data-shimmer] > [aria-hidden='true'] * {
+  color: var(--px-gold) !important;
+  animation-duration: 1.2s !important;
+  animation-timing-function: steps(4, end) !important;
+}
+html[data-pixel-ui] span[data-state='ongoing'] {
+  animation: px-blink 1.1s steps(1, end) infinite;
+}
+html[data-pixel-ui] [data-state='ongoing'] * {
+  animation-timing-function: steps(8, end) !important;
+}
+
+/* ── 像素光标（SVG data-URI：箭头 / 手 / I-beam / 禁止 / 抓取） ─── */
 html[data-pixel-ui] body {
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' shape-rendering='crispEdges'%3E%3Cpath d='M2 2v17h3v-3h3v-3h3v-3h3v-3h3V2z' fill='%23FFFDF5' stroke='%231A0F06' stroke-width='2'/%3E%3C/svg%3E") 2 2, auto;
+  cursor: var(--px-cursor-arrow);
+}
+/* 浅色纸面：深色箭头 + 纸白描边，避免白箭头糊在纸上。 */
+html[data-pixel-theme='pixel-paper'] body {
+  cursor: var(--px-cursor-arrow);
 }
 html[data-pixel-ui] button,
 html[data-pixel-ui] a,
 html[data-pixel-ui] select,
 html[data-pixel-ui] [role='tab'],
 html[data-pixel-ui] [role='menuitem'],
-html[data-pixel-ui] [role='switch'] {
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' shape-rendering='crispEdges'%3E%3Cpath d='M2 2v17h3v-3h3v-3h3v-3h3v-3h3V2z' fill='%23F4D03F' stroke='%231A0F06' stroke-width='2'/%3E%3C/svg%3E") 2 2, pointer;
+html[data-pixel-ui] [role='switch'],
+html[data-pixel-ui] [role='treeitem'],
+html[data-pixel-ui] [role='option'],
+html[data-pixel-ui] [role='button'],
+html[data-pixel-ui] [role='link'],
+html[data-pixel-ui] [aria-selected],
+html[data-pixel-ui] [aria-current] {
+  cursor: var(--px-cursor-pointer);
+}
+/* 宿主的 .sessionRow / .projectRow 只在行上写 cursor:pointer；子 span 若被
+ * 宿主另写 cursor 会导致箭头/默认小手混用。让可交互行内的非文本子元素继承
+ * 同一个像素手，输入框和 contenteditable 保持像素 I-beam。 */
+html[data-pixel-ui] :is(button, a, select, [role='tab'], [role='menuitem'], [role='switch'], [role='treeitem'], [role='option'], [role='button'], [role='link']) *:not(input):not(textarea):not([contenteditable='true']) {
+  cursor: inherit !important;
 }
 html[data-pixel-ui] input,
 html[data-pixel-ui] textarea,
 html[data-pixel-ui] [contenteditable='true'] {
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' shape-rendering='crispEdges'%3E%3Cpath d='M5 3h4v2h2v2h2v2h2v2h2v2h2v6h-2v2h-4v2H5z' fill='%23FFFDF5' stroke='%231A0F06' stroke-width='2'/%3E%3C/svg%3E") 4 3, text;
+  cursor: var(--px-cursor-text);
+}
+/* 语义状态：禁用/拖拽/忙碌/帮助；主题只负责换图形，状态钩子保持通用。 */
+html[data-pixel-ui] :is(button, input, select, textarea, [role='button'], [role='menuitem'], [role='switch']):disabled,
+html[data-pixel-ui] [aria-disabled='true'] {
+  cursor: var(--px-cursor-blocked) !important;
+}
+html[data-pixel-ui] [draggable='true'] {
+  cursor: var(--px-cursor-grab) !important;
+}
+html[data-pixel-ui] [draggable='true']:active {
+  cursor: var(--px-cursor-grabbing) !important;
+}
+html[data-pixel-ui] [aria-busy='true'] {
+  cursor: var(--px-cursor-busy) !important;
+}
+html[data-pixel-ui] [data-cursor='help'],
+html[data-pixel-ui] abbr[title] {
+  cursor: help !important;
+}
+html[data-pixel-ui] [data-cursor='pointer'] {
+  cursor: var(--px-cursor-pointer) !important;
+}
+html[data-pixel-ui] [data-cursor='text'] {
+  cursor: var(--px-cursor-text) !important;
 }
 
 /* ── 设置页「像素主题」行 ─────────────────────────────────────────
@@ -567,11 +1141,12 @@ html[data-pixel-ui] [contenteditable='true'] {
   flex-direction: column;
   gap: 8px;
   padding: 12px 0;
-  border-top: 1px solid var(--px-wood-pale, var(--dsw-alias-border-l2, #6b5a3a));
+  border-top: 2px solid var(--px-wood-pale, var(--dsw-alias-border-l2, #6b5a3a));
 }
 .px-theme-row-title {
   font-family: var(--px-font, inherit);
   font-size: 12px;
+  font-variant-ligatures: none;
   color: var(--px-gold-bright, var(--dsw-alias-label-primary));
 }
 .px-theme-row-desc {
@@ -592,18 +1167,28 @@ html[data-pixel-ui] [contenteditable='true'] {
   padding: 6px 12px;
   font-family: var(--px-font, inherit);
   font-size: 11px;
+  font-variant-ligatures: none;
   color: var(--px-text-on-dark, var(--dsw-alias-label-primary));
-  background: var(--px-wood-dark, var(--dsw-alias-bg-layer-1));
+  background-color: var(--px-wood-dark, var(--dsw-alias-bg-layer-1));
   border: 2px solid var(--px-wood-darkest, var(--dsw-alias-border-l1));
   border-radius: 0 !important;
   cursor: pointer;
-  transition: transform 0.06s steps(2), background-color 0.06s steps(2);
+  transition:
+    transform var(--px-t-fast, 80ms) steps(2, end),
+    background-color var(--px-t-fast, 80ms) steps(2, end),
+    background-image var(--px-t-fast, 80ms) steps(2, end);
 }
 .px-theme-btn:hover {
-  background: var(--px-wood-mid, var(--dsw-alias-bg-layer-2));
+  background-color: var(--px-wood-mid, var(--dsw-alias-bg-layer-2));
+  background-image: repeating-conic-gradient(
+    color-mix(in srgb, var(--px-gold, #F4D03F) 7%, transparent) 0 25%,
+    transparent 0 50%
+  );
+  background-size: 4px 4px;
 }
 .px-theme-btn:active {
-  transform: translateY(2px);
+  transform: translate(1px, 1px);
+  transition-duration: 0s;
 }
 .px-theme-btn:focus-visible {
   outline: 2px solid var(--px-gold, var(--dsw-alias-state-business-primary, currentColor));
@@ -611,13 +1196,562 @@ html[data-pixel-ui] [contenteditable='true'] {
 }
 .px-theme-btn-active {
   color: var(--px-accent-ink, var(--dsw-alias-label-on-accent, #fff));
-  background: var(--px-accent-bg, var(--dsw-alias-brand-primary));
+  background-color: var(--px-accent-bg, var(--dsw-alias-brand-primary));
+  background-image: repeating-conic-gradient(
+    color-mix(in srgb, var(--px-accent-ink, #1A0F06) 8%, transparent) 0 25%,
+    transparent 0 50%
+  );
+  background-size: 4px 4px;
   border-color: var(--px-gold-deep, var(--dsw-alias-border-l2));
+}
+.px-theme-btn-active:hover {
+  background-color: var(--px-accent-hover, var(--dsw-alias-button-primary-hover, var(--px-accent-bg)));
 }
 .px-theme-swatch {
   width: 10px;
   height: 10px;
   border: 2px solid #000;
   flex-shrink: 0;
+}
+
+/* ── 真 PNG 9-slice 素材层：全息 / 南瓜灯 / 便签本 ───────────────────
+ * 三套素材主题共用下面这一层规则，差异全部收敛到 --pxa-* 变量
+ * （图片、切片、边框宽度、重复方式、文字色）。素材在构建时由
+ * scripts/asset-inline.mjs 转成 data URI：浏览器端不再依赖宿主素材路由，
+ * 换素材只需要重新 build + 刷新页面，不必重启 DSH Desktop。
+ * 素材：Complete UI Essential Pack v2.4 © Crusenho Agus Hennihuno，
+ * CC BY 4.0；每套的源文件映射与署名见 assets/complete-ui/<theme>/ATTRIBUTION.md。
+ *
+ * v1.7 留下的两条硬规则：
+ *   ① Tooltip / Toast 不套大面板图，只换成 2px 主题色边（木刻版翻车点）；
+ *   ② 横条主按钮和方形图标按钮用不同素材，绝不把 96×32 塞进方块。
+ */
+
+/* 全息：深蓝 + 青。96×96 面板、96×32 主按钮、32×32 图标框。 */
+html[data-pixel-theme='pixel-hologram'] {
+  --px-wood-darkest: #071426;
+  --px-wood-dark: #10233B;
+  --px-wood-mid: #1A2E4A;
+  --px-wood-warm: #244A6A;
+  --px-wood-light: #3E8FB0;
+  --px-wood-pale: #9BC4D4;
+  --px-text-on-dark: #E8F7FF;
+  --px-text-light: #9BC4D4;
+  --px-parchment: #E8F7FF;
+  --px-gold: #14DCEE;
+  --px-gold-bright: #7DF3FF;
+  --px-gold-dark: #0FA8B8;
+  --px-gold-deep: #0B6F7A;
+  --px-sidebar-fill: #081624;
+  --px-line: #1B5A6A;
+  --px-accent-bg: #2C416D;
+  --px-accent-hover: #385586;
+  --px-accent-ink: #E8F7FF;
+  --px-input-bg: #1A2E4A;
+  --px-input-text: #E8F7FF;
+  --px-input-ph: #8FB6C9;
+  --px-input-caret: #14DCEE;
+  --px-tooltip-bg: #0A1A2E;
+  --px-code-bg: #071426;
+  --px-code-ink: #7DF3FF;
+  --px-code-meta: #9BC4D4;
+  --px-ink-on-mid: #E8F7FF;
+  --px-topbar-fill: #10233B;
+  --px-dither: #0C1E33;
+  --pxa-panel: url("pxasset:hologram/panel.png");
+  --pxa-panel-slice: 24 fill;
+  --pxa-panel-width: 24px;
+  --pxa-panel-repeat: stretch;
+  --pxa-menu: var(--pxa-panel);
+  --pxa-menu-slice: 20 fill;
+  --pxa-menu-width: 10px;
+  --pxa-button: url("pxasset:hologram/button-primary.png");
+  --pxa-button-hover: url("pxasset:hologram/button-primary-press.png");
+  --pxa-button-active: url("pxasset:hologram/button-primary-lock.png");
+  --pxa-button-slice: 8 20 fill;
+  --pxa-button-width: 6px 10px;
+  --pxa-button-ink: #E8F7FF;
+  --pxa-button-hover-ink: #E8F7FF;
+  --pxa-icon: url("pxasset:hologram/icon-button.png");
+  --pxa-icon-slice: 8 fill;
+  --pxa-icon-width: 5px;
+  --pxa-input: url("pxasset:hologram/input.png");
+  --pxa-input-slice: 10 fill;
+  --pxa-input-width: 8px;
+  --pxa-input-ink: #E8F7FF;
+  --pxa-placeholder: #9BC4D4;
+  --pxa-caret: #14DCEE;
+  --pxa-select: url("pxasset:hologram/select-bar.png");
+  --pxa-select-slice: 10 fill;
+  --pxa-select-width: 8px;
+  --pxa-ink: #E8F7FF;
+  --pxa-accent: #14DCEE;
+  --pxa-accent-bright: #7DF3FF;
+  --pxa-hover-wash: rgba(20, 220, 238, 0.1);
+  --pxa-tooltip-bg: #0A1A2E;
+  --pxa-tooltip-ink: #E8F7FF;
+}
+html[data-pixel-theme='pixel-hologram'] body {
+  background-color: var(--px-wood-darkest);
+  background-image:
+    linear-gradient(rgba(20, 220, 238, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(20, 220, 238, 0.045) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+html[data-pixel-theme='pixel-hologram'] ::-webkit-scrollbar-thumb {
+  background: url("pxasset:hologram/scroll-handle.png") center / 100% 100% no-repeat !important;
+  border: 2px solid var(--px-wood-darkest) !important;
+}
+html[data-pixel-theme='pixel-hologram'] ::-webkit-scrollbar-track {
+  background: var(--px-wood-dark);
+  border-left: 2px solid var(--px-line);
+}
+
+/* 南瓜灯：暖橙藤蔓包边。frame_full 30px 只给对话框；菜单用 frame_simple，
+ * 避免小块浮层被厚藤蔓包成“门板”。 */
+html[data-pixel-theme='pixel-pumpkin'] {
+  --px-wood-darkest: #170D06;
+  --px-wood-dark: #241409;
+  --px-wood-mid: #2F1B0C;
+  --px-wood-warm: #3A2210;
+  --px-wood-light: #8A4A18;
+  --px-wood-pale: #D89A5A;
+  --px-text-on-dark: #FFE9C9;
+  --px-text-light: #D8A76F;
+  --px-parchment: #FFE9C9;
+  --px-gold: #FF9E2C;
+  --px-gold-bright: #FFC85E;
+  --px-gold-dark: #D97706;
+  --px-gold-deep: #8A4A18;
+  --px-sidebar-fill: #1B0F07;
+  --px-line: #0E0703;
+  --px-accent-bg: #FF9E2C;
+  --px-accent-hover: #FFB45C;
+  --px-accent-ink: #2A1206;
+  --px-input-bg: #3A2210;
+  --px-input-text: #FFF6E6;
+  --px-input-ph: #F2C795;
+  --px-input-caret: #FFC85E;
+  --px-tooltip-bg: #1C0F07;
+  --px-code-bg: #120A05;
+  --px-code-ink: #FFC85E;
+  --px-code-meta: #D8A76F;
+  --px-ink-on-mid: #FFE9C9;
+  --px-topbar-fill: #241409;
+  --px-dither: #20120A;
+  --pxa-panel: url("pxasset:pumpkin/panel.png");
+  --pxa-panel-slice: 30 fill;
+  --pxa-panel-width: 30px;
+  --pxa-panel-repeat: round;
+  --pxa-menu: url("pxasset:pumpkin/popover.png");
+  --pxa-menu-slice: 12 fill;
+  --pxa-menu-width: 12px;
+  --pxa-button: url("pxasset:pumpkin/button.png");
+  --pxa-button-hover: url("pxasset:pumpkin/button-hover.png");
+  --pxa-button-active: url("pxasset:pumpkin/button-press.png");
+  --pxa-button-slice: 6 8 12 8 fill;
+  --pxa-button-width: 6px 8px 10px 8px;
+  --pxa-button-ink: #FFF6E6;
+  --pxa-button-hover-ink: #FFF6E6;
+  --pxa-icon: url("pxasset:pumpkin/icon-button.png");
+  --pxa-icon-slice: 4 4 10 4 fill;
+  --pxa-icon-width: 4px 4px 6px 4px;
+  --pxa-input: url("pxasset:pumpkin/input.png");
+  --pxa-input-slice: 6 fill;
+  --pxa-input-width: 6px;
+  --pxa-input-ink: #FFF6E6;
+  --pxa-placeholder: #F2C795;
+  --pxa-caret: #FFC85E;
+  --pxa-select: url("pxasset:pumpkin/select.png");
+  --pxa-select-slice: 6 fill;
+  --pxa-select-width: 6px;
+  --pxa-ink: #FFE9C9;
+  --pxa-accent: #FF9E2C;
+  --pxa-accent-bright: #FFC85E;
+  --pxa-hover-wash: rgba(255, 158, 44, 0.12);
+  --pxa-tooltip-bg: #1C0F07;
+  --pxa-tooltip-ink: #FFE9C9;
+}
+html[data-pixel-theme='pixel-pumpkin'] body {
+  background-color: var(--px-wood-darkest);
+  background-image: repeating-conic-gradient(rgba(255, 158, 44, 0.045) 0 25%, transparent 0 50%);
+  background-size: 4px 4px;
+}
+
+/* 便签本：撕角活页纸 + 铅笔光标。panel 的左边 18px 是活页孔，
+ * 用 repeat round 让孔按比例排布，而不是被拉成长椭圆。 */
+html[data-pixel-theme='pixel-papernote'] {
+  --px-wood-darkest: #F2E6D2;
+  --px-wood-dark: #F6ECD9;
+  --px-wood-mid: #EFE3CE;
+  --px-wood-warm: #E6D7BC;
+  --px-wood-light: #C9AF8A;
+  --px-wood-pale: #A8895F;
+  --px-text-on-dark: #3A2412;
+  --px-text-light: #6E4E2E;
+  --px-parchment: #FFFAF2;
+  --px-gold: #6E3A10;
+  --px-gold-bright: #8C4A16;
+  --px-gold-dark: #5A2E0C;
+  --px-gold-deep: #4A2408;
+  --px-sidebar-fill: #F6ECD9;
+  --px-line: #8C5A2C;
+  --px-accent-bg: #A3551B;
+  --px-accent-hover: #8C4713;
+  --px-accent-ink: #FFF9F1;
+  --px-input-bg: #FFF9F1;
+  --px-input-text: #3A2412;
+  --px-input-ph: #7A5A38;
+  --px-input-caret: #8C4A16;
+  --px-tooltip-bg: #2E1C0C;
+  --px-code-bg: #F0E2CC;
+  --px-code-ink: #6E3A10;
+  --px-code-meta: #7A5A38;
+  --px-ink-on-mid: #3A2412;
+  --px-topbar-fill: #F6ECD9;
+  --px-dither: #E9DAC0;
+  --px-check: var(--px-check-light);
+  --px-radio: var(--px-radio-light);
+  --pxa-panel: url("pxasset:papernote/panel.png");
+  --pxa-panel-slice: 12 8 12 18 fill;
+  --pxa-panel-width: 12px 8px 12px 18px;
+  --pxa-panel-repeat: stretch round;
+  --pxa-menu: url("pxasset:papernote/popover.png");
+  --pxa-menu-slice: 6 fill;
+  --pxa-menu-width: 6px;
+  --pxa-button: url("pxasset:papernote/button.png");
+  --pxa-button-hover: url("pxasset:papernote/button-hover.png");
+  --pxa-button-active: url("pxasset:papernote/button.png");
+  --pxa-button-slice: 8 6 10 6 fill;
+  --pxa-button-width: 6px 5px 8px 6px;
+  --pxa-button-ink: #3A2412;
+  --pxa-button-hover-ink: #6E3A10;
+  --pxa-icon: url("pxasset:papernote/icon-button.png");
+  --pxa-icon-slice: 6 fill;
+  --pxa-icon-width: 6px;
+  --pxa-input: url("pxasset:papernote/input.png");
+  --pxa-input-slice: 4 4 6 4 fill;
+  --pxa-input-width: 4px 4px 5px 4px;
+  --pxa-input-ink: #3A2412;
+  --pxa-placeholder: #7A5A38;
+  --pxa-caret: #8C4A16;
+  --pxa-select: url("pxasset:papernote/popover.png");
+  --pxa-select-slice: 6 fill;
+  --pxa-select-width: 6px;
+  --pxa-ink: #3A2412;
+  --pxa-accent: #8C5A2C;
+  --pxa-accent-bright: #6E3A10;
+  --pxa-hover-wash: rgba(140, 90, 44, 0.14);
+  --pxa-tooltip-bg: #2E1C0C;
+  --pxa-tooltip-ink: #FFFAF2;
+  --pxa-outline: #8C5A2C;
+}
+html[data-pixel-theme='pixel-papernote'] body {
+  background-color: var(--px-wood-darkest);
+  background-image: repeating-conic-gradient(rgba(140, 90, 44, 0.04) 0 25%, transparent 0 50%);
+  background-size: 4px 4px;
+}
+/* 便签本：铅笔光标覆盖一切——按钮/链接/输入框/正文都不再退回像素手或
+ * I-beam，否则一块纸面上会同时出现三种指针。热区在笔尖 (4,4)：素材是
+ * 左上笔尖、右下橡皮，之前写成 26 26 等于点在橡皮上。 */
+html[data-pixel-theme='pixel-papernote'] body,
+html[data-pixel-theme='pixel-papernote'] body * {
+  cursor: url("pxasset:papernote/cursor.png") 4 4, auto !important;
+}
+/* 特殊状态优先于铅笔：禁用、拖拽、忙碌时给出明确反馈，不再全是同一支笔。 */
+html[data-pixel-theme='pixel-papernote'] :is(button, input, select, textarea, [role='button'], [role='menuitem']):disabled,
+html[data-pixel-theme='pixel-papernote'] [aria-disabled='true'] {
+  cursor: var(--px-cursor-blocked) !important;
+}
+html[data-pixel-theme='pixel-papernote'] [draggable='true'] {
+  cursor: var(--px-cursor-grab) !important;
+}
+html[data-pixel-theme='pixel-papernote'] [draggable='true']:active {
+  cursor: var(--px-cursor-grabbing) !important;
+}
+html[data-pixel-theme='pixel-papernote'] [aria-busy='true'] {
+  cursor: var(--px-cursor-busy) !important;
+}
+
+/* 云石：板岩底 + 白石框 + 钢青。白石的 20px 边框只给对话框和菜单；
+ * 按钮/输入框本身是白石控件，文字用深墨色。 */
+html[data-pixel-theme='pixel-marble'] {
+  --px-wood-darkest: #161C26;
+  --px-wood-dark: #1F2836;
+  --px-wood-mid: #2A3548;
+  --px-wood-warm: #354258;
+  --px-wood-light: #5C708C;
+  --px-wood-pale: #AEBCCB;
+  --px-text-on-dark: #E9F0F7;
+  --px-text-light: #AEBCCB;
+  --px-parchment: #E9F0F7;
+  --px-gold: #7FB2E5;
+  --px-gold-bright: #A9D1F2;
+  --px-gold-dark: #5A88B8;
+  --px-gold-deep: #3C5A7A;
+  --px-sidebar-fill: #121821;
+  --px-line: #0D1219;
+  --px-accent-bg: #7FB2E5;
+  --px-accent-hover: #9CC6EE;
+  --px-accent-ink: #121A24;
+  --px-input-bg: #E8EFF2;
+  --px-input-text: #1B2230;
+  --px-input-ph: #5A6B80;
+  --px-input-caret: #5A88B8;
+  --px-tooltip-bg: #1B2230;
+  --px-code-bg: #1F2836;
+  --px-code-ink: #A9D1F2;
+  --px-code-meta: #AEBCCB;
+  --px-ink-on-mid: #E9F0F7;
+  --px-topbar-fill: #1F2836;
+  --px-dither: #1B2330;
+  --pxa-panel: url("pxasset:marble/panel.png");
+  --pxa-panel-slice: 20 fill;
+  --pxa-panel-width: 20px;
+  --pxa-panel-repeat: repeat;
+  --pxa-menu: url("pxasset:marble/popover.png");
+  --pxa-menu-slice: 12 fill;
+  --pxa-menu-width: 12px;
+  --pxa-menu-repeat: repeat;
+  --pxa-button: url("pxasset:marble/button.png");
+  --pxa-button-hover: url("pxasset:marble/button-hover.png");
+  --pxa-button-active: url("pxasset:marble/button-press.png");
+  --pxa-button-slice: 5 8 6 8 fill;
+  --pxa-button-width: 5px 6px 6px 6px;
+  --pxa-button-ink: #1B2230;
+  --pxa-button-hover-ink: #1B2230;
+  --pxa-icon: url("pxasset:marble/icon-button.png");
+  --pxa-icon-slice: 6 fill;
+  --pxa-icon-width: 6px;
+  --pxa-input: url("pxasset:marble/input.png");
+  --pxa-input-slice: 6 fill;
+  --pxa-input-width: 6px;
+  --pxa-input-ink: #1B2230;
+  --pxa-placeholder: #5A6B80;
+  --pxa-caret: #5A88B8;
+  --pxa-select: url("pxasset:marble/select.png");
+  --pxa-select-slice: 6 fill;
+  --pxa-select-width: 6px;
+  --pxa-select-ink: #1B2230;
+  --pxa-ink: #E9F0F7;
+  --pxa-accent: #7FB2E5;
+  --pxa-accent-bright: #A9D1F2;
+  --pxa-hover-wash: rgba(127, 178, 229, 0.14);
+  --pxa-tooltip-bg: #1B2230;
+  --pxa-tooltip-ink: #E9F0F7;
+}
+html[data-pixel-theme='pixel-marble'] body {
+  background-color: var(--px-wood-darkest);
+  background-image: repeating-conic-gradient(rgba(127, 178, 229, 0.035) 0 25%, transparent 0 50%);
+  background-size: 4px 4px;
+}
+
+/* 秘银：靛紫底 + 银蓝薄框 + 紫高光。96×96 的 Frame_Standard 银边只在左右，
+ * 做对话框像幕布；这里统一用 32×32 Frame_Lite 的 6px 四边薄框。 */
+html[data-pixel-theme='pixel-mithril'] {
+  --px-wood-darkest: #120E24;
+  --px-wood-dark: #1A1430;
+  --px-wood-mid: #241C42;
+  --px-wood-warm: #2E2552;
+  --px-wood-light: #4A3F7A;
+  --px-wood-pale: #BDB4E0;
+  --px-text-on-dark: #F0ECFF;
+  --px-text-light: #BDB4E0;
+  --px-parchment: #F0ECFF;
+  --px-gold: #B49BFF;
+  --px-gold-bright: #D3C4FF;
+  --px-gold-dark: #8A6FE0;
+  --px-gold-deep: #5A4A9A;
+  --px-sidebar-fill: #0F0B1E;
+  --px-line: #0B0817;
+  --px-accent-bg: #B49BFF;
+  --px-accent-hover: #C9B6FF;
+  --px-accent-ink: #1A1030;
+  --px-input-bg: #646C79;
+  --px-input-text: #FFFFFF;
+  --px-input-ph: #F2F5FF;
+  --px-input-caret: #D3C4FF;
+  --px-tooltip-bg: #171129;
+  --px-code-bg: #171129;
+  --px-code-ink: #D3C4FF;
+  --px-code-meta: #BDB4E0;
+  --px-ink-on-mid: #F0ECFF;
+  --px-topbar-fill: #1A1430;
+  --px-dither: #1E1738;
+  --pxa-panel: url("pxasset:mithril/panel.png");
+  --pxa-panel-slice: 6 fill;
+  --pxa-panel-width: 6px;
+  --pxa-panel-repeat: stretch;
+  --pxa-menu: var(--pxa-panel);
+  --pxa-menu-slice: 6 fill;
+  --pxa-menu-width: 6px;
+  --pxa-menu-repeat: stretch;
+  --pxa-button: url("pxasset:mithril/button.png");
+  --pxa-button-hover: url("pxasset:mithril/button-hover.png");
+  --pxa-button-active: url("pxasset:mithril/button-press.png");
+  --pxa-button-slice: 6 6 10 6 fill;
+  --pxa-button-width: 6px 6px 9px 6px;
+  --pxa-button-ink: #12101E;
+  --pxa-button-hover-ink: #12101E;
+  --pxa-icon: url("pxasset:mithril/icon-button.png");
+  --pxa-icon-slice: 6 fill;
+  --pxa-icon-width: 6px;
+  --pxa-input: url("pxasset:mithril/input.png");
+  --pxa-input-slice: 6 fill;
+  --pxa-input-width: 6px;
+  --pxa-input-ink: #FFFFFF;
+  --pxa-placeholder: #F2F5FF;
+  --pxa-caret: #D3C4FF;
+  --pxa-select: url("pxasset:mithril/select.png");
+  --pxa-select-slice: 6 fill;
+  --pxa-select-width: 6px;
+  --pxa-ink: #F0ECFF;
+  --pxa-accent: #B49BFF;
+  --pxa-accent-bright: #D3C4FF;
+  --pxa-hover-wash: rgba(180, 155, 255, 0.12);
+  --pxa-tooltip-bg: #171129;
+  --pxa-tooltip-ink: #F0ECFF;
+}
+html[data-pixel-theme='pixel-mithril'] body {
+  background-color: var(--px-wood-darkest);
+  background-image: repeating-conic-gradient(rgba(180, 155, 255, 0.04) 0 25%, transparent 0 50%);
+  background-size: 4px 4px;
+}
+
+/* ── 共用 9-slice 规则：只在素材主题生效 ─────────────────────────── */
+/* 便签的纸面几乎与页面同色，补 2px 墨线把「纸」钉出来；其他素材主题的
+ * 边缘本身对比足够，--pxa-outline 不设即透明。 */
+html[data-pixel-asset] [role='dialog'],
+html[data-pixel-asset] [data-menu-material] {
+  outline: 2px solid var(--pxa-outline, transparent);
+  outline-offset: -2px;
+}
+html[data-pixel-asset] [role='dialog'] {
+  border: 0 solid transparent !important;
+  border-width: var(--pxa-panel-width, 24px) !important;
+  border-image: var(--pxa-panel) var(--pxa-panel-slice, 24 fill) / var(--pxa-panel-width, 24px) / 0 var(--pxa-panel-repeat, stretch) !important;
+  background: transparent !important;
+  color: var(--pxa-ink) !important;
+  box-sizing: border-box !important;
+}
+html[data-pixel-asset] [data-menu-material] {
+  border: 0 solid transparent !important;
+  border-width: var(--pxa-menu-width, 10px) !important;
+  border-image: var(--pxa-menu) var(--pxa-menu-slice, 10 fill) / var(--pxa-menu-width, 10px) / 0 var(--pxa-menu-repeat, stretch) !important;
+  background: transparent !important;
+  box-sizing: border-box !important;
+  overflow-x: hidden !important;
+}
+html[data-pixel-asset] [role='menu']:not([data-menu-material]) {
+  border: 0 !important;
+  border-image: none !important;
+  background: transparent !important;
+}
+html[data-pixel-asset] [role='menuitem'] {
+  color: var(--pxa-ink) !important;
+  background: transparent !important;
+  background-image: none !important;
+}
+html[data-pixel-asset] [role='menuitem']:hover {
+  color: var(--pxa-accent-bright) !important;
+  background-color: var(--pxa-hover-wash) !important;
+  background-image: none !important;
+}
+html[data-pixel-asset] button[class*='primary'],
+html[data-pixel-asset] button[class*='Primary'] {
+  border: 0 solid transparent !important;
+  border-width: var(--pxa-button-width) !important;
+  border-image: var(--pxa-button) var(--pxa-button-slice) / var(--pxa-button-width) / 0 stretch !important;
+  background: transparent !important;
+  color: var(--pxa-button-ink) !important;
+  min-height: 32px;
+}
+html[data-pixel-asset] button[class*='primary']:hover,
+html[data-pixel-asset] button[class*='Primary']:hover {
+  border-image-source: var(--pxa-button-hover) !important;
+  color: var(--pxa-button-hover-ink, var(--pxa-button-ink)) !important;
+  background: transparent !important;
+  background-image: none !important;
+}
+html[data-pixel-asset] button[class*='primary']:active,
+html[data-pixel-asset] button[class*='Primary']:active {
+  border-image-source: var(--pxa-button-active, var(--pxa-button)) !important;
+  transform: translate(1px, 1px) !important;
+  transition-duration: 0s !important;
+}
+/* 图标主按钮（发送/关闭）：用方形图标框，绝不把横条按钮塞进方块。 */
+html[data-pixel-asset] button[class*='primary']:has(> svg:only-child),
+html[data-pixel-asset] button[class*='Primary']:has(> svg:only-child) {
+  border: 0 solid transparent !important;
+  border-width: var(--pxa-icon-width) !important;
+  border-image: var(--pxa-icon) var(--pxa-icon-slice) / var(--pxa-icon-width) / 0 stretch !important;
+  background: transparent !important;
+  color: var(--pxa-button-ink) !important;
+  min-height: 0;
+}
+html[data-pixel-asset] button[class*='primary']:has(> svg:only-child):hover,
+html[data-pixel-asset] button[class*='Primary']:has(> svg:only-child):hover {
+  border-image-source: var(--pxa-icon) !important;
+  color: var(--pxa-accent-bright) !important;
+}
+html[data-pixel-asset] input:not([type='checkbox']):not([type='radio']):not([type='range']),
+html[data-pixel-asset] textarea,
+html[data-pixel-asset] [contenteditable='true'] {
+  border: 0 solid transparent !important;
+  border-width: var(--pxa-input-width, 8px) !important;
+  border-image: var(--pxa-input) var(--pxa-input-slice, 10 fill) / var(--pxa-input-width, 8px) / 0 stretch !important;
+  background: transparent !important;
+  color: var(--pxa-input-ink) !important;
+  caret-color: var(--pxa-caret) !important;
+  box-sizing: border-box !important;
+}
+/* 原生 select 用输入框的底色/文字色，不套 9-slice：border-image 的 fill 会
+ * 盖住右侧箭头，且不同主题的输入图填充色与箭头对比不稳定。 */
+html[data-pixel-asset] select {
+  background-color: var(--px-input-bg) !important;
+  color: var(--px-input-text) !important;
+  border: 2px solid var(--px-line) !important;
+  box-sizing: border-box !important;
+  padding-right: 30px !important;
+}
+html[data-pixel-asset] input::placeholder,
+html[data-pixel-asset] textarea::placeholder {
+  color: var(--pxa-placeholder) !important;
+  -webkit-text-fill-color: var(--pxa-placeholder) !important;
+  opacity: 1;
+}
+html[data-pixel-asset] [contenteditable='true']:empty::before {
+  color: var(--pxa-placeholder) !important;
+  -webkit-text-fill-color: var(--pxa-placeholder) !important;
+}
+html[data-pixel-asset] [role='menuitem'][aria-current='page'],
+html[data-pixel-asset] [role='treeitem'][aria-selected='true'] {
+  border: 0 solid transparent !important;
+  border-width: var(--pxa-select-width, 8px) !important;
+  border-image: var(--pxa-select) var(--pxa-select-slice, 10 fill) / var(--pxa-select-width, 8px) / 0 stretch !important;
+  background: transparent !important;
+  background-image: none !important;
+  color: var(--pxa-select-ink, var(--pxa-ink)) !important;
+  box-sizing: border-box !important;
+}
+/* 浮层只换颜色：2px 主题色边 + 实色底，不套面板图。 */
+html[data-pixel-asset] [role='tooltip'] {
+  border: 2px solid var(--pxa-accent) !important;
+  border-image: none !important;
+  background-color: var(--pxa-tooltip-bg) !important;
+  color: var(--pxa-tooltip-ink) !important;
+}
+html[data-pixel-asset] [role='alert'] {
+  border: 2px solid var(--pxa-accent) !important;
+  border-left: 4px solid var(--pxa-accent) !important;
+  border-image: none !important;
+  background-color: var(--pxa-tooltip-bg) !important;
+  color: var(--pxa-tooltip-ink) !important;
+}
+html[data-pixel-asset] [role='dialog'] button:not(:disabled):not([class*='primary']):not([class*='Primary']):hover {
+  background-color: var(--pxa-hover-wash) !important;
+}
+html[data-pixel-asset] [role='tab']::after {
+  background: var(--pxa-accent) !important;
 }
 

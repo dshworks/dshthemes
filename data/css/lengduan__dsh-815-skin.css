@@ -1,5 +1,5 @@
 /* lengduan/dsh-815-skin — src/client/vj815.module.css
-   fetched 2026-10-23 from https://raw.githubusercontent.com/lengduan/dsh-815-skin/main/src/client/vj815.module.css
+   fetched 2026-10-31 from https://raw.githubusercontent.com/lengduan/dsh-815-skin/main/src/client/vj815.module.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* 1945-08-15 终战皮肤：史料照片底 + 可读玻璃层。 */
 
@@ -362,6 +362,13 @@ body[data-dsh-815]
   box-shadow:
     inset 0 1px 0 rgba(226, 201, 138, 0.12),
     0 8px 22px rgba(0, 0, 0, 0.32);
+}
+
+/* 会话退出码的 neutral 胶囊在浅色宿主下使用近白底，米色次级文字不易辨认。
+   只把带失败圆点的工具徽章改为皮肤墨色，保留胶囊底色与状态圆点。 */
+body[data-dsh-815]:not([data-ds-dark-theme])
+  [data-tool] [data-tone='neutral'][class*='_badge']:has(> [class*='_dot'][aria-hidden='true']) {
+  color: var(--vj-ink);
 }
 
 body[data-dsh-815] [class*='markdown'] [class*='bannerWrap'] {
@@ -1456,6 +1463,42 @@ body[data-dsh-815] [data-changes-review] [class*='deleted'] {
 body[data-dsh-815] [data-tool='schedule_create'] {
   --card-fill: #24261c;
   --card-hover: #2c2e24;
+}
+
+/* 设置 ›「Web 扩展」›「远程访问」页的分段单选（总开关 / 裸 /api 要求配对 / 自动公网隧道 /
+   Cloudflare 配置同步 / 固定域名中继 / 局域网访问六处都是同一组件）：选中块不由 button
+   自己画，而是组件的 group::before（data-pill 变体，位置走内联 --segment-pill-*）。
+   插件给它的底是 background: var(--dsw-alias-bg-overlay, var(--dsw-alias-bg-layer-3))，
+   皮肤把这个 token 定成 #323428；而组底是 color-mix(label-primary 7%, transparent) 叠在
+   弹框底 #24261c 上，实测合成 #333429（rgb 51,52,41）—— 与选中块 #323428（rgb 50,52,40）
+   对比 1.00:1，选中的「开」和未选中的控件底完全同色，用户报「看不出选中」。
+   换成皮肤自己的选中档半透明铜金 35% + 铜边：选中块对组底 1.63:1、选中块上的奶油文字
+   6.51:1，铜边再补一条清晰边界；半透明叠色跟随控件自身的组底，弹框内其它页签无需另调。
+   锚点用组件手写属性 role='group' + data-pill（不参与构建期 hash），外层再挂设置弹框的
+   data-shortcut-modal='settings'（同一锚点第 728 行已用于左侧 tab）；本组件在全家桶各插件里
+   各有一份同构 CSS，皮肤只在设置弹框这六处实测量过，其它页面不扩面。暗色主题下宿主本用
+   rgba(255,255,255,.14) 白块，语义不同，整体排除。 */
+body[data-dsh-815]:not([data-ds-dark-theme])
+  [role='dialog'][aria-modal='true'][data-shortcut-modal='settings']
+  [role='group'][data-pill]::before {
+  background: rgba(196, 163, 90, 0.35);
+  box-shadow: inset 0 0 0 1px rgba(196, 163, 90, 0.6);
+}
+
+/* Mnemon 的独立记忆页面、插件详情与组件子页：徽章、目录提示和选择器使用宿主的
+   bg-module-platform，浅色主题下为 #f5f6f7，却配皮肤的浅色文字。
+   在这两个入口及其弹层内补齐深橄榄底，并提亮说明和元数据；使用宿主的
+   语义属性限定范围，不依赖 CSS Modules 的构建哈希。 */
+body[data-dsh-815] :is(
+  [data-dsh-mnemon-view],
+  [data-mnemon-dialog-portal],
+  [data-plugin-detail='dsh-mnemon'],
+  [data-plugin-row-detail^='dsh-mnemon#']
+) {
+  --dsw-alias-bg-module-platform: #24261c;
+  --dsw-alias-label-secondary: #d4ccb0;
+  --dsw-alias-label-tertiary: #c8c0a4;
+  --dsw-alias-label-caption: #9e9780;
 }
 
 

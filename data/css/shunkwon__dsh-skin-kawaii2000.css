@@ -1,545 +1,1545 @@
 /* shunkwon/dsh-skin-kawaii2000 — lib/skin.css
-   fetched 2026-10-23 from https://raw.githubusercontent.com/shunkwon/dsh-skin-kawaii2000/main/lib/skin.css
+   fetched 2026-10-31 from https://raw.githubusercontent.com/shunkwon/dsh-skin-kawaii2000/main/lib/skin.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* ==========================================================================
-   dsh skin — kawaii 2000s
+   dsh skin — mist glass（雾面玻璃）
    --------------------------------------------------------------------------
-   2000-2002 个人主页语汇的可爱变体:窗体骨架仍是 Win2000 斜角控件,
-   配色换成糖果粉 + 婴儿蓝。规则与机构版同源:
+   v1 是 2000-2002 个人主页语汇（Win2000 斜角、零圆角、实心糖果色）；
+   v2 换成糖果毛玻璃（饱和极光 + 粉紫渐变）；v3 保留 v2 的玻璃骨架，
+   把颜色全部收回中性 —— v2 的「廉价感」来自颜色，不来自玻璃：
 
-     · 零圆角、零渐变 —— 立体只来自双色斜角边,不来自模糊投影
-     · 一切彩色落在 216 色 web-safe 六档 (00/33/66/99/cc/ff)
-     · 对比度对着实际面色算,不是对着白底
-     · 系统字体栈,零远程依赖
+     · 桌面是一层低饱和的石色 → 雾蓝，只给玻璃一点冷暖可透，不抢戏
+     · 所有面都是中性白玻璃；灰阶、墨色、发丝线、阴影一律不带色相
+     · 全站只有一种强调色：石墨（夜间反相成近白）。只给「新会话」「发送」
+       两个主操作和开关开态，用实色，不用渐变、不发光
+     · 阴影是中性的淡投影；玻璃的边界靠一道内侧亮边 + 极淡的发丝线
+     · 圆角四档 8 / 12 / 16 / 18，配 corner-shape: superellipse
+     · 字体全用系统字（SF + 苹方），零远程依赖
+     · 正文对比度对着「玻璃实际落到什么颜色上」算，不是对着白底算
 
-   实现方式:覆盖 dsh 的 --dsw-* 设计令牌。选择器一律用 `html body`
-   (特指度 0,0,2) 压过主题表的 `body` (0,0,1),因此与样式表插入顺序无关。
+   实现方式:覆盖 dsh 的 --dsw-* 设计令牌,再用少量结构选择器补玻璃层。
+   选择器一律用 `html body`(0,0,2)压过主题表的 `body`(0,0,1),
+   因此与样式表插入顺序无关。
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   1. 令牌层 — 白天(糖果粉)
+   1. 令牌层 — 白天(石色雾面 + 中性白玻璃)
    -------------------------------------------------------------------------- */
 html body {
-  /* 皮肤自有令牌 */
-  --k-ground:   #ff99cc;   /* 桌面地色(侧栏) */
-  --k-face:     #ffccff;   /* 窗体面色 */
-  --k-face2:    #ffcccc;   /* 次级面 */
-  --k-well:     #ffffff;   /* 凹陷井(输入区) */
-  --k-note:     #ffffcc;   /* 经典淡黄(代码/提示) */
-  --k-cyan:     #ccffff;   /* 婴儿蓝(对方气泡) */
+  /* —— 玻璃配方 —— */
+  --kg-blur: 30px;              /* 侧栏/画布的磨砂半径 */
+  --kg-blur-soft: 20px;         /* 浮层 */
+  --kg-sat: 1.15;               /* backdrop 饱和度：只略提一点，别把背后的颜色放大 */
+  /* 整扇窗四周留出的生底宽度 = frame 的 padding；全屏面板要收进这条边时也用
+     这个值算宽度。3.1 起应用贴满窗口、不再浮在桌面上（像 Claude Code），
+     留边和窗口圆角都归零；想要回浮窗的样子，把这两个改回 14px / 20px。 */
+  --kg-window-inset: 0px;
+  --kg-window-radius: 0px;
+  /* —— 玻璃「透明层」配方：白天是中性白，夜间翻成石墨 —— */
+  --kg-tint: rgba(255, 255, 255, 0.46);   /* 侧栏玻璃 */
+  --kg-tint-canvas: rgba(255, 255, 255, 0.68); /* 正文画布玻璃 */
+  --kg-tint-solid: rgba(252, 252, 253, 0.86);  /* 需要读字的浮层 */
+  --kg-tint-opaque: rgb(252, 252, 253);        /* 盖住整窗内容的全屏面板底：实色，不玩透 */
+  --kg-rim: rgba(255, 255, 255, 0.55);    /* 内侧亮边 */
+  --kg-rim-top: rgba(255, 255, 255, 0.85);/* 内顶高光 */
+  --kg-outline: rgba(0, 0, 0, 0.07);      /* 浮起来的面外侧的发丝线 */
 
-  --k-band:     #993366;   /* 实心标题带,白字 6.95:1 */
-  --k-band-ink: #ffffff;
-  --k-primary:  #cc0066;   /* 主按钮填色,白字 5.59:1 */
+  /* 面的四档亮度：弱 / 中 / 强 / 满 */
+  --kg-surface-weak:   rgba(255, 255, 255, 0.36);
+  --kg-surface:        rgba(255, 255, 255, 0.56);
+  --kg-surface-strong: rgba(255, 255, 255, 0.82);
+  --kg-surface-max:    rgba(255, 255, 255, 0.96);
+  /* 画布玻璃的径向「清晰区」 */
+  --kg-veil-1: rgba(255, 255, 255, 0.55);
+  --kg-veil-2: rgba(255, 255, 255, 0.24);
+  --kg-veil-3: rgba(255, 255, 255, 0.06);
+  --kg-veil-top: rgba(255, 255, 255, 0.14);
+  --kg-sheen: rgba(255, 255, 255, 0.08);
+  /* 侧栏的竖向薄釉 */
+  --kg-side-1: rgba(255, 255, 255, 0.22);
+  --kg-side-2: rgba(255, 255, 255, 0.04);
+  --kg-side-3: rgba(255, 255, 255, 0.08);
+  /* 输入卡：最厚的一块玻璃 */
+  --kg-card-base: rgba(255, 255, 255, 0.88);
+  --kg-card-1: rgba(255, 255, 255, 0.96);
+  --kg-card-2: rgba(255, 255, 255, 0.9);
+  --kg-card-3: rgba(250, 250, 251, 0.92);
+  /* 底部状态轨 */
+  --kg-rail-base: rgba(255, 255, 255, 0.5);
+  --kg-rail-1: rgba(255, 255, 255, 0.16);
+  --kg-rail-2: rgba(255, 255, 255, 0.4);
+  /* 气泡、选中行与表头 */
+  --kg-bubble: rgba(120, 120, 128, 0.12);
+  --kg-select: rgba(0, 0, 0, 0.06);
+  --kg-th-fill: rgba(255, 255, 255, 0.55);
+  /* 分段控件/输入井的凹面 */
+  --kg-well: rgba(0, 0, 0, 0.05);
+  --kg-well-rim: rgba(0, 0, 0, 0.06);
+  --kg-well-shade: rgba(16, 18, 22, 0.06);
+  --kg-hair: rgba(0, 0, 0, 0.08);         /* 玻璃内侧发丝线 */
+  --kg-hair-strong: rgba(0, 0, 0, 0.14);
+  --kg-hair-clear: rgba(0, 0, 0, 0);      /* 发丝线两端淡出用 */
 
-  --k-frame:    #000000;   /* 门户线 = 黑 */
-  --k-bev-hi:   #ffffff;   /* 斜角外层高光(上/左) */
-  --k-bev-lt:   #ffffff;   /* 斜角内层高光 */
-  --k-bev-dk:   #cc6699;   /* 斜角内层阴影 */
-  --k-bev-sh:   #993366;   /* 斜角外层阴影(下/右) */
+  /* —— 强调色：石墨，只此一种 —— */
+  --kg-accent: #1d1d1f;
+  --kg-accent-hover: #3a3a3c;
+  --kg-on-accent: #ffffff;
+  --kg-on-accent-dim: rgba(255, 255, 255, 0.62); /* 强调色面上的次级字（快捷键） */
+  --kg-focus: rgba(0, 0, 0, 0.22);        /* 输入卡聚焦时的发丝线 */
+  --kg-focus-halo: rgba(0, 0, 0, 0.05);
+  /* 搜索命中：荧光笔黄。「查找」和成功/警告/错误一样算语义色，所以带色相 */
+  --kg-find: rgba(255, 214, 10, 0.32);
+  --kg-find-current: rgba(255, 176, 0, 0.72);
+  --kg-link-line: rgba(29, 29, 31, 0.28);
+  --kg-link-line-hover: rgba(29, 29, 31, 0.7);
+  --kg-quote-line: rgba(0, 0, 0, 0.16);
+  --kg-scroll: rgba(0, 0, 0, 0.2);
+  --kg-scroll-hover: rgba(0, 0, 0, 0.34);
+  --kg-selection: rgba(0, 0, 0, 0.12);
 
-  --k-ink:      #000000;
-  --k-muted:    #333333;
-  --k-faint:    #663366;
+  /* —— 墨色 —— */
+  --kg-ink: #1d1d1f;
+  --kg-muted: #48484d;
+  --kg-faint: #69696e;
+  --kg-dim: #8e8e93;
 
-  /* 字体栈 —— 零远程依赖 */
-  --dsw-font-family: Tahoma, Verdana, "PingFang SC", "Microsoft YaHei", sans-serif;
-  --ds-font-family-code: "Courier New", Menlo, monospace;
-  --k-font-song: "Songti SC", SimSun, "PingFang SC", serif;
+  /* —— 投影语言：中性淡投影 —— */
+  --kg-shadow-1: 0 1px 3px -1px rgba(16, 18, 22, 0.12);
+  --kg-shadow-2: 0 12px 32px -18px rgba(16, 18, 22, 0.3), 0 2px 6px -3px rgba(16, 18, 22, 0.1);
+  --kg-shadow-3: 0 24px 56px -28px rgba(16, 18, 22, 0.34), 0 4px 12px -6px rgba(16, 18, 22, 0.12);
+  --kg-shadow-window: 0 24px 60px -40px rgba(16, 18, 22, 0.4);
+  --kg-shadow-card: 0 16px 36px -24px rgba(16, 18, 22, 0.28), 0 2px 8px -4px rgba(16, 18, 22, 0.1);
 
-  /* ---- static 调色板:整条中性坡道染成糖果色 ---- */
-  --dsw-static-neutral-bluish-00:   #ffccff;
-  --dsw-static-neutral-bluish-50:   #ffccff;
-  --dsw-static-neutral-bluish-60:   #ffcccc;
-  --dsw-static-neutral-bluish-75:   #ff99cc;
-  --dsw-static-neutral-bluish-100:  #ff99cc;
-  --dsw-static-neutral-bluish-150:  #ff99cc;
-  --dsw-static-neutral-bluish-200:  #ff66cc;
-  --dsw-static-neutral-bluish-300:  #cc6699;
-  --dsw-static-neutral-bluish-400:  #cc6699;
-  --dsw-static-neutral-bluish-500:  #996699;
-  --dsw-static-neutral-bluish-600:  #663366;
-  --dsw-static-neutral-bluish-700:  #333333;
-  --dsw-static-neutral-bluish-750:  #993366;
-  --dsw-static-neutral-bluish-800:  #660033;
-  --dsw-static-neutral-bluish-850:  #660033;
-  --dsw-static-neutral-bluish-875:  #330033;
-  --dsw-static-neutral-bluish-900:  #330033;
-  --dsw-static-neutral-bluish-950:  #330033;
-  --dsw-static-neutral-bluish-1000: #000000;
+  /* —— 圆角四档 —— */
+  --kg-r-xs: 8px;
+  --kg-r-sm: 12px;
+  --kg-r-md: 16px;
+  --kg-r-lg: 18px;
+
+  /* —— 动效 —— */
+  --kg-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --kg-t: 180ms var(--kg-ease);
+
+  --dsw-corner-shape: superellipse(1.6);
+
+  /* —— 字体:系统字，标题和正文同一家，零远程依赖 —— */
+  --dsw-font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Helvetica Neue", sans-serif;
+  --ds-font-family-code: "SF Mono", Menlo, "JetBrains Mono", monospace;
+  --kg-font-display: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", sans-serif;
+
+  /* ---- static 调色板:中性坡道换成真中性灰(略偏冷) ---- */
+  --dsw-static-neutral-bluish-00:   #ffffff;
+  --dsw-static-neutral-bluish-50:   #f8f8f9;
+  --dsw-static-neutral-bluish-60:   #f4f4f6;
+  --dsw-static-neutral-bluish-75:   #efeff1;
+  --dsw-static-neutral-bluish-100:  #eaeaed;
+  --dsw-static-neutral-bluish-150:  #e2e2e6;
+  --dsw-static-neutral-bluish-200:  #d6d6db;
+  --dsw-static-neutral-bluish-300:  #bebec4;
+  --dsw-static-neutral-bluish-400:  #98989f;
+  --dsw-static-neutral-bluish-500:  #7b7b82;
+  --dsw-static-neutral-bluish-600:  #616168;
+  --dsw-static-neutral-bluish-700:  #48484e;
+  --dsw-static-neutral-bluish-750:  #3d3d42;
+  --dsw-static-neutral-bluish-800:  #313135;
+  --dsw-static-neutral-bluish-850:  #28282b;
+  --dsw-static-neutral-bluish-875:  #232326;
+  --dsw-static-neutral-bluish-900:  #1c1c1e;
+  --dsw-static-neutral-bluish-950:  #141416;
+  --dsw-static-neutral-bluish-1000: #0e0e10;
 
   --dsw-static-neutral-00:   #ffffff;
-  --dsw-static-neutral-50:   #ffccff;
-  --dsw-static-neutral-100:  #ffccff;
-  --dsw-static-neutral-150:  #ff99cc;
-  --dsw-static-neutral-200:  #ff99cc;
-  --dsw-static-neutral-250:  #ff66cc;
-  --dsw-static-neutral-300:  #cc6699;
-  --dsw-static-neutral-400:  #cc6699;
-  --dsw-static-neutral-500:  #996699;
-  --dsw-static-neutral-550:  #663366;
-  --dsw-static-neutral-600:  #663366;
-  --dsw-static-neutral-700:  #333333;
-  --dsw-static-neutral-800:  #330033;
-  --dsw-static-neutral-850:  #330033;
-  --dsw-static-neutral-900:  #000000;
-  --dsw-static-neutral-1000: #000000;
+  --dsw-static-neutral-50:   #f8f8f9;
+  --dsw-static-neutral-100:  #eaeaed;
+  --dsw-static-neutral-150:  #e2e2e6;
+  --dsw-static-neutral-200:  #d6d6db;
+  --dsw-static-neutral-250:  #cacacf;
+  --dsw-static-neutral-300:  #bebec4;
+  --dsw-static-neutral-400:  #98989f;
+  --dsw-static-neutral-500:  #7b7b82;
+  --dsw-static-neutral-550:  #6e6e75;
+  --dsw-static-neutral-600:  #616168;
+  --dsw-static-neutral-700:  #48484e;
+  --dsw-static-neutral-800:  #2c2c30;
+  --dsw-static-neutral-850:  #242427;
+  --dsw-static-neutral-900:  #0e0e10;
+  --dsw-static-neutral-1000: #0e0e10;
 
-  /* DeepSeek 品牌蓝 → 品牌粉 */
-  --dsw-static-deepseek-50:  #ffccff;
-  --dsw-static-deepseek-100: #ffccff;
-  --dsw-static-deepseek-200: #ff99cc;
-  --dsw-static-deepseek-300: #ff66cc;
-  --dsw-static-deepseek-400: #cc0066;
-  --dsw-static-deepseek-450: #cc0066;
-  --dsw-static-deepseek-500: #cc0066;
-  --dsw-static-deepseek-600: #993366;
-  --dsw-static-deepseek-800: #660033;
-  --dsw-static-deepseek-900: #330033;
+  /* DeepSeek 品牌蓝 → 石墨 */
+  --dsw-static-deepseek-50:  #f4f4f5;
+  --dsw-static-deepseek-100: #e9e9eb;
+  --dsw-static-deepseek-200: #d4d4d8;
+  --dsw-static-deepseek-300: #a1a1a8;
+  --dsw-static-deepseek-400: #52525b;
+  --dsw-static-deepseek-450: #3f3f46;
+  --dsw-static-deepseek-500: #2c2c31;
+  --dsw-static-deepseek-600: #1d1d1f;
+  --dsw-static-deepseek-700-delete: #18181b;
+  --dsw-static-deepseek-800: #111113;
+  --dsw-static-deepseek-900: #09090b;
 
-  /* 语义三色 —— 在粉面 #ffccff 上 5.29 / 5.42 / 6.51 */
-  --dsw-static-green-100: #ccffcc;
-  --dsw-static-green-400: #006600;
-  --dsw-static-green-500: #006600;
-  --dsw-static-green-900: #003300;
-  --dsw-static-amber-100: #ffffcc;
-  --dsw-static-amber-400: #993300;
-  --dsw-static-amber-500: #993300;
-  --dsw-static-amber-600: #993300;
-  --dsw-static-amber-900: #330000;
-  --dsw-static-red-50:    #ffcccc;
-  --dsw-static-red-100:   #ffcccc;
-  --dsw-static-red-400:   #990000;
-  --dsw-static-red-500:   #990000;
-  --dsw-static-red-600:   #990000;
-  --dsw-static-red-900:   #330000;
+  /* 语义四色 —— 对着中性白玻璃算过对比度 */
+  --dsw-static-green-100: #e3f4ea;
+  --dsw-static-green-400: #12924f;
+  --dsw-static-green-500: #0f7d44;
+  --dsw-static-green-900: #0a3f26;
+  --dsw-static-amber-100: #fbf1de;
+  --dsw-static-amber-400: #a35a00;
+  --dsw-static-amber-500: #8f4e00;
+  --dsw-static-amber-600: #7d4400;
+  --dsw-static-amber-900: #3d2400;
+  --dsw-static-red-50:    #fdeceb;
+  --dsw-static-red-100:   #fbe4e2;
+  --dsw-static-red-400:   #c4321f;
+  --dsw-static-red-500:   #b42318;
+  --dsw-static-red-600:   #9a1d14;
+  --dsw-static-red-900:   #42100b;
 
-  --dsw-static-blue-50:   #ccffff;
-  --dsw-static-blue-50p:  #ccffff;
-  --dsw-static-blue-75:   #ccffff;
-  --dsw-static-blue-100:  #ccffff;
-  --dsw-static-blue-300:  #99ccff;
-  --dsw-static-blue-400:  #0000cc;
-  --dsw-static-blue-450:  #0000cc;
-  --dsw-static-blue-500:  #0000cc;
-  --dsw-static-blue-600:  #000099;
-  --dsw-static-blue-800:  #000066;
-  --dsw-static-blue-900:  #000066;
-  --dsw-static-blue-950:  #000033;
+  --dsw-static-blue-50:   #edf3fa;
+  --dsw-static-blue-50p:  #edf3fa;
+  --dsw-static-blue-75:   #e4edf8;
+  --dsw-static-blue-100:  #dbe7f5;
+  --dsw-static-blue-300:  #97b8dd;
+  --dsw-static-blue-400:  #2f64a8;
+  --dsw-static-blue-450:  #285895;
+  --dsw-static-blue-500:  #234f87;
+  --dsw-static-blue-600:  #1c426f;
+  --dsw-static-blue-800:  #12304f;
+  --dsw-static-blue-900:  #0b2036;
 
-  /* ---- alias 层 ---- */
-  --dsw-alias-bg-base:    var(--k-face);
-  --dsw-alias-bg-layer-1: var(--k-face);
-  --dsw-alias-bg-layer-2: var(--k-face2);
-  --dsw-alias-bg-layer-3: var(--k-face);
-  --dsw-alias-bg-module-platform: var(--k-face2);
-  --dsw-alias-bg-multi-select:    var(--k-face2);
-  --dsw-alias-bg-overlay:  var(--k-face2);
-  --dsw-alias-bg-skeleton: rgba(153, 0, 102, 0.12);
-  --dsw-alias-bg-mask-1:   rgba(51, 0, 51, 0.32);
-  --dsw-alias-bg-mask-2:   rgba(51, 0, 51, 0.16);
-  --dsw-alias-bg-mask-3:   rgba(51, 0, 51, 0.48);
-  --dsw-alias-bg-mask-drop: rgba(255, 204, 255, 0.75);
+  /* ---- alias 层：面全是玻璃，字全是中性墨 ---- */
+  --dsw-alias-bg-base:    #f3f3f4;
+  --dsw-alias-bg-layer-1: rgba(255, 255, 255, 0.74);
+  --dsw-alias-bg-layer-2: rgba(250, 250, 251, 0.82);
+  --dsw-alias-bg-layer-3: rgba(255, 255, 255, 0.88);
+  --dsw-alias-bg-module-platform: rgba(255, 255, 255, 0.5);
+  --dsw-alias-bg-multi-select:    rgba(0, 0, 0, 0.06);
+  --dsw-alias-bg-overlay:  rgba(252, 252, 253, 0.92);
+  --dsw-alias-bg-skeleton: rgba(0, 0, 0, 0.07);
+  --dsw-alias-bg-mask-1:   rgba(16, 18, 22, 0.26);
+  --dsw-alias-bg-mask-2:   rgba(16, 18, 22, 0.12);
+  --dsw-alias-bg-mask-3:   rgba(16, 18, 22, 0.44);
+  --dsw-alias-bg-mask-drop: rgba(250, 250, 251, 0.7);
 
-  /* 分隔线坡道:l1/l2 是应用到处用的「顺带一条线」(原值 rgba(0,0,0,.04/.1)
-     的发丝线),把它们设成纯黑等于加粗十倍 —— 页头那条 1px 分隔线就是这么
-     变成一条贯穿全宽黑杠的(`.wSkVaW_header::after` 取 l2 当 background)。
-     这里走同族的柔和粉紫,越靠后越重;真正的结构框线(表格/代码块/控件/
-     标签)不用这些令牌,直接走 --k-frame 黑,所以门户骨架仍是黑线。 */
-  --dsw-alias-border-l1: #ffcccc;
-  --dsw-alias-border-l2: #cc99cc;
-  --dsw-alias-border-l3: #cc6699;
-  --dsw-alias-border-l4: #993366;
-  --dsw-alias-border-l2-darkmode-thin: #cc99cc;
-  --dsw-alias-border-inverted:  #cc99cc;
-  --dsw-alias-border-inverted2: #cc99cc;
+  /* 分隔线一律是玻璃内侧的发丝线，不是黑框 */
+  --dsw-alias-border-l1: var(--kg-hair);
+  --dsw-alias-border-l2: rgba(0, 0, 0, 0.1);
+  --dsw-alias-border-l3: rgba(0, 0, 0, 0.14);
+  --dsw-alias-border-l4: rgba(0, 0, 0, 0.2);
+  --dsw-alias-border-l2-darkmode-thin: rgba(0, 0, 0, 0.1);
+  --dsw-alias-border-inverted:  rgba(255, 255, 255, 0.5);
+  --dsw-alias-border-inverted2: rgba(255, 255, 255, 0.32);
 
-  --dsw-alias-brand-primary:        var(--k-primary);
-  --dsw-alias-brand-primary-invert: var(--k-primary);
-  --dsw-alias-brand-text:           var(--k-band);
-  --dsw-alias-brand-primary-new-colorprimary-new-color: var(--k-primary);
+  --dsw-alias-brand-primary:        var(--kg-accent);
+  --dsw-alias-brand-primary-invert: var(--kg-ink);
+  --dsw-alias-brand-text:           var(--kg-ink);
+  --dsw-alias-brand-primary-new-colorprimary-new-color: var(--kg-accent);
 
-  --dsw-alias-button-primary-fill:   var(--k-primary);
-  --dsw-alias-button-primary-hover:  #990033;
-  --dsw-alias-button-primary-dimmed: var(--k-face2);
-  --dsw-alias-button-contrast-fill:  var(--k-band);
-  --dsw-alias-button-elevated-fill:  var(--k-face);
-  --dsw-alias-button-floating-fill:  var(--k-face);
-  --dsw-alias-button-floating-hover: var(--k-ground);
-  --dsw-alias-button-ghost-active-fill:   var(--k-ground);
-  --dsw-alias-button-ghost-active-hover:  #ff66cc;
-  --dsw-alias-button-ghost-active-border: var(--k-frame);
-  --dsw-alias-button-info-fill:  var(--k-primary);
-  --dsw-alias-button-info-hover: #990033;
-  --dsw-alias-button-tool-bar-fill: rgba(153, 51, 102, 0.55);
-  --dsw-alias-button-tool-bar-hover: rgba(153, 51, 102, 0.75);
-  --dsw-alias-button-tool-bar-fill-invisible: rgba(153, 51, 102, 0.36);
+  --dsw-alias-button-primary-fill:   var(--kg-accent);
+  --dsw-alias-button-primary-hover:  var(--kg-accent-hover);
+  --dsw-alias-button-primary-dimmed: rgba(29, 29, 31, 0.3);
+  --dsw-alias-button-contrast-fill:  var(--kg-ink);
+  --dsw-alias-button-elevated-fill:  rgba(255, 255, 255, 0.8);
+  --dsw-alias-button-floating-fill:  rgba(255, 255, 255, 0.72);
+  --dsw-alias-button-floating-hover: rgba(255, 255, 255, 0.92);
+  --dsw-alias-button-ghost-active-fill:   rgba(0, 0, 0, 0.06);
+  --dsw-alias-button-ghost-active-hover:  rgba(0, 0, 0, 0.09);
+  --dsw-alias-button-ghost-active-border: rgba(0, 0, 0, 0.16);
+  --dsw-alias-button-info-fill:  var(--kg-accent);
+  --dsw-alias-button-info-hover: var(--kg-accent-hover);
+  --dsw-alias-button-tool-bar-fill: rgba(255, 255, 255, 0.55);
+  --dsw-alias-button-tool-bar-hover: rgba(255, 255, 255, 0.85);
+  --dsw-alias-button-tool-bar-fill-invisible: rgba(255, 255, 255, 0.3);
 
-  --dsw-alias-interactive-bg-hover:        rgba(153, 0, 102, 0.10);
-  --dsw-alias-interactive-bg-hover-accent: rgba(153, 0, 102, 0.20);
-  --dsw-alias-interactive-bg-hover-solid:  var(--k-ground);
-  --dsw-alias-interactive-bg-hover-danger: rgba(153, 0, 0, 0.12);
-  --dsw-alias-interactive-bg-active:       rgba(153, 0, 102, 0.22);
+  --dsw-alias-interactive-bg-hover:        rgba(0, 0, 0, 0.04);
+  --dsw-alias-interactive-bg-hover-accent: rgba(0, 0, 0, 0.05);
+  --dsw-alias-interactive-bg-hover-solid:  rgba(0, 0, 0, 0.05);
+  --dsw-alias-interactive-bg-hover-danger: rgba(180, 35, 24, 0.08);
+  --dsw-alias-interactive-bg-active:       rgba(0, 0, 0, 0.08);
 
-  --dsw-alias-label-primary:           var(--k-ink);
-  --dsw-alias-label-secondary:         var(--k-muted);
-  --dsw-alias-label-tertiary:          var(--k-faint);
-  --dsw-alias-label-caption:           var(--k-faint);
-  --dsw-alias-label-dimmed:            #996699;
-  --dsw-alias-label-primary-dimmed:    var(--k-muted);
+  --dsw-alias-label-primary:           var(--kg-ink);
+  --dsw-alias-label-secondary:         var(--kg-muted);
+  --dsw-alias-label-tertiary:          var(--kg-faint);
+  --dsw-alias-label-caption:           var(--kg-faint);
+  --dsw-alias-label-dimmed:            var(--kg-dim);
+  --dsw-alias-label-primary-dimmed:    var(--kg-muted);
   --dsw-alias-label-primary-inverted:  #ffffff;
   --dsw-alias-label-primary-foreground:#ffffff;
-  --dsw-alias-label-primary-bluish:    #000066;
+  --dsw-alias-label-primary-bluish:    #1c426f;
+  --dsw-alias-link:                    var(--kg-ink);
 
-  --dsw-alias-markdown-code-block:        var(--k-note);
-  --dsw-alias-markdown-code-block-banner: #ffff99;
-  --dsw-alias-markdown-inline-code:       var(--k-note);
-  --dsw-alias-markdown-code-segment-selected:   var(--k-note);
-  --dsw-alias-markdown-code-segment-unselected: var(--k-face2);
-  --dsw-alias-markdown-citation:    var(--k-cyan);
-  --dsw-alias-markdown-tag:         var(--k-face2);
-  --dsw-alias-markdown-placeholder: var(--k-face2);
+  --dsw-alias-markdown-code-block:        rgba(255, 255, 255, 0.66);
+  --dsw-alias-markdown-code-block-banner: rgba(244, 244, 246, 0.9);
+  --dsw-alias-markdown-inline-code:       rgba(0, 0, 0, 0.05);
+  --dsw-alias-markdown-code-segment-selected:   rgba(255, 255, 255, 0.92);
+  --dsw-alias-markdown-code-segment-unselected: rgba(255, 255, 255, 0.5);
+  --dsw-alias-markdown-citation:    rgba(219, 231, 245, 0.85);
+  --dsw-alias-markdown-tag:         rgba(255, 255, 255, 0.6);
+  --dsw-alias-markdown-placeholder: rgba(255, 255, 255, 0.5);
 
-  --dsw-alias-scrollbar-bg-l1:    var(--k-face);
-  --dsw-alias-scrollbar-bg-l2:    var(--k-face);
-  --dsw-alias-scrollbar-hover-l1: var(--k-ground);
-  --dsw-alias-scrollbar-hover-l2: var(--k-ground);
+  --dsw-alias-scrollbar-bg-l1:    transparent;
+  --dsw-alias-scrollbar-bg-l2:    transparent;
+  --dsw-alias-scrollbar-hover-l1: var(--kg-scroll);
+  --dsw-alias-scrollbar-hover-l2: var(--kg-scroll);
 
-  --dsw-alias-state-business-primary:  var(--k-primary);
-  --dsw-alias-state-business-tertiary: var(--k-face2);
-  --dsw-alias-state-success-primary:   #006600;
-  --dsw-alias-state-success-secondary: #006600;
-  --dsw-alias-state-success-tertiary:  #ccffcc;
-  --dsw-alias-state-warn-primary:  #993300;
-  --dsw-alias-state-warn-secondary:#993300;
-  --dsw-alias-state-warn-label:    #993300;
-  --dsw-alias-state-warn-tertiary: var(--k-note);
-  --dsw-alias-state-error-primary:  #990000;
-  --dsw-alias-state-error-secondary:#990000;
+  --dsw-alias-state-business-primary:  var(--kg-accent);
+  --dsw-alias-state-business-tertiary: rgba(0, 0, 0, 0.05);
+  --dsw-alias-state-success-primary:   #0f7d44;
+  --dsw-alias-state-success-secondary: #12924f;
+  --dsw-alias-state-success-tertiary:  #e3f4ea;
+  --dsw-alias-state-warn-primary:  #8f4e00;
+  --dsw-alias-state-warn-secondary:#a35a00;
+  --dsw-alias-state-warn-label:    #8f4e00;
+  --dsw-alias-state-warn-tertiary: #fbf1de;
+  --dsw-alias-state-error-primary:  #b42318;
+  --dsw-alias-state-error-secondary:#c4321f;
+  --dsw-alias-state-idle-primary:   var(--kg-dim);
 
-  --dsw-alias-toast-bg:   var(--k-band);
-  --dsw-alias-tooltip-bg: var(--k-band);
+  --dsw-alias-toast-bg:   rgba(29, 29, 31, 0.92);
+  --dsw-alias-toast-label:#f5f5f7;
+  --dsw-alias-tooltip-bg: rgba(29, 29, 31, 0.92);
+  --dsw-alias-tooltip-key-bg: rgba(255, 255, 255, 0.16);
+  --dsw-alias-menu-group-header-fill: rgba(244, 244, 246, 0.6);
+  --dsw-alias-menu-icon: var(--kg-faint);
+  --dsw-alias-onboarding-accent: var(--kg-accent);
+  --dsw-alias-onboarding-card-fill: rgba(255, 255, 255, 0.68);
+  --dsw-alias-onboarding-secondary-fill: rgba(250, 250, 251, 0.72);
+  --dsw-alias-onboarding-checkbox-border: rgba(0, 0, 0, 0.26);
+  --dsw-alias-settings-card-fill: rgba(255, 255, 255, 0.62);
+  --dsw-alias-settings-card-stroke: rgba(255, 255, 255, 0.7);
+  --dsw-alias-switch-thumb: #ffffff;
+  --dsw-alias-turn-trigger-bg: rgba(255, 255, 255, 0.55);
+  --dsw-alias-turn-trigger-bg-hover: rgba(255, 255, 255, 0.8);
+  --dsw-alias-label-shimmer: rgba(0, 0, 0, 0.18);
+  --dsw-alias-label-deep-diving: var(--kg-ink);
+  --dsw-alias-label-deep-diving-shimmer: rgba(0, 0, 0, 0.12);
 
-  --dsw-specific-bubble:           var(--k-cyan);
-  --dsw-specific-bubble-highlight: #99ffff;
-  --dsw-specific-input-major:      var(--k-well);
-  --dsw-specific-login-input:      var(--k-well);
-  --dsw-specific-menu:             var(--k-face);
-  --dsw-specific-selector:         var(--k-face2);
-  --dsw-specific-tip:              var(--k-note);
-  --dsw-specific-sidebar-fill:                 var(--k-ground);
-  --dsw-specific-sidebar-nav-item-hover:       #ff66cc;
-  --dsw-specific-sidebar-nav-item-active:      var(--k-face);
-  --dsw-specific-sidebar-nav-item-active-accent: var(--k-face);
+  --dsw-alias-code-diff-added:   rgba(18, 146, 79, 0.1);
+  --dsw-alias-code-diff-deleted: rgba(180, 35, 24, 0.08);
+  --dsw-alias-file-diff-added-bg:   rgba(18, 146, 79, 0.08);
+  --dsw-alias-file-diff-deleted-bg: rgba(180, 35, 24, 0.07);
+  --dsw-alias-file-diff-added-gutter:   rgba(18, 146, 79, 0.18);
+  --dsw-alias-file-diff-deleted-gutter: rgba(180, 35, 24, 0.16);
+  --dsw-alias-file-diff-added-marker:   #0f7d44;
+  --dsw-alias-file-diff-deleted-marker: #b42318;
 
-  /* 现代阴影令牌一律置空 —— 立体只允许来自斜角 */
-  --dsw-shadow-lv1: none;
-  --dsw-shadow-lv2: none;
-  --dsw-shadow-lv3: none;
-  --dsw-shadow-lv4: none;
-  --dsw-mask-blur: none;
-  --dsw-hovercard-bg: var(--k-face);
+  --dsw-specific-bubble:           rgba(255, 255, 255, 0.62);
+  --dsw-specific-bubble-highlight: rgba(255, 255, 255, 0.82);
+  --dsw-specific-input-major:      rgba(255, 255, 255, 0.5);
+  --dsw-specific-login-input:      rgba(255, 255, 255, 0.6);
+  --dsw-specific-menu:             rgba(252, 252, 253, 0.92);
+  --dsw-specific-selector:         rgba(250, 250, 251, 0.82);
+  --dsw-specific-tip:              rgba(250, 250, 251, 0.82);
+  --dsw-specific-sidebar-fill:               rgba(255, 255, 255, 0.44);
+  --dsw-specific-sidebar-nav-item-hover:     rgba(0, 0, 0, 0.04);
+  --dsw-specific-sidebar-nav-item-active:    rgba(0, 0, 0, 0.06);
+  --dsw-specific-sidebar-nav-item-active-accent: rgba(0, 0, 0, 0.08);
+
+  /* 阴影换成玻璃语言：内侧亮边 + 外侧发丝线 + 中性淡投影 */
+  --dsw-elevation-stroke: inset 0 0 0 1px var(--kg-rim), 0 0 0 0.5px var(--kg-outline);
+  --dsw-elevation-stroke-color: var(--kg-hair);
+  --dsw-elevation-soft:  inset 0 0 0 1px var(--kg-rim), 0 0 0 0.5px var(--kg-outline), var(--kg-shadow-2);
+  --dsw-elevation-panel: inset 0 1px 0 var(--kg-rim-top), inset 0 0 0 1px var(--kg-rim), 0 0 0 0.5px var(--kg-outline), var(--kg-shadow-2);
+  --dsw-elevation-prominent: inset 0 1px 0 var(--kg-rim-top), inset 0 0 0 1px var(--kg-rim), 0 0 0 0.5px var(--kg-outline), var(--kg-shadow-3);
+  --dsw-shadow-lv1: var(--kg-shadow-1);
+  --dsw-shadow-lv1-blur: var(--kg-shadow-1);
+  --dsw-shadow-lv2: var(--kg-shadow-2);
+  --dsw-shadow-lv3: var(--kg-shadow-3);
+  --dsw-shadow-lv4: var(--kg-shadow-3);
+  --dsw-mask-blur: blur(2px);
+  --dsw-hovercard-bg: rgba(252, 252, 253, 0.9);
+  --dsw-focus-ring-color: rgba(29, 29, 31, 0.5);
+  --dsw-focus-ring-width: 2px;
 }
 
 /* --------------------------------------------------------------------------
-   2. 令牌层 — 夜间(深紫糖果)
-   系统处于暗色模式时才生效。不是终端风:仍是实心面 + 斜角,只是把
-   糖果坡道整体压暗到深紫。
+   2. 令牌层 — 夜间(石墨雾面 + 烟灰玻璃)
+   系统处于暗色模式时才生效。玻璃配方反过来：深色半透明面 + 亮边，
+   字是中性白，强调色反相成近白。
    -------------------------------------------------------------------------- */
 html body[data-ds-dark-theme] {
-  --k-ground:   #330033;
-  --k-face:     #660066;
-  --k-face2:    #663366;
-  --k-well:     #330033;
-  --k-note:     #333300;
-  --k-cyan:     #003333;
+  --kg-sat: 1.1;
+  --kg-tint: rgba(255, 255, 255, 0.06);
+  --kg-tint-canvas: rgba(255, 255, 255, 0.05);
+  --kg-tint-solid: rgba(36, 37, 41, 0.9);
+  --kg-tint-opaque: rgb(36, 37, 41);
+  --kg-rim: rgba(255, 255, 255, 0.1);
+  --kg-rim-top: rgba(255, 255, 255, 0.16);
+  --kg-outline: rgba(0, 0, 0, 0.4);
 
-  --k-band:     #993366;
-  --k-primary:  #ff99cc;
+  --kg-surface-weak:   rgba(255, 255, 255, 0.04);
+  --kg-surface:        rgba(255, 255, 255, 0.07);
+  --kg-surface-strong: rgba(255, 255, 255, 0.11);
+  --kg-surface-max:    rgba(255, 255, 255, 0.16);
+  --kg-veil-1: rgba(255, 255, 255, 0.08);
+  --kg-veil-2: rgba(255, 255, 255, 0.03);
+  --kg-veil-3: rgba(255, 255, 255, 0);
+  --kg-veil-top: rgba(255, 255, 255, 0.04);
+  --kg-sheen: rgba(255, 255, 255, 0.04);
+  --kg-side-1: rgba(255, 255, 255, 0.04);
+  --kg-side-2: rgba(255, 255, 255, 0.01);
+  --kg-side-3: rgba(255, 255, 255, 0.02);
+  --kg-card-base: rgba(44, 45, 50, 0.86);
+  --kg-card-1: rgba(255, 255, 255, 0.1);
+  --kg-card-2: rgba(255, 255, 255, 0.05);
+  --kg-card-3: rgba(255, 255, 255, 0.07);
+  --kg-rail-base: rgba(255, 255, 255, 0.05);
+  --kg-rail-1: rgba(255, 255, 255, 0.02);
+  --kg-rail-2: rgba(255, 255, 255, 0.05);
+  --kg-bubble: rgba(255, 255, 255, 0.08);
+  --kg-select: rgba(255, 255, 255, 0.08);
+  --kg-th-fill: rgba(255, 255, 255, 0.06);
+  --kg-well: rgba(0, 0, 0, 0.22);
+  --kg-well-rim: rgba(255, 255, 255, 0.06);
+  --kg-well-shade: rgba(0, 0, 0, 0.3);
+  --kg-hair: rgba(255, 255, 255, 0.08);
+  --kg-hair-strong: rgba(255, 255, 255, 0.14);
+  --kg-hair-clear: rgba(255, 255, 255, 0);
 
-  --k-frame:    #ffccff;
-  --k-bev-hi:   #cc99cc;
-  --k-bev-lt:   #cc66cc;
-  --k-bev-dk:   #660066;
-  --k-bev-sh:   #330033;
+  --kg-accent: #e8e8ea;
+  --kg-accent-hover: #ffffff;
+  --kg-on-accent: #1d1d1f;
+  --kg-on-accent-dim: rgba(29, 29, 31, 0.62);
+  --kg-focus: rgba(255, 255, 255, 0.26);
+  --kg-focus-halo: rgba(255, 255, 255, 0.05);
+  --kg-find: rgba(255, 214, 10, 0.22);
+  --kg-find-current: rgba(255, 190, 40, 0.55);
+  --kg-link-line: rgba(242, 242, 243, 0.3);
+  --kg-link-line-hover: rgba(242, 242, 243, 0.75);
+  --kg-quote-line: rgba(255, 255, 255, 0.2);
+  --kg-scroll: rgba(255, 255, 255, 0.18);
+  --kg-scroll-hover: rgba(255, 255, 255, 0.3);
+  --kg-selection: rgba(255, 255, 255, 0.2);
 
-  --k-ink:      #ffccff;
-  --k-muted:    #ffccff;
-  --k-faint:    #cc99cc;
+  --kg-ink: #f2f2f3;
+  --kg-muted: #c7c7cc;
+  --kg-faint: #a4a4aa;
+  --kg-dim: #7c7c82;
 
-  --dsw-static-neutral-bluish-00:   #660066;
-  --dsw-static-neutral-bluish-50:   #ffccff;
-  --dsw-static-neutral-bluish-60:   #663366;
-  --dsw-static-neutral-bluish-75:   #663366;
-  --dsw-static-neutral-bluish-100:  #ffccff;
-  --dsw-static-neutral-bluish-150:  #663366;
-  --dsw-static-neutral-bluish-200:  #cc99cc;
-  --dsw-static-neutral-bluish-300:  #cc99cc;
-  --dsw-static-neutral-bluish-400:  #cc99cc;
-  --dsw-static-neutral-bluish-500:  #cc66cc;
-  --dsw-static-neutral-bluish-600:  #cc99cc;
-  --dsw-static-neutral-bluish-700:  #996699;
-  --dsw-static-neutral-bluish-750:  #663366;
-  --dsw-static-neutral-bluish-800:  #660066;
-  --dsw-static-neutral-bluish-850:  #660066;
-  --dsw-static-neutral-bluish-875:  #660066;
-  --dsw-static-neutral-bluish-900:  #330033;
-  --dsw-static-neutral-bluish-950:  #330033;
-  --dsw-static-neutral-bluish-1000: #ffccff;
+  --kg-shadow-1: 0 1px 3px -1px rgba(0, 0, 0, 0.5);
+  --kg-shadow-2: 0 14px 34px -18px rgba(0, 0, 0, 0.7), 0 2px 8px -4px rgba(0, 0, 0, 0.45);
+  --kg-shadow-3: 0 28px 60px -28px rgba(0, 0, 0, 0.8), 0 6px 16px -10px rgba(0, 0, 0, 0.45);
+  --kg-shadow-window: 0 24px 60px -36px rgba(0, 0, 0, 0.8);
+  --kg-shadow-card: 0 20px 44px -26px rgba(0, 0, 0, 0.85), 0 2px 8px -4px rgba(0, 0, 0, 0.4);
 
-  --dsw-static-deepseek-400: #ff99cc;
-  --dsw-static-deepseek-450: #ff99cc;
-  --dsw-static-deepseek-500: #ff99cc;
-  --dsw-static-deepseek-800: #663366;
+  /* static 色板在 dsh 里是「绝对色」：主题自己的夜间表只换 alias，static 白天夜间
+     几乎同值（00 是白、1000 是近黑）。组件会绕过 alias 直接用 static —— 提示气泡的字
+     和里面的快捷键键帽就是 color: var(--dsw-static-neutral-bluish-00)，底色却是 alias
+     （夜间近黑）。所以 00 / 60 / 75 / 150 / 1000 这几级不能反相，跟白天同值，
+     否则就是黑底黑字（2026-10-25 截图）。其余几级只是调亮，暗底上当前景色读得出来。 */
+  --dsw-static-neutral-bluish-00:   #ffffff;
+  --dsw-static-neutral-bluish-50:   #f2f2f3;
+  --dsw-static-neutral-bluish-60:   #f4f4f6;
+  --dsw-static-neutral-bluish-75:   #efeff1;
+  --dsw-static-neutral-bluish-100:  #f2f2f3;
+  --dsw-static-neutral-bluish-150:  #e2e2e6;
+  --dsw-static-neutral-bluish-200:  #aeaeb4;
+  --dsw-static-neutral-bluish-300:  #c7c7cc;
+  --dsw-static-neutral-bluish-400:  #b4b4ba;
+  --dsw-static-neutral-bluish-500:  #a0a0a7;
+  --dsw-static-neutral-bluish-600:  #b4b4ba;
+  --dsw-static-neutral-bluish-700:  #8e8e95;
+  --dsw-static-neutral-bluish-750:  #46464c;
+  --dsw-static-neutral-bluish-800:  #34343a;
+  --dsw-static-neutral-bluish-850:  #2e2e33;
+  --dsw-static-neutral-bluish-875:  #29292d;
+  --dsw-static-neutral-bluish-900:  #222226;
+  --dsw-static-neutral-bluish-950:  #1a1a1d;
+  --dsw-static-neutral-bluish-1000: #0e0e10;
 
-  --dsw-static-green-500: #99ff99;
-  --dsw-static-green-400: #99ff99;
-  --dsw-static-amber-500: #ffcc00;
-  --dsw-static-amber-400: #ffcc00;
-  --dsw-static-amber-600: #ffcc00;
-  --dsw-static-red-500:   #ff9999;
-  --dsw-static-red-400:   #ff9999;
-  --dsw-static-red-600:   #ff9999;
+  --dsw-static-deepseek-400: #e5e5e7;
+  --dsw-static-deepseek-450: #d4d4d8;
+  --dsw-static-deepseek-500: #e5e5e7;
+  --dsw-static-deepseek-600: #f2f2f3;
+  --dsw-static-deepseek-800: #3a3a40;
 
-  --dsw-alias-bg-base:    var(--k-ground);
-  --dsw-alias-bg-layer-1: var(--k-face);
-  --dsw-alias-bg-layer-2: var(--k-face2);
-  --dsw-alias-bg-layer-3: var(--k-face);
-  --dsw-alias-bg-module-platform: var(--k-face2);
-  --dsw-alias-bg-overlay: var(--k-face2);
-  --dsw-alias-bg-skeleton: rgba(255, 204, 255, 0.12);
+  --dsw-static-green-100: #163a2a;
+  --dsw-static-green-400: #6fe4a6;
+  --dsw-static-green-500: #7ceeb2;
+  --dsw-static-green-900: #0d2a1c;
+  --dsw-static-amber-100: #3d2c12;
+  --dsw-static-amber-400: #ffce7a;
+  --dsw-static-amber-500: #ffd68f;
+  --dsw-static-amber-600: #ffd68f;
+  --dsw-static-amber-900: #2a1d09;
+  --dsw-static-red-50:    #45140f;
+  --dsw-static-red-100:   #45140f;
+  --dsw-static-red-400:   #ff8f87;
+  --dsw-static-red-500:   #ffa49d;
+  --dsw-static-red-600:   #ffa49d;
+  --dsw-static-red-900:   #2a0b08;
 
-  /* 同上:通用分隔线不用 --k-frame(暗色下是亮粉),否则页头那条 1px 会
-     画成一条贯穿全宽的亮线。 */
-  --dsw-alias-border-l1: #663366;
-  --dsw-alias-border-l2: #996699;
-  --dsw-alias-border-l3: #cc66cc;
-  --dsw-alias-border-l4: #cc99cc;
-  --dsw-alias-border-l2-darkmode-thin: #663366;
-  --dsw-alias-border-inverted:  #996699;
-  --dsw-alias-border-inverted2: #996699;
+  --dsw-static-blue-50:   #15233a;
+  --dsw-static-blue-50p:  #15233a;
+  --dsw-static-blue-75:   #182a42;
+  --dsw-static-blue-100:  #1b304b;
+  --dsw-static-blue-300:  #8fb4de;
+  --dsw-static-blue-400:  #a5c4ea;
+  --dsw-static-blue-450:  #a5c4ea;
+  --dsw-static-blue-500:  #b2cdee;
+  --dsw-static-blue-600:  #c6daf3;
+  --dsw-static-blue-800:  #22406a;
+  --dsw-static-blue-900:  #172c49;
 
-  --dsw-alias-brand-primary:        var(--k-primary);
-  --dsw-alias-brand-primary-invert: var(--k-primary);
-  --dsw-alias-brand-text:           var(--k-ink);
+  --dsw-alias-bg-base:    rgba(18, 19, 22, 0.86);
+  --dsw-alias-bg-layer-1: rgba(44, 45, 50, 0.7);
+  --dsw-alias-bg-layer-2: rgba(50, 51, 56, 0.72);
+  --dsw-alias-bg-layer-3: rgba(58, 59, 64, 0.78);
+  --dsw-alias-bg-module-platform: rgba(255, 255, 255, 0.06);
+  --dsw-alias-bg-multi-select:    rgba(255, 255, 255, 0.1);
+  --dsw-alias-bg-overlay:  rgba(30, 31, 35, 0.92);
+  --dsw-alias-bg-skeleton: rgba(255, 255, 255, 0.08);
+  --dsw-alias-bg-mask-1:   rgba(0, 0, 0, 0.5);
+  --dsw-alias-bg-mask-2:   rgba(0, 0, 0, 0.3);
+  --dsw-alias-bg-mask-3:   rgba(0, 0, 0, 0.66);
+  --dsw-alias-bg-mask-drop: rgba(18, 19, 22, 0.7);
 
-  --dsw-alias-button-primary-fill:  var(--k-primary);
-  --dsw-alias-button-primary-hover: #ffccff;
-  --dsw-alias-button-contrast-fill: var(--k-primary);
-  --dsw-alias-button-elevated-fill: var(--k-face);
-  --dsw-alias-button-floating-fill: var(--k-face);
-  --dsw-alias-button-floating-hover: var(--k-face2);
-  --dsw-alias-button-ghost-active-fill: var(--k-face2);
-  --dsw-alias-button-info-fill: var(--k-primary);
+  --dsw-alias-border-l1: var(--kg-hair);
+  --dsw-alias-border-l2: rgba(255, 255, 255, 0.1);
+  --dsw-alias-border-l3: rgba(255, 255, 255, 0.14);
+  --dsw-alias-border-l4: rgba(255, 255, 255, 0.2);
+  --dsw-alias-border-l2-darkmode-thin: rgba(255, 255, 255, 0.08);
+  --dsw-alias-border-inverted:  rgba(255, 255, 255, 0.16);
+  --dsw-alias-border-inverted2: rgba(255, 255, 255, 0.1);
 
-  --dsw-alias-interactive-bg-hover:        rgba(255, 204, 255, 0.12);
-  --dsw-alias-interactive-bg-hover-accent: rgba(255, 204, 255, 0.24);
-  --dsw-alias-interactive-bg-hover-solid:  var(--k-face2);
-  --dsw-alias-interactive-bg-active:       rgba(255, 204, 255, 0.20);
+  --dsw-alias-brand-primary:        var(--kg-accent);
+  --dsw-alias-brand-primary-invert: var(--kg-ink);
+  --dsw-alias-brand-text:           var(--kg-ink);
 
-  --dsw-alias-label-primary:          var(--k-ink);
-  --dsw-alias-label-secondary:        #ffccff;
-  --dsw-alias-label-tertiary:         var(--k-faint);
-  --dsw-alias-label-caption:          var(--k-faint);
-  --dsw-alias-label-dimmed:           #996699;
-  --dsw-alias-label-primary-inverted: #330033;
-  --dsw-alias-label-primary-foreground: #330033;
+  --dsw-alias-button-primary-fill:  var(--kg-accent);
+  --dsw-alias-button-primary-hover: var(--kg-accent-hover);
+  --dsw-alias-button-primary-dimmed: rgba(232, 232, 234, 0.3);
+  --dsw-alias-button-contrast-fill: var(--kg-ink);
+  --dsw-alias-button-elevated-fill: rgba(255, 255, 255, 0.1);
+  --dsw-alias-button-floating-fill: rgba(255, 255, 255, 0.08);
+  --dsw-alias-button-floating-hover: rgba(255, 255, 255, 0.14);
+  --dsw-alias-button-ghost-active-fill:   rgba(255, 255, 255, 0.1);
+  --dsw-alias-button-ghost-active-hover:  rgba(255, 255, 255, 0.14);
+  --dsw-alias-button-ghost-active-border: rgba(255, 255, 255, 0.22);
+  --dsw-alias-button-info-fill:  var(--kg-accent);
+  --dsw-alias-button-info-hover: var(--kg-accent-hover);
+  --dsw-alias-button-tool-bar-fill: rgba(255, 255, 255, 0.1);
+  --dsw-alias-button-tool-bar-hover: rgba(255, 255, 255, 0.16);
+  --dsw-alias-button-tool-bar-fill-invisible: rgba(255, 255, 255, 0.06);
 
-  --dsw-alias-markdown-code-block:        var(--k-note);
-  --dsw-alias-markdown-code-block-banner: #333300;
-  --dsw-alias-markdown-inline-code:       var(--k-note);
-  --dsw-alias-markdown-citation:          var(--k-cyan);
+  --dsw-alias-interactive-bg-hover:        rgba(255, 255, 255, 0.06);
+  --dsw-alias-interactive-bg-hover-accent: rgba(255, 255, 255, 0.08);
+  --dsw-alias-interactive-bg-hover-solid:  rgba(255, 255, 255, 0.1);
+  --dsw-alias-interactive-bg-hover-danger: rgba(255, 143, 135, 0.12);
+  --dsw-alias-interactive-bg-active:       rgba(255, 255, 255, 0.12);
 
-  --dsw-alias-scrollbar-bg-l1:    var(--k-face);
-  --dsw-alias-scrollbar-bg-l2:    var(--k-face);
-  --dsw-alias-scrollbar-hover-l1: var(--k-face2);
-  --dsw-alias-scrollbar-hover-l2: var(--k-face2);
+  --dsw-alias-label-primary:          var(--kg-ink);
+  --dsw-alias-label-secondary:        var(--kg-muted);
+  --dsw-alias-label-tertiary:         var(--kg-faint);
+  --dsw-alias-label-caption:          var(--kg-faint);
+  --dsw-alias-label-dimmed:           var(--kg-dim);
+  --dsw-alias-label-primary-inverted: #1d1d1f;
+  --dsw-alias-label-primary-foreground: #1d1d1f;
+  --dsw-alias-link:                   var(--kg-ink);
 
-  --dsw-alias-state-success-primary: #99ff99;
-  --dsw-alias-state-warn-primary:    #ffcc00;
-  --dsw-alias-state-warn-label:      #ffcc00;
-  --dsw-alias-state-error-primary:   #ff9999;
+  --dsw-alias-markdown-code-block:        rgba(255, 255, 255, 0.05);
+  --dsw-alias-markdown-code-block-banner: rgba(255, 255, 255, 0.08);
+  --dsw-alias-markdown-inline-code:       rgba(255, 255, 255, 0.08);
+  --dsw-alias-markdown-code-segment-selected:   rgba(255, 255, 255, 0.12);
+  --dsw-alias-markdown-code-segment-unselected: rgba(255, 255, 255, 0.04);
+  --dsw-alias-markdown-citation:          rgba(255, 255, 255, 0.08);
 
-  --dsw-specific-bubble:           var(--k-cyan);
-  --dsw-specific-bubble-highlight: #006666;
-  --dsw-specific-input-major:      var(--k-well);
-  --dsw-specific-menu:             var(--k-face);
-  --dsw-specific-selector:         var(--k-face2);
-  --dsw-specific-tip:              var(--k-note);
-  --dsw-specific-sidebar-fill:              var(--k-ground);
-  --dsw-specific-sidebar-nav-item-hover:    var(--k-face2);
-  --dsw-specific-sidebar-nav-item-active:   var(--k-face);
-  --dsw-specific-sidebar-nav-item-active-accent: var(--k-face);
+  --dsw-alias-scrollbar-bg-l1:    transparent;
+  --dsw-alias-scrollbar-bg-l2:    transparent;
+  --dsw-alias-scrollbar-hover-l1: var(--kg-scroll);
+  --dsw-alias-scrollbar-hover-l2: var(--kg-scroll);
+
+  --dsw-alias-state-business-primary:  var(--kg-accent);
+  --dsw-alias-state-business-tertiary: rgba(255, 255, 255, 0.08);
+  --dsw-alias-state-success-primary:   #7ceeb2;
+  --dsw-alias-state-success-secondary: #6fe4a6;
+  --dsw-alias-state-success-tertiary:  rgba(124, 238, 178, 0.14);
+  --dsw-alias-state-warn-primary:  #ffd68f;
+  --dsw-alias-state-warn-label:    #ffd68f;
+  --dsw-alias-state-warn-tertiary: rgba(255, 214, 143, 0.14);
+  --dsw-alias-state-error-primary:   #ffa49d;
+  --dsw-alias-state-error-secondary: #ff8f87;
+
+  --dsw-alias-toast-bg:   rgba(58, 59, 64, 0.94);
+  --dsw-alias-toast-label:#f2f2f3;
+  --dsw-alias-tooltip-bg: rgba(10, 10, 12, 0.94);
+  --dsw-alias-tooltip-key-bg: rgba(255, 255, 255, 0.14);
+  --dsw-alias-menu-group-header-fill: rgba(255, 255, 255, 0.04);
+  --dsw-alias-menu-icon: var(--kg-faint);
+  --dsw-alias-settings-card-fill: rgba(255, 255, 255, 0.06);
+  --dsw-alias-settings-card-stroke: rgba(255, 255, 255, 0.1);
+  --dsw-alias-turn-trigger-bg: rgba(255, 255, 255, 0.07);
+  --dsw-alias-turn-trigger-bg-hover: rgba(255, 255, 255, 0.12);
+
+  --dsw-alias-code-diff-added:   rgba(124, 238, 178, 0.12);
+  --dsw-alias-code-diff-deleted: rgba(255, 164, 157, 0.12);
+  --dsw-alias-file-diff-added-bg:   rgba(124, 238, 178, 0.1);
+  --dsw-alias-file-diff-deleted-bg: rgba(255, 164, 157, 0.1);
+  --dsw-alias-file-diff-added-gutter:   rgba(124, 238, 178, 0.2);
+  --dsw-alias-file-diff-deleted-gutter: rgba(255, 164, 157, 0.2);
+  --dsw-alias-file-diff-added-marker:   #7ceeb2;
+  --dsw-alias-file-diff-deleted-marker: #ffa49d;
+
+  --dsw-specific-bubble:           rgba(255, 255, 255, 0.08);
+  --dsw-specific-bubble-highlight: rgba(255, 255, 255, 0.14);
+  --dsw-specific-input-major:      rgba(255, 255, 255, 0.06);
+  --dsw-specific-login-input:      rgba(255, 255, 255, 0.07);
+  --dsw-specific-menu:             rgba(36, 37, 41, 0.94);
+  --dsw-specific-selector:         rgba(255, 255, 255, 0.07);
+  --dsw-specific-tip:              rgba(255, 255, 255, 0.07);
+  --dsw-specific-sidebar-fill:               rgba(255, 255, 255, 0.05);
+  --dsw-specific-sidebar-nav-item-hover:     rgba(255, 255, 255, 0.06);
+  --dsw-specific-sidebar-nav-item-active:    rgba(255, 255, 255, 0.1);
+  --dsw-specific-sidebar-nav-item-active-accent: rgba(255, 255, 255, 0.14);
+
+  --dsw-elevation-stroke: inset 0 0 0 1px var(--kg-rim), 0 0 0 0.5px var(--kg-outline);
+  --dsw-elevation-stroke-color: var(--kg-hair);
+  --dsw-elevation-soft:  inset 0 0 0 1px var(--kg-rim), 0 0 0 0.5px var(--kg-outline), var(--kg-shadow-2);
+  --dsw-elevation-panel: inset 0 1px 0 var(--kg-rim-top), inset 0 0 0 1px var(--kg-rim), 0 0 0 0.5px var(--kg-outline), var(--kg-shadow-2);
+  --dsw-elevation-prominent: inset 0 1px 0 var(--kg-rim-top), inset 0 0 0 1px var(--kg-rim), 0 0 0 0.5px var(--kg-outline), var(--kg-shadow-3);
+  --dsw-shadow-lv1: var(--kg-shadow-1);
+  --dsw-shadow-lv1-blur: var(--kg-shadow-1);
+  --dsw-shadow-lv2: var(--kg-shadow-2);
+  --dsw-shadow-lv3: var(--kg-shadow-3);
+  --dsw-shadow-lv4: var(--kg-shadow-3);
+  --dsw-mask-blur: blur(3px);
+  --dsw-hovercard-bg: rgba(36, 37, 41, 0.92);
+  --dsw-focus-ring-color: rgba(242, 242, 243, 0.55);
 }
 
 /* --------------------------------------------------------------------------
-   3. 结构层 — 零圆角
-   组件 CSS 用 class 特指度写 border-radius,只能靠 !important 统一压平。
-   这是本体系的绝对规则:2000-2002 是直角。
+   3. 环境层 — 石色雾面
+   玻璃必须有东西可透，但透上来的只该是一点冷暖，不是颜色本身。
+   body 铺一层石色 → 雾蓝的线性底 + 三团低透明色斑 + 中性暗角 + 细噪点
+   （噪点压掉大面积渐变的色带，也让「磨砂」在纯色区读得出质感）。
+   固定定位，滚动时不动。
    -------------------------------------------------------------------------- */
-html body *,
-html body *::before,
-html body *::after {
+html body {
+  background-color: #e3e1dc;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E"),
+    radial-gradient(140% 122% at 50% 30%, rgba(20, 24, 30, 0) 50%, rgba(20, 24, 30, 0.12) 100%),
+    radial-gradient(52rem 40rem at 6% -12%, rgba(247, 240, 229, 0.9) 0%, rgba(247, 240, 229, 0) 62%),
+    radial-gradient(36rem 28rem at 104% 0%, rgba(214, 216, 222, 0.8) 0%, rgba(214, 216, 222, 0) 56%),
+    radial-gradient(44rem 34rem at 96% 104%, rgba(184, 198, 214, 0.75) 0%, rgba(184, 198, 214, 0) 60%),
+    linear-gradient(165deg, #ebe8e2 0%, #dfe1e4 52%, #cfd6de 100%);
+  background-size: 140px 140px, auto, auto, auto, auto, auto;
+  background-repeat: repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat;
+  background-attachment: fixed;
+  color: var(--kg-ink);
+  font-family: var(--dsw-font-family);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* 夜间桌面：纯黑带一点灰，不带色相，也不带任何纹理。
+   上一版在这里叠了一块 140px 平铺噪点、三团白色微亮和一条线性渐变。问题是
+   这些大面积渐变在 8bit 上只有几个色阶的落差，浏览器只能靠抖动补足 —— 抖出
+   来的就是一层 1px 的细网，放大/缩放后看在眼里就是摩尔纹；平铺噪点本身又是
+   周期图案，两样叠在一起更明显。现在桌面只剩一个纯色：没有渐变就没有抖动，
+   没有平铺就没有周期。层次交给玻璃自己那层白和 1px 亮边。
+   #050505 是「黑，但比 #000 多一点点灰」。 */
+html body[data-ds-dark-theme] {
+  background-color: #050505;
+  background-image: none;
+  background-size: auto;
+  background-repeat: repeat;
+  background-attachment: scroll;
+  color: var(--kg-ink);
+}
+
+/* --------------------------------------------------------------------------
+   4. 结构层 — 三层玻璃
+   骨架 = 侧栏玻璃 / 画布玻璃 / 雾面桌面。整扇窗四周留 14px 生底：玻璃要有
+   边界才读得出是玻璃，不然只是一块半透明的板。侧栏更透（让桌面的冷暖透上来），
+   画布带一块偏白的「清晰区」（保证正文对比度）。
+   -------------------------------------------------------------------------- */
+html body .pI_x6G_frame,
+html body [data-platform="darwin"] .pI_x6G_frame {
+  background-color: transparent !important;
+  background-image: none !important;
+  /* 四周留 --kg-window-inset 宽的生底（现在是 0，应用贴满窗口）。
+     注意这里只是**留边**，圆角归各面板自己（见下面三块）：
+     整扇统一裁切会把贴在角上的东西切掉 —— 窄窗口下面板的
+     「开始」页签本来就被应用摆在 x=-13（压在侧栏上），裁切会把它咬掉一半。 */
+  padding: var(--kg-window-inset) !important;
+  box-sizing: border-box !important;
+}
+
+html body .pI_x6G_sidebarCol,
+html body [data-platform="darwin"] .pI_x6G_sidebarCol {
+  background-color: var(--kg-tint) !important;
+  background-image: linear-gradient(
+    180deg,
+    var(--kg-side-1) 0%,
+    var(--kg-side-2) 46%,
+    var(--kg-side-3) 100%
+  ) !important;
+  border-right: 0 !important;
+  border-radius: var(--kg-window-radius) 0 0 var(--kg-window-radius) !important;
+  box-shadow:
+    inset -1px 0 0 var(--kg-rim),
+    inset 1px 1px 0 var(--kg-rim-top),
+    var(--kg-shadow-window) !important;
+  -webkit-backdrop-filter: blur(var(--kg-blur)) saturate(var(--kg-sat)) !important;
+  backdrop-filter: blur(var(--kg-blur)) saturate(var(--kg-sat)) !important;
+}
+
+html body .pI_x6G_centerCol,
+html body [data-platform="darwin"] .pI_x6G_centerCol {
+  background-color: var(--kg-tint-canvas) !important;
+  background-image:
+    radial-gradient(120% 90% at 50% 34%, var(--kg-veil-1) 0%, var(--kg-veil-2) 62%, var(--kg-veil-3) 100%),
+    linear-gradient(185deg, var(--kg-veil-top) 0%, rgba(255, 255, 255, 0) 60%) !important;
+  border-left: 0 !important;
+  border-radius: 0 var(--kg-window-radius) var(--kg-window-radius) 0 !important;
+  box-shadow:
+    inset 1px 0 0 var(--kg-rim),
+    inset 0 1px 0 var(--kg-rim),
+    inset -1px -1px 0 var(--kg-rim),
+    var(--kg-shadow-window) !important;
+  -webkit-backdrop-filter: blur(34px) saturate(var(--kg-sat)) !important;
+  backdrop-filter: blur(34px) saturate(var(--kg-sat)) !important;
+}
+
+/* 右栏装的也是内容（文件/终端/面板），所以用画布那块玻璃，不用侧栏那层薄玻璃 ——
+   否则同一个窗口里左右两种「玻璃浓度」，看着像两种材质。 */
+html body .pI_x6G_rightbarCol,
+html body [data-platform="darwin"] .pI_x6G_rightbarCol {
+  background-color: var(--kg-tint-canvas) !important;
+  background-image:
+    radial-gradient(120% 90% at 50% 34%, var(--kg-veil-1) 0%, var(--kg-veil-2) 62%, var(--kg-veil-3) 100%),
+    linear-gradient(185deg, var(--kg-veil-top) 0%, rgba(255, 255, 255, 0) 60%) !important;
+  border-radius: 0 var(--kg-window-radius) var(--kg-window-radius) 0 !important;
+  box-shadow:
+    inset 1px 0 0 var(--kg-rim),
+    inset 0 1px 0 var(--kg-rim),
+    inset -1px -1px 0 var(--kg-rim) !important;
+  -webkit-backdrop-filter: blur(34px) saturate(var(--kg-sat)) !important;
+  backdrop-filter: blur(34px) saturate(var(--kg-sat)) !important;
+}
+
+/* 右栏打开时，画布不再是右边缘 —— 把右侧圆角交还给右栏，
+   否则两块接缝的上下角会各露出一个生底缺口。 */
+html body .pI_x6G_frame:not([style*="minmax(0px, 0px)"]) .pI_x6G_centerCol {
   border-radius: 0 !important;
 }
 
-/* --------------------------------------------------------------------------
-   4. 结构层 — 斜角原语
-   凸起:上/左亮,下/右暗;凹陷反向。box-shadow 在这里是零模糊 inset 硬边线,
-   不是投影。
+/* 折叠后的窄条也是玻璃，只是更白一点，否则图标直接坐在桌面色上 */
+html body [data-sidebar-collapsed] .pI_x6G_sidebarCol {
+  background-color: var(--kg-tint-canvas) !important;
+}
 
-   原则:只强制几何(边框宽度/样式/四色/内斜角线),不强制 background-color。
-   组件 CSS 用 class 特指度(0,1,0)压过 `html body button`(0,0,3),所以几何
-   必须带 !important;但底色留给 token 层解析 —— 这样主操作键保住自己的品牌
-   填色,透明图标键则透出所在面色,不会被刷成一片同色。
+/* 底部状态轨 = 这扇窗的下沿 */
+html body .pI_x6G_bottomRow {
+  background-color: var(--kg-rail-base) !important;
+  background-image: linear-gradient(180deg, var(--kg-rail-1) 0%, var(--kg-rail-2) 100%) !important;
+  border-radius: 0 0 var(--kg-window-radius) var(--kg-window-radius) !important;
+  box-shadow:
+    inset 0 1px 0 var(--kg-rim),
+    inset 0 0 0 1px var(--kg-rim) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(var(--kg-sat)) !important;
+  backdrop-filter: blur(22px) saturate(var(--kg-sat)) !important;
+}
+
+/* 「面板 / 新标签页」是 off-canvas 覆盖层（P3OORG_panel）。
+   它有两种摆法，别一把梭：
+     · 有右栏时：它就在右栏里（已经被列宽对齐了），只需要把右侧圆角接过来、
+       别再拿自己的实色底糊住右栏的玻璃；
+     · 全屏时（frame 带 data-rightbar-fullscreen）：应用给它内联 width:100vw，
+       但它的包含块是右栏那一列（P3OORG_panel 本身就是 position:absolute;
+       right:0），不是窗口。于是 inset 的 left 从右栏左缘量起，再叠上 100vw 的
+       宽度，面板就被推到右栏右缘之外：内容仍按整窗宽度居中，右侧却被窗口裁掉
+       ——「开始」页的卡片只剩左边一截、罗盘整个跑到窗外，就是这么来的。
+       修法：不动 right:0（右栏右缘 = 窗口右缘 - 生底），只用 width 把面板收回
+       整窗的生底以内，left 交给 auto。
+   应用给它铺了一层实色底 rgb(251,241,249)，那是它「不像玻璃」的主因。 */
+html body [class*="P3OORG_panel"] {
+  border: 0 !important;
+  border-radius: 0 var(--kg-window-radius) var(--kg-window-radius) 0 !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+/* 全屏面板：内联的 100vw 要压过（否则右侧多出两个生底导致横向溢出），
+   宽度改成整窗减两侧生底，落位正好是「整窗收进 14px、四角自己圆」。
+   它盖住的是整窗内容（不是桌面）：半透明会把身后的对话原样透成一层水印，
+   而且父级右栏自己也带 backdrop-filter，面板自己的背景模糊在这里不生效，
+   透出来还是清晰的 —— 所以底色用实色，玻璃感交给四周亮边、投影和白纱。 */
+html body .pI_x6G_frame[data-rightbar-fullscreen] [data-sidebar-right-panel] {
+  inset: 0 0 0 auto !important;
+  width: calc(100vw - 2 * var(--kg-window-inset)) !important;
+  border-radius: var(--kg-window-radius) !important;
+  background-color: var(--kg-tint-opaque) !important;
+  background-image:
+    radial-gradient(120% 90% at 50% 34%, var(--kg-veil-1) 0%, var(--kg-veil-2) 62%, var(--kg-veil-3) 100%),
+    linear-gradient(185deg, var(--kg-veil-top) 0%, rgba(255, 255, 255, 0) 60%) !important;
+  box-shadow:
+    inset 0 1px 0 var(--kg-rim),
+    inset 0 0 0 1px var(--kg-rim),
+    var(--kg-shadow-2) !important;
+  overflow: hidden;
+  -webkit-backdrop-filter: blur(34px) saturate(var(--kg-sat));
+  backdrop-filter: blur(34px) saturate(var(--kg-sat));
+}
+/* 夜间所有大表面同样只留纯色。
+   侧栏 / 画布 / 右栏 / 底部状态轨 / 页头 / 输入卡片的渐变都只有几个色阶的
+   落差（0.08 → 0.03 → 0 这种），在 8bit 上不够分，只能靠抖动补，抖动就是
+   那层细网。这里统一抹平，玻璃浓度仍由各自的 background-color 决定，区别
+   只靠 1px 亮边、投影和玻璃自己的白 —— 不再靠大面积渐变。 */
+html body[data-ds-dark-theme] .pI_x6G_sidebarCol,
+html body[data-ds-dark-theme] .pI_x6G_centerCol,
+html body[data-ds-dark-theme] .pI_x6G_rightbarCol,
+html body[data-ds-dark-theme] .pI_x6G_bottomRow,
+html body[data-ds-dark-theme] .wSkVaW_header,
+html body[data-ds-dark-theme] [class*="uV2eYG_card"],
+html body[data-ds-dark-theme] .pI_x6G_frame[data-rightbar-fullscreen] [data-sidebar-right-panel] {
+  background-image: none !important;
+}
+
+html body [class*="P3OORG_panelBody"],
+html body [class*="_tabHost"] {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+/* 页签条原本贴着窗口左边（x≈+1），收进圆角后会被咬掉一截 */
+html body [class*="_tabHostHeader"] {
+  padding-left: 12px !important;
+  padding-right: 12px !important;
+}
+
+/* 会话视图自己不涂底色 —— 画布玻璃已经在那儿了 */
+html body .wSkVaW_root,
+html body .wSkVaW_body,
+html body .wSkVaW_scrollBody,
+html body .EvIC1a_root,
+html body .EvIC1a_frame,
+html body .pXSMma_root,
+html body .hHd-Xa_root,
+html body [data-platform="darwin"] .hHd-Xa_root,
+html body .bhn1Oq_root,
+html body .bhn1Oq_listArea {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* 页头：不描边，只用一层向内淡出的光把标题和内容分开 */
+html body .wSkVaW_header {
+  background-image: linear-gradient(180deg, var(--kg-veil-top) 0%, rgba(255, 255, 255, 0) 100%) !important;
+  box-shadow: none !important;
+}
+html body .wSkVaW_header::after {
+  background: linear-gradient(90deg, var(--kg-hair-clear) 0%, var(--kg-hair) 22%, var(--kg-hair) 78%, var(--kg-hair-clear) 100%) !important;
+}
+
+/* --------------------------------------------------------------------------
+   5. 玻璃原语 — 圆角 / 亮边 / 悬停
+   组件 CSS 用 class 特指度写几何，所以几何必须 !important；颜色交给令牌。
    -------------------------------------------------------------------------- */
 html body button,
 html body [role="button"],
 html body summary {
-  box-sizing: border-box !important;
-  border-width: 2px !important;
-  border-style: solid !important;
-  border-color: var(--k-bev-hi) var(--k-bev-sh) var(--k-bev-sh) var(--k-bev-hi) !important;
-  box-shadow: inset 1px 1px 0 var(--k-bev-lt), inset -1px -1px 0 var(--k-bev-dk) !important;
+  border-width: 0 !important;
+  border-style: none !important;
+  box-shadow: none !important;
+  font-family: var(--dsw-font-family);
+  transition:
+    background-color var(--kg-t), box-shadow var(--kg-t), color var(--kg-t), transform var(--kg-t);
+}
+
+html body button:active:not(:disabled),
+html body [role="button"]:active:not([aria-disabled="true"]) {
+  transform: translateY(0.5px) scale(0.995);
+}
+
+/* disabled 却又写 aria-disabled="false"，是应用在说「点不了，但不是禁用态」——
+   Agent 预设里当前选中的那张卡（aria-pressed="true"）就是这样。它不压暗，
+   否则选中的那一项看着像不可用。 */
+html body button:disabled:not([aria-disabled="false"]),
+html body button[aria-disabled="true"],
+html body [role="button"][aria-disabled="true"] {
+  opacity: 0.45;
+  box-shadow: none !important;
+}
+
+/* 上面把所有按钮的描边都去掉了，可 primitives 的「描边按钮」（variant outline，插件市场的
+   「安装」、各处的次要操作）就靠那一圈 0.5px 线认出是按钮，去掉后只剩一行字。
+   给它补一圈内侧发丝线，和玻璃面的亮边同一个画法。 */
+html body [class*="_outline_1rv3m"] {
+  box-shadow: inset 0 0 0 1px var(--kg-hair-strong) !important;
+}
+html body [class*="_outline_1rv3m"]:hover:not(:disabled) {
+  background-color: var(--kg-surface) !important;
+}
+/* 禁用时（如插件市场里不兼容的「安装」）上面的禁用规则会把它也清掉，线照样留着、跟着整体变淡 */
+html body button[class*="_outline_1rv3m"]:disabled:not([aria-disabled="false"]),
+html body button[class*="_outline_1rv3m"][aria-disabled="true"] {
+  box-shadow: inset 0 0 0 1px var(--kg-hair-strong) !important;
+}
+
+html body [class*="_iconButton"]:hover,
+html body [class*="_searchButton"]:hover,
+html body [class*="_toolBar"] button:hover {
+  background-color: var(--kg-surface) !important;
+  box-shadow: inset 0 0 0 1px var(--kg-rim) !important;
+}
+
+/* 输入类控件：**不要自己画框**。
+   应用的模型是「外壳画框、input 透明」—— 搜索框就是 searchField(带边框)
+   > span.wrap > input(background: transparent; border: none)。我给 input
+   加底色 + 内描边，就变成框里还有一个框。所以这里把 input 还原成透明的，
+   边框、圆角、聚焦高亮都交给外壳。 */
+html body input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html body textarea,
+html body select,
+html body [contenteditable="true"] {
+  border-width: 0 !important;
+  border-style: none !important;
+  border-radius: var(--kg-r-sm) !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  color: var(--kg-ink);
   font-family: var(--dsw-font-family);
 }
-
-/* 按下感:斜角翻转为凹陷 */
-html body button:active,
-html body [role="button"]:active,
-html body summary:active,
-html body details[open] > summary {
-  border-color: var(--k-bev-dk) var(--k-bev-hi) var(--k-bev-hi) var(--k-bev-dk) !important;
-  box-shadow: inset 1px 1px 0 var(--k-bev-sh), inset -1px -1px 0 var(--k-bev-lt) !important;
+html body input::placeholder,
+html body textarea::placeholder {
+  color: var(--kg-dim);
 }
 
-/* 禁用态:不给斜角,平贴 */
-html body button:disabled,
-html body button[aria-disabled="true"] {
-  border-color: var(--k-bev-dk) !important;
+html body :focus-visible {
+  outline: 2px solid var(--dsw-focus-ring-color) !important;
+  outline-offset: 2px !important;
+}
+
+html body input[type="checkbox"],
+html body input[type="radio"] {
+  accent-color: var(--kg-accent);
+}
+
+/* --------------------------------------------------------------------------
+   6. 侧栏 — 导航、会话树、底部
+   -------------------------------------------------------------------------- */
+/* 新会话 = 全站仅有的两处强调色面之一：实色石墨，不渐变、不发光 */
+html body .hHd-Xa_newSession,
+html body [data-platform="darwin"] .hHd-Xa_newSession {
+  background-color: var(--kg-accent) !important;
+  background-image: none !important;
+  border-radius: var(--kg-r-sm) !important;
+  color: var(--kg-on-accent) !important;
+  box-shadow: var(--kg-shadow-1) !important;
+  transition: background-color var(--kg-t), box-shadow var(--kg-t);
+}
+html body .hHd-Xa_newSession:hover,
+html body [data-platform="darwin"] .hHd-Xa_newSession:hover {
+  background-color: var(--kg-accent-hover) !important;
+  background-image: none !important;
+  box-shadow: var(--kg-shadow-1) !important;
+}
+html body .hHd-Xa_newSessionLabel,
+html body .hHd-Xa_newSessionLabelMask {
+  color: var(--kg-on-accent) !important;
+}
+/* 悬停时右侧的 ⌥⌘N：不画底片，只用按钮文字色降透明度，像 macOS 菜单里的快捷键。
+   里面的 _keys / kbd 是共用的快捷键组件，自带三级色，外层的颜色传不进去，
+   得在这个按钮里单独让它们继承 —— 别的地方（菜单、提示）的快捷键不受影响。 */
+html body .hHd-Xa_newSessionShortcut {
+  background-color: transparent !important;
+  color: var(--kg-on-accent-dim) !important;
+  padding: 0 !important;
+  letter-spacing: 0.04em;
+}
+html body .hHd-Xa_newSessionShortcut [class*="_keys"],
+html body .hHd-Xa_newSessionShortcut kbd {
+  color: inherit !important;
+}
+
+/* 插件 / 自动化任务这些大按钮 = 一层浅玻璃。
+   _seat 系列里 seatIcon / seatLabel / seatChevron 是子节点，:hover 会
+   连它们一起点亮（同一类「子节点命中」的坑），所以把它们排除掉。 */
+html body [class*="_panelRow"],
+html body [class*="_seat"]:not([class*="_seatIcon"]):not([class*="_seatLabel"]):not([class*="_seatChevron"]) {
+  border-radius: var(--kg-r-sm) !important;
+  transition: background-color var(--kg-t), box-shadow var(--kg-t);
+}
+html body [class*="_panelRow"]:hover,
+html body [class*="_seat"]:not([class*="_seatIcon"]):not([class*="_seatLabel"]):not([class*="_seatChevron"]):hover {
+  background-color: var(--kg-surface) !important;
+  box-shadow: inset 0 0 0 1px var(--kg-rim) !important;
+}
+
+html body .hHd-Xa_brandName,
+html body .hHd-Xa_brandIdentity {
+  font-family: var(--kg-font-display);
+  letter-spacing: 0;
+}
+
+/* 分组标题：小字、加宽字距 */
+html body [class*="_sectionLabel"],
+html body [class*="_sectionHeader"] {
+  color: var(--kg-faint) !important;
+  letter-spacing: 0.06em;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  background-image: none !important;
+}
+
+/* 会话行：圆角片，选中 = 一层淡灰实底 + 发丝线，不加色条 */
+html body [class*="_sessionRow"],
+html body [class*="_projectRow"] {
+  border-radius: var(--kg-r-xs) !important;
+  transition: background-color var(--kg-t), box-shadow var(--kg-t), color var(--kg-t);
+}
+html body [class*="_sessionRow"]:hover,
+html body [class*="_projectRow"]:hover {
+  background-color: var(--kg-surface) !important;
+  box-shadow: inset 0 0 0 1px var(--kg-rim) !important;
+}
+html body [class*="YDXeBa_selected"],
+html body [class*="_sessionRow"][aria-selected="true"],
+html body [class*="_sessionRow"][data-selected] {
+  background-color: var(--kg-select) !important;
+  background-image: none !important;
+  box-shadow: inset 0 0 0 1px var(--kg-hair) !important;
+  color: var(--kg-ink) !important;
+}
+
+/* 侧栏列表底部渐隐：遮罩列表，别再盖一条白条 */
+html body [class*="bhn1Oq_fade"] {
+  display: none !important;
+}
+html body [class*="bhn1Oq_treeBody"] {
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 90%, rgba(0, 0, 0, 0) 100%);
+  mask-image: linear-gradient(180deg, #000 0%, #000 90%, rgba(0, 0, 0, 0) 100%);
+}
+
+/* --------------------------------------------------------------------------
+   6b. 顶栏 — 收起侧栏后不留左边那条图标栏（学 Claude Code）
+   lib/topbar.js 给 html 打上 data-windows-titlebar —— 借 dsh 的 Windows 标题栏
+   模式：收起列宽 56 → 0，开关和新会话固定到左上角，插件 / 自动化 / 工作区 /
+   余额 / 设置收起时隐藏 —— 同时打上 data-kg-topbar。下面只认 data-kg-topbar：
+   真的 Windows 桌面版有自己的标题栏，这一节一条都不生效。
+
+   顶栏不是另起一行，就是会话页头那一行。左上角不放新会话（⌥⌘N、侧栏里的主按钮
+   都还在），用鼠标时连侧栏开关也没有，标题就从页头自己的内边距开始；触屏上留着
+   开关，标题让出它的宽度（--dsh-frame-leading-clearance，页头的标题行本来就读它）。
+
+   定位参照始终是侧栏列（contain: layout）：展开时它 280 宽，收起时 0 宽，
+   左上角都在窗口左上角（再加上留边，现在是 0），所以按钮两种状态落在屏幕
+   同一处，展开收起不跳。
+
+   用鼠标时没有侧栏开关：碰窗口左边缘，侧栏浮出盖在正文上（data-kg-side，
+   lib/sidebar-peek.js），⌥⌘B 钉住 / 收起。触屏没有悬停，开关照常显示。
+   -------------------------------------------------------------------------- */
+html[data-kg-topbar] body {
+  --kg-topbar-btn: 32px;
+  /* 相对侧栏列左上角的偏移。横向 12px = 侧栏内边距，展开时开关和「新会话」
+     主按钮左缘对齐；纵向 9px 让按钮中心落在页头标题行的中线上
+     （页头上内边距 10px + 标题行 30px，中线在 25px）。 */
+  --kg-topbar-x: 12px;
+  --kg-topbar-y: 9px;
+  --kg-topbar-gap: 4px;
+  /* 左上角按钮占掉的那一截（含右边留给标题的 12px）：触屏上只有开关一颗；
+     用鼠标时开关也藏起来，这一截归零 */
+  --kg-topbar-lead: calc(var(--kg-topbar-x) + var(--kg-topbar-btn) + 12px);
+}
+@media (hover: hover) and (pointer: fine) {
+  html[data-kg-topbar] body {
+    --kg-topbar-lead: 0px;
+  }
+  html[data-kg-topbar] body .hHd-Xa_toggle {
+    display: none !important;
+  }
+  /* 展开（钉住或浮出）时侧栏顶上那一行本来是给开关的：整行去掉，「新会话」
+     主按钮顶上来，正好和页头标题行同一条中线 */
+  html[data-kg-topbar] body .hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_logoRow {
+    display: none !important;
+  }
+  html[data-kg-topbar] body .hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_newSession {
+    margin-top: 0 !important;
+  }
+}
+
+/* Windows 桌面版在所有列上方画的那条标题栏色带：这里没有单独的标题栏。
+   这个伪元素改作左边缘的提示条：指针靠近左边缘（data-kg-edge）时贴着窗口
+   左边亮出一道竖短条，告诉你从这里能拉出侧栏。 */
+html[data-kg-topbar] body .pI_x6G_frame::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: auto !important;
+  left: calc(var(--kg-window-inset) + 3px) !important;
+  top: calc(50% - 28px) !important;
+  width: 4px !important;
+  height: 56px !important;
+  border-radius: 2px;
+  background: var(--kg-hair-strong) !important;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 4;
+  transition: opacity var(--kg-t);
+  -webkit-app-region: no-drag;
+}
+html[data-kg-topbar][data-kg-edge] body .pI_x6G_frame::before {
+  opacity: 1;
+}
+
+html[data-kg-topbar] body .pI_x6G_sidebarCol {
+  contain: layout;
+}
+
+/* 收起：列宽 0，只剩固定定位的开关（只在触屏上显示）。不放开 overflow 它会被这条 0 宽的
+   列裁掉；z-index 让它压在画布玻璃上面。收起是一步到位的（见下面「侧栏只动 transform」），
+   玻璃和投影直接去掉，否则 0 宽的列还会在画布左缘留一道投影细线。 */
+html[data-kg-topbar] body .pI_x6G_frame[data-sidebar-collapsed] .pI_x6G_sidebarCol {
+  overflow: visible !important;
+  z-index: 2;
+  background: none !important;
   box-shadow: none !important;
-  color: #996699;
 }
 
-/* ── 标签页:不是凸起按钮 ──────────────────────────────────────────────
-   Win2000 里 tab 是独立控件,不是 push button。原生组件是「无边框文字 +
-   底部 11px 留白给一根 2px 下划线」,一旦套上通用凸起斜角,那 27px 高的
-   空盒子就整个暴露出来 —— 这正是「框有点大」的来源。
+/* 全屏面板盖住整扇窗，左上角是它自己的页签条：左上角的按钮让它盖住，不浮在页签上。
+   宽度再扣掉展开的侧栏（布局只扣了侧栏宽，没扣两侧生底），免得压到侧栏上。 */
+html[data-kg-topbar] body .pI_x6G_frame[data-rightbar-fullscreen] .pI_x6G_sidebarCol {
+  z-index: auto;
+}
+html[data-kg-topbar] body .pI_x6G_frame[data-rightbar-fullscreen] [data-sidebar-right-panel] {
+  max-width: calc(100vw - 2 * var(--kg-window-inset) - var(--dsh-windows-sidebar-width, 0px)) !important;
+}
+html[data-kg-topbar] body .pI_x6G_frame[data-rightbar-fullscreen]:not([data-sidebar-collapsed]) [data-sidebar-right-panel] {
+  border-radius: 0 var(--kg-window-radius) var(--kg-window-radius) 0 !important;
+}
 
-   改成真·标签条:未选中平贴且下沉一格,选中的凸起、加粗、底边取面色开口
-   与下方面板连通。那根 2px 底缘强调条是 Material 语汇(skill 否决项),
-   去掉,选中态改由 tab 形状本身表达。
+/* 收起后（或侧栏盖在正文上时）画布就是整扇窗：四角都圆；右栏打开时右侧两个角交给右栏 */
+html[data-kg-topbar] body .pI_x6G_frame[data-sidebar-collapsed] .pI_x6G_centerCol,
+html[data-kg-topbar][data-kg-side~="overlay"] body .pI_x6G_centerCol {
+  border-radius: var(--kg-window-radius) !important;
+}
+html[data-kg-topbar] body .pI_x6G_frame[data-sidebar-collapsed]:not([style*="minmax(0px, 0px)"]) .pI_x6G_centerCol,
+html[data-kg-topbar][data-kg-side~="overlay"] body .pI_x6G_frame:not([style*="minmax(0px, 0px)"]) .pI_x6G_centerCol {
+  border-radius: var(--kg-window-radius) 0 0 var(--kg-window-radius) !important;
+}
 
-   不加标签条基线。`.wSkVaW_tabs` 容器是整个对话面板那么宽(实测 1112px),
-   而两个标签才占约 100px —— 给它 border-bottom 会画成一条贯穿全宽的黑线,
-   比原来那根 2px 强调条更抢眼(实测栽过一次)。标签自己的边框已经足够
-   表达标签形状。 */
+/* 页头标题给左上角的按钮让位（没有按钮时是 0）。侧栏盖在正文上时正文不动，标题也不能
+   跟着侧栏展开挪回去。钉住时也写一个值：这个变量会继承（见下一段），用鼠标时三种状态
+   都是 0，就一直不变。 */
+html[data-kg-topbar] body .pI_x6G_frame {
+  --dsh-frame-leading-clearance: 0px;
+}
+html[data-kg-topbar] body .pI_x6G_frame[data-sidebar-collapsed],
+html[data-kg-topbar][data-kg-side~="overlay"] body .pI_x6G_frame {
+  --dsh-frame-leading-clearance: var(--kg-topbar-lead);
+}
+
+/* 侧栏只动 transform（lib/sidebar-peek.js，状态在 html 的 data-kg-side 上）。
+   正文不跟着动画：要么原地不动，要么等侧栏停下来才一次让开或铺满。画布宽度变一次，
+   长对话在 WebKit 里要重排 + 重画 60~90ms，放在动画里每一帧都掉，放在动画外面只是一下。
+
+   侧栏一展开、收起，布局就改几个会继承的变量。WebKit 里祖先上的继承变量一变，底下
+   每个节点都要重算样式，长对话七千多个节点，每次 34ms 起：
+   - --dsh-windows-sidebar-width：布局写在 frame 上，只有右栏的全屏面板读它。在画布
+     和侧栏两列上钉成常量，变化就停在这两列，不往整段对话里传；右栏照常继承。
+   - --dsh-windows-menu-start：ui-sidebar 靠 html:has([data-sidebar-collapsed]) 写在
+     根上，只给桌面版的原生菜单用，浏览器里没人读。钉死。
+   - --dsh-frame-leading-clearance：见上一段。 */
+html[data-kg-topbar] {
+  --dsh-windows-menu-start: 84px !important;
+}
+html[data-kg-topbar] body .pI_x6G_centerCol,
+html[data-kg-topbar] body .pI_x6G_sidebarCol {
+  --dsh-windows-sidebar-width: 0px;
+}
+
+/* 布局自己的列宽过渡关掉：列宽每变一帧，画布就要重排一次。展开、收起时列宽一步到位。 */
+html[data-kg-topbar] body .pI_x6G_frame[data-animating],
+html[data-kg-topbar] body .pI_x6G_frame[data-animating] .pI_x6G_handle {
+  transition: none !important;
+}
+
+/* overlay：画布横跨侧栏那一列和自己那一列，盒子宽度不随侧栏变，正文不重排；侧栏压在
+   它上面。三列都得显式摆，否则自动排布会把右栏挤到下一行。 */
+html[data-kg-topbar][data-kg-side~="overlay"] body .pI_x6G_sidebarCol {
+  grid-column: 1 / 2 !important;
+  grid-row: 1 !important;
+  z-index: 3;
+}
+html[data-kg-topbar][data-kg-side~="overlay"] body .pI_x6G_centerCol {
+  grid-column: 1 / 3 !important;
+  grid-row: 1 !important;
+}
+html[data-kg-topbar][data-kg-side~="overlay"] body .pI_x6G_rightbarCol {
+  grid-column: 3 / 4 !important;
+  grid-row: 1 !important;
+}
+
+/* card：边缘浮出的侧栏是一块单独浮起的玻璃卡片，离窗口边 8px、四角圆、一团更重的投影
+   把它和底下的正文分开。窗口本身贴边、没有圆角，只有它浮着。宽度跟着侧栏内容
+   （justify-self: start），留边往列外伸，不挤内容。 */
+html[data-kg-topbar][data-kg-side~="card"] body .pI_x6G_sidebarCol {
+  justify-self: start;
+  margin: 8px !important;
+  border-radius: var(--kg-r-lg) !important;
+  box-shadow:
+    inset -1px 0 0 var(--kg-rim),
+    inset 1px 1px 0 var(--kg-rim-top),
+    0 0 0 0.5px var(--kg-outline),
+    var(--kg-shadow-3) !important;
+}
+
+/* 动的只有 transform。hidden 不带过渡（摆好起点），摘掉它就滑进来（先快后慢）；leaving
+   带一条更快、先慢后快的过渡滑走。挪出去的距离连投影一起算上。 */
+html[data-kg-topbar] body .pI_x6G_sidebarCol {
+  transition: transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+html[data-kg-topbar][data-kg-side~="hidden"] body .pI_x6G_sidebarCol,
+html[data-kg-topbar][data-kg-side~="leaving"] body .pI_x6G_sidebarCol {
+  transform: translateX(calc(-100% - 56px));
+}
+/* 收起后摘掉 hidden 也不带过渡：不然触屏上那颗开关会从窗口外再滑回来 */
+html[data-kg-topbar][data-kg-side~="hidden"] body .pI_x6G_sidebarCol,
+html[data-kg-topbar] body .pI_x6G_frame[data-sidebar-collapsed] .pI_x6G_sidebarCol {
+  transition: none;
+}
+html[data-kg-topbar][data-kg-side~="leaving"] body .pI_x6G_sidebarCol {
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
+}
+
+/* 开关：两种状态都是顶栏最左边那颗按钮。只用面板图标，鲸鱼不再出现 */
+html[data-kg-topbar] body .hHd-Xa_toggle {
+  position: fixed !important;
+  top: var(--kg-topbar-y) !important;
+  left: var(--kg-topbar-x) !important;
+  width: var(--kg-topbar-btn) !important;
+  height: var(--kg-topbar-btn) !important;
+  border-radius: var(--kg-r-xs) !important;
+  color: var(--kg-muted) !important;
+}
+html[data-kg-topbar] body .hHd-Xa_toggle .hHd-Xa_railMark {
+  display: none !important;
+}
+html[data-kg-topbar] body .hHd-Xa_toggle .hHd-Xa_panelIcon {
+  display: inline !important;
+}
+
+/* 新会话：收起时标题栏模式会把它固定在左上角，这里整个不要 —— ⌥⌘N 和侧栏里
+   那颗石墨主按钮都还在 */
+html[data-kg-topbar] body .hHd-Xa_collapsed .hHd-Xa_newSession {
+  display: none !important;
+}
+/* 悬停只铺一层淡灰，不做白玻璃方块：顶栏按钮是窗口 chrome，不是面板上的卡片 */
+html[data-kg-topbar] body .hHd-Xa_toggle:hover {
+  background-color: var(--dsw-specific-sidebar-nav-item-active) !important;
+  box-shadow: none !important;
+  color: var(--kg-ink) !important;
+}
+
+/* 开关（只在触屏上显示）的提示：展开时朝右，落在品牌行空出来的那一截里；朝下
+   （标题栏模式的默认）会正好盖在「新会话」主按钮上。收起时下方是空的画布，照旧朝下。
+   这里直接按侧栏列的坐标摆，所以 tooltip-fix.js 写的原点补偿要压掉。 */
+html[data-kg-topbar] body .hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_logoRow > [role="tooltip"] {
+  left: calc(var(--kg-topbar-x) + var(--kg-topbar-btn) + 8px) !important;
+  top: calc(var(--kg-topbar-y) + var(--kg-topbar-btn) / 2) !important;
+  transform: translateY(-50%) !important;
+  translate: none !important;
+}
+
+/* 展开：品牌行（鲸鱼 + 字标 + 版本角标）让给开关，这一行只留按钮的高度 */
+html[data-kg-topbar] body .hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_brand {
+  display: none !important;
+}
+html[data-kg-topbar] body .hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_logoRow {
+  height: 36px !important;
+}
+
+/* 「对话 / 轨迹」页签收进顶栏这一行，第二行整个去掉。
+   页头本来是两行网格：第一行标题行（标题、访达 / ⋯、右栏开关），第二行页签。
+   有页签时把标题行拍平（display: contents），整个页头改成一条 flex：
+   标题 → 页签 → 访达 / ⋯ → 右栏开关。标题行让位用的留白挪到标题上。
+   页签不能干脆删掉：轨迹没有快捷键也没有命令，视图又按会话记住，停在轨迹上的
+   会话会回不到对话。上下内边距 11 / 9：这一行中线落在 39px，和左上角按钮对齐。 */
+html[data-kg-topbar] body .wSkVaW_header:has([data-conversation-tabs]) {
+  display: flex !important;
+  align-items: center;
+  min-height: 0 !important;
+  padding-top: 11px !important;
+  padding-bottom: 9px !important;
+  container-type: inline-size;
+}
+/* 拍平后标题行没有盒子了，可它身上应用给的 container-type 还在，下面的
+   @container 会认它当最近的容器、量不出尺寸就永远不成立 —— 一并撤掉，让页头当容器 */
+html[data-kg-topbar] body .wSkVaW_header:has([data-conversation-tabs]) .wSkVaW_titleRow {
+  display: contents;
+  container-type: normal;
+}
+html[data-kg-topbar] body .wSkVaW_header:has([data-conversation-tabs]) .wSkVaW_titleCluster {
+  order: 1;
+  margin-inline-start: max(0px, calc(var(--dsh-frame-leading-clearance, 0px) - 20px));
+}
+html[data-kg-topbar] body .wSkVaW_header [data-conversation-tabs] {
+  order: 2;
+  flex: none;
+  margin: 0 0 0 12px !important;
+}
+html[data-kg-topbar] body .wSkVaW_header:has([data-conversation-tabs]) .wSkVaW_headerUtilities {
+  order: 3;
+}
+html[data-kg-topbar] body .wSkVaW_header:has([data-conversation-tabs]) .wSkVaW_headerCorner {
+  order: 4;
+}
+/* 窄了先收「智能体团队」「预设」（手机宽度上它们会把标题挤成 0 宽），再窄页签
+   退回自己那一行，标题始终留得出位置。尺寸容器：有页签时是页头（上面设的），
+   没有页签时是标题行（应用自己给它设了 container-type: inline-size）。 */
+@container (max-width: 760px) {
+  html[data-kg-topbar] body .wSkVaW_header .wSkVaW_headerActions {
+    display: none !important;
+  }
+}
+/* 容器查询改不了容器自己，所以 flex-wrap 常开（标题会先缩，宽的时候不会折行）；
+   窄的时候在右栏开关后面插一个占满整行的 ::before 当换行符，页签落到第二行。 */
+html[data-kg-topbar] body .wSkVaW_header:has([data-conversation-tabs]) {
+  flex-wrap: wrap;
+}
+@container (max-width: 520px) {
+  html[data-kg-topbar] body .wSkVaW_header:has([data-conversation-tabs])::before {
+    content: "";
+    order: 5;
+    flex: 0 0 100%;
+    height: 0;
+  }
+  html[data-kg-topbar] body .wSkVaW_header [data-conversation-tabs] {
+    order: 6;
+    margin: 8px 0 0 !important;
+  }
+}
+
+/* 页头里除标题以外的东西 —— 标题后的「智能体团队」「标准模式」、「对话 / 轨迹」
+   页签、右侧的「访达打开」「⋯」和最右的右栏开关 —— 平时退成透明，指针进到顶栏、
+   键盘聚焦进来、或者它们自己的菜单开着时才显示。右栏还能用 ⇧⌘B 开。触屏没有
+   悬停，一直显示。 */
+@media (hover: hover) {
+  html[data-kg-topbar] body .wSkVaW_headerActions,
+  html[data-kg-topbar] body .wSkVaW_headerUtilities,
+  html[data-kg-topbar] body .wSkVaW_headerCorner,
+  html[data-kg-topbar] body [data-conversation-tabs] {
+    opacity: 0;
+    transition: opacity var(--kg-t);
+  }
+  html[data-kg-topbar] body .wSkVaW_header:is(:hover, :focus-within) :is(.wSkVaW_headerActions, .wSkVaW_headerUtilities, .wSkVaW_headerCorner, [data-conversation-tabs]),
+  html[data-kg-topbar] body :is(.wSkVaW_headerActions, .wSkVaW_headerUtilities, .wSkVaW_headerCorner):has([aria-expanded="true"]) {
+    opacity: 1;
+  }
+}
+
+/* 右栏相关的几个图标换成一套：和系统图标同粗的 1.25px 线、圆角放大的方框、圆线头。
+   原来是 1px 细线（「全屏」还是填充的轮廓），和皮肤里别的图标不是一路。
+   SVG 是应用渲染的，改不了 path，所以把原来的线藏起来、用遮罩在同一块地方画新的，
+   颜色仍是按钮的 currentColor，白天夜间、悬停都跟着走。
+   - 右上角「打开右侧边栏」、右栏里「收起右侧边栏」：竖线在右边（右栏那一格）。
+     应用给这两个的 scaleX(-1) 翻转要去掉，新图标本来就朝右。
+   - 右栏里「分栏」：竖线在正中。
+   - 右栏里「全屏」/「退出全屏」：四个角向外 / 向内。
+   后三个按钮的 SVG 没有类名，按原图标的 path 认（:has），dsh 换了图标就不再匹配、
+   退回原样，不会套错。左栏开关保持原样。 */
+html body :is(
+  ._1kL45W_icon,
+  .P3OORG_collapseGlyph,
+  svg:has(> path[d="M8 1.5V14.5"]),
+  .P3OORG_iconButton svg:has(> path[d^="M2.33203 10.4054"]),
+  .P3OORG_iconButton svg:has(> path[d^="M9 2.5V6C9"])
+) {
+  transform: none;
+  background-color: currentColor;
+  -webkit-mask: var(--kg-glyph) center / 100% 100% no-repeat;
+  mask: var(--kg-glyph) center / 100% 100% no-repeat;
+}
+html body :is(
+  ._1kL45W_icon,
+  .P3OORG_collapseGlyph,
+  svg:has(> path[d="M8 1.5V14.5"]),
+  .P3OORG_iconButton svg:has(> path[d^="M2.33203 10.4054"]),
+  .P3OORG_iconButton svg:has(> path[d^="M9 2.5V6C9"])
+) > * {
+  display: none;
+}
+html body :is(._1kL45W_icon, .P3OORG_collapseGlyph) {
+  --kg-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='1.75' y='2.75' width='12.5' height='10.5' rx='2.75'/%3E%3Cpath d='M10 2.75v10.5'/%3E%3C/svg%3E");
+}
+html body svg:has(> path[d="M8 1.5V14.5"]) {
+  --kg-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='1.75' y='2.75' width='12.5' height='10.5' rx='2.75'/%3E%3Cpath d='M8 2.75v10.5'/%3E%3C/svg%3E");
+}
+html body .P3OORG_iconButton svg:has(> path[d^="M2.33203 10.4054"]) {
+  --kg-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1.75 6V4.5a1.75 1.75 0 0 1 1.75-1.75h2M10.5 2.75h2a1.75 1.75 0 0 1 1.75 1.75V6M14.25 10v1.5a1.75 1.75 0 0 1-1.75 1.75h-2M5.5 13.25h-2a1.75 1.75 0 0 1-1.75-1.75V10'/%3E%3C/svg%3E");
+}
+html body .P3OORG_iconButton svg:has(> path[d^="M9 2.5V6C9"]) {
+  --kg-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5.75 2.75v2a1.25 1.25 0 0 1-1.25 1.25H1.75M10.25 2.75v2a1.25 1.25 0 0 0 1.25 1.25h2.75M10.25 13.25v-2a1.25 1.25 0 0 1 1.25-1.25h2.75M5.75 13.25v-2a1.25 1.25 0 0 0-1.25-1.25H1.75'/%3E%3C/svg%3E");
+}
+
+/* 在 DeepSeek.app 里：顶栏就是窗口标题栏（学 Claude Code）。
+   app（~/Library/Application Support/DeepSeekWebApp/main.swift）把标题栏做成透明、内容铺满，
+   红绿灯直接落在页面最上面那一行，并在 <html> 上留下约定：
+   - data-native-titlebar：红绿灯正显示着。全屏时拿掉，这一段全部失效，退回上面的样子；
+   - --native-titlebar-height：标题栏那一行的高，红绿灯中线的两倍（macOS 26 是 52px）；
+   - --native-controls-end：红绿灯右缘（79px）。
+   这一行里不是按钮的地方，按下去由 app 拖动窗口、双击按系统设置最小化或缩放，页面不用管。
+   浏览器里没有这个属性，这一段一条都不生效。
+
+   这一行是整扇窗共用的：收起时页头标题接在红绿灯后面，中线对齐红绿灯；侧栏（钉住、
+   浮出的卡片都一样）顶上空出这一行给红绿灯，「新会话」排在它下面 —— 卡片离窗口顶 8px，
+   38px 高的按钮放不进红绿灯那一行。其余会摆到左上角的东西（插件 / 自动化页的大标题、
+   账号页的页头、弹窗、全屏右栏的页签条）都让开红绿灯。 */
+html[data-kg-topbar][data-native-titlebar] body {
+  --kg-native-lead: calc(var(--native-controls-end) + 16px);
+}
+/* 页头整行就是标题栏那一行：高度相同，内容中线对齐红绿灯（行内容 28px 高，扣掉 0.5px 底线） */
+html[data-kg-topbar][data-native-titlebar] body .wSkVaW_header:has([data-conversation-tabs]) {
+  padding-top: calc(var(--native-titlebar-height) / 2 - 14px) !important;
+  padding-bottom: calc(var(--native-titlebar-height) / 2 - 14.5px) !important;
+}
+html[data-kg-topbar][data-native-titlebar] body .wSkVaW_header:not(:has([data-conversation-tabs])):not(.wSkVaW_headerSessionless) {
+  padding-top: calc(var(--native-titlebar-height) / 2 - 15px) !important;
+}
+/* 收起、或者卡片盖在正文上时，标题让到红绿灯后面。只写在页头上，不写在 frame 上：这个变量
+   会继承，写在 frame 上钉住、收起时整段对话都要重算样式（见下面「侧栏只动 transform」） */
+html[data-kg-topbar][data-native-titlebar] body .pI_x6G_frame[data-sidebar-collapsed] .wSkVaW_header,
+html[data-kg-topbar][data-native-titlebar][data-kg-side~="overlay"] body .wSkVaW_header {
+  --dsh-frame-leading-clearance: var(--kg-native-lead);
+}
+/* 侧栏顶上空出标题栏那一行。卡片本身离窗口顶 8px，内边距少 8px，两种状态内容落在同一高度，
+   钉住那一下不跳 */
+html[data-kg-topbar][data-native-titlebar] body .hHd-Xa_root:not(.hHd-Xa_collapsed) {
+  padding-top: var(--native-titlebar-height) !important;
+}
+html[data-kg-topbar][data-native-titlebar][data-kg-side~="card"] body .hHd-Xa_root:not(.hHd-Xa_collapsed) {
+  padding-top: calc(var(--native-titlebar-height) - 8px) !important;
+}
+/* 插件 / 插件详情 / 自动化任务页的大标题：窄窗口里会退到左上角，整个挪到标题栏那一行下面，
+   和 dsh 官方 mac 版（data-platform="darwin"）的做法一样 */
+html[data-kg-topbar][data-native-titlebar] body .X_2TxG_pageHead,
+html[data-kg-topbar][data-native-titlebar] body .X_2TxG_detailTop,
+html[data-kg-topbar][data-native-titlebar] body .X_2TxG_moreHead,
+html[data-kg-topbar][data-native-titlebar] body .t-XoWW_pageHeading {
+  padding-top: calc(28px + var(--native-titlebar-height)) !important;
+}
+/* 账号页铺满整扇窗，它的页头就当标题栏那一行：同高，内容让到红绿灯后面 */
+html[data-kg-topbar][data-native-titlebar] body ._44HXVa_header {
+  height: var(--native-titlebar-height) !important;
+  padding-left: var(--kg-native-lead) !important;
+}
+/* 弹窗离窗口顶至少这么多（设置弹窗、自动化的下拉都读它），碰不到红绿灯 */
+html[data-kg-topbar][data-native-titlebar] {
+  --dsh-frame-overlay-top: calc(var(--native-titlebar-height) + 20px);
+}
+/* 全屏右栏盖住整扇窗时，左上角是它的页签条：让到红绿灯后面，中线对齐（页签条 34px 高，
+   在页头里离顶 4px；页头比面板缩进 1px） */
+html[data-kg-topbar][data-native-titlebar] body .pI_x6G_frame[data-sidebar-collapsed] [data-sidebar-right-panel="fullscreen"] [class*="_tabHostHeader_"],
+html[data-kg-topbar][data-native-titlebar][data-kg-side~="overlay"] body [data-sidebar-right-panel="fullscreen"] [class*="_tabHostHeader_"] {
+  padding-top: calc(var(--native-titlebar-height) / 2 - 21px) !important;
+  padding-left: calc(var(--kg-native-lead) - 1px) !important;
+}
+
+/* --------------------------------------------------------------------------
+   7. 页签 — 玻璃分段控件
+   旧版是 Win2000 页签条。玻璃版没有「压在基线上」这回事：整条是一个
+   凹槽，选中项是一块浮起来的白玻璃。
+   -------------------------------------------------------------------------- */
 html body [role="tablist"] {
-  gap: 0 !important;
+  /* 应用给的是 margin-top:10px，页签正好压在页头那条分隔线上。
+     上面收小到 4px、下面补 6px：页签离标题近一点，离那条线留出呼吸
+     —— 读起来是「线在下面」，而不是「框骑在线上」。 */
+  margin-top: 4px !important;
+  margin-bottom: 6px !important;
+  background-color: var(--kg-well) !important;
+  background-image: none !important;
+  border: 0 !important;
   border-bottom: 0 !important;
-  align-items: flex-end;
+  border-radius: var(--kg-r-sm) !important;
+  box-shadow:
+    inset 0 0 0 1px var(--kg-well-rim),
+    inset 0 1px 3px var(--kg-well-shade) !important;
+  padding: 3px !important;
+  gap: 2px !important;
+  align-items: center !important;
+  width: max-content !important;
+  height: auto !important;
 }
 
-/* 两个标签同族:同一套边框、相邻不留缝、底边一律敞口(向下并入面板)。
-   高低差只由 padding 产生 —— flex-end 底对齐,未选中的顶边自然低 2px,
-   就是 Win2000 里「未选中标签往下沉一格」的样子。 */
 html body [role="tab"] {
-  box-sizing: border-box !important;
-  border-width: 1px 1px 0 1px !important;
-  border-style: solid !important;
-  border-color: var(--k-frame) !important;
+  border: 0 !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border-radius: calc(var(--kg-r-sm) - 3px) !important;
   box-shadow: none !important;
-  background-color: var(--k-face2);
-  color: var(--k-faint);
-  font-weight: 400;
-  padding: 3px 12px !important;
+  color: var(--kg-muted) !important;
+  font-weight: 500 !important;
+  padding: 3px 13px !important;
   margin: 0 !important;
-  position: relative;
+  min-height: 0 !important;
+  transition: background-color var(--kg-t), color var(--kg-t), box-shadow var(--kg-t);
 }
-
-html body [role="tab"][aria-selected="true"] {
-  background-color: var(--k-face);
-  color: var(--k-ink);
-  font-weight: 700;
-  padding: 5px 12px 3px !important;
-  z-index: 1;
+html body [role="tab"]:hover {
+  color: var(--kg-ink) !important;
+  background-color: var(--kg-surface) !important;
 }
-
-/* 标签不吃通用按钮的「按下翻转凹陷」。上面那条 `button:active` 是 (0,1,3),
-   这里用 (0,2,2) 压过它 —— 标签页没有按下弹起的动作。 */
 html body [role="tab"]:active {
-  border-color: var(--k-frame) !important;
+  border: 0 !important;
   box-shadow: none !important;
 }
-
-/* 底缘 accent 强调条 —— 否决项,去掉 */
+html body [role="tab"][aria-selected="true"] {
+  background-color: var(--kg-surface-max) !important;
+  background-image: none !important;
+  color: var(--kg-ink) !important;
+  font-weight: 600 !important;
+  box-shadow:
+    var(--kg-shadow-1),
+    inset 0 0 0 1px var(--kg-rim-top) !important;
+}
 html body [role="tab"]::after,
 html body [role="tab"]::before {
   display: none !important;
 }
 
-/* 输入区 = 凹陷井。同样只强制几何,底色由 --dsw-specific-input-major 决定 */
-html body input,
-html body textarea,
-html body select,
-html body [contenteditable="true"] {
-  box-sizing: border-box !important;
-  border-width: 2px !important;
-  border-style: solid !important;
-  border-color: var(--k-bev-dk) var(--k-bev-hi) var(--k-bev-hi) var(--k-bev-dk) !important;
-  box-shadow: inset 1px 1px 0 var(--k-bev-sh), inset -1px -1px 0 var(--k-bev-lt) !important;
-  color: var(--k-ink);
-  font-family: var(--dsw-font-family);
+/* 面板的页签条：别做成「凹槽里再套一颗药丸」——
+   外层那颗胶囊和选中页签的圆角挨得太近，读起来是两层框。
+   外层退回透明，只留选中页签那一块玻璃，图标做幽灵键。 */
+html body [class*="_tabStrip"] {
+  background-color: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  gap: 4px !important;
+}
+/* 页签上的 ×：应用按 28px 高的页签写死 top: 4px 刚好居中；上面给页签加了 3px 上下
+   内边距，页签变成 34px，× 就比标题高出 3px。改成按页签高度居中。 */
+html body [class*="_tabClose_6nhg2"] {
+  top: 50% !important;
+  translate: 0 -50%;
+}
+html body [class*="_stripChrome"] button,
+html body [class*="_iconButton_6nhg2"] {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  color: var(--kg-faint) !important;
+}
+html body [class*="_stripChrome"] button:hover,
+html body [class*="_iconButton_6nhg2"]:hover {
+  background-color: var(--kg-surface) !important;
+  color: var(--kg-ink) !important;
 }
 
-/* 焦点 = 点线框,不是发光 */
-html body input:focus,
-html body textarea:focus,
-html body select:focus,
-html body [contenteditable="true"]:focus {
-  outline: 1px dotted var(--k-ink) !important;
-  outline-offset: -4px;
-}
-
-/* --------------------------------------------------------------------------
-   5. 结构层 — Win2000 滚动条
-   -------------------------------------------------------------------------- */
-html body ::-webkit-scrollbar {
-  width: 16px;
-  height: 16px;
-}
-html body ::-webkit-scrollbar-track {
-  background-color: var(--k-face2);
-  border-left: 1px solid var(--k-bev-dk);
-}
-html body ::-webkit-scrollbar-thumb {
-  background-color: var(--k-face);
-  border: 2px solid;
-  border-color: var(--k-bev-hi) var(--k-bev-sh) var(--k-bev-sh) var(--k-bev-hi);
-  box-shadow: inset 1px 1px 0 var(--k-bev-lt), inset -1px -1px 0 var(--k-bev-dk);
-}
-html body ::-webkit-scrollbar-corner {
-  background-color: var(--k-face2);
-}
 
 /* --------------------------------------------------------------------------
-   6. 排版层
-   宋体只用在非粗体的中文正文(宋体无中文粗体,合成粗体发糊);
-   粗体标题与 UI 铭牌仍走黑体。含中文的列不套 mono。
+   8. 对话 — 正文、表格、代码、气泡
    -------------------------------------------------------------------------- */
-html body {
-  background-color: var(--dsw-alias-bg-base);
-  color: var(--k-ink);
-  font-family: var(--dsw-font-family);
-}
-
+/* 正文不要写死字号 —— 设置里的「字号大小」是用户定的（当前 16px），
+   写死 14.5px 会和按 16px 渲染的标记行/列表挤在一起，看起来像要重叠。
+   只给单位无关的行高，字号继承应用。 */
 html body p,
 html body li,
 html body dd,
 html body blockquote {
-  font-family: var(--k-font-song);
-  font-size: 14px;
-  line-height: 1.7;
+  font-family: var(--dsw-font-family);
+  line-height: 1.8;
 }
 
 html body h1,
@@ -547,15 +1547,23 @@ html body h2,
 html body h3,
 html body h4,
 html body h5,
-html body h6,
+html body h6 {
+  font-family: var(--kg-font-display);
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--kg-ink);
+}
+/* 标题只换字体和字重，字号仍走应用的阶梯（这样也会跟着「字号大小」缩放） */
+html body h1 { line-height: 1.38; }
+html body h2 { line-height: 1.44; }
+html body h3 { line-height: 1.5; }
+
 html body strong,
 html body b,
 html body th {
-  font-family: var(--dsw-font-family);
-  font-weight: 700;
+  font-weight: 600;
 }
 
-/* 数字等宽,刷新不跳动 */
 html body code,
 html body pre,
 html body time,
@@ -564,83 +1572,742 @@ html body [class*="count"] {
   font-variant-numeric: tabular-nums;
 }
 
-/* 代码块 = 经典淡黄纸 + 黑框 */
-html body pre,
-html body code {
+/* 行内代码 = 一小片淡灰底，靠等宽字体区分，不靠颜色 */
+html body :not(pre) > code {
+  background-color: var(--dsw-alias-markdown-inline-code) !important;
+  border-radius: 6px !important;
+  box-shadow: inset 0 0 0 1px var(--kg-hair) !important;
+  color: var(--kg-ink) !important;
+  padding: 0.1em 0.4em !important;
   font-family: var(--ds-font-family-code);
+  font-size: 0.9em;
 }
+/* 代码块 = 一块更厚的白玻璃 */
 html body pre {
-  background-color: var(--k-note);
-  border: 1px solid var(--k-frame);
+  background-color: var(--dsw-alias-markdown-code-block) !important;
+  border: 0 !important;
+  border-radius: var(--kg-r-md) !important;
+  box-shadow:
+    inset 0 1px 0 var(--kg-rim-top),
+    inset 0 0 0 1px var(--kg-rim),
+    var(--kg-shadow-1) !important;
+  font-family: var(--ds-font-family-code);
+  padding: 14px 16px !important;
+  overflow: auto;
+}
+html body pre code {
+  background: none !important;
+  box-shadow: none !important;
+  color: inherit !important;
+  padding: 0 !important;
 }
 
-/* 表格 = 黑网格 */
+/* 表格 = 一张玻璃卡片，网格线换成发丝线 */
 html body table {
-  border-collapse: collapse;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
 }
 html body th,
 html body td {
-  border: 1px solid var(--k-frame);
+  border: 0 !important;
+  border-bottom: 1px solid var(--kg-hair) !important;
+  padding: 10px 14px !important;
+  text-align: left;
 }
 html body th {
-  background-color: var(--k-band);
-  color: var(--k-band-ink);
+  background-color: var(--kg-th-fill) !important;
+  color: var(--kg-ink) !important;
+  font-weight: 600 !important;
+  border-bottom: 1px solid var(--kg-hair-strong) !important;
+  letter-spacing: 0;
+}
+html body tbody tr:last-child td {
+  border-bottom: 0 !important;
+}
+html body tbody tr:hover td {
+  background-color: var(--kg-surface-weak) !important;
+}
+/* 卡片必须挂在 table 上，不能挂在 _tableScroll / _tableFill 上：
+   那两个外壳永远撑满正文列宽，而表格本身是 max-content（还可能居中），
+   挂在外壳上就会得到一张比表格大一圈的空卡。 */
+html body table {
+  background-color: var(--kg-surface-weak) !important;
+  border-radius: var(--kg-r-md) !important;
+  /* 表格自身的底色不会自己跟着圆角走，得靠裁切；表头/末行单元格
+     另有四角圆角兜着（见下），两层一起才没有方角露出来。 */
+  overflow: hidden;
+  box-shadow:
+    inset 0 0 0 1px var(--kg-rim),
+    inset 0 1px 0 var(--kg-rim-top),
+    var(--kg-shadow-1) !important;
+}
+/* 表头 / 末行的四个角跟着圆，否则单元格底色会从圆角里凸出来 */
+html body thead tr:first-child > th:first-child {
+  border-top-left-radius: var(--kg-r-md) !important;
+}
+html body thead tr:first-child > th:last-child {
+  border-top-right-radius: var(--kg-r-md) !important;
+}
+html body tbody tr:last-child > td:first-child {
+  border-bottom-left-radius: var(--kg-r-md) !important;
+}
+html body tbody tr:last-child > td:last-child {
+  border-bottom-right-radius: var(--kg-r-md) !important;
+}
+html body [class*="_tableScroll"] th:first-child,
+html body [class*="_tableScroll"] td:first-child {
+  padding-left: 18px !important;
+}
+html body [class*="_tableScroll"] th:last-child,
+html body [class*="_tableScroll"] td:last-child {
+  padding-right: 18px !important;
 }
 
-/* 经典蓝链 / 紫已访问 */
+/* 宽表格（应用给滚动框加 .md-table-wide）是例外，卡片改挂在滚动框上。
+   应用的做法是 margin-left:-lead + padding-left:lead + width:100%+lead+spare，
+   把滚动框一直撑到画布右边缘，表格本身仍是 max-content、每格限宽 320px ——
+   于是挂在 table 上的卡片右半截被画布裁掉，左边和正文对不齐，滚动条比卡片还长。
+   这里把滚动框收回正文栏，表格填满它、长字在格子里换行；列多到每列 4.5em
+   都放不下时才在卡片里横滚。卡片挂在滚动框上，圆角和边框就不会跟着内容滚走。 */
+html body .hWmORq_body .md-table-wide,
+html body .hWmORq_body .md-table-wide:hover,
+html body .hWmORq_body .md-table-wide:focus-visible {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+  /* 应用平时 overflow:hidden、悬停才 scroll；皮肤的滚动条是 10px 实体条，
+     悬停时会凭空多出一条空轨，内容跟着往上跳 */
+  padding-bottom: 0 !important;
+  overflow-x: auto !important;
+  background-color: var(--kg-surface-weak) !important;
+  border-radius: var(--kg-r-md) !important;
+  box-shadow:
+    inset 0 0 0 1px var(--kg-rim),
+    inset 0 1px 0 var(--kg-rim-top),
+    var(--kg-shadow-1) !important;
+}
+html body .hWmORq_body .md-table-wide > table {
+  width: 100% !important;
+  max-width: none !important;
+  background-color: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+html body .md-table-wide th,
+html body .md-table-wide td {
+  max-width: none !important;
+  min-width: 4.5em !important;
+}
+
+/* 用户气泡 = 一块中性淡灰实底，右下角收成小圆角（说话的方向）。
+   提示气泡（primitives 的 Tooltip）类名也带 _bubble，不排除的话所有提示都会
+   被刷成这块 12% 的淡灰聊天气泡：底下的按钮整个透上来（2026-10-24 截图）。 */
+html body [class*="_bubble"]:not([role="tooltip"]) {
+  background-color: var(--kg-bubble) !important;
+  background-image: none !important;
+  border-radius: var(--kg-r-md) var(--kg-r-md) 6px var(--kg-r-md) !important;
+  box-shadow: inset 0 0 0 1px var(--kg-hair) !important;
+  color: var(--kg-ink) !important;
+  padding: 10px 16px !important;
+}
+
+html body blockquote {
+  border-left: 3px solid var(--kg-quote-line) !important;
+  background-color: var(--kg-surface-weak) !important;
+  border-radius: 0 var(--kg-r-sm) var(--kg-r-sm) 0 !important;
+  padding: 8px 14px !important;
+  color: var(--kg-muted) !important;
+}
+
+html body hr {
+  border: 0 !important;
+  height: 1px !important;
+  background: linear-gradient(90deg, var(--kg-hair-clear) 0%, var(--kg-hair-strong) 50%, var(--kg-hair-clear) 100%) !important;
+  margin: 22px 0 !important;
+}
+
+/* 链接：墨色，靠一道淡下划线认出来；悬停时下划线加深 */
 html body a {
-  color: #0000cc;
+  color: var(--kg-ink);
   text-decoration: underline;
+  text-decoration-color: var(--kg-link-line);
+  text-underline-offset: 2.5px;
+  text-decoration-thickness: 1px;
+  transition: color var(--kg-t), text-decoration-color var(--kg-t);
 }
-html body a:visited {
-  color: #660099;
+html body a:hover {
+  color: var(--kg-ink);
+  text-decoration-color: var(--kg-link-line-hover);
 }
 
-/* 选中态 = 实心品牌粉 */
+/* 列表标记：默认圆点，只把颜色压淡 —— 只给正文列表，别给插件/会话那种结构性列表 */
+html body [class*="_markdown"] ul > li::marker {
+  color: var(--kg-faint);
+}
+
+/* 开关：恢复胶囊形状，开态用强调色 */
+html body [role="switch"] {
+  border-radius: 999px !important;
+}
+html body [role="switch"][aria-checked="true"] {
+  background-color: var(--kg-accent) !important;
+  box-shadow: none !important;
+}
+html body [role="switch"][aria-checked="false"] {
+  background-color: var(--kg-well) !important;
+  box-shadow: inset 0 0 0 1px var(--kg-hair) !important;
+}
+
 html body ::selection {
-  background-color: var(--k-primary);
-  color: #ffffff;
+  background-color: var(--kg-selection);
+  color: var(--kg-ink);
 }
 
-/* details 折叠标记换成 [+] / [−] */
-html body summary {
-  list-style: none;
+/* 搜索结果点进来后的关键词高亮（lib/search-jump.js 用 CSS.highlights 注册）：
+   kg-find 是所有出现处，含侧栏结果的标题和摘录；kg-find-current 是滚过去的那处。
+   不改字色，夜间的浅字落在半透明黄上照样读得清。 */
+html body ::highlight(kg-find) {
+  background-color: var(--kg-find);
 }
-html body summary::-webkit-details-marker {
-  display: none;
-}
-html body summary::before {
-  content: "[+] ";
-  font-family: var(--ds-font-family-code);
-}
-html body details[open] > summary::before {
-  content: "[\2212] ";
-}
-
-/* 列表项换成像素心 —— 唯一的装饰性放纵 */
-html body ul > li::marker {
-  content: "\2665  ";
-  color: var(--k-primary);
+html body ::highlight(kg-find-current) {
+  background-color: var(--kg-find-current);
 }
 
 /* --------------------------------------------------------------------------
-   7. 否决项兜底 — 把体系外的现代残留压掉
+   9. 输入区 — 浮在画布上的一块厚玻璃
+   全站视觉重心：内侧亮边 + 内顶高光 + 外侧发丝线 + 一团中性淡投影；
+   聚焦时发丝线加深，外面再套一圈极淡的环。
    -------------------------------------------------------------------------- */
-
-/* 零渐变。CSS 选不中「带渐变的元素」,只能整体清掉后代的背景图。
-   实测全页唯一的 background-image 就是侧栏截断用的淡出遮罩
-   (span.qDHVXG_fade),清掉后文字改为硬截断 —— 2000-2002 本来就没有
-   淡出遮罩这种东西。body 自身不在此规则内,留作日后铺墙纸的位置。 */
-html body *,
-html body *::before,
-html body *::after {
-  background-image: none !important;
+html body [class*="uV2eYG_card"] {
+  background-color: var(--kg-card-base) !important;
+  background-image: linear-gradient(
+    158deg,
+    var(--kg-card-1) 0%,
+    var(--kg-card-2) 52%,
+    var(--kg-card-3) 100%
+  ) !important;
+  border-radius: var(--kg-r-lg) !important;
+  box-shadow:
+    inset 0 1px 0 var(--kg-rim-top),
+    inset 0 0 0 1px var(--kg-rim),
+    0 0 0 0.5px var(--kg-outline),
+    var(--kg-shadow-card) !important;
+  -webkit-backdrop-filter: blur(26px) saturate(var(--kg-sat));
+  backdrop-filter: blur(26px) saturate(var(--kg-sat));
+  transition: box-shadow 260ms var(--kg-ease), background-color 260ms var(--kg-ease);
+}
+html body [class*="uV2eYG_root"]:focus-within [class*="uV2eYG_card"] {
+  box-shadow:
+    inset 0 1px 0 var(--kg-rim-top),
+    inset 0 0 0 1px var(--kg-focus),
+    0 0 0 3px var(--kg-focus-halo),
+    var(--kg-shadow-card) !important;
 }
 
-/* 图片/画布的圆形裁切一并压平(零圆角规则的延伸) */
-html body img,
-html body svg,
-html body canvas {
-  border-radius: 0 !important;
+/* 输入区内部：不要井、不要框，只留字 */
+html body [class*="uV2eYG_input"],
+html body [class*="uV2eYG_input"]:hover,
+html body [class*="uV2eYG_input"]:focus,
+html body[data-ds-dark-theme] [class*="uV2eYG_input"],
+html body[data-ds-dark-theme] [contenteditable="true"][class*="uV2eYG_input"] {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  color: var(--kg-ink) !important;
+}
+html body [class*="uV2eYG_placeholder"] {
+  color: var(--kg-faint) !important;
+}
+
+/* 发送键 = 第二处强调色面：实色石墨，不渐变、不发光、不上浮 */
+html body [class*="uV2eYG_primary"] {
+  background-color: var(--kg-accent) !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-radius: var(--kg-r-sm) !important;
+  color: var(--kg-on-accent) !important;
+  box-shadow: var(--kg-shadow-1) !important;
+  transition: background-color var(--kg-t), box-shadow var(--kg-t);
+}
+html body [class*="uV2eYG_primary"]:not(:disabled):hover {
+  background-color: var(--kg-accent-hover) !important;
+  background-image: none !important;
+}
+html body [class*="uV2eYG_primary"]:disabled {
+  background-image: none !important;
+  background-color: var(--kg-well) !important;
+  color: var(--kg-dim) !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
+
+/* 输入区下方的工具条：透明底 + 发丝线，悬停才铺一层淡灰 */
+html body [class*="uV2eYG_tools"] button,
+html body [class*="uV2eYG_standardControls"] button,
+html body [class*="uV2eYG_modes"] button {
+  background-color: transparent !important;
+  border-radius: var(--kg-r-xs) !important;
+  box-shadow: inset 0 0 0 1px var(--kg-hair) !important;
+  color: var(--kg-muted) !important;
+}
+html body [class*="uV2eYG_tools"] button:hover,
+html body [class*="uV2eYG_standardControls"] button:hover,
+html body [class*="uV2eYG_modes"] button:hover {
+  background-color: var(--kg-well) !important;
+  color: var(--kg-ink) !important;
+}
+
+/* 「预览版」角标：一枚发丝线小片 */
+html body [class*="pXSMma_previewBadge"] {
+  background-color: transparent !important;
+  border-radius: 999px !important;
+  box-shadow: inset 0 0 0 1px var(--kg-hair-strong) !important;
+  color: var(--kg-muted) !important;
+  font-family: var(--dsw-font-family) !important;
+  font-size: 11px !important;
+  letter-spacing: 0.02em;
+  padding: 2px 9px !important;
+}
+
+/* 首屏标题：系统字，字距不再拉开 */
+html body [class*="pXSMma_title"],
+html body [class*="pXSMma_headline"] {
+  font-family: var(--kg-font-display);
+  letter-spacing: 0;
+}
+/* 首屏品牌区：整块去掉 —— 鱼形 logo、标题「探索未至之境」和「预览版」
+   角标都在 HeroShell 的标题行里，隐藏这一行，下面的工作区/模式选择和
+   输入框照旧。类名用后缀匹配：CSS Module 的哈希前缀（pXSMma_）随
+   dsh 构建变化。 */
+html body [class*="pXSMma_headline"] {
+  display: none !important;
+}
+html body [class*="pXSMma_workspace"]:not([class*="Label"]),
+html body [class*="wSkVaW_heroWorkspaceRow"] > * {
+  border-radius: var(--kg-r-sm) !important;
+}
+
+/* --------------------------------------------------------------------------
+   10. 浮层 — 菜单、弹窗、提示、toast
+   这些地方必须优先保证读得清：玻璃更实、模糊更轻。
+   -------------------------------------------------------------------------- */
+html body [role="menu"],
+html body [role="dialog"],
+html body [role="listbox"],
+html body [role="alertdialog"] {
+  background-color: var(--kg-tint-solid) !important;
+  border: 0 !important;
+  border-radius: var(--kg-r-md) !important;
+  box-shadow:
+    inset 0 1px 0 var(--kg-rim-top),
+    inset 0 0 0 1px var(--kg-rim),
+    var(--kg-shadow-3) !important;
+  -webkit-backdrop-filter: blur(var(--kg-blur-soft)) saturate(var(--kg-sat));
+  backdrop-filter: blur(var(--kg-blur-soft)) saturate(var(--kg-sat));
+}
+/* 输入卡里的弹层（「+」、@ 文件、/ 指令那张列表）是卡片的子节点，不传送到 body。
+   卡片自己带 backdrop-filter，成了它们的 backdrop root：弹层的模糊只够得着卡片里的
+   东西，伸出卡片的那一截底下，对话原样透上来，0.86 / 0.9 的玻璃挡不住，两层字叠在
+   一起（夜间最显眼：暗底上亮字的残影）。模糊补不回来，所以用实色，同全屏面板。
+   模型菜单是传送出去的，模糊照常生效，不在此列。 */
+html body [class*="uV2eYG_card"] :is([role="listbox"], [role="menu"], [role="dialog"]) {
+  background-color: var(--kg-tint-opaque) !important;
+}
+html body [role="menuitem"],
+html body [role="option"] {
+  border-radius: var(--kg-r-xs) !important;
+  transition: background-color var(--kg-t);
+}
+html body [role="menuitem"]:hover,
+html body [role="menuitem"][data-highlighted],
+html body [role="option"]:hover {
+  background-color: var(--kg-surface-strong) !important;
+}
+
+html body [role="tooltip"] {
+  border-radius: var(--kg-r-xs) !important;
+  box-shadow: inset 0 0 0 1px var(--kg-rim), var(--kg-shadow-2) !important;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+/* 侧栏、画布、右栏里的提示（position: fixed、按窗口坐标摆）会被这几块玻璃的
+   backdrop-filter 当成相对面板定位，偏出一个面板原点 —— 由 lib/tooltip-fix.js
+   量出原点、用 translate 抵回去。 */
+
+/* 搜索命中条（lib/search-jump.js）：点搜索结果进来后浮在对话区右上角，
+   「关键词 2 / 5 ↑ ↓ ×」。挂在 body 上、按窗口坐标摆（top / right 由脚本按滚动区写），
+   不在任何玻璃面里，所以不受 backdrop-filter 改包含块的影响。配方同菜单。 */
+html body .kg-findbar {
+  position: fixed;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 32px;
+  padding: 0 4px 0 12px;
+  border-radius: var(--kg-r-sm);
+  corner-shape: superellipse(1.6);
+  background-color: var(--kg-tint-solid);
+  box-shadow:
+    inset 0 1px 0 var(--kg-rim-top),
+    inset 0 0 0 1px var(--kg-rim),
+    var(--kg-shadow-2);
+  -webkit-backdrop-filter: blur(var(--kg-blur-soft)) saturate(var(--kg-sat));
+  backdrop-filter: blur(var(--kg-blur-soft)) saturate(var(--kg-sat));
+  color: var(--kg-ink);
+  font-size: 13px;
+  line-height: 18px;
+}
+html body .kg-findbar[hidden] {
+  display: none;
+}
+html body .kg-findbar-query {
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-radius: 4px;
+  padding: 0 3px;
+  background-color: var(--kg-find);
+}
+html body .kg-findbar-count {
+  margin: 0 6px 0 8px;
+  color: var(--kg-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+html body .kg-findbar-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--kg-r-xs);
+  background: transparent;
+  color: var(--kg-muted);
+  cursor: pointer;
+  transition: background-color var(--kg-t), color var(--kg-t);
+}
+html body .kg-findbar-button svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+html body .kg-findbar-button:hover:not(:disabled) {
+  background-color: var(--kg-surface-strong);
+  color: var(--kg-ink);
+}
+html body .kg-findbar-button:disabled {
+  color: var(--kg-faint);
+  opacity: 0.45;
+  cursor: default;
+}
+html body .kg-findbar-button:focus-visible {
+  outline: var(--dsw-focus-ring-width) solid var(--dsw-focus-ring-color);
+  outline-offset: -2px;
+}
+
+/* 工作区文件面板（⌥⌘P）的常用文件夹置顶（lib/files-pin.js）。
+   每层 ul 改成 flex 纵列，脚本给置顶的 li 写负的 order 排到前面 —— 只改视觉顺序，
+   不动 React 的节点。置顶组最后一项下面一条发丝线；手动钉住的行尾留一个淡图钉；
+   悬停文件夹行时右边出图钉按钮（脚本把它挪进那个 li，绝对定位），行的右内边距
+   让出它的位置，长名字照常省略。 */
+html body .k-1LKG_level {
+  display: flex;
+  flex-direction: column;
+}
+html body .k-1LKG_item[data-files-entry="directory"] {
+  position: relative;
+}
+html body .k-1LKG_item[data-kg-pin-end] {
+  margin-bottom: 4px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--kg-hair);
+}
+html body .k-1LKG_item[data-kg-pinned="manual"] > .k-1LKG_row::after {
+  content: "";
+  flex: none;
+  width: 12px;
+  height: 12px;
+  margin-left: auto;
+  background-color: currentColor;
+  opacity: 0.4;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 2.25h4M6.75 2.25v4L4.5 9.25h7L9.25 6.25v-4M8 9.25v4.5'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 2.25h4M6.75 2.25v4L4.5 9.25h7L9.25 6.25v-4M8 9.25v4.5'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+}
+html body .k-1LKG_item[data-files-entry="directory"]:hover > .k-1LKG_row {
+  padding-right: 34px;
+}
+html body .k-1LKG_item[data-kg-pinned="manual"]:hover > .k-1LKG_row::after {
+  visibility: hidden;
+}
+html body .kg-files-pin {
+  position: absolute;
+  right: 6px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--kg-faint);
+  cursor: pointer;
+  transition: background-color var(--kg-t), color var(--kg-t);
+}
+html body .k-1LKG_item:hover > .kg-files-pin,
+html body .kg-files-pin:focus-visible {
+  display: inline-flex;
+}
+html body .kg-files-pin svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+html body .kg-files-pin:hover {
+  background-color: var(--dsw-alias-interactive-bg-hover);
+  color: var(--kg-ink);
+}
+html body .kg-files-pin[data-on="true"] {
+  color: var(--kg-ink);
+}
+html body .kg-files-pin[data-on="true"] svg path {
+  fill: currentColor;
+  fill-opacity: 0.25;
+}
+html body .kg-files-pin:focus-visible {
+  outline: var(--dsw-focus-ring-width) solid var(--dsw-focus-ring-color);
+  outline-offset: -2px;
+}
+/* 插件页（已安装 / 发现）。
+   - 没有图标的插件、发现页的空状态用的是 primitives 的 PluginArtworkDefault：一块
+     青到蓝渐变的拼图，整页唯一带色相的东西。只改填充（CSS fill 压过 fill 属性），
+     形状不动，退成石墨色。认它靠渐变 id 的前缀 dsh_plugin_art。
+   - 发现页的分类胶囊（全部 / 工具 / …）和页签一个画法：没选中的透明，选中的是一块
+     亮玻璃 + 淡投影；原来没选中的是一块近白底，放在白卡上几乎看不出。 */
+html body svg path[fill^="url(#dsh_plugin_art"] {
+  fill: var(--kg-muted);
+}
+html body [class*="_pill_1bqmh"][class*="_interactive_1bqmh"] {
+  background-color: transparent !important;
+  color: var(--kg-muted) !important;
+  box-shadow: none !important;
+}
+html body [class*="_pill_1bqmh"][class*="_interactive_1bqmh"]:hover {
+  background-color: var(--kg-surface) !important;
+  color: var(--kg-ink) !important;
+}
+html body [class*="_pill_1bqmh"][class*="_interactive_1bqmh"][class*="_active_1bqmh"] {
+  background-color: var(--kg-surface-max) !important;
+  color: var(--kg-ink) !important;
+  box-shadow: var(--kg-shadow-1), inset 0 0 0 1px var(--kg-rim-top) !important;
+}
+
+/* 文件面板顶上的「时间 | 名称」排序开关（lib/files-pin.js 放进路径那一行、「重新读取」前面）。
+   和页签同一套：凹下去的浅槽里，选中那格是一块亮玻璃。 */
+html body .kg-files-sort {
+  display: inline-flex;
+  flex: none;
+  gap: 2px;
+  padding: 2px;
+  margin-right: 4px;
+  border-radius: var(--kg-r-xs);
+  background-color: var(--kg-well);
+  box-shadow: inset 0 0 0 1px var(--kg-hair);
+}
+html body .kg-files-sort button {
+  height: 20px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--kg-muted);
+  font: inherit;
+  font-size: 12px;
+  line-height: 20px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--kg-t), color var(--kg-t);
+}
+html body .kg-files-sort button:hover {
+  color: var(--kg-ink);
+}
+html body .kg-files-sort button[aria-pressed="true"] {
+  background-color: var(--kg-surface-max);
+  color: var(--kg-ink);
+  box-shadow: var(--kg-shadow-1), inset 0 0 0 1px var(--kg-rim-top);
+}
+html body .kg-files-sort button:focus-visible {
+  outline: var(--dsw-focus-ring-width) solid var(--dsw-focus-ring-color);
+  outline-offset: -2px;
+}
+
+/* 改动文件的悬停对比浮层（改动文件卡上悬停 500ms 出现的 HoverCard preview）。
+   这块内容是要逐行读的代码，可它的底色只来自 --dsw-alias-bg-layer-1，玻璃皮肤
+   把这个令牌调成了半透明（白天 0.74 / 夜间 0.70），于是浮层下面那 9 行文件列表
+   整片透上来：文件名、行号、代码三层的字叠在一起（2026-10-23 截图报的问题）。
+   浮层的 DOM 结构是「定位卡 > div[data-changes-hover-preview]」，底色画在外层
+   定位卡上；data-changes-hover-preview 是 dsh 给的稳定钩子（类名是
+   <哈希>_<本地名>，哈希随 dsh 构建变），所以用 :has() 认这个子节点，不写
+   [class*="_preview"] —— 那会连别的 preview 组件一起改。
+   配方同上面的菜单/弹窗：--kg-tint-solid 更实一点的玻璃 + 轻模糊。
+   preview 本来就比卡片左右各窄 24px，两侧仍看得到卡片，读起来还是「浮在卡上
+   的一片玻璃」，而不是把卡片挤开或盖成一块实心板。 */
+html body div:has(> [data-changes-hover-preview]) {
+  background-color: var(--kg-tint-solid) !important;
+  -webkit-backdrop-filter: blur(var(--kg-blur-soft)) saturate(var(--kg-sat));
+  backdrop-filter: blur(var(--kg-blur-soft)) saturate(var(--kg-sat));
+}
+
+/* 底部状态条上的小药丸（2 轮 35 步 / token 速度 / 缓存命中）。
+   只认这个组件的类名 —— 写 [class*="_pill"] 会把插件页那对
+   「已安装 / 发现」分段页签也改成药丸，和 tablist 的凹槽叠成两层框。 */
+html body [class*="bOPqQW_pill"] {
+  background-color: var(--kg-surface-weak) !important;
+  border-radius: 999px !important;
+  box-shadow: inset 0 0 0 1px var(--kg-rim) !important;
+  color: var(--kg-muted) !important;
+  padding: 2px 10px !important;
+}
+
+/* 工具调用卡片：一层薄玻璃，不模糊（数量多，省 GPU）。
+   只认具体组件的类名 —— 千万不要写 [class*="_card"]：插件列表的每一层
+   子节点都叫 card / cardHead / cardMain / cardDesc / cardIcon，那样会把
+   一圈 16px 圆角描边画到每一层上，正好从标题和说明中间穿过去。 */
+/* 插件列表的一行 = li.card（子节点 cardHead/cardMain/cardDesc 也带 _card，
+   所以只认 li，不认所有 _card） */
+html body li[class*="_card"] {
+  background-color: var(--kg-surface-weak) !important;
+  border-radius: var(--kg-r-md) !important;
+  box-shadow:
+    inset 0 0 0 1px var(--kg-rim),
+    var(--kg-shadow-1) !important;
+  transition: background-color var(--kg-t), box-shadow var(--kg-t);
+}
+html body li[class*="_card"]:hover {
+  background-color: var(--kg-surface) !important;
+  box-shadow: inset 0 0 0 1px var(--kg-rim-top), var(--kg-shadow-2) !important;
+}
+
+html body [class*="CY-8Ka_card"],
+html body [class*="O_Ebla_root"] {
+  border-radius: var(--kg-r-md) !important;
+  box-shadow:
+    inset 0 0 0 1px var(--kg-rim),
+    var(--kg-shadow-1) !important;
+}
+/* 过程步骤（「已完成分析」那一行）在应用里不是卡片、自己没有内边距；
+   上面这条给它加了圈和影，就得补上，否则图标贴着圆角。
+   内边距取用户气泡的 10px 16px：同为 --kg-r-md 圆角（气泡右下尾角是 6px），
+   描边不同 —— 气泡是 --kg-hair 发丝线，这里沿用上面的 --kg-rim 亮边 + 投影。
+   :not([hidden])：外层「已完成，用时 N 秒」收起时它是 hidden="until-found"
+   （content-visibility: hidden，盒子还在），内边距会撑出一条 20px 的空框。 */
+html body [class*="O_Ebla_root"]:not([hidden]) {
+  padding: 10px 16px !important;
+}
+
+/* --------------------------------------------------------------------------
+   11. 滚动条 — 细的悬浮灰条
+   -------------------------------------------------------------------------- */
+html body ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+html body ::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+html body ::-webkit-scrollbar-thumb {
+  background-color: var(--kg-scroll);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  border-radius: 999px;
+}
+html body ::-webkit-scrollbar-thumb:hover {
+  background-color: var(--kg-scroll-hover);
+  background-clip: padding-box;
+}
+html body ::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
+/* --------------------------------------------------------------------------
+   12. 退化路径 —— 系统要求减少透明/动效时，玻璃退回实色
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-transparency: reduce) {
+  html body {
+    background-image: linear-gradient(158deg, #efede9 0%, #e8e9eb 50%, #e1e5ea 100%) !important;
+  }
+  html body .pI_x6G_sidebarCol,
+  html body .pI_x6G_centerCol,
+  html body .pI_x6G_rightbarCol,
+  html body [class*="uV2eYG_card"],
+  html body div:has(> [data-changes-hover-preview]) {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+  html body .pI_x6G_centerCol,
+  html body [class*="uV2eYG_card"],
+  html body div:has(> [data-changes-hover-preview]) {
+    background-color: rgba(255, 255, 255, 0.92) !important;
+  }
+  html body .pI_x6G_sidebarCol {
+    background-color: rgba(255, 255, 255, 0.86) !important;
+  }
+  /* 搜索命中条：令牌两套主题各有一份，直接用实色那一档 */
+  html body .kg-findbar {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background-color: var(--kg-tint-opaque);
+  }
+  /* 夜间：上面三条带 !important 的白天值会压过夜间桌面和玻璃，正文 --kg-ink
+     又是近白，于是白底白字。多一个 [data-ds-dark-theme]（特异度更高）换回暗色：
+     桌面用夜间那个纯色（同样没有渐变，免得又抖出细网），面板用夜间
+     --kg-tint-solid 的颜色，不透明度与白天两条一一对应。 */
+  html body[data-ds-dark-theme] {
+    background-color: #050505 !important;
+    background-image: none !important;
+  }
+  html body[data-ds-dark-theme] .pI_x6G_centerCol,
+  html body[data-ds-dark-theme] [class*="uV2eYG_card"],
+  html body[data-ds-dark-theme] div:has(> [data-changes-hover-preview]) {
+    background-color: rgba(36, 37, 41, 0.92) !important;
+  }
+  html body[data-ds-dark-theme] .pI_x6G_sidebarCol {
+    background-color: rgba(36, 37, 41, 0.86) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html body button,
+  html body [role="button"],
+  html body input,
+  html body textarea,
+  html body [class*="uV2eYG_card"],
+  html body [role="tab"],
+  html body [class*="_sessionRow"] {
+    transition: none !important;
+  }
+  html body button:active:not(:disabled) {
+    transform: none !important;
+  }
+  html[data-kg-topbar] body .wSkVaW_headerActions,
+  html[data-kg-topbar] body .wSkVaW_headerUtilities,
+  html[data-kg-topbar] body .wSkVaW_headerCorner,
+  html[data-kg-topbar] body [data-conversation-tabs],
+  html[data-kg-topbar] body .pI_x6G_sidebarCol,
+  html[data-kg-topbar] body .pI_x6G_frame::before {
+    transition: none !important;
+  }
 }
 
