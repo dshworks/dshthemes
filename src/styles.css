@@ -428,7 +428,11 @@ img { display: block; max-width: 100%; }
 .foot .spacer { flex: 1; }
 
 /* --- prose page (about / 404) ---------------------------------------------- */
-.prose { max-width: var(--measure); padding: 2.5rem 0 4rem; }
+/* Every .prose is also a .wrap: block padding only, so the wrap's 1.5rem
+   inline gutter survives (a `padding: x 0 y` here put text flush against
+   both edges of a phone), and the max-width grows by that gutter so the
+   desktop measure stays 66ch. */
+.prose { max-width: calc(var(--measure) + 3rem); padding-block: 2.5rem 4rem; }
 .prose h1 { font-size: 1.6rem; margin-bottom: 1rem; }
 .prose h2 { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); font-weight: 400; margin: 2rem 0 0.7rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--line); }
 .prose p, .prose li { color: var(--text); font-size: 0.92rem; }
