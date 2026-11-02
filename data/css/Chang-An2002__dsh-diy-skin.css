@@ -1,0 +1,366 @@
+/* Chang-An2002/dsh-diy-skin — dsh-diy-skin/client.js
+   fetched 2026-11-02 from https://raw.githubusercontent.com/Chang-An2002/dsh-diy-skin/main/dsh-diy-skin/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/* The picture layer, now at the *bottom* of the page.
+
+   It was z-index 0, which in the root stacking context paints above in-flow block
+   backgrounds and above inline content — above every word the app draws. That is
+   why a picture at 100% opacity hid the conversation, the sidebar and everything
+   else: the layer sat in front of the text, and only positioned UI (the titlebar
+   controls, the sidebar toggle) was in front of it.
+
+   A negative z-index puts the whole layer below in-flow content instead: below the
+   text, below the cards, below the panels. Whatever the app draws is then above
+   the pictures, so no opacity setting can hide a word.
+
+   That only works if nothing opaque covers the whole window in between, which is
+   what the rules below are for. */
+.dsd-layer{position:fixed;inset:0;z-index:-1;pointer-events:none}
+/* Editing is a mode, not a backdrop: the layer steps up so the shield covers
+   everything the app paints below its own overlay layer (z-index 20) — the
+   composer, the chat text, the side panels — while staying under the app's real
+   overlays (20) and modals (1000+). Without the step, the conversation panel
+   carries a positive z-index of its own and would sit above the shield, leaving
+   the very text this isolation exists to protect selectable.
+
+   It is also the one time the pictures come forward, and they have to: a picture
+   behind the app's own content can never receive a pointer event, so dragging
+   would be impossible. The shield makes the app inert for exactly that long. */
+.dsd-layer[data-editing='true']{z-index:15}
+/* The app's full-window canvases, made see-through so the wallpaper below them is
+   visible at all. All of them are --dsw-alias-bg-base fills, and that colour is
+   not lost: it moves to the document canvas, which is painted underneath
+   everything, so the 整体底色 knob still decides what shows where a picture is
+   masked away.
+
+   There are three of them, not two. The application frame and its centre column are
+   the obvious pair; the third is the conversation column's own root, which fills
+   that whole column *inside* the centre column. Transparentising only the two outer
+   ones left the wallpaper hidden behind it — visible nowhere except inside the
+   composer band, which is the one layer that lives above everything. That is
+   exactly the bug the user reported, so this rule is the fix.
+
+   Two selector notes:
+
+   - [class*='frame']:has([class*='sidebarCol']) rather than [class*='frame']
+     alone: several components have a class ending in "frame" — an attachment
+     thumbnail among them — and only the application frame contains a sidebar
+     column.
+   - the conversation root is found by what it contains, not by its own name,
+     because root is the most reused class name in this codebase. The authored
+     halves of all of these names (frame, centerCol, sidebarCol, root, composerSeat,
+     composerHero) survive a rebuild; the bundler's hash in front of them does not.
+
+   Surfaces that are *panels* keep their fill on purpose — the sidebar, cards,
+   dialogs, the reply box — so the wallpaper is the canvas and the panels float on
+   top of it. Where that is not wanted, the matching knob takes an 8-digit hex:
+   #ffffff00 makes the sidebar fully transparent. */
+[class*='frame']:has([class*='sidebarCol']){background:transparent!important}
+[class*='centerCol']{background:transparent!important}
+[class*='root']:has([class*='composerSeat'],[class*='composerHero']){background:transparent!important}
+/* The sidebar column and the sidebar inside it: the colour moves *behind* the
+   wallpaper instead of over it, so the picture keeps full strength and the sidebar
+   still reads as a surface. .dsd-side paints the column's colour under the
+   pictures; .dsd-side-line holds the boundary above them. The strip along the top
+   of the window is painted from the same token and gets neither — there is no
+   sidebar behind it, only the picture. */
+[class*='sidebarCol'],[class*='root']:has([class*='newSession']){background:transparent!important}
+[class*='frame']:has([class*='sidebarCol']):before{background:transparent!important}
+/* The session list's scroll fade, which paints the sidebar colour over the pictures
+   at the bottom of the list. With the colour moved behind them (see the bed) it has
+   nothing left to do, and while it was there the user saw its opaque end as a
+   dividing line just above the two corner chips. */
+[class*='sidebarCol'] [class*='fade']{background:transparent!important}
+/* The app's overlay close buttons sit inside the Windows caption strip — top 20px
+   against a 40px strip — so the native buttons overlap them, and clicking one closes
+   the application instead of the image. A CSS attempt at this missed: the sheet that
+   draws the button is split across chunks and its selector does not survive the read.
+   The move is done in JS by the button's shape instead; see trackOverlayChrome. */
+body{background-color:var(--dsw-alias-bg-base)}
+/* The app's two full-window canvases, made see-through so the wallpaper below
+   them is visible at all. Both are --dsw-alias-bg-base fills, and that colour is
+   not lost: it moves to the document canvas itself, which is painted underneath
+   everything, so the 整体底色 knob still decides what shows where a picture is
+   masked away.
+
+   :has([class*='sidebarCol']) rather than [class*='frame'] alone: several
+   components have a class ending in "frame" — an attachment thumbnail among them
+   — and only the application frame contains a sidebar column. The authored halves
+   of these names (frame, sidebarCol, centerCol) survive a rebuild even though the
+   bundler's hash in front of them does not. */
+[class*='frame']:has([class*='sidebarCol']){background:transparent!important}
+[class*='centerCol']{background:transparent!important}
+body{background-color:var(--dsw-alias-bg-base)}
+/* One picture: centred on its own anchor point, sized by height alone so the
+   aspect ratio follows. The max-width/height reset guards against a global image
+   cap in the app's own stylesheet; the mask fades the edges out, which is what
+   keeps a big picture from reading as a pasted rectangle.
+
+   No mix-blend-mode, deliberately. This rule used to carry
+   mix-blend-mode:luminosity, from when a picture was meant to sink into whatever
+   it was painted over. Inside this layer it never did much — the layer is its own
+   stacking context, so blending is confined to the layer's contents, and with
+   nothing opaque underneath the pictures the backdrop was transparent and the
+   blend degraded to "no blend". The composer pane changed that: it is opaque and
+   it sits *under* the pictures, so luminosity blending suddenly had something to
+   work with, took the pane's near-neutral chrominance, and turned every picture
+   black and white across exactly the band the pane covers. A picture's colour
+   must not depend on what is painted beneath it — that is the whole reason the
+   pane works — so the blend is gone. The edges and the opacity are what make a
+   picture sit in the UI, and both are still here. */
+.dsd-bg{position:absolute;z-index:0;pointer-events:none;object-fit:contain;transform:translate(-50%,-50%);max-width:none;max-height:none;-webkit-user-select:none;user-select:none;-webkit-mask-image:radial-gradient(125% 115% at 50% 50%,#000 62%,transparent 100%);mask-image:radial-gradient(125% 115% at 50% 50%,#000 62%,transparent 100%)}
+/* While editing, pictures come forward — above the shield, so they stay
+   draggable, and with a visible outline on the selected one. */
+.dsd-layer[data-editing='true'] .dsd-bg{pointer-events:auto;z-index:2;cursor:move}
+.dsd-layer[data-editing='true'] .dsd-bg[data-selected='true']{outline:1px dashed var(--dsw-alias-brand-primary);outline-offset:4px}
+/* The isolation shield: transparent, full-viewport, and the only thing the
+   pointer can reach besides the pictures. It is what stops a drag over the
+   background from selecting the conversation text underneath. */
+.dsd-shield{position:absolute;inset:0;z-index:1;pointer-events:auto;cursor:default;-webkit-user-select:none;user-select:none}
+/* Stretch grips on the selected picture's four corners. The cursor follows the
+   diagonal each one drags along. */
+.dsd-handle{position:absolute;z-index:3;width:14px;height:14px;margin:-7px 0 0 -7px;pointer-events:auto;border-radius:3px;background:var(--dsw-alias-bg-base);border:1.5px solid var(--dsw-alias-brand-primary)}
+.dsd-handle[data-corner='nw'],.dsd-handle[data-corner='se']{cursor:nwse-resize}
+.dsd-handle[data-corner='ne'],.dsd-handle[data-corner='sw']{cursor:nesw-resize}
+.dsd-handle:hover{background:var(--dsw-alias-brand-primary)}
+/* The two corner chips. They read from this plugin's own --dsd-chip-* tokens,
+   not from --dsw-alias-* ones: they are drawn here, and borrowing the app's
+   names for them is what made "输入框与模块" repaint the balance read-out and left
+   the 背景 entry with no surface to colour at all. The var() fallbacks are the
+   light values, used only if the theme service is missing entirely. */
+/* Two opaque surfaces sit *above* the picture layer and hide it. Both overrides
+   need !important, and the reason is worth writing down rather than
+   rediscovering:
+
+   1. The Windows caption strip. The desktop preload paints the native
+      titleBarOverlay from a probe element it creates itself, with an INLINE
+      background-color of var(--dsw-specific-sidebar-fill) — it reads that
+      element's computed colour and hands it to Electron, which then draws the
+      three caption buttons over the page in that colour. An author-important
+      declaration outranks a normal inline one, so this rule is the whole switch:
+      the probe resolves to transparent, the preload reports rgba(0, 0, 0, 0) on
+      its next mutation, and the strip stops painting. The symbol colour comes
+      from the same probe's color (var(--dsw-alias-label-primary)), which stays
+      the user's to set. The selector is deliberately narrow — the token name
+      plus the span element the preload creates; nothing else sets this inline.
+   2. The composer seat. It is position:sticky with z-index 7 and a gradient that
+      runs from transparent to solid var(--dsw-alias-bg-base) 36px down, which is
+      what keeps text legible as it scrolls under the input. It also covers the
+      picture across the full width of the seat, which is the solid plate the
+      user saw beside the input. The input's own card keeps its opaque
+      background — that one is wanted, or the reply would be unreadable over a
+      picture — so only the seat around it is cleared. */
+span[style*='--dsw-specific-sidebar-fill']{background-color:transparent!important}
+[class*='composerSeat']{background:transparent!important}
+/* The composer band, on the other side of the app's text.
+
+   Now that the pictures are at the bottom of the page, they can no longer hide
+   anything — including the reply that scrolls under the composer, which the app's
+   own plate used to cover. That plate is gone (it was covering the picture too),
+   so the band's readability has to be rebuilt somewhere, and there is only one
+   place it can go: above the text.
+
+   Which means the picture has to be drawn a second time, above that veil. Two
+   copies of the same picture, one behind the app and one in front of it over the
+   band's veil, and both at the same place with the same size, opacity and mask —
+   so the band is indistinguishable from the rest of the window except that the
+   text stops at it.
+
+   The band layer sits at z-index 5: above every in-flow surface and every line of
+   text, below the composer seat (7), the app's own overlays (20) and its modals
+   (1000+). So the reply box and its toolbar stay in front of it, and nothing else
+   the user can click does. */
+.dsd-band{position:fixed;inset:0;z-index:5;pointer-events:none}
+/* The veil and the second copy, faded as one thing.
+   
+   The mask is what keeps the band's top edge invisible. The veil has to be opaque
+   over most of the band (that is how the text is hidden) but soft at its top (or
+   the text would end in a jagged line), and a soft veil means the wallpaper behind
+   it shows through *as well as* the copy on top — the same picture painted twice,
+   which reads as a bright seam. Fading the pair together makes the two add up to
+   exactly one picture everywhere: at the top the group is transparent and only the
+   wallpaper shows, further down the group is opaque and only the copy shows. */
+.dsd-band-mask{position:absolute;inset:0;-webkit-mask-image:linear-gradient(180deg,transparent calc(100vh - var(--dsd-pane-bottom,0px) - var(--dsd-pane-height,0px) - 44px),#000 calc(100vh - var(--dsd-pane-bottom,0px) - var(--dsd-pane-height,0px)));mask-image:linear-gradient(180deg,transparent calc(100vh - var(--dsd-pane-bottom,0px) - var(--dsd-pane-height,0px) - 44px),#000 calc(100vh - var(--dsd-pane-bottom,0px) - var(--dsd-pane-height,0px)))}
+/* The veil itself: the app's own canvas colour, opaque, the same colour the app
+   paints everywhere else — which is what makes it invisible as a band.
+
+   It runs to the bottom of the window rather than to the bottom of the seat. The
+   seat's own box stops a little above the window in the app's layout, and the reply
+   text scrolled on through that gap: the user saw body copy below the input again.
+   The height is therefore the seat's height plus however much it is lifted off the
+   bottom. */
+.dsd-band-veil{position:absolute;left:var(--dsd-pane-left,0);right:var(--dsd-pane-right,0);bottom:0;height:calc(var(--dsd-pane-bottom,0px) + var(--dsd-pane-height,0px));background:var(--dsw-alias-bg-base)}
+/* The second copy, clipped to the band.
+
+   clip-path on a full-viewport box rather than an overflow:hidden box of the
+   band's own size: the pictures are positioned in viewport percentages, and inside
+   a smaller container those percentages would resolve against the container and
+   land somewhere else entirely. Clipping keeps the geometry identical to the copy
+   behind the app, so the two are superimposed pixel for pixel. */
+.dsd-band-clip{position:absolute;inset:0;clip-path:inset(calc(100vh - var(--dsd-pane-bottom,0px) - var(--dsd-pane-height,0px)) var(--dsd-pane-right,0px) 0 var(--dsd-pane-left,0px))}
+/* The sidebar's bed: its colour, painted under the pictures instead of over them.
+   See the note where it is rendered. */
+.dsd-side{position:absolute;top:0;bottom:0;left:var(--dsd-side-left,0);width:var(--dsd-side-width,0);background:var(--dsw-specific-sidebar-fill)}
+/* The sidebar's edge, above the wallpaper. A hairline and not a surface: a surface
+   over the pictures is the thing this replaced. It is 1px because a half-pixel line
+   disappears on a 1x display, and it takes the border tone the user already has a
+   knob for. */
+.dsd-side-line{position:absolute;top:0;bottom:0;left:calc(var(--dsd-side-left,0px) + var(--dsd-side-width,0px));width:1px;background:var(--dsw-alias-border-l2)}
+/* Editing chrome must never be read as the window's own drag strip. The strip
+   carries -webkit-app-region: drag, which turns a press into a window move, so a
+   panel or a picture dragged into it used to hand the gesture to the window and
+   could not be pulled back out. Opting the thing being dragged out of the drag
+   region is the fix, and it is the same tool the app uses on its own sidebar
+   toggle. The native caption buttons cannot be opted out of; the panel's top
+   clamp keeps its header from under them. */
+.dsd-layer[data-editing='true'],.dsd-editor{-webkit-app-region:no-drag}
+.dsd-balance{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px;border-radius:999px;font-size:12px;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--dsd-chip-ink,#46536e);background:var(--dsd-chip-fill,#f4f7fd);border:.5px solid var(--dsd-chip-stroke,#1d4ed824);pointer-events:auto;user-select:none;cursor:default}
+/* The collapsed rail keeps the amount as a caption only: a filled pill in a
+   56px column would read as a button that does something else. */
+.dsd-balance[data-compact='true']{height:22px;padding:0 6px;gap:4px;border-color:transparent;background:transparent}
+.dsd-balance-dot{width:6px;height:6px;border-radius:50%;flex:none;background:var(--dsw-alias-state-success-primary)}
+.dsd-balance[data-state='loading'] .dsd-balance-dot{background:var(--dsw-alias-state-idle-primary)}
+.dsd-balance[data-state='stale'] .dsd-balance-dot{background:var(--dsw-alias-state-warn-primary)}
+.dsd-balance[data-state='empty']{border-color:var(--dsw-alias-state-warn-primary)}
+.dsd-balance[data-state='empty'] .dsd-balance-dot{background:var(--dsw-alias-state-warn-primary)}
+.dsd-balance[data-state='empty'] .dsd-balance-amount{color:var(--dsw-alias-state-warn-label)}
+.dsd-balance[data-state='error'] .dsd-balance-dot{background:var(--dsw-alias-state-error-primary)}
+.dsd-balance-amount{color:var(--dsd-chip-ink-strong,#101a33);font-weight:500}
+.dsd-balance-currency{color:var(--dsd-chip-ink,#46536e)}
+.dsd-badge{display:flex;align-items:center;justify-content:center;gap:3px;line-height:0}
+.dsd-badge-amount{font-size:10px;font-variant-numeric:tabular-nums;color:var(--dsw-alias-label-secondary)}
+/* The corner entry. It shares the footer row with the balance chip, so it is
+   deliberately the same height and radius. It is deliberately NOT lifted above
+   the editing layer either: while editing, the whole app is behind the shield by
+   design, and the two ways out are the panel's ✕ and Escape — the latter
+   registered by the picture layer, which cannot fail to render the way a panel
+   can. */
+.dsd-chip{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px;border-radius:999px;font-family:inherit;font-size:12px;line-height:1;color:var(--dsd-chip-ink,#46536e);background:var(--dsd-chip-fill,#f4f7fd);border:.5px solid var(--dsd-chip-stroke,#1d4ed824);cursor:pointer;pointer-events:auto}
+.dsd-chip:hover{color:var(--dsd-chip-ink-strong,#101a33);background:var(--dsw-alias-interactive-bg-hover)}
+.dsd-chip:focus-visible{outline:var(--dsw-focus-ring-width) solid var(--dsw-focus-ring-color,var(--dsw-alias-state-business-primary));outline-offset:1px}
+.dsd-chip[data-active='true']{color:var(--dsw-alias-brand-text);border-color:var(--dsw-alias-brand-primary);background:var(--dsw-alias-button-ghost-active-fill)}
+.dsd-chip-mark{width:9px;height:9px;flex:none;border:1.5px solid currentColor;border-radius:2px}
+/* Anchored above the corner entry, not over it, so the entry stays visible while
+   the panel is open. z-index sits above the top-up overlay: the editor is the
+   thing the user is looking at, and the two are never open together anyway. */
+.dsd-chip-logo{flex:none;display:block}
+/* Free-floating: the header drags it anywhere (an explicit left/top replaces
+   these anchors after the first drag), so it can be moved out of the way of the
+   picture being adjusted instead of sitting on top of it. Wide and tall enough
+   for two columns; the columns scroll, the panel does not. */
+.dsd-editor{position:fixed;left:12px;bottom:52px;z-index:1002;display:flex;flex-direction:column;gap:9px;width:min(672px,calc(100vw - 24px));max-height:min(80vh,720px);overflow:hidden;padding:12px;border-radius:var(--dsw-radius-lg);background:var(--dsw-alias-bg-base);border:.5px solid var(--dsw-alias-border-l3);box-shadow:var(--dsw-elevation-prominent);color:var(--dsw-alias-label-primary);font-size:12px;line-height:18px;pointer-events:auto}
+.dsd-editor-head{display:flex;align-items:center;gap:8px;cursor:move;-webkit-user-select:none;user-select:none}
+.dsd-editor-title{font-size:13px;font-weight:500}
+.dsd-editor-grip{margin-left:auto;color:var(--dsw-alias-label-caption);letter-spacing:-1px}
+.dsd-editor-close{width:22px;height:22px;flex:none;border-radius:var(--dsw-radius-sm);border:0;background:transparent;color:var(--dsw-alias-label-secondary);cursor:pointer;font-size:15px;line-height:1}
+.dsd-editor-close:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}
+/* The two columns. minmax(0,1fr) rather than 1fr: without the zero minimum a
+   long unbreakable line in either column would set that column's floor and push
+   the panel past its own width instead of scrolling. */
+.dsd-editor-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;flex:1;min-height:0}
+.dsd-pane{display:flex;flex-direction:column;gap:8px;min-height:0;overflow:auto;padding-right:2px}
+.dsd-pane-color{border-left:.5px solid var(--dsw-alias-border-l1);padding-left:12px}
+/* Stacked on a narrow window: the colour column keeps its own scroll area and
+   moves under the pictures, with the divider turned sideways. */
+@media (max-width:640px){.dsd-editor-body{grid-template-columns:minmax(0,1fr)}.dsd-pane-color{border-left:0;padding-left:2px;border-top:.5px solid var(--dsw-alias-border-l1);padding-top:8px}}
+/* The scheme switch. It is a segmented control, not two checkboxes: exactly one
+   of light and dark is being edited, and the filled half says which. */
+ .dsd-scheme-chip{display:inline-flex;align-items:center;gap:2px}
+.dsd-scheme-chip .dsd-color-preset{border-radius:var(--dsw-radius-md)}
+.dsd-scheme-form{background:none}
+.dsd-scheme-action{flex:none;height:24px;padding:0 7px;border:.5px solid var(--dsw-alias-border-l2);border-radius:var(--dsw-radius-md);background:var(--dsw-alias-bg-layer-2);color:var(--dsw-alias-label-secondary);font-size:12px;line-height:1;cursor:pointer}
+.dsd-scheme-action:hover{color:var(--dsw-alias-label-primary)}
+.dsd-scheme-action-destructive:hover{color:var(--dsw-alias-state-error-label)}
+
+.dsd-scheme-name{box-sizing:border-box;flex:1 1 auto;min-width:0;height:24px;padding:0 8px;border:.5px solid var(--dsw-alias-border-l2);border-radius:var(--dsw-radius-md);background:var(--dsw-alias-bg-layer-2);color:var(--dsw-alias-label-primary);font-size:12px}
+.dsd-color-schemerow{display:grid;grid-template-columns:1fr 1fr;gap:6px;flex:none}
+.dsd-color-schemerow .dsd-color-preset{width:100%}
+.dsd-scheme-formrow{display:flex;align-items:center;gap:6px;grid-column:1/-1}
+.dsd-color-scheme{display:flex;gap:2px;flex:none;padding:2px;border-radius:var(--dsw-radius-sm);background:var(--dsw-alias-button-ghost-active-fill)}
+.dsd-color-scheme-item{flex:1;height:24px;border:0;border-radius:var(--dsw-radius-xs);background:transparent;color:var(--dsw-alias-label-secondary);font-family:inherit;font-size:12px;cursor:pointer}
+.dsd-color-scheme-item[data-active='true']{background:var(--dsw-alias-bg-base);color:var(--dsw-alias-label-primary);font-weight:500}
+.dsd-color-presets{display:flex;flex-wrap:wrap;gap:6px;flex:none}
+.dsd-color-preset{height:26px;padding:0 10px;border-radius:var(--dsw-radius-sm);border:.5px solid var(--dsw-alias-border-l3);background:transparent;color:var(--dsw-alias-label-secondary);font-family:inherit;font-size:12px;cursor:pointer}
+.dsd-color-preset:hover:not(:disabled){color:var(--dsw-alias-label-primary);background:var(--dsw-alias-interactive-bg-hover)}
+.dsd-color-preset:disabled{opacity:.45;cursor:default}
+.dsd-color-group{display:flex;flex-direction:column;gap:4px}
+/* The caption above each switch. Without it, two segmented controls in a column
+   read as one control with four options. */
+.dsd-color-caption{color:var(--dsw-alias-label-caption)}
+/* name | picker | hex | reset. The hex column is wide enough for eight digits at
+   this font size, because an eight-digit value is a normal one here. */
+.dsd-color-row{display:grid;grid-template-columns:minmax(0,1fr) 24px 84px 22px;align-items:center;gap:6px}
+.dsd-color-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--dsw-alias-label-tertiary)}
+/* A knob the user has touched is the one thing in this column that must be
+   findable at a glance, so its name takes the brand colour. */
+.dsd-color-row[data-modified='true'] .dsd-color-name{color:var(--dsw-alias-brand-text)}
+.dsd-color-pick{width:24px;height:24px;padding:0;border:.5px solid var(--dsw-alias-border-l3);border-radius:var(--dsw-radius-xs);background:transparent;cursor:pointer;appearance:none;-webkit-appearance:none}
+.dsd-color-pick::-webkit-color-swatch-wrapper{padding:2px}
+.dsd-color-pick::-webkit-color-swatch{border:0;border-radius:2px}
+.dsd-color-hex{width:100%;min-width:0;height:24px;box-sizing:border-box;padding:0 6px;border-radius:var(--dsw-radius-xs);border:.5px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-2);color:var(--dsw-alias-label-primary);font-family:var(--ds-font-family-code);font-size:11px}
+.dsd-color-hex:focus{outline:none;border-color:var(--dsw-alias-brand-primary)}
+.dsd-color-reset{width:22px;height:22px;border:0;border-radius:var(--dsw-radius-xs);background:transparent;color:var(--dsw-alias-label-caption);font-family:inherit;font-size:13px;line-height:1;cursor:pointer}
+.dsd-color-reset:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}
+.dsd-color-reset:disabled{opacity:.3;cursor:default}
+.dsd-editor-group{display:flex;flex-direction:column;gap:6px;padding:8px;border-radius:var(--dsw-radius-md);background:var(--dsw-alias-button-ghost-active-fill)}
+.dsd-editor-subtitle{color:var(--dsw-alias-label-secondary);font-weight:500}
+/* Picking a file and going to find one, two to one. The gallery hand-off is a
+   secondary control, so it takes the outline treatment rather than the filled
+   one: two filled buttons side by side would read as two equal choices. */
+ .dsd-editor-addrow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;flex:none}
+/* The base picture: pinned to the viewport and covering it, with none of the
+   sticker treatment. It gets its own class because it overrides almost everything
+   the positioned picture sets — the anchor point, the height in vh, the edge
+   mask — and a pile of inline overrides would have to be kept in step with that
+   rule by hand. It is the bottom layer, so no z-index of its own is needed: the
+   base items are rendered before every other picture. */
+.dsd-bg-full{position:absolute;inset:0;left:0;top:0;width:100%;height:100%;object-fit:cover;-webkit-mask-image:none;mask-image:none;transform:none;border-radius:0}
+.dsd-editor-addbase{grid-column:auto}
+ .dsd-editor-measure{margin-left:6px;padding:0;border:0;background:none;color:var(--dsw-alias-link);font-size:11px;cursor:pointer;text-decoration:underline}.dsd-editor-usage{margin:0;font-size:11px;line-height:1.5;color:var(--dsw-alias-label-tertiary)}
+.dsd-editor-size{flex:none;font-size:11px;color:var(--dsw-alias-label-tertiary);font-variant-numeric:tabular-nums}
+.dsd-editor-popup{position:fixed;z-index:1001;display:flex;flex-direction:column;gap:8px;box-sizing:border-box;padding:10px 12px;border-radius:var(--dsw-radius-lg);background:var(--dsw-alias-bg-base);border:.5px solid var(--dsw-alias-border-l3);box-shadow:var(--dsw-elevation-prominent);color:var(--dsw-alias-label-primary)}
+.dsd-editor-popup-head{display:flex;align-items:center;gap:8px;cursor:move;-webkit-user-select:none;user-select:none}
+.dsd-editor-popup-title{flex:1 1 auto;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:12px;color:var(--dsw-alias-label-primary)}
+.dsd-editor-popup-close{flex:none;width:20px;height:20px;padding:0;border:0;border-radius:var(--dsw-radius-sm);background:none;color:var(--dsw-alias-label-tertiary);font-size:14px;line-height:1;cursor:pointer}
+.dsd-editor-key{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--dsw-alias-label-secondary);cursor:pointer}
+.dsd-editor-key input{margin:0;accent-color:var(--dsw-alias-brand-primary)}
+.dsd-editor-keybusy{color:var(--dsw-alias-label-tertiary)}.dsd-editor-badge{flex:none;padding:0 5px;border-radius:999px;font-size:11px;line-height:16px;color:var(--dsw-alias-brand-primary);border:.5px solid var(--dsw-alias-border-l2)}
+.dsd-editor-add{grid-column:span 1;display:inline-flex;align-items:center;justify-content:center;height:28px;border-radius:var(--dsw-radius-sm);background:var(--dsw-alias-button-primary-fill);color:var(--dsw-alias-brand-primary-invert);font-weight:500;cursor:pointer}
+.dsd-editor-more{display:inline-flex;align-items:center;justify-content:center;height:28px;padding:0 8px;border-radius:var(--dsw-radius-sm);border:.5px solid var(--dsw-alias-border-l3);background:transparent;color:var(--dsw-alias-label-secondary);font-family:inherit;font-size:12px;white-space:nowrap;cursor:pointer}
+.dsd-editor-more:hover{color:var(--dsw-alias-label-primary);background:var(--dsw-alias-interactive-bg-hover)}
+.dsd-editor-file{display:none}
+.dsd-editor-hint{margin:0;color:var(--dsw-alias-label-tertiary)}
+.dsd-editor-notice{position:absolute;left:12px;right:12px;bottom:10px;margin:0;padding:6px 10px;border-radius:var(--dsw-radius-md);background:var(--dsw-specific-popover-fill);box-shadow:var(--dsw-shadow-popover);color:var(--dsw-alias-state-warn-label)}
+.dsd-editor-item{display:flex;flex-direction:column;gap:5px;padding:8px;border-radius:var(--dsw-radius-md);background:var(--dsw-alias-bg-layer-2);border:.5px solid transparent}
+.dsd-editor-item[data-selected='true']{border-color:var(--dsw-alias-brand-primary)}
+.dsd-editor-item-head{display:flex;align-items:center;gap:8px;min-width:0;cursor:pointer}
+.dsd-editor-thumb{width:28px;height:28px;flex:none;object-fit:cover;border-radius:var(--dsw-radius-xs);background:color-mix(in srgb, var(--dsw-alias-label-primary) 11%, var(--dsw-alias-bg-base))}
+.dsd-editor-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--dsw-alias-label-secondary)}
+.dsd-editor-remove{flex:none;border:0;background:transparent;color:var(--dsw-alias-label-tertiary);cursor:pointer;font-family:inherit;font-size:12px}
+.dsd-editor-remove:hover{color:var(--dsw-alias-state-error-primary)}
+.dsd-editor-clear{height:26px;border-radius:var(--dsw-radius-sm);border:.5px solid var(--dsw-alias-border-l3);background:transparent;color:var(--dsw-alias-label-secondary);cursor:pointer;font-family:inherit;font-size:12px}
+.dsd-editor-clear:hover{color:var(--dsw-alias-label-primary);background:var(--dsw-alias-interactive-bg-hover)}
+.dsd-slider{display:grid;grid-template-columns:44px minmax(0,1fr) 46px;align-items:center;gap:6px}
+.dsd-slider-label{color:var(--dsw-alias-label-tertiary)}
+.dsd-slider-input{width:100%;min-width:0;accent-color:var(--dsw-alias-brand-primary)}
+.dsd-slider-value{text-align:right;color:var(--dsw-alias-label-secondary);font-variant-numeric:tabular-nums}
+/* The native Platform page, laid out exactly like the official account overlay:
+   same fixed full-viewport column, same 1001 layer, same 48px header, and the
+   Windows titlebar strip reserved as padding so this header cannot land on top
+   of the window's own controls. That last line is the whole fix — without it the
+   back control overlaps 收起侧边栏/应用/编辑 and neither set is clickable. */
+.dsd-topup{position:fixed;inset:0;z-index:1001;display:flex;flex-direction:column;background:var(--dsw-alias-bg-base);pointer-events:auto}
+[data-windows-titlebar] .dsd-topup{padding-top:var(--dsh-windows-titlebar-height)}
+.dsd-topup-head{box-sizing:border-box;flex:none;height:48px;padding:6px 16px;border-bottom:.5px solid var(--dsw-alias-border-l1);-webkit-app-region:initial}
+.dsd-topup-controls{display:flex;align-items:center;gap:24px;padding-top:5px}
+.dsd-topup-lights{display:none;flex:none;width:60.667px;height:14px}
+[data-platform='darwin'] .dsd-topup-lights{display:block}
+.dsd-topup-back{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:28px;padding:0 6px;border:0;border-radius:var(--dsw-radius-sm);background:transparent;color:var(--dsw-alias-label-secondary);font:inherit;font-size:14px;line-height:22px;white-space:nowrap;cursor:pointer}
+.dsd-topup-back:hover{color:var(--dsw-alias-label-primary);background:var(--dsw-alias-interactive-bg-hover)}
+.dsd-topup-arrow{font-size:16px;line-height:1}
+.dsd-topup-viewport{position:relative;flex:1;min-height:0;color:var(--dsw-alias-label-secondary)}
+.dsd-topup-status{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;font-size:14px;line-height:22px}
+.dsd-topup-status p{margin:0;color:var(--dsw-alias-label-tertiary)}
+.dsd-topup-retry{box-sizing:border-box;min-width:58px;height:32px;padding:0 12px;border:.5px solid var(--dsw-alias-border-l2);border-radius:var(--dsw-radius-md);background:var(--dsw-alias-button-elevated-fill);color:var(--dsw-alias-label-primary);font-family:inherit;font-size:13px;line-height:20px;cursor:pointer}
+.dsd-topup-retry:hover{background:var(--dsw-alias-interactive-bg-hover)}
+@media (prefers-reduced-motion:reduce){.dsd-editor,.dsd-topup{animation:none}}

@@ -1,0 +1,699 @@
+/* Cui-chengyu/dsh-wechat-theme — client.js
+   fetched 2026-11-02 from https://raw.githubusercontent.com/Cui-chengyu/dsh-wechat-theme/main/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/* ── palette ─────────────────────────────────────────────────────────────── */
+html body {
+  --dsw-font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+    "WeChat Sans Std", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --dsw-font-family-mono: "Menlo", "Consolas", "Courier New", monospace;
+
+  --dsw-alias-bg-base: #f5f5f5;
+  --dsw-alias-bg-layer-1: #f5f5f5;
+  --dsw-alias-bg-layer-2: #ffffff;
+  --dsw-alias-bg-layer-3: #ffffff;
+  --dsw-alias-bg-overlay: #ffffff;
+
+  --dsw-alias-border-l1: #e7e7e7;
+  --dsw-alias-border-l2: #e3e3e3;
+  --dsw-alias-border-l3: #dcdcdc;
+  --dsw-alias-border-l4: #f0f0f0;
+
+  --dsw-alias-label-primary: #191919;
+  --dsw-alias-label-secondary: #7f7f7f;
+  --dsw-alias-label-tertiary: #b2b2b2;
+  --dsw-alias-label-caption: #b2b2b2;
+  --dsw-alias-label-dimmed: #c9c9c9;
+
+  --dsw-alias-brand-primary: #07c160;
+  --dsw-alias-brand-text: #07c160;
+  --dsw-alias-link: #576b95;
+
+  --dsw-alias-button-primary-fill: #07c160;
+  --dsw-alias-button-primary-hover: #06ad56;
+  --dsw-alias-button-primary-dimmed: #a9e7c5;
+  --dsw-alias-button-info-fill: #07c160;
+  --dsw-alias-button-info-hover: #06ad56;
+  --dsw-alias-button-contrast-fill: #191919;
+
+  --dsw-alias-interactive-bg-hover: rgba(0, 0, 0, 0.045);
+  --dsw-alias-interactive-bg-active: rgba(0, 0, 0, 0.08);
+  --dsw-alias-interactive-bg-hover-solid: #e3e3e3;
+
+  --dsw-alias-state-business-primary: #07c160;
+  --dsw-alias-state-success-primary: #07c160;
+
+  --dsw-alias-scrollbar-bg-l1: rgba(0, 0, 0, 0.10);
+  --dsw-alias-scrollbar-bg-l2: rgba(0, 0, 0, 0.16);
+  --dsw-alias-scrollbar-hover-l2: rgba(0, 0, 0, 0.28);
+
+  --dsw-alias-toast-bg: #4c4c4c;
+  --dsw-alias-tooltip-bg: #4c4c4c;
+  --dsw-alias-settings-card-fill: #ffffff;
+  --dsw-alias-settings-card-stroke: #ededed;
+
+  --dsw-specific-bubble: #95ec69;
+  --dsw-specific-bubble-highlight: #8ee05f;
+  --dsw-specific-input-major: #ffffff;
+  --dsw-specific-sidebar-fill: #ededed;
+  --dsw-specific-selector: #ffffff;
+  --dsw-menu-surface-fill: rgba(255, 255, 255, 0.98);
+
+  --dsw-radius-xs: 2px;
+  --dsw-radius-sm: 4px;
+  --dsw-radius-md: 6px;
+  --dsw-radius-lg: 8px;
+  --dsw-radius-xl: 8px;
+  --dsw-radius-panel: 8px;
+
+  --dsh-chat-flow-gap: 8px;
+  --dsh-chat-content-width: 760px;
+
+  color: var(--dsw-alias-label-primary);
+  background: var(--dsw-alias-bg-base);
+}
+
+html body[data-ds-dark-theme] {
+  --dsw-alias-bg-base: #111111;
+  --dsw-alias-bg-layer-1: #191919;
+  --dsw-alias-bg-layer-2: #1f1f1f;
+  --dsw-alias-bg-layer-3: #2a2a2a;
+  --dsw-alias-bg-overlay: #1f1f1f;
+
+  --dsw-alias-border-l1: #2a2a2a;
+  --dsw-alias-border-l2: #303030;
+  --dsw-alias-border-l3: #2a2a2a;
+  --dsw-alias-border-l4: #232323;
+
+  --dsw-alias-label-primary: #d9d9d9;
+  --dsw-alias-label-secondary: #8a8a8a;
+  --dsw-alias-label-tertiary: #6e6e6e;
+  --dsw-alias-label-caption: #6e6e6e;
+  --dsw-alias-label-dimmed: #4d4d4d;
+
+  --dsw-alias-button-contrast-fill: #d9d9d9;
+
+  --dsw-alias-interactive-bg-hover: rgba(255, 255, 255, 0.06);
+  --dsw-alias-interactive-bg-active: rgba(255, 255, 255, 0.10);
+  --dsw-alias-interactive-bg-hover-solid: #2f2f2f;
+
+  --dsw-alias-scrollbar-bg-l1: rgba(255, 255, 255, 0.10);
+  --dsw-alias-scrollbar-bg-l2: rgba(255, 255, 255, 0.16);
+  --dsw-alias-scrollbar-hover-l2: rgba(255, 255, 255, 0.28);
+
+  --dsw-alias-settings-card-fill: #1f1f1f;
+  --dsw-alias-settings-card-stroke: #2a2a2a;
+
+  --dsw-specific-bubble: #3eb575;
+  --dsw-specific-bubble-highlight: #45c07d;
+  --dsw-specific-input-major: #1f1f1f;
+  --dsw-specific-sidebar-fill: #191919;
+  --dsw-specific-selector: #2a2a2a;
+  --dsw-menu-surface-fill: rgba(31, 31, 31, 0.98);
+}
+
+/* ── shell ───────────────────────────────────────────────────────────────── */
+.mP3x-q_frame {
+  background: #f5f5f5 !important;
+}
+
+.mP3x-q_sidebarCol {
+  background: #ededed !important;
+  border-right: 1px solid #dcdcdc !important;
+}
+
+.mP3x-q_centerCol {
+  background: #f5f5f5 !important;
+}
+
+.mP3x-q_bottomRow {
+  background: #f5f5f5;
+  border-top: 1px solid #e7e7e7;
+  font-size: 11px;
+  color: #b2b2b2;
+}
+
+body[data-ds-dark-theme] .mP3x-q_frame,
+body[data-ds-dark-theme] .mP3x-q_centerCol {
+  background: #111111 !important;
+}
+
+body[data-ds-dark-theme] .mP3x-q_sidebarCol {
+  background: #191919 !important;
+  border-right-color: #242424 !important;
+}
+
+body[data-ds-dark-theme] .mP3x-q_bottomRow {
+  background: #111111;
+  border-top-color: #242424;
+}
+
+/* ── left sidebar ────────────────────────────────────────────────────────── */
+.wtg9ga_root {
+  --dsh-sidebar-inline-padding: 10px;
+  background: #ededed;
+  padding: 8px 10px;
+}
+
+.wtg9ga_brand {
+  padding-left: 6px;
+}
+
+.wtg9ga_brandName {
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+/* the compose / new-chat affordance, in WeChat's flat list style */
+.wtg9ga_newSession {
+  margin-top: 10px;
+  height: 34px;
+  min-height: 34px;
+  border: 1px solid #dcdcdc !important;
+  border-radius: 6px !important;
+  background: #ffffff !important;
+  color: #191919 !important;
+  box-shadow: none !important;
+  font-weight: 500;
+}
+
+.wtg9ga_newSession:hover {
+  background: #f7f7f7 !important;
+}
+
+.wtg9ga_newSession svg {
+  color: #07c160;
+}
+
+.wtg9ga_newSessionShortcut {
+  color: #b2b2b2;
+}
+
+.wtg9ga_panelRow {
+  min-height: 34px;
+  border-radius: 5px;
+  margin: 1px 2px;
+  padding: 5px 9px;
+  font-size: 13.5px;
+  color: #191919;
+}
+
+.wtg9ga_panelRow:hover {
+  background: #e3e3e3;
+}
+
+.wtg9ga_panelActive {
+  background: #dedede;
+  color: #191919;
+}
+
+.wtg9ga_panelActive svg {
+  color: #07c160;
+}
+
+.wtg9ga_panelIcon {
+  color: #7f7f7f;
+}
+
+.wtg9ga_iconButton {
+  border-radius: 5px;
+}
+
+.wtg9ga_iconButton:hover {
+  background: #e3e3e3;
+}
+
+/* ── workspace + session list ────────────────────────────────────────────── */
+.GAkraW_sectionHeader {
+  height: 32px;
+  margin-bottom: 2px;
+}
+
+.GAkraW_sectionLabel {
+  color: #999999;
+  font-size: 12px;
+  letter-spacing: 0;
+}
+
+.wnFoaW_projectRow {
+  min-height: 34px;
+  border-radius: 5px;
+  font-size: 13px;
+  color: #7f7f7f;
+  margin: 1px 4px;
+  padding: 4px 8px;
+}
+
+.wnFoaW_projectRow:hover {
+  background: #e3e3e3;
+}
+
+.wnFoaW_sessionRow {
+  min-height: 52px;
+  margin: 1px 4px;
+  padding: 7px 9px;
+  border-radius: 5px;
+  gap: 8px;
+  /* WeChat keeps every conversation equally readable; DSH fades the ones
+     that are not on screen, which reads as "disabled" here. */
+  opacity: 1 !important;
+}
+
+.wnFoaW_sessionRow:hover {
+  background: #e3e3e3;
+}
+
+.wnFoaW_sessionRow.wnFoaW_selected {
+  background: #dedede;
+}
+
+.wnFoaW_title {
+  margin: 0 4px;
+  font-size: 13.5px;
+  font-weight: 400;
+  color: #191919 !important;
+  line-height: 20px;
+}
+
+.wnFoaW_meta {
+  font-size: 11.5px;
+  line-height: 17px;
+  color: #999999 !important;
+}
+
+.wnFoaW_time {
+  font-size: 10.5px;
+  color: #b2b2b2 !important;
+}
+
+/* Archived conversations read as "put away, not broken": a quiet grey row with
+   the time replaced by a small 已归档 tag. DSH only dims the title, which is
+   indistinguishable from a session that merely is not open. */
+.wnFoaW_sessionRow.wnFoaW_archived {
+  background: rgba(0, 0, 0, 0.028);
+}
+
+.wnFoaW_sessionRow.wnFoaW_archived:hover {
+  background: #e3e3e3;
+}
+
+.wnFoaW_sessionRow.wnFoaW_archived .wnFoaW_title {
+  color: #8f8f8f !important;
+}
+
+.wnFoaW_sessionRow.wnFoaW_archived .wnFoaW_time {
+  display: none;
+}
+
+.wnFoaW_sessionRow.wnFoaW_archived::after {
+  content: "已归档";
+  flex: none;
+  margin-left: auto;
+  padding: 0 5px;
+  height: 16px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.06);
+  color: #9a9a9a;
+  font-size: 10px;
+  line-height: 16px;
+  letter-spacing: 0.2px;
+  pointer-events: none;
+}
+
+.wnFoaW_sessionRow.wnFoaW_archived:hover::after {
+  display: none;
+}
+
+.wnFoaW_searchResultRow.wnFoaW_archived {
+  background: rgba(0, 0, 0, 0.028);
+}
+
+.wnFoaW_searchResultRow.wnFoaW_archived .wnFoaW_searchResultTitle {
+  color: #8f8f8f;
+}
+
+.wnFoaW_folderActive {
+  color: #07c160;
+}
+
+body[data-ds-dark-theme] .wtg9ga_root,
+body[data-ds-dark-theme] .wtg9ga_newSession {
+  background: #191919 !important;
+  border-color: #2a2a2a !important;
+  color: #d9d9d9 !important;
+}
+
+body[data-ds-dark-theme] .wtg9ga_panelRow,
+body[data-ds-dark-theme] .wnFoaW_title {
+  color: #d9d9d9;
+}
+
+body[data-ds-dark-theme] .wtg9ga_panelRow:hover,
+body[data-ds-dark-theme] .wnFoaW_sessionRow:hover,
+body[data-ds-dark-theme] .wnFoaW_projectRow:hover {
+  background: #242424;
+}
+
+body[data-ds-dark-theme] .wtg9ga_panelActive,
+body[data-ds-dark-theme] .wnFoaW_sessionRow.wnFoaW_selected {
+  background: #2a2a2a;
+}
+
+body[data-ds-dark-theme] .wnFoaW_sessionRow.wnFoaW_archived {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+body[data-ds-dark-theme] .wnFoaW_sessionRow.wnFoaW_archived .wnFoaW_title {
+  color: #7a7a7a !important;
+}
+
+body[data-ds-dark-theme] .wnFoaW_sessionRow.wnFoaW_archived::after {
+  background: rgba(255, 255, 255, 0.08);
+  color: #8a8a8a;
+}
+
+/* ── conversation header ─────────────────────────────────────────────────── */
+.an3WzG_header {
+  min-height: 60px;
+  padding: 6px 22px 0 18px;
+  background: #f5f5f5;
+  border-bottom: 1px solid #e7e7e7;
+}
+
+.an3WzG_tabs {
+  gap: 22px;
+  margin-top: 2px;
+  padding-left: 2px;
+}
+
+.an3WzG_viewTabs {
+  gap: 24px;
+}
+
+.an3WzG_titleRow {
+  align-items: center;
+}
+
+.an3WzG_header :is(h1, h2, [class*="_title"]) {
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: #191919;
+}
+
+.an3WzG_tab {
+  min-height: 25px;
+  padding: 0 0 9px;
+  font-size: 13px;
+  font-weight: 400;
+  color: #7f7f7f;
+}
+
+.an3WzG_tab:hover {
+  color: #191919;
+}
+
+.an3WzG_tabActive {
+  color: #07c160;
+  font-weight: 500;
+}
+
+.an3WzG_tabActive:hover {
+  color: #06ad56;
+}
+
+.an3WzG_tabActive:after {
+  background: #07c160;
+  border-radius: 1px;
+  height: 2px;
+}
+
+.an3WzG_crumb {
+  color: #999999;
+  font-size: 12.5px;
+}
+
+body[data-ds-dark-theme] .an3WzG_header {
+  background: #111111;
+  border-bottom-color: #242424;
+}
+
+body[data-ds-dark-theme] .an3WzG_header :is(h1, h2, [class*="_title"]) {
+  color: #d9d9d9;
+}
+
+body[data-ds-dark-theme] .an3WzG_tab {
+  color: #8a8a8a;
+}
+
+body[data-ds-dark-theme] .an3WzG_tab:hover {
+  color: #d9d9d9;
+}
+
+body[data-ds-dark-theme] .an3WzG_tabActive {
+  color: #07c160;
+}
+
+/* ── transcript ──────────────────────────────────────────────────────────── */
+.V4vHZW_frame,
+.V4vHZW_root,
+[data-conversation-scroll] {
+  background: #f5f5f5;
+}
+
+.V4vHZW_scroll {
+  padding-top: 22px;
+  padding-bottom: 14px;
+}
+
+body[data-ds-dark-theme] .V4vHZW_frame,
+body[data-ds-dark-theme] .V4vHZW_root,
+body[data-ds-dark-theme] [data-conversation-scroll] {
+  background: #111111;
+}
+
+/* ── user message: the green bubble ──────────────────────────────────────── */
+.LOmM4q_userRow {
+  align-items: flex-end;
+  padding-right: 2px;
+}
+
+.LOmM4q_userStack {
+  max-width: min(calc(var(--dsh-chat-content-width, 760px) * 0.72), 76%);
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.LOmM4q_bubble {
+  position: relative;
+  background: #95ec69;
+  color: #111111;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 14px;
+  line-height: 22px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.02);
+}
+
+.LOmM4q_bubble::after {
+  content: "";
+  position: absolute;
+  right: -4px;
+  bottom: 12px;
+  width: 8px;
+  height: 8px;
+  background: #95ec69;
+  border-radius: 1px;
+  transform: rotate(45deg);
+}
+
+.LOmM4q_bubble a {
+  color: #1a4d2e;
+  text-decoration: underline;
+}
+
+.LOmM4q_attachmentRow {
+  margin-right: 4px;
+}
+
+body[data-ds-dark-theme] .LOmM4q_bubble {
+  background: #3eb575;
+  color: #101010;
+}
+
+body[data-ds-dark-theme] .LOmM4q_bubble::after {
+  background: #3eb575;
+}
+
+/* ── assistant message: the white bubble ─────────────────────────────────── */
+.xMeOpW_root {
+  position: relative;
+  width: fit-content;
+  max-width: min(80%, 660px);
+  margin-left: 4px;
+  padding: 9px 13px;
+  background: #ffffff;
+  border: 1px solid #ededed;
+  border-radius: 4px;
+  color: #191919;
+  line-height: 24px;
+}
+
+.xMeOpW_root::after {
+  content: "";
+  position: absolute;
+  left: -4px;
+  top: 15px;
+  width: 8px;
+  height: 8px;
+  background: #ffffff;
+  border-left: 1px solid #ededed;
+  border-bottom: 1px solid #ededed;
+  border-radius: 1px;
+  transform: rotate(45deg);
+}
+
+/* wide tables must not break out of the bubble */
+.xMeOpW_body .md-table-wide {
+  --dsh-table-spare: 0px !important;
+  --dsh-table-lead: 0px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+  overflow-x: auto;
+}
+
+.xMeOpW_body .md-table-wide > table {
+  max-width: 100%;
+}
+
+.xMeOpW_actions {
+  color: #b2b2b2;
+}
+
+/* A step with no readable answer keeps a bubble as wide as its own padding.
+   The client half measures that and hides the result; see sweepBubbles. */
+.xMeOpW_root[data-wx-empty] {
+  display: none;
+}
+
+body[data-ds-dark-theme] .xMeOpW_root {
+  background: #1f1f1f;
+  border-color: #2c2c2c;
+  color: #d9d9d9;
+}
+
+body[data-ds-dark-theme] .xMeOpW_root::after {
+  background: #1f1f1f;
+  border-left-color: #2c2c2c;
+  border-bottom-color: #2c2c2c;
+}
+
+/* ── thinking / tool rows: quiet system lines ────────────────────────────── */
+.VJlF5q_root {
+  color: #8a8a8a;
+}
+
+.VJlF5q_title {
+  font-size: 12.5px;
+  color: #8a8a8a;
+}
+
+.VJlF5q_thinkBody {
+  font-size: 12.5px;
+  line-height: 20px;
+  color: #999999;
+  border-left: 2px solid #e3e3e3;
+  padding-left: 10px;
+  margin-left: 2px;
+}
+
+.hSzSIW_root,
+.EqXNNG_root,
+.iFrn8G_root,
+.cVfUIq_root {
+  border-radius: 5px;
+}
+
+body[data-ds-dark-theme] .VJlF5q_thinkBody {
+  border-left-color: #2f2f2f;
+  color: #7f7f7f;
+}
+
+/* ── composer ────────────────────────────────────────────────────────────── */
+.GRgSLq_card {
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  background: #ffffff;
+  box-shadow: none;
+}
+
+.GRgSLq_card:focus-within {
+  border-color: #b7e7cd;
+  box-shadow: 0 0 0 2px rgba(7, 193, 96, 0.10);
+}
+
+.GRgSLq_input {
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.GRgSLq_placeholder {
+  color: #b2b2b2;
+}
+
+.GRgSLq_row {
+  padding: 2px 8px 6px;
+}
+
+.GRgSLq_add {
+  border-radius: 4px;
+}
+
+.GRgSLq_add:hover {
+  background: #f2f2f2;
+}
+
+.GRgSLq_primary {
+  width: 44px;
+  height: 30px;
+  border-radius: 4px;
+  background: #07c160;
+  color: #ffffff;
+}
+
+.GRgSLq_primary:hover {
+  background: #06ad56;
+}
+
+.GRgSLq_select {
+  color: #7f7f7f;
+  font-size: 12.5px;
+}
+
+.GRgSLq_select:hover {
+  color: #191919;
+}
+
+body[data-ds-dark-theme] .GRgSLq_card {
+  background: #1f1f1f;
+  border-color: #2c2c2c;
+}
+
+body[data-ds-dark-theme] .GRgSLq_add:hover {
+  background: #2a2a2a;
+}
+
+/* ── menus, dialogs, misc ────────────────────────────────────────────────── */
+::selection {
+  background: rgba(7, 193, 96, 0.22);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.16) transparent;
+}
+
+body[data-ds-dark-theme] * {
+  scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+}

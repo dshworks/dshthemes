@@ -1,0 +1,379 @@
+/* Time-233/dsh-theme-neon-arcade — src/theme.css
+   fetched 2026-11-02 from https://raw.githubusercontent.com/Time-233/dsh-theme-neon-arcade/main/src/theme.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* NEON ARCADE. All application styling is scoped to this plugin's marker. */
+@font-face {
+  font-family: 'Neon Arcade Pixel';
+  src: url('__PIXEL_FONT__') format('truetype');
+  font-display: swap;
+  font-weight: 400;
+}
+
+html[data-neon-arcade] {
+  --na-cyan: #35f1ff;
+  --na-pink: #ff66cc;
+  --na-lime: #b5f86e;
+  --na-violet: #a980ff;
+  --na-grid: #7160a012;
+  --na-edge: #35f1ff3b;
+  --na-scanline-highlight: rgba(190, 202, 210, .07);
+  --na-scanline-trail: rgba(168, 184, 198, .012);
+  --na-stars: url('__ARCADE_STARS_DARK__');
+  --na-scene: url('__ARCADE_SCENE_DARK__');
+  --na-glow: 0;
+  --na-shadow: 0 0 0 transparent;
+}
+html[data-neon-arcade-glow] {
+  --na-glow: 1;
+  --na-shadow: 0 0 16px #35f1ff14, 3px 3px 0 #ff4dc414;
+}
+html[data-neon-arcade] body:not([data-ds-dark-theme]) {
+  --na-cyan: #007383;
+  --na-pink: #ad267f;
+  --na-lime: #386d17;
+  --na-violet: #7042a6;
+  --na-grid: #78539d0c;
+  --na-edge: #00738340;
+  --na-scanline-highlight: rgba(72, 83, 96, .055);
+  --na-scanline-trail: rgba(72, 83, 96, .008);
+  --na-stars: url('__ARCADE_STARS_LIGHT__');
+  --na-scene: url('__ARCADE_SCENE_LIGHT__');
+}
+html[data-neon-arcade] body {
+  background: var(--dsw-alias-bg-base);
+  accent-color: var(--na-cyan);
+  caret-color: var(--na-cyan);
+}
+html[data-neon-arcade] ::selection { background: #8756b580; color: #fff; }
+html[data-neon-arcade] :is(button, input, select, textarea, [role='menuitem']) {
+  border-radius: 3px;
+}
+html[data-neon-arcade] :is(button, a, input, textarea, [contenteditable='true']):focus-visible {
+  outline: 2px solid var(--na-cyan);
+  outline-offset: 3px;
+}
+html[data-neon-arcade] :is(pre, [role='menu'], [role='dialog']) {
+  border: 1px solid var(--dsw-alias-border-l3);
+  border-radius: 5px;
+  box-shadow: var(--na-shadow);
+}
+html[data-neon-arcade] pre { border-left: 2px solid var(--na-violet); }
+html[data-neon-arcade] a { text-underline-offset: 3px; }
+
+/* Desktop shell adapter, verified on the installed 0.2.1-rc.2 build. */
+html[data-neon-arcade] .BynINW_frame { --dsh-windows-content-radius: 4px; }
+html[data-neon-arcade] .BynINW_frame::before {
+  box-shadow: inset 0 -1px var(--na-edge);
+  background: linear-gradient(90deg, var(--dsw-specific-sidebar-fill), var(--dsw-alias-bg-base));
+}
+html[data-neon-arcade] .BynINW_sidebarCol {
+  border-right: 1px solid var(--na-edge);
+  background-image: linear-gradient(180deg, #35f1ff06, transparent 24%, #a35cff09);
+}
+html[data-neon-arcade] .BynINW_centerCol {
+  border-top: 1px solid var(--na-edge);
+  position: relative;
+}
+html[data-neon-arcade] ._2H3hWW_panelActive {
+  box-shadow: inset 3px 0 var(--na-cyan);
+  color: var(--na-cyan);
+}
+html[data-neon-arcade] ._2H3hWW_newSession {
+  border: 1px solid var(--na-edge);
+  box-shadow: 2px 2px 0 #ff4dc422;
+}
+html[data-neon-arcade] ._2H3hWW_newSession:hover { border-color: var(--na-cyan); }
+html[data-neon-arcade] .wCInkW_panel {
+  border: 1px solid var(--na-edge);
+  border-radius: 6px;
+  corner-shape: bevel;
+  box-shadow: 5px 5px 0 #ff4dc415, 0 24px 80px #0008;
+}
+html[data-neon-arcade] .wCInkW_header { color: var(--na-cyan); }
+html[data-neon-arcade] [data-conversation-region='chat'] {
+  position: relative;
+  isolation: isolate;
+}
+html[data-neon-arcade-grid] [data-conversation-region='chat'] {
+  background-image: linear-gradient(var(--na-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--na-grid) 1px, transparent 1px),
+    radial-gradient(ellipse at 70% 5%, #9b45ff0b, transparent 60%);
+  background-size: 32px 32px, 32px 32px, 100% 100%;
+}
+/* The two decorative layers stay behind content, inside the chat canvas.
+   No overlay elements, pointer handlers, observers, or moving particle loops. */
+html[data-neon-arcade-decorations] [data-conversation-region='chat']::before,
+html[data-neon-arcade-decorations] [data-conversation-region='chat']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  image-rendering: pixelated;
+}
+html[data-neon-arcade-decorations] [data-conversation-region='chat']::before {
+  background-image: var(--na-stars);
+  background-repeat: repeat;
+  background-size: 560px 420px;
+  opacity: .3;
+}
+html[data-neon-arcade-decorations] [data-conversation-region='chat']::after {
+  background-image: var(--na-scene);
+  background-position: center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  opacity: .14;
+}
+html[data-neon-arcade-decorations] [data-conversation-region='chat']:is([data-content-phase='hero'], [data-content-phase='blank'])::before { opacity: 1; }
+html[data-neon-arcade-decorations] [data-conversation-region='chat']:is([data-content-phase='hero'], [data-content-phase='blank'])::after { opacity: 1; }
+html[data-neon-arcade-decorations] .BynINW_sidebarCol {
+  background-image: var(--na-stars), linear-gradient(180deg, #35f1ff06, transparent 24%, #a35cff09);
+  background-size: 560px 420px, 100% 100%;
+}
+/* Game scenes stay below native chat content in passive mode. Explicit
+   participation elevates the canvas and enables its local pointer controls. */
+.na-air-battle {
+  display: none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  user-select: none;
+  z-index: -1;
+  image-rendering: pixelated;
+}
+html[data-neon-arcade-game] [data-conversation-region='chat'] { background-image: none; }
+html[data-neon-arcade-game] [data-conversation-region='chat']::before,
+html[data-neon-arcade-game] [data-conversation-region='chat']::after { display: none; }
+html[data-neon-arcade-game] .na-air-battle { display: block; opacity: .2; }
+html[data-neon-arcade-game] [data-conversation-region='chat']:is([data-content-phase='hero'], [data-content-phase='blank']) > .na-air-battle { opacity: .72; }
+.na-air-battle-controls {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  z-index: 13;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: calc(100% - 32px);
+  pointer-events: auto;
+  font-family: 'Segoe UI', 'Microsoft YaHei UI', sans-serif;
+}
+.na-air-battle-hint { color: var(--dsw-alias-label-tertiary); font-size: 11px; line-height: 18px; pointer-events: none; }
+.na-air-battle-join, .na-pig-sling-time {
+  border: 1px solid var(--dsw-alias-border-l4);
+  color: var(--dsw-alias-label-primary);
+  background: var(--dsw-alias-bg-layer-1);
+  padding: 6px 12px;
+  border-radius: 3px;
+  cursor: pointer;
+  white-space: nowrap;
+  font: 12px/18px 'Segoe UI', 'Microsoft YaHei UI', sans-serif;
+}
+.na-air-battle-join:hover, .na-pig-sling-time:hover { border-color: var(--na-cyan); color: var(--na-cyan); }
+.na-air-battle-join:focus-visible, .na-pig-sling-time:focus-visible { outline: 2px solid var(--na-cyan); outline-offset: 2px; }
+.na-air-battle-join[aria-pressed='true'] { border-color: var(--na-cyan); }
+html[data-neon-arcade-game] [data-conversation-region='chat'][data-na-playing] > .na-air-battle {
+  z-index: 12;
+  opacity: 1;
+  pointer-events: auto;
+  touch-action: none;
+  cursor: grab;
+  outline: none;
+}
+html[data-neon-arcade-game] [data-conversation-region='chat'][data-na-playing] > .na-air-battle:focus-visible { outline: none; }
+.na-fruit-bomb-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  pointer-events: none;
+  background: #fff;
+}
+html[data-na-fruit-impact] body > :not(.na-fruit-bomb-flash) {
+  animation: na-fruit-impact .85s steps(1, end) both;
+}
+@keyframes na-fruit-impact {
+  0%, 100% { transform: translate(0, 0); }
+  6% { transform: translate(-24px, 14px) rotate(-.5deg); }
+  14% { transform: translate(22px, -18px) rotate(.6deg); }
+  22% { transform: translate(-20px, -12px) rotate(-.4deg); }
+  30% { transform: translate(26px, 16px) rotate(.5deg); }
+  40% { transform: translate(-18px, 15px) rotate(-.5deg); }
+  50% { transform: translate(20px, -14px) rotate(.4deg); }
+  62% { transform: translate(-14px, -10px) rotate(-.3deg); }
+  74% { transform: translate(12px, 9px) rotate(.2deg); }
+  84% { transform: translate(-8px, 5px); }
+  92% { transform: translate(5px, -4px); }
+}
+.na-fruit-result {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 14;
+  display: flex; flex-direction: column; align-items: center; gap: 18px;
+  width: 350px; max-width: calc(100% - 48px); padding: 28px 20px;
+  background: #12132cf2; border: 2px solid #ff658a; box-shadow: 5px 5px 0 #59cbe855, 0 0 32px #ff658a20;
+  color: #e8e4ff; font-family: 'Segoe UI', 'Microsoft YaHei UI', sans-serif; text-align: center;
+}
+.na-fruit-result[hidden] { display: none; }
+.na-fruit-result h2 { font: 32px/1.2 'Neon Arcade Pixel', monospace; color: #ff8fb4; margin: 0; white-space: nowrap; }
+.na-fruit-result p { font-size: 13px; margin: 0; color: #b8c9df; }
+.na-fruit-restart { background: #b9faff; color: #12132c; padding: 8px 22px; border: 1px solid #e8ffff; border-radius: 0; font: 14px/20px 'Microsoft YaHei UI', sans-serif; cursor: pointer; }
+.na-fruit-restart:hover { background: #ffd08a; }
+.na-fruit-restart:focus-visible { outline: 2px solid #ff8fb4; outline-offset: 4px; }
+.na-fruit-slice-controls .na-air-battle-hint { color: #b8c9df; background: #12132ce8; padding: 5px 7px; }
+html[data-neon-arcade] [data-composer-card] {
+  border: 1px solid var(--na-edge);
+  border-radius: 7px;
+  corner-shape: bevel;
+  box-shadow: var(--na-shadow);
+}
+html[data-neon-arcade] [data-composer-card]:focus-within {
+  border-color: var(--na-cyan);
+  box-shadow: 0 0 0 1px var(--na-edge), var(--na-shadow);
+}
+html[data-neon-arcade-decorations] [data-composer-card]::before {
+  content: '';
+  position: absolute;
+  left: 16px;
+  top: -2px;
+  width: 56px;
+  height: 3px;
+  pointer-events: none;
+  background: repeating-linear-gradient(90deg, var(--na-cyan) 0 4px, transparent 4px 8px);
+}
+html[data-neon-arcade] [data-composer-input] { caret-color: var(--na-cyan); }
+html[data-neon-arcade] .RlGAzG_primary {
+  color: #090817;
+  background: var(--na-cyan);
+  border-radius: 3px;
+  box-shadow: 2px 2px 0 #ff66cc70;
+}
+html[data-neon-arcade] body:not([data-ds-dark-theme]) .RlGAzG_primary { color: #fff; }
+html[data-neon-arcade] .RlGAzG_primary:hover:not(:disabled) {
+  background: var(--na-pink);
+  box-shadow: 2px 2px 0 #35f1ff70;
+}
+html[data-neon-arcade] [data-conversation-tabs] {
+  border-bottom: 1px solid var(--dsw-alias-border-l1);
+}
+html[data-neon-arcade-scanlines] .BynINW_centerCol::after {
+  content: '';
+  position: absolute;
+  inset: -100% 0 0;
+  pointer-events: none;
+  z-index: 9;
+  /* One non-repeating beam sits halfway down a 2x-height layer. Moving that
+     layer by half its height sweeps one beam through the clipped canvas.
+     Both ends wrap outside the canvas. Only the transform animates.
+     Keep the layer above the composer (z=7) and below shell dialogs (z=20). */
+  background-image: linear-gradient(
+    to bottom,
+    transparent calc(50% - 8px),
+    var(--na-scanline-trail) calc(50% - 3px),
+    var(--na-scanline-highlight) 50%,
+    var(--na-scanline-highlight) calc(50% + 1px),
+    transparent calc(50% + 3px)
+  );
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  opacity: 1;
+  transform: translate3d(0, -12px, 0);
+  animation: na-crt-sweep 18s linear infinite;
+  will-change: transform;
+}
+@keyframes na-crt-sweep {
+  from { transform: translate3d(0, -12px, 0); }
+  to { transform: translate3d(0, calc(50% + 12px), 0); }
+}
+
+/* Plugin-owned UI. Body and code fonts retain the user's native typography. */
+.na-settings {
+  font-family: 'Segoe UI', 'Microsoft YaHei UI', sans-serif;
+  color: var(--dsw-alias-label-primary);
+  border: 1px solid var(--dsw-alias-border-l3);
+  border-radius: 4px;
+  corner-shape: bevel;
+  padding: 16px;
+  margin: 14px 0;
+  background: var(--dsw-alias-bg-layer-1);
+}
+.na-settings-head { display: flex; gap: 12px; align-items: center; }
+.na-wordmark {
+  font: 400 18px/1.4 'Neon Arcade Pixel', monospace;
+  letter-spacing: 1px;
+  color: var(--dsw-alias-state-business-primary);
+}
+.na-desc { color: var(--dsw-alias-label-secondary); font-size: 12px; line-height: 1.7; margin-top: 4px; }
+.na-settings-sub { margin: 14px 0 4px; padding-top: 12px; border-top: 1px solid var(--dsw-alias-border-l2); }
+.na-setting { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 36px; font-size: 13px; }
+.na-setting label { flex: 1; }
+.na-game-select { max-width: 55%; padding: 5px 8px; color: var(--dsw-alias-label-primary); background: var(--dsw-alias-bg-layer-2); border: 1px solid var(--dsw-alias-border-l4); font: inherit; }
+.na-pig-sling-controls .na-air-battle-hint { max-width: min(45vw, 300px); }
+html[data-neon-arcade-game] [data-na-playing] > .na-pig-sling-controls { color: #294d5e; }
+html[data-neon-arcade-game] [data-na-playing] > .na-pig-sling-controls .na-air-battle-hint { color: #294d5e; background: #f8faf0d9; padding: 5px 7px; }
+.na-pig-sling-time { border-radius: 0; box-shadow: 2px 2px 0 #ff66cc25; }
+.na-pig-sling-controls[data-na-night] .na-pig-sling-time { color: #b4f6ff; background: #15172d; border-color: #5a6c98; }
+html[data-neon-arcade-game] [data-na-playing] > .na-pig-sling-controls[data-na-night] .na-air-battle-hint { color: #c7d7ee; background: #15172de8; }
+html[data-neon-arcade-game] [data-na-playing] > .na-pig-sling-controls[data-na-night] .na-air-battle-join { color: #e6e2ff; background: #15172d; border-color: #80c9d8; }
+.na-pig-sling-controls[data-na-night] button:hover { color: #b4f6ff; border-color: #b4f6ff; }
+.na-toggle {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  width: 40px;
+  height: 22px;
+  padding: 3px;
+  border: 1px solid var(--dsw-alias-border-l4);
+  background: var(--dsw-alias-bg-layer-2);
+  cursor: pointer;
+}
+.na-toggle span { display: block; width: 12px; height: 12px; background: var(--dsw-alias-label-tertiary); }
+.na-toggle[aria-checked='true'] { border-color: var(--dsw-alias-state-business-primary); background: var(--dsw-alias-state-business-tertiary); }
+.na-toggle[aria-checked='true'] span { margin-left: auto; background: var(--dsw-alias-state-business-primary); }
+.na-setting:has(.na-toggle:disabled) { opacity: .45; }
+.na-toggle:disabled { cursor: default; }
+.na-setting-note { color: var(--dsw-alias-label-tertiary); font-size: 11px; line-height: 1.7; margin-top: 8px; }
+.na-footer {
+  border: 1px solid var(--dsw-alias-border-l2);
+  background: var(--dsw-alias-bg-layer-1);
+  color: var(--dsw-alias-label-secondary);
+  font: 10px/1.2 'Neon Arcade Pixel', monospace;
+  letter-spacing: .4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 7px 8px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+.na-footer[data-active='true'] { color: var(--dsw-alias-state-business-primary); border-color: var(--dsw-alias-state-business-primary); }
+.na-footer-dot { width: 5px; height: 5px; background: currentColor; }
+.na-mascot { color: #35f1ff; overflow: visible; image-rendering: pixelated; }
+html[data-neon-arcade-glow] .na-mascot { filter: drop-shadow(0 0 10px #35f1ff38); }
+.na-mascot .na-sprite-offset { fill: #ff66cc; }
+@media (max-width: 820px) {
+  /* Keep the original square pixel proportions in narrow/split desktop panels. */
+  html[data-neon-arcade-decorations] [data-conversation-region='chat']::after {
+    background-size: auto 100%;
+    opacity: .24;
+  }
+  html[data-neon-arcade-decorations] [data-conversation-region='chat']:is([data-content-phase='hero'], [data-content-phase='blank'])::after { opacity: .65; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-neon-arcade] .na-mascot, html[data-neon-arcade] .na-toggle { transition: none; animation: none; }
+  /* Scan motion is explicitly opt-in; reduce its speed when the OS requests it. */
+  html[data-neon-arcade-scanlines] .BynINW_centerCol::after { animation-duration: 32s; }
+}
+@media (forced-colors: active) {
+  html[data-neon-arcade] { --na-cyan: Highlight; --na-pink: LinkText; --na-edge: ButtonBorder; }
+  html[data-neon-arcade-grid] [data-conversation-region='chat'] { background-image: none; }
+  html[data-neon-arcade-scanlines] .BynINW_centerCol::after { display: none; }
+  html[data-neon-arcade-decorations] [data-conversation-region='chat']::before,
+  html[data-neon-arcade-decorations] [data-conversation-region='chat']::after,
+  html[data-neon-arcade-decorations] [data-composer-card]::before { display: none; }
+  html[data-neon-arcade-decorations] .BynINW_sidebarCol { background-image: none; }
+  .na-toggle span { background: ButtonText; }
+  .na-air-battle { visibility: hidden; }
+  .na-air-battle-controls { display: none; }
+}
+

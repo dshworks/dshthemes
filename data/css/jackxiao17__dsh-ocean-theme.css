@@ -1,0 +1,416 @@
+/* jackxiao17/dsh-ocean-theme — lib/client.js
+   fetched 2026-11-02 from https://raw.githubusercontent.com/jackxiao17/dsh-ocean-theme/main/lib/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/* ═══ 画布：body::before 铺满屏渐变（不透明，自带兜底色） ══════════════
+ * body 背景置透明 → 画布即渐变；面板半透明浮在其上。
+ * 深色档 = 官方首页渐变配方（JohnnyTing/dsh-official-homepage-theme，MIT）；
+ * 浅色档 = 同一构图的亮蓝改编（浅海 → 天光）。 */
+html {
+  background: #e8f0fa;
+}
+
+html:has(body[data-ds-dark-theme]) {
+  background: #071323;
+}
+
+body::before {
+  position: fixed;
+  content: '';
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(980px 520px at 66% -4%, rgba(255, 255, 255, 0.9), transparent 60%),
+    radial-gradient(760px 460px at 18% 20%, rgba(96, 149, 212, 0.30), transparent 68%),
+    radial-gradient(640px 420px at 54% 52%, rgba(118, 168, 224, 0.18), transparent 72%),
+    radial-gradient(560px 400px at 100% 70%, rgba(255, 255, 255, 0.55), transparent 64%),
+    linear-gradient(180deg, #edf3fb 0%, #dde9f7 45%, #c8d9ef 100%);
+}
+
+body[data-ds-dark-theme]::before {
+  background-image:
+    radial-gradient(980px 520px at 66% -4%, rgba(195, 216, 220, 0.34), transparent 60%),
+    radial-gradient(760px 460px at 18% 20%, rgba(44, 97, 156, 0.42), transparent 68%),
+    radial-gradient(640px 420px at 54% 52%, rgba(56, 104, 155, 0.22), transparent 72%),
+    radial-gradient(560px 400px at 100% 70%, rgba(219, 221, 203, 0.15), transparent 64%),
+    linear-gradient(180deg, #15375e 0%, #0d2949 42%, #071626 100%);
+}
+
+body,
+#root {
+  background: transparent !important;
+  min-height: 100vh;
+}
+
+/* ═══ 浅海 token 层（默认档）：白玻璃 + 蓝调边框 ══════════════════════ */
+html body {
+  --dsw-alias-bg-base: rgba(255, 255, 255, 0.6) !important;
+  --dsw-alias-bg-layer-1: #f6f9fd !important;
+  --dsw-alias-bg-layer-2: #ecf2fa !important;
+  --dsw-alias-bg-layer-3: #e1ebf7 !important;
+  --dsw-alias-bg-overlay: #ffffff !important;
+  --dsw-alias-bg-mask-1: rgba(10, 25, 50, 0.32) !important;
+  --dsw-alias-bg-mask-2: rgba(10, 25, 50, 0.22) !important;
+  --dsw-alias-border-l1: rgba(23, 58, 110, 0.10) !important;
+  --dsw-alias-border-l2: rgba(23, 58, 110, 0.14) !important;
+  --dsw-alias-border-l3: rgba(23, 58, 110, 0.22) !important;
+  --dsw-alias-label-primary: #0c1a2e !important;
+  --dsw-alias-label-secondary: #3d5270 !important;
+  --dsw-alias-label-tertiary: #64789a !important;
+  --dsw-alias-label-caption: #7d90aa !important;
+  --dsw-specific-sidebar-fill: rgba(223, 233, 247, 0.78) !important;
+  --dsw-specific-input-major: rgba(255, 255, 255, 0.72) !important;
+  --dsw-specific-menu: rgba(255, 255, 255, 0.88) !important;
+  --dsw-menu-surface-fill: rgba(255, 255, 255, 0.88) !important;
+  --dsw-alias-button-floating-fill: rgba(255, 255, 255, 0.9) !important;
+  --dsw-alias-button-floating-hover: rgba(255, 255, 255, 1) !important;
+  --dsw-alias-button-elevated-fill: #f4f8fd !important;
+  --dsw-alias-interactive-bg-hover: rgba(47, 84, 138, 0.08) !important;
+  --dsw-alias-interactive-bg-active: rgba(47, 84, 138, 0.14) !important;
+  --dsw-alias-interactive-bg-hover-solid: #e4edf8 !important;
+  --dsw-alias-scrollbar-bg-l1: #c3d4ea !important;
+  --dsw-alias-scrollbar-bg-l2: #b0c6e2 !important;
+  --dsw-alias-scrollbar-hover-l1: #a2bbdb !important;
+  --dsw-alias-scrollbar-hover-l2: #8badcf !important;
+  /* tooltip / toast 必须是深底：这两处的文字色产品写死了 —— tooltip 组件里
+   * 硬编码 color: var(--dsw-static-neutral-bluish-00)（= #fff，且没有对应的
+   * label token 可覆盖），toast 的 --dsw-alias-toast-label 也指向同一个 #fff。
+   * 0.1.0 把它们改成白玻璃 #ffffff，于是「白底 + 白字」——悬浮提示整片看不见，
+   * 浅色档的 tab（对话/轨迹/上下文/编队）提示、以及顶部 toast 全部中招。
+   * 这里回到产品原本的「深底白字」语义，取深海档同一支海军蓝 #16314f
+   * （白字 13.2:1），两档工具提示同一身份，且无需碰任何类名哈希。 */
+  --dsw-alias-tooltip-bg: #16314f !important;
+  --dsw-alias-toast-bg: #16314f !important;
+  /* toast 文字自己声明一份，与上面的深底成对锁死（产品默认指向 #fff，此处仍取近白） */
+  --dsw-alias-toast-label: #f5f9ff !important;
+  /* 编辑/写入 工具行的 ±行数：常显红绿（规则见结构层的 _diffAdded/_diffRemoved）。
+   * 不直接用产品原绿 #22c55e——浅底只有 2.0:1（白底也才 2.3:1），11px 小字基本读不动；改用与正文
+   * 行内代码同一支薄荷绿 #27793d（4.8:1），红取 #b3261e（5.8:1）。 */
+  --sea-diff-add: #27793d;
+  --sea-diff-del: #b3261e;
+  --dsw-alias-bg-module-platform: #e6eef9 !important;
+  --dsw-alias-markdown-code-block-banner: #eaf1f9 !important;
+  /* 用户气泡（聊天/目标/用户提问三处共用 token）→ 淡azure蓝：
+   * 在淡蓝画布上明显跳出（「这是我说的话」），现有深色文字/琥珀/薄荷全部兼容 */
+  --dsw-specific-bubble: #cfe0fb !important;
+  --dsw-specific-bubble-highlight: #a9c7f0 !important;
+  /* 可点击卡片族（文件交付卡/变更卡/计划卡/日程卡）+ 工具 ioCard → 主题海军蓝阶梯：
+   * fill = layer-1、悬停 = layer-2 整级提亮（官方手感）。0.12.14 修掉
+   * [class*='details'] 误匹配后，此配色不再有「文件名色块」副作用 */
+  --dsw-static-neutral-50: #f6f9fd !important;
+  --dsw-static-neutral-100: #ecf2fa !important;
+  --dsw-alias-markdown-code-block: #f6f9fd !important;
+}
+
+/* ═══ 深海 token 层：官方首页海军蓝一族（amber 强调保持不变） ═════════ */
+body[data-ds-dark-theme] {
+  --dsw-alias-bg-base: rgba(7, 19, 35, 0.72) !important;
+  --dsw-alias-bg-layer-1: #0a1a30 !important;
+  --dsw-alias-bg-layer-2: #102641 !important;
+  --dsw-alias-bg-layer-3: #183653 !important;
+  --dsw-alias-bg-overlay: #0f2744 !important;
+  --dsw-alias-bg-mask-1: rgba(1, 7, 18, 0.74) !important;
+  --dsw-alias-bg-mask-2: rgba(4, 13, 28, 0.54) !important;
+  --dsw-alias-border-l1: rgba(210, 229, 255, 0.09) !important;
+  --dsw-alias-border-l2: rgba(210, 229, 255, 0.15) !important;
+  --dsw-alias-border-l3: rgba(231, 242, 255, 0.28) !important;
+  --dsw-alias-label-primary: #f5f9ff !important;
+  --dsw-alias-label-primary-inverted: #102641 !important;
+  --dsw-alias-label-secondary: #c2d2e6 !important;
+  --dsw-alias-label-tertiary: #8fa4bf !important;
+  --dsw-alias-label-caption: #9eb2cc !important;
+  --dsw-alias-markdown-code-block-banner: #0a1a30 !important;
+  --dsw-alias-button-floating-fill: #122942 !important;
+  --dsw-alias-button-floating-hover: #1f4066 !important;
+  --dsw-alias-button-elevated-fill: #17314f !important;
+  --dsw-alias-button-tool-bar-fill: #102641 !important;
+  --dsw-alias-button-tool-bar-hover: #1a3454 !important;
+  --dsw-alias-interactive-bg-hover: rgba(197, 220, 251, 0.10) !important;
+  --dsw-alias-interactive-bg-active: rgba(209, 228, 253, 0.16) !important;
+  --dsw-alias-interactive-bg-hover-solid: #1f4167 !important;
+  --dsw-alias-scrollbar-bg-l1: #244361 !important;
+  --dsw-alias-scrollbar-bg-l2: #345a7d !important;
+  --dsw-alias-scrollbar-hover-l1: #5b7fa7 !important;
+  --dsw-alias-scrollbar-hover-l2: #779ac1 !important;
+  /* 两档同一支海军蓝：文字被产品写死为白（见浅海档同名条目），深底是唯一解 */
+  --dsw-alias-tooltip-bg: #16314f !important;
+  --dsw-alias-toast-bg: #16314f !important;
+  /* ±行数：深底用亮一档的薄荷（与深色档行内代码同色）+ 产品红 400 */
+  --sea-diff-add: #7fd88f;
+  --sea-diff-del: #f25a5a;
+  --dsw-alias-bg-module-platform: #183653 !important;
+  /* 用户气泡 → 月光蓝：比深海画布亮两档、比白字暗两档，「这是我说的话」一眼定位 */
+  --dsw-specific-bubble: #2a5089 !important;
+  --dsw-specific-bubble-highlight: #345d9e !important;
+  --dsw-specific-sidebar-fill: rgba(8, 24, 44, 0.82) !important;
+  --dsw-specific-input-major: rgba(14, 32, 56, 0.72) !important;
+  --dsw-specific-menu: rgba(16, 34, 58, 0.9) !important;
+  --dsw-menu-surface-fill: rgba(16, 34, 58, 0.9) !important;
+  /* 可点击卡片族 + 工具 ioCard → 主题海军蓝阶梯（fill = layer-1、hover = layer-2） */
+  --dsw-static-neutral-850: #0a1a30 !important;
+  --dsw-static-neutral-800: #102641 !important;
+  --dsw-alias-markdown-code-block: #0a1a30 !important;
+}
+
+/* ═══ 分层结构（浅海默认 + 深海覆盖）：四级深度 ═══════════════════════
+ * L1 侧栏（最暗/最浅的底）→ L2 会话画布（渐变）→ L3 输入卡（浮起）
+ * → L4 弹窗（最高层玻璃）。每级都带发丝线边框 + 顶缘内发光 + 蓝黑阴影。 */
+
+/* ── L1 侧栏 ── */
+[class*='sidebarCol'] {
+  background: rgba(240, 246, 252, 0.72) !important;
+  border-color: rgba(23, 58, 110, 0.10) !important;
+  box-shadow: inset -1px 0 rgba(255, 255, 255, 0.5), 20px 0 70px rgba(15, 40, 80, 0.08) !important;
+}
+
+body[data-ds-dark-theme] [class*='sidebarCol'] {
+  background: linear-gradient(180deg, rgba(6, 20, 39, 0.72), rgba(3, 13, 27, 0.82)) !important;
+  border-color: rgba(205, 224, 249, 0.14) !important;
+  box-shadow: inset -1px 0 rgba(255, 255, 255, 0.045), 20px 0 70px rgba(0, 11, 30, 0.35) !important;
+}
+
+[class*='sidebarCol'] [class*='_root '],
+[class*='sidebarCol'] [class$='_root'] {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* ── L2 会话区：圆角与断层修复 ───────────────────────────────────────
+ * 产品在 Windows 标题栏模式下的原生结构：frame 背景 = 侧栏色（sidebar-fill），
+ * 会话列（centerCol）= bg-base + 左上 16px 圆角。原版两栏都是不透明且色差
+ * 极小，圆角看不出来；主题把两栏都改半透明后「蓝条 vs 白板」色差被放大，
+ * 圆角曲线显形。确定性修法：直接削平圆角，面板与顶部条带以直线相交。 */
+[data-windows-titlebar] [class*='centerCol'] {
+  border-radius: 0 !important;
+}
+
+[class*='home'],
+[class*='Home'],
+[class*='welcome'],
+[class*='Welcome'] {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* 面板内部的 _root 容器有实底（bg-layer token），清透明让画布统一成像 */
+[class*='centerCol'] [class$='_root'] {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+[class*='centerCol'] > *,
+main > * {
+  border-color: rgba(23, 58, 110, 0.08) !important;
+}
+
+body[data-ds-dark-theme] [class*='centerCol'] > *,
+body[data-ds-dark-theme] main > * {
+  border-color: rgba(215, 233, 255, 0.065) !important;
+}
+
+/* 输入区容器：去掉自带实底，与上方会话区同质（消除底部断层） */
+[data-composer-seat] {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* 文件交付卡的隐形预览按钮、行内文件提及/文件链接等「透明覆盖按钮」：
+ * 全局按钮悬停 veil 已在 0.12.20 整体移除（它先后在三处误伤：交付卡、
+ * 文件提及、文件链接芯片——像素实测 rgb(28,45,64) 均为同一层纱），
+ * 悬停反馈完全交还产品原生的 token 化悬停样式，无需任何排除规则 */
+
+/* ── L3 输入卡：浮在画布上的玻璃卡 ── */
+[data-composer-seat] [class*='_card'],
+[data-composer-seat] [class*='Card'] {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(238, 245, 252, 0.9)) !important;
+  border-color: rgba(23, 58, 110, 0.14) !important;
+  box-shadow: 0 12px 36px rgba(15, 40, 80, 0.12), inset 0 1px rgba(255, 255, 255, 0.9) !important;
+}
+
+body[data-ds-dark-theme] [data-composer-seat] [class*='_card'],
+body[data-ds-dark-theme] [data-composer-seat] [class*='Card'] {
+  color: #eef6ff !important;
+  background: linear-gradient(145deg, #1f3654, #09192f) !important;
+  border-color: rgba(225, 237, 255, 0.14) !important;
+  box-shadow: 0 18px 48px rgba(0, 5, 18, 0.35), inset 0 1px rgba(255, 255, 255, 0.08) !important;
+}
+
+/* 侧栏「新会话」等浮动/抬升按钮：跟随海军蓝（深色档原先发灰的元凶） */
+[class*='_logoRow'] > button[class*='_brand']:hover:not(:disabled) {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* ── L4 弹窗 / 菜单 / 浮层：最高层玻璃 ── */
+[role='dialog'],
+[class*='popover'],
+[role='menu'],
+[class*='dropdown'] {
+  background: rgba(255, 255, 255, 0.88) !important;
+  border-color: rgba(23, 58, 110, 0.12) !important;
+  box-shadow: 0 24px 70px rgba(15, 40, 80, 0.18), inset 0 1px rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(24px) saturate(130%);
+  -webkit-backdrop-filter: blur(24px) saturate(130%);
+}
+
+body[data-ds-dark-theme] [role='dialog'],
+body[data-ds-dark-theme] [class*='popover'],
+body[data-ds-dark-theme] [role='menu'],
+body[data-ds-dark-theme] [class*='dropdown'] {
+  color: #eef6ff !important;
+  background: linear-gradient(145deg, rgba(32, 55, 84, 0.82), rgba(12, 29, 51, 0.92)) !important;
+  border-color: rgba(225, 237, 255, 0.14) !important;
+  box-shadow: 0 24px 70px rgba(0, 5, 18, 0.42), inset 0 1px rgba(255, 255, 255, 0.07) !important;
+}
+
+/* 对话框头部：透明，让弹窗自身的玻璃统一成像（原先单独着色会产生分层色带） */
+[role='dialog'] > [class$='_content'] > [class$='_header'] {
+  background: transparent !important;
+  border-color: rgba(23, 58, 110, 0.08) !important;
+}
+
+body[data-ds-dark-theme] [role='dialog'] > [class$='_content'] > [class$='_header'] {
+  background: transparent !important;
+  border-color: rgba(210, 230, 255, 0.12) !important;
+}
+
+/* 详情列（右侧面板）。只匹配 detailsCol——宽松的 [class*='details'] 会误杀
+ * 一切模块里本地名叫 details 的容器（如文件交付卡的 .K5rwea_details 文件名区，
+ * 其上晕出一片渐变深蓝，即 0.12.4–0.12.13「文件名底色」顽症的真凶） */
+[class*='detailsCol'] {
+  background: rgba(255, 255, 255, 0.78) !important;
+  border-color: rgba(23, 58, 110, 0.12) !important;
+  backdrop-filter: blur(20px) saturate(120%);
+  -webkit-backdrop-filter: blur(20px) saturate(120%);
+}
+
+body[data-ds-dark-theme] [class*='detailsCol'] {
+  background: linear-gradient(180deg, rgba(12, 32, 58, 0.82), rgba(5, 16, 31, 0.92)) !important;
+  border-color: rgba(203, 223, 250, 0.14) !important;
+}
+
+/* ── 工具行的 +N / −N（编辑、写入…）常显红绿 ───────────────────────────
+ * 产品规则（ToolRow.module.css）只在 :is(:hover, [aria-expanded=true]) 时才给
+ * .diffAdded / .diffRemoved 上色，默认态跟着行文字一起发灰；一移开鼠标就失去
+ * 「加了几行、删了几行」的语义。这里改成永远上色。
+ * 加 !important 是为了把常态与悬浮态锁成同一支色——否则悬浮瞬间会被产品规则
+ * 抢回去，绿/红突然亮一档。类名用 [class*='_diffAdded'] 匹配本地名（哈希前缀
+ * hKdVjq_ 随构建变，本地名稳定），不碰具体哈希。 */
+[class*='_diffAdded'] {
+  color: var(--sea-diff-add) !important;
+}
+
+[class*='_diffRemoved'] {
+  color: var(--sea-diff-del) !important;
+}
+
+/* ═══ 交互反馈：按压微沉（全局按钮悬停纱已于 0.12.20 移除——
+ * 它先后在交付卡隐形按钮、文件提及、文件链接芯片三处误伤出框，
+ * 产品按钮自有 token 化悬停样式（interactive-bg-hover 族，已随主题），
+ * 全局纱是重复干扰源。0.12.0–0.12.19 的相关排除规则随之全部退役） ═══ */
+button,
+[role='button'] {
+  transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease, color 160ms ease;
+}
+
+button:active:not(:disabled),
+[role='button']:active {
+  transform: translateY(1px) scale(0.995);
+}
+
+/* 选中态导航 / 标签 */
+[aria-selected='true']:not([role='tab']),
+[aria-current='true'] {
+  color: #0c1a2e !important;
+  background: linear-gradient(135deg, rgba(96, 149, 212, 0.22), rgba(47, 84, 138, 0.18)) !important;
+}
+
+body[data-ds-dark-theme] [aria-selected='true']:not([role='tab']),
+body[data-ds-dark-theme] [aria-current='true'] {
+  color: #f7fbff !important;
+  background: linear-gradient(135deg, rgba(97, 132, 171, 0.46), rgba(44, 79, 121, 0.42)) !important;
+}
+
+[role='tab'] {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+button[role='tab']:hover:not(:disabled) {
+  background: rgba(96, 149, 212, 0.10) !important;
+}
+
+body[data-ds-dark-theme] button[role='tab']:hover:not(:disabled) {
+  background: rgba(105, 154, 218, 0.08) !important;
+}
+
+[role='tab']:focus-visible {
+  outline-color: rgba(96, 149, 212, 0.5) !important;
+  outline-offset: 3px;
+}
+
+/* 分隔条 hover：一道主题色细光 */
+[class*='_splitRow_'] > [class*='_divider_']:hover::after {
+  background: linear-gradient(to bottom, transparent, rgba(96, 149, 212, 0.30) 50%, transparent) center / 1px 100% no-repeat !important;
+}
+
+/* ═══ 深色档专属：输入控件文字 / 占位符 / 正文投影 / 代码块玻璃 ═══════ */
+body[data-ds-dark-theme] textarea,
+body[data-ds-dark-theme] input,
+body[data-ds-dark-theme] select {
+  color: #f5f9ff !important;
+  caret-color: #d5e8ff;
+}
+
+body[data-ds-dark-theme] [class*='composer'] textarea,
+body[data-ds-dark-theme] [class*='composer'] input {
+  background: transparent !important;
+  border-color: transparent !important;
+}
+
+body[data-ds-dark-theme] textarea::placeholder,
+body[data-ds-dark-theme] input::placeholder {
+  color: rgba(193, 208, 228, 0.72) !important;
+}
+
+/* 正文的暗色投影：在深蓝画布上托住可读性。只作用于 Markdown 容器本身——
+ * text-shadow 会继承，若挂在消息行（flowItem）上，文件卡等子表面的文字
+ * 也会带光晕，在卡片底色上晕出一片「渐变深蓝色块」（0.12.12 时代顽症的
+ * 真凶：它不是背景色，background 探针照不到） */
+body[data-ds-dark-theme] [class*='_markdown_'] {
+  text-shadow: 0 1px 4px rgba(0, 7, 20, 0.72), 0 0 12px rgba(0, 7, 20, 0.38);
+}
+
+/* 代码块容器：浅色白玻璃 / 深色海军蓝玻璃（语法高亮配色不动） */
+pre,
+.md-code-block {
+  overflow: hidden;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(238, 245, 252, 0.88)) !important;
+  border: 1px solid rgba(23, 58, 110, 0.12) !important;
+  border-radius: 16px;
+  box-shadow: 0 10px 32px rgba(15, 40, 80, 0.10), inset 0 1px rgba(255, 255, 255, 0.9) !important;
+}
+
+body[data-ds-dark-theme] pre,
+body[data-ds-dark-theme] .md-code-block {
+  color: #eef6ff !important;
+  background: linear-gradient(145deg, rgba(32, 52, 75, 0.82), rgba(12, 29, 51, 0.9)) !important;
+  border: 1px solid rgba(224, 237, 255, 0.14) !important;
+  box-shadow: 0 22px 56px rgba(0, 6, 20, 0.4), inset 0 1px rgba(255, 255, 255, 0.07) !important;
+}
+
+pre code,
+code {
+  color: inherit !important;
+}
+
+/* 行内代码配色完全交给 Markdown 层（浅色薄荷/翡翠、深色薄荷），此处不再覆盖——
+ * 0.12.0 曾把深色行内代码改成官网蓝，与主题的薄荷绿身份冲突，0.12.3 移除。 */
+
+/* 输入区装饰元素在深色下减淡 */
+body[data-ds-dark-theme] [class*='composer']::before,
+body[data-ds-dark-theme] [class*='composer']::after {
+  opacity: 0.16 !important;
+}

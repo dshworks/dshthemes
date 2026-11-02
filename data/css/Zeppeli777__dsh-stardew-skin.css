@@ -1,0 +1,110 @@
+/* Zeppeli777/dsh-stardew-skin — scripts/client.template.js
+   fetched 2026-11-02 from https://raw.githubusercontent.com/Zeppeli777/dsh-stardew-skin/main/scripts/client.template.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+@font-face {
+  font-family: 'FusionPixel';
+  src: url(data:font/woff2;base64,__FONT_B64__) format('woff2');
+  font-display: swap;
+}
+body {
+  background: #6db3f2 !important;
+}
+/* 壁纸移到伪元素上：轻微模糊 + 降饱和 + 提亮，让山谷退成「远景」不与文字抢对比 */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background: url(data:image/jpeg;base64,__WALLPAPER_B64__) center / cover no-repeat;
+  filter: blur(3px) saturate(0.82) brightness(1.07);
+  pointer-events: none;
+}
+/* 再罩一层薄纱，进一步压掉壁纸的「杂」 */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: rgba(253, 240, 200, 0.20);
+  pointer-events: none;
+}
+/* 像素字体只用于展示性标题；正文、小字、快捷键与代码保留宿主排版。 */
+body :where(h1, h2, h3),
+body [class*="_titleGroup"],
+body [class*="_brand"] {
+  font-family: 'FusionPixel', 'Microsoft YaHei', sans-serif !important;
+}
+/* 标题直接浮在山谷上，用奶油色衬影保证识别，不再套一条横贯面板的纯色框。 */
+[class*="_composerHero"] [class*="_headline"] {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  width: fit-content;
+  margin-inline: auto;
+  padding: 2px 12px 6px;
+  text-shadow: 0 2px 0 rgba(253, 240, 200, 0.95), 0 0 14px rgba(253, 240, 200, 0.95), 0 0 28px rgba(253, 240, 200, 0.75);
+}
+/* 工作区与模式选择收成居中的紧凑胶囊，保留轻纸面和背景层次。 */
+[class*="_heroWorkspaceRow"] {
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 4px 10px;
+  background: rgba(253, 240, 200, 0.78);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(74, 36, 8, 0.32);
+  border-radius: 999px;
+  box-shadow: 0 4px 16px rgba(74, 36, 8, 0.16);
+}
+/* 代码高亮（shiki）默认前景继承 label-primary——那是给奶油底配的深褐，
+   落在同样深褐的代码块底上就成了「褐字褐底」。这里把代码文字换成奶油沙色，
+   注释/标点也提亮一档；!important 保证压过官方 :root 定义，light/dark 都生效。 */
+:root {
+  --shiki-foreground: #f3dfb0 !important;
+  --shiki-token-comment: #b08d5e !important;
+  --shiki-token-punctuation: #d8c09a !important;
+}
+/* 无语言代码块不经过 Shiki，需单独覆盖其继承的深棕前景。 */
+pre[class*="_plain"] {
+  color: #f3dfb0 !important;
+}
+::selection { background: #a8331c; color: #fff3d8; }
+/* 代码横幅只匹配代码块自己的头部，语言标签和操作按钮使用浅色前景。 */
+[class*="_bannerWrap"] [class*="_header"] {
+  background: var(--dsw-alias-markdown-code-block-banner) !important;
+  color: #e3b878 !important;
+}
+[class*="_bannerWrap"] [class*="_header"] :where(button, [class*="_language"]) {
+  color: #e3b878 !important;
+}
+/* 会话消息流垫 90% 不透明的奶油纸面，让壁纸约透出 10%，同时保持正文清晰。
+   首页无 _viewArea 容器，不受此规则影响；类名后缀来自官方 CSS Modules，跨版本相对稳定。 */
+[class*="_viewArea"] {
+  background: rgba(253, 240, 200, 0.90);
+  border: 2px solid rgba(74, 36, 8, 0.55);
+  border-radius: 4px;
+  box-shadow: 0 2px 0 rgba(74, 36, 8, 0.35);
+}
+/* 底部状态条（token 统计等）同样垫纸面；:has 限定为包含统计 pill 的输入框 dock。 */
+[class*="_footArea"], [class*="_footerActions"], [class*="_dock"]:has([class*="_pill"]) {
+  background: rgba(253, 240, 200, 0.92);
+  border-radius: 4px;
+}
+[class*="_dock"]:has([class*="_pill"]) {
+  padding: 6px 8px;
+}
+/* 会话语义化 HEADER 垫纸面；代码横幅是 DIV，不会被此规则误伤。 */
+[class*="_centerCol"] header[class*="_header"] {
+  background: rgba(253, 240, 200, 0.92);
+  border-radius: 4px;
+}
+/* 模型与权限菜单使用近乎实心的纸面，避免文字直接落在半透明壁纸上。 */
+[class*="_surface"]:is([class*="_menu"], [class*="_list"]) {
+  background: rgba(251, 228, 176, 0.98) !important;
+  border: 1px solid rgba(74, 36, 8, 0.45);
+  border-radius: 4px;
+}
+/* 官方弹层还有一层默认半透明灰色 material，需移除才能露出上面的奶油纸面。 */
+[class*="_surface"]:is([class*="_menu"], [class*="_list"]) > [class*="_material"] {
+  background: transparent !important;
+}

@@ -1,0 +1,210 @@
+/* nizihan29/dsh-theme-strinova — lib/client.js
+   fetched 2026-11-02 from https://raw.githubusercontent.com/nizihan29/dsh-theme-strinova/master/lib/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+position: fixed;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        overflow: hidden;
+        background-image:
+          linear-gradient(rgba(224, 164, 60, 0.05) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(224, 164, 60, 0.05) 1px, transparent 1px),
+          radial-gradient(58% 42% at 12% -4%, rgba(224, 164, 60, 0.18), transparent 62%),
+          radial-gradient(48% 38% at 90% 104%, rgba(224, 164, 60, 0.14), transparent 62%);
+        background-size: 46px 46px, 46px 46px, 100% 100%, 100% 100%;
+      }
+        content: '';
+        position: absolute;
+        top: -25%;
+        left: -35%;
+        width: 55%;
+        height: 150%;
+        background: linear-gradient(90deg, transparent, rgba(224, 164, 60, 0.10), transparent);
+        transform: translateX(-130%) rotate(14deg);
+      }
+        0%, 100% { opacity: 0.72; }
+        50% { opacity: 1; }
+      }
+        0% { transform: translateX(-130%) rotate(14deg); }
+        55%, 100% { transform: translateX(320%) rotate(14deg); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+          animation: none;
+        }
+      }
+
+
+        position: fixed;
+        inset: 0;
+        z-index: -2;
+        pointer-events: none;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+      }
+        background-image: linear-gradient(160deg, #f7efe3 0%, #f0e2cd 45%, #e8d3b0 100%);
+        opacity: 1;
+      }
+        background-image: linear-gradient(160deg, #241d15 0%, #1e1811 50%, #16120c 100%);
+        opacity: 1;
+      }
+        display: none;
+        position: fixed;
+        left: 2vw;
+        bottom: 0;
+        height: 62vh;
+        width: auto;
+        z-index: -1;
+        pointer-events: none;
+        user-select: none;
+        filter: drop-shadow(0 14px 34px rgba(110, 80, 35, 0.28));
+      }
+        display: block;
+      }
+      @media (max-width: 860px) {
+          left: -8vw;
+          opacity: 0.45;
+        }
+      }
+        position: fixed;
+        right: 16px;
+        bottom: 16px;
+        z-index: 20;
+        pointer-events: none;
+        user-select: none;
+      }
+
+
+      /* 会话区：低模糊 + 局部渐变护底。壁纸只吃掉最细纹理、四周保持清晰，
+       * 中间文字区用一层 scrim 兜底，文字可读又不挡壁纸。 */
+      [data-chat-flow] {
+        backdrop-filter: blur(2.5px) saturate(140%);
+        -webkit-backdrop-filter: blur(2.5px) saturate(140%);
+        background:
+          linear-gradient(180deg,
+            rgba(246, 238, 228, 0.60) 0%,
+            rgba(246, 238, 228, 0.70) 10%,
+            rgba(246, 238, 228, 0.90) 90%,
+            rgba(246, 238, 228, 0.60) 100%);
+        border: 1px solid rgba(160, 120, 70, 0.14);
+        border-radius: 20px;
+        padding: 12px 14px 20px;
+      }
+      body[data-ds-dark-theme] [data-chat-flow] {
+        backdrop-filter: blur(2.5px) saturate(140%);
+        -webkit-backdrop-filter: blur(2.5px) saturate(140%);
+        background:
+          linear-gradient(180deg,
+            rgba(20, 16, 12, 0.55) 0%,
+            rgba(20, 16, 12, 0.65) 10%,
+            rgba(20, 16, 12, 0.80) 90%,
+            rgba(20, 16, 12, 0.55) 100%);
+        border-color: rgba(224, 164, 60, 0.14);
+      }
+
+      /* 用户气泡：只有用户说的话有气泡，AI 回答浮在毛玻璃透明底上 */
+      .Sixlwa_userRow .Sixlwa_bubble {
+        background: rgba(255, 232, 200, 0.78) !important;
+        border: 1px solid rgba(160, 120, 70, 0.28) !important;
+        border-radius: 14px !important;
+      }
+      body[data-ds-dark-theme] .Sixlwa_userRow .Sixlwa_bubble {
+        background: rgba(224, 164, 60, 0.24) !important;
+        border-color: rgba(224, 164, 60, 0.38) !important;
+      }
+
+      /* 代码高亮（Shiki）背景改实，避免和壁纸相混 */
+      :root {
+        --shiki-background: rgba(251, 246, 239, 0.78) !important;
+        --shiki-foreground: #33281f !important;
+      }
+      body[data-ds-dark-theme] {
+        --shiki-background: rgba(31, 24, 18, 0.78) !important;
+        --shiki-foreground: #e8ddd0 !important;
+      }
+
+      /* 左上角品牌：藏掉原 svg logo，换成自己的 Strinova logo */
+      .hHd-Xa_brand {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        position: relative !important;
+      }
+      .hHd-Xa_brand svg,
+      .hHd-Xa_brand::after,
+      .hHd-Xa_localBuildTitle,
+      .hHd-Xa_localBuildBrand,
+      .hHd-Xa_buildVersion {
+        display: none !important;
+      }
+      .hHd-Xa_brand::before {
+        content: '';
+        display: inline-block;
+        width: 130px;
+        height: 73px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
+      }
+
+      /* 会话统计：胶囊用品牌琥珀色，文字高对比 */
+      .bOPqQW_pill,
+      .JObwrW_trigger {
+        color: #33281f !important;
+        background-color: rgba(242, 228, 204, 0.8) !important;
+        border: 1px solid rgba(160, 120, 70, 0.28) !important;
+      }
+      body[data-ds-dark-theme] .bOPqQW_pill,
+      body[data-ds-dark-theme] .JObwrW_trigger {
+        color: #f8f0e4 !important;
+        background-color: rgba(74, 52, 32, 0.88) !important;
+        border-color: rgba(224, 164, 60, 0.4) !important;
+      }
+      .bOPqQW_label,
+      .JObwrW_trigger span {
+        font-weight: 600 !important;
+      }
+        position: fixed;
+        inset: 0;
+        z-index: 30;
+        pointer-events: none;
+        overflow: hidden;
+      }
+        position: absolute;
+        top: 100%;
+        left: 0;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 214, 150, 0.9), rgba(224, 164, 60, 0.30) 55%, transparent 75%);
+        opacity: 0;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+      }
+        0%   { transform: translate3d(0, 0, 0); opacity: 0; }
+        8%   { opacity: 0.8; }
+        85%  { opacity: 0.4; }
+        100% { transform: translate3d(var(--px, 0px), -115vh, 0); opacity: 0; }
+      }
+      @media (prefers-reduced-motion: reduce) { display: none; }
+      }
+
+      /* 输入框占位符：比真实输入更淡，便于区分 */
+      [data-composer-placeholder],
+      [data-composer-card] ::placeholder,
+      textarea::placeholder {
+        color: rgba(150, 136, 116, 0.55) !important;
+        -webkit-text-fill-color: rgba(150, 136, 116, 0.55) !important;
+        opacity: 1 !important;
+      }
+      body[data-ds-dark-theme] [data-composer-placeholder],
+      body[data-ds-dark-theme] [data-composer-card] ::placeholder,
+      body[data-ds-dark-theme] textarea::placeholder {
+        color: rgba(205, 190, 170, 0.5) !important;
+        -webkit-text-fill-color: rgba(205, 190, 170, 0.5) !important;
+      }
+
+      ::selection {
+        background: rgba(224, 164, 60, 0.30);
+        color: #1a130c;
+      }
