@@ -1,23 +1,33 @@
 /* wanxi123w/dsh-theme-theresa — lib/client.js
-   fetched 2026-10-26 from https://raw.githubusercontent.com/wanxi123w/dsh-theme-theresa/main/lib/client.js
+   fetched 2026-11-03 from https://raw.githubusercontent.com/wanxi123w/dsh-theme-theresa/main/lib/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/* 总开关关掉时 body 作用域整个撤掉，但节点还挂在 DOM 上：
+   先给一层"默认隐藏"，作用域内的规则优先级更高，打开时照常显示。 */
+.tre-bg,.tre-ornament,.tre-mark,.tre-hero{display:none}
 /* 所有选择器都在 body[data-dsh-theresa] 之内：停用插件即整层消失。 */
 body[data-dsh-theresa]{
-  --tre-dim-light:.45; --tre-dim-dark:.45;
+  --tre-dim-light:.42; --tre-dim-dark:.5;
   /* 装饰的比例尺：间距、不透明度、描边。所有装饰只从这里取值，不再各调各的。 */
   --tre-gap-1:8px;
-  --tre-gap-2:14px;
+  --tre-gap-2:16px;
   --tre-gap-3:22px;
-  --tre-o-ghost:.28;
-  --tre-o-quiet:.35;
-  --tre-o-soft:.6;
-  --tre-o-firm:.85;
+  --tre-gap-4:34px;
+  --tre-o-ghost:.22;
+  --tre-o-quiet:.32;
+  --tre-o-soft:.58;
+  --tre-o-firm:.86;
   --tre-hair:1px;
   --tre-line:0.5px;
   --tre-radius-control:10px;
-  --tre-radius-surface:16px;
-  --tre-motion-fast:120ms;
-  --tre-motion-normal:200ms;
+  --tre-radius-surface:18px;
+  --tre-motion-fast:140ms;
+  --tre-motion-normal:240ms;
+  --tre-motion-slow:1100ms;
+  /* 玻璃强度：由 data-tre-glass 覆盖，0 清淡 / 1 标准 / 2 厚重 */
+  --tre-glass-blur:16px;
+  --tre-glass-sat:160%;
+  /* 通透度乘子：大面铺底的 alpha 都乘它，JS 按设置写入 */
+  --tre-alpha-scale:1;
   --tre-opacity-disabled:.48;
   --tre-focus-ring:0 0 0 2px rgba(122,78,92,.45);
   --tre-text-primary:#181319;
@@ -29,6 +39,8 @@ body[data-dsh-theresa]{
   --tre-border-strong:rgba(43,30,36,.26);
   --tre-accent:#7A4E5C;
 }
+body[data-dsh-theresa][data-tre-glass="0"]{ --tre-glass-blur:9px; --tre-glass-sat:140% }
+body[data-dsh-theresa][data-tre-glass="2"]{ --tre-glass-blur:24px; --tre-glass-sat:175% }
 body[data-dsh-theresa][data-ds-dark-theme]{
   --tre-focus-ring:0 0 0 2px rgba(224,185,196,.5);
   --tre-text-primary:#FFFFFF;
@@ -49,8 +61,17 @@ body[data-dsh-theresa][data-theresa-skin="on"][data-ds-dark-theme]{
 html:has(body[data-dsh-theresa][data-theresa-skin="on"]){background:#FBF8F4}
 html:has(body[data-dsh-theresa][data-theresa-skin="on"][data-ds-dark-theme]){background:#14111B}
 
+/* ---- 画布级容器显式透明 ----
+   DSH NEXT 把 bg-layer-1 铺到了比以前更大的面上（整页/整列），
+   同一份半透明白在新版就会"白一层"。这里把画布级容器清空，
+   玻璃只留给我们自己点名的面板；:where() 把特异性压到 0，不抢组件自己的底色。 */
+body[data-dsh-theresa][data-theresa-skin="on"] :where(#root, #app, main, [data-ds-app], [data-ds-shell], [data-slot="conversation"], [data-slot="main"], [data-slot="workspace"]) {
+  background-color: transparent;
+}
+
 /* ---- 背景层：body 的真实子元素，fixed + z-index:-1 ---- */
 body[data-dsh-theresa] .tre-bg{
+  display:block;
   position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;
   background:radial-gradient(1100px 760px at 12% -6%,rgba(255,196,226,.55),rgba(255,196,226,0) 62%),
              radial-gradient(900px 700px at 88% 4%,rgba(214,190,255,.45),rgba(214,190,255,0) 60%),
@@ -63,10 +84,33 @@ body[data-dsh-theresa][data-ds-dark-theme] .tre-bg{
 }
 body[data-dsh-theresa][data-tre-bg="off"] .tre-bg{display:none}
 body[data-dsh-theresa] .tre-bg-img{
-  position:absolute;inset:0;background-position:center center;background-size:cover;
-  background-repeat:no-repeat;opacity:0;transition:opacity 900ms ease;
+  position:absolute;inset:0;background-position:var(--tre-focus-x,50%) var(--tre-focus-y,50%);
+  background-size:cover;background-repeat:no-repeat;
+  transform:scale(var(--tre-bg-zoom,1));
+  transform-origin:var(--tre-focus-x,50%) var(--tre-focus-y,50%);
+  opacity:0;transition:opacity var(--tre-motion-slow,1100ms) ease;
 }
+/* 「完整」适配：整张图都露出来，多出来的地方由渐变底填 */
+body[data-dsh-theresa][data-tre-fit="contain"] .tre-bg-img{background-size:contain}
 body[data-dsh-theresa] .tre-bg-img[data-active="1"]{opacity:1}
+/* 阅读衬底：从侧栏右边缘起，把正文那一侧压暗/压亮，人物一侧保持通透。
+   强度 = 色纱档位 × 阅读衬底滑杆，两层互相独立。 */
+body[data-dsh-theresa] .tre-bg-read{
+  position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(90deg,
+    rgba(255,250,246,calc(var(--tre-dim-light,.42) * var(--tre-read-strength,.5) * 1.15)) 0%,
+    rgba(255,250,246,calc(var(--tre-dim-light,.42) * var(--tre-read-strength,.5) * .78)) 34%,
+    rgba(255,250,246,calc(var(--tre-dim-light,.42) * var(--tre-read-strength,.5) * .34)) 62%,
+    rgba(255,250,246,0) 84%);
+}
+body[data-dsh-theresa][data-ds-dark-theme] .tre-bg-read{
+  background:linear-gradient(90deg,
+    rgba(16,13,21,calc(var(--tre-dim-dark,.5) * var(--tre-read-strength,.5) * 1.25)) 0%,
+    rgba(16,13,21,calc(var(--tre-dim-dark,.5) * var(--tre-read-strength,.5) * .82)) 34%,
+    rgba(16,13,21,calc(var(--tre-dim-dark,.5) * var(--tre-read-strength,.5) * .38)) 62%,
+    rgba(16,13,21,0) 84%);
+}
+@media (prefers-reduced-motion:reduce){body[data-dsh-theresa] .tre-bg-img{transition:none}}
 /* 色纱：浓度分白昼/长夜两档。CSS 按 color-scheme 各取一个，JS 不必订阅主题变化。 */
 body[data-dsh-theresa] .tre-bg-veil{
   position:absolute;inset:0;
@@ -84,20 +128,18 @@ body[data-dsh-theresa][data-ds-dark-theme] .tre-bg-veil{
        宽度由 JS 实测 [data-slot="sidebar"] 后写进 --tre-side-w；
        侧栏收成窄条时置 data-tre-side="narrow" 自动隐藏。 ---- */
 body[data-dsh-theresa] .tre-side-figure{
-  position:fixed;left:0;bottom:0;z-index:0;pointer-events:none;
+  position:fixed;left:0;bottom:var(--tre-figure-inset,0px);z-index:0;pointer-events:none;
   width:var(--tre-side-w,260px);
   height:min(62vh,460px);
   background:var(--tre-figure-url) bottom center/contain no-repeat;
   transform:scale(var(--tre-figure-scale,1));transform-origin:bottom center;
-  transition:opacity 300ms ease,transform 180ms ease;
-  opacity:.6;
-  -webkit-mask-image:linear-gradient(180deg,transparent 0%,#000 16%,#000 100%);
-  mask-image:linear-gradient(180deg,transparent 0%,#000 16%,#000 100%);
+  transition:opacity 300ms ease,transform 180ms ease,bottom 180ms ease;
+  opacity:var(--tre-figure-o,.62);
+  -webkit-mask-image:linear-gradient(180deg,transparent 0%,#000 18%,#000 100%);
+  mask-image:linear-gradient(180deg,transparent 0%,#000 18%,#000 100%);
   filter:drop-shadow(0 6px 18px rgba(60,40,50,.10));
-  transition:opacity 300ms ease;
 }
 body[data-dsh-theresa][data-ds-dark-theme] .tre-side-figure{
-  opacity:.48;
   filter:drop-shadow(0 6px 22px rgba(0,0,0,.45)) brightness(1.06);
 }
 body[data-dsh-theresa][data-tre-figure="off"] .tre-side-figure,
@@ -151,12 +193,22 @@ body[data-dsh-theresa][data-tre-headline="on"] [class*="titleGroup"] > span:firs
 body[data-dsh-theresa][data-tre-headline="on"] [class*="titleGroup"] > span:first-child::after{
   content:var(--tre-headline, "去找到你自己吧……");
   font-family:"Theresa Script","STKaiti","KaiTi","Songti SC",serif;
-  font-size:29px;font-weight:400;line-height:34px;letter-spacing:.02em;
+  font-size:29px;font-weight:400;line-height:38px;letter-spacing:.06em;
+  max-width:18em;
   color:var(--dsw-alias-label-primary,#181319);
+  text-shadow:0 1px 2px rgba(255,255,255,.55);
+}
+body[data-dsh-theresa][data-tre-headline="on"][data-ds-dark-theme] [class*="titleGroup"] > span:first-child::after{
+  text-shadow:0 1px 3px rgba(10,8,14,.6);
+}
+@media (max-width:1100px){
+  body[data-dsh-theresa][data-tre-headline="on"] [class*="titleGroup"] > span:first-child::after{
+    font-size:26px;line-height:34px;letter-spacing:.05em;
+  }
 }
 
 /* ---- 落款印章 + 四角金线：都在 shell.overlay 里，纯装饰、不吃指针 ---- */
-body[data-dsh-theresa] .tre-ornament{position:fixed;inset:0;pointer-events:none;z-index:0}
+body[data-dsh-theresa] .tre-ornament{display:block;position:fixed;inset:0;pointer-events:none;z-index:0}
 body[data-dsh-theresa][data-tre-seal="off"] .tre-seal,
 body[data-dsh-theresa][data-tre-frame="off"] .tre-frame{display:none}
 /* 落款：左下角（避开右下角的小鲸鱼挂件），中文在上、英文在下，中间一条细金线。
@@ -164,7 +216,7 @@ body[data-dsh-theresa][data-tre-frame="off"] .tre-frame{display:none}
    两个签名都是「白 RGB + alpha」的蒙版：形状由文件给、颜色由主题给，
    于是浅色/深色共用同一份素材，金色装饰也不会被吃掉。 */
 body[data-dsh-theresa] .tre-seal{
-  position:absolute;left:calc(var(--tre-side-w,260px) + var(--tre-gap-3));bottom:var(--tre-gap-3);
+  position:absolute;left:calc(var(--tre-side-w,260px) + var(--tre-gap-4,34px));bottom:var(--tre-gap-4,34px);
   display:flex;flex-direction:column;align-items:center;
   gap:var(--tre-gap-1);opacity:var(--tre-o-firm);
 }
@@ -181,7 +233,7 @@ body[data-dsh-theresa][data-ds-dark-theme] .tre-sig-layer{background-color:#EDE6
 body[data-dsh-theresa] .tre-sig-layer--gold{background-color:var(--dsw-alias-state-warn-primary,#B08234)}
 /* 分隔线只到中文宽度的 64%，居中——比通栏更像落款的分行，而不是表格的边框 */
 body[data-dsh-theresa] .tre-seal-rule{
-  width:64%;height:1px;
+  width:56%;height:1px;
   background:color-mix(in srgb, var(--dsw-alias-state-warn-primary,#B08234) 55%, transparent);
 }
 /* 黑冠压在「特蕾西娅」中线上 */
@@ -253,8 +305,8 @@ body[data-dsh-theresa][data-theresa-skin="on"] [data-dockkit-pane],
 body[data-dsh-theresa][data-theresa-skin="on"] [data-dockkit-float],
 body[data-dsh-theresa][data-theresa-skin="on"] [role="dialog"],
 body[data-dsh-theresa][data-theresa-skin="on"] [data-shell-overlay] > *{
-  -webkit-backdrop-filter:blur(16px) saturate(160%);
-  backdrop-filter:blur(16px) saturate(160%);
+  -webkit-backdrop-filter:blur(var(--tre-glass-blur,16px)) saturate(var(--tre-glass-sat,160%));
+  backdrop-filter:blur(var(--tre-glass-blur,16px)) saturate(var(--tre-glass-sat,160%));
 }
 
 /* ---- 正文可读性：给字加一圈光晕，而不是把图调淡 ----
@@ -262,10 +314,10 @@ body[data-dsh-theresa][data-theresa-skin="on"] [data-shell-overlay] > *{
 body[data-dsh-theresa][data-tre-bg="on"][data-theresa-skin="on"]{--dsw-specific-bubble:rgba(255,255,255,.78)}
 body[data-dsh-theresa][data-tre-bg="on"][data-theresa-skin="on"][data-ds-dark-theme]{--dsw-specific-bubble:rgba(66,44,62,.74)}
 body[data-dsh-theresa][data-tre-bg="on"] [data-conversation-scroll] :is(p,li,h1,h2,h3,h4,h5,h6,blockquote,td,th){
-  text-shadow:0 1px 2px rgba(255,255,255,.92),0 0 10px rgba(255,250,246,.75);
+  text-shadow:0 1px 2px rgba(255,255,255,calc(var(--tre-halo,.8) * .92)),0 0 10px rgba(255,250,246,calc(var(--tre-halo,.8) * .75));
 }
 body[data-dsh-theresa][data-tre-bg="on"][data-ds-dark-theme] [data-conversation-scroll] :is(p,li,h1,h2,h3,h4,h5,h6,blockquote,td,th){
-  text-shadow:0 1px 2px rgba(12,8,16,.9),0 0 10px rgba(20,17,27,.7);
+  text-shadow:0 1px 2px rgba(12,8,16,calc(var(--tre-halo,.8) * .9)),0 0 10px rgba(20,17,27,calc(var(--tre-halo,.8) * .7));
 }
 
 /* ---- 徽记 ---- */
@@ -273,7 +325,17 @@ body[data-dsh-theresa] .tre-mark{display:flex;align-items:center;justify-content
 body[data-dsh-theresa][data-ds-dark-theme] .tre-mark{color:#EDE6EE}
 body[data-dsh-theresa][data-tre-crown="off"] .tre-mark,
 body[data-dsh-theresa][data-tre-hero="off"] .tre-hero{display:none}
-body[data-dsh-theresa] .tre-hero{display:flex;align-items:center;justify-content:center;color:var(--dsw-alias-state-warn-primary)}
+body[data-dsh-theresa] .tre-hero{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  color:var(--dsw-alias-state-warn-primary);
+}
+/* 欢迎页的黑冠：亮色下取墨色（"黑冠"就该是黑的），暗色下反白，
+   否则在深底上会看不见。 */
+body[data-dsh-theresa] .tre-hero-crown{
+  display:flex;align-items:center;justify-content:center;
+  color:var(--dsw-alias-label-secondary,#3F363F);
+}
+body[data-dsh-theresa][data-ds-dark-theme] .tre-hero-crown{color:#EDE6EE}
 body[data-dsh-theresa] .tre-hero svg{filter:drop-shadow(0 0 20px rgba(176,130,52,.40))}
 
 /* ---- 设置页：自带一套 --tre-* 语义层，所有 var 都带兜底 ---- */
@@ -293,7 +355,9 @@ body[data-dsh-theresa] .tre-hint{font-size:11.5px;line-height:1.5;color:var(--tr
 body[data-dsh-theresa] .tre-opening{
   position:fixed;inset:0;z-index:2147483000;cursor:pointer;
   background:#14111B center/cover no-repeat;
-  opacity:1;transition:opacity 700ms ease;
+  opacity:1;
+  /* 退场时长由 JS 按"自然播完 / 手动跳过"分别写入 */
+  transition:opacity var(--tre-opening-fade,1800ms) ease;
 }
 body[data-dsh-theresa] .tre-opening[data-out="1"]{opacity:0}
 body[data-dsh-theresa] .tre-opening-video{
@@ -375,6 +439,17 @@ body[data-dsh-theresa] .tre-input{
 }
 body[data-dsh-theresa] .tre-input:focus-visible{outline:none;box-shadow:var(--tre-focus-ring,0 0 0 2px rgba(122,78,92,.45))}
 body[data-dsh-theresa] .tre-status{font-size:11.5px;line-height:1.5}
+/* 「检查遮挡层」的结果：等宽、可滚动、不占满整页 */
+body[data-dsh-theresa] .tre-probe{
+  margin-top:8px;padding:8px 10px;border-radius:var(--tre-radius-control,10px);
+  border:1px solid var(--tre-border,rgba(43,30,36,.12));
+  background:var(--tre-surface,rgba(255,253,251,.72));
+  max-height:180px;overflow:auto;display:flex;flex-direction:column;gap:4px;
+}
+body[data-dsh-theresa] .tre-probe-line{
+  font-family:ui-monospace,Consolas,monospace;font-size:11px;line-height:1.45;
+  color:var(--tre-text-secondary,#3F363F);white-space:pre-wrap;word-break:break-all;
+}
 body[data-dsh-theresa] .tre-status[data-state="ok"]{color:var(--dsw-alias-state-success-primary,#4E7A5F)}
 body[data-dsh-theresa] .tre-status[data-state="busy"]{color:var(--tre-text-tertiary,#6B6169)}
 body[data-dsh-theresa] .tre-status[data-state="error"]{color:var(--dsw-alias-state-error-primary,#A8434F)}
@@ -385,5 +460,10 @@ body[data-dsh-theresa] .tre-btn{
   transition:background var(--tre-motion-fast,120ms) ease;
 }
 body[data-dsh-theresa] .tre-btn:hover{background:var(--tre-surface-hover,rgba(122,78,92,.09))}
+body[data-dsh-theresa] .tre-btn[data-on="1"]{
+  border-color:var(--tre-accent,#7A4E5C);
+  background:color-mix(in srgb, var(--tre-accent,#7A4E5C) 14%, transparent);
+  color:var(--tre-accent,#7A4E5C);
+}
 body[data-dsh-theresa] .tre-btn:focus-visible{outline:none;box-shadow:var(--tre-focus-ring,0 0 0 2px rgba(122,78,92,.45))}
 @media (hover:none){body[data-dsh-theresa] .tre-btn{padding:10px 14px}}

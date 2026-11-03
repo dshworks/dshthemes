@@ -1,5 +1,5 @@
 /* TABmk/dsh-theme-ascetic — src/skin.css
-   fetched 2026-10-26 from https://raw.githubusercontent.com/TABmk/dsh-theme-ascetic/master/src/skin.css
+   fetched 2026-11-03 from https://raw.githubusercontent.com/TABmk/dsh-theme-ascetic/master/src/skin.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* dsh-theme-ascetic — terminal chrome layered over the token override.
    Everything is gated on html[data-ascii] (set by the plugin, removed on
@@ -535,6 +535,15 @@ html[data-glyphs] [data-composer-stat] button::before {
 html[data-glyphs] [data-composer-stat] button::after {
   content: "]";
   color: var(--ax-ink3);
+}
+
+/* The queue dock (messages waiting behind a running turn) is the one composer
+   surface that brings a face of its own: the queued-message preview and the
+   "N queued" header pin Inter ahead of the type token, so that face wins
+   wherever it is installed and the row drops out of the skin. The dock owns no
+   slot here, so pin the whole subtree to the mono stack. */
+html[data-ascii] :is([data-queue-dock], [data-queue-dock] *) {
+  font-family: var(--ax-mono) !important;
 }
 
 /* ---- 7. blank-session hero ---------------------------------------------- */

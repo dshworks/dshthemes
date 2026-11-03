@@ -1,5 +1,5 @@
 /* renge1145141919810/dsh-p5r-theme — client.js
-   fetched 2026-10-26 from https://raw.githubusercontent.com/renge1145141919810/dsh-p5r-theme/main/client.js
+   fetched 2026-11-03 from https://raw.githubusercontent.com/renge1145141919810/dsh-p5r-theme/main/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 /* ============================================================
    P5R phantom skin -scoped to body[data-p5r]
@@ -529,11 +529,22 @@ body[data-p5r] [data-chat-flow-kind='user'] [class*='_bubble'] a {
   color: #b3000e;
 }
 
+/* The reply plate is mode-aware. In dark mode it is ink with paper type; in
+   light mode the SAME fixed ink plate would put the theme's dark label colour
+   on a black background and make the reply unreadable, so light mode gets a
+   paper plate with the ink frame instead. */
 body[data-p5r] [data-chat-flow-kind='assistant-step'] {
-  background: #0a0a0b !important;
-  border: 2px solid #f7f1e3;
+  background: #fbf6ea !important;
+  border: 2px solid #0a0a0b;
+  color: #12100f !important;
   padding: 12px 16px;
   margin: 4px 0;
+}
+
+body[data-p5r][data-ds-dark-theme] [data-chat-flow-kind='assistant-step'] {
+  background: #0a0a0b !important;
+  border-color: #f7f1e3;
+  color: #f7f1e3 !important;
 }
 
 /* --- the composer plate ---------------------------------------------
@@ -615,18 +626,115 @@ body[data-p5r] div:has(> [data-composer-card])::after {
 body[data-p5r] [data-composer-card] {
   position: relative;
   z-index: 1;
-  background: #0a0a0b !important;
+  /* light mode: paper card on the ink plate, so the theme's dark label colour
+     stays readable; dark mode keeps the original ink card */
+  background: #fbf6ea !important;
+  color: #12100f !important;
   border: none !important;
   border-radius: 0 !important;
   box-shadow: none !important;
 }
 
-/* --- reduce ---------------------------------------------------------- */
+body[data-p5r][data-ds-dark-theme] [data-composer-card] {
+  background: #0a0a0b !important;
+  color: #f7f1e3 !important;
+}
+
+/* --- the affinity fanfare: three notes rising from the sidebar foot ----
+   The notes are drawn (blue eighth note with a paper outline), not imported,
+   and they leave the DOM as soon as their animation ends. */
+.p5r-notes {
+  position: absolute;
+  left: 18px;
+  bottom: 54px;
+  width: 260px;
+  height: 0;
+  pointer-events: none;
+}
+
+/* The supplied three-note sprite. It rises from the sidebar foot over the same
+   3.4s the animation itself runs, so the two end together. */
+.p5r-note-img {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 286px;
+  height: auto;
+  image-rendering: auto;
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: p5r-sprite-rise 3.45s cubic-bezier(0.22, 0.7, 0.3, 1) forwards;
+}
+
+@keyframes p5r-sprite-rise {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.82);
+  }
+  10% {
+    opacity: 1;
+  }
+  72% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(26px, -190px) scale(1.02);
+  }
+}
+
+.p5r-note {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 42px;
+  height: 56px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0;
+  /* composited so the rise cannot be dropped on a busy frame */
+  will-change: transform, opacity;
+  animation: p5r-note-rise 1.75s cubic-bezier(0.25, 0.6, 0.3, 1) forwards;
+}
+
+@keyframes p5r-note-rise {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.7) rotate(0deg);
+  }
+  16% {
+    opacity: 1;
+    transform: translate(calc(var(--p5r-drift) * 0.18), -30px) scale(1)
+      rotate(calc(var(--p5r-tilt) * 0.25));
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--p5r-drift), -250px) scale(1.06)
+      rotate(var(--p5r-tilt));
+  }
+}
+
+/* --- reduce ----------------------------------------------------------
+   Everything decorative is squashed when the OS asks for less motion - EXCEPT
+   the affinity fanfare. That global animation-duration override (0.01ms, with
+   the important flag) was what made the notes invisible on a machine with
+   animations switched off: they were spawned, finished in a hundredth of a
+   millisecond, and removed by their own animationend handler before a frame was
+   painted. The fanfare now gets a shorter, calmer animation instead of none. */
 @media (prefers-reduced-motion: reduce) {
-  body[data-p5r] *,
+  body[data-p5r] *:not(.p5r-note):not(.p5r-note-img),
   body[data-p5r]::before {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .p5r-note,
+  .p5r-note-img {
+    animation-duration: 1.6s !important;
+    animation-timing-function: ease-out !important;
   }
 }

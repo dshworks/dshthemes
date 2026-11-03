@@ -1,5 +1,5 @@
 /* berhbro/dsh-cyrene-theme — lib/client.js
-   fetched 2026-10-26 from https://raw.githubusercontent.com/berhbro/dsh-cyrene-theme/main/lib/client.js
+   fetched 2026-11-03 from https://raw.githubusercontent.com/berhbro/dsh-cyrene-theme/main/lib/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 /* =====================================================================
    昔涟 · 粉白渐变毛玻璃主题
@@ -182,6 +182,21 @@ body[data-dsh-cyrene][data-cyrene-skin="on"][data-ds-dark-theme] .cyre-bg{
 }
 body[data-dsh-cyrene][data-cyrene-skin="on"][data-cyre-bg="off"] .cyre-bg{
   display:none;
+}
+/* ---- 窗口拖拽区：这一层必须退出宿主的 no-drag 减法 ----
+   macOS 桌面（hiddenInset，没有原生标题栏）把 body 的每个直接子元素都标成 no-drag：
+     html[data-platform=darwin] body > :not(#root){-webkit-app-region:no-drag}
+   而 app-region 的合成分法是「文档顺序里最后一个包含该点的盒子说了算」
+   （宿主 ui-web 的 window-drag/regions.ts）。
+   背景层是插件 append 到 body 末尾的、position:fixed;inset:0 铺满视口 —— 它正好是
+   最后那个盒子，于是把 [data-window-drag] 的整片拖拽区减掉：整扇窗拖不动，
+   双击标题栏也不会缩放了。pointer-events:none 和 z-index:-1 都救不了它，
+   因为合成只看 app-region 盒子的文档顺序，不看绘制顺序。
+   用 initial 让它退出 drag / no-drag 合成（computed 值回到 none）。
+   宿主那条选择器带 #root 的 id，普通声明压不住，所以必须 !important。 */
+body[data-dsh-cyrene] > .cyre-bg{
+  -webkit-app-region:initial !important;
+  app-region:initial !important;
 }
 body[data-dsh-cyrene][data-cyrene-skin="on"] .cyre-bg-img{
   position:absolute;
@@ -399,7 +414,18 @@ body[data-dsh-cyrene][data-ds-dark-theme]{
 }
 .cyre-close:hover{background:rgba(239,107,168,.14)}
 
-.cyre-editor{display:flex;flex-direction:column;gap:10px;min-height:0}
+.cyre-editor{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  min-height:0;
+  /* 覆盖层是 max-height + overflow:hidden 的固定高度；编辑器必须自己滚，
+     否则内容一多，最后几行（世界书入口）会被直接裁掉——看起来就像没做这个功能。 */
+  flex:1 1 auto;
+  overflow-y:auto;
+  overflow-x:hidden;
+  scrollbar-gutter:stable;
+}
 .cyre-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .cyre-switch{
   display:inline-flex;
@@ -634,9 +660,36 @@ body[data-dsh-cyrene][data-ds-dark-theme]{
   flex-direction:column;
   gap:10px;
 }
+/* 滚动容器是 flex 列，子项默认会「缩」而不是「滚」：条目一多，列表先被压扁，
+   卡片就画到下面的说明文字上（世界书 279 条时一眼就看见文字叠在一起）。
+   把直接子项钉成不缩放，让内容真的把容器撑高、由 overflow-y 接管。 */
+.cyre-manager-scroll > *{flex:0 0 auto}
 .cyre-manager-status{margin-left:auto;font-size:12px;color:var(--cy-ui-soft)}
 .cyre-manager-status[data-tone="ok"]{color:#3f9d76}
 .cyre-manager-status[data-tone="error"]{color:#d4518f}
+/* 「看原文」的内联预览：桌面壳会把 target=_blank 的新窗口拦下来（点了像没反应），
+   所以默认在这里就地展开；长文本自己滚，不把管理器撑爆。 */
+.cyre-raw{display:flex;flex-direction:column;gap:6px;padding:8px 10px;border-radius:12px;border:1px solid var(--cy-ui-line);background:var(--cy-ui-face2)}
+.cyre-raw[hidden]{display:none}
+.cyre-raw-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.cyre-raw-title{font-size:11.5px;color:var(--cy-ui-soft)}
+.cyre-raw-actions{display:flex;gap:6px;flex-wrap:wrap}
+.cyre-raw-actions .cyre-btn{font-size:11.5px;padding:3px 9px;margin:0}
+.cyre-raw-body{
+  margin:0;max-height:260px;overflow:auto;
+  white-space:pre-wrap;word-break:break-word;
+  font-size:11.5px;line-height:1.6;color:var(--cy-ui-text);
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+/* 「在浏览器打开」被壳拦下时，地址直接摆在点击的地方（可选中、可复制）。 */
+.cyre-raw-url{
+  display:block;padding:6px 8px;border-radius:8px;
+  border:1px dashed var(--cy-ui-line);background:rgba(255,255,255,.5);
+  font-size:11.5px;line-height:1.5;color:var(--cy-ui-text);word-break:break-all;
+  user-select:text;-webkit-user-select:text;cursor:text;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+.cyre-raw-url[hidden]{display:none}
 .cyre-entry{
   display:flex;
   flex-wrap:wrap;
@@ -649,6 +702,22 @@ body[data-dsh-cyrene][data-ds-dark-theme]{
 .cyre-entry-info{display:flex;align-items:baseline;gap:8px;font-size:12.5px;color:var(--cy-ui-text)}
 .cyre-entry-info span{font-size:11.5px;color:var(--cy-ui-soft)}
 .cyre-entry .cyre-btn{margin-left:auto}
+.cyre-mem-list{display:flex;flex-direction:column;gap:8px;min-height:0}
+.cyre-mem-item{
+  display:flex;flex-direction:column;gap:4px;
+  padding:9px 11px;border-radius:12px;
+  border:1px solid var(--cy-ui-line);
+  background:var(--cy-ui-face2);
+}
+.cyre-mem-text{margin:0;font-size:12.5px;line-height:1.6;color:var(--cy-ui-text);word-break:break-word}
+.cyre-mem-meta{font-size:11px;line-height:1.4;color:var(--cy-ui-soft);font-variant-numeric:tabular-nums}
+.cyre-mem-item > .cyre-btn{align-self:flex-end;margin-top:2px;font-size:11.5px;padding:3px 9px}
+.cyre-mem-file{flex-wrap:wrap;align-items:center;gap:6px 8px;padding-top:2px}
+.cyre-mem-path{
+  flex:1 1 100%;min-width:0;font-size:11px;line-height:1.5;
+  color:var(--cy-ui-soft);word-break:break-all;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
 
 /* =====================================================================
    对话界面微调（不跟主题开关走：换掉新会话欢迎页的内置鱼 + 自带艺术字欢迎语，
