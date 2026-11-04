@@ -1,0 +1,130 @@
+/* lemoncat7/dsh-theme-xiaohei — src/rift/scene-styles.ts
+   fetched 2026-11-04 from https://raw.githubusercontent.com/lemoncat7/dsh-theme-xiaohei/main/src/rift/scene-styles.ts
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+.rift-scene { position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
+.rift-scene[data-artwork='loading'] { visibility:hidden; }
+.rift-scene > img,.rift-scene > canvas { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:right center; }
+.rift-scene > canvas { opacity:0; }
+.rift-scene[data-renderer='webgl'] > canvas { opacity:1; }
+.rift-scene::after { content:''; position:absolute; inset:0; }
+.rift-signature { position:absolute; right:32px; bottom:24px; z-index:1; color:#e7f5ef; text-align:right; font:10px/1.7 ui-monospace,monospace; letter-spacing:.24em; text-shadow:0 1px 10px #071519; }
+.rift-signature strong { display:block; font-size:17px; font-weight:400; letter-spacing:.42em; }
+/* Only the freestanding home title sits directly on artwork; controls stay native light/dark. */
+html[data-rift-theme] #root [class*='_headline']:has([data-slot='conversation.hero.brand.mark']) {
+ --dsw-alias-label-primary:#edf5ff; --dsw-alias-label-secondary:#d3e5fa;
+ color:#edf5ff; text-shadow:0 2px 12px #08181d;
+ background:radial-gradient(ellipse at center,rgb(9 22 28 / 78%),rgb(9 22 28 / 0%) 74%);
+}
+html[data-rift-theme] #root [data-slot='conversation.hero.brand.mark'] .rift-hero-mark { color:#b2d7ff; }
+html[data-rift-theme] #root [class*='_heroWorkspaceRow'] {
+ align-self:flex-start; max-width:100%; box-sizing:border-box; padding:6px 10px;
+ border:1px solid var(--rift-rim); border-radius:3px 10px 3px 10px; background:var(--rift-panel);
+}
+html[data-rift-theme] .xiaohei-draft-label { color:#dceafb; text-shadow:0 1px 5px #071519; }
+/* Native header surface; glass decoration leaves fixed menus viewport-bound. */
+html[data-rift-theme] {
+ --rift-header:linear-gradient(105deg,rgb(25 35 52 / 78%),rgb(31 43 62 / 70%) 55%,rgb(22 34 51 / 68%));
+}
+html[data-rift-theme][data-xiaohei-appearance='light'] {
+ --rift-header:linear-gradient(105deg,rgb(233 244 255 / 80%),rgb(242 248 255 / 72%) 55%,rgb(225 239 255 / 68%));
+}
+html[data-rift-theme] #root :is([data-slot='conversation.header'],[data-slot='conversation.session.header']) { background:none; border:0; }
+html[data-rift-theme] #root :is([data-slot='conversation.header'],[data-chain-overlay-fallback='conversation.header']) > header {
+ background:var(--rift-header) !important;
+ box-shadow:inset 0 -1px var(--rift-edge),inset 0 1px var(--rift-glass-highlight); color:var(--rift-text);
+ --dsw-alias-label-primary:var(--rift-text); --dsw-alias-label-secondary:var(--rift-muted); --dsw-alias-label-tertiary:var(--rift-muted);
+ --dsw-alias-interactive-bg-hover:var(--rift-hover);
+}
+/* A separate daylight illustration, not a dark scene bleached by an overlay. */
+html[data-xiaohei-appearance='light'] .rift-scene { }
+html[data-xiaohei-appearance='light'] .rift-scene::after { }
+html[data-xiaohei-appearance='light'] .rift-signature { color:#365878; text-shadow:0 1px 8px rgb(255 255 255 / 60%); }
+html[data-rift-theme][data-xiaohei-appearance='light'] #root [class*='_headline']:has([data-slot='conversation.hero.brand.mark']) {
+ --dsw-alias-label-primary:#293e5a; --dsw-alias-label-secondary:#3c4d65;
+ color:#293e5a; text-shadow:0 1px 12px rgb(255 255 255 / 65%); background:none;
+}
+html[data-rift-theme][data-xiaohei-appearance='light'] #root [data-slot='conversation.hero.brand.mark'] .rift-hero-mark { color:#315d8a; }
+html[data-rift-theme][data-xiaohei-appearance='light'] .xiaohei-draft-label { color:#3c4d65; text-shadow:none; }
+html[data-rift-theme][data-xiaohei-appearance='light'] #root [data-conversation-scroll]:has([data-chat-flow-kind]) {
+ background:transparent; color:#242832; --dsw-alias-label-primary:#242832; --dsw-alias-label-secondary:#3c4d65; --dsw-alias-label-tertiary:#3c4d65;
+}
+html[data-rift-theme][data-xiaohei-appearance='light'] #root [data-chat-flow-kind] {
+ --rift-muted:#243247;
+ --rift-glass:rgb(238 246 255 / 68%);
+ color:var(--rift-text); --dsw-alias-label-primary:var(--rift-text); --dsw-alias-label-secondary:var(--rift-muted); --dsw-alias-label-tertiary:var(--rift-muted);
+ --dsw-alias-label-primary-bluish:var(--rift-text); --dsw-alias-label-primary-dimmed:var(--rift-muted);
+ --dsw-alias-label-caption:var(--rift-muted); --dsw-alias-label-dimmed:var(--rift-muted);
+}
+html[data-rift-theme][data-xiaohei-appearance='light'] #root [data-chat-flow-kind] .dsh-knowledge-writeback-notice {
+ --knowledge-text-primary:#242832; --knowledge-text-secondary:#243247; --knowledge-text-tertiary:#243247;
+ --knowledge-border:rgb(49 93 138 / 30%); --knowledge-control:rgb(238 246 255 / 85%);
+}
+html[data-rift-theme][data-xiaohei-appearance='light'] #root [data-slot='conversation.composer'] {
+ color:var(--rift-text); --dsw-alias-label-primary:var(--rift-text); --dsw-alias-label-secondary:var(--rift-muted); --dsw-alias-label-tertiary:#606b7a;
+}
+/* Scope the clearer glass to conversation surfaces; menus and sidebar keep
+   their solid reading palette. No screen-sized blur or milky overlay. */
+html[data-rift-theme][data-xiaohei-appearance='light'] #root [data-composer-card='true'] {
+ --rift-plate:linear-gradient(115deg,rgb(222 238 255 / 72%),rgb(243 249 255 / 66%));
+ --rift-muted:#243247; --dsw-alias-label-secondary:#243247; --dsw-alias-label-tertiary:#243247;
+ box-shadow:0 12px 32px -24px var(--rift-shadow),inset 0 0 0 1px rgb(255 255 255 / 20%) !important;
+}
+/* Small metadata must not inherit the message's wallpaper text outline. */
+html[data-rift-theme] #root [data-chat-flow-kind] [class*='_actions'] {
+ --dsw-alias-label-secondary:var(--rift-text); --dsw-alias-label-tertiary:var(--rift-text);
+ color:var(--rift-text); background:none; border:0; border-radius:0; box-shadow:none;
+ -webkit-text-stroke:0; text-shadow:0 1px 2px var(--rift-base);
+}
+html[data-rift-theme][data-xiaohei-appearance='light'] #root [data-chat-flow-kind] [class*='_actions'] {
+ --dsw-alias-label-secondary:#242832; --dsw-alias-label-tertiary:#242832;
+ color:#242832;
+}
+html[data-rift-theme][data-xiaohei-appearance='light'] #root [data-chat-flow-kind]:not([data-chat-flow-kind='user']):not([data-chat-flow-kind='assistant-step']):not(:has(> [data-slot='conversation.chat.node']:empty)) {
+ background:transparent;
+}
+/* User and admitted steering share UserStyleBubble: its full-width row is
+   layout only. Keep the reading surface on the bubble, including after the
+   Host replaces the pending steering projection with a durable node. */
+html[data-rift-theme][data-xiaohei-appearance='light'] #root [data-chat-flow-kind]:not([data-chat-flow-kind='user']):not([data-chat-flow-kind='steering']):not([data-chat-flow-kind='assistant-step']):not([data-chat-flow-kind='turn-tail']) > [data-slot='conversation.chat.node'] > :first-child {
+ background:rgb(238 246 255 / 68%); border-radius:3px 10px 3px 10px;
+}
+html[data-rift-theme][data-xiaohei-appearance='light'] #root [data-chat-flow-kind='assistant-step']:not(:has(> [data-slot='conversation.chat.node']:empty)) { box-shadow:none;
+}
+html[data-rift-theme][data-xiaohei-appearance='light'] #root [data-chat-flow-kind] :is(pre,code) {
+ color:#242832; background-color:rgb(226 238 253 / 72%);
+}
+html[data-rift-theme][data-xiaohei-appearance='light'] :is([data-submission-echo],[data-pending-steering],.xiaohei-draft-bubble) {
+ color:#242832; --dsw-alias-label-primary:#242832; --dsw-alias-label-secondary:#3c4d65;
+}
+/* Fade paint only, never the bubble element: text, links and selection remain
+   fully opaque. Remove the outgoing bubble's hard right rim and cast shadow. */
+html[data-rift-theme][data-xiaohei-appearance='light'] #root :is([data-chat-flow-kind='user'],[data-chat-flow-kind='steering'],[data-submission-echo],[data-pending-steering]) [class*='_bubble']:not([role='tooltip']),
+html[data-rift-theme][data-xiaohei-appearance='light'] .xiaohei-draft-bubble {
+ border-color:transparent; border-left-color:var(--rift-rim); box-shadow:none;
+}
+html[data-rift-theme][data-xiaohei-appearance='light'] #root :is([data-chat-flow-kind='assistant-step'],[data-chat-flow-kind='user'],[data-chat-flow-kind='steering'],[data-submission-echo],[data-pending-steering]),
+html[data-rift-theme][data-xiaohei-appearance='light'] .xiaohei-draft-bubble {
+ -webkit-text-stroke:2px rgb(245 250 255 / 90%); paint-order:stroke fill; text-shadow:none;
+}
+html[data-rift-theme][data-xiaohei-appearance='light'] #root [data-chat-flow-kind] :is(pre,code,button) { -webkit-text-stroke:0; text-shadow:none; }
+/* Native Tooltip lives inside the message DOM and also names its class
+   "bubble". Clear inherited outlines without changing its positioning. */
+html[data-rift-theme] [role='tooltip'] { -webkit-text-stroke:0; text-shadow:none; }
+/* Message metadata and its hints are plain text, not miniature chat bubbles. */
+html[data-rift-theme] #root [data-chat-flow-kind] [role='tooltip'] {
+ color:var(--rift-text); background:none; border:0; border-radius:0; box-shadow:none;
+ text-shadow:0 1px 2px var(--rift-base);
+}
+/* A fully transparent right edge cannot guarantee contrast over all artwork.
+   Honor the explicit increased-contrast preference with the solid fallback. */
+@media(prefers-contrast:more){
+ html[data-rift-theme][data-xiaohei-appearance='light'] #root [data-chat-flow-kind='assistant-step']:not(:has(> [data-slot='conversation.chat.node']:empty)) { background:rgb(245 250 255 / 94%); -webkit-text-stroke:0; text-shadow:none; }
+ html[data-rift-theme][data-xiaohei-appearance='light'] #root [data-chat-flow-kind],
+ html[data-rift-theme][data-xiaohei-appearance='light'] :is([data-submission-echo],[data-pending-steering],.xiaohei-draft-bubble) { --rift-plate:rgb(240 247 255 / 94%); -webkit-text-stroke:0; text-shadow:none; }
+}
+@media(max-width:760px){
+ .rift-signature { display:none; }
+ .rift-scene > img { object-position:78% center; }
+ .rift-scene > canvas { display:none; }
+}
+@media(forced-colors:active){.rift-scene{display:none}}

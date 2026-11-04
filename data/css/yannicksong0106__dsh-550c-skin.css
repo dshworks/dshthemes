@@ -1,0 +1,1346 @@
+/* yannicksong0106/dsh-550c-skin — src/skin.css
+   fetched 2026-11-04 from https://raw.githubusercontent.com/yannicksong0106/dsh-550c-skin/master/src/skin.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* ═══════════════════════════════════════════════════════════════════════════
+   550C · DSH skin — the style layer
+
+   Everything here is scoped to `html[data-550c]`, which the client half sets
+   only while this plugin's skin is switched on; switching it off in 设置 → 通用
+   removes the whole layer and cannot leave anything behind.
+
+   THE ONE RULE THIS FILE FOLLOWS
+
+   It changes how DSH looks, never where anything is. No padding, margin, size,
+   display, flex or offset is set on any of the app's own elements, so the shell
+   composes exactly as DSH composed it and every control keeps the hit target
+   and the geometry its authors designed. What changes is colour (the `--dsw-*`
+   ladder is written by the client half out of src/palettes.js), type, rules,
+   corners, glow, and a set of absolutely-positioned decorations.
+
+   Decorations are the one place geometry is touched at all: they are
+   `position:absolute` pseudo-elements with `pointer-events:none`, which paint
+   inside a box without contributing to layout. `position:relative` is set only
+   where one needs an anchor, and never with an offset, so nothing moves.
+
+   Class selectors use the CSS-module LOCAL name via `[class*="_name"]`: the
+   hash in front of it (`pI_x6G_frame`, `hHd-Xa_root`) changes between DSH
+   builds, the local name does not. Names generic enough to collide across
+   modules (`_root`, `_row`, `_title`) are not used bare.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 1. TYPE ─────────────────────────────────────────────────────────────── */
+
+/* The splash's Windows fixed-pitch pair: Cascadia Mono for Latin, NSimSun for
+   CJK — fixed-pitch per glyph, which is what makes mixed text line up. The
+   opt-out exists because a fully monospaced UI is a strong opinion.
+   Font sizes are deliberately NOT touched: changing them would reflow DSH's
+   own layout, and this layer does not do that. */
+html[data-550c]:not([data-550c-mono='off']) {
+  --dsw-font-family: var(--c-mono);
+  --ds-font-family-code: var(--c-mono);
+}
+
+html[data-550c] {
+  -webkit-font-smoothing: antialiased;
+}
+
+html[data-550c] ::selection {
+  background: rgba(var(--c-glow-rgb), 0.28);
+  color: var(--c-text);
+}
+
+/* DSH's own small labels — section headers, scope triggers, panel seats — take
+   the tracked uppercase treatment the splash uses for machine labels. */
+html[data-550c] :where([class*='_sectionLabel'], [class*='_seatLabel'], [class*='_triggerLabel'], [class*='_sectionHeader']) {
+  letter-spacing: 0.1em;
+}
+
+/* A leading tick on section headers, drawn as a decoration. */
+html[data-550c] :where([class*='_sectionLabel'])::before {
+  content: '▚ ';
+  color: var(--c-amber-d);
+}
+
+/* ── 2. SURFACES ─────────────────────────────────────────────────────────── */
+
+/* NOTHING HERE RESHAPES A BOX, AND NOTHING HERE DRAWS ONE.
+
+   Two earlier passes did, and both were wrong in the same way — they piled
+   decoration onto the app instead of recolouring it:
+
+   1. A global `border-radius: 2px` squared off every control. DSH's own design
+      is soft and round; forcing its corners square made the skin look like a
+      different program bolted on, and it is what "板正" actually was.
+   2. Every card, bubble, popover, menu, tooltip, toast and dialog got a 1px
+      phosphor ring AND eight one-pixel corner brackets. On a page like the
+      agent-preset list that is dozens of hard rectangles and hundreds of
+      bracket segments — a lot of ink saying nothing. A machine console is
+      allowed to be beautiful, but not by accumulation.
+
+   So the app keeps its own radii, and raised surfaces are separated by TONE
+   alone. The faint ring that used to sit here was still drawing a rectangle
+   around every card, and a rectangle is a box however thin you make it — the
+   surface ladder already steps `bgBase` → `bgPanel` → `bgWin`, which is how the
+   splash separates its own panes. Nothing is added, so each surface keeps
+   whatever elevation the app already gave it. */
+
+/* ── 3. CONTROLS ─────────────────────────────────────────────────────────── */
+
+/* Primary actions glow instead of casting: the accent fill plus the splash's own
+   button bloom. */
+html[data-550c] :where([class*='_primary']) {
+  box-shadow: 0 0 14px rgba(var(--c-glow-rgb), 0.22);
+}
+
+html[data-550c] :where(button, [role='button']):hover {
+  box-shadow: 0 0 12px rgba(var(--c-glow-rgb), 0.18);
+}
+
+/* Focus is a phosphor ring, not a browser outline. `outline` is used rather than
+   a border so focus never changes a box's size. */
+html[data-550c] :focus-visible {
+  outline: 1px solid var(--c-amber);
+  outline-offset: 1px;
+  box-shadow: 0 0 12px rgba(var(--c-glow-rgb), 0.35);
+}
+
+/* The new-session button is the console's power switch: the accent on its face,
+   not a ring drawn round it. */
+html[data-550c] :where([class*='_newSession']) {
+  color: var(--c-amber-b);
+  text-shadow: var(--c-glow-text);
+}
+
+/* Selected rows carry the accent rule the splash puts on an active window title.
+   An inset shadow, so the row keeps its box. */
+html[data-550c] :where([class*='_sessionRow'], [class*='_projectRow'], [class*='_folder'])[class*='_selected'],
+html[data-550c] :where([class*='_folderActive']) {
+  box-shadow: inset 2px 0 0 0 var(--c-amber);
+}
+
+/* ── 4. THE COMPOSER ─────────────────────────────────────────────────────── */
+
+/* The composer is a POOL OF LIGHT, not a panel.
+
+   It used to be a filled rounded rectangle, and that is why it still read as a
+   box even with its border removed: a flat fill of `bgWin` on a darker page IS a
+   rectangle, however soft its corners. So there is no fill at all — only a soft
+   radial bloom that fades out before it reaches an edge, which leaves nothing
+   for the eye to trace. The input text sits on the page's own ground, where it
+   has all the contrast it needs. */
+html[data-550c] [data-composer-card] {
+  background: radial-gradient(105% 165% at 50% 46%, rgba(var(--c-glow-rgb), 0.07), transparent 72%);
+  box-shadow: none;
+}
+
+/* The composer's own copy follows the same 等宽 switch as everything else.
+   It is gated deliberately rather than always-on: the workspace seat sizes
+   itself against the composer's text metrics, so a font swap here narrows that
+   seat by two pixels. With the switch off the skin's geometry is byte-identical
+   to stock DSH; with it on, the only difference left anywhere is text metrics,
+   which is what choosing a different typeface means. */
+html[data-550c]:not([data-550c-mono='off']) [data-composer-input] {
+  font-family: var(--c-mono);
+}
+
+html[data-550c] [data-composer-card] {
+  caret-color: var(--c-amber);
+}
+
+/* A block cursor parked at the end of an EMPTY composer — the one place a caret
+   glyph is stable, because an empty editor has one line and no flow to disturb.
+   The real caret still works; it just also blinks in phosphor.
+
+   layout-exempt: this is the single decoration in the whole layer that sits IN
+   TEXT FLOW rather than out of it. It has to be inline-block with a width to be
+   visible at all, so unlike every other rule here it does occupy space — the
+   width of one glyph plus 3px, after the placeholder's last character. That is
+   bounded and invisible in practice (the composer is hundreds of pixels wider
+   than its placeholder), but it is a real exception, so it is marked and
+   counted by test/layout-contract.test.mjs rather than hidden. Verified by
+   tools/scenarios/rects.js, which measures the placeholder's box for exactly
+   this reason. */
+html[data-550c] [data-composer-input] :where([class*='_placeholder'])::after,
+html[data-550c] [data-composer-placeholder]::after {
+  content: '';
+  display: inline-block;
+  width: 0.55em;
+  height: 1.05em;
+  margin-left: 3px;
+  vertical-align: -0.18em;
+  background: var(--c-amber);
+  opacity: 0.75;
+  animation: c-blink 1.06s steps(1) infinite;
+}
+
+html[data-550c]:not([data-550c-mono='off']) [data-composer-card] :where([class*='_trigger'], [class*='_triggerLabel'], [class*='_modes']) {
+  font-family: var(--c-mono);
+  letter-spacing: 0.04em;
+}
+
+/* ── 5. TRANSCRIPT, MARKDOWN, CODE ───────────────────────────────────────── */
+
+html[data-550c] :where([class*='_markdown'], article, [class*='_md']) :where(h1, h2, h3) {
+  color: var(--c-amber-b);
+  text-shadow: var(--c-glow-text);
+  letter-spacing: 0.02em;
+}
+
+html[data-550c] :where([class*='_markdown'], article, [class*='_md']) h2::before {
+  content: '▸ ';
+  color: var(--c-amber-d);
+}
+
+html[data-550c] :where([class*='_markdown'], article, [class*='_md']) a {
+  color: var(--c-amber-b);
+  text-decoration-color: var(--c-amber-d);
+  text-underline-offset: 2px;
+}
+
+/* Code keeps the app's own shape and separation; it is recoloured, not framed.
+   The ring that used to be drawn round every `pre` is the same accumulation the
+   surfaces section now avoids — a code block is already a different surface. */
+html[data-550c] :where(pre, [class*='_shiki']) {
+  background-color: var(--c-bg-panel);
+}
+
+html[data-550c] :where([class*='_markdown'], article) :where(th, td) {
+  border-color: rgba(var(--c-glow-rgb), 0.24);
+}
+
+html[data-550c] :where([class*='_markdown'], article) th {
+  color: var(--c-amber);
+  letter-spacing: 0.06em;
+}
+
+/* Blockquotes keep whatever border the app gave them and are only recoloured —
+   widening a border would reflow the quote's text. The accent strip is drawn as
+   an inset shadow so it reads as the splash's note strip either way. */
+html[data-550c] :where([class*='_markdown'], article) blockquote {
+  border-left-color: var(--c-amber-d);
+  background: rgba(var(--c-glow-rgb), 0.05);
+  box-shadow: inset 2px 0 0 0 var(--c-amber-d);
+}
+
+/* ── 6. RUNNING WORK AS CHARACTER CELLS ──────────────────────────────────── */
+
+/* A tool call that is still running gets the splash's cell bar as an advancing
+   underline, rather than a smooth web progress bar. Decorated, not resized. */
+html[data-550c] :where([data-state='running'], [data-running], [class*='_running']) {
+  position: relative;
+}
+
+html[data-550c] :where([data-state='running'], [data-running], [class*='_running'])::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(90deg, var(--c-amber) 0 4px, transparent 4px 7px);
+  opacity: 0.5;
+  animation: c-cells 1.2s linear infinite;
+}
+
+@keyframes c-cells {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: 7px;
+  }
+}
+
+/* ── THE RUNNING STATUS: DELIBERATELY NO RULE ────────────────────────────── */
+
+/* `深度求索中，用时 41秒` is the app's own line, drawn while a turn is running.
+   It reads as a console readout because its COLOUR comes from the scheme — see
+   `--dsw-alias-label-deep-diving` in `src/palettes.js`. `.EvIC1a_running` sets
+   `color` from that token and rebinds the shared text shimmer to
+   `--dsw-alias-label-deep-diving-shimmer`, so owning the pair is the whole
+   treatment and the app supplies the sweep.
+
+   AN EARLIER PASS PAINTED OVER IT AND MADE IT WORSE. It set
+   `background-clip: text` with a gradient built from `--c-text-dim`, and
+   `color: transparent` to let the gradient show. That replaced a phosphor-coloured
+   line with a *grey* one that only brightened where the band passed — reported,
+   exactly, as "深度求索太没辨识度了". It also fought the app's own shimmer with a
+   second, differently-timed one. Tokens, not paint: the line was never the
+   problem, its colour was.
+
+   Nothing is added and nothing is resized, so the contract holds either way —
+   but the reason to prefer the token is that it is one value instead of a
+   gradient, a keyframe, a clip and a transparent-colour trick. */
+
+/* ── ELEVATED SURFACES ARE PANELS, NOT GLASS ─────────────────────────────── */
+
+/* DSH's menus and hover cards are translucent by design: they paint
+   `--dsw-menu-surface-fill` and then blur and saturate whatever sits behind them
+   (`blur(40px) saturate(150%)`). Over a console that reads as frosted plastic —
+   the milkiness is the blur pulling the page's colours up through the panel.
+
+   The fill itself is now the scheme's panel material, nearly opaque (see
+   `--dsw-menu-surface-fill` in `src/palettes.js`), which already leaves the
+   filter nothing to show. Turning it off as well is the honest statement of the
+   intent, and it is the cheaper frame: a full-screen backdrop filter is real work
+   on every open.
+
+   Declared on `body`, not on `html`, and for the same reason the ladder is:
+   DSH defines this token on `body`, and a custom property set on an ancestor is
+   shadowed by the descendant's own declaration. `html[data-550c] body` outranks
+   it; `html[data-550c]` alone would not. */
+html[data-550c] body {
+  --dsw-menu-backdrop-filter: none;
+}
+
+/* ── 7. SCROLLBARS AS RAILS ──────────────────────────────────────────────── */
+
+/* Appearance only. The scrollbar's THICKNESS is a layout property: the app's
+   scroll bodies are `overflow:auto`, so a wider scrollbar narrows their content
+   box and shifts everything inside by the difference. An earlier draft set
+   `width:10px` here and moved the composer cluster by two pixels — caught by
+   tools/scenarios/rects.js. Colour, corner and thumb inset are free; size is
+   not, so the platform's own width is left alone. */
+html[data-550c] ::-webkit-scrollbar-track {
+  background: rgba(var(--c-glow-rgb), 0.05);
+}
+
+html[data-550c] ::-webkit-scrollbar-thumb {
+  border-radius: 0;
+  background-clip: padding-box;
+}
+
+html[data-550c] ::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+html[data-550c] {
+  scrollbar-color: var(--dsw-alias-scrollbar-bg-l1) transparent;
+}
+
+/* ── 8. ATMOSPHERE ───────────────────────────────────────────────────────── */
+
+/* One overlay carries every atmospheric effect, so they switch as a unit and can
+   never intercept a click. It sits above the app (2147480000) but below the boot
+   splash (2147482000), so a splash playing over a skinned UI stays clean. */
+html[data-550c] .c-crt,
+html[data-550c] .c-crt * {
+  pointer-events: none !important;
+  /* The darwin base sheet turns direct body children into no-drag regions;
+     `initial` takes this overlay out of that computation rather than turning
+     the whole top of the window into a drag handle. */
+  -webkit-app-region: initial !important;
+}
+
+html[data-550c] .c-crt {
+  position: fixed;
+  inset: 0;
+  z-index: 2147480000;
+  overflow: hidden;
+}
+
+/* Scanlines: a 3px period at very low alpha. The alpha is load-bearing —
+   anything above ~0.2 turns 12px CJK into mush. */
+html[data-550c] .c-crt .c-scan {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(180deg, rgba(0, 0, 0, 0.32) 0 1px, rgba(0, 0, 0, 0) 1px 3px);
+  opacity: var(--c-scan-strength, 0.5);
+}
+
+/* The rolling refresh band a CRT shows: one soft bright bar, very slow. */
+html[data-550c] .c-crt .c-roll {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 28vh;
+  background: linear-gradient(
+    180deg,
+    rgba(var(--c-glow-rgb), 0) 0%,
+    rgba(var(--c-glow-rgb), 0.035) 50%,
+    rgba(var(--c-glow-rgb), 0) 100%
+  );
+  animation: c-roll 9s linear infinite;
+}
+
+@keyframes c-roll {
+  from {
+    top: -30vh;
+  }
+  to {
+    top: 100vh;
+  }
+}
+
+/* Vignette: the tube's corner falloff. */
+html[data-550c] .c-crt .c-vig {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 78% 78% at 50% 50%, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0.42) 100%);
+  opacity: var(--c-vig-strength, 0.7);
+}
+
+/* A barely-there global flicker. Stepped, not smooth: a smooth sine reads as a
+   rendering bug, a stepped one reads as a phosphor. */
+html[data-550c] .c-crt .c-flicker {
+  position: absolute;
+  inset: 0;
+  background: rgba(var(--c-glow-rgb), 0.012);
+  animation: c-flick 4.7s steps(1) infinite;
+}
+
+@keyframes c-flick {
+  0%,
+  96% {
+    opacity: 0;
+  }
+  96.5% {
+    opacity: 1;
+  }
+  97% {
+    opacity: 0;
+  }
+  98.2% {
+    opacity: 1;
+  }
+  98.6% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* The bloom: a soft accent wash from the top of the tube, which is what makes
+   the palette feel emissive rather than merely dark. */
+html[data-550c] .c-crt .c-bloom {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(var(--c-glow-rgb), 0.06), rgba(var(--c-glow-rgb), 0) 70%);
+}
+
+/* The prompt cursor: a blinking block at the end of the transcript, which is
+   where the splash's log ends too. */
+html[data-550c] .c-cursor::after {
+  content: '';
+  display: inline-block;
+  width: 0.62em;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: -0.16em;
+  background: var(--c-amber);
+  box-shadow: 0 0 7px rgba(var(--c-glow-rgb), 0.6);
+  animation: c-blink 1.06s steps(1) infinite;
+}
+
+/* The ● REC beat, for the session activity dot the sidebar already draws. */
+html[data-550c] .c-rec > s {
+  animation: c-blink 1.06s steps(1) infinite;
+}
+
+@keyframes c-blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  50.01%,
+  100% {
+    opacity: 0.12;
+  }
+}
+
+/* ── 9. EFFECT SWITCHES ──────────────────────────────────────────────────── */
+
+html[data-550c][data-550c-scan='off'] .c-crt .c-scan,
+html[data-550c][data-550c-scan='off'] .c-crt .c-roll,
+html[data-550c][data-550c-scan='off'] .c-crt .c-flicker,
+html[data-550c][data-550c-vig='off'] .c-crt .c-vig,
+html[data-550c][data-550c-vig='off'] .c-crt .c-bloom {
+  display: none;
+}
+
+/* ── 10. THE DIALOG BOX, REBUILT AS A CONSOLE ────────────────────────────── */
+
+/* THE ONE AUTHORISED LAYOUT EXCEPTION.
+
+   Everything else in this sheet is forbidden from changing DSH's geometry, and
+   test/layout-contract.test.mjs enforces that. The dialog box is deliberately
+   different: this pass gives it a header band (the animated mark and the rate
+   meter, top left), a terminal input, and a control row where the compute-load
+   rheostat abuts the model selector. The composer card therefore gets taller,
+   and the geometry check knows it — it asserts that nothing OUTSIDE the composer
+   moves, and reports the composer region separately instead of pretending it is
+   fixed.
+
+   THE STYLE, AND WHAT IT IS NOT
+
+   An earlier pass drew this like a dot-matrix terminal: `█`/`·` text, 1px
+   right-angled brackets, character-cell bars. It read as a 1980s compiler and
+   clashed with DSH, whose surfaces are soft, rounded and quiet.
+
+   So the rule for everything below is LIGHT, NOT LINES. Where the old pass put a
+   border it now puts a gradient or a glow; where it put square corners it puts
+   the app's own radii; where it put a row of characters it puts a rail with a
+   luminous fill. The console still reads as a machine — but as a machine that
+   belongs to this application. */
+
+html[data-550c] .c-console-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-sizing: border-box;
+  padding: 0 6px 9px;
+  font-family: var(--c-mono);
+  font-size: 10px;
+  line-height: 1;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--c-text-dim);
+  user-select: none;
+}
+
+/* The mark is NOT framed, and it is not text. It is a grid of cells whose empty
+   positions are invisible, so the logotype reads as lettering rather than as a
+   dot matrix — the difference between depicting a machine and emulating its
+   display hardware. */
+html[data-550c] .c-mark {
+  --cell: 3px;
+  display: grid;
+  grid-template-columns: repeat(var(--cols), var(--cell));
+  gap: 1px;
+  flex: none;
+  /* A slow breathing glow on the whole mark, on top of the per-cell shimmer. */
+  animation: c-mark-breathe 5.2s ease-in-out infinite;
+}
+
+html[data-550c] .c-cell {
+  width: var(--cell);
+  height: var(--cell);
+  border-radius: 0.5px;
+  background: transparent;
+}
+
+/* Only lit cells are drawn. `data-lit` is set by the boot sequence, one cell at
+   a time, so the mark writes itself out and then stays. */
+html[data-550c] .c-cell[data-lit='1'] {
+  background: var(--c-amber);
+  box-shadow: 0 0 4px rgba(var(--c-glow-rgb), 0.7);
+  /* The phase is per COLUMN, so the light travels across the mark as a wave
+     instead of the whole thing blinking. This is what makes it dynamic. */
+  animation: c-mark-shimmer 2.6s ease-in-out infinite;
+  animation-delay: calc(var(--col) * 65ms);
+}
+
+@keyframes c-mark-shimmer {
+  0%,
+  100% {
+    opacity: 0.62;
+    box-shadow: 0 0 3px rgba(var(--c-glow-rgb), 0.45);
+  }
+  45% {
+    opacity: 1;
+    box-shadow: 0 0 9px rgba(var(--c-glow-rgb), 0.95);
+  }
+}
+
+/* ── THE MARK WHILE THE AGENT IS WORKING ─────────────────────────────────── */
+
+/* The logo loads. There is no separate spinner and no progress box: the mark
+   itself enters a loading state, which is the only honest way to show "this
+   machine is working" on a console whose identity IS this mark.
+
+   The sweep runs in READING order (`--seq`, not `--col`), so the light travels
+   the way the logotype was written — which reads as the logo being written out
+   again, on a loop. A wave across the columns would only look like the idle
+   shimmer moving faster, which is why the two use different phases.
+
+   Negative delays so the loop is already in flight on the first frame; and the
+   cells go dark at the tail rather than merely dimming, so the sweep has a head
+   and a tail and the direction is unmistakable. */
+html[data-550c] .c-console-head[data-550c-working] .c-cell[data-lit='1'] {
+  animation: c-mark-rewrite 1.35s linear infinite;
+  animation-delay: calc(var(--seq) * -22ms);
+}
+
+@keyframes c-mark-rewrite {
+  0% {
+    opacity: 1;
+    box-shadow: 0 0 11px rgba(var(--c-glow-rgb), 1);
+  }
+  45% {
+    opacity: 0.5;
+    box-shadow: 0 0 4px rgba(var(--c-glow-rgb), 0.4);
+  }
+  70%,
+  100% {
+    opacity: 0.14;
+    box-shadow: none;
+  }
+}
+
+/* The readout turns with it, so the working state is legible as text and not only
+   as movement. */
+html[data-550c] .c-console-head[data-550c-working] .c-console-state {
+  color: var(--c-amber-b);
+  text-shadow: 0 0 9px currentColor;
+}
+
+/* The breathing glow stops while working: it belongs to the resting state, and
+   two rhythms at once would muddy the sweep. */
+html[data-550c] .c-console-head[data-550c-working] .c-mark {
+  animation: none;
+}
+
+@keyframes c-mark-breathe {
+  0%,
+  100% {
+    filter: brightness(0.94);
+  }
+  50% {
+    filter: brightness(1.12);
+  }
+}
+
+/* ── the rate meter, in the header right after the mark ──────────────────── */
+
+/* A RATE gauge, not a progress bar: it shows how fast the machine is writing at
+   this moment, and falls back to nothing when output stops. A hairline rail with
+   a luminous fill, and it takes the header's spare width — a meter too short to
+   separate a quiet answer from a fast one is not a meter. */
+html[data-550c] .c-tps {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+html[data-550c] .c-tps-rail {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 5px;
+  border-radius: 999px;
+  /* An inset well rather than a flat line: the rail has to read as a channel the
+     light travels along, or the meter looks like a rule on the page. */
+  background: rgba(var(--c-glow-rgb), 0.1);
+  box-shadow: inset 0 0 0 1px rgba(var(--c-glow-rgb), 0.13);
+  overflow: hidden;
+}
+
+/* A slow highlight that travels the empty rail while nothing is being written.
+   A gauge sitting at zero should still look powered — and this is the same
+   travelling light as the mark's shimmer, so the two read as one instrument. */
+html[data-550c] .c-tps-rail::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, rgba(var(--c-glow-rgb), 0.5), transparent);
+  background-size: 34% 100%;
+  background-repeat: no-repeat;
+  animation: c-tps-scan 3.4s ease-in-out infinite;
+  transition: opacity 0.4s linear;
+}
+
+/* Once there is real output the scan gets out of the way: the fill is the
+   reading, and a second moving light would compete with it. */
+html[data-550c] .c-tps[data-550c-level='busy'] .c-tps-rail::after,
+html[data-550c] .c-tps[data-550c-level='hot'] .c-tps-rail::after {
+  opacity: 0;
+}
+
+@keyframes c-tps-scan {
+  0% {
+    background-position: -40% 0;
+  }
+  100% {
+    background-position: 140% 0;
+  }
+}
+
+html[data-550c] .c-tps-fill {
+  position: relative;
+  z-index: 1;
+  width: 0;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(var(--c-glow-rgb), 0.5), var(--c-amber));
+  /* A short ease, not a linear snap: the reading should settle, not twitch. */
+  transition: width 0.28s ease-out, background 0.3s linear;
+}
+
+html[data-550c] .c-tps-value {
+  flex: none;
+  min-width: 6ch;
+  color: var(--c-text-faint);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  transition: color 0.3s linear;
+}
+
+html[data-550c] .c-tps-unit {
+  flex: none;
+  color: var(--c-text-faint);
+  letter-spacing: 0.1em;
+}
+
+/* The pressure ladder: quiet → busy → hot. Colour carries the meaning. */
+html[data-550c] .c-tps[data-550c-level='busy'] .c-tps-fill {
+  background: linear-gradient(90deg, rgba(var(--c-glow-rgb), 0.55), var(--c-amber), var(--c-amber-b));
+}
+
+html[data-550c] .c-tps[data-550c-level='busy'] .c-tps-value {
+  color: var(--c-amber);
+}
+
+html[data-550c] .c-tps[data-550c-level='hot'] .c-tps-fill {
+  background: linear-gradient(90deg, var(--c-amber), var(--c-amber-b), var(--c-amber-b));
+  box-shadow: 0 0 10px rgba(var(--c-glow-rgb), 0.8);
+}
+
+html[data-550c] .c-tps[data-550c-level='hot'] .c-tps-value {
+  color: var(--c-amber-b);
+  text-shadow: var(--c-glow-text);
+}
+
+html[data-550c] .c-console-session {
+  flex: none;
+  color: var(--c-text-faint);
+  font-variant-numeric: tabular-nums;
+  opacity: 0.75;
+}
+
+html[data-550c] .c-console-state {
+  flex: none;
+  color: var(--c-amber-b);
+  letter-spacing: 0.24em;
+  text-shadow: var(--c-glow-text);
+}
+
+/* ── the compute-load rheostat, laid out in the control row's middle ─────── */
+
+/* ALWAYS ON SCREEN, ALWAYS GRABBABLE. There is no trigger and no popover: a
+   fader you must open first is a menu, not a fader. It takes the control row's
+   empty middle — between the app's tools group and its trailing group — and
+   stretches to fill it. */
+html[data-550c] .c-load {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  /* The greedy item in the row: the app's own groups stay at their natural width
+     at the two ends, and the fader owns everything between them. */
+  flex: 1 1 auto;
+  min-width: 120px;
+  font-family: var(--c-mono);
+  font-size: 10px;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+html[data-550c] .c-load-key {
+  flex: none;
+  color: var(--c-text-faint);
+  letter-spacing: 0.16em;
+}
+
+html[data-550c] .c-load-now {
+  flex: none;
+  min-width: 4ch;
+  color: var(--c-amber);
+  transition: color 0.25s linear, text-shadow 0.25s linear;
+}
+
+/* The fader itself. */
+html[data-550c] .c-load-track {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 20px;
+  cursor: ew-resize;
+  touch-action: none;
+}
+
+/* THE BLOCKS: dense narrow slanted rectangles, packed edge to edge. Each one is
+   a skewed rectangle with its own edges and its own gap, which is what a striped
+   gradient cannot draw — and the whole point of the texture is that the cells
+   stay countable. Flex distributes them, so their width follows the track. */
+html[data-550c] .c-load-cells {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+html[data-550c] .c-load-cell {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 13px;
+  border-radius: 1px;
+  /* The slant. One angle for every block, so the row reads as a single sheared
+     surface rather than a set of independently tilted chips. */
+  transform: skewX(-18deg);
+  background: rgba(var(--c-glow-rgb), 0.16);
+  transition: background 0.18s linear, box-shadow 0.18s linear;
+}
+
+/* A lit block: the accent on its face plus a little bloom, so a lit run reads as
+   powered rather than merely brighter.
+
+   And it FLOWS. Only lit blocks carry the animation, so the movement exists only
+   where the load has already reached — the dark blocks stay perfectly still, and
+   the boundary between moving light and dead cells is what makes the covered
+   region legible as "live" at a glance. The phase comes from the block's own
+   index, so the light travels along the run as a wave instead of every cell
+   pulsing together. The delay is negative so the wave is already in motion on
+   the first frame rather than starting from the left edge. */
+html[data-550c] .c-load-cell[data-lit='1'] {
+  background: var(--c-amber);
+  box-shadow: 0 0 6px rgba(var(--c-glow-rgb), 0.7);
+  animation: c-load-flow 1.7s linear infinite;
+  animation-delay: calc(var(--i) * -55ms);
+}
+
+@keyframes c-load-flow {
+  0%,
+  100% {
+    filter: brightness(0.78);
+  }
+  45% {
+    filter: brightness(1.3);
+  }
+}
+
+/* The handle: a bright slanted bar sitting on the boundary between lit and dark,
+   at the same angle as the blocks so it reads as part of the same surface. */
+html[data-550c] .c-load-thumb {
+  position: absolute;
+  top: 50%;
+  width: 3px;
+  height: 19px;
+  transform: translate(-50%, -50%) skewX(-18deg);
+  background: var(--c-amber-b);
+  box-shadow: 0 0 10px rgba(var(--c-glow-rgb), 0.9);
+  transition: left 0.12s linear, background 0.3s linear, box-shadow 0.3s linear;
+  pointer-events: none;
+}
+
+html[data-550c] .c-load-track:focus-visible {
+  outline: 1px solid var(--c-amber);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ── the load ladder ─────────────────────────────────────────────────────── */
+
+/* As the fader climbs the whole control heats up: the lit blocks, the handle and
+   the readout all shift together, so "how loaded is it" is legible from any of
+   them without reading a number. */
+html[data-550c] .c-load[data-550c-level='low'] .c-load-now {
+  color: var(--c-cyan);
+}
+
+html[data-550c] .c-load[data-550c-level='low'] .c-load-cell[data-lit='1'] {
+  background: var(--c-cyan);
+  box-shadow: 0 0 6px rgba(79, 209, 197, 0.6);
+}
+
+html[data-550c] .c-load[data-550c-level='low'] .c-load-thumb {
+  background: var(--c-cyan);
+}
+
+html[data-550c] .c-load[data-550c-level='mid'] .c-load-now {
+  color: var(--c-amber);
+}
+
+html[data-550c] .c-load[data-550c-level='high'] .c-load-now {
+  color: var(--c-amber-b);
+  text-shadow: var(--c-glow-text);
+}
+
+html[data-550c] .c-load[data-550c-level='high'] .c-load-cell[data-lit='1'] {
+  background: var(--c-amber-b);
+  box-shadow: 0 0 7px rgba(var(--c-glow-rgb), 0.85);
+}
+
+html[data-550c] .c-load[data-550c-level='high'] .c-load-thumb {
+  background: var(--c-amber-b);
+}
+
+html[data-550c] .c-load[data-550c-level='max'] .c-load-now {
+  color: var(--c-red);
+  text-shadow: 0 0 8px currentColor;
+  animation: c-load-alarm 0.9s steps(1) infinite;
+}
+
+html[data-550c] .c-load[data-550c-level='max'] .c-load-cell[data-lit='1'] {
+  background: var(--c-red);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--c-red) 70%, transparent);
+}
+
+html[data-550c] .c-load[data-550c-level='max'] .c-load-thumb {
+  background: var(--c-red);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--c-red) 80%, transparent);
+}
+
+@keyframes c-load-alarm {
+  0%,
+  55% {
+    opacity: 1;
+  }
+  55.01%,
+  100% {
+    opacity: 0.35;
+  }
+}
+
+/* ── the fader on a model with no effort setting ─────────────────────────── */
+
+/* `ModelSelect` renders its effort suffix only when the model has one, so an
+   absent suffix means there is nothing to choose. The fader then has to stop
+   being a control rather than keep naming a level: all cells dark, no handle,
+   no hover, a readout that says 不适用 instead of a detent.
+
+   It keeps its place in the row — the row is the app's layout and this is the
+   skin's own furniture inside it — so nothing moves when the model changes. */
+html[data-550c] .c-load[data-550c-unavailable] .c-load-now {
+  color: var(--c-text-faint);
+  text-shadow: none;
+  animation: none;
+}
+
+html[data-550c] .c-load[data-550c-unavailable] .c-load-thumb {
+  display: none;
+}
+
+html[data-550c] .c-load[data-550c-unavailable] .c-load-track {
+  cursor: default;
+}
+
+html[data-550c] .c-load[data-550c-unavailable] .c-load-cell {
+  background: rgba(var(--c-glow-rgb), 0.08);
+}
+
+/* ── the effort picker the rheostat replaces ─────────────────────────────── */
+
+/* WHILE THE CONSOLE IS DRIVING THE APP'S OWN MENUS, THEY ARE INVISIBLE.
+
+   There is no service for setting reasoning effort, so the fader sets it the way
+   a user would: it opens the model menu, steps into the 推理等级 submenu, clicks
+   the level and closes up again. That work has to happen — the option buttons
+   only exist while the menu is open — but nobody should SEE it. It was visible,
+   and the report was exact: every move of the fader flashed the effort picker
+   open and shut under the user's hand.
+
+   `visibility` rather than `display` on purpose: a `display:none` menu would be
+   laid out at zero size and is the kind of state change that can make React skip
+   work, while `visibility:hidden` keeps the menu fully built and fully
+   clickable — the drive needs it present, just not seen.
+
+   Scoped under BOTH attributes, not just the driving marker: a rule that could
+   fire while the skin is off would be able to hide the app's own menu with
+   nothing on screen to explain it.
+
+   `_menu`, not `_7KE1Ra_menu`. The hash is per-BUILD: `_7KE1Ra` is what the web
+   profile's node_modules spells, while the desktop app's asar spells the same
+   module `oXE0lW_menu`. Keying on the hash meant this rule, and every other
+   app-side selector in this plugin, silently did nothing on the desktop — where
+   the effort picker stayed on screen beside the fader that was meant to replace
+   it. Local names are stable across builds; hashes are not. */
+html[data-550c][data-550c-driving] [class*='_menu'] {
+  visibility: hidden !important;
+}
+
+/* The harness offers reasoning effort inside the model dropdown. The rheostat
+   takes that over, so the dropdown's copy is hidden — two controls for one
+   setting is worse than either alone.
+
+   Hidden, never removed: the option buttons inside are exactly what the console
+   clicks to set the level for real, and a `display:none` button is still
+   clickable. The suffix on the model trigger goes too, because the rheostat now
+   states the level and saying it twice reads as two different settings.
+
+   layout-exempt: this rule hides one of the app's OWN nodes, which is a layout
+   property on a DSH element and therefore a genuine exception to this sheet's
+   rule. It is confined to the dialog box — the one region this pass is
+   authorised to restructure — and it is marked and counted by
+   test/layout-contract.test.mjs rather than buried inside a widened check. */
+html[data-550c] [data-550c-effort],
+html[data-550c] [class*='_triggerEffort'] {
+  display: none !important;
+}
+
+/* Its own switch, so the console can be turned off without turning off the skin. */
+html[data-550c][data-550c-mark='off'] .c-console-head,
+html[data-550c][data-550c-mark='off'] .c-load {
+  display: none;
+}
+
+/* ── 11. THE INSTRUMENT PANEL: SIDEBAR ───────────────────────────────────── */
+
+/* The sidebar is the one surface that is on screen for the whole session, so it
+   is where the console's identity can afford to be stated rather than implied.
+   Everything here is either a token remap through the ladder or an
+   absolutely-positioned decoration; the column's geometry is untouched.
+
+   `data-550c-panel` carries the switch, with three values:
+     full     sidebar + backdrop grid
+     sidebar  sidebar only
+     grid     backdrop only
+     off      neither
+   The decorations are mounted by src/panel.js only for the halves that are on, so
+   the rules below can assume their nodes exist. */
+
+/* The four bracket corners. Drawn as eight gradients on one node — two per corner
+   — because a border cannot be broken at the middle of an edge without a second
+   element per corner, and this node must never grow a box of its own.
+
+   The anchor marker is what makes `inset` mean the sidebar: the column is not
+   positioned, so an absolute child of it would resolve against the viewport. On
+   the first live run it did exactly that and the frame came out 1588px wide. */
+html[data-550c] [data-550c-panel-anchor] {
+  position: relative;
+}
+
+html[data-550c] .c-panel-frame {
+  position: absolute;
+  inset: 6px;
+  pointer-events: none;
+  z-index: 3;
+  border-radius: 3px;
+  background-image:
+    linear-gradient(var(--c-rule) 0 0), linear-gradient(var(--c-rule) 0 0),
+    linear-gradient(var(--c-rule) 0 0), linear-gradient(var(--c-rule) 0 0),
+    linear-gradient(var(--c-rule) 0 0), linear-gradient(var(--c-rule) 0 0),
+    linear-gradient(var(--c-rule) 0 0), linear-gradient(var(--c-rule) 0 0);
+  background-repeat: no-repeat;
+  background-size:
+    14px 1px, 1px 14px,
+    14px 1px, 1px 14px,
+    14px 1px, 1px 14px,
+    14px 1px, 1px 14px;
+  background-position:
+    left top, left top,
+    right top, right top,
+    left bottom, left bottom,
+    right bottom, right bottom;
+  opacity: 0.65;
+}
+
+/* The raster every instrument face has printed on it. Very low alpha: at 0.05 it
+   is the surface's texture, above about 0.1 it competes with 12px CJK. */
+html[data-550c] .c-panel-frame::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(0deg, var(--c-rule) 0 1px, transparent 1px 24px),
+    repeating-linear-gradient(90deg, var(--c-rule) 0 1px, transparent 1px 24px);
+  opacity: 0.055;
+}
+
+/* The label band at the head of the column. Dashed, like a form's field rule, and
+   spaced like the splash's panel captions. */
+html[data-550c] .c-panel-frame::after {
+  content: '550C // CONSOLE';
+  position: absolute;
+  left: 0;
+  right: 0;
+  /* INSIDE the frame's own inset, not above it. At `top:-7px` the label sat
+     outside the column and was clipped by its top edge — the one place on this
+     surface where there is free space is between the frame's rule and the
+     wordmark, and that is where it goes. */
+  top: 6px;
+  padding: 0 8px 3px;
+  font-family: var(--c-mono);
+  font-size: 8px;
+  line-height: 10px;
+  letter-spacing: 0.34em;
+  color: var(--c-amber-d, var(--c-text-faint));
+  text-transform: uppercase;
+  background-image: linear-gradient(90deg, var(--c-rule) 0 6px, transparent 6px 12px);
+  background-repeat: repeat-x;
+  background-position: left bottom;
+  background-size: 12px 1px;
+  /* The rule has to sit still while the label reads: a moving background here
+     would drag the text with it. Only the opacity breathes. */
+  animation: c-panel-breathe 6.4s ease-in-out infinite;
+}
+
+@keyframes c-panel-breathe {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* A status tick on every session row, in the row's leading gutter. It is the
+   smallest possible statement of "this row is a channel", and it costs one node
+   per row. */
+html[data-550c] .c-panel-tick {
+  position: absolute;
+  left: 4px;
+  top: 50%;
+  width: 2px;
+  height: 10px;
+  margin-top: -5px;
+  pointer-events: none;
+  background: var(--c-amber-d, var(--c-text-faint));
+  opacity: 0.5;
+  transition: opacity 0.2s linear, background 0.2s linear;
+}
+
+/* The row's own hover already tints it; the tick comes up with it, so the row
+   reads as powered rather than merely highlighted. `:focus-within` too, because
+   a keyboard user gets no hover. */
+html[data-550c] [data-row-key^='session:'] {
+  position: relative;
+}
+
+html[data-550c] [data-row-key^='session:']:hover .c-panel-tick,
+html[data-550c] [data-row-key^='session:']:focus-within .c-panel-tick {
+  background: var(--c-amber);
+  opacity: 1;
+  box-shadow: 0 0 6px rgba(var(--c-glow-rgb), 0.7);
+}
+
+/* The project rows get a hairline rail down the group, so a workspace's sessions
+   read as belonging to it rather than merely following it. Drawn as a gradient on
+   the app's own row — no node, and no layout property. */
+html[data-550c] [data-row-key^='workspace:'] {
+  background-image: linear-gradient(90deg, var(--c-rule) 0 1px, transparent 1px);
+  background-repeat: no-repeat;
+  background-position: 9px bottom;
+  background-size: 1px 8px;
+  opacity: 1;
+}
+
+/* ── 11b. THE OPEN CHANNEL: HOVER INTERFERENCE, INVERTED SELECTION ──────── */
+
+/* A conversation row is a channel, and switching to one is a channel opening.
+   The two states say that the way a terminal does:
+
+     hover     the signal breaks up — slices of the accent, the alarm red and the
+               cool cyan tear sideways across the row, twice per loop
+     selected  INVERSE VIDEO: the fill becomes the phosphor and the text becomes
+               the tube's black, which is what a selected line looks like on a
+               console and is impossible to mistake for a hover tint
+
+   NOTHING HERE MOVES THE ROW. The tear is a pseudo-element's
+   `background-position`, which is paint; the selection is `background` and
+   `color`. `transform` — the obvious way to displace a slice — is a layout
+   property on a DSH element and is forbidden by this sheet's own contract, and
+   it would move the row's hit target as well as its pixels.
+
+   THE GLITCH IS A BURST, NOT A LOOP. Two flashes inside 1.4s, most of the cycle
+   at rest: an effect that runs continuously stops reading as interference and
+   starts reading as noise, and this sidebar is on screen all session. */
+
+html[data-550c] [data-row-key^='session:']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: 0;
+  /* Three slices at three heights, in the scheme's own tear triple. NOT a fixed
+     red/green/blue: whether a tear is chromatic is a property of the phosphor,
+     and hardcoding one put a red fringe on the P4 white screen — a different
+     machine leaking into this one. See `glitch` in `src/palettes.js`.
+     `screen` so they add light where they cross the row's text rather than
+     punching holes in it. */
+  background-image:
+    linear-gradient(90deg, transparent 0 6%, var(--c-glitch-1) 6% 38%, transparent 38%),
+    linear-gradient(90deg, transparent 0 46%, var(--c-glitch-2) 46% 68%, transparent 68%),
+    linear-gradient(90deg, transparent 0 74%, var(--c-glitch-3) 74% 94%, transparent 94%);
+  background-size: 100% 3px, 100% 2px, 100% 4px;
+  background-repeat: no-repeat;
+  background-position: 0 24%, 0 58%, 0 80%;
+  mix-blend-mode: screen;
+}
+
+html[data-550c] [data-row-key^='session:']:hover::after,
+html[data-550c] [data-row-key^='session:']:focus-within::after {
+  animation: c-channel-tear 1.4s steps(1) infinite;
+}
+
+/* The displacement is the whole effect: each slice jumps to a different x on each
+   step, so the row appears to lose horizontal hold for a frame or two. */
+@keyframes c-channel-tear {
+  0%,
+  68% {
+    opacity: 0;
+  }
+  69% {
+    opacity: 1;
+    background-position: -8px 24%, 11px 58%, -5px 80%;
+  }
+  74% {
+    opacity: 0.55;
+    background-position: 6px 19%, -9px 62%, 7px 76%;
+  }
+  79% {
+    opacity: 1;
+    background-position: -4px 31%, 5px 55%, -11px 83%;
+  }
+  84% {
+    opacity: 0.7;
+    background-position: 9px 26%, -6px 60%, 3px 79%;
+  }
+  89% {
+    opacity: 0;
+  }
+  90% {
+    opacity: 0.9;
+    background-position: -11px 21%, 8px 64%, -7px 77%;
+  }
+  95%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* The chromatic split on the row's own text while the signal is broken. On the
+   text rather than the row, because `text-shadow` cannot escape the glyphs. The
+   offsets are the tear's outer two colours, so on the white screen this reads as
+   a doubled edge rather than as coloured fringing. */
+html[data-550c] [data-row-key^='session:']:hover :where(span),
+html[data-550c] [data-row-key^='session:']:focus-within :where(span) {
+  text-shadow: 1px 0 0 var(--c-glitch-1), -1px 0 0 var(--c-glitch-3);
+}
+
+/* ── the selected conversation: inverse video ────────────────────────────── */
+
+/* `aria-selected` is the app's own statement of which row is current — an
+   attribute, so it survives a rebuild, unlike the hashed class beside it. The
+   skin never guesses the selection from a class name.
+
+   THE INVERSION IS THE POINT: the phosphor becomes the paper and the tube's
+   black becomes the ink, which is the one state a console can show that no tint
+   can be confused with. It also costs no new token — the accent is already the
+   brightest thing in every scheme and `bg` is already the darkest. */
+html[data-550c] [data-row-key^='session:'][aria-selected='true'] {
+  background: var(--c-amber);
+  color: var(--c-bg);
+}
+
+/* Every descendant, because the app colours the title and the icon slot
+   separately and a black fill under pale-grey glyphs is unreadable. The
+   timestamp keeps a little air: it is the least important thing on the row and
+   full-contrast black would make it shout as loudly as the name. */
+html[data-550c] [data-row-key^='session:'][aria-selected='true'] :where(span, svg) {
+  color: var(--c-bg);
+}
+
+html[data-550c] [data-row-key^='session:'][aria-selected='true'] :where(span):last-child {
+  color: color-mix(in srgb, var(--c-bg) 72%, transparent);
+}
+
+/* The tick is on an inverted row too, and in its normal colour it would be
+   invisible against the fill. */
+html[data-550c] [data-row-key^='session:'][aria-selected='true'] .c-panel-tick {
+  background: var(--c-bg);
+  opacity: 0.8;
+  box-shadow: none;
+}
+
+/* An inverted row is already the loudest thing in the sidebar, so it does not
+   also tear. */
+html[data-550c] [data-row-key^='session:'][aria-selected='true']::after {
+  animation: none;
+  opacity: 0;
+}
+
+/* ── 12. THE INSTRUMENT PANEL: BACKDROP ──────────────────────────────────── */
+
+/* The console's floor.
+
+   IT IS DRAWN UNDER THE APP, NOT OVER IT. `<body>` first child, `z-index:-1`, so
+   the app's own surfaces paint on top of it — the frame, the sidebar and the
+   centre column all paint a background, and a layer above them would be drawing
+   over the application rather than behind it. What shows through is exactly the
+   area the app leaves transparent.
+
+   `position:fixed` so it covers the viewport without contributing a scrollable
+   area of its own. */
+html[data-550c] .c-grid {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-color: var(--c-bg);
+  background-image:
+    /* The bloom: the light a CRT spills onto the wall behind it. */
+    radial-gradient(ellipse 70% 46% at 50% -6%, rgba(var(--c-glow-rgb), 0.07), transparent 70%),
+    /* The MAJOR grid, every 120px: four squares of the minor grid. */
+    repeating-linear-gradient(0deg, var(--c-rule) 0 1px, transparent 1px 120px),
+    repeating-linear-gradient(90deg, var(--c-rule) 0 1px, transparent 1px 120px);
+}
+
+/* The minor grid, every 24px, at a quarter of the major lines' weight — two
+   layers rather than one image, because a single `background-image` cannot give
+   its own rules different alphas and graph paper is what one weight looks like. */
+html[data-550c] .c-grid::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(0deg, var(--c-rule) 0 1px, transparent 1px 24px),
+    repeating-linear-gradient(90deg, var(--c-rule) 0 1px, transparent 1px 24px);
+  opacity: 0.32;
+}
+
+/* THERE WAS A SCAN HEAD HERE, AND IT COST FRAMES.
+ *
+ * A `.c-grid::after` drifted a 22vh gradient down the tube on an infinite
+ * `transform` animation — and it was the single cause of the stutter reported
+ * when the sidebar expands. Measured on one page load, same gesture each time:
+ *
+ *   as shipped                8 frames over 33ms, worst 33.5
+ *   scan head hidden          0 frames over 33ms, worst 16.8
+ *   scan head promoted        1 frame  over 33ms, worst 33.3   (will-change)
+ *
+ * PERFECT 60fps with it gone, and only when it is gone. A viewport-sized
+ * gradient animating behind a `z-index:-1` layer cannot be composited on its own
+ * without a permanent full-screen layer, and even promoted it still dropped a
+ * frame; the repaints it forced underneath were the cost.
+ *
+ * It is also REDUNDANT: the CRT layer already carries a rolling refresh band
+ * (`.c-roll`), which is the same idea done once. Two drifting bands on one
+ * screen is not atmosphere, it is noise — and this one was paying for it in
+ * dropped frames on every sidebar transition. */
+
+/* ── 13. REDUCED MOTION ──────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-550c] .c-crt .c-roll,
+  html[data-550c] .c-crt .c-flicker,
+  html[data-550c] .c-crt .c-bloom,
+  html[data-550c] .c-cursor::after,
+  html[data-550c] .c-rec > s,
+  html[data-550c] [data-composer-placeholder]::after,
+  html[data-550c] .c-load[data-550c-level='max'] .c-load-now,
+  html[data-550c] .c-load-cell[data-lit='1'],
+  html[data-550c] .c-mark,
+  html[data-550c] .c-cell[data-lit='1'],
+  html[data-550c] .c-console-head[data-550c-working] .c-cell[data-lit='1'],
+  html[data-550c] .c-tps-rail::after,
+  html[data-550c] .c-panel-frame::after,
+  html[data-550c] [data-row-key^='session:']::after,
+  html[data-550c] :where([data-state='running'], [data-running])::after {
+    animation: none;
+  }
+  html[data-550c] .c-crt .c-flicker {
+    display: none;
+  }
+}
+
