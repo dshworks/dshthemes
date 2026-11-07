@@ -1,0 +1,351 @@
+/* PlayerOneD/dsh-theme-matrix — client.js
+   fetched 2026-11-07 from https://raw.githubusercontent.com/PlayerOneD/dsh-theme-matrix/main/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+html[data-matrix="on"] {
+  --mx-accent: var(--dsw-mx-accent, #00ff41);
+  --mx-glow: var(--dsw-mx-glow, rgba(0,255,65,0.55));
+  --mx-cyan: var(--dsw-mx-cyan, #00d4ff);
+  --mx-cyan-glow: var(--dsw-mx-cyan-glow, rgba(0,212,255,0.4));
+  /* Global hairline fix. DSH draws EVERY popover/panel/menu/dropdown edge with
+     box-shadow layers that begin with --dsw-elevation-stroke, a 0.5px sub-pixel
+     stroke (0 0 0 .5px). On rounded corners over the dark Matrix background that
+     stroke antialiases into a faint dotted edge. We neutralise it at the root:
+     1) redefine --dsw-elevation-stroke itself to a clean 1px INSET ring, and
+     2) inline-expand the three composite elevation tokens so they no longer pull
+        the 0.5px stroke at all (belt and suspenders -- some browsers/subtrees
+        resolve the var(--dsw-elevation-stroke) inside a :root-declared token in
+        a way that ignored the html-scoped override). The 1px ring uses
+        --dsw-elevation-stroke-color, which each popover sets to its own border
+        token, so tone stays consistent. Scoped to html[data-matrix="on"]. */
+  --dsw-elevation-stroke: inset 0 0 0 1px var(--dsw-elevation-stroke-color);
+  --dsw-elevation-panel:
+    inset 0 0 0 1px var(--dsw-elevation-stroke-color),
+    0 3px 8px 0 rgba(0,0,0,0.06),
+    0 0 16px 0 rgba(0,0,0,0.05);
+  --dsw-elevation-prominent:
+    inset 0 0 0 1px var(--dsw-elevation-stroke-color),
+    0 3px 8px 0 rgba(0,0,0,0.08),
+    0 0 20px 0 rgba(0,0,0,0.10);
+  --dsw-elevation-soft:
+    inset 0 0 0 1px var(--dsw-elevation-stroke-color),
+    0 4px 16px 0 rgba(0,0,0,0.06),
+    0 0 24px 0 rgba(0,0,0,0.06);
+}
+/* Rain is an overlay canvas positioned exactly over the center column (JS sets
+   left/top/size); it blends with screen so glyphs read as light over the dark
+   UI without hiding bright text, and is click-through. No host element gets a
+   position/z-index change, so layout is untouched. */
+html[data-matrix="on"] {
+  background: #000 !important;
+}
+html[data-matrix="on"] body,
+html[data-matrix="on"] #root,
+html[data-matrix="on"] [class*="_frame"] {
+  background: transparent !important;
+}
+/* Center column: opaque-ish dark glass — readable, with the rain overlay above. */
+html[data-matrix="on"] [class*="_centerCol"] {
+  background: #000c03 !important;
+}
+/* Side columns + bottom bar: near-black. */
+html[data-matrix="on"] [class*="_sidebarCol"] {
+  background: #000600 !important;
+}
+html[data-matrix="on"] [class*="_rightbarCol"] {
+  background: #000600 !important;
+}
+html[data-matrix="on"] [class*="_bottomRow"] {
+  background: #000600 !important;
+}
+/* Text fields: fluorescent text + accent caret (elements only). */
+html[data-matrix="on"] textarea,
+html[data-matrix="on"] input[type="text"],
+html[data-matrix="on"] input:not([type]) {
+  color: var(--dsw-alias-label-primary) !important;
+  caret-color: var(--mx-accent) !important;
+}
+html[data-matrix="on"] textarea::placeholder,
+html[data-matrix="on"] input::placeholder {
+  color: color-mix(in srgb, var(--mx-accent) 55%, transparent) !important;
+  opacity: 1 !important;
+}
+html[data-matrix="on"] a { color: var(--mx-cyan) !important; }
+/* Native buttons/elements often use a WHITE hover/active background from the
+   base (light) theme, which makes light text unreadable in our dark Matrix UI.
+   Tint button hover/active backgrounds to a translucent accent-green and keep
+   the label light, so hovered buttons stay legible. Scoped to button + [role],
+   gated by html[data-matrix="on"], so disabling removes it. */
+html[data-matrix="on"] button:hover,
+html[data-matrix="on"] button:focus-visible,
+html[data-matrix="on"] [role="button"]:hover,
+html[data-matrix="on"] [role="button"]:focus-visible {
+  background-color: color-mix(in srgb, var(--mx-accent) 18%, transparent) !important;
+  color: var(--dsw-alias-label-primary) !important;
+}
+html[data-matrix="on"] button:active,
+html[data-matrix="on"] [role="button"]:active {
+  background-color: color-mix(in srgb, var(--mx-accent) 30%, transparent) !important;
+}
+html[data-matrix="on"] ::selection {
+  background: color-mix(in srgb, var(--mx-accent) 35%, transparent);
+  color: #fff;
+}
+
+/* ---- Visual enhancements (1/2/3/4) --------------------------------------
+   Pure presentational CSS gated by html[data-matrix="on"]; disabling removes
+   every rule. No layout/slot changes; native radii & elevation are preserved
+   (we add glow/border/filter, we do not alter border-radius). */
+
+/* (1) Frosted glass + neon border + outer glow on floating panels/cards.
+   Targets real DSH CSS-module classes via stable class fragments (hashed
+   prefixes vary, so we match the trailing name): menus, dialogs, the settings
+   panel. The effect is subtle (low-opacity border + soft glow) and
+   backdrop-filter blurs only what is behind the panel (the rain), never text. */
+html[data-matrix="on"] [class*="_menu"]:not([class*="_menuAnchor"]):not([class*="_menuItem"]):not([class*="_menuGroup"]),
+html[data-matrix="on"] [class*="_dialog"],
+html[data-matrix="on"] [class*="_guidePanel"],
+html[data-matrix="on"] [class*="_modal"] {
+  backdrop-filter: blur(10px) saturate(120%);
+  -webkit-backdrop-filter: blur(10px) saturate(120%);
+  /* Inset ring instead of a border: an inset box-shadow follows the element's
+     own border-radius (round stays round, square stays square) and does not
+     shift layout. A real border would add 1px to the box and paint a square
+     frame on radius-less menus. */
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--mx-accent) 30%, transparent),
+    0 8px 32px rgba(0,0,0,0.65),
+    0 0 24px -6px var(--mx-glow) !important;
+}
+
+/* (1b) Menu/popover surfaces that have NO border-radius of their own. Their
+   0.5px elevation hairline has nowhere to follow, so it renders as a faint
+   square dotted edge. Give them a card radius AND a clean inset ring so the
+   edge reads as a solid rounded line. Listed by their real hashed class names
+   (stable in this build) to avoid catching unrelated _menu/_card elements. */
+html[data-matrix="on"] [class*="j99sVW_card"],
+html[data-matrix="on"] [class*="pc3rQa_menu"],
+html[data-matrix="on"] [class*="_9r0rkG_menu"] {
+  border-radius: var(--dsw-radius-lg) !important;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--mx-accent) 26%, transparent),
+    0 8px 28px -6px rgba(0, 0, 0, 0.7),
+    0 0 22px -8px var(--mx-glow) !important;
+}
+
+/* (1b-2) HARD NO-EDGE TEST: strip every border AND shadow from any popover
+   menu surface, leaving only its background fill and radius. Some menus draw
+   their hairline as a real 1px or 0.5px border (not a box-shadow), which keeps
+   showing as a dotted edge at rounded corners no matter how we patch the
+   shadow. This makes them completely edge-free so we can see the fill alone.
+   Broad on purpose (all [role="menu"] plus the known popover class names). */
+html[data-matrix="on"] [role="menu"],
+html[data-matrix="on"] [class*="_menu"]:not([class*="_menuItem"]):not([class*="_menuGroup"]):not([class*="_menuAnchor"]),
+html[data-matrix="on"] [class*="A6Bq1a_panel"],
+html[data-matrix="on"] [class*="xXe6ja_panel"],
+html[data-matrix="on"] [class*="rezYhW_menu"],
+html[data-matrix="on"] [class*="Z17U9a_panel"],
+html[data-matrix="on"] [class*="Fu0XRq_panel"],
+html[data-matrix="on"] [class*="VBK9GG_panel"],
+html[data-matrix="on"] [class*="j99sVW_card"],
+html[data-matrix="on"] [class*="_9r0rkG_menu"] {
+  border: none !important;
+  outline: none !important;
+  box-shadow: 0 8px 30px -8px rgba(0, 0, 0, 0.7), 0 0 22px -8px var(--mx-glow) !important;
+  background-clip: padding-box !important;
+}
+
+/* (1c) Real popover/panel containers that DO have a radius. They draw their
+   edge with box-shadow: var(--dsw-elevation-*) whose first layer is the 0.5px
+   hairline; on the rounded dark surface that reads as a dotted corner. Replace
+   the whole shadow with a clean 1px inset ring + soft outer glow, keyed to the
+   real class names so no unrelated element is touched. */
+html[data-matrix="on"] [class*="A6Bq1a_panel"],
+html[data-matrix="on"] [class*="xXe6ja_panel"],
+html[data-matrix="on"] [class*="rezYhW_menu"],
+html[data-matrix="on"] [class*="js5r2G_list"],
+html[data-matrix="on"] [class*="Z17U9a_panel"],
+html[data-matrix="on"] [class*="Fu0XRq_panel"],
+html[data-matrix="on"] [class*="VBK9GG_panel"],
+html[data-matrix="on"] [class*="V7pFBG_registry"] {
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--mx-accent) 26%, transparent),
+    0 8px 30px -8px rgba(0, 0, 0, 0.7),
+    0 0 22px -8px var(--mx-glow) !important;
+}
+
+/* (1d) Conversation "turn preview" hover card (right-rail peek), class
+   SNx2jG_preview. It is a rounded card (radius-lg) that floats beside a
+   conversation turn and shows two text lines (previewPrompt / previewResponse).
+   We give the CARD itself the clean Matrix edge (1px inset ring + soft glow,
+   following its radius) and make sure the inner prompt/response blocks carry
+   NO border / outline / shadow of their own -- the goal is a single clean
+   rounded card with plain text inside, never two square framed boxes. */
+html[data-matrix="on"] [class*="SNx2jG_preview"] {
+  border: 0 !important;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--mx-accent) 26%, transparent),
+    0 8px 30px -8px rgba(0, 0, 0, 0.7),
+    0 0 22px -8px var(--mx-glow) !important;
+}
+html[data-matrix="on"] [class*="SNx2jG_previewPrompt"],
+html[data-matrix="on"] [class*="SNx2jG_previewResponse"] {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+
+/* (2) Cyan as the secondary accent: links already cyan (see a{} above); the
+   inline citation/tag chips pick up the cyan tint while the primary accent
+   stays green. Real classes: markdown citation/tag live under _citation/_tag
+   fragments in the markdown renderer. */
+html[data-matrix="on"] [class*="_citation"],
+html[data-matrix="on"] [class*="_inlineCode"] {
+  color: var(--mx-cyan) !important;
+}
+
+/* (3) Sidebar: a vertical glowing green divider on the rail edge, and line
+   icons that glow on hover. The layout package exposes the sidebar column
+   class; we light up its boundary with an inset accent line + soft glow. */
+html[data-matrix="on"] [class*="_sidebarCol"] {
+  box-shadow: inset -1px 0 0 0 color-mix(in srgb, var(--mx-accent) 45%, transparent),
+              2px 0 18px -8px var(--mx-glow) !important;
+}
+html[data-matrix="on"] [class*="_sidebarCol"] svg,
+html[data-matrix="on"] [class*="_sidebarButton"] svg {
+  transition: color 140ms ease, filter 140ms ease;
+}
+html[data-matrix="on"] [class*="_sidebarCol"] button:hover svg,
+html[data-matrix="on"] [class*="_sidebarCol"] a:hover svg,
+html[data-matrix="on"] [class*="_sidebarButton"]:hover svg {
+  color: var(--mx-accent) !important;
+  filter: drop-shadow(0 0 6px var(--mx-glow)) !important;
+}
+
+/* (4) Code blocks render in a monospace stack (cyan-tinted border/glow), never
+   the body text; body/CJK text keeps the native UI font so Chinese stays
+   clean. Real code classes: _codeBlock/_codeBody/_sourceCode/_codeSection. */
+html[data-matrix="on"] code,
+html[data-matrix="on"] pre,
+html[data-matrix="on"] [class*="_codeBlock"],
+html[data-matrix="on"] [class*="_codeBody"],
+html[data-matrix="on"] [class*="_sourceCode"] {
+  font-family: "JetBrains Mono", "Sarasa Mono SC", "Cascadia Code",
+    ui-monospace, SFMono-Regular, Menlo, Consolas, monospace !important;
+}
+html[data-matrix="on"] [class*="_codeBlock"],
+html[data-matrix="on"] [class*="_codeSection"] {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--mx-cyan) 22%, transparent),
+              0 0 20px -10px var(--mx-cyan-glow);
+}
+
+/* Rain canvas: fixed overlay positioned by JS over the center column; blends
+   with screen so glyphs light up over the dark UI without hiding bright text;
+   click-through and above content. Only its own position/z-index, not layout. */
+.mx-rain-canvas {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100px;
+  height: 100px;
+  display: block;
+  pointer-events: none;
+  z-index: 2147482000;
+  mix-blend-mode: screen;
+  will-change: opacity;
+}
+
+/* ---- Rounded hover backgrounds -----------------------------------------
+   Many DSH hover fills (and our own generic button:hover tint above) paint a
+   rectangular background on elements whose container does not clip corners,
+   so the highlighted area shows square edges. Give hovered/list-row surfaces a
+   small radius so the highlight follows the rounded dark-UI language. We set
+   the radius on the hovered element itself; elements that already declare a
+   larger radius keep it (we only add when the computed radius is 0 is not
+   expressible in CSS, so we scope narrowly to interactive rows/buttons and use
+   a modest 7px that reads well on both compact rows and pills). Gated by
+   html[data-matrix="on"] so disabling removes it. */
+html[data-matrix="on"] button,
+html[data-matrix="on"] [role="button"],
+html[data-matrix="on"] [class*="_row"],
+html[data-matrix="on"] [class*="_item"],
+html[data-matrix="on"] [class*="_option"],
+html[data-matrix="on"] [class*="_header"],
+html[data-matrix="on"] [class*="_trigger"],
+html[data-matrix="on"] [class*="_tab"],
+html[data-matrix="on"] [class*="_selector"],
+html[data-matrix="on"] [class*="_chip"],
+html[data-matrix="on"] [class*="_pill"],
+html[data-matrix="on"] [class*="_cell"],
+html[data-matrix="on"] [class*="_member"],
+html[data-matrix="on"] [class*="_seat"],
+html[data-matrix="on"] [class*="_nav"],
+html[data-matrix="on"] [class*="_entry"],
+html[data-matrix="on"] [class*="_sessionRow"],
+html[data-matrix="on"] [class*="_workspace"],
+html[data-matrix="on"] [class*="_crumb"],
+html[data-matrix="on"] [class*="_link"],
+html[data-matrix="on"] [class*="_action"],
+html[data-matrix="on"] [class*="_tool"],
+html[data-matrix="on"] [class*="_button"] {
+  border-radius: 7px;
+}
+/* _card was intentionally removed from the 7px hover-radius list above: real
+   surface cards (e.g. the bottom chat composer GRgSLq_card at 28px, and other
+   *_card containers) ship their own large radius, and forcing 7px flattened the
+   composer into a small-cornered box. Cards keep their native radius. */
+/* Compact circular icon buttons/pills should stay round, not 7px squares:
+   if the native design is a full pill/circle these keep their own radius via
+   more specific native rules; we do not force radius on bare icon spans. */
+html[data-matrix="on"] [class*="_iconButton"],
+html[data-matrix="on"] [class*="_roundButton"],
+html[data-matrix="on"] [class*="_iconBtn"] {
+  border-radius: 8px;
+}
+
+/* ---- Clean rounded popover surface (plugin "add" menu ONLY) ------------
+   The DSH popover list draws its surface ONLY with box-shadow:
+   var(--dsw-elevation-prominent), whose first layer is a 0.5px hairline
+   stroke (0 0 0 .5px) around a box with NO border-radius. On the dark Matrix
+   background that sub-pixel square stroke reads as a faint dotted outline at
+   the four corners. Fix scoped to the plugin-manager "add plugin" menu
+   (V7pFBG_addMenu, i.e. [role="menu"] carrying an *_addMenu class) so other
+   menus (model picker, dropdowns) keep their native look untouched. Gated by
+   html[data-matrix="on"]. */
+html[data-matrix="on"] [role="menu"][class*="_addMenu"] {
+  background: var(--dsw-specific-menu, var(--dsw-alias-bg-layer-2)) !important;
+  border-radius: var(--dsw-radius-lg) !important;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--mx-accent) 22%, transparent),
+    0 8px 28px -6px rgba(0, 0, 0, 0.7),
+    0 0 22px -8px var(--mx-glow) !important;
+}
+
+/* ---- Clean rounded large floating panels (settings etc.) ---------------
+   The settings panel (.AnXs9G_panel, 28px radius) draws its edge with
+   box-shadow: var(--dsw-elevation-prominent), whose first layer is a 0.5px
+   hairline stroke (0 0 0 .5px). On a 28px rounded corner over the dark Matrix
+   background that sub-pixel stroke antialiases into a faint dotted edge at the
+   four corners. Replace it with a 1px inset ring (which follows the rounded
+   path cleanly at any radius) plus a soft outer shadow, so the corners read as
+   a solid clean line. Scoped to the settings panel class ONLY (hashed module
+   prefix AnXs9G, stable per this build) -- the earlier broad [class*="_panel"]
+   selector wrongly caught sidebar/list panels and turned them into solid green
+   slabs. Gated by html[data-matrix="on"]. */
+html[data-matrix="on"] [class*="AnXs9G_panel"] {
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--mx-accent) 20%, transparent),
+    0 12px 40px -12px rgba(0, 0, 0, 0.75),
+    0 0 26px -10px var(--mx-glow) !important;
+}
+
+/* Text-input focus rings and a few component styles hardcode a 0.5px hairline
+   INSET stroke (inset 0 0 0 .5px) for their own edge/focus. Bump those to a
+   clean 1px so they match the unified look. Targets the documented classes:
+   plugin-manager install/registry text fields, and the schedule date cell. */
+html[data-matrix="on"] [class*="_installField"] input[type="text"]:focus,
+html[data-matrix="on"] [class*="_registryCustomField"]:focus,
+html[data-matrix="on"] [class*="_cell"][aria-current="date"] {
+  box-shadow: inset 0 0 0 1px var(--dsw-elevation-stroke-color, var(--mx-accent)) !important;
+}

@@ -1,0 +1,3559 @@
+/* WhatCannotBeSaid/dsh-quasar-theme — src/theme.css
+   fetched 2026-11-07 from https://raw.githubusercontent.com/WhatCannotBeSaid/dsh-quasar-theme/main/src/theme.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* dsh-quasar-theme — paint layer.
+ *
+ * What a token cannot carry
+ * -------------------------
+ * The token layer (src/tokens.json -> client.js) sets colours, and every token but
+ * two is nothing more than a value. Those two are handled here, because a custom
+ * property can hold a colour but not a *stack of composited layers*: the body
+ * background has to be art-first-then-veil, and "which art" is a per-mode choice.
+ * That is the entire reason this file exists. It adds no colour of its own — every
+ * value it paints is read from a token.
+ *
+ * Why the art rides on `body` and not on an injected element
+ * ---------------------------------------------------------
+ * A background on `body` paints behind every descendant, so the art needs no
+ * element, no z-index and no stacking context. It also makes the compositing model
+ * in tools/s3-veil-budget.py match the browser layer for layer:
+ *
+ *     composite = art*(1-a) + fill*a        fill = the veil, a = its alpha
+ *
+ * `--dsw-alias-bg-base` and `--dsw-specific-sidebar-fill` ship *as the veil* —
+ * their solved alphas are what that budget solved for (the authority is
+ * `build/veil-budget.json`; this file deliberately quotes no number, because a
+ * number quoted here would drift the moment a wallpaper changes), and they are
+ * emitted with an alpha byte by tools/s3-emit-tokens.py. Nothing in this file
+ * re-states those numbers: doing so would create a second source of truth for the
+ * one number the whole contrast budget rests on.
+ *
+ * Why the shell still has to be rescued
+ * -------------------------------------
+ * The app paints `--dsw-alias-bg-base` on several wrappers that duplicate `body`
+ * rather than layering above it. While that token was opaque they were invisible;
+ * now that it is a veil they repaint it a second and third time on top, and the art
+ * disappears from exactly the column the user looks at — while every computed value
+ * on `body` still reads correctly. The `Shell` section below sets those wrappers to
+ * `transparent`, not to a colour: transparent reveals the fixed art underneath,
+ * whereas a colour would double-veil it.
+ *
+ * The selectors are `data-*` attributes rather than the class names the probes
+ * print, because those class names are CSS-Modules hashes a rebuild may change.
+ * `tools/s3-probe-shell.py` counts what each one actually reaches in the running app
+ * and FAILS on a selector that matches nothing without being declared conditional —
+ * dead CSS is invisible at runtime, so nothing else would catch it.
+ *
+ * Measured on DSH Desktop 0.2.0-rc.2 (2026-10-05): the first draft carried
+ * `[data-shell-bottom]` over from the reference theme without checking it. The S4
+ * census (`out/s4-census.json`) shows that attribute does not exist in this build —
+ * the real contract is `[data-dsh-bottom-panel]`. The dead selector was REPLACED
+ * rather than kept "just in case": an attribute no build ever writes is not a
+ * conditional match, it is a typo with a plausible name, and shipping it would have
+ * left the bottom panel covering the art.
+ *
+ * What this file deliberately does NOT do
+ * ---------------------------------------
+ *   --dsh-boot-bg            S1 measured that its only consumer is a second
+ *                            fallback already shadowed by `--dsw-alias-bg-base`,
+ *                            so setting it changes nothing.
+ *   --dsw-desktop-window-tint  S1 measured rawHits = 0 across all 233 sheets of
+ *                            this document. It is not part of this app.
+ *   --dsw-focus-ring-color   focus.css declares it nowhere unconditionally; it
+ *                            falls back to `--dsw-alias-state-business-primary`,
+ *                            which the token layer already overrides. Declaring it
+ *                            here would freeze that fallback.
+ *   colour-scheme, data-ds-dark-theme
+ *                            The app owns both. This sheet reads the attribute the
+ *                            app writes and never writes it.
+ */
+
+/* --------------------------------------------------------------------------
+ * Mode selection
+ *
+ * `--cp-wall` picks which art is current, and it is re-declared on
+ * `body[data-ds-dark-theme]` so a scheme flip repaints through the same attribute
+ * the token layer keys on. No listener, no JavaScript, and no frame where the old
+ * image is still showing.
+ *
+ * `--cp-pick-light` / `--cp-pick-dark` are published by the generated block that
+ * the build prepends to this sheet; each holds one `url("data:...")`. Keeping the
+ * image and the selection in separate variables is what lets this file name a mode
+ * without knowing which image won.
+ * ------------------------------------------------------------------------ */
+body {
+  /* 2026-10-06 用户更正：「我是让你去掉毛玻璃效果，然后把透明度调到 75%」——
+     所以那时候这里是 0px（毛玻璃关掉），不是原来那版冻结的面板默认值 4px。
+     透明度 75% 在 build/veil-budget.json -> src/tokens.json 那一侧
+     （tools/s3-veil-budget.py 的 SHIPPED_ALPHA）。
+     2026-10-17：那条「去掉毛玻璃」只对亮档成立过，现在两档都要模糊，见下面这一段。 */
+  /* 2026-10-17 第六十一轮 用户：「暗色模式下加一点模糊度或者降一点透明度，现在有点看不清
+     文字。」随后两轮把口径钉死：「有点太模糊了呀，啥都看不见了」（28px 被否）、
+     「6px都够了，不能超过6px，越低越好」。所以暗档 = 4px 模糊 + 亮度压到 38%，亮档随后跟上（见本段末）。
+
+     为什么不能只靠模糊：暗档那张画（out/wallpaper-src/wallhaven-og33jl.png，1600x900 按
+     cover 缩放，fill #111720 alpha 0.35，取字形大小 13px 的方块均值当文字真正压住的底色，
+     逐像素取最坏值）的瓶颈是**高频**——0.2% 的像素是发亮的眼睛与红色划痕，峰值相对亮度
+     0.42，是画面中位数的 54 倍。半径一过 6px 整幅就糊成雾，而 6px 本身只把最坏值从 0px 的
+     1.60 / 1.30 / 1.08 抬到 2.10 / 1.70 / 1.41，仍然读不清。
+
+     所以补一档 brightness()，同一口径实测（整幅取最坏值；括号内是低于 4.5 的面积占比）：
+       4px + 100% -> 1.75 / 1.42 / 1.18   (0.440% / 0.597% / 0.837%)
+       4px +  62% -> 3.89 / 3.16 / 2.62   (0.040% / 0.164% / 0.312%)
+       4px +  45% -> 5.90 / 4.79 / 3.97   (0.000% / 0.000% / 0.053%)
+       4px +  40% -> 6.69 / 5.43 / 4.50   (0.000% / 0.000% / 0.000%)  <- 过线
+       4px +  38% -> 7.02 / 5.70 / 4.73   (0.000% / 0.000% / 0.000%)  <- 曾经发这一档
+     压亮度不同：`brightness()` 把整幅逐像素一起乘下去，一个边缘都不抹掉，画还在，只是暗了；
+     对比度是跟着抬起来的。模糊换不来这个 —— 6px 半径已经抹掉 58% 的画面细节，最坏值却几乎
+     没改善。两者作用在相反的一端，所以是叠加用，不是二选一。
+
+     2026-10-17 稍后，用户看过 0.38 之后：「现在太模糊了，根本看不清，你设置的参数是什么？」
+     → 被问的是参数，答的也是参数 → 用户点名要改的那一项：「亮度，改为0.65」。所以亮度从
+     0.38 抬到 0.65，模糊仍是 4px，**两档仍然同值**（口径没变，变的只是那一个数）。
+
+     0.65 是一个已知的取舍，不是测出来的最优：同一口径下
+       4px +  65% -> 3.45 / 2.80 / 2.32   (0.066% / 0.132% / 0.208% 低于 4.5)
+     三档都掉到 AA 的 4.5 以下，低于 4.5 的面积是 0.07%～0.21%。换算成看得见的东西：屏幕上
+     大约千分之一到千分之二的面积（一整屏 1600x900 里约 1～3 个字形大小的地方）压在最亮的
+     噪点上时读不利索，其余部分都在 4.5 以上。这是用户看过画面之后要的那一档 —— 他要的是
+     画能看清，不是纸面合规；把这个取舍写在这里，是为了下一轮不要再把它当成「没测过」。
+
+     4px 而不是 6px：3px 与 4px 的可读性几乎并列，再往上就开始糊；用户要求「越低越好」，
+     4px 是既稳又低的那一档。
+
+     亮档 2026-10-17 同一轮跟上：用户「以暗色模式为准，统一亮色和暗色，总不能暗色壁纸有
+     模糊，亮色壁纸就清晰可见吧，那样风格就不统一了」。所以两档曾经发**同一串**
+     `blur(4px) brightness(0.65)`、同一个 4px 半径 —— 这不是把暗档的药照抄给亮档，亮档本来
+     就富余，压亮度只是让它和暗档的观感一致。亮档从前靠 alpha 0.84 解决可读性、模糊边际
+     收益小，这是它当年留在 0px 的理由；那个理由只解释了「不必要」，不解释「该不该统一」。
+     注意亮档压亮度是**反方向**的：壁纸本来是亮的，`brightness(0.65)` 把它压暗，而亮档的墨
+     色是深色，所以这一档是把画压向墨色、不是压离它；它富余，压了仍然过线。
+
+     2026-10-17 再后来，用户：「暗色不变，亮色blur改为2px」。所以**两档的半径从此可以不同**：
+     暗档 4px、亮档 2px。这是统一口径之后第一次按模式分开，但只分开半径、不分开亮度 ——
+     两档仍然发同一个 brightness(0.65)，`--cp-filter-*` 仍是一个模式一条、由
+     `body[data-ds-dark-theme]` 重绑。为什么这样不违背「风格统一」：用户要的是观感对齐，
+     不是两个数字逐字相等；亮档本来富余（2px/0.65 下最坏值 8.65 / 7.49 / 6.52，远在 4.5
+     之上），少糊那一半不会让哪一档变得「清晰可见」而与另一档割裂。门禁 `css.14` 相应地从
+     「两个半径必须相等」放宽成「两个半径都在 0～6px 窗口内、且亮度必须相等」——把真正要守
+     的那条（亮度口径一致）钉住，把用户明确要求分开的那条（半径）放开。 */
+  --cp-blur-light: 2px;
+  --cp-blur-dark: 4px;
+  /* 两个 `--cp-filter-*` 现在**亮度同值、半径不同**（暗 `blur(4px)`、亮 `blur(2px)`，两条都是
+     brightness(0.65)），但两条令牌都保留：`body[data-ds-dark-theme]` 仍按模式重绑
+     `--cp-filter`，那是换档走属性而不是走 JS 的那条路，删掉任一条都会让某一档读到另一档的值。
+     为什么不再写 `none`：P4 (2026-10-09) 把亮档的 `blur(0px)` 换成 `none` 是为了省掉一个
+     filter effect node；本轮亮档也要模糊，`none` 这条路随之作废。 */
+  --cp-filter-light: blur(2px) brightness(0.65);
+  --cp-filter-dark: blur(4px) brightness(0.65);
+  --cp-wall: var(--cp-pick-light);
+  --cp-blur: var(--cp-blur-light);
+  --cp-filter: var(--cp-filter-light);
+  /* 2026-10-07 第二十四轮：`--cp-glass: 14px` 与它唯一的消费者（「新会话」按钮的
+     `backdrop-filter`）一并删除 —— 那个按钮被本主题自己藏成 `display: none`
+     （见下面「隐藏重复的新会话按钮」那条规则），真机复核 rect [0,0,0,0] /
+     display=none，所以那条 blur 从来没有落到过任何一个像素上。
+     历史：它 2026-10-06 是用户点名「新会话的同理」加的，本轮按议决「处理死代码」
+     清掉。仍活着的两条材质值是下面这两条：composer 与 guide。 */
+  /* 2026-10-07 液态玻璃：「为输入框添加液态玻璃效果」。模糊半径是**材质参数**，
+     不是颜色，所以它留在这一层。折射那半边不在这里：位移图必须现画（一张固定尺寸的
+     图被 feImage 铺到滤镜区域上，挡板深度会随元素比例漂移），而且画的是**滤镜区域**的
+     尺寸（盒外扩一个挡板）——所以由 src/client.js 挂在 url(#uni-lg-*) 上，本表只写 id
+     与兜底。4px 是实测值：14px 会把折射赖以可见的高频细节先糊掉，2px 又压不住小字。
+     **2026-11-01（D107）改成 3px**：用户点名「降低卡片的厚度，并且把弹层降到卡片的厚度」。
+     3px 是折中——这一轮同时把折射挂回来（D107 ②），「像玻璃」的读数由边缘弯折与
+     `::after` 的高光承担，模糊只需要压住小字；2px 在无折射时是实测过的下限，现在有折射
+     兜着，先落在 3px，观感不够薄再逐个往下试。弹层（菜单材质层与模型/思考档面板）同一轮
+     从 20px 拉到这个值，理由见「卡内弹层与卡片同厚」那一节。 */
+  --cp-glass-composer: 3px;
+  /* 2026-10-07：`--cp-glass-menu` 已删除。命令框不再由本表给材质——用户要求
+     「与任务框一致的参数」，于是本表对它的材质覆盖整条撤销，它直接吃官方那对令牌
+     （`--dsw-menu-surface-fill` + `--dsw-menu-backdrop-filter`）。见下方「与任务框对齐」。 */
+  /* 2026-10-07 第二十四轮：`--cp-side-scrim` 已删除。侧栏那层 45% 面纱是「各栏不一致」
+     的最大成因（只有左栏有、只有亮档有色）。用户要求四个区域统一为同一底纱 α 与同一
+     底色，于是整条撤回 —— 现在只留 `body::after` 那一层底纱。理由见下面
+     「One veil, four regions」一节。 */
+  /* 右栏六张入口卡片的**背景**模糊（2026-10-07 第二十四轮）。取值与输入卡同一个实测值
+     4px，理由相同：14px 会把折射赖以可见的高频细节先糊掉，2px 压不住小字。折射那半边
+     不在本表里（见 src/client.js 的 uni-lg-guide target）。 */
+  --cp-glass-guide: 4px;
+  /* 2026-11-01：编辑卡片（changed-files）的液态玻璃。与 guide 同一个 4px —— 卡片是
+     一块内容板，不是输入框，没有 D107 那种「降厚」的要求；与右栏入口卡同厚，读起来
+     是同一种材质。 */
+  --cp-glass-card: 4px;
+  /* 2026-11-02：用户消息气泡的毛玻璃。与 guide / card 同一个 4px。气泡只做材质不做
+     折射 —— 它是每条消息一个实例，数量随会话增长，每个都挂位移图会持续吃 GPU；
+     卡片与入口卡是低频的，气泡是高频的。 */
+  --cp-glass-bubble: 4px;
+}
+body[data-ds-dark-theme] {
+  --cp-wall: var(--cp-pick-dark);
+  --cp-blur: var(--cp-blur-dark);
+  --cp-filter: var(--cp-filter-dark);
+  /* 2026-10-07 用户：「将左上角亮色模式下的Logo替换为暗色模式那张。」
+     D33 的分档选择现已取消：生成块里的 `--cp-brand-mark` 直接发布暗档那张图，
+     因此两档天然一致，不需要在这里重声明，也没有模式切换时的旧图帧。 */
+  /* 暗色多普勒的两层副影（第五十一轮加、第五十六轮撤）。原文保留在此，记录那轮
+     为什么把它压深一档：亮档副影是「深暖金 / 铜」，暗档却是「浅香槟 / 浅琥珀」，
+     与暖白主字 #cfd5dc 的亮度太接近，1px 尺度上只剩色相差，读不出分离。当时的
+     做法是与深色底混一档、把关键词从「浅金」改成「铜」，并注册成两支局部变量
+     --uni-sel-warm-near / --uni-sel-warm-far 供 text-shadow 消费。
+     第五十六轮用户定案只留悬停收束，多普勒连同这两支变量一起删除，故此处不再声明。 */
+}
+
+/* --------------------------------------------------------------------------
+ * The background stack: art (blurred) below, veil above
+ *
+ * Two layers, painted back to front by DOM order at the same `z-index: -1`:
+ * `::before` is the art, `::after` is the veil. Both are `position: fixed`, so
+ * they stay anchored to the viewport while a long conversation scrolls over them
+ * -- that is what `background-attachment: fixed` used to do for the art, and it
+ * is no longer available because the art is not in a background stack any more.
+ *
+ * WHY THE ART IS A BLURRED ELEMENT (frosted glass, 2026-10-06)
+ * ----------------------------------------------------------
+ * A uniform veil forces a straight trade: lower alpha shows more wallpaper and
+ * loses text contrast. Blur breaks the trade instead of splitting it -- it
+ * destroys the high-frequency detail (which is what makes small text hard to
+ * read) while keeping the low-frequency colour and glow (which is what makes the
+ * wallpaper present). Measured on the real background crop, 24px moves dark
+ * mode's worst-case composite from `#4f4d51` to `#2f2d32`, which lifts
+ * `label-secondary` from 3.88 (below target) to 6.26 (above it) at an alpha that
+ * shows 58% of the art.
+ *
+ * CORRECTION (2026-10-08, round 25, measured): that gain does NOT transfer to light
+ * mode's current wallpaper (`eva01city`), and blur is not a usable lever there. On the
+ * live app, alpha 0.35 + blur 48px moves light's main tertiary ink from 2.00 to 2.19
+ * (5% 1.62 -> 1.86) and blur 96px to 2.47/1.97 -- the binding constraint is the wall's
+ * LUMINANCE, not its sharpness, and light's art is dark (p05 0.007 / median 0.044). The
+ * earlier "light's wallpaper is already flat (p02-p98 0.695-0.890)" note described the
+ * OLD light wallpaper and no longer applies. Light therefore ships blur 0px with the
+ * veil alpha raised instead (0.84 since 2026-10-10, see "One veil, four regions").
+ *
+ * `inset: calc(-1 * var(--cp-blur))` is load-bearing: a blurred element fades to
+ * transparent at its own edges, and without the negative inset that fade shows up
+ * as a soft frame at the viewport borders.
+ *
+ * `--cp-blur: 0px` stays a supported state even though nothing sets it any more:
+ * the settings panel that used to drive it was removed on 2026-10-06, so this is
+ * now a hand-edited value in this sheet. Setting it to 0 reproduces the pre-blur
+ * look exactly, which is what makes the before/after measurable.
+ *
+ * `background-color` still carries the veil token. It sits *under* the art, so it
+ * cannot change how the art reads; it exists so the canvas -- what shows through
+ * before the image decodes, and beyond its edges -- is the theme's colour rather
+ * than the browser's default white. Without it a dark-mode start flashes white.
+ * ------------------------------------------------------------------------ */
+body {
+  background-color: var(--dsw-alias-bg-base) !important;
+  background-image: none;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: calc(-1 * var(--cp-blur, 0px));
+  z-index: -1;
+  background-image: var(--cp-wall);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  /* P4 (2026-10-09) made this a literal `none`, because both modes shipped
+     `--cp-blur: 0px` and `blur(0px)` is not `none`: it keeps a filter effect node alive on
+     this full-viewport fixed layer for the life of the page, for zero visible pixels.
+     That reasoning is now spent — round 61 (2026-10-17) ships a real radius on BOTH modes
+     (`blur(4px) brightness(0.38)`, one identical string per mode), so a filter node is
+     wanted, and the value comes from the two `--cp-filter-*` tokens above rather than from
+     a literal. `inset` still reads `--cp-blur`, so the negative inset follows the radius
+     on its own — that is what keeps the blur a one-line change, not a restructure. */
+  filter: var(--cp-filter);
+  pointer-events: none;
+}
+/* ASCII renderer owns only the background. Keep the existing readability veil.
+   Until the cell geometry is ready, retain the existing static fallback. */
+body[data-uni-black-hole]:has([data-black-hole-state='ready'])::before {
+  background-image: none;
+}
+/* 2026-10-28：亮档 veil 从 α0.84 降到 α0.235，暗档原样。
+   第一次修这条时把整层撤掉了（`background-image: none`），结果真机上黑洞确实清楚了，
+   可输入卡的玻璃只剩 20% 的背板：卡片后面是纯黑的影子，占位字符压在中灰上，用户报告
+   「输入框中的文字都看不见了」。所以 veil 不是要撤，是要**降到够用**：
+   `body::after` 与画布同为 z-index:-1、树序在后，它对画布是一层白纸；
+   0.84 把画布压到 16%（洞被冲成灰雾），0.235 留 76.5% 强度（洞是深石板色，
+   卡片背后也够亮），这一档是按输入卡 ≈80% 白纸面反推的：卡片背后 0.2×画布，
+   画布亮度 240 时卡片落到 210 左右，深色小字对比度回到 4 以上。
+   只改 opacity、不写颜色：selfcheck 的 css.8 禁止 theme.css 出现字面色值；
+   底色仍由令牌层的 `--dsw-alias-bg-base` 决定，暗档那条 `body[data-ds-dark-theme]` 不落进
+   本选择器，没挂黑洞的页面（无 `data-uni-black-hole`）也不落进。 */
+body:not([data-ds-dark-theme])[data-uni-black-hole]:has([data-black-hole-state='ready'])::after {
+  /* 恒定 0.28（2026-10-29 甲方案后）：洞在两页都常驻，不再有「洞已走」的那一端，
+     所以这里不接任何转场变量。撤掉 data-uni-black-hole 只发生在主题卸载时，
+     那时整张样式表一起走，不存在亮度突跳。 */
+  opacity: 0.28;
+}
+/* 亮档输入卡在这一页改成纸面。
+   卡片自己的填充是官方令牌的半透明面，背后若是深色影子，卡内小字立刻失去对比
+   （2026-10-28 真机报告：「输入框中的文字都看不见了」）。veil 是**整页**那层，
+   而卡片缺的是**局部**背板：这里把卡片底面换成与 veil 同源的纸色令牌，影子透上来
+   16%，卡内约 84% 纸白，深色占位字回到 4:1 上下；卡片以外一个像素不改，黑洞照旧。
+   用令牌不写字面色值（css.8）。暗档不落进本选择器：暗档卡片本来就压在近黑上，
+   半透明面正是它要的材质。 */
+body:not([data-ds-dark-theme])[data-uni-black-hole]:has([data-black-hole-state='ready']) [data-composer-card] {
+  background-color: var(--dsw-alias-bg-base);
+}
+/* 会话框外那一行「工作区选择」「模式」：同一块纸色背板，范围收死在这两颗。
+   2026-10-29 用户报「亮色新会话页的黑洞遮挡了会话框外『工作区选择』与『模式』的文字」。
+   真机截图量下来，压在字上的是吸积盘外圈的浅棕字符（; : + * 那一层）：字与噪点同色、
+   同号，字形被啃。字色 #1c242b 压在最深一格 #b3a291 上仍有 ≈6.5:1，所以不是「字太暗」，
+   是「字后面不干净」—— 调字色会掉到 1:1 附近，方向是错的。
+   只给字形加纸色光晕（0 0 1px/2px/4px）不够：光晕只清字形外 1~2px，字缝里照样露棕字
+   （用户 m00207「又看不清了」），只有背板能把噪点整块挡住。
+   不动黑洞本身：压淡吸积盘外圈会把盘一起削薄（m00225 试过一轮，m00394 撤回）。
+   `[data-phase='hero']` 挂在新会话页根节点上，对话页没有这个属性，
+   所以作用域自动等于「只这一页」；两条选择器都是 data-* 契约（css.7）。
+
+   **已撤回（2026-11-01，用户点名）**：原话「去掉亮色下『工作区选择』和『Agent预设』模式
+   选择的背板，之前加了个背景」。那两条 `background-color: var(--dsw-alias-bg-base)` 删掉，
+   两颗控件回到宿主自己的样式（无底色，只有字与图标），黑洞与输入卡一律不动。
+   代价就是上面这段记的那件事重新成立：吸积盘外圈的浅棕字符会重新压在字缝里，
+   最坏一格仍按当时的量测 ≈6.5:1 起（字形本身没变暗）。这是当轮用户明确要的取舍，
+   不是遗漏；要改回来见 D106 的「处置」栏，那里留着两条选择器原文。
+   当天第三轮接上了「幽灵化」：这两颗控件改成静止态不透明度 0.55，规则见本文件
+   输入卡幽灵态那一节末尾（`同一套幽灵态，用在会话框外那两处控件上`）。 */
+/* build 期把画布藏起来，等第一帧画好再露面（否则会看到一张空白的半成品）。
+   2026-10-29 修：`data-uni-black-hole` 挂在 body、`data-black-hole-state` 挂在画布，
+   一条要求同一元素同时带两个属性的选择器命中 0 个元素，是死规则。 */
+body[data-uni-black-hole] canvas[data-black-hole-state='building'] {
+  visibility: hidden;
+}
+/* 对话页背景（2026-10-29 定稿）：洞在对话页里走到视口右缘出画，弧贴右边，左栏那片只剩背景，
+   所以这里把壳层与左栏的漆一起清空，才不会露出官方底纱。
+   属性的切换由 accretion-disk.js 的 arcTo() 在同一拍负责，回新会话页时一起撤。 */
+body[data-uni-sky-mode]:has([data-black-hole-state='ready']) [data-slot='root'] > * > div:has(> [data-slot='sidebar']),
+body[data-uni-sky-mode]:has([data-black-hole-state='ready']) [data-slot='sidebar'],
+body[data-uni-sky-mode]:has([data-black-hole-state='ready']) [data-slot='sidebar'] > div {
+  background: transparent;
+}
+/* 2026-10-28：黑洞只画在「主区 + 右栏」，左栏恢复成一张纸。
+   原因：画布以前是 `position: fixed; inset: 0` 铺满视口，黑洞连左栏一起画，
+   左栏只是靠自己的漆把它盖住；上面的壳层清空段把左栏漆成透明之后，洞就漏进来了。
+   现在画布由 `src/runtime/accretion-disk.js` 的 mount() 按容器 rect 摆位、按容器尺寸取景，
+   这里只管接住它、并把左栏漆回去。
+
+   为什么不是把画布改到 z-index: 1 再给主区垫纸：画布的底是**不透明**清屏色（暗 `#030509`
+   / 亮 `#edf0f4`），垫纸就会被它整块盖掉，主区立刻变成纯黑块；改垫 `transparent` 又要求
+   画布自己带 opacity（`getContext('2d', {alpha: false})` 不支持透明），而 opacity 会触发
+   混成层、每帧重新合成整条时间轴。所以画布仍旧排在所有漆之下（负 z-index），外壳的漆
+   继续当它的纸——暗档就是旧观感，亮档就是上一轮调好的 0.28 veil。
+
+    容器取两个元素：column 是 `[data-slot='root'] > * > div:has(> [data-slot='main'])`（主区那
+    一列，真机 1256px 视口下实测 x=280、宽 976），frame 是 `[data-slot='root'] > *`（实测
+    x=0、宽 1256）。左边界取 column 左边，左栏因此不进入取景；右边界取 frame 右边，右栏是
+    column 的兄弟、和它同包在 frame 里，所以不会被在右栏边缘切一刀。取不到 column 时按视口
+    占位（JS 里同样退一层）。2026-10-29 核对：`[data-slot='root'] > *:has(> [data-slot='main'])`
+    在当前真实结构下匹配 0 个节点（frame 与 column 之间还隔着两层无属性 div），补漆选择器
+    原来也据此写错，一并按真实链条改正。
+
+   左栏透明（2026-10-29 终版）。用户三句话把一个方向说死了：m00567「我是让左栏跟黑洞
+   独立，黑洞不在左栏显示。但左栏和整个区域要是无界的，看起来要是都一样的」，紧接
+   m00648「我的意思是让左边栏透明！！！」。所以左栏不刷任何颜色，而是把自己（连同外层
+   容器与官方那层 `--dsw-specific-sidebar-fill`）清成 transparent，透出整窗同一个底。
+
+   这条路能成的关键是画布也不再不透明（src/runtime/accretion-disk.js 的 `clearRect`）：
+   画布一旦是不透明清屏色，主区就是「画布 + 外壳纱」的合成色，左栏透出的底怎么都差
+   一档 —— 前两次失败都是在猜这个合成值。画布透明之后，主区透出的同样是那一层底，
+   两区逐像素相等，不需要任何颜色匹配，也不改整窗原有的明度（不再把 body 刷成画布色，
+   那会把整个窗口压黑一档）。
+
+   `--cp-void` 仍由绘制方发布（src/runtime/accretion-disk.js 的 `applyMode()`），留给画布与
+   将来需要精确对齐的场合；本表不消费它。 */
+body[data-uni-black-hole]:has([data-black-hole-state='ready']) [data-slot='root'] > * > div:has(> [data-slot='sidebar']),
+body[data-uni-black-hole]:has([data-black-hole-state='ready']) [data-slot='sidebar'],
+body[data-uni-black-hole]:has([data-black-hole-state='ready']) [data-slot='sidebar'] > div {
+  background-color: transparent !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+}
+/* 画布取景框固定成整个 frame 之后（2026-10-29），左栏的隔离不能靠「画布从 x=280 开始」，
+   改由 mask 的 alpha 斜坡负责：斜坡起点就是对话列左缘 --uni-hole-edge，新会话页那一侧
+   逐像素透明（洞不进左栏），对话页这个变量收到 0（弧已经贴到视口右缘）。
+   @property 把它注册成 <length>，于是这 1000ms 内由 transition 连续推过去，边界是溶解的，
+   而不是在某一帧跳一下；mask 只改合成结果，不改每帧绘制，也不多一层 JS。
+   时长与 client.js 的 MOVE_MS 对齐：320ms → 640ms → 1000ms（用户 m03318「现在的转场
+   太快了，慢一点」）。 */
+@property --uni-hole-edge {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+canvas[data-uni-black-hole],
+canvas[data-uni-hole-body] {
+  --uni-hole-edge: 0px;
+  transition: --uni-hole-edge 1000ms linear;
+  /* 转场时 canvas 靠 transform 平移（见 accretion-disk.js 的 arcTo）：直接声明 will-change
+     让这一层提前升成合成层，位移才能整段跑在合成器上，主线程卡住也不抖。 */
+  will-change: transform;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, transparent var(--uni-hole-edge), currentColor calc(var(--uni-hole-edge) + 72px));
+  mask-image: linear-gradient(to right, transparent 0, transparent var(--uni-hole-edge), currentColor calc(var(--uni-hole-edge) + 72px));
+}
+/* 洞与盘是两块画布（拆分第一阶段），上面这套遮罩、过渡与合成层三样必须同时覆盖两块：
+   只给盘会漏左栏，只给洞会让转场时盘的位移掉回主线程。 */
+body[data-uni-motion='reduced'] canvas[data-uni-black-hole] {
+  transition: none;
+}
+/* 洞是第二块画布，边界推进与减动效的口径必须与吸积盘那块完全一致。 */
+body[data-uni-motion='reduced'] canvas[data-uni-hole-body] {
+  transition: none;
+}
+
+/* --------------------------------------------------------------------------
+ * 会话行：只保留置顶标题的字色（2026-10-31）
+ *
+ * 会话行的状态标记（pending / 完成未读 / running）已在 2026-10-31 全部交回 DSH 官方：
+ * 主题不再写 data-uni-life、不再画任何图形，官方那枚状态点/转圈按原样显示。
+ *
+ * 这里只剩置顶：置顶是**独立属性**，与状态无关，所以它不受上面那条撤走的影响。
+ * 下面没有一条规则写 color 之外的布局属性，也没有任何背景、边框、指示条或动画 ——
+ * 置顶只作用于主标题本身。
+ * ------------------------------------------------------------------------ */
+
+body {
+  /* 置顶标题的「星云流光」：135deg 四色线性渐变（用户 2026-11-01 第七十四轮给的精确
+   * 色值规范，逐字：
+   *   linear-gradient(135deg, #00F2FE 0%, #4FACFE 33%, #FF6B9D 66%, #FF512F 100%)）。
+   * 四个色相依次是青（187°）、天蓝（204°）、玫红（345°）、橙红（12°）—— 没有一个
+   * 落在用户当轮点名的禁区：黄（约 40–70°）、绿（约 90–160°）、紫（约 270–330°）。
+   *
+   * 为什么这里破例出现色值字面量：css.8 的原则是「本表不发明颜色，颜色归令牌层」。
+   * 这四枚是**用户给定的外部规范**，而令牌层装不下它 —— tok.1 钉死 53 项、
+   * tok.6 要求令牌名以 --dsw-/--ds-/--dsh- 开头（主题私有名进不去），改既有令牌
+   * 还会撞 DARK_TOKENS_SHA。所以 css.8 对 `--uni-pin-flow` 这一条声明开了窄豁免：
+   * 只有这条声明允许字面量，其余位置照旧禁止。换算成 oklch 一样能过门禁，但那样
+   * 表里读不到用户给的原始色值，日后核对与调整都要反算，得不偿失。
+ *
+ * 一处必须说清的偏差：四个色标自身都不在紫段，但**蓝与玫红之间的插值必然穿过紫**
+ * （暗档 #4FACFE → #FF6B9D、亮档 #2563EB → #E11D48，中点大约落在 280–300°）。
+ * 要严格去掉这段紫，只能在 33% 与 66% 之间再插一个中间色标把过渡引开，代价是偏离
+ * 用户给定的四个精确色值。本轮按给定色值落地，把这条写在明处，等用户裁决要不要插。 */
+  --uni-pin-flow: linear-gradient(135deg, #00F2FE 0%, #4FACFE 33%, #FF6B9D 66%, #FF512F 100%);
+  /* --uni-pin-title 自第七十四轮起不再给标题上色：它现在只剩一个消费者 —— 置顶行
+   * 左侧的开普勒轨道点（--uni-kep-dot / --uni-kep-orbit，见本表 608 起）。这枚
+   * 香槟金（用户 2026-10-31 给的 #E6C78F）原样保留，避免这一轮顺手改掉另一个部件。 */
+  --uni-pin-title: color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 88.5%, var(--dsw-alias-label-caption));
+}
+body:not([data-ds-dark-theme]) {
+  /* 亮档同一支 135deg 渐变，色值由用户按白底可读性压低明度、提高饱和度（逐字：
+   *   linear-gradient(135deg, #0284C7 0%, #2563EB 33%, #E11D48 66%, #EA580C 100%)）。
+   * 四枚依次是青蓝（200°）、宝蓝（221°）、玫红（350°）、橙（21°）—— 同样避开
+   * 黄、绿、紫三个禁区；最暖的一枚停在 21° 的橙，没有滑进黄色段。 */
+  --uni-pin-flow: linear-gradient(135deg, #0284C7 0%, #2563EB 33%, #E11D48 66%, #EA580C 100%);
+  --uni-pin-title: color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 75%, var(--dsw-alias-state-business-primary));
+}
+
+/* pinned —— 图钉保持官方默认（2026-10-31，第五十一轮）：这行尾那枚 pinIndicator
+ * 的图形、尺寸与位置全部交回官方。主题在这行上只接管标题字色，见下方「恒星锚定」
+ * 块；钩子直接读官方元素本身的类名，不再由运行时盖属性。 */
+
+/* pinned —— 恒星锚定：置顶行的**主标题**（2026-10-31，第五十轮）。
+ * ----------------------------------------------------------------------------
+ * 用户规格：香槟金标题 + Semibold 600 + 一层极弱静态辉光（暗色 #E6C78F / 亮色
+ * #89672F）；字号、字间距不动；预览、时间、辅助信息一律不动；不加图标、不加背景、
+ * 不加边框、不加下划线、不加左侧指示条、不加胶囊角标、不加任何动画。
+ *
+ * 钩子为什么是 :has([class*='pinIndicator'])：置顶的唯一事实来源就是官方那枚
+ * pinIndicator，主题不引入第二个来源。用类名而不是精确 class 名，是因为官方那枚
+ * 带 CSS-Modules 后缀，前缀匹配才不会被一次构建改掉。标题排在
+ * 图钉之前，而 CSS 没有「前一个兄弟」选择器，所以只能站在行上往回看。这条选法的
+ * 好处是**取消置顶自动恢复**：属性一撤、规则立即不再匹配，官方字色自己回来，不需要
+ * 任何「原来是什么」的记忆；代价是一旦官方改掉 pinIndicator，标志星与这行字色会一起
+ * 消失，而不是只坏一个 —— 两者本来就该是同一个事实的两面。
+ *
+ * 为什么只落第 2 个子元素且必须是 span：会话行的孩子是 slot / title / time /
+ * pinIndicator / rowActions，标题就是第 2 个（与 D43 同一条结构性选法）。`span` 限定
+ * 让失配的后果是「没有效果」，而不是把颜色泼到别的元素上。
+ *
+ * 为什么只碰 color / background-image / background-clip / font-weight：置顶是**独立
+ * 属性**，与行首图标格互不相干。用户明确点名过「不要让置顶与状态标记争夺图标区域」，
+ * 所以这里仍然只作用于字形本身 —— background-image 是给字形当填充用的（被 clip 裁进
+ * 笔画里），不是铺成行底色，所以仍然没有背景色、边框、指示条，也不动字号、字间距与
+ * 行高：行尺寸与布局一个像素都没变。
+ *
+ * 前提写在这里而不是留给人猜：这条依赖 background-clip: text。本主题只跑在 Chromium
+ * 上（DSH Web 与桌面端同一内核），这是稳定能力；万一换到不支持的渲染器，后果是这行
+ * 字**看不见**（color 已透明、裁剪却没生效）。没有用 @supports 兜底，因为 css.7 只
+ * 放行 @property 一种 @ 块，其它 @ 块会被判成非契约选择器 —— 兜底写不进去。 */
+/* dsh-im 渠道会话行：肉眼看到的字不在 span 里（第八十七轮，2026-11-06）
+ * ----------------------------------------------------------------------------
+ * dsh-im 把渠道会话标题做成「原文透明 + ::after 用 attr() 重画」：原文靠
+ * -webkit-text-fill-color: transparent 藏起来，再把去掉「微信 · 」前缀的文字重画在
+ * 22px 处给左侧 logo 让位（该插件 session-channel-logos.js:82-107）。
+ * 于是两条作用在字形上的属性必须跟着换层：写在本层 span 上，镂空挡不住
+ * text-shadow（透明原文以阴影现形，与重画层错位叠字），background-clip:text 也会把
+ * 渐变裁进被 logo 盖住的原文。放大、字距、字重这类可继承属性留在本层不动，重画层自己
+ * 继承，效果与其它会话行一致。 */
+body [data-row-key^='session:']:has([class*='pinIndicator']) > span:nth-child(2) {
+  /* 渐变文字的三件套。`color: transparent` 是让字形镂空、由背景图透出来的那块
+   * （不是「把字藏起来」：没有 background-clip:text 时它才会真的看不见，见下条注释）。
+   * 前缀与标准两条都写：Chromium 认 -webkit-，标准名是给未来兜的同一个值。 */
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  background-image: var(--uni-pin-flow);
+  font-weight: 600;
+}
+
+/* 置顶的 IM 行：渐变挪到重画层。本层摘掉背景裁剪，否则渐变会从被 logo 盖住的原文里
+ * 透出来；重画层自己的 -webkit-text-fill-color 交给我们接管成透明，由渐变填充。 */
+body [data-row-key^='session:']:has([class*='pinIndicator']) > span[data-dsh-im-session-text] {
+  background-image: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+}
+
+body [data-row-key^='session:']:has([class*='pinIndicator']) > span[data-dsh-im-session-text]::after {
+  background-image: var(--uni-pin-flow);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 外光已撤（2026-11-01 第七十五轮，用户逐字：「只要文字本身变色，其他的都不要！」）。
+ * 上一轮这里是 `filter: drop-shadow(0 0 6px …) drop-shadow(0 0 14px …)` 的双层霓虹；
+ * 现在置顶行只剩字形自己的渐变，没有任何阴影、发光、光晕与选中态加成。
+ * 选中行的色散仍归多普勒（本表「会话行选中：引力放大」一节，0.45px 的横向错位），
+ * 而它的颜色是 currentColor —— 字形已透明，那条 text-shadow 自然画不出东西，
+ * 两套效果各管各的视觉区域，互不干扰。
+ * 字号、字间距、行高、内边距一个字没动，所以行尺寸与布局都不变。 */
+
+/* --------------------------------------------------------------------------
+ * 会话行 Running —— 日冕弧带（Corona Arc，2026-11-02）
+ *
+ * 用户的判据（m00676）有两条：位置连续（单一主体、逐帧不瞬移）与形状连续（轮廓任何
+ * 时刻都不断口、不重新起笔）。这两条判掉了此前的吸积流：螺旋是开口曲线，外圈 r=6.2
+ * 与中心 r=1 相距 5.2px，单主体走完一轮必须跨过这段位移 —— 用时隐时现、交接残影、
+ * 双流相位都只能盖住淡入淡出，盖不住位移本身（m00682 的结论）。
+ *
+ * 所以这一格换成闭合环上的一段弧带：
+ *   1. 环上没有端点，一圈走完就回到起点，位置天然连续；
+ *   2. 弧长在 0.28~0.44 圈之间呼吸，头尾都在环上，永远不出现「起笔」；
+ *   3. 弧带本身就是那颗点，头端 round cap 收成圆头，不再另画 circle；
+ *   4. 角速度每圈两次微加速（±10%），弧长与亮度一起呼吸 —— 匀速定长弧就是 spinner 换皮。
+ *
+ * 样式表只做三件事：官方那两枚圆藏起来（且只在我们那组挂上来之后才藏）、
+ * 弧带的颜色与笔宽、头段与尾段的粗细差。所有几何与亮度都在 src/runtime/accretion.js
+ * 里逐帧写（每帧重写四段 d，不用 CSS dashoffset，也不做 CSS 动画）。
+ *
+ * 与 pending 的分界：pending 是固定椭圆 + 匀速绕行（a 6.6 / b 3.6 / 2600ms，官方原样）；
+ * 这里是圆、顺时针（用户 m00844 纠正过方向）、1300ms，一个「绕」一个「转」，半径都不变
+ * 但速度与呼吸不同。
+ * ------------------------------------------------------------------------ */
+
+body {
+  /* 颜色只有两枚：头段亮（暗档与官方 success 同色），尾段就是同一枚色，靠 stroke-opacity
+   * 逐段递减（0.85 / 0.6 / 0.38 × 整体呼吸），样式表里不写任何 opacity。
+   * 时间常量在 accretion.js（UNI_ACC_CYCLE = 1300），这里不再持有动画。
+   * 亮档不再继承宿主那枚绿，见紧跟着的覆盖块（第七十六轮）。 */
+  --uni-acc-dot: var(--dsw-alias-state-success-primary);
+  --uni-acc-trail: var(--dsw-alias-state-success-primary);
+}
+
+/* 亮档的弧带绿（2026-11-02 第七十六轮，用户 m00875：「再优化一下亮色下的配色，现在不够
+ * 显眼……找一个对比度更高的绿色」）。
+ * 亮档继承的是宿主 --dsw-alias-state-success-primary，在浅底上其实不低（#397949 对
+ * #f9fafc 5.02:1），但它是一枚灰绿（oklch 0.521 0.100 150），彩度只有 0.10；再乘上弧带
+ * 自己的 stroke-opacity（尾段 0.85 / 0.6 / 0.38 × 呼吸 0.75~1）之后，在 #e8ebef 那类偏灰的
+ * 面上只剩 3~4:1，1.3px 的弧就糊了 —— 用户说的「不够显眼」是这条。
+ * 做法不是换一枚随手挑的绿（css.8 不许主题自造字面色值），而是在宿主绿上做 oklch
+ * 派生：明度 0.521 → 0.48，彩度 ×1.5（0.100 → 0.150），色相不动。派生结果 ≈ #007329，
+ * 仍是同一支绿，只是更深更饱和；对 #f9fafc / #eff2f5 / #e8ebef 三档浅底实测
+ * 5.77 / 5.36 / 5.04:1，连最灰的那档也过了 WCAG AA 4.5:1（原色只有 4.38:1）。
+ * 数值由 tools/selfcheck.mjs 的 css.18 用 tokens.json 的宿主值重算，改 Formula 就红。
+ * 暗档一个字节都不动：暗档冻结（dark.2 逐个钉住），深底上那枚 #7fcc94 本来就有 7:1 以上。 */
+body:not([data-ds-dark-theme]) {
+  --uni-acc-dot: oklch(from var(--dsw-alias-state-success-primary) 0.48 calc(c * 1.5) h);
+  --uni-acc-trail: oklch(from var(--dsw-alias-state-success-primary) 0.48 calc(c * 1.5) h);
+}
+
+/* 盒子：官方那枚 svg 是 14px，第五十七轮提到 16px（用户 m01092「还是比官方默认的大」）。
+ * 槽位本身就是 16×20，占满宽度但不出格；viewBox 仍是 24、组内 scale(24/14)，
+ * 于是环半径 5.6 设计单位 = 6.4px，直径 12.8px。 */
+body svg[data-state='ongoing'] {
+  width: 16px;
+  height: 16px;
+}
+
+/* 官方那层：两枚 r=9.5 的整圆 + 整圈匀速转的 g，一并藏掉（它们的匀速转正是主题当初
+ * 要去掉的风车感）。藏的条件仍是「我们那组图元已经挂上来了」（:has(> g.uni-acc)）：
+ * 脚本没跑起来、或这一帧还没 attach 完，官方那环就地顶着，不会出现空格。 */
+body svg[data-state='ongoing']:has(> g.uni-acc) > g:not(.uni-acc) {
+  display: none;
+}
+
+/* 弧带：无填充、圆头、无描边叠加。笔宽 1.15 设计单位 = 1.31px，16px 格里读得出方向。 */
+body svg[data-state='ongoing'] .uni-acc-arc {
+  fill: none;
+  stroke: var(--uni-acc-trail);
+  stroke-linecap: round;
+  stroke-width: 1.15;
+}
+
+/* 头段略粗一档并换亮色 —— 「头亮尾淡」靠颜色 + 笔宽 + 逐段 opacity 三层一起给，
+ * 不用真渐变（16px 下渐变看不出，还多一次 paint）。 */
+body svg[data-state='ongoing'] .uni-acc-arc-head {
+  stroke: var(--uni-acc-dot);
+  stroke-width: 1.3;
+}
+
+/* 尾段比头细一点，收束得更快。 */
+body svg[data-state='ongoing'] .uni-acc-arc-tail {
+  stroke-width: 1;
+}
+
+/* --------------------------------------------------------------------------
+ * 会话行 Pending —— 开普勒轨道（2026-11-01 第七十二轮）
+ *
+ * 用户规格（附图「Pending - 开普勒轨道」，m00003）：「沿固定椭圆轨道运行，保持稳定
+ * 周期运动」；图中的「中心引力核心」不要，只需要椭圆轨道和运动光点。附图另给三档
+ * 实际尺寸 16 / 20 / 24px、暗亮两档，以及与 Running 的分界 —— 一个「绕」（半径不变），
+ * 一个「落」（半径逐渐减小、越靠近越快）。
+ *
+ * 钩子为什么是 `span[data-state='warning']`：DSH 0.2.1-rc.5 的会话行只有 ongoing /
+ * warning / done / idle 四个 data-state（primitives 的 StateDot 只对 ongoing 出 svg，
+ * 其余都是 span），没有 pending。warning 就是官方自己的 pendingInteraction（等待审批 /
+ * 计划确认 / 提问），语义上「待处理」最贴近 pending，用户 2026-11-01 指定挂在这一态上。
+ * done（完成未读）与 idle（前导格让给插件槽）不动。
+ *
+ * 为什么官方的琥珀点必须让位：那枚点的位置就是图里「中心引力核心」的位置，留着它
+ * 读起来就是「一颗点围着另一颗点转」。官方这点是 `::after`（inset 20% + currentColor）
+ * 画出来的，所以关的是元素自己的伪元素；改 color 会连带改掉同一个 span 上的派生色。
+ * 官方的 10×10 是 StateDot 写在 style 上的行内宽高，放大到 16px 只能 !important。
+ *
+ * 运动全部在 src/runtime/kepler.js —— 每帧按**弧长**取点（匀速），几何写在 0 0 16 16
+ * 的坐标系里，盒子换 20px / 24px 只是等比缩放。样式表只管颜色、盒子、以及「官方点
+ * 让位」这三件事，一条动画都不持有：CSS 关键帧只能把画好的椭圆整体 rotate，光点会
+ * 跟着椭圆自转，读起来是两个圆在互相打转。
+ *
+ * 颜色：暗档沿用 --uni-pin-title（rgb(230,197,143) 那一族香槟金，本轮之前它同时是
+ * 置顶标题的字色；第七十四轮标题改用渐变之后，这枚色只剩轨道点一个消费者），轨道取
+ * 它 72% 的透明度当细线，光点用满色 —— 附图里轨道比点
+ * 暗得多，同一个色相只差明度，读起来仍是「一颗点带着一条轨道」。58% 在 1:1 的
+ * 16px 上实测糊成一根灰线（0.8px 描边的抗锯齿把颜色摊薄），提到 72% 才读得出金。
+ * ------------------------------------------------------------------------ */
+body {
+  --uni-kep-orbit: color-mix(in srgb, var(--uni-pin-title) 72%, transparent);
+  --uni-kep-dot: var(--uni-pin-title);
+}
+
+/* 亮档光点单独提亮（2026-11-01 第七十三轮）。
+ *
+ * 用户反馈（m00001）：「亮色模式下有点暗，不够亮」。暗档那枚香槟金放在 #111720 上
+ * 是亮的；同一个色值挪到 #eff2f5 那种浅底上，观感就翻成暗棕 —— 浅底上「暗」不是
+ * 明度低，而是跟底色的明度差不够。这枚标记又只有 16px、光点直径 2px，靠压深换
+ * 对比只会换来「发灰」，换不来「亮」。
+ *
+ * 所以亮档不再继承 --uni-pin-title：那枚色当时还要给置顶标题当字色，而字色恰恰需要
+ * 压深才读得出，两件事对明度的要求相反，共用一个值必然有一边将就。
+ *
+ * 第三轮（m00229「试试 #5c4815」）：前面两轮都在往「亮」上走，但浅底上越亮越
+ * 不起眼 —— 亮档要的是和暗档相当的明度差，方向应该反过来：底色浅，标记就得深。
+ * oklch 把 warn-secondary 压到明度 0.412、彩度乘 0.66、色相 +8.5°，落点
+ * rgb(92,72,21) = #5c4815，在 #eff2f5 上是 7.81:1（暗档香槟金在 #111720 上是
+ * 10.92:1），比第一版古铜的 4.63 高七成。轨道取光点 80%，深色细线不再被浅底冲淡。
+ *
+ * 第四轮（m00249「比 #5c4815 再金点，比 #86682f 对比再高点」）：0.412 那档压得太狠，
+ * 色相虽然在 87°，明度一低就读成褐。抬回 0.50、彩度 0.108（比 0.412 档高一半）、
+ * 色相 +9° 到 87.3°，落点 rgb(125,94,0) = #7d5e00 —— 金感回来了，对比 5.38:1 仍
+ * 比第一版古铜的 4.63 高，还没丢到 #86682f 那一档。 */
+body:not([data-ds-dark-theme]) {
+  --uni-kep-dot: color-mix(in oklch, var(--dsw-alias-state-warn-secondary) 60%, var(--dsw-alias-label-primary-foreground));
+  --uni-kep-dot: oklch(from var(--dsw-alias-state-warn-secondary) 0.50 calc(c * 0.98) calc(h + 9));
+  --uni-kep-orbit: color-mix(in srgb, var(--uni-kep-dot) 80%, transparent);
+}
+
+/* 光点不带晕（附图 24px 那档有一圈暖晕，16px 那档只有一颗点）：会话行只有 16px 一档，
+   0.8px 的轨道上叠任何 blur，轨道先糊掉。 */
+body [data-row-key^='session:'] span[data-state='warning']:has(> svg.uni-kep) {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+body [data-row-key^='session:'] span[data-state='warning']:has(> svg.uni-kep)::after {
+  display: none;
+}
+
+body [data-row-key^='session:'] span[data-state='warning'] > svg.uni-kep {
+  display: block;
+  width: 16px;
+  height: 16px;
+  /* 椭圆贴着 16px 盒子的边（半长轴 6.6 + 旋转盒半宽 6.0），overflow: visible 让描边
+     不被裁掉半像素。 */
+  overflow: visible;
+}
+
+body [data-row-key^='session:'] span[data-state='warning'] > svg.uni-kep > .uni-kep-orbit {
+  fill: none;
+  stroke: var(--uni-kep-orbit);
+  /* 0.8 单位 = 16px 下的 0.8px：附图里轨道就是一根发丝，比 running 的六段尾流细。 */
+  stroke-width: .8;
+}
+
+body [data-row-key^='session:'] span[data-state='warning'] > svg.uni-kep > .uni-kep-dot {
+  fill: var(--uni-kep-dot);
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  /* 2026-10-06 方案 A 曾在这里叠两层 `repeating-linear-gradient` 画 NERV 网格
+     （文档 §15 `--nerv-grid`，24px 一格 / 9% 橙）。用户当天看到后说「删去」，
+     于是整块移除：网格是这一层唯一的额外消费者，删掉之后 `--cp-hud-cell` /
+     `--cp-hud-line` / `--cp-hud-rule` 三个变量也一并删除，不留死声明。
+     要恢复就把那两层按「前沿后」的顺序加回 `background-image` 的最前面
+     （veil 必须垫底，否则 78% 的它会把网格吃掉）。 */
+  background-image: linear-gradient(var(--dsw-alias-bg-base), var(--dsw-alias-bg-base));
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+ * Shell
+ *
+ * Emptied, not recoloured. Each of these carries a paint of
+ * `var(--dsw-alias-bg-base)` — the same paint `body` already performs — so setting
+ * them to `transparent` reveals the fixed art instead of veiling it again.
+ *
+ *   [data-slot='main']                  the conversation column
+ *   [data-dsh-bottom-panel]             the bottom panel's own row
+ *   [data-rightbar-col]                 the right column, also usable as a pane
+ *   [data-dsh-panel-entry]              dock panes
+ *   [data-conversation-content]         the transcript surface itself
+ *   #root *:has(> [data-conversation-content])
+ *                                       the panel AROUND the transcript. This is
+ *                                       the one that actually hides the art, and it
+ *                                       is matched by what it contains rather than
+ *                                       by position, because the shell inserts
+ *                                       wrappers that break `:first-child` paths.
+ *   #root *:has(> [data-dsh-center-col]) the frame, which sits behind two
+ *                                       attribute-less wrappers inside the root slot
+ *
+ * The sidebar is emptied as well. It used to keep its own
+ * `--dsw-specific-sidebar-fill` because that token was a DIFFERENT tone from the
+ * app base (a darker panel). Since the borderless round (docs/design.md D9) the
+ * token IS `--dsw-alias-bg-base`, so keeping the fill only stacked a second 0.80
+ * veil over the one `body::after` already paints — the sidebar was 4 veils deep
+ * in all (body, this frame, the sidebar column, the sidebar root). Measured
+ * consequence: the art reached the eye at 0.2^2 = 4% in the main column and
+ * 0.2^4 in the sidebar, and the §15 HUD grid rendered at +4/255 R instead of the
+ * +20 the 9% NERV orange should give. Every one of those paints is the same
+ * colour, so emptying them trades nothing for a 5x stronger art and grid.
+ * ------------------------------------------------------------------------ */
+[data-slot='main'],
+[data-dsh-bottom-panel],
+[data-rightbar-col],
+[data-rightbar-col] > *,
+[data-dsh-panel-entry],
+[data-conversation-content],
+#root *:has(> [data-conversation-content]),
+#root *:has(> [data-dsh-center-col]),
+[data-slot='root'] > *,
+/* C2（2026-10-11，用户点名「收窄裸 :has() 主语」）：原来只写 `div:has(> …)`，主语是
+   **全文任意 div** —— 每次样式失效都要对文档里每个 div 求一次 `:has()`。收窄到根槽的
+   孙辈（已知链：根槽 < frame < 侧栏列 < 侧栏槽），实测命中集一字不变：长会话页与 hero
+   页各 1 个，就是侧栏列那个 div（祖先链见本表 css 注释里的等价性记录）。 */
+[data-slot='root'] > * > div:has(> [data-slot='sidebar']),
+[data-slot='sidebar'] > div,
+[data-dockkit-empty='true'],
+/* 2026-10-07 实测补漏：**插件/外壳自己画的同色 veil**。用真会话（不是空白页）
+   打开真机才看得到 —— 空白 hero 会话里这些面根本不存在，所以此前几轮探针都
+   报「只有 body 在画 veil」。实测 `dsh-better-sidebar` 的停靠面板
+   （`[data-dsh-pane]`，实测 `data-dsh-pane='pane:1'`）会重画一遍
+   `--dsw-alias-bg-base`，把主区从 1 层 veil 变成 2 层：用「按 cover 投影取该区域
+   真实 art 像素」反解，用户截图里侧栏 α=0.303（正好是出货值），主区
+   α=0.511 = 1−0.7²，**正好多一层**。官方外壳的 tab host 与 frame 也读同一个令牌。
+   这里只收有 data-* 钩子的（css.7 不许写哈希类名，css.6 连注释里出现哈希类名都拦）。 */
+[data-dsh-pane],
+[data-dsh-pane] > *,
+[data-dockkit-surface='true'],
+[data-dockkit-pane],
+[data-dsh-taskboard-view],
+[data-disclosure-row='true'] {
+  background-color: transparent !important;
+}
+
+/* 2026-10-07 第二十四轮（无边界统一）的两条补漏。都是**同一个** `--dsw-alias-bg-base`
+   又一次重复绘制，所以处置与上面整段一致：清空，不换色。
+     · `[data-dsh-center-col]` 是 main 列的**本体**。官方 Windows 分支给它
+       `background: var(--dsw-alias-bg-base)` 并加 16px 左上圆角
+       （AppFrame.module.css:33-37）；上面那条 `[data-slot='main']` 命中的是它里面的
+       子槽，碰不到这个本体 —— 这就是 main 比右栏多一层纱的原因。
+     · `[data-slot='root'] > *::before` 是官方 Windows 标题栏那条 40px 全宽横带
+       （AppFrame.module.css:39-46，填的也是 `--dsw-specific-sidebar-fill`）。它画在
+       三栏之上，所以顶部永远比它下面的栏更密。
+   清掉这两条之后，左栏 / main / 右栏 / 顶栏四个区域都只剩 `body::after` 那一层底纱。
+   `::before` 的 `content` 与 `-webkit-app-region: drag` 都不动 —— 窗口拖动区不变。 */
+[data-dsh-center-col],
+[data-slot='root'] > *::before {
+  background-color: transparent !important;
+}
+
+/* --------------------------------------------------------------------------
+ * 顶栏菜单条：隐藏桌面端注入的「应用 / 编辑」（2026-10-08，用户点名）
+ *
+ * 用户原话：「先隐藏「应用」和「编辑」吧。」
+ *
+ * 这两枚按钮不是 Web 客户端的组件，而是**桌面端外壳的 preload 注入**的：
+ * app.asar 的 lib/preload-app.cjs:454 installWindowsMenu() 建一个
+ * `div[data-windows-menu]`（两枚 button 在它的 open shadow root 里，文案取 locale 的
+ * messages.application「应用」/ messages.edit「编辑」），挂在 body 下；位置
+ * `left: var(--dsh-windows-menu-start, 48px)`、高度 `var(--dsh-windows-titlebar-height)`。
+ * 点击走 `dsh-desktop:windows-menu`，由主进程弹原生菜单（lib/main.js:11970）。
+ *
+ * 处置：整条隐藏 —— 宿主 div 与 shadow 内容一起消失，不换色、不留位、不改几何。
+ * 顶栏那一行**保留**：同轮用户只点名这两枚，没有要求收缩
+ * `--dsh-windows-titlebar-height`，故不收缩；窗口拖动区（`-webkit-app-region: drag`）
+ * 与右上三枚系统按钮都不动。一条 `display: none`，无模式分支、不新增也不修改任何令牌，
+ * 暗色冻结不受影响。
+ *
+ * 钩子：`data-windows-menu` 是外壳自己打的 data-* 契约（css.7 放行），不含 CSS-Modules
+ * 哈希类名（css.6）。在浏览器里打开 Web 界面时该元素不存在，这条规则空转。
+ *
+ * 副作用（如实记录）：隐藏后进不去「应用」菜单的 关于 / 检查更新 / dsh 命令 / 退出应用。
+ * 退出仍可从托盘右键菜单走（lib/main.js:10853，托盘菜单就是 打开应用 / 退出应用）；
+ * 「重新加载页面」「重启应用与 Host」两项只在开发构建里存在（lib/main.js:11899 起
+ * `...development ? [...] : []`），本机是安装包，本来就没有。
+ * ------------------------------------------------------------------------ */
+div[data-windows-menu] {
+  display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+ * Glass: the composer card
+ *
+ * 用户 2026-10-06：「先给对话框添加毛玻璃和透明效果」。
+ *
+ * 透明来自令牌，不来自这张表：卡片自己的填充是 `--dsw-specific-input-major`，
+ * tools/s2-palette.py 的 SURFACE 把它解成半透明，但**最终令牌**的 α 是 0.302
+ * （src/tokens.json 的 `surfaceAlphaOverride` 钉 0.3、构建产物的 TOKENS 表一致），
+ * 那个 0.62 / 0.68 是中间产物，别拿它推合成结果。
+ *
+ * 毛玻璃来自这里。卡片带 `data-composer-card` 契约属性（实测），这是 paint layer
+ * 允许触碰的钩子之一（css.7 只放行 body/:root/#root/data-* ），所以不需要、
+ * 也不允许去写 CSS-Modules 哈希类名（css.6 明令禁止）。
+ *
+ * 模糊的对象是卡片**身后**的「壁纸 + veil」合成，因此本表不发明任何颜色
+ * （css.8）：它只加 filter，颜色仍然全部由令牌层决定。
+ *
+ * 2026-10-07 液态玻璃（用户点名：「为输入框添加液态玻璃效果」）：毛玻璃只是奶白，
+ * 液态玻璃是**折射**——`url(#uni-lg-input)` 在卡片边缘把身后的画面弯折，中间保持
+ * 清晰，于是壁纸的高频细节重新可见，而小字仍然被 4px 模糊压平。写法是两层：先写
+ * 只有模糊的那条，再写带 url() 的那条；不认 url() 的引擎会在解析期丢掉整条声明，
+ * 退回上一行（本机实测 `-webkit-backdrop-filter: url("https://raw.githubusercontent.com/WhatCannotBeSaid/dsh-quasar-theme/main/src/...")` 就是这条路）。
+ * 位移图不在这张表里：它必须按元素实际尺寸现画，由 src/client.js 挂在同一个 id 上。
+ *
+ * 2026-10-07 修 hover 位移（用户：「当发送按钮和停止按钮处于可触发状态时，鼠标悬浮
+ * 其上会导致页面位移」）：玻璃**不能挂在卡片本体上**，现在挂 `::before`。
+ * `backdrop-filter` 会让元素成为 `position: fixed` 后代的包含块，而输入卡的 tooltip
+ * 正是 fixed 且没有 portal —— InputBar.tsx:420 / :461 / :476 三处都没传 portal，
+ * Tooltip.tsx:252 于是把气泡渲染成锚点的兄弟节点，`left/top` 按视口坐标算。
+ * 包含块一换，那对视口坐标就被当成相对卡片。真机实测（<DSH_PORT> 端口注入等价声明）：
+ * 发送按钮气泡从按钮所在的 x1078 掉到 x1471；会话滚动容器 scrollWidth 969→1257
+ * （挤出横向滚动条、clientHeight 745→740）、scrollHeight 1441→2054；吸底滚动把
+ * 输入卡从 y693 顶到 y75 —— 整页跳 618px。同一页删掉该声明后，282 个元素在 hover
+ * 前后 rect 零差异。按钮自己的 :hover 规则只改 background，与几何无关，这也解释了
+ * 为什么只有「按钮可用」时才发作：`disabled` 为真时气泡根本不渲染（Tooltip.tsx:99）。
+ * 别只当成 tooltip 的事：DSH 在 ConversationRoot.module.css:503-506 为同一个理由
+ * 写下 hero 用 flex 居中而不用 transform —— 任何挂在卡片上的 filter 都踩这条线。
+ *
+ * 为什么挂在 `::before` 上仍然等价：伪元素是卡片的子节点，不是 tooltip 的祖先，
+ * 因此不再参与后者的包含块。卡片是 `position: relative` 且无 z-index（InputBar.module
+ * .css:45-47），去掉 filter 后不再是层叠上下文，`z-index: -1` 的伪元素被提升到最近
+ * 层叠上下文、画在卡片自己的背景之下，合成次序（身后画面模糊 → 半透明卡面 → 内容）
+ * 与从前逐层一致；`inset: 0` 与 `border-radius: inherit` 保证两个盒子重合。
+ * **不变量：输入卡的祖先链上不许出现 filter / transform / contain。**
+ * ------------------------------------------------------------------------ */
+[data-composer-card]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  -webkit-backdrop-filter: blur(var(--cp-glass-composer)) saturate(135%);
+  backdrop-filter: blur(var(--cp-glass-composer)) saturate(135%);
+  /* 2026-11-01（D107 ④）：折射回挂到卡片上，用户点名「1234 都做」。这一行必须排在
+     上面那条只带模糊的声明**之后**：不认 `url()` 的引擎在解析期丢掉整条生效值，正好
+     退回毛玻璃（本机实测被丢的是 `-webkit-` 前缀那条，所以上面那行不加 url()）。
+     位移图仍由 src/runtime/glass.js 的 `uni-lg-input` target 按卡片实测尺寸现画。
+     代价是当年 C1 量到的那笔：+98 ms/s，占该页主题开销约三成 —— 现在照付，见下方 C1 段。 */
+  -webkit-backdrop-filter: url(#uni-lg-input) blur(var(--cp-glass-composer)) saturate(135%);
+  backdrop-filter: url(#uni-lg-input) blur(var(--cp-glass-composer)) saturate(135%);
+  /* ----------------------------------------------------------------------
+   * C1（2026-10-11，用户点名「玻璃去掉 url(#uni-lg-input)」）：位移折射不再挂在输入卡上。
+   *
+   * 本块末尾原来还有两行 `url(#uni-lg-input) …`，把 SVG 位移串在 blur 之前；位移贴图由
+   * src/client.js 逐元素测量后画进 svg#uni-lg-defs。同页消融（同一静止重页、20 s 一相、
+   * 两次原样对照差 0.6%）：
+   *     原样（url + blur）330 → 只留 blur 232 → 连 backdrop-filter 一起关 183（ms/s 渲染器）
+   * 即 SVG 位移一项 ≈ +98 ms/s，占该页主题开销约三成。去掉后玻璃只剩 blur + saturate，
+   * 磨砂与着色不变；代价是失去折射位移，这是用户点名要付的代价。
+   *
+   * 回退（只改 CSS，不碰 JS）：把下面两行重新加回本块末尾即可 ——
+   *     -webkit-backdrop-filter: url(#uni-lg-input) blur(var(--cp-glass-composer)) saturate(135%);
+   *     backdrop-filter: url(#uni-lg-input) blur(var(--cp-glass-composer)) saturate(135%);
+   * `#uni-lg-input` 的滤镜定义仍由 src/client.js 照常构建（tools/selfcheck.mjs 的 glass.1
+   * 钉住「client 半仍造这枚滤镜」），所以 JS 端从未被拆掉。
+   * 连门禁一起回退：glass.1 的 named 期望数 1 → 2、glass.2 的 rules 期望数 1 → 2。
+   * 改动前的逐字原样见 src/theme.css.bak-20261011-1530-c1c2。
+   * ------------------------------------------------------------------- */
+}
+
+/* --------------------------------------------------------------------------
+ * 输入卡的玻璃厚壁（2026-11-01，D107 ②，用户点名「1234 都做」）
+ *
+ * 折射缺席时，「像玻璃」这件事主要靠边缘，不靠模糊：一条顶边亮高光、一条底边暗影、
+ * 一圈内壁亮线，读起来就是一块有厚度的板，而不是一块半透明的色块。这一层是纯着色，
+ * 不挂任何 filter，所以对帧时没有影响（对比之下折射是 +98 ms/s）。
+ *
+ * 为什么用 `::after` 而不是并进 `::before`：`::before` 是模糊背板，两层职责不同 ——
+ * 背板管「身后画面」，厚壁管「这层玻璃自己的边」，混在一起后幽灵态就没法只撤其中一层。
+ * 两个伪元素都是 `z-index: -1`，`::after` 在树序里靠后，于是合成次序是
+ * 模糊背板 → 厚壁 → 内容，与真玻璃一致。
+ *
+ * 颜色一律走 `color-mix(... var(--token) ..., transparent)`：本表禁字面色（css.8）。
+ * 亮档与暗档共用这几行 —— 令牌自己会翻面，不需要第二份数值。
+ *
+ * 2026-11-02 强度全部减半：12%→6%、40%→20%、渐变 6%→3%。用户 m00001 的原话是
+ * 「液态玻璃效果跟背景比起来太突兀了，我感觉是太厚了」。这一层当初是给「折射缺席」
+ * 垫的边（D107 之前的代价），D107 把折射挂回来之后，折射自己的亮边与本层画在同一条
+ * 线上，一条边被描了两遍，读出来就是「厚」。减半后边缘仍在，只是不再和折射抢同一条
+ * 线。两档共用同一组百分比，暗亮同时生效（D50）。
+ * ------------------------------------------------------------------------ */
+[data-composer-card]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: var(--uni-thick-opacity, 1);
+  transition: opacity 200ms linear;
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--dsw-alias-label-primary) 6%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, var(--dsw-alias-bg-base) 20%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--dsw-alias-label-primary) 3%, transparent),
+    transparent 38%
+  );
+}
+
+/* --------------------------------------------------------------------------
+ * 输入卡面填充局部稀释到 80%（2026-11-02）
+ *
+ * 卡面吃 `--dsw-specific-input-major`（α0.302，src/tokens.json 的 surfaceAlphaOverride）。
+ * 这枚令牌同时喂右栏六张引导卡（本表 1426 行）与模型/思考档面板
+ * （src/model-effort-picker.css:430），改令牌等于顺带改掉那几处，所以只在本卡上乘 0.8
+ * —— 0.302×0.8 ≈ 0.242。厚壁减半之后剩下的「厚」主要在面：卡面比身后的壁纸白一档，
+ * 玻璃读起来像贴了张纸。只收这一处，其余消费者的透明度一个像素不动。
+ *
+ * 特异度 (0,1,1)：低于亮档黑洞那条纸面规则（本表 297 行，0,4,1），所以亮档 + 黑洞
+ * 仍是纸面 —— 那条是 2026-10-28 为「输入框文字看不见」加的对比度修，不是厚度选择，
+ * 不动它。幽灵态那条链更长，也照旧压过本行。
+ * ------------------------------------------------------------------------ */
+body [data-composer-card] {
+  background-color: color-mix(in srgb, var(--dsw-specific-input-major) 80%, transparent);
+}
+
+/* --------------------------------------------------------------------------
+ * 悬停推厚已取消（2026-11-02）
+ *
+ * 2026-11-01 的 D107 ③ 在这里让玻璃变厚：指针进入卡片时模糊 3px → 6px、饱和
+ * 135% → 150%，瞬切。用户 2026-11-02 问「鼠标悬停时会变厚？」，确认这是整张卡上
+ * 唯一会「跳」的地方 —— 比静态厚薄更像他最初说的「太突然」。
+ *
+ * 去掉的三条理由：它没有功能价值（输入卡一直可输入，不需要靠变厚提示可点）；随静息
+ * 态减半之后 3px→6px 仍是一眼可见的跳变；每次进入/离开都要重算一遍整块背板。
+ * 静息态（上面那条 `::before`）保持 3px / 135% 不动，折射与厚壁照旧，卡面全程一个
+ * 厚度。幽灵态不受影响 —— 它本来就带 `:not(:hover)`，与这条无关。
+ *
+ * 要恢复就把下面的注释放开。恢复前先想清楚：一块玻璃不该因为指针经过而改变厚度。
+ * [data-composer-card]:hover::before {
+ *   -webkit-backdrop-filter: blur(6px) saturate(150%);
+ *   -webkit-backdrop-filter: url(#uni-lg-input) blur(6px) saturate(150%);
+ *   backdrop-filter: blur(6px) saturate(150%);
+ *   backdrop-filter: url(#uni-lg-input) blur(6px) saturate(150%);
+ * }
+ * ------------------------------------------------------------------------ */
+
+/* --------------------------------------------------------------------------
+ * 卡内弹层与卡片同厚（2026-11-01，D107 ①）
+ *
+ * 用户原话：「把弹层降到卡片的厚度」。改前弹层吃 `--dsw-menu-backdrop-filter`
+ * （本主题把它定成 blur(20px) saturate(130%)，src/tokens.json:237-238），而卡片是 4px
+ * —— 同一个输入框里弹出来的菜单比装它的那块玻璃厚五倍，观感是玻璃上又盖了块磨砂板。
+ *
+ * 为什么不去改那对共享令牌：`--dsw-menu-backdrop-filter` 与 `--dsw-menu-surface-fill`
+ * 有十几个消费者（TodoPanel、ContextMeter、GoalBar、MenuSurface…），动它等于顺手改掉
+ * 半个界面，超范围。所以只覆盖「从输入卡里弹出来」的那两块：
+ *
+ *   1. 命令框 / 工作区 / 预设这些 MenuSurface 材质层 —— 用 `aria-expanded` 认领：
+ *      菜单 portal 到 body，CSS 里没有指向触发者的反向选择器，但触发器在卡片体内、
+ *      开合时自己的 `aria-expanded` 跟着翻（第 63 轮量 anchored 面板时记下的同一事实）。
+ *      hero 页另加一条 `[data-phase='hero']` 兜底：那一页的弹层全来自输入卡，而工作区
+ *      与预设两颗触发器是否带 `aria-expanded` 不做假设。
+ *   2. 模型 / 思考档面板 —— 那是本主题自己的组件（`[data-uni-mep]`），直接在同一份
+ *      样式里改成同厚，不经过这里。
+ *
+ * 只改模糊与饱和，不挂折射：折射要按每个面的尺寸各画一张位移图（glue.1 的 id 计数会
+ * 跟着涨），两片材质厚度一致已经足够读作同一块玻璃。
+ * ------------------------------------------------------------------------ */
+body:has([data-composer-card] [aria-expanded='true'], [data-phase='hero'])
+  [data-menu-material='translucent'] > [aria-hidden='true'] {
+  -webkit-backdrop-filter: blur(var(--cp-glass-composer)) saturate(135%);
+  backdrop-filter: blur(var(--cp-glass-composer)) saturate(135%);
+}
+
+/* --------------------------------------------------------------------------
+ * 新会话页输入卡的「幽灵态」（2026-11-01，用户点名，设计树五轮定稿）
+ *
+ * 用户原话（Q1）：鼠标未悬停时输入框接近透明，好让黑洞露出来；悬停或输入文字时
+ * 恢复现在的材质。Q2 选「整卡幽灵态」、Q3 选「两态、条件从宽」、Q4 选「只新会话页」、
+ * Q5 选「亮档也做」、Q6 选「激活态 ≥4.5:1、幽灵态 ≥3:1」。
+ *
+ * 作用域只有新会话页：`[data-phase='hero']` 是官方挂在会话根上的契约属性（对话页
+ * 没有），用 `body:has()` 而不用后代选择器，是为了不假设输入卡落在那个根的子树里 ——
+ * 官方把输入卡放在 conversation 区域，hero 属性挂在同一棵树上，但两者的先后关系
+ * 不属于实测过的契约。两个 `:has()` 都是 data-*（css.7），不碰任何哈希类名（css.6）。
+ *
+ * 为什么静止态写成「一排 :not()」而不是另写一条「激活态」：
+ * 条件不成立时本块整条退出匹配，卡片自动回到**原有**声明（令牌层给的
+ * `--dsw-specific-input-major`，亮档另加 src/theme.css:284 那条纸色背板），
+ * 于是「恢复现状」不需要我重抄一遍现状的数值 —— 少一处会漂移的副本。
+ *
+ * 焦点**不再**是唤醒条件（2026-11-01 第二轮，用户报「点新会话弹出页面时，不先用鼠标
+ * 点一下页面，输入框不会幽灵化」）。排除法就能定位：那一刻卡片既不 hover（指针还在
+ * 侧栏）、也没有文字（`data-uni-composer-typed` 没设）、弹层也没开，而「点击页面后
+ * 就幽灵化」说明 `[data-phase='hero']` 与 `data-black-hole-state='ready'` 早都成立 ——
+ * 剩下唯一会被一次点击翻过来的状态就是 `:focus-within`：新会话页的编辑器一挂载就
+ * 拿到焦点。那等于「默认实体」，与幽灵态的目的相反，所以把焦点从条件里摘掉。
+ * 代价写在明处：键盘 Tab 进空卡片时它仍是幽灵态（焦点环还在，一打字就实体化）。
+ * 想改成「用户亲手碰过之后焦点才算数」，加一个 pointerdown/keydown 打的
+ * `data-uni-composer-engaged`，条件写成 `:not(:focus-within:not([data-uni-composer-engaged]))`。
+ *
+ * 弹层打开这一条用 `:has([aria-expanded='true'])` 读，不另加 JS：四个官方弹层的触发器
+ * 都在卡片体内，弹层虽然 portal 到 body，触发器自己的 `aria-expanded` 跟着开合
+ * （第 63 轮量 anchored 面板时记下的同一事实）。权限那颗由 Menu 原语渲染、不一定带这个
+ * 属性，但点它时指针必然在卡片里 —— `:hover` 那一半兜住了。
+ *
+ * 「卡内有字」这一条 CSS 读不到（2026-11-01 补，用户点名）：输入框是 Lexical 的
+ * `div[role='textbox'][data-composer-input='true']`，不是 textarea —— 没有
+ * `:placeholder-shown` 可判，空编辑器里还留着 `<p><br></p>`，`textContent` 也不为空。
+ * 所以这一条由 src/client.js 的 `mountComposerTyped()` 打上 `data-uni-composer-typed`，
+ * 本表只读它：属性在，下面四条幽灵规则一起退出匹配，卡片回到激活态材质。
+ * 判「有没有字」的逻辑只写一处（JS），CSS 不猜编辑器内部结构。
+ *
+ * 填充的 α 由 color-mix 缩放**同一个**令牌得到（css.8：不发明颜色）：
+ *   暗档 0.68 × 15% = 0.102；亮档 0.62 × 89% = 0.552（两档基准 α 见上面 696-697 行）。
+ * 不用 `rgb(from … / α)` 写绝对 α：css.8 把 `rgb(`/`rgba(` 一律判成自造颜色。
+ *
+ * 模糊是瞬切的，不做过渡：`backdrop-filter` 每帧重算整块背板，逐帧插值 blur 半径
+ * 在这台机器上是白烧（液态玻璃那轮的消融见上）。文字、图标用 `> *` 一级不透明度
+ * 压到 0.55：只压一层，不做 `*` 全海选，避免透明度按层数叠乘。
+ *
+ * 刻意**不**声明 box-shadow：2026-10-08 第三十一轮用户点名恢复官方 elevation，
+ * 本表此后不对输入卡写 box-shadow（见下面那一节），幽灵态也不开这个口子 ——
+ * 可点击暗示由「描边仍在、填充变薄」承担。
+ *
+ * 已知边界（如实记）：幽灵态下字压在吸积盘最亮那圈字符上时，对比度会掉到 1.4:1
+ * （暗档）/ 2.8:1（亮档），这是「让洞露出来」这个目标本身决定的，不是数值挑错；
+ * 页面主底（暗档 p50 0.0036、亮档纸面）上分别是 5.6:1 与 3.9:1。
+ * ------------------------------------------------------------------------ */
+/* 三件东西共用**一套**判据（2026-11-01 第四轮，用户原话：「把输入卡和『工作区选择』和
+   『Agent预设』的幽灵化状态合并，也就是一起幽灵化一起显现，不然不协调」）。
+   做法：把「有人在场」整段搬进 `body` 的 `:has()` 链，三件东西都读这一条链 ——
+   要么一起幽灵，要么一起显现，没有「卡实体、标签还是稿」这种中间态。
+   任一成立即整组实体：
+     · 指针落在卡、工作区选择、Agent预设 任一处；
+     · 卡里有字（`data-uni-composer-typed`，由 src/client.js 的 `mountComposerTyped()` 打）；
+     · 卡内或这两颗的弹层开着（`aria-expanded='true'`；**自己或子孙都算** —— 两半写成两条
+      并列参数，因为 `:has()` 不能嵌套，写不进一条）；
+     · 键盘焦点落在这两颗上（`:focus-visible`）。**卡不参与这一条**：编辑器一挂载就
+       拿焦点，而文本输入框天然匹配 `:focus-visible`，让它参与等于把刚出现的页面钉回
+       实体态 —— 那正是上一轮修掉的毛病。
+   判据只写在 `body` 上、不写成各元素自己的 `:not(:hover)`，因为 `:hover` 只认自己：
+   写成各管各的，指针从卡挪到标签时会出现「卡已变稿、标签刚实体」的一瞬。
+   副作用如实记：这条链的选择器特异度很高（四个 `:not(:has())` 各按参数计分），
+   以后要覆盖这三件东西的幽灵态，得用同等或更高的特异度。 */
+
+/* 过渡是**跨相位**的，所以门不能挂在相位上（2026-11-01 第八轮修的就是这个）。
+   原先这里写 `:has([data-phase='hero'])`：phase 一从 hero 变走，这条 `transition`
+   声明本身就不再匹配 —— 属性值连同过渡一起消失，底色从 α0.030 直接跳到 0.302，
+   就是用户报的「到对话页底部瞬间由透明变白」。
+   改成挂 `[data-conversation-content]`（会话根上的常驻属性，hero / settling / active
+   三态都在），过渡才能活到相位切换那一刻。`box-shadow` 一并纳入：幽灵态的 `none`
+   与官方 elevation 之间若瞬切，那 1px 描边会先于填充出现，同样是一下白边。
+   `backdrop-filter` 仍一律瞬切（逐帧重算整块背板在这台机器上白烧）。 */
+body[data-uni-black-hole]:has([data-black-hole-state='ready']) [data-conversation-content] [data-composer-card] {
+  transition: background-color 200ms linear, box-shadow 200ms linear;
+}
+body[data-uni-black-hole]:has([data-black-hole-state='ready']) [data-conversation-content] [data-composer-card] > *,
+body[data-uni-black-hole]:has([data-black-hole-state='ready']) [data-phase='hero'] button[aria-label='选择工作区'],
+body[data-uni-black-hole]:has([data-black-hole-state='ready']) [data-phase='hero'] [data-slot='conversation.hero.agentPreset'] button {
+  transition: opacity 200ms linear;
+}
+body[data-uni-black-hole]:has([data-black-hole-state='ready']):has([data-phase='hero'], [data-phase='settling']):not(:has([data-composer-card]:hover, [data-phase='hero'] button[aria-label='选择工作区']:hover, [data-slot='conversation.hero.agentPreset'] button:hover)):not(:has([data-composer-card][data-uni-composer-typed])):not(:has([data-composer-card] [aria-expanded='true'], [data-phase='hero'] button[aria-label='选择工作区'][aria-expanded='true'], [data-phase='hero'] button[aria-label='选择工作区'] [aria-expanded='true'], [data-slot='conversation.hero.agentPreset'] button[aria-expanded='true'], [data-slot='conversation.hero.agentPreset'] button [aria-expanded='true'])):not(:has([data-phase='hero'] button[aria-label='选择工作区']:focus-visible, [data-slot='conversation.hero.agentPreset'] button:focus-visible)) [data-composer-card] {
+  background-color: color-mix(in srgb, var(--dsw-specific-input-major) var(--uni-ghost-mix, 10%), transparent);
+  /* 幽灵态下连**外围那一圈**一起去掉 —— 这是 2026-11-01 第六轮的关键发现：
+     宿主给卡片的不是纯底色，`InputBar.module.css` 的 `.card`（编译成哈希类，名字不入
+     本样式表）里写着
+     `box-shadow: var(--dsw-elevation-soft)`，而 `--dsw-elevation-soft` 带着一层
+     用 `--dsw-elevation-stroke-color` 画的 1px 描边（宿主自己把该变量设成
+     `var(--dsw-alias-border-l2)`）。所以填充降到 α0.045 时仍然是「一块有边的板」，
+     用户看到的就是「不够透」—— 让人以为是填充太实，其实是这条描边在勾轮廓。
+     只写 `none`、不重抄激活态的值：条件不成立时整条退出匹配，官方 elevation 自动回来
+     （与 2026-10-08 第三十一轮「恢复官方 elevation」不冲突：那条管的是常态）。 */
+  box-shadow: none;
+  /* 厚壁那一层（`::after`，D107 ②）在幽灵态一起撤：它是纯着色的顶边高光与内壁亮线，
+     留着就等于给一张近乎透明的卡勾了一圈边，幽灵态又变回「有边的板」。用变量而不是
+     再抄一遍上面那条长链：`::after` 是卡片的伪元素，自定义属性按继承下来。 */
+  --uni-thick-opacity: 0;
+}
+/* 两档的百分比**故意不同**，这是观感对齐、不是基准分档：
+   令牌自身 α=0.302（构建产物的 TOKENS 表与 src/tokens.json 的 `surfaceAlphaOverride` 一致，
+   两档同值），所以 · 暗档 10% → α0.030，· 亮档 33% → α0.100。
+   为什么不让两档同数：填充色与底背的关系相反 —— 亮档是白填充压在宣纸上（δ 很小、几乎看不见，
+   要 0.100 才看得出是一层膜），暗档是深填充压在暗盘面上（暗区几乎不变、但一亮环带就被压暗，
+   同 α 下它比亮档「实」得多）。要让两者看上去一样透，暗档的数必须比亮档**低**。
+   数值对照（文字 opacity 0.55、底背取 preview 真实像素带）：暗档 α0.030 → 主底 4.57 /
+   盘面 95 分位 3.80；亮档 α0.100 → 宣纸 3.46。填充在这个区间里几乎不影响对比度
+   （4.55–4.57），所以往下再压也不会掉出 ≥3:1 —— 决定读不读得清的是文字不透明度。 */
+body:not([data-ds-dark-theme]) {
+  --uni-ghost-mix: 33%;
+}
+body[data-uni-black-hole]:has([data-black-hole-state='ready']):has([data-phase='hero'], [data-phase='settling']):not(:has([data-composer-card]:hover, [data-phase='hero'] button[aria-label='选择工作区']:hover, [data-slot='conversation.hero.agentPreset'] button:hover)):not(:has([data-composer-card][data-uni-composer-typed])):not(:has([data-composer-card] [aria-expanded='true'], [data-phase='hero'] button[aria-label='选择工作区'][aria-expanded='true'], [data-phase='hero'] button[aria-label='选择工作区'] [aria-expanded='true'], [data-slot='conversation.hero.agentPreset'] button[aria-expanded='true'], [data-slot='conversation.hero.agentPreset'] button [aria-expanded='true'])):not(:has([data-phase='hero'] button[aria-label='选择工作区']:focus-visible, [data-slot='conversation.hero.agentPreset'] button:focus-visible)) [data-composer-card]::before {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+/* 字与图标压一层到 0.55：卡里的直接子级、以及会话框外那两颗整颗。
+   两点省略要说明：① `> *` 只压一层，不做 `*` 全海选，避免透明度按层数叠乘；
+   ② 那两颗没有可缩的填充（撤掉背板后宿主给的就是「无底色，只有字与图标」），
+   所以它们的幽灵态就是这一条 —— 不为它们发明底色，也不做 color-mix。 */
+body[data-uni-black-hole]:has([data-black-hole-state='ready']):has([data-phase='hero'], [data-phase='settling']):not(:has([data-composer-card]:hover, [data-phase='hero'] button[aria-label='选择工作区']:hover, [data-slot='conversation.hero.agentPreset'] button:hover)):not(:has([data-composer-card][data-uni-composer-typed])):not(:has([data-composer-card] [aria-expanded='true'], [data-phase='hero'] button[aria-label='选择工作区'][aria-expanded='true'], [data-phase='hero'] button[aria-label='选择工作区'] [aria-expanded='true'], [data-slot='conversation.hero.agentPreset'] button[aria-expanded='true'], [data-slot='conversation.hero.agentPreset'] button [aria-expanded='true'])):not(:has([data-phase='hero'] button[aria-label='选择工作区']:focus-visible, [data-slot='conversation.hero.agentPreset'] button:focus-visible)) :is([data-composer-card] > *, [data-phase='hero'] button[aria-label='选择工作区'], [data-slot='conversation.hero.agentPreset'] button) {
+  opacity: 0.55;
+}
+
+/* --------------------------------------------------------------------------
+ * 输入卡外圈的色调环：撤掉官方 elevation（2026-10-08，第二十六轮）
+ *
+ * 用户报告：「输入框周边有一圈与周围格格不入的色调」，亮暗两档都有；并指出该环的范围
+ * 就是输入卡外层容器的盒子（padding 左右各 16px、height 123px、width 920px）。
+ * 真机实测（1600×1000 light，桌面壳）：那 16px 带里**唯一在画东西的是卡片自己的
+ * elevation** —— 官方 InputBar.module.css:45-77 给 `.card` 写 `box-shadow:
+ * var(--dsw-elevation-soft)`，本机解析成 `rgba(26,19,37,0.008) 0 0 0 0.5px,
+ * rgba(0,0,0,0.03) 0 4px 16px, rgba(0,0,0,0.03) 0 0 24px`：一层 0.5px 描边加两层
+ * 3% 黑，外扩 16/24px，正好就是用户量到的那一圈。
+ *
+ * 逐项消融（同一张卡、同一几何）：撤 elevation 后卡片外侧 −3px 与 −25px 的亮度差
+ * 从 −0.035 回到 +0.007（噪声级），边界明暗落差 0.097/0.097/0.132/0.102 →
+ * 0.068/0.068/0.114/0.060（左/右/上/下），即这一圈里 elevation 占 0.018–0.042。
+ * 其余两项是**非**因：把 `saturate(135%)` 换成 100%，四边落差一字不变（色度差只有
+ * ±1/255，环是明暗不是色相）；把 `url(#uni-lg-input)` 换成纯 blur，落差同样不变。
+ * 剩下的 0.060–0.114 是卡片自身填充（`--dsw-specific-input-major`）的边界 —— 那是
+ * 「输入卡这块面板」本身，按用户约束（结构、交互、配色不变）不动。
+ *
+ * 处置（2026-10-08，第二十七轮）：当时只撤 elevation，卡片填充与 `::before` 的液态玻璃
+ * 一律不动；两档共用那一条（无模式分支），不新增也不修改任何令牌。
+ *
+ * **已撤回（2026-10-08，第三十一轮，用户点名）**：用户原话「恢复卡边 box-shadow」——
+ * 撤销那条 `box-shadow: none !important`，卡片回到官方 `--dsw-elevation-soft`（本机解析
+ * 值就是上面那三层：0.5px 描边 + `0 4px 16px` 与 `0 0 24px` 两层 3% 黑）。本表此后
+ * **不再**对 `[data-composer-card]` 声明任何 box-shadow；那圈落差按用户当轮的取舍保留
+ * （elevation 占 0.018–0.042，其余 0.060–0.114 是卡片自身填充的边界，本来就不动）。
+ * ------------------------------------------------------------------------ */
+
+/* --------------------------------------------------------------------------
+ * One veil, four regions —— 无边界统一（2026-10-07，第二十四轮）
+ *
+ * 用户要求：「左栏、右栏、40px 顶栏与 main 必须统一为同一种样式 —— 同一底纱 α、同一
+ * 底色，消除各栏之间以及各栏与顶栏之间因叠纱层数不同造成的亮度差，以满足无边界样式
+ * 的整体美化。」
+ *
+ * 真机实测（1600×1000 light，Electron 桌面壳级联，右栏展开）先把差异定位成**叠加层数**，
+ * 不是几何：grid tracks `280px 600px 720px`，三栏紧邻、没有 gap，`.frame` 自身的背景
+ * 早已被上面清空段清掉。亮度差来自另外三处**同一令牌的重复绘制**：
+ *   ① main 列本体 `[data-dsh-center-col]`：官方 Windows 分支给它
+ *      `background: var(--dsw-alias-bg-base)`（AppFrame.module.css:33-37）⇒ main 比
+ *      右栏多一层纱（实测透出 42.25% vs 65%）。
+ *   ② 40px 顶栏 `.frame::before`：官方 Windows 分支同令牌再画一条全宽横带
+ *      （AppFrame.module.css:39-46）⇒ 顶部盖在所有栏之上，永远更密。
+ *   ③ 左栏 scrim：2026-10-07 本表自己加的 45% `--dsw-alias-bg-layer-1`
+ *      （用户当轮点名「给侧栏加一层 scrim」，现已删除，见上一条注释）⇒ 只有左栏有，
+ *      且只有亮档有色（透出 35.75%）。
+ *
+ * 处置：三条一并撤掉，四个区域只留 `body::after` 那一层底纱 —— 也就是用户在
+ * 2026-10-07 点名要回来的「65% 透出」。①②在上面的清空段里补掉，③由本节删除。
+ * 现在本表不再声明 `--cp-side-scrim`，`body[data-ds-dark-theme]` 里那条 `transparent`
+ * 覆写也一并删除：底纱的 α 与底色全部由令牌层按档发布（亮 `#eff2f5` / 暗 `#111720`，第五轮 2026-10-25 换族；第六轮纸白曾短暂上线，2026-10-27 已整体回退，
+ * 黑洞画布清屏色 `src/runtime/accretion-disk.js` 同值）。
+ *
+ * 2026-10-08（第二十五轮，用户口径更正）：亮暗**不再要求共用同一套方案**，两者各自独立
+ * 演进，不再朝「亮暗统一」对齐；唯一仍需共同坚守的是**无边界（borderless）理念本身** ——
+ * 两档都必须继续保持。用户同时把**暗色冻结**为当前实现（α0.35 / `#11172059`，2026-10-25 第五轮换色后仍冻结在 α0.35）：此后任何
+ * 调整都不得触及暗色，亮色的改动不受该冻结影响。机器化守卫见 tools/selfcheck.mjs 的 dark.1。
+ *
+ * 亮档可读性（2026-10-08 第二十五轮，真机实测）：撤掉 ③ 之后亮档回到 veil-budget 记下的
+ * 状态 —— α0.35 下三档墨色不达标（main tertiary n=41 中位 2.00 / 5% 分位 1.62，31/41
+ * 低于 4.5；sidebar primary 3.29/2.47）。**模糊不是杠杆**：α0.35 + blur 48px → 2.19/1.86，
+ * blur 96px → 2.47/1.97 —— 约束是墙的亮度，不是锐度。所以按同一层纱抬高 α：0.70 是当时
+ * 「本主题三档墨色全部达标」的第一个值（main tertiary 中位 5.03 / 5% 4.67、低于 4.5 计数 0；
+ * sidebar primary 7.24/6.53、sidebar tertiary 5.56/4.80、rightbar tertiary 6.99/5.38）。
+ *
+ * 亮档可读性第二轮（2026-10-10，用户点名）：用户报「目前亮色下的文字还是不太清晰，降低一些
+ * 透明度以增加文字可读性 … 只需要修改亮色下的，暗色不需要，文字很清晰」——所以亮档
+ * **0.70 → 0.84**。0.70 之所以仍被抱怨，是因为当年只校准了 veil-budget 里的三档 label 墨色；
+ * 真机逐元素普查发现**唯一不达标的 run 是会话页签 `对话` / `轨迹`**，它画在
+ * `--dsw-alias-state-business-primary`（`#49484d`）上，而这个令牌**不在 veil-budget 的 INKS
+ * 清单里**，因此求解器看不见它。真机实测最坏 26×15 字形窗：0.70 → 3.42、0.78 → 4.04、
+ * 0.80 → 4.21、0.82 → 4.38、0.83 → 4.49、**0.84 → 4.56（首个过 AA）**、0.85 → 4.67。
+ * 代价如实记录：亮档透出由 30% 降到 16%，p05 合成 `#a4a4ac` → `#c1c0ca`（亮度 0.3726 →
+ * 0.5341，仍在亮档下限 0.50 之上）。veil-budget 的解析解（worst-case art 全窗 p05）是 0.82，
+ * 但它只覆盖三档 label 墨色，所以本轮取真机阈值 0.84。四区仍然只共享这一层纱，
+ * 所以无边界不变。范围外缺口（不在本主题 55 令牌内，未改）：官方蓝 `#345EBA` 系任何 α 都
+ * 过不了 4.5（0.88 时 3.68）；品牌/链接与 state-error/success/warn 三色到 0.90 仍 <4.0（第五轮后品牌改青 `#006874`，这条旧测量不再逐值成立，见 build/veil-budget.json 的记录与缺口说明）。
+ *
+ * 2026-10-08（第二十九轮，用户点名）：main 底部的 `[data-composer-seat]` 已清掉 ——
+ * 它是同一令牌的**第三次绘制**。官方 ConversationRoot.module.css:448-452 给座位铺
+ *     linear-gradient(180deg, transparent 0px, var(--dsw-alias-bg-base) 36px)
+ * 而座位高度随草稿增长（官方上限 14 行 × 24px），所以那条亮带**随输入框变高而变高**。
+ * 亮档 α0.70（当时的出货值；现为 0.84）叠在 `body::after` 同一层上 ⇒ 合成 1-(1-0.70)² = 0.91，
+ * 实测座位顶边下 36px 处比上方亮 **+38/255**（(172,172,180) → (210,209,220)）。这正是用户点名的
+ * 「main 区域随着输入框变化而扩大的那团白色」。清掉后四区仍只留 `body::after` 一层纱；
+ * 座位自身没有可读性损失 —— 输入卡是玻璃面，卡后的文字由卡自己的 backdrop-filter 负责。
+ *
+ * 仍未动（同属「官方在同一层纱上重复绘制」，但不是用户点名的对象）：markdown
+ * `_bannerWrap_7gxqk_24` 的 α0.70（当时值）同令牌横带，以及第三方的**不透明**面（推理窗
+ * `--dsw-alias-bg-layer-2`、右栏六张入口卡片等，改 α 无效）。
+ * ------------------------------------------------------------------------ */
+
+/* 输入框座：官方输入遮罩（`--dsw-alias-bg-base` 的第三次绘制）——见上。 */
+[data-composer-seat] { background-image: none !important; }
+
+/* --------------------------------------------------------------------------
+ * 左栏会话列表底部渐隐（2026-10-08，第三十轮，用户点名 `_9lTDKa_fade`）
+ *
+ * 用户问「这个同理，是残留的东西吗？也占着左栏底部的位置。」——不是残留、也不是死代码：
+ * 它是官方**在跑**的同令牌第二次绘制，与输入框座（上一条）同一类。官方
+ * WorkspaceBrowser.module.css:329-337 给 `.fade` 写的是
+ *     position: absolute; left: 0; right: var(--dsh-session-list-edge-inset); bottom: 0;
+ *     height: 24px;
+ *     background: linear-gradient(to bottom, transparent, var(--dsw-specific-sidebar-fill));
+ *     pointer-events: none;
+ * 而 `--dsw-specific-sidebar-fill` 本表按档发布成 `--dsw-alias-bg-base`（亮 `#eff2f5d6` /
+ * 暗 `#11172059`，与 `body::after` 那层纱同一个值）⇒ 这 24px 在已有的一层纱上**再铺一层**，
+ * 把列表最后一条会话行压成一条更亮的平色带（用户截图里那一条）。
+ *
+ * 处置照抄上游对同一情形的答案：**隐藏**。同文件 :339-343 上游自己写着
+ *     [data-platform='darwin'] .fade { display: none }
+ * 注释的理由是「macOS 桌面侧栏是半透明 vibrancy 上的，不透明填充渐变会画出 solid smear
+ * 而不是渐隐」—— 本主题的侧栏同样是半透明的，情形逐条一致，故取同一处置。
+ * 渐隐原本的功能（提示下方还有内容）在无边界样式里由壁纸本身与滚动位置承担，不需要
+ * 一层额外的不透明纱；列表滚动与命中不受影响（该 span 本来就是 pointer-events: none）。
+ *
+ * 钩子：该 span 没有 data-*、没有 aria-hidden，而 selfcheck css.6 禁止写哈希类名，
+ * 故用 `[data-slot='sidebar.workspaces']` 作锚 + `span[class*='fade']`（CSS Modules 生成的
+ * 类名保留局部名，实测三态下唯一命中 1 个元素，即列表底部那个 span）。
+ * 两档共用、无模式分支、不新增也不修改任何令牌。
+ * ------------------------------------------------------------------------ */
+[data-slot='sidebar.workspaces'] span[class*='fade'] {
+  display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+ * markdown 代码块标题条的第二次铺纱（2026-10-08，第三十一轮，用户点名
+ * `_bannerWrap_7gxqk_24`）
+ *
+ * 与输入框座、左栏渐隐同一类：官方在已有的一层纱上再铺一次同一令牌。官方给 sticky 的
+ * `_bannerWrap` 写 `background: var(--dsw-alias-bg-base)`（本表按档发布成亮档那层纱；
+ * 写这段时是 α0.70，现为 0.84），而它包着的 `[data-code-block-banner]` 标题头是**不透明**的
+ * `--dsw-alias-bg-layer-2`（真机 `rgb(215,214,228)`）。
+ *
+ * 真机实测（1600×1000 light，同一页面加载内做对照）：头与 wrap 的 rect 逐像素相同
+ * （都是 `[514,492,845,42]`）⇒ 头把那层纱完全盖住。对照组（两次连拍、什么都不改）
+ * **0/35490** 像素变化；处理组（给 wrap 注入 `background-color: transparent`）
+ * **12/35490** 像素变化、worst 通道差 8（只剩圆角抗锯齿）⇒ 清掉视觉零变化，
+ * 属冗余的第二次铺纱，按同一口径清掉。
+ *
+ * 钩子：wrap 自身没有 data-*（哈希类名被 css.6 禁止），用 `:has(> …)` 从官方
+ * `data-code-block-banner` 反查它的父元素；该选择器同时满足 css.7（含 `[data-`）。
+ * 两档共用、无模式分支、不新增也不修改任何令牌。
+ * ------------------------------------------------------------------------ */
+/* C2（2026-10-11，同一次收窄）：包 `[data-code-block-banner]` 的那个 div 自身没有 data-*
+   （哈希类名被 css.6 禁止），只能反查；但主语不再放任到「全文任意 div」—— 官方把它放在带
+   `data-code-wrap='true'` 的代码块包装器里（实测链：banner < 横幅包装 div < 包装器 < markdown
+   body < …）。加一层祖先限定后主语只剩「代码块包装器的子元素」；长会话页实测旧式命中 1 个
+   （就是那个横幅包装 div），新式是它的子集且包含它 ⇒ 命中集相等。 */
+[data-code-wrap='true'] > div:has(> [data-code-block-banner]) {
+  background-color: transparent !important;
+}
+
+
+/* --------------------------------------------------------------------------
+ * The @ / `/` command window: material aligned to the task panel (2026-10-07)
+ *
+ * 用户（2026-10-07）：「将命令框的材质参数改为与任务框一致的参数……不得凭猜测填写，
+ * 需先读取任务框实际生效值再同步」。任务框 = 会话待办面板 TodoPanel，材质声明在
+ * `reference/deepseek-harness/packages/client/ui-conversation/src/client/skeleton/TodoPanel.module.css:25-26`：
+ *     background: var(--dsw-specific-menu);
+ *     backdrop-filter: var(--dsw-menu-backdrop-filter);
+ * 而 `--dsw-specific-menu: var(--dsw-menu-surface-fill)`（design-platform.css:273 亮 /
+ * :391 暗）；命令框自己的材质层（ui-primitives MenuSurface.module.css:26-27）写的是
+ *     background: var(--dsw-menu-surface-fill);
+ *     backdrop-filter: var(--dsw-menu-backdrop-filter);
+ * ⇒ 两个面本来就用**同一对令牌**，唯一让命令框偏离任务框的是本表此前叠上去的
+ * `url(#uni-lg-menu)` 折射与 40px/135% 覆盖。
+ *
+ * 该覆盖已整条撤销（连同 `--cp-glass-menu` 与 src/client.js 的 `uni-lg-menu` target，
+ * selfcheck 的 url(#uni-lg-*) 计数随之 2 → 1）：命令框不再被本表改材质，逐项与任务框
+ * 一致 —— 填充 `--dsw-menu-surface-fill`（α0.30 仍由 D47/D50 钉在令牌层）、
+ * 模糊与饱和度 `--dsw-menu-backdrop-filter`（EVA 令牌 = blur(20px) saturate(130%)）、
+ * 无折射。
+ *
+ * 不动的项（属命令框自身、与框内文字可读性无关）：MenuView `.menu` 的
+ * `box-shadow: --dsw-elevation-prominent`、边框圆角、尺寸、定位、交互与显示范围。
+ * ------------------------------------------------------------------------ */
+
+/* --------------------------------------------------------------------------
+ * The settings panel: material aligned to the task panel (2026-10-07)
+ *
+ * 用户（2026-10-07）：「按与上一轮命令框对齐任务框完全相同的方式，为设置界面添加液态玻璃
+ * 效果……不得凭猜测填写」。设置界面 = `SettingsRoot.tsx` 的 modal（`createPortal(…, body)`），
+ * 钩子是面板自己带的 `data-shortcut-modal="settings"`（SettingsRoot.tsx:70）；材质声明在
+ * `ui-settings-general/src/client/SettingsRoot.module.css:85-103` 的 `.panel`：
+ *     background: var(--dsw-alias-bg-layer-2);      ← 不透明 elevated 面，且完全没有模糊
+ *     box-shadow: var(--dsw-elevation-prominent);
+ * 即它此前**不吃**任务面板那对令牌（`--dsw-specific-menu` + `--dsw-menu-backdrop-filter`）
+ * —— 这就是本轮要清掉的分歧。
+ *
+ * skin 写在 `::before` 上，理由照抄 app 自己的同型写法
+ * （ui-subagent/src/client/SubagentHeaderLineage.module.css:109-121，逐字：「backdrop-filter
+ * on the menu itself would turn it into the containing block for fixed descendants, so the
+ * sidebar-button Tooltip bubbles would be re-anchored into the menu and clipped by its hidden
+ * overflow」）。面板同样是 `overflow: hidden` 且装着控件，所以：
+ *   - 面板本体只清空（`background-color: transparent`），不挂 filter → 几何与交互零变化；
+ *   - `::before` 承担 skin，两个值都来自令牌，本表不发明颜色或模糊参数（css.8）。
+ * 不动的项：`box-shadow: --dsw-elevation-prominent`、圆角、尺寸、定位、交互与显示范围。
+ * 【2026-10-08 第三十三轮更新】当时被列进「不动的项」的还有 `.mask`
+ * （`--dsw-alias-bg-mask-1` + `--dsw-mask-blur`），依据是「用户未点名」。本轮用户
+ * 点名「去掉全屏遮罩」，该面已由紧随本节的那条规则清空 —— 见下一节。
+ * ------------------------------------------------------------------------ */
+[data-shortcut-modal='settings'] {
+  background-color: transparent !important;
+}
+
+[data-shortcut-modal='settings']::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: var(--dsw-specific-menu);
+  -webkit-backdrop-filter: var(--dsw-menu-backdrop-filter);
+  backdrop-filter: var(--dsw-menu-backdrop-filter);
+}
+
+/* --------------------------------------------------------------------------
+ * 设置弹层：去掉它身后那层全屏遮罩（2026-10-08，第三十三轮，用户点名）
+ *
+ * 用户原话：「去掉点击设置后弹出设置页面时的全屏遮罩。」
+ *
+ * 遮罩是设置面板的**前一个兄弟**、也是弹层容器的第一个子节点。官方设置弹层
+ * （ui-settings-general 的 SettingsRoot）的渲染形状是
+ *     <div role="presentation" class="…overlay">
+ *       <div class="…mask" aria-hidden="true" onClick={onClose} />
+ *       <div data-shortcut-modal="settings" class="…panel" role="dialog" … />
+ *     </div>
+ * 而 `.mask` 自己那两条声明是
+ *     inset: var(--dsh-frame-chrome-top, 0px) 0 0;
+ *     background: var(--dsw-alias-bg-mask-1);   ← 本主题令牌层发布的深色纱（亮 α0.34 / 暗 α0.62）
+ *     backdrop-filter: var(--dsw-mask-blur);    ← 官方令牌，本主题未覆盖
+ * 即「顶栏带以下整屏铺一层深色纱，再叠一层模糊」——就是用户点名的那层遮罩。
+ * 上一节（设置面板材质对齐任务框）当时把 `.mask` 列进「不动的项」，本轮用户点名，
+ * 于是补上这一条，并把那一节的记录一并更新。
+ *
+ * 处置：只把这个弹层的第一个子节点清空 —— 底色透明、模糊撤掉。两者要一起撤才算
+ * 「没有遮罩」：只清底色还剩一层模糊，只撤模糊还剩一层深色纱。
+ *
+ * 为什么身份写成「容器的第一个子节点」：mask 自己只有哈希类名（css.6 禁止），也没有
+ * 任何 data-* 钩子；它唯一稳定的身份就是「装 `[data-shortcut-modal='settings']` 的
+ * 那个容器的第一个孩子」—— 官方设置弹层的两个孩子固定是 mask 与 panel，同型写法在
+ * ui-primitives 的 Dialog 里也是 [mask, dialog]。选择器里带上 `[data-shortcut-modal]`
+ * 既让整条过 css.7，也把作用范围**只**收到设置面板：官方另外几处读同一个
+ * `--dsw-alias-bg-mask-1` 的遮罩（通用 Dialog、图片灯箱）一律不动。
+ *
+ * 刻意保留的（口径与本表其它各节一致：不动显示范围、不动交互）：mask 那颗
+ * `aria-hidden` 的全屏点击层与它的 `onClick`（点面板外关闭）照旧 —— 本条只撤视觉。
+ * 要连点击层也去掉是另一件事（`display: none`），那会改掉官方的关闭方式，
+ * 不在本轮点名的范围内。
+ * 暗色冻结不受影响：本条无模式分支、不新增也不修改任何令牌。
+ * 回滚 = 删本段这一条规则。
+ * ------------------------------------------------------------------------ */
+/* 2026-10-12 回归与更正（C3 → C4）：C3 把主语收窄成 `[data-slot='root'] div:has(…)`，
+   依据是「遮罩容器永远挂在根槽子树里」。**这条依据是错的**，当天用户就报「打开设置时
+   整屏一层遮罩」。真机实测（DSH Web 19388，两版选择器同时求值）：
+     容器链：一个 class 是 CSS-Modules 哈希名的 DIV → BODY —— **不经 `#root`，也不经 `[data-slot='root']`**
+     容器子节点：遮罩 DIV[aria-hidden=true]（哈希 class）+ 面板 DIV[data-shortcut-modal=settings]（哈希 class）
+     命中数：裸 `div:has(…)` = **1**；`[data-slot='root'] div:has(…)` = **0**
+   即设置弹层是**直接挂在 `body` 下的 portal**，C3 之后本规则从未生效过。
+   现在把主语收到 `body > div`（候选集 = body 下那三四个直接子级），既是实测命中的那一层，
+   也不再对整篇文档的每个 div 求 `:has()`。
+   **若官方改了 portal 的挂载点，本规则会静默失配**（表现就是遮罩回来）——排查办法：
+   打开设置，量 `document.querySelector("div:has(> [data-shortcut-modal='settings'])")` 的父链，
+   把主语换到实测的那一层；tools/selfcheck.mjs 的 `css.13` 钉住这一条的存在。 */
+body > div:has(> [data-shortcut-modal='settings']) > :first-child {
+  background-color: transparent !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+/* --------------------------------------------------------------------------
+ * Liquid glass: the six guide entries in the right column（2026-10-07，第二十四轮）
+ *
+ * 用户点名：「右侧的那六张通过 liquid-glass 技能进行液态玻璃美化」。六张 =
+ * `[data-sidebar-right-guide-entry]`（`ui-sidebar-right/.../tabs/guide/GuideBody.tsx:60`
+ * 与 `ui-sidebar-terminal/src/client/TerminalGuide.tsx:55` 渲染；真机实测 6 个，每个
+ * 380×56、x1051、从 y326 起每 70 一行）。它们此前填的是**不透明**的
+ * `--dsw-alias-bg-layer-1`（`rgb(246,246,250)`），是右栏里唯一把壁纸挡死的面 ——
+ * 四栏统一之后，这里就是右栏剩下的最大反差源。
+ *
+ * 三件事全部照既有权威抄，不发明：
+ *   · 填充 `var(--dsw-specific-input-major)`——与输入卡**同一个**材质令牌（两档同为
+ *     α0.30）。用输入卡而不是菜单令牌，是因为用户对「液态玻璃」的参照物就是输入卡，
+ *     而菜单那对令牌（`--dsw-specific-menu` + `--dsw-menu-backdrop-filter`）是给菜单
+ *     用的另一套材质，本节不是菜单。
+ *   · 模糊 `var(--cp-glass-guide)` = 4px，与输入卡同一个实测值（见 `body{}` 注释）。
+ *   · 折射 `url(#uni-lg-guide)`，位移图由 src/client.js 按元素实测尺寸现画；
+ *     bezel/scale 与输入卡同组 14/14 —— 一套材质只有一组参数。
+ *
+ * skin 挂 `::before`，与输入卡、设置面板同型：卡片本体只清空、不挂 filter，因为它可能
+ * 装 fixed 后代，而 `backdrop-filter` 会成为那些后代的包含块。卡片官方是
+ * `position: static`，`::before` 的 `inset: 0` 需要定位祖先，所以补 `position: relative`
+ * —— 不带偏移量，布局与命中区域零变化。
+ *
+ * 写法与输入卡一致：先写只有模糊的那条兜底，再写带 url() 的那条（不认 url() 的引擎在
+ * 解析期丢掉整条声明，退回上一行）。selfcheck glass.1/glass.2 的计数随第二个 id
+ * 从 1 改为 2。
+ *
+ * 不动：六张卡片各自的尺寸、圆角、图标、排布、交互与显示范围；官方没给 box-shadow，
+ * 这里也不加。卡片文字色仍由令牌层决定。
+ * ------------------------------------------------------------------------ */
+[data-sidebar-right-guide-entry] {
+  position: relative;
+  background-color: transparent !important;
+}
+
+[data-sidebar-right-guide-entry]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: var(--dsw-specific-input-major);
+  -webkit-backdrop-filter: blur(var(--cp-glass-guide)) saturate(135%);
+  backdrop-filter: blur(var(--cp-glass-guide)) saturate(135%);
+  -webkit-backdrop-filter: url(#uni-lg-guide) blur(var(--cp-glass-guide)) saturate(135%);
+  backdrop-filter: url(#uni-lg-guide) blur(var(--cp-glass-guide)) saturate(135%);
+}
+
+/* --------------------------------------------------------------------------
+ * Glass: 已删除（2026-10-07 第二十四轮，用户议决「处理死代码」）
+ *
+ * 这里原本是一条 `[data-window-drag='true'] + button { background-color:
+ * var(--dsw-specific-input-major); backdrop-filter: blur(var(--cp-glass))
+ * saturate(135%) }` —— 2026-10-06 用户点名「新会话的同理」加的那层毛玻璃。
+ * 真机复核（一次性只读探针 `uni-newchat-probe.py`）：它挂的按钮
+ * `_2H3hWW_newSession`（ks=Control+Alt+N）rect [0,0,0,0]、display=none ——
+ * 本主题自己的「隐藏重复的新会话按钮」规则把它藏了 —— 而计算值仍算出
+ * `bdf=blur(14px) saturate(1.35)`，即那条 blur 从不落到任何一个像素上。
+ * 所以规则与 `--cp-glass` 一起去掉；留着只会让下一个读者以为那个按钮有材质。
+ *
+ * 那个按钮上仍**没有任何 data-* 属性**。如果哪天真要给它材质，合法钩子仍只有
+ * 「拖动条的下一个兄弟」这一条（css.6 禁止 CSS-Modules 哈希类名、css.7 只放行
+ * body/:root/#root/data-* 选择器）。
+ * ------------------------------------------------------------------------ */
+
+/* --------------------------------------------------------------------------
+ * NERV HUD：指示条 / 状态灯 / 等宽数字（方案 A + B/C/D，2026-10-06）
+ *
+ * 用户 2026-10-06：「我怎么感觉这套配色一点也不EVA啊。」真机像素统计：当时
+ * 画面里 NERV 橙占 **0.0000%**（明暗两档都是），因为橙只以 9–10% 的 hover 洗色
+ * 存在，0.10 的橙叠在 #202b42 上合成出来是 (44,45,60) —— 一个蓝色。
+ *
+ * 文档 §1 把 EVA 感拆成「整体色彩关系」+「工业终端质感」两半，此前只做了前一半。
+ * 这一块补后一半；随后用户又点名「剩下的BCD都一起做了吧」，把底色换成初号机紫黑
+ * （`tools/s2-palette.py` 的 NEUTRAL_HUE_COOL 265→300、PALE 274→288，暗档 L 下压到
+ * .205），主色换成初号机紫，成功绿换成初号机绿 —— 本块里唯一受影响的是状态灯：
+ * 它现在读 `--dsw-alias-state-success-primary`（初号机绿），而选中条仍是 NERV 橙。
+ * 这两个颜色同时在场正是初号机的签名：橙是 NERV，绿是机体。
+ *
+ * 三处规则全部只用**既有令牌**，所以 css.8（本表不发明颜色）与 54 项令牌契约都不动：
+ *
+ *   §7  「EVA 风格的选中项建议使用左侧 2–3px NERV 橙色指示条」
+ *       → 指示条是 background-image，不是 border-left（border 会把文字推 3px），
+ *         也不是 inset box-shadow（见下）。
+ *       钩子 `[data-row-key][aria-selected='true']` 来自真机 dump：会话行自带
+ *       data-row-key 和显式的 aria-selected，而它选中态的 CSS-Modules 类名
+ *       （hIlkoa_selected）恰好是 css.6 禁止的那类。
+ *
+ *       指示条最早用的是 `box-shadow: inset 3px 0 0 0`，但那个写法被行的
+ *       `border-radius` 裁掉两端，真机放大后是一段**硬切弧**（32px 的行只剩
+ *       24px 的弧，两端还带缺口）。用户 2026-10-06：「现在这个硬切边框看着
+ *       太别扭了，还有其他样式吗？」
+ *       后来改成 3px 宽、满高、两端淡出的 background-image：圆角处的裁剪正好
+ *       落在全透明区，所以硬边消失，同时 background 层不参与布局，既不需要
+ *       伪元素，也不需要 position:relative。这条「两端淡出的竖线」后来被 D40 借用
+ *       成**锁定线**，又在第十八轮被用户点名撤掉（「不要使用：……左侧指示线……」）
+ *       —— 现在选中态只剩标题的字色与字重，见下面 D40 那一节。
+ *       其它备选样式（圆角短条 / 直角短条 / 圆点 / 满高直角条 / 不要条）见
+ *       `docs/render-report.md` §22 的对照图。
+ *   §12 「Status」→ 进行中的 spinner 带 `data-state="ongoing"`（真机唯一一个
+ *       data-state）。工业面板的 RUN 灯本来就是绿的，这里给它初号机绿，
+ *       而不是把它也涂成橙色 —— 不然整个界面就只剩一个颜色了。
+ *   §17 「数字、系统状态、时间可用等宽字体」→ 侧栏开 tabular-nums，消掉行内
+ *       数字跳动；不换字体族，因为 §17 同时说明不建议所有文字等宽。
+ * ------------------------------------------------------------------------ */
+/* ---------------------------------------------------------------------------
+ * 选中会话的扫描线已撤（2026-10-07，用户点名；D42，承 D40）
+ *
+ * 用户当轮原话：「选中会话时有一个从左向右扫过的黄色竖线，删除该样式。」
+ * 删掉的就是本节此前唯一的装饰：两条 background-image 光带（30px 实心核心 +
+ * 48px 14% 外晕，颜色取自 --dsw-alias-brand-primary —— NERV 橙在亮档读作黄），
+ * 以及把它们从行外左侧推到行外右侧的那个 `background-position` 过渡。
+ * 现在两条规则都不再声明 background-image / background-size /
+ * background-repeat / background-position，也不再有 position 过渡。
+ *
+ * 当时还留着两件事，第五十五轮（2026-10-31）也一并删掉了：
+ *   · `background-color: transparent`（选中态）—— 当年压掉官方给的
+ *     `--dsw-alias-interactive-bg-hover`；用户当轮改口径，要求恢复官方默认外观，
+ *     这条随之移除，官方底色原样回归；
+ *   · `transition: background-color 140ms linear` 与 reduced-motion 下的
+ *     `transition: none` —— 那是给上面那层透明底配的淡入，底没了就没有存在理由。
+ *
+ * 以下段落是扫描机制的历史记录（它曾经怎么工作、为什么这么写），保留以便回溯；
+ * 读它时请连同 `docs/design.md` D40 与 `docs/render-report.md` §35 一起看。
+ * ------------------------------------------------------------------------ */
+/* ---------------------------------------------------------------------------
+ * 【历史】扫描锁定：选中会话的 NERV-HUD 视觉（D40，第十八轮重写）
+ *
+ * 第十八轮用户逐字要求：「不要使用：选中背景 / 半透明背景 / 边框 / 左侧指示线 /
+ * 底部指示线 / 矩形高亮 / 大面积 Glow。采用：扫描线动画 + 标题视觉层级变化。」
+ * 「最终只保留两个视觉机制：① 切换会话时：一次性的左 → 右扫描线。② 当前选中会话：
+ * 标题颜色更亮 + 字重 500。除此之外，不增加任何背景、边框、指示线或其他选中装饰。」
+ * 「不要改变布局：padding / margin / width / height / font-size / line-height 都不许变。」
+ *
+ * 钩子：`[data-row-key^='session:']`。用前缀而不是 `[data-row-key]`，因为侧栏里
+ * 还有 workspace 与 overflow 两种行也带这个属性，而官方把选中态只给会话行
+ * （`@deepseek-ai/dsh-client-ui-workspace/Rows.module.css` 里那条把
+ * projectRow:hover / sessionRow:hover / sessionRow+选中态 合成一条、声明为
+ * `background: var(--dsw-alias-interactive-bg-hover)` 的规则；它的类名是哈希
+ * 类名，css.6 明令禁止，所以这里不复述）。
+ * 行自带显式 `aria-selected`，不必碰哈希类名（css.6）。
+ *
+ * 两层背景，全是 background-image ⇒ 不参与布局、不需要伪元素、不需要 position，
+ * 也不会像 border 那样把文字推移 3px：
+ *   ① 扫描光带 30px 宽（用户给的 20–40px）、中央约 2px 实心核心、两侧柔和渐隐
+ *   ② 极轻外晕 48px 宽、14% 强调色   （「允许非常轻微 Glow」，绝不是大面积发光）
+ *
+ * 扫描怎么来的：不是 @keyframes —— 本表既不许有关键帧，也不许 @media（css.7 会把
+ * 紧跟规则的 `@` 块判成非法选择器）。改用 `background-position` 的**过渡**：光带
+ * 停在行外左侧（-34px / -52px），选中时停到行外右侧（calc(100% + 34px) /
+ * calc(100% + 52px)），属性一变就从左扫到右；扫完仍停在行外 ⇒ 自动消失，不需要
+ * 第二段动画，也不需要 JS。用户给的写法是 `@keyframes translateX(-100% → 400%)`，
+ * 这里是同一件事的过渡版：位移量换成 background-position，位移距离换成「行宽 + 光带宽」。
+ *
+ * 「切换才扫」是白送的：过渡只在选中属性真的变化时触发。hover 不改 aria-selected
+ * ⇒ 不扫；点已选中的行不改属性 ⇒ 不扫；A→B 时 B 扫一次、A 立刻退场（下面未选中态
+ * 的 transition 列表**故意不声明 background-position**，所以不会反向扫一遍）。
+ * 快速 A→B→C 时同一行只有一次属性变化，过渡被新目标值取代，不会叠线残留。
+ *
+ * 第十九轮撤掉的部分（2026-10-07，用户点名）：「去掉选中会话标题上的所有视觉效果
+ * （如高亮、背景色、加粗、下划线、边框等），改为在会话被选中后，其标题文字以跑马灯
+ * 形式持续、无限循环滚动」。标题上的混色 `color` 与 `font-weight: 500`（连同它们各自
+ * 的 transition 分量）因此全部删除，选中标题回到官方字色与字重，标题上不再有任何
+ * 本主题加的效果；换上来的是标题自己的跑马灯（D41）—— 那套东西在同一天的第二十轮
+ * 又被整体换成静态彩虹标题（D43，见本节末尾），形状与驱动都已删除。
+ * 第十八轮那套「短暂提亮」的原样记录（`--dsw-alias-brand-text` 亮档 #0f1115 / 暗档
+ * #f9fafb、560ms overshoot 曲线、以及「`font-weight: 500` 落在行上会被标题 span 继承、
+ * 标题盒与行高一个像素都不动」的实测）留在 `docs/design.md` D40 与
+ * `docs/render-report.md` §35 —— 那条布局结论仍然成立，只是不再需要。
+ *
+ * 第十八轮把上一轮（同一天早些时候）的四样东西全部撤掉：8% 橙色底、3px 锁定线、
+ * 图标 drop-shadow、以及一切矩形装饰。选中态**没有** background-color ——
+ * 那条 `background-color: transparent` 是必须写的：官方选中态规则给的
+ * `--dsw-alias-interactive-bg-hover`（亮档实测 9% 橙）正是用户否掉的那块「黄色背景」。
+ * 颜色全部来自既有令牌，css.8 与 54 项令牌契约都不动。
+ *
+ * 为什么两条规则都带 `body` 与 `[aria-selected]`：官方那条规则
+ * 是 `.行类:hover, .行类:选中` 合成一条、声明为 **background 简写**
+ * （`background: var(--dsw-alias-interactive-bg-hover)`），权重 (0,2,0)，
+ * 简写会把 background-image 重置成 none。而它**只**在选中 / 悬停时命中，
+ * 所以：
+ *   · 选中态规则 `body [data-row-key^='session:'][aria-selected='true']` =
+ *     (0,2,1) > (0,2,0)，position / 底色 / 颜色都归我们；
+ *   · 但只写 `body [data-row-key^='session:']` 的**基准**规则只有 (0,1,1)，
+ *     一旦行被官方标成选中（React 会给行加 hIlkoa_selected 类），三层背景就被
+ *     官方的简写重置成 none —— 2026-10-07 真机翻车现场：底色与提亮生效、锁定线
+ *     与扫描光带消失（`backgroundImage: none`、`backgroundPosition` 只剩一层）。
+ * 给基准规则补一个 `[aria-selected]`（会话行两态都带这个属性）抬到 (0,2,1)，
+ * 就与官方顺序无关、也不再依赖 `!important`。
+ *
+ * 已知取舍：① 会话行的 `background-image` 由本表接管，但未选中行的官方 hover 底色
+ * 仍在（本表不声明未选中态的 background-color），只是 hover 从瞬变变成 140ms 淡入；
+ * ② 每个会话行常驻两层透明背景层，都不显示、不参与布局；
+ * ③ 扫描 380ms 只跑一次，不进循环（用户明确不要持续闪烁）；
+ * ④ 本层不能写 @media，所以 reduced-motion 由 `src/client.js` 把
+ *    `matchMedia('(prefers-reduced-motion: reduce)')` 的结果写到 `body[data-uni-motion]`，
+ *    本节的最后一条规则据此关掉扫描。第十九轮的跑马灯曾据此不启动；D43 的静态彩虹
+ *    不是动效，与 reduced-motion 无关（第二十一轮 D44 已把它整条撤除，本表不再给选中
+ *    标题上任何颜色或动效）。
+ * 旧短条的历史（7 款候选对照图）见 `docs/render-report.md` §22、`docs/design.md` D21/D26。
+ * ------------------------------------------------------------------------ */
+/* 第五十五轮（2026-10-31）撤除：这里原本是
+ *   body [data-row-key^='session:'][aria-selected] { transition: background-color 140ms linear; }
+ *   body [data-row-key^='session:'][aria-selected='true'] { background-color: transparent; }
+ *   body[data-uni-motion='reduced'] [data-row-key^='session:'][aria-selected] { transition: none; }
+ * 三条合起来把官方选中底色压成透明、再给它配一段 140ms 淡入。用户当轮定案
+ * 「删除相关代码，恢复成 DSH 官方默认的效果」，三条一并删除 —— 底色由官方那条
+ * background 简写自己给，时序也是官方的瞬时切换。
+ * 上面这一整节注释（扫描光带、两层背景、D40–D44 的历史）是对更早几轮实现的记录，
+ * 那些规则早已不在表里，保留只为回溯。 */
+/* ---------------------------------------------------------------------------
+ * 【历史】选中标题的静态彩虹（D43，第二十轮；第二十一轮整段撤除，D44）
+ *
+ * 第二十一轮用户原话：「我在EVA主题插件中调整了会话列表里选中会话的样式，现在想将
+ * 选中会话的字体颜色恢复为官方样式。」⇒ 本规则**整条删除**，一个声明都不留：选中行
+ * 的标题 span 不再被本表碰 `color` / `background-image` / `background-clip`，字色回到
+ * 官方那条链路（本主题只按 54 项令牌改调色板，不再给选中标题单独上色）。行级三条规则
+ * （上一节）原样保留：底色仍是 `transparent`、hover 仍有 140ms 淡入 —— 所以选中态在
+ * 本表里已**没有任何**主题装饰，只剩官方的字色与被压掉的那层底色。
+ * 落位记录见 `docs/render-report.md` §38、`docs/design.md` D44。
+ *
+ * 撤除的就是下面这条（照录为历史，不再是生效规则；括号里是原来的五个色标）：
+ *   body [data-row-key^='session:'][aria-selected='true'] > span:nth-child(2) {
+ *     color: transparent;
+ *     background-image: linear-gradient(90deg, 红 → 橙 → 黄 → 绿 → 紫 五色标);
+ *     -webkit-background-clip: text;
+ *     background-clip: text;
+ *   }
+ * 五个色标全部取自既有令牌，依次读 state-error-primary / brand-primary /
+ * state-warn-primary / state-success-primary / state-business-primary（暗档五色分明；
+ * 亮档令牌是为浅底对比度压暗过的，读起来收在一段深灰上 —— 亮档没有可用的蓝 / 青 / 紫
+ * 令牌，这是令牌表的事实，不是取舍）。钩子当时用**结构性选择器** `> span:nth-child(2)`，
+ * 理由与 D41 的 `selectedTitle()` 同源：第 2 个元素子节点就是标题（真机 probe 确认），
+ * 限定 `span` 让失败方向是「没有彩虹」，而不是「`color: transparent` 落到别的元素上、
+ * 文字看不见」。
+ *
+ * 为什么是删干净、而不是再写一条把颜色设回官方令牌：彩虹的全部效果都出自这一条规则，
+ * 删掉它「官方字色」自动回来；补一条同选择器的 `color: <官方令牌>` 既不是官方外观
+ * （官方不声明这条），也会凭空多一条声明、把令牌审计的读取面弄脏。
+ * ------------------------------------------------------------------------ */
+/* ---------------------------------------------------------------------------
+ * 【历史】选中标题的跑马灯（D41，第十九轮；第二十轮整段撤除）
+ *
+ * 用户原话：「改为在会话被选中后，其标题文字以跑马灯形式持续、无限循环滚动」，
+ * 并要求「切换选中项时，原选中项停止滚动并恢复为普通静态标题」。
+ * 当时的形状是本表的 `body [data-uni-marquee] { text-overflow: clip; }` 与
+ * `body [data-uni-marquee]::after { content: attr(data-uni-marquee); margin-left: 32px; }`，
+ * 驱动是 `src/client.js` 的 MARQUEE_SPEED = 42 px/s、MARQUEE_GAP = 32、逐帧负
+ * `text-indent`、订阅 `aria-selected` 的 MutationObserver，以及 reduced-motion 下
+ * 完全不启动。真机读数与像素扫描见 `docs/render-report.md` §36，决策见
+ * `docs/design.md` D41。
+ * ------------------------------------------------------------------------ */
+[data-state='ongoing'] {
+  color: var(--dsw-alias-state-success-primary);
+}
+[data-slot='sidebar'] {
+  font-variant-numeric: tabular-nums;
+}
+
+/* --------------------------------------------------------------------------
+ * WHALE-01 SYSTEM —— 顶栏标识
+ *
+ * 规范：`WHALE-01_SYSTEM_Logo_Design_Spec.md`（§4–§18）。
+ *
+ * 为什么只能走 CSS：官方顶栏是**两条 svg**——一枚 24×18 的鲸鱼 path，加一条
+ * 156×24 的 logotype path。`deepseek` 与 `HARNESS` 是**矢量字形**，DOM 里没有
+ * 任何文字节点可以替换（`textContent` 是空的）。所以这里把两条 svg 各自隐藏，
+ * 在同一个骨架上重画三个元素：图标、WHALE-01、SYSTEM 标签。
+ *
+ * 颜色全部由令牌派生（paint layer 不许写死色值，见 selfcheck `css.8`）：
+ *   主文字   --dsw-alias-label-primary           暗档是冷灰白（≈规范 #E0E0E5），亮档是深墨
+ *   `-01`    往侧栏底色方向混 78%                规范 §7 方法 B：降亮度而不是缩字号
+ *   标签底   最强墨色 84% + 二级容器           暗档正好是「浅灰底」，亮档自动反相
+ *   标签字   一级容器色                        跟随底色，两个档都读得出来
+ * 规范里的绝对色值（#E0E0E5 / #D8D8D8 / #383838）无法照抄：主题有明暗两档，写死的
+ * 冷白在亮档会消失。这里保留规范的比例与结构，把颜色交给令牌。
+ * ------------------------------------------------------------------------ */
+[data-slot='sidebar.brand.mark'] {
+  /* 官方用内联 `display: contents` 让这个槽不生成盒子；要摆图形必须先把它变成盒子。
+     `!important` 在这里是必要的：内联样式只对非 important 声明占先。 */
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  /* 2026-10-09（第三十四轮，D78）用户点名：头像与 `WHALE-01` 的间距偏大，且这一处
+     必须与 `WHALE-01`—`SYSTEM` 那一处**相等**。
+     官方 identity 行自带 8px `gap`（哈希类名 `.brandIdentity`，css.6 不得选），头像这侧
+     可控的只有本行这一个 margin。目标是两处**光学间距**相等 —— 墨迹到墨迹、墨迹到色块：
+       · 贴图右侧自带 1.97px 透明边（alpha bbox 14→242 / 256，硬边，无淡晕），
+         加上 `W` 的字形左边距 1.00px —— 头像这侧已白送 0.97px 视觉留白；
+       · `SYSTEM` 芯片左侧留白 10.33px = 芯片 `margin-left: 10px` + `-01` 的字形右边距 0.33px。
+     故盒子间距只需 7.36px（= 10.33 − 0.97），减去官方那 8px ⇒ 本行 −0.64px。
+     实测（真机 <DSH_AUTHORITY> 页面，只用运行时 <style> 改这一个值做 A/B，暗档）：
+       16px  → 头像侧 26.97 / 芯片侧 10.33（差 16.64px，即用户看到的偏大）
+       −0.64px → 头像侧 10.35 / 芯片侧 10.33（差 0.02px）  ← 本轮取值
+     头像是 flex 行第一项、盒子不动（仍在 16–52），改这一处只把名字与芯片整体左移；
+     芯片的 10px 未动（用户没点名那一侧）。回滚 = 把本值改回 16px。 */
+  margin-right: -0.64px;
+  /* D80：官方在桌面外壳下给整条 `brandIdentity`（贴图 + 名字）加了 `translateY(1px)`。
+     2026-11-02（第七十九轮）真机复测：贴图墨迹中心 20.50、Cinzel 大写墨迹中心 20.50，
+     两件已经同线（`QUASAR` 的 Q 尾巴垂到 22.5，那是字形，不是错位 —— 判读只取顶线到
+     基线的大写块）。故保持 −1px。纯纵向、不碰布局（relative 不改行盒），横向间距与点击
+     分区都不受影响。 */
+  position: relative;
+  top: -1px;
+  /* 2026-10-27（第二版）：槽里换用户给的墨笔黑洞位图。`BlackHoleLogo`
+     （src/runtime/brand-logo.js，注册在 `sidebar.brand.mark` 的 priority −1）只给 28px 的
+     方盒子，图本身是 `--cp-brand-mark` 里的 PNG，由 src/brand-logo.css 当遮罩、用
+     `currentColor` 上色 —— 也就是这一行的前景色（label-primary）。盒子负责居中：
+     36px 盒子 − 28px 图形 = 每边 4px。
+     官方鲸鱼不再隐藏 —— 原来那条 `> svg { display: none }` 已在 2026-10-27 撤销：槽里已经
+     是本主题的组件，留着这条只会在日后回退到贴图方案时把两样一起藏掉。 */
+}
+[data-slot='sidebar.brand.name'] {
+  display: flex !important;
+  align-items: center;
+  gap: 0;
+  /* 2026-11-02（第七十七轮，用户点名）：字标换族。
+     旧栈 Bahnschrift / DIN Alternate / DIN Next / Eurostile Extended / Montserrat
+     里只有 Bahnschrift 在 Windows 上真存在 —— DIN Alternate 是 macOS 字体，DIN Next
+     与 Eurostile Extended 是商业字体，Montserrat 要装。所谓跨平台稳定只在构建机成立。
+     现在改为内嵌 Cinzel 700（build/fonts.json → 构建期 base64 → declarations 里的
+     @font-face，build-client.mjs 的新「embedded fonts」段）。
+     字距 0.10em 是罗马碑铭大写的读法：Cinzel 的字面本来就宽，需要这一点呼吸；
+     16px 不变，因为三件套的总宽已经由芯片那 10px 外边距定死。 */
+  font-family: 'Cinzel', Georgia, 'Times New Roman', serif;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1;
+  letter-spacing: 0.10em;
+  white-space: nowrap;
+  /* 纵向补偿：下面这个 0 与贴图那 −1px 配的是旧字 Bahnschrift 的墨迹中心（D80 读得
+     WHALE-01 的墨迹中心天生比行盒中心高 1.07px，行位移后落到 20.75）。换族后字面
+     高度变了，这条读数不再是 Cinzel 的，先按 0 跑；若三件套的墨迹中心不再落在三键
+     中心线 20.50 上，改的是这里，不是贴图那行。 */
+}
+[data-slot='sidebar.brand.name'] > svg {
+  display: none;
+}
+[data-slot='sidebar.brand.name']::before {
+  /* 2026-11-02：WHALE → QUASAR。类星体是黑洞加吸积盘加喷流的合体，与槽里那枚水墨
+     黑洞、与主题的发光弧带同源；`-01` 一并撤掉（用户：「宇宙主题不用加数字」）。 */
+  content: 'QUASAR';
+  color: var(--dsw-alias-label-primary);
+}
+/* 2026-11-02：`-01` 的后缀整条删除。它原来做两件事 —— EVA 机体编号的语义，以及
+   「实色主词 + 78% 混合后缀」的两档层次。数字被用户否决（「宇宙主题不用加数字」），
+   两档层次随之失去第二档；现在整行只有主名一种实色，层次交给字号（16 对芯片的 11）
+   与明暗（亮字压暗底 / 深字压浅块）承担，不再由字色分档。 */
+[data-window-drag='true'] button:has([data-slot='sidebar.brand.name']) {
+  display: flex;
+  align-items: center;
+  /* 官方这个按钮是 `height: 24px; overflow: hidden`。图标一旦超过 24px 就会被上下裁掉
+     （36px 的图只剩中间那条 24px 的带子，看起来像被切了一半）。这里把盒子放开：
+     高度交给内容、不再裁剪。本选择器权重 (0,2,1) 高于官方那两条类名 (0,2,0)。 */
+  height: auto;
+  min-height: 36px;
+  overflow: visible;
+}
+/* 2026-10-07 用户点名：隐藏左栏的「收起侧栏」按钮，右栏的收起按钮保持可见。
+   用户口径：右栏 = Control+Alt+B，左栏 = Control+B。（Web 运行时里左栏那条落在
+   Control+Alt+B 上，右栏是 Control+Shift+B —— 两套地图不同，所以不再按快捷键跨栏收口。）
+   改按 DOM 归属收口：左栏那个按钮在 [data-slot='sidebar'] 里，右栏两个按钮（打开/收起
+   右侧边栏）都在 conversation.session.header.corner 里、从不进 sidebar slot。
+   于是桌面与 Web 两套绑定地图下都只藏左栏，右栏按钮不可能被命中。 */
+[data-slot='sidebar'] button[aria-keyshortcuts='Control+B'],
+[data-slot='sidebar'] button[aria-keyshortcuts='Control+Alt+B'] {
+  display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+ * 品牌行抬进 40px 顶栏带（2026-10-08，用户点名）
+ *
+ * 用户原话：「Logo可以移到顶栏吗？现在上方空的有点多。」点头后：「改」。
+ *
+ * 那 46px 空白是**两层内边距**叠出来的，不是某一处多余的东西：
+ *   · 框架给整列留了顶栏高：`[data-windows-titlebar]` 下 AppFrame 的 frame 类写
+ *     `padding-top: var(--dsh-windows-titlebar-height)`，另有一条同高的 `::before`
+ *     横带（`-webkit-app-region: drag`）盖在上面 —— dsh-client-ui-layout 的
+ *     AppFrame.module.css；
+ *   · 侧栏根自己还有 6px：SidebarRoot 的 root 类写
+ *     `padding: 6px var(--dsh-sidebar-inline-padding)` —— dsh-client-ui-sidebar 的
+ *     SidebarRoot.module.css。40 + 6 = 46px。
+ * 而官方品牌行（`data-window-drag='true'` 那一行）的高度**本来就是 40px**
+ * （同文件 `[data-windows-titlebar]` 下 logoRow 规则：`height: 40px; margin: 0;
+ * padding: 0`），与顶栏带等高 —— 这条带本来就是它的座位，先前只是被上面那两层
+ * 内边距压到了下面。带里之所以空的：官方把侧栏开关固定在这条带里（toggle 类：
+ * `position: fixed; top: calc((40px - 28px) / 2); left: 12px; z-index: 30;
+ * -webkit-app-region: no-drag`），而本表上一条已把它隐藏。
+ *
+ * 处置：不动官方任何声明，照抄官方开关自己的手法 —— 让品牌行脱离文档流、固定进这条带：
+ *   ① 行本体 `position: fixed; top: 0; left: var(--dsh-sidebar-inline-padding, 12px);
+ *      z-index: 30`。行高本来就是 40px（见上），正好占满 0–40 这条带；左边界沿用
+ *      侧栏自己的行内内边距令牌，logo 的 x 与改动前逐像素一致。
+ *      【第三十二轮 D71 起 `top` 由 `0` 改为 `4px`：整行在带内下移 4px，与同带的
+ *      会话头标题落到同一条光学中线上。下面单独一段注释记这件事，本条其余不动。】
+ *   ② 脱离流之后，侧栏下面的内容自然上提 40px —— 用户要消掉的那块空缺就是这么收回的。
+ *   ③ 只给品牌按钮 `-webkit-app-region: no-drag`（官方开关同款），
+ *      于是 logo 仍可点（展开态点击 = 新建会话）；带内 logo 之外的部分仍归横带，
+ *      照旧能拖窗口。
+ *
+ * 为什么不用负 margin（第一版翻车记录，2026-10-08）：第一版写的是
+ * `margin-top: calc(-1 * (var(--dsh-windows-titlebar-height) + 6px)); position: relative`，
+ * 真机上整行**直接不见**（用户报「Logo不见了！」）。原因是**裁剪**，不是层叠：
+ * 侧栏列（官方 sidebarCol）是 `overflow: hidden`，它的盒子从框架 padding-top 之后才
+ * 开始（y = 40），行被抬到 y = 0–40 时整行落在列自己的盒子之上，被裁得一点不剩；
+ * `z-index` 再高也救不了被祖先裁掉的东西。官方开关用 `position: fixed` 正是为了脱离
+ * 这个裁剪（固定定位的包含块是视口，不经过列的 overflow），所以这里照抄 fixed。
+ *
+ * 收起态必须排除：官方在收起态把新建会话按钮也固定进这条带（`.collapsed` 下的
+ * newSession：`position: fixed; top: calc((40px - 28px) / 2); left: 48px;
+ * z-index: 30; -webkit-app-region: no-drag`），品牌行若也固定进带会与它撞位。
+ * 排除用的是官方自己那条判据：`[data-sidebar-collapsed='true']`。
+ *
+ * 钩子：只读 data-* 契约 —— `[data-window-drag='true']`（Windows 上侧栏里仅此一行，
+ * 另一条 topStrip 只在 darwin 渲染）再加 `:has([data-slot='sidebar.brand.mark'])`
+ * 收窄到品牌行本体；过 css.6（无哈希类名）与 css.7（只 data-*）。无模式分支、
+ * 不新增也不修改任何令牌，暗色冻结不受影响。
+ *
+ * 边界：不动 `--dsh-windows-titlebar-height`（带仍 40px，拖动区尺寸与右上三枚系统
+ * 按钮不变）；不动品牌行宽度、点击语义与字标；收起态完全不变。回滚 = 删本段两条规则。
+ * ------------------------------------------------------------------------ */
+/* --------------------------------------------------------------------------
+ * 品牌三件套在带内整体下移 4px，与同带的会话头共用一条中线（2026-10-08，第三十二轮，D71）
+ *
+ * 用户原话：「完善 EVA 主题：当前头像 Logo、「WHALE-01」与「SYSTEM」三者的位置偏上，
+ * 请整体向下小幅移动；同时保证这三者居中对齐（如无特别说明，默认指水平居中对齐，
+ * 且三者共用同一对齐基准）。」
+ *
+ * 「偏上」不是错觉，也不是三件套自己没居中 —— 它自己就是居中的。真机读数（桌面壳
+ * 960 CSS 宽、DPI 200%，按真机窗口抓屏逐像素量墨迹得来）：
+ *   · 三件套墨迹中心 = Logo 20.75 / `WHALE-01` 19.75 / `SYSTEM` 芯片 20.0
+ *     —— 三者离散只有 1.0px，本来就共处一条中线，而且正落在 40px 带的中线 20 上；
+ *   · 同一条带里的另一个占用者（会话头标题）墨迹中心是 **24.5**，比三件套低 4px。
+ * 所以「偏上」是相对**同一横带里的会话头**读出来的：带里两处内容不在一条线上。
+ *
+ * 处置：把那 4px 补上 —— 品牌行 `top: 0` → `top: 4px`，三件套随之下移 4px，落到
+ * 24.5 这条线上，与会话头标题**共用同一对齐基准**（同一条水平中线）。位移走行自己的
+ * `top`（该行已经是 `position: fixed`），不给按钮加 margin：行盒随可见像素一起下移到
+ * 4–44，点击区与拖拽区跟着走，不会出现「画在这、点在别处」。
+ *
+ * 实测（1600×1000 伪带探针复现，该复现与真机在品牌三件套上吻合到 0.5px 内；四档
+ * 0/2/3/4px 在同一次浏览器会话内 A/B，只用运行时 `<style>` 改这一个值，亮暗两档一致）：
+ *   top   三件套墨迹中心 logo / name / chip      散差    会话头标题
+ *   0     20.75 / 20.25 / 20.5                  0.5px   24.5
+ *   2     22.75 / 22.25 / 22.5                  0.5px   24.5
+ *   3     23.75 / 23.25 / 23.5                  0.5px   24.5
+ *   4     24.75 / 24.25 / 24.5                  0.5px   24.5   ← 本轮取值
+ * 取 4px 而不是 2 / 3px 的判据：它让三件套与会话头落在**同一条**中线上，而不是取一个
+ * 没有参照的中间值。三者散差全程 0.5px（flex 行内取整），位移不改变彼此的相对对齐。
+ *
+ * 回读（改完后从**服务端下发的 client.js** 再量一次，亮暗两档）：品牌行 `top` = 4px、
+ * 行盒 y 4–44（改动前 0–40）、`mark` 盒 y 7–43（前 3–39）；三件套墨迹中心 亮档
+ * 25.0 / 24.25 / 24.5、暗档 26.25 / 24.25 / 24.5 —— 三者仍共用一条中线（散差 ≤ 0.75px，
+ * logo 是图形，取暗/取亮会让它的墨迹中心偏 0.5px 上下），且这条线正是会话头标题那条线
+ * （同一横带内实测 24.25–24.5）。探针：`_work/uni-verify-d71.py`（回读下发产物）、
+ * `_work/uni-brand-shift-ab.py`（四档 A/B）；对比图 `_work/d71-before-after.png`。
+ *
+ * 边界：不动 `--dsh-windows-titlebar-height`（带仍 40px）、不动行宽 / 左边界 / 点击与
+ * 拖拽语义、不动字标与芯片的字体字号内边距、**不动会话头那一行**（用户点名的是这三者，
+ * 「只动点名的那一项」）。行盒 4–44 只多探进侧栏 4px 空白内边距（侧栏内容从 46 起），
+ * 不遮任何元素、不叠会话头（两者 x 不相交）。收起态整段不适用（选择器已带
+ * `:not(:has([data-sidebar-collapsed='true']))`，未改）。回滚 = 把 `top` 改回 `0`。
+ * ------------------------------------------------------------------------ */
+/* --------------------------------------------------------------------------
+ * 顶栏对齐：以右上 Windows 三键的中心线为基准（2026-10-09，第三十四轮，D80）
+ *
+ * 用户逐字：「顶栏的文字与图标不在同一位置（未对齐）…以顶栏右侧的 Windows 三键
+ * （最小化 / 最大化 / 关闭）为基准，将顶栏所有元素的对齐…不调整元素之间的间距（gap）。
+ * 验收：以三键的中心作一条水平基准线，顶栏所有元素（文字与图标）的中心都必须落在这条
+ * 线上，偏差 0 或像素级最小。」
+ *
+ * 基准线的实测（真机桌面窗口抓屏 2558×160 设备像素，DPI 192 ⇒ scale 2，原点 = 客户区
+ * 左上；三个字形用「近黑」阈值从壁纸上分离，无背景估计）：
+ *   最小化横杠 ink y 20.00–21.00、最大化方框 15.50–25.50、关闭 × 15.50–25.50
+ *   ⇒ 三者中心 20.50 / 20.50 / 20.50，散差 0.000 ⇒ **基准线 y = 20.50 css**
+ *   （Windows 把字形居中画在按键里，所以字形中心即按键中心线。）
+ *
+ * 同一张抓屏里，带内各元素当前的中心（css）与到基准线的偏差：
+ *   头像贴图 ink 24.75（+4.25）  `WHALE-01` ink 23.75（+3.25）  `SYSTEM` 芯片 24.00（+3.50）
+ *   会话头标题 ink 25.25（+4.75） 会话头右侧图标 25.00（+4.50）
+ *
+ * 处置：只动各行自己的纵向位移 —— 行位移是 1:1 的（都是 `position: fixed` 的 `top`），
+ * 横向间距与所有 gap 一个字都不动。行内再各补一次亚像素修正，让**墨迹中心**（而不是
+ * 盒子中心）落在基准线上。四项改动 + 真机复测（改完后重新抓屏，同一坐标帧内读数）：
+ *   品牌行 `top: 4px → 0.5px`     芯片墨迹 24.00 → **20.50**（偏差 0.00）
+ *   贴图   `top: -1px`（官方给 `brandIdentity` 加了 `translateY(1px)`，芯片不在其中，
+ *         这两件天然低 1px；−1px 与它精确抵消）  贴图墨迹 24.75 → 20.75 → **20.50**
+ *   名字   **不加补偿**（复测后行盒已经够正）      `WHALE-01` 墨迹 23.75 → 20.75 → **20.50**
+ *   会话头行 `top: 0 → -4.625px`   标题墨迹 25.25 → **20.75**、行右侧图标 25.00 → **20.50**
+ * 会话头那一行的 0.25px 是全表最后一点残差：它行内由官方摆位，这一行只有「行位移」一个
+ * 旋钮，再往上 0.25 会把已经落在 20.50 的右侧图标带下去（两侧只能取最小偏差）。
+ * 右栏面板头（用户第二轮点名「右侧边栏展开时还没有对齐」）另有一条规则，见下。
+ * 回滚 = 把这几处各自改回 4px / 无 / 无 / 0。
+ * ------------------------------------------------------------------------ */
+html[data-windows-titlebar]:not(:has([data-sidebar-collapsed='true'])) [data-window-drag='true']:has([data-slot='sidebar.brand.mark']) {
+  position: fixed;
+  top: 0.5px;
+  left: var(--dsh-sidebar-inline-padding, 12px);
+  z-index: 30;
+}
+
+/* 品牌按钮保持可点：从窗口拖拽区里排除（官方侧栏开关同款）。 */
+[data-window-drag='true'] button:has([data-slot='sidebar.brand.name']) {
+  -webkit-app-region: no-drag;
+}
+
+/* --------------------------------------------------------------------------
+ * 会话头抬进 40px 顶栏带（2026-10-08，用户点名；承上面「品牌行抬进顶栏带」）
+ *
+ * 用户原话：「接下来请把主内容区（main）和右侧栏也一并上移到顶栏带内——顶栏中间目前
+ * 太空，希望由 main 与右侧栏来填充。」并指定按品牌行同一手法处理。
+ *
+ * 带的真身（决定「移动什么」）：框架用 `padding-top: var(--dsh-windows-titlebar-height)`
+ * 把三栏整体下压 40px，再在 0–40 上盖一条透明的 `::before` 拖动区 —— 带里显示的壁纸/
+ * 纱与三栏本来就是同一层，缺的是**内容**。所以抬的是内容行，不是整列（整列上提的方案
+ * 已在 2026-10-08 与用户对过，被否：顶部 40px 全落在拖动区里，按钮点不动）。
+ *
+ * main 顶部那一行正是官方自己的 chrome 行：会话 `<header>`，带 `data-window-drag='true'`
+ * （官方 darwin 分支就靠这个标记把整行当窗口拖动区），行内有
+ * `[data-conversation-header-leading]`、utilities，以及 `[data-conversation-header-corner]`
+ * —— 右栏开关挂在 corner 里。
+ *
+ * 处置：照品牌行同一手法（fixed + top 0 + z-index 30）把这一行放进带里：
+ *   · 左边界接在侧栏宽度之后（`--dsh-windows-sidebar-width` 由框架写在 frame 上，
+ *     侧栏收起时为 0）；
+ *   · 右边界用官方的 `env(titlebar-area-width)` 收在右上三枚系统按钮左边 —— 那三键是
+ *     系统绘制、既点不到也放不了东西，任何抬进带里的右侧内容都必须让开它；该 env 缺失
+ *     时退回「右侧留 140px」（三枚按钮在 100% 下的实际宽度）。
+ *   · 行高钉成带高，保证「三者同带」。
+ * 行内控件单独 `-webkit-app-region: no-drag`（与品牌按钮同款），否则带里的拖动区会把
+ * 点击吞掉。
+ *
+ * 边界：不动 `--dsh-windows-titlebar-height`（带仍 40px、拖动区与三键不变）；不动正文与
+ * 输入区（本行脱离流后正文自然上提一行高）。
+ *
+ * 2026-10-08 追加（用户点名：「右栏打开时的面板头同样上移」）。两轮真机读数把它逼成了现在
+ * 这个形状：
+ *   · 面板头那一行终于有钩子了 —— 用户回读的 DOM 链是 `div[data-dockkit-tab]` →
+ *     `div[data-dockkit-strip-tabs]` → **`div[data-dockkit-strip][data-window-drag]`** →
+ *     `div` → `section[data-dockkit-content][data-dockkit-pane]`，即 `[data-dockkit-strip]`
+ *     就是那一行。
+ *   · 上一版用「右栏整列上提」把面板头送进带里，方向对；撞三键是因为它的右侧图标正好落在
+ *     系统三键底下（实测面板左缘 1405 / 宽 515、vw 1920 ⇒ 面板右端就是窗口右缘，而带的最右
+ *     约 138px 归三键）。拿到 strip 钩子后，让位这一半有了落点：只给这一行加右侧内边距。
+ *   · 会话头的收口试过 CSS anchor positioning，**本机不生效**：真机读数里 `position: fixed`
+ *     对了，但 `right` 落回兜底值（1783 = 让开三键那一版），锚点那一行没解析。故不再依赖
+ *     锚点，改成状态互斥：面板**关**时会话头进带；面板**开**时会话头回正文、由面板头填带 ——
+ *     两行永不同时占同一段带，也就不需要知道面板左缘。
+ * 遗留（用户点名再动）：会话头行高仍被官方压回 76px（我写的 40px 没赢，官方大概给了
+ * min-height），故它进带后会向下多占 36px。
+ * 回滚 = 删本段四条规则。
+ * ------------------------------------------------------------------------ */
+html[data-windows-titlebar]:not(:has([data-rightbar-collapsed])) [data-rightbar-col] {
+  /* 面板打开：整列上提一个带高，面板头随之进带（正文同步上提，相对关系不变）。 */
+  margin-top: calc(-1 * var(--dsh-windows-titlebar-height));
+  height: calc(100% + var(--dsh-windows-titlebar-height));
+}
+
+html[data-windows-titlebar] [data-dockkit-strip] {
+  /* 面板头右侧让位：那一段归系统三键，既点不到也放不了东西。 */
+  padding-right: calc(100vw - env(titlebar-area-width, calc(100vw - 140px)));
+  /* 叠在会话头之上（会话头 z-index 30）：万一锚点解析不了、两行在带里重叠，
+     保证面板标签行仍可见、可点。 */
+  position: relative;
+  z-index: 31;
+  /* D80（用户点名「右侧边栏展开时还没有对齐」）：面板头那一行整行上移到三键中心线。
+     真机抓屏读数：面板头两个图标（全屏 / 收起右侧边栏）的墨迹中心都是 25.00 css，
+     基准线 20.50 ⇒ 整行 −4.50px。用 relative 位移而不是改 padding：面板头的盒子
+     （0–38）不动，面板内容随盒子走、不会被推进顶栏带里，只有这一行的内容上移。
+     行内标签文字与三枚图标同属一个居中线，随之一同落线，不需要各自再补。 */
+  top: -4.5px;
+}
+
+html[data-windows-titlebar] [data-window-drag='true']:has([data-conversation-header-leading]) {
+  position: fixed;
+  /* D80：整行上移到三键中心线。标题墨迹中心 25.25 → 20.625、行右侧图标 25.00 → 20.375，
+     两者与基准线（20.50）各差 ±0.125px —— 这是这一行只有「行位移」一个旋钮时的最小偏差
+     （行内元素由官方布局摆位，本表不改官方声明）。行盒仍在带内：标题行落在 5.4–35.4，
+     标签行 45.4–70.4 仍在官方会话头 76px 盒内，正文列的 76px 接缝不变。 */
+  top: -4.625px;
+  left: var(--dsh-windows-sidebar-width, 280px);
+  right: calc(100vw - env(titlebar-area-width, calc(100vw - 140px)));
+  height: var(--dsh-windows-titlebar-height, 40px);
+  z-index: 30;
+}
+
+/* 面板打开：会话头停在面板左缘。单独成一条规则 —— 锚点不生效时这条整条被丢，
+   上一条的「只让开三键」照旧生效（声明被丢 ≠ 规则被丢）。参数里不再嵌 env()/calc，
+   2026-10-08 真机读数显示：嵌了 env() 兜底的那一版整条被丢，right 落回兜底值 1783。 */
+html[data-windows-titlebar]:not(:has([data-rightbar-collapsed])) [data-window-drag='true']:has([data-conversation-header-leading]) {
+  right: max(anchor(--uni-rightbar left), 138px);
+}
+
+/* 右栏列作锚点（幂等，面板开关都挂着）。 */
+html[data-windows-titlebar] [data-rightbar-col] {
+  anchor-name: --uni-rightbar;
+}
+
+/* 会话头里的控件保持可点：从窗口拖拽区里排除。 */
+html[data-windows-titlebar] [data-window-drag='true']:has([data-conversation-header-leading]) button,
+html[data-windows-titlebar] [data-window-drag='true']:has([data-conversation-header-leading]) a,
+html[data-windows-titlebar] [data-window-drag='true']:has([data-conversation-header-leading]) [role='button'] {
+  -webkit-app-region: no-drag;
+}
+
+/* 右栏里的控件保持可点：带内的拖动区不吞点击。 */
+html[data-windows-titlebar] [data-dockkit-pane] button,
+html[data-windows-titlebar] [data-dockkit-pane] a,
+html[data-windows-titlebar] [data-dockkit-pane] [role='button'],
+html[data-windows-titlebar] [data-dockkit-tab] {
+  -webkit-app-region: no-drag;
+}
+
+/* --------------------------------------------------------------------------
+ * 「对话」/「轨迹」标签行与正文重叠（2026-10-08，第三十三轮，用户点名）
+ *
+ * 用户原话：「修复 main 区域内「对话」、「轨迹」这一行的文字与对话内容重叠的问题。」
+ *
+ * 那一行是官方会话头里的 `[data-conversation-tabs]`（role="tablist"，两枚 button：
+ * 对话 / 轨迹）。会话头本体已被上面那一节抬进 40px 顶栏带 —— 它是
+ * `position: fixed; top: 0`，**脱离文档流**；而官方
+ * `ui-conversation/src/client/skeleton/ConversationRoot.module.css` 给会话头写的是
+ *     min-height: 76px; padding: 10px 28px 0 20px; display: grid
+ * 所以它的盒子仍是 76px 高（本表上面写的 height 被官方 min-height 压回 76px ——
+ * 那一节的注释已把它记成遗留）。行内排布：标题行 30px 落在带内（y 10–40），
+ * 标签行 25px 在 y 50–75，头底边在 y 76。
+ *
+ * 于是正文列从 y = 40（框架的 padding-top 就是带高）开始，而会话头画在 0–76：
+ * 40–76 这 36px 里会话头没有背景，正文就从「对话 / 轨迹」两个标签**背后**穿过
+ * —— 这正是用户看到的叠字。伪带仿真读数（给 html 加 `data-windows-titlebar` 与内联
+ * `--dsh-windows-titlebar-height: 40px`，注入路径同 `_work/probe-menu/probe.mjs`）：
+ *   会话头                       rect [280,  0, 836, 76]   position: fixed, z-index 30
+ *   [data-conversation-tabs]     rect [300, 50, 788, 25]   ← 标签行
+ *   [data-conversation-content]  rect [280, 40, 976, 781]  ← 正文列，压在标签后面
+ *
+ * 处置：把正文列下移「会话头真实高度 − 顶栏带已经给的带高」，正文即从 y = 76 起、
+ * 正好接在会话头下缘，会话头不再压住任何内容。
+ *
+ * 为什么是 margin-top 而不是 padding-top：`[data-conversation-content]` 是会话根的
+ * flex 项（`flex: 1 1 0%`），外边距会吃掉可用空间，于是真正的滚动视口
+ * `[data-conversation-scroll]`（官方给它 overflow: auto）整体落到 76 起、由它自己的
+ * 盒子把上方内容裁掉；padding 只把内容推下去，滚动时文字仍会从固定头后面穿过
+ * —— 同一个重叠，只是从「一开始就重叠」变成「滚动时才重叠」。
+ *
+ * 为什么把 76px 这个字面值连同算式一起写在明处：76 是官方会话头的 `min-height`
+ * （上面那份 ConversationRoot 里的会话头规则），本表不复制它的任何声明、只借这个
+ * 高度参加运算，所以这里同时写出它与带高的差。这条规则**只在会话真有 tabs 时生效**
+ * ——官方给没有 tabs 的会话头写的是 `min-height: 0; padding-bottom: 10px`（那种头
+ * 只有 50px，不含标签行），空白 / hero 会话不该凭空多出间距，故用
+ * `:has([data-conversation-tabs])` 把范围收窄。
+ *
+ * 钩子：`html[data-windows-titlebar]`（桌面外壳）+ 两个 data-* 契约
+ * （`data-conversation-content` 是正文列本体、`data-conversation-tabs` 是标签行），
+ * 过 css.6（选择器与注释里都不出现 CSS-Modules 哈希类名）与 css.7（含 data-*）；
+ * 不动任何令牌（css.8），暗色冻结不受影响。回滚 = 删本段这一条规则。
+ *
+ * P4（2026-10-09）：主语由裸 `:has()`（＝文档级通配主语，本表最贵的一类选择器）收窄为
+ * `#root *:has()`。真机实测（DSH GUI，`#root` 下挂着这条规则要的那个容器）：裸版与
+ * `#root *` 版命中的是同一个元素（1 对 1，且它就是 `#root` 子树里的 div），所以收窄
+ * 不改变命中，只把候选集从整篇文档缩到 `#root` 子树。
+ * ------------------------------------------------------------------------ */
+html[data-windows-titlebar] #root *:has(> [data-conversation-content]):has([data-conversation-tabs]) > [data-conversation-content] {
+  --cp-conv-header-h: 76px;
+  margin-top: calc(var(--cp-conv-header-h) - var(--dsh-windows-titlebar-height, 40px));
+}
+
+/* --------------------------------------------------------------------------
+ * 顶栏三键底板清成透明（2026-10-08，用户点名）
+ *
+ * 用户原话：「顶栏右边的三个按键能跟界面同步吗？现在看着太突兀了。」
+ *
+ * 那三枚按钮与底板由桌面端外壳交给 Windows 画（Electron titleBarOverlay），页面 CSS
+ * 碰不到；颜色由 preload 采样后发送 —— 底板取 `--dsw-specific-sidebar-fill`、图标取
+ * `--dsw-alias-label-primary`（lib/preload-app.cjs:573-613 → lib/main.js:12003
+ * setTitleBarOverlay）。图标那一半本来就在跟随主题；问题只在底板。
+ *
+ * 2026-10-08 探针实测（一次性 Electron 窗，同款 titleBarOverlay 选项，页面纯色
+ * 51,102,204）：
+ *   · 页面露出部分的顶栏带 = 恰好 51,102,204 ⇒ 这条带仍是页面，不是窗口背景；
+ *   · 按键底板区 = 211,213,233，且只覆盖按钮那一块（左边界就是按钮簇左缘）；
+ *   · 反解合成：底板 = 页面底色与采样色按 α≈0.90 混合 —— 而采样色本身是 α0.698，
+ *     1−(1−0.698)² = 0.909，吻合 ⇒ 底板是「同色叠了两层」。
+ *   · 用同一关系回算用户截图：页面带 171.5 → 预测 221，实测 218.2 ✓。
+ * 结论：底板是**半透明叠在页面上**的，不是叠在窗口背景上 —— 清成透明即完全消失，
+ * 不需要动外壳，也不需要重打包 app.asar。
+ *
+ * 处置：只在**亮档**把该令牌覆盖成 `transparent !important`。盖在 body 上是因为 preload
+ * 的采样 span 挂在 body 里，采样结果随之变成 transparent：
+ *   · 不写进令牌层（tokens.json 与 veil 生成脚本会重算那个值），这是纯 paint layer
+ *     覆盖：重建即生效，删掉即回滚；
+ *   · **`!important` 才是生效的那一半**（2026-10-08 第二版翻车记录）：本表的令牌层走
+ *     主题服务的令牌覆盖接口（src/client.js:29 那一路调用），那一路声明的分量压过普通
+ *     样式表声明 —— 第一版没加 `!important`，用户重启后底板照旧。同来源下 important 的
+ *     样式表声明压过非 important 声明（含内联非 important），故补上。
+ *   · 暗档一律不动 —— `dark.1` 要求两处 veiled surface 逐字节相同，且暗色已冻结。
+ *
+ * 已知连带（如实记录，同属「官方在同一层纱上再画一遍」那一类）：该令牌在页面里还有
+ * 两个可见消费者 —— markdown 表头与提示框（out/cssom-refs.json 的 refs 共 10 处，
+ * 其余 6 处本表已清空或隐藏、3 处是 darwin）。清成透明后这两处不再叠第二层纱，
+ * 本表原先也注明过它们属同类、只是当时未点名。要保留原样，就再用 `--dsw-alias-bg-base`
+ * 补两条把它们画回来的规则。
+ * ------------------------------------------------------------------------ */
+html[data-windows-titlebar] body:not([data-ds-dark-theme]) {
+  --dsw-specific-sidebar-fill: transparent !important;
+}
+
+/* 芯片回来（2026-11-02，用户点名：「B，CORE调到14px/500」，随后又调到 12px）。
+ *
+ * 位置与几何沿用 SYSTEM 那枚硬边小片：名字右侧 10px、内边距 4px 8px、圆角 0、
+ * 84% 混合底（浅底深字）。字面是 EB Garamond 500 / 12px —— 主名 Cinzel 700/16px 仍是
+ * 第一层，芯片靠字号（16 对 12）与明暗退到第二层，不靠字重压人。
+ * 点它进设置：分区判定在 src/client.js 的品牌行 effect（`clientX >= name.right`）。
+ * 它顺带补回名字右侧那段留白（组宽 114 → 约 170），这是用户要的密度。 */
+[data-window-drag='true'] button:has([data-slot='sidebar.brand.name'])::after {
+  content: 'CORE';
+  margin-left: 10px;
+  padding: 4px 8px;
+  border-radius: 0;
+  font-family: 'EB Garamond', Garamond, Georgia, serif;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0.8px;
+  background: color-mix(in srgb, var(--dsw-alias-label-primary) 84%, var(--dsw-alias-bg-layer-2));
+  color: var(--dsw-alias-bg-layer-1);
+}
+
+/* --------------------------------------------------------------------------
+ * 去掉重复的「新会话」按钮（2026-10-07，用户点名）
+ *
+ * 官方侧栏有**两个**新会话入口，而且共用同一个快捷键（两者的
+ * `aria-keyshortcuts` 都是 `Control+Alt+N`）：顶栏那块 WHALE-01 / SYSTEM 区域
+ * 自己就是一个 button，下面还另有一个带图标的「新会话」按钮。用户要求去掉下面
+ * 那个 —— 二者功能重复。
+ *
+ * 定位方式不碰哈希类名（`css.6` 禁止）：侧栏槽 → 根容器 → **直接子级**里带快捷键
+ * 的 button。实测只命中那一个（`14,70,252,38`）；顶栏那个按钮嵌在
+ * `[data-window-drag='true']` 的 logoRow 里、层级更深，所以不被匹配（不要换成
+ * 「侧栏里所有带 aria-keyshortcuts 的按钮」——那会连收起侧栏、新建会话、添加
+ * 工作区一起藏掉，实测过一次）。
+ *
+ * 只从布局里移除，DOM 节点保留：快捷键与 a11y 结构不变。官方若改了结构，规则
+ * 失配的后果是按钮重新出现，而不是藏掉别的东西。
+ * ------------------------------------------------------------------------ */
+[data-slot='sidebar'] > div > button[aria-keyshortcuts] {
+  display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+ * 撤掉侧栏两块对调，回到官方顺序（2026-10-07，第二十一轮，D44，承 D38）
+ *
+ * 用户原话：「将左侧工作区+会话列表的位置挪回原处，同理导航栏也挪回原处。」
+ * 第十七轮（D38）用 `order` 把会话区抬到了 `nav` 上方；本轮**整段撤回**：三条
+ * `order` 全部删除后，侧栏根容器的每个直接子级都回到 `order: 0`，也就是**纯 DOM
+ * 顺序** —— 品牌行 →（已隐藏的）新会话按钮 → 导航 `nav` → 工作区 / 会话列表 →
+ * 底部区，与官方一致。导航回到上方，工作区 + 会话列表回到它下面。
+ *
+ * 为什么整块删而不是反向对调：`order` 的默认值就是 0，三块都不声明时没有任何一块
+ * 被重排 —— 这最贴近「挪回原处」，也不会在官方将来增删侧栏子节点时留下一个只有
+ * 我们自己知道的排序。既然留着也没有任何副作用，就一并删掉。
+ *
+ * 未动：DOM（仍不写 JS）、会话区那个官方自己的 `flex: 1` 滚动容器、品牌行与底部区、
+ * 以及隐藏重复「新会话」按钮那条规则（D37，另一件事）。
+ * ------------------------------------------------------------------------ */
+
+/* 【历史 · D38，第十七轮，已由 D44 撤回】会话区与导航区对调
+ *
+ * 侧栏根容器本来就是 `display:flex; flex-direction:column`，当时只用 `order` 重排
+ * —— **不动 DOM、不写 JS**：
+ *
+ *   nav                 默认 0 → `order: 2`（原在上，当时落到会话区下方）
+ *   nav 的下一个 div      默认 0 → `order: 1`（工作区 + 会话列表，原在下）
+ *   再往后的 div          默认 0 → `order: 3`（底部区）
+ *
+ * 第三行不能省：`order` 的默认值是 0，只给前两块设 1 / 2 的话，底部区会带着 0
+ * 跑到最前面去。品牌行与隐藏按钮保持默认 0，仍在最前。
+ *
+ * 选择器全部走结构与标签（`nav`、相邻兄弟、后续兄弟），不碰哈希类名（`css.6`）。
+ * 会话区那块仍由官方自己的 `flex: 1` 撑开并内部滚动。
+ *
+ * 当时的实测（1600×1000、两档一致）：品牌行 y 6 → 会话区 y 70（高 486）→ 导航
+ * y 556（高 276）→ 底部区 y 840。三条规则已在本轮删除，此处仅存档；现在的顺序
+ * 由 DOM 决定，没有本主题的 `order` 参与。
+ * ------------------------------------------------------------------------ */
+
+/* --------------------------------------------------------------------------
+ * 拆掉侧栏底部区：隐掉「命令」那一行，「设置」行提到导航上方（2026-10-07，第二十二轮，D45）
+ *
+ * 用户原话：「去掉左边栏底部的这一块区域，将「设置」按钮挪到导航栏的顶部位置。」
+ *
+ * 依据官方 ui-sidebar 包源码（`@deepseek-ai/dsh-client-ui-sidebar/lib/client.js`
+ * 的 SidebarRoot 渲染，与 `docs/render-report.md` §33 / §34 的真机读数一致）：侧栏
+ * 根容器（`[data-slot='sidebar']` 里的那个 `div`）是 `display:flex; flex-direction:column`，
+ * 直接子级依次是
+ *   品牌行 `logoRow` →（D37 已隐藏的）新会话按钮 → 导航 `nav`（9 个全局面板项）
+ *   → 工作区 / 会话列表 `regionArea`（官方 `flex: 1`）→ 底部区 `footArea`
+ * `footArea` 自己也是竖排 flex，**固定只有两个孩子**：
+ *   ① `div.footerActions` —— 装 `sidebar.footer.action` 槽，本机由 `dsh-ledger-cn`
+ *      占着，渲染成账单卡片（`div.lcn-fw[data-rail]`）；
+ *   ② `div.settingsArea` —— 装 `sidebar.settings` 槽，settings-general 往里放
+ *      「设置」行（`button[aria-keyshortcuts='Control+Alt+,']` + 连接 / 更新指示灯）。
+ * 所以「底部这一块区域」= `footArea`，而其中要保留的只有它的第二个孩子。
+ *
+ * 做法仍然只有 CSS —— 不写 JS、不动 DOM：这些节点是 React 拥有的，把 `settingsArea`
+ * 摘到 `nav` 前面会让协调器在卸载 / 重排时找不到原父节点。用 `order` 只改绘制顺序，
+ * React 完全不知情，也不会被它撤销。
+ *   1. 【已撤回，2026-10-08 第三十一轮，用户点名「账单卡片显示不出来」】原本这里还有
+ *      一条 `:first-child { display: none !important }`，隐掉 `footArea` 的第一个孩子
+ *      （`footerActions`）。当轮的依据是「槽空时这个 div 本来也是空的，隐掉无副作用」
+ *      —— 该前提现已失效：用户装上了 `dsh-ledger-cn`，它把账单卡注册进
+ *      `sidebar.footer.action`（槽内 DOM = `div.lcn-fw[data-rail] > button.lcn-ft`），
+ *      于是这条规则把**账单卡整行藏掉**。真机证据（亮档桌面壳）：`div.lcn-fw` 自身
+ *      `display: block; visibility: visible; opacity: 1`，而它的祖父（`footArea` 的
+ *      第一个孩子、装槽的那个 div）计算 `display: none` ⇒ 卡片存在、只是容器被藏。
+ *      故整条删除；`footerActions` 是否占位改由槽内容自己决定。**「槽空时无副作用」
+ *      这个假设不应再被复述** —— 槽是第三方的公共接口，谁都可以往里放东西。
+ *   2. 三块显式定序：品牌行等保持默认 `order: 0` 仍在最前 → 设置行 `1` → 导航 `2`
+ *      → 工作区 / 会话列表 `3`。会话区仍由官方自己的 `flex: 1` 撑开并内部滚动。
+ *   3. 【2026-10-08，第三十一轮追问「卡片的定位该归主题还是归插件」】第 2 条的 `order: 1`
+ *      原本落在 `footArea` 整个盒子上，等于把**装第三方槽的容器**一起抬到顶部 ——
+ *      账单卡（`dsh-ledger-cn` 注册进 `sidebar.footer.action`）于是停在左上角，
+ *      与 dsh-web（无主题）里它在底部的样子不一致。
+ *      这越过了主题的职责边界：主题只该负责「皮肤 + 自己负责区域的排列」；装载第三方槽
+ *      的区域（`footArea`）在布局里的位置属于**宿主（官方 ui-sidebar）的槽契约**，
+ *      主题不得为了美化去搬它 —— 否则「换个主题位置就变」和「插件一装布局就跑偏」
+ *      两件事同时发生。
+ *      改法：`footArea` 自己 `display: contents`（不生成盒子），把它的两个孩子提升为
+ *      侧栏根容器的 flex 项，再分别定序：
+ *        ① `footerActions`（装 `sidebar.footer.action`）→ `order: 4`，回官方底部；
+ *        ② `settingsArea`（官方 settings-general 的「设置」行）→ `order: 1`，留在导航上方。
+ *      第 2 条的意图（设置在上）不变，而卡片回到「任何不重排区域的主题」都会给它的
+ *      那个位置 —— 换主题位置不变、卸载插件也不塌（槽空时该孩子高度为 0，规则作用在
+ *      空盒上）。
+ *
+ *      `display: contents` **故意不写 `!important`**：官方窄轨规则
+ *      `[data-windows-titlebar] .collapsed .footArea { display: none }`
+ *      （SidebarRoot.module.css:82-85，特异性 0-3-0）必须继续压过本表这条（0-1-3），
+ *      这样侧栏收起时底部区照旧整体隐藏。级联测试（`_work/uni-collapse-cascade.py`，
+ *      同结构 + 官方同形选择器）：展开态本表胜出 → `display: contents`；收起态官方胜出
+ *      → `display: none`。真机实测（1600×1000 亮档）：卡片 [12,930,256,64]（贴侧栏底
+ *      994）、设置行 [14,90,252,42]、导航 y 200→136、会话区 y 444→380，x 与宽度逐像素
+ *      不变（`footArea` 自身 padding 本来就是 0，`display: contents` 不吃间距）。
+ *      常驻规则：**不得为美化搬动装载第三方槽的区域**；要动就动自己负责的那部分。
+ *
+ * 与 D38 的关系（容易误读，故写明）：选择器仍与第十七轮 D38 同一组 —— 侧栏直接子级里
+ * 只有 `nav` 和它后面那两个 div 带得住结构钩子 —— 但第十七轮 D38 的取值（`nav + div`
+ * 会话区 1 / `nav` 2 / `nav + div ~ div` 底部区 3）早已随 D44 撤回；现在的取值是
+ * 「会话区 3 / 导航 2 / 底部区两个孩子在官方位置各自落座」。其中 `nav { order: 2 }`
+ * 一条两轮**逐字相同**，看到它别当成 D38 又回来了 —— 判据是另外几条的取值落点。
+ *
+ * 选择器只用槽名、标签与兄弟关系（`nav`、相邻兄弟、后续兄弟、`:first-child` /
+ * `:nth-child(2)`），不碰 CSS-Modules 哈希类名（`css.6`）；规则一旦失配，后果是
+ * 「设置」留在官方底部、卡片照旧在底部 —— 不会误藏或误移别的元素。
+ *
+ * 未动：`settingsArea` 里那一行「设置」本身的 padding / 边框 / 高度（本轮只按 `order`
+ * 改绘制顺序；后来 D62 另给它加了 4px 左右外边距做左对齐）；官方折叠态、以及
+ * D37 / D44 两条规则。
+ * ------------------------------------------------------------------------ */
+[data-slot='sidebar'] > div > nav + div ~ div {
+  display: contents;
+}
+[data-slot='sidebar'] > div > nav + div ~ div > :first-child {
+  order: 4;
+}
+[data-slot='sidebar'] > div > nav + div ~ div > :nth-child(2) {
+  order: 1;
+}
+[data-slot='sidebar'] > div > nav {
+  order: 2;
+}
+[data-slot='sidebar'] > div > nav + div {
+  order: 3;
+}
+
+/* --------------------------------------------------------------------------
+ * 导航区顶到顶栏带下沿：首枚导航按钮的中心与 main 区「对话 / 轨迹」标签行同轴
+ * （2026-10-20，第六十六轮，D100）
+ *
+ * 用户逐字：「定位导航区与 main 区标签行的盒模型并测量两者垂直基线。仅调整导航区
+ * 与顶栏之间的垂直间距，使第一个导航按钮与 main 区「对话」「轨迹」所在行对齐。
+ * 保持顶栏三个图标按钮之间的水平间距不变。」
+ *
+ * 真机读数（1600×1000、侧栏 280、深色、桌面壳、已打开一个真实会话）：
+ *   标签行 `[data-conversation-tabs]`      y 45.375 / 高 25 / 中心 **57.875**
+ *   导航区 `nav`（改前）                    y 98     / 高 36 / 中心 **116**
+ *   首枚导航按钮 `nav > button`（改前）      y 98     / 高 36 / 中心 **116**
+ *   ⇒ 改前中心差 **+58.125px**（导航比标签行低 58.125）
+ *
+ * 为什么必须同时改 `order`（这与「只改垂直间距」的字面要求不同，故写明）：
+ *   顶栏带下沿是 40，侧栏根容器 `padding-top` 是 6，内容区顶点即 46。导航中心要落在
+ *   57.875 就得 y = 40（高 36）—— 也就是「流内第一个孩子」那一格。而 D45 把「设置」
+ *   行定在 `order: 1`（46→98、高 52），整格占住了这一位置。只给 `nav` 加 `margin-top`
+ *   实测撞车：`nav` 落到 y 92、中心 110（仍差 **+52.125**），且与「设置」行 46→98 重叠。
+ *   故本轮在桌面壳里把两者换位：导航 `order: 1`、「设置」行 `order: 2` —— 设置行从
+ *   导航上方挪到导航正下方，这是本轮唯一的可见重排，不是纯间距微调。
+ *
+ * 为什么只在 `html[data-windows-titlebar]` 下生效：标签行落进 40px 顶栏带这件事本身
+ * 只发生在桌面壳（承 2026-10-08「会话头抬进顶栏带」那条）；Web 壳没有这条带，对齐
+ * 目标不存在，所以 Web 壳一字不动、D45 的「设置在导航上方」原样保留。
+ *
+ * `margin-top: -6px` 是抵消侧栏根容器自己的 `padding-top: 6px`（同一数值，不是凑像素
+ * 硬调的魔数），与表内会话头 `top: -4.625px`、dockkit 条 `top: -4.5px` 同一手法。
+ *
+ * 实测（改后，同一环境）：
+ *   导航区 / 首枚按钮   y 40 / 高 36 / 中心 **58**  ⇒ 与标签行中心差 **+0.125px**
+ *   设置行              46→98 变成 **84→136**（中心 72→110），仍在同一栏内
+ *   工作区 / 会话列表   142→**136**（高 852→**858**，吃掉设置行让出的 6px）
+ *   水平方向：`nav` 仍 x 12 / 宽 256，横竖零变化；无横向溢出（scrollW 280 = clientW 280）
+ *   顶栏图标：更多操作 [1384, 6.375, 28, 28]、打开右侧边栏 [1420, 6.375, 28, 28] —— 未动
+ *   125% 缩放：中心差 **−0.031px**；浅色档与深色档逐像素一致
+ *   0.125px 是全表既有残差（D80 基线取 20.50，实测图标中心 20.375），不再追。
+ *
+ * 回滚（三种粒度，任取一种即可回到改前）：
+ *   ① 只回中心差：删 `margin-top: -6px` 一行 —— 导航回到 y 46、中心 64（差 +6.125）。
+ *   ② 回排列：删掉本块两条规则 —— 回到 D45 的「设置 1 / 导航 2」，中心差回到 +58.125。
+ *   ③ 想让 Web 壳也照此排列：删掉两条选择器的前缀 `html[data-windows-titlebar] `。
+ * ------------------------------------------------------------------------ */
+html[data-windows-titlebar] [data-slot='sidebar'] > div > nav {
+  order: 1;
+  margin-top: -6px;
+}
+html[data-windows-titlebar] [data-slot='sidebar'] > div > nav + div ~ div > :nth-child(2) {
+  order: 2;
+}
+
+/* --------------------------------------------------------------------------
+ * 导航末项 → 会话区标题：43.5px → 26px（2026-11-05，D102）
+ *
+ * 用户逐字：「只调整邮件 → 会话的距离，不动其他，先调整为24px」→「改26px」。
+ *
+ * 真机读数（桌面壳、DPI 200%，截图按 device-scale-factor=2 换算为 CSS px，墨迹到墨迹）：
+ * 官方 **43.5**。目标 26，即上提 17.5px。
+ *
+ * 只动一处：`nav` 的 `margin-bottom` 由官方 8px 改 -9.5px。负值让下面的 regionArea
+ * 上提，会话标题行随之前移；本行补 `position: relative; z-index: 1`，保住最后一枚
+ * 按钮的点击区不被覆盖。
+ * 未动：`margin-top`（D100 的 -6px）、项间 `gap`（官方 2px）、品牌行、会话区内部、
+ * nav 宽度与横排。
+ * 回滚 = 删本段。
+ * ------------------------------------------------------------------------ */
+html[data-windows-titlebar] [data-slot='sidebar'] > div > nav {
+  margin-bottom: -9.5px;
+  position: relative;
+  z-index: 1;
+}
+
+/* --------------------------------------------------------------------------
+ * 「设置」行与导航页按钮左对齐（2026-10-07，第二十三轮，D62）
+ *
+ * 用户要求：「设置」按钮与导航页按钮位置不一致 —— 以导航页按钮的位置为基准调整
+ * 「设置」按钮的定位，使两者一致；不动导航页按钮本身的现有位置与样式。
+ *
+ * 真机读数（1600×1000，light）：
+ *   导航页按钮（`nav` 里那排 button）= x 14 / 宽 252 / 高 36 / padding `7px 8px` /
+ *     margin `0 2px` → 图标 x 22、文字 x 46（侧栏根容器 padding `6px 12px`，
+ *     内容区 12–268；导航行 12+2 = 14）。
+ *   「设置」触发器（`settings.launcher` 槽的直系 button，其父 div 带 margin
+ *     `4px -2px`）= x 10 / 宽 260 / 高 42 / padding `0 10px 0 8px` → 图标 x 18、
+ *     文字 x 42。左边缘比导航行偏出去 4px，宽度也多 8px。
+ *
+ * 做法：只给触发器补 4px 左右外边距 —— 10+4 = 14、260−8 = 252，图标落 14+8 = 22、
+ * 文字落 22+16+8 = 46，与导航行逐像素对齐；右边缘 270 → 266 也与导航行一致。
+ * 触发器自己的 padding 与高度（官方 42px，比导航行高 6px）不动，导航行一个字节不改。
+ * 选择器走官方 `data-slot`（D45 的结构注释里已列出该槽），不碰 CSS-Modules 哈希类名
+ * （`css.6`）；槽失配时的后果是「设置」留在官方位置，不会误伤别的元素。
+ * ------------------------------------------------------------------------ */
+[data-slot='settings.launcher'] > button {
+  margin: 0 4px;
+}
+
+/* --------------------------------------------------------------------------
+ * 品牌行三区：Logo → 设置、文字 → 新会话、CORE → 设置（2026-11-02 恢复）
+ *
+ * 用户逐字：「B，CORE调到14px/500」——B 就是恢复第三区：芯片重新点得动，指回设置。
+ * 第七十八轮那段两区（撤芯片、Logo 独立承担设置）只活了几个小时，现在退回三区；
+ * 插件行仍留在导航区，不再藏，也不再有插件区。
+ *
+ * 三个标签在**同一个官方 button 里**：官方 SidebarRoot 把 `sidebar.brand.mark` 与
+ * `sidebar.brand.name` 两个槽都渲染进那个 button，CORE 是那个 button 自己的 `::after`，
+ * 所以分区只能是**同一个按钮上的坐标区间**——判定写在 `src/client.js` 的品牌行 effect
+ * 里（只放行 name 盒子的那一段，两侧都截）。本文件负责的只是藏掉设置按钮那条官方入口。
+ *
+ * 藏「设置」按钮：`settings.launcher` 槽的直系 button。槽本身是 `display:contents` 的定位
+ * 锚（官方 scoped-slots 契约：每个渲染点外面都套一层 `display:contents` 的 `data-slot`
+ * 包装），所以这个槽里唯一可藏的就是那个 button。藏掉后整行塌成 0 高（真机实测 42 → 0），
+ * D62 给它的 `margin: 0 4px` 从此不再落到任何像素上 —— 规则保留：它记录的是上一轮的结论，
+ * 删掉不会让布局更好，只会让历史断线。
+ *
+ * 「插件」行重新藏起来（2026-11-02，用户逐字：「导航区的插件去掉呀，把插件入口重新换到品牌Logo上。」）：
+ * 按可访问名（`aria-label` = zh `插件` / en `Plugins`，其余语言回落英文）把它单独藏掉，
+ * 同一个 nav 里 `ui-schedule` 的「自动化任务」行与将来任何插件注册进来的行一律不动。
+ * Logo 指回插件面板，芯片 `CORE` 指点设置 —— 这又是第二十五轮那套三区，只是芯片换了字。
+ *
+ * 已知代价，写在明处：① 插件面板没有快捷键，只能点 Logo 进；② 设置仍有两条路：芯片
+ * `CORE`，以及官方那条命令（桌面端 `Ctrl+,`、Web 端 `Ctrl+Alt+,` 各按自己的地图；
+ * client.js 的桥在按钮缺失时兜底派发的是 Web 那一版 `Control+Alt+,`）；③ 若某台机器上
+ * `ui-settings-account` 是启用的，`settings.launcher` 槽里渲染的是账户菜单而不是回退的
+ * 设置按钮，同样会被藏 —— 本机 profile 里它是 `disabled`，渲染的就是那个回退按钮；
+ * ④ 藏掉后整行塌成 0 高（真机实测 42 → 0），D62 给它的 `margin: 0 4px` 不再落到任何
+ * 像素上，规则保留只为记录历史。
+ * ------------------------------------------------------------------------ */
+[data-slot='settings.launcher'] > button {
+  display: none !important;
+}
+[data-slot='sidebar'] > div > nav[aria-label] > button:has([data-slot='sidebar.panellist'])[aria-label='插件'],
+[data-slot='sidebar'] > div > nav[aria-label] > button:has([data-slot='sidebar.panellist'])[aria-label='Plugins'] {
+  display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+ * 启用 DeepSeek 账号时，导航区的账号卡整枝收起（2026-10-20，第六十四轮，D101）
+ *
+ * 用户逐字：「在启用 DeepSeek 账号时隐藏导航区账号卡，且不占位、不留空白。」
+ * 「保留「SYSTEM」设置入口的原有渲染与功能。」
+ *
+ * 宿主真身（app.asar → @deepseek-ai/dsh-client-ui-settings-account/lib/client.js）：
+ * 该包 `ctx.slots.inject("settings.launcher", …)` 注册进 `settings.launcher` 这个
+ * single 槽，启用时**替换**掉官方回退的设置按钮。所以槽里长出来的是一棵账号卡，
+ * 不是按钮本身：
+ *
+ *   div[data-slot='sidebar.settings']            （display:contents 的槽锚）
+ *     div.triggerRow                              margin: 4px -2px / rail：8px 0 10px
+ *       div[data-slot='settings.launcher']        （display:contents 的槽锚）
+ *         div                                  账号卡根（flex:1; min-width:0）
+ *           span                               Menu 根（width:100%）
+ *             button[aria-haspopup='menu']     触发器（高 44px / 窄轨 36px）
+ *       连接状态指示 / 桌面更新指示（同行的另两枚，与本规则无关）
+ *
+ * 两条规则分别处理「藏」与「空」：
+ *   ① 藏账号卡：`:has(button[aria-haspopup='menu'])` 认的是**槽里有没有菜单触发器**。
+ *      官方回退按钮的 aria-haspopup 是 `dialog`（settings-general 的 JSX 写死），与
+ *      `menu` 互斥，所以这里不会误伤回退设置按钮 —— 未启用账号时这条规则一条都不命中，
+ *      该按钮仍归上面 D68 那条 `> button` 管，行为逐字节不变。也不用 `data-collapsed`
+ *      （trajectory 包也在用）或 `data-signed-out`（只描述登录态，不描述「是不是账号卡」）。
+ *      `display:none` 压过槽锚自己的 `display:contents`，账号卡整枝不再参与布局。
+ *   ② 收掉残留的空格：`triggerRow` 自带 `margin: 4px -2px`（窄轨 `8px 0 10px`），
+ *      账号卡藏净后这一行只剩上下外边距、没有内容，会留下 8px（窄轨 18px）垂直空白。
+ *      只收**垂直**外边距、横向下边距留着，行宽与缩进不变。选择器用 `:has(> …)` 认
+ *      同一个触发器，`>` 保证只命中「把 launcher 槽直接装进来的那一行」，不会牵连
+ *      设置面板里别的 div。
+ *
+ * 作用域：只在 `[data-slot='sidebar']` 内、只在这个槽、只在这一行。nav 的排列、工作区、
+ * 会话列表、连接指示与更新指示一个字节没动；其他账号形态（未启用账号插件、Web 壳、
+ * 收起态 rail）走的是各自原有规则。
+ *
+ * 回滚两种粒度：① 删 ① 号规则 → 账号卡重新出现且照旧占位；② 两条一起删 → 回到 D68
+ * 记录的旧世界（账号卡在导航区里露着、SYSTEM 第三区在桌面壳里点不动）。
+ * ------------------------------------------------------------------------ */
+[data-slot='sidebar'] [data-slot='settings.launcher']:has(button[aria-haspopup='menu']) {
+  display: none !important;
+}
+[data-slot='sidebar'] div:has(> [data-slot='settings.launcher'] button[aria-haspopup='menu']) {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* --------------------------------------------------------------------------
+ * 新版导航的三处「更多」：只藏触发器，菜单随入口一起消失（2026-10-24，第六十九轮，D102）
+ *
+ * 用户逐字：「隐藏 DSH 新版本导航中新增的「更多」及其下级「浏览更多插件」「创造你的插件」。
+ * 隐藏对话区域内「对话」「轨迹」右侧的「更多」及其下级同样两项。」并限定：只藏这些，
+ * 其他导航项与既有功能不动。
+ *
+ * 宿主真身（app.asar @ 0.2.1-rc.3，三处都是**另一种按钮**，不是同一条规则的三个实例）：
+ *   ① 左栏：`dsh-client-ui-sidebar` 的 `PanelMoreMenu`，是 `nav[aria-label='全局面板']`
+ *      的直系子按钮（与「插件」「自动化任务」并排），属性 `aria-haspopup='menu'`、
+ *      `aria-label` = `t('panels.more')`。真机实测它外面还套了一层 Tooltip 的 `span`
+ *      （`nav > span > button`），所以选择器必须写后代而不是 `>`。
+ *   ② 会话头：「对话 / 轨迹」那排视图的 `ViewsMoreMenu`，`aria-label` =
+ *      `t('session.moreViews')`；当前视图被折进菜单时文案变成
+ *      「更多会话视图 · {视图名}」⇒ 只能前缀匹配。它渲染在 `conversation.session.header`
+ *      槽内部（该槽由 `ConversationSessionHeader` 自己提供，槽锚是官方 SlotOutlet 加的
+ *      `data-slot` 包装，不是哈希类名）。
+ *   ③ 右栏：`dsh-client-ui-sidebar-right` 的 `GuideMoreMenu` 是**一张卡片**（`button.entry`），
+ *      挂在 `[data-sidebar-right-guide]` 根下，`aria-label` = `t('tab.guide.more')`。
+ * 三处菜单的内容都由 `dsh-client-ui-entry-customization` 注册进各自的 slot，行文案是
+ * 「浏览更多插件」「创建你的插件」；而**菜单只能由这三枚触发器打开**，没有快捷键、
+ * 没有第二条入口。
+ *
+ * 做法：只藏触发器（`display: none !important`），不碰菜单行、不碰 slot 注册、不碰
+ * 其他任何按钮。触发器不在 ⇒ 菜单没有入口 ⇒ 两项一起不可达，tab 键也进不去。
+ *
+ * 选择器身份：官方 `data-slot` / `data-sidebar-right-guide` 锚 + 官方 i18n 文案。
+ * 文案只有中英两本字典（其余语言回落英文），写全即覆盖全部取值；`aria-haspopup='menu'`
+ * 是第二道约束，保证即使未来某个按钮重名也不会误伤（「选择工作区」「选择 Shell」「账号菜单」
+ * 都在各自的容器里，一条都不命中）。
+ *
+ * 失配后果（写在明处）：DSH 将来改文案或改槽位 ⇒ 规则不命中 ⇒「更多」原样露出来，
+ * 即回到官方行为；代价是菜单重新可见，而不是某个点击变成死的，也不会误藏别的按钮。
+ * 与 D68 同一条纪律：槽失配只能让步，不能接管。
+ *
+ * 生效范围：左栏 + 会话头 + 右栏，整页不区分路由（左栏收起成 rail 时命中的是同一枚按钮）；
+ * 其他菜单、其他行、其他页面一个字节不改。
+ *
+ * 回滚：删掉本节六条规则 → 三处「更多」原样回来（菜单本就一直在，只是重新有了入口），
+ * 无需重建、无需重启，刷新页面即可。
+ * ------------------------------------------------------------------------ */
+[data-slot='sidebar'] nav button[aria-haspopup='menu'][aria-label='更多'],
+[data-slot='sidebar'] nav button[aria-haspopup='menu'][aria-label='More'],
+[data-slot='conversation.session.header'] button[aria-haspopup='menu'][aria-label^='更多会话视图'],
+[data-slot='conversation.session.header'] button[aria-haspopup='menu'][aria-label^='More conversation views'],
+[data-sidebar-right-guide] button[aria-haspopup='menu'][aria-label='更多工具'],
+[data-sidebar-right-guide] button[aria-haspopup='menu'][aria-label='More tools'] {
+  display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+ * 新建会话页（hero）：德语 headline / 去掉「预览版」/ 去掉图形 logo
+ * （2026-10-08，第三十四轮，用户点名，D72）
+ *
+ * 用户逐字（当轮三项，并限定「仅作用于新会话页面」）：
+ *   ① 将「探索未至之境」改为「Wovon man nicht sprechen kann, darüber muss man
+ *      schweigen」——该字符串原样保留、含变音符号、不得改写／截断／翻译；
+ *   ② 删除该页面中出现的「预览版」文案；
+ *   ③ 删除该页面的图片 Logo 资源及相关引用。
+ *
+ * 宿主真身（app.asar → @deepseek-ai/dsh-client-ui-conversation/lib/client.js，
+ * HeroShell，JSX @610619）。headline 行是**三件东西并排**，全部是 CSS-Modules
+ * 哈希类名（css.6 禁止复述，此处只用结构描述）：
+ *   标题行 div > [ ① 一枚 span 包着 mark 槽
+ *                     div[data-slot='conversation.hero.brand.mark'] > 内联 svg 鲸鱼,
+ *                  ② 另一枚 span（标题组）> [ 无类名的 span（宿主 headline 文案）,
+ *                                             徽标 span（宿主 preview 文案）] ]
+ * 实测（探针在 <DSH_PORT> 注入本 bundle 后回读）：该页整页**没有任何 <img>**（imgs: []），
+ * 全页仅两处带 background-image —— 侧栏品牌贴图与左栏渐隐；hero 的「图形 logo」
+ * 就是 ① 里那枚 34×25.02 的内联 svg（path 是官方矢量，不是图片文件）。
+ * 两处文案都来自宿主 i18n 字典（zh `hero.headline`/`hero.preview` @519632），
+ * 徽标那行 JSX **无条件渲染**（没有空串判断）；而 @deepseek-ai/dsh-client-locale 的
+ * 公开 API 只有 register / bind / resolveText / addLanguage（类型化命名空间字典，
+ * 只能登记自己的 key），**没有任何覆盖宿主既有 key 的通路** ⇒ 三项都只能落在本表。
+ * 用户已明确第 ③ 项指的是 hero 这枚图形：侧栏那张插画贴图（`build/brand-mark-dark.png`
+ * / `--cp-brand-mark` / 上面 884-898 的品牌段）**不在本轮范围**，一字未动。
+ *
+ * 钩子：三件东西里只有 mark 槽带 data-*（官方 slot 契约 kind:'single', scope:'root'，
+ * 官方 build 在该槽不注册任何东西，渲染的就是 conversation 包自己的动画鲸鱼 fallback）。
+ * 标题行与徽标都是哈希类名、标题那个 span 连类名都没有，所以本节用 `:has()` 从
+ * **唯一稳定的 data-*** 反推整行：
+ *   div:has(> span > [data-slot='conversation.hero.brand.mark'])   = 标题行
+ * 这个锚只在新会话页成立（其它页面没有 hero 槽）⇒ 作用域自动等于用户点名的「仅该页」。
+ *
+ * 做法（四条，两档共用、无模式分支、不新增也不修改任何令牌）：
+ *   ① 图形 logo：mark 槽自己 + 包它的那枚 flex 盒一起 `display: none`。只藏槽会留下
+ *      标题行 12px 的 `gap`（空 flex 项仍占位）；槽那条是兜底（`!important` 覆盖官方
+ *      写在其上的内联 `display: contents`）。
+ *   ② 宿主文案：藏掉标题组的两个子 span（`> span:has(> span) > span` —— 标题行里
+ *      只有标题组这一枚 span 的子节点里有 span，mark 槽那枚的子节点是 div，不误伤）。
+ *   ③ 德语原句：用标题组的 `::before` 的 content 注入。取 ::before 而非 ::after，
+ *      是为了让它落在原来标题的位置；伪元素参与 flex 布局，由标题行自己的
+ *      `justify-content: center` 居中，字号／字重／行高／墨色全部继承标题行的官方值
+ *      （26px / 500 / 32px / 继承），与本主题加在品牌行上的 `content: 'WHALE'` 同一形状。
+ *      字符串按用户要求逐字，含 ü/ä。
+ *   ④「预览版」随 ② 一起消失（它是标题组另一个子 span）。
+ *
+ * 未动（同页其余一切照旧）：composer 卡、选择工作区／标准模式行、侧栏品牌贴图与
+ * 左栏渐隐，全部一个字节不改。
+ *
+ * 已知代价，写在明处：① 该句由 content 注入，DOM 里没有文本节点 ⇒ 页内查找（Ctrl+F）
+ * 与读屏都取不到它（该区域对无障碍读作空）；② 文案不分语言：中文／英文界面同为这一句
+ * （用户指定的是固定文案，故未做语言分支）；③ 宿主若改动 hero 结构（标题不再是标题组的
+ * 子节点），规则失配 → 该页退回官方文案，不会误伤其它页面。
+ * 回滚 = 删本节四条规则。
+ * ------------------------------------------------------------------------ */
+/* C2（2026-10-11，用户点名收窄裸 :has() 主语）：本节两条藏元素的规则原来以
+ * `div:has(> span > [mark])` 作主语（主语是全文任意 div），现改为以**紧贴 mark 的那枚 span**
+ * 作主语：`span:has(> [mark])` 藏 mark 那枚 span，`span:has(> [mark]) + span > span` 藏标题组
+ * 里那两个子 span。hero 页按文档序 id 实测命中集一字不变：[538] 与 [543,544]。
+ * 下一节要落 container-type 与德语 ::before 的两条无法用 span 作主语（属性必须落在标题行 div
+ * 上），改为加祖先门：`[data-phase='hero'] div:has(> span > [mark])`，实测 = 同一个 [537]。
+ * 门与主语都是 data-* 契约（css.7）；宿主若改 hero 结构则本节失配、退回官方文案。 */
+[data-slot='conversation.hero.brand.mark'] {
+  display: none !important;
+}
+span:has(> [data-slot='conversation.hero.brand.mark']) {
+  display: none !important;
+}
+span:has(> [data-slot='conversation.hero.brand.mark']) + span > span {
+  display: none !important;
+}
+/* 第三十五轮（D75，2026-10-08，用户点名）曾把标题行改成 Great Vibes 花体、容器查询单行
+ * 排版，并在 paint 层嵌入该字体的 @font-face。D104（2026-10-28）删掉了那行大字；
+ * 2026-10-31 按用户要求把字体资产、@font-face 与两支字体令牌整份移除 —— 本节现在只剩
+ * 下面两条 span 兜底规则与 D104 的整行隐藏。 */
+/* D104（2026-10-28，用户点名）：去掉这行大字，新会话页只留输入框。
+ * 用户逐字：「去掉 dsh-universe-theme 新会话页面的文字，只保留输入框。」
+ * 范围经确认为「只删那行大字」：composer 卡、选择工作区、预设/模式两个下拉一个字节不动
+ * （宿主 HeroShell 在未选工作区时会把输入框置为 disabled 并提示「选择工作区」，删掉
+ * 那个入口等于让新会话页无法开始对话，故不在本轮范围）。
+ *
+ * 做法：把第三十四/三十五轮那两条（conversation 容器的 `container-type: inline-size`
+ * 与注入德语的 `::before`）整块换成**一条**：标题行自己 `display: none`。
+ * 为什么不能只删 `::before`：mark 槽与标题组两个子 span 已由上面两条规则藏掉，行里
+ * 什么都不剩，但空 flex 行仍会占住 HeroShell 的间距（`gap` 与行高），页面会留下一段
+ * 空白；显式藏掉整行，输入框才会顶到原来的行位置。
+ * 上面那两条 span 规则保留，作为第二道保险：宿主若改动标题行结构使本节整行选择器
+ * 失配，它们仍能藏住 logo 与三件文案，页面退化为「无大字」而不是「官方文案回来」。
+ *
+ * 代价：德语那句与 Great Vibes 的花体排版在新会话页不再出现。
+ * 2026-10-31（用户点名）：本主题的字体改动整份移除 —— Great Vibes 字体文件、
+ * @font-face、两支字体令牌与这里的花体排版一起撤掉，回滚需重新引入字体资产。
+ * 回滚 = 把本条换回 container-type ＋ ::before 两条规则（见上一节注释）。 */
+[data-phase='hero'] div:has(> span > [data-slot='conversation.hero.brand.mark']) {
+  display: none !important;
+}
+
+/* ---- 第三十八轮（2026-10-09）· 提问卡材质对齐 @ / 命令面板
+ * 用户原话：「将 main 区域待处理状态下的选项面板样式，调整为与 @ 和 / 唤出的面板样式一致…
+ * 当前选项面板过于透明（背景过透）…优先复用 @ 与 / 面板已有的样式定义/变量」；对象在
+ * ask_user_question 里点名为「提问」卡（同一缺口的另两张 —— 计划待审 / 等待审批 —— 本轮不动）。
+ *
+ * 「待处理状态」的来历：本表不产生这个词，官方包里它只作 todo 状态用；把它指成这张卡的是
+ * 官方 `pendingInteraction` —— main 区域那时显示的正是「批准 / 提问 / 计划评审」三张卡片之一。
+ * （2026-10-31 补注：这句原先引的是本主题曾内置的状态轨 `build/session-eva-status.js`，该文件
+ * 已按用户要求整份移除，判断所依据的事实改为直接引用官方字段。）
+ *
+ * 根因（源码位置，不是观感推断）：三张卡片的填充都是
+ * `background: var(--dsw-specific-input-major)`（提问卡见
+ * `@deepseek-ai/dsh-client-ui-user-questions/lib/client.js` 内联 CSS 的卡片类；类名带
+ * CSS-Modules 哈希，按 css.6 不写进本文件，取值逐字为：
+ * `width:100%; max-width:var(--dsh-chat-content-width);
+ * border-radius:var(--dsw-radius-xl); background:var(--dsw-specific-input-major);
+ * max-height:min(60vh,520px); box-shadow:var(--dsw-elevation-panel); border:0;
+ * overflow:hidden`），而 @ 与 / 唤出的面板吃的是任务框那一对
+ * `--dsw-menu-surface-fill` + `backdrop-filter: var(--dsw-menu-backdrop-filter)`
+ * （命令框一节 L499 已记：命令窗的现状填充与模糊就是这一对）。
+ * 两支填充的透明度差是 **0**：src/tokens.json 的 `surfaceAlphaOverride`（:19–28）把
+ * `--dsw-specific-input-major` 与 `--dsw-menu-surface-fill` 都钉在亮暗同值的 α0.30。
+ * 差在模糊 —— `--dsw-menu-backdrop-filter` = blur(20px) saturate(130%)
+ * （src/tokens.json:240–243，两档同值），而提问卡的模块里**一条 backdrop-filter 都没有**
+ * ⇒ 壁纸清晰地透上来，就是用户说的「过透」。
+ *
+ * 处理：只换材质这一层，取值逐字照抄 @ 与 / 面板那一对（`var(--dsw-specific-menu)` =
+ * `var(--dsw-menu-surface-fill)` 的官方别名，亮 design-platform.css:273 / 暗 :391；
+ * 模糊 `var(--dsw-menu-backdrop-filter)`）—— 本表不发明颜色或模糊参数（css.8），也不重复
+ * 写值，与命令框、任务框、设置面板共用同两个令牌。钩子是外层 frame（`data-question-key`，
+ * 本表禁写 CSS-Modules 哈希类名 css.6），吃材质的是它的第一个子元素 `<section …card>`，
+ * 所以身份写成 `[data-question-key] > :first-child`。
+ *
+ * 为什么挂在 `::before` 而不是卡片本体：卡片 `overflow: hidden` 且装控件，
+ * `backdrop-filter` 会成为 `position: fixed` 后代的包含块（ui-subagent 的
+ * SubagentHeaderLineage.module.css:109-121，本表设置面板一节 L536–542 已照抄同一理由）；
+ * 官方的菜单面自己也正是这么做的 —— ui-primitives 的 MenuSurface 材质子节点逐字
+ * `position:absolute; inset:0; z-index:-1; border-radius:inherit; background:var(
+ * --dsw-menu-surface-fill); backdrop-filter:var(--dsw-menu-backdrop-filter);
+ * pointer-events:none`。卡片官方 `position: static`，而 `inset: 0` 需要定位祖先，
+ * 所以补 `position: relative` —— 不带偏移量，布局与命中区域零变化（与六张引导卡
+ * L637–640 同型同理由）。
+ *
+ * 不动：提问卡自己的圆角、`max-height`、`box-shadow`、文字色，以及它内部选项 / 编号 /
+ * 徽标 / 自定义输入框 / 页脚的样式与交互，触发条件与显示范围一概不碰；@ 与 / 唤出的面板
+ * 本身一个字节不碰。暗色档无模式分支、不新增也不修改任何令牌（dark.1 冻结）。
+ * 回滚 = 删本段这两条规则。 */
+[data-question-key] > :first-child {
+  position: relative;
+  background-color: transparent !important;
+}
+
+[data-question-key] > :first-child::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: var(--dsw-specific-menu);
+  -webkit-backdrop-filter: var(--dsw-menu-backdrop-filter);
+  backdrop-filter: var(--dsw-menu-backdrop-filter);
+}
+
+/* ---- 第三十九轮（2026-10-09）· 工作区置顶按钮
+ * 用户原话：「请为工作区列表新增「置顶」功能，用于将指定工作区固定在列表顶部…每次添加工作区时，
+ * 原本想置顶的那个工作区都会被往下挪一个位置…置顶状态如无特别说明/默认需要持久化保存」。
+ *
+ * 根因（源码位置，不是观感推断）：官方建工作区时把它**前置**进持久顺序 ——
+ * `@deepseek-ai/dsh-workspace` 的 index.js:685 逐字
+ * `workspaceIds: [id, ...state.workspaceIds]`；客户端模型 upsert() 同步照做
+ * （dsh-api-workspace-controller 的 client.js:292 逐字
+ * `this.committedOrder = [view.workspaceId, ...this.committedOrder]`）。所以「往下挪一位」
+ * 是真的，不是观感。官方没有任何工作区级置顶：注册表记录没有 pin 字段，客户端模型的
+ * `pinnedSessionIds` 只管会话，行菜单 `workspaceMenuItems` 是硬编码两行（重命名 / 删除）
+ * 而不是槽 —— 所以入口只能注入行 DOM。
+ *
+ * 挂点：`src/client.js` 的 `'universe: workspace pins'` effect 把按钮注入官方工作区行的
+ * `span.rowActions`（ui-workspace-client.js:1270-1346 的 ProjectRowItem，行内第 4 个子元素），
+ * 按钮带 `data-uni-ws-pin-button`（值 = workspaceId）与 `data-uni-ws-pin-state`（on|off），
+ * 行本身用 `div[data-row-key^='workspace:']` 定位（该属性逐字来自
+ * `"data-row-key": "workspace:" + group.key`，而 `buildGroup` 的第一个实参是
+ * `workspace.workspaceId`，同文件 :434）。三个都是本主题自己的契约名，不引用任何
+ * CSS-Modules 哈希类（cli.17）。
+ *
+ * 为什么静止态一条都不用写：官方 `.rowActions` 本身就是 `display:none`，只在
+ * `.projectRow:hover` / `.projectRow.menuOpen` 时 `display:inline-flex`（同文件 css$3 逐字），
+ * 所以按钮天然继承官方那套显隐与交互。同理尺寸也逐字照抄官方 `.iconButton` ——
+ * 16×16、`border-radius: var(--dsw-radius-xs)`、`background: 0 0`、`border: none`、
+ * `padding: 0`，两级颜色同官方（静止 `--dsw-alias-label-tertiary`，hover
+ * `--dsw-alias-label-primary`）。唯一的偏离是置顶态：官方 `PinnedIndicator` 用
+ * `--dsw-alias-label-caption`（只读指示器，弱化），这里是可点按钮，用
+ * `--dsw-alias-label-primary` 表达「已生效」。
+ *
+ * 不动：工作区行的高度 / 内边距 / 缩进 / 圆角 / 标题字号，`rowActions` 的 `gap` 与它两个
+ * 官方按钮的像素位置（注入时插在最前，官方那两个位置零变化），`rowActions` 的显隐条件，
+ * 以及官方菜单（重命名 / 删除）一个字节不碰；暗色档无模式分支、不新增也不修改任何令牌
+ * （dark.1 冻结）。回滚 = 删本段三条规则。 */
+[data-uni-ws-pin-button] {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: none;
+  border-radius: var(--dsw-radius-xs);
+  background: transparent;
+  color: var(--dsw-alias-label-tertiary);
+  cursor: pointer;
+}
+
+[data-uni-ws-pin-button]:hover {
+  color: var(--dsw-alias-label-primary);
+}
+
+[data-uni-ws-pin-state='on'] {
+  color: var(--dsw-alias-label-primary);
+}
+
+/* --------------------------------------------------------------------------
+ * 访问模式（权限）触发器右侧那枚 ⌄（2026-10-20，用户点名）
+ *
+ * 用户原话：「另外去掉「权限」旁的「v」形标识。」
+ *
+ * 这个控件不是本主题的，是 dsh 官方的权限选择器：槽位
+ * `[data-slot='conversation.input.permission']` 里是一枚 button（`.dlU_AG_trigger`），
+ * 内部依次是图标 span、文字 span、以及一枚 `span.dlU_AG_chevron`（14×14，颜色
+ * `label-tertiary`）。它是 CSS Modules 的哈希类名，逐版本会变，所以这里按**槽位属性**
+ * 定位（本表 2026-10-08 的 `span[class*='fade']` 用的是同一套做法），不写死哈希。
+ *
+ * 只藏箭头、不动文字与图标：这个按钮开着时同样没有底色可替代（官方那枚触发器点开是
+ * 一个 listbox 弹层，触发器自身不变色），但它的**文字**本身就是状态（「工作区内修改」
+ * 会随档位改名），箭头只是重复「这里能点」。所以撤箭头不损失信息。
+ *
+ * 连带把右内边距补齐：官方给触发器的 `padding: 0 4px 0 8px` 右少左多，那 4px 是留给
+ * 箭头与 4px gap 的；箭头没了之后右 4px / 左 8px 会让文字偏左。改成两侧 8px。
+ * ------------------------------------------------------------------------ */
+[data-slot='conversation.input.permission'] span[class*='chevron'] {
+  display: none;
+}
+
+[data-slot='conversation.input.permission'] button[class*='trigger'] {
+  padding-right: 8px;
+}
+
+/* ------------------------------------------------------------------------
+ * 视界引力（2026-10-30，第四十七轮）
+ *
+ * 用户原话：「重新设计悬停效果，现在还是有背景色和边框，我要的是完全无背景和
+ * 无边框」。此前两版都被否：1px 实线环、暖金 box-shadow 光晕。原因是同一个——
+ * 只要效果围着元素矩形画出来，不管它叫 border 还是 box-shadow，眼睛一律读成
+ * 边框。所以这一版把载体从「矩形」换成「几何」。
+ *
+ * 经 /grilling 八问定稿：底座是纯几何的向心塌陷——悬停时元素整体缩到 0.97
+ * （纯图标按钮 0.90）。矩形上不写 border、不写 background、不写 box-shadow、
+ * 不建伪元素、不发光。会话行再叠一层重力透镜（src/runtime/lens.js 已在跑）。
+ *
+ * 为什么只能是缩放：它是唯一既不生成盒子、又不改布局、还不往矩形上画东西的
+ * 通道。用的是独立的 scale 属性而不是 transform —— 实测宿主的发送键自己带
+ * translateY(-2px)，往 transform 里写会把它吃掉。代价有两个，都在落码后实测：
+ *   ① 缩放同样会重建 absolute/fixed 后代的包含块、创建层叠上下文（实测这 84
+ *      个元素内部 0 个绝对/固定定位后代，暂不触发）；
+ *   ② 缩放会连带改命中区 —— 这条落码后成了真问题，第四十九轮单独修掉，见下。
+ *
+ * 触发面（2026-10-31，第四十九轮）：缩放一并缩小命中区，指针停在最外那 1.5%
+ * （图标按钮 5%）一圈时 :hover 立刻掉线 → 元素弹回原尺寸 → 指针又落回元素上 →
+ * :hover 再次成立，两帧之间无限循环，肉眼就是边缘持续抽搐（实测光标停在左边
+ * 2px 处，scale 在 0.97 与 1.0 之间连续振荡）。病根是「触发状态的那个盒子，同时
+ * 就是收缩的那个盒子」；样式表里唯一稳定的触发面是祖先，而通用元素的祖先里还装
+ * 着别的兄弟，挂上去会连坐（悬停标签就缩按钮）。所以本节所有自缩规则都不再挂
+ * :hover，改挂 data-uni-grav：由 src/runtime/gravity.js 按**未缩放的盒子**记账，
+ * 指针进到元素里挂属性、留在原始盒子里状态不变、离开原始盒子才摘。规则里凡出现
+ * [data-uni-grav] 的地方，属性都由那里写入，样式表不再自己判断悬停。会话行仍用
+ * 「父级悬停」那条（它有专属包装，天然稳定），只有「更多」弹出层里没有包装的行
+ * 跟着属性走。
+ *
+ * 幅度为什么分两档：同一个百分比在大面和小面上不是一回事。发送键 34px 缩
+ * 0.96 只有 1.4px，肉眼看不出来；会话行 256px 用同一比例要缩掉 10px，边界
+ * 会跳。图标按钮走 0.90，其余走 0.97。
+ *
+ * 节奏：进入 220ms、离开 160ms，缓动 cubic-bezier(0.2, 0.85, 0.15, 1) ——
+ * 前段快、尾段收，读作被引力拽了一下然后停住。
+ *
+ * 底色：只压「透明面悬停时凭空浮出的那层 6%」（官方 --dsw-alias-interactive-
+ * bg-hover）。实心面（发送键的蓝、新建会话的白卡、添加文件的浅灰圆）保留宿主
+ * 自己的填充深浅 —— 它们本来就有底色，悬停只是同色变化，不产生多出来的背景。
+ *
+ * 选中态一律不碰（[aria-selected='true'] 排除在外），与 2026-10-07 的定案
+ * 一致。亮暗两档同一条规则：塌陷与颜色无关，不需要分档。
+ * ------------------------------------------------------------------------ */
+
+/* 静止态只声明过渡，不声明缩放值 —— 宿主若自带 transform（实测发送键就是
+   translateY(-2px)），这里不去覆盖它；所以缩放走独立的 scale 属性，而不是往
+   transform 里拼，两者会各自合成，宿主的位移不会被吃掉。
+   none 到 0.97 的插值由浏览器按 1 处理。
+   transition 里补的三条是宿主原本就有的淡变（实测 84 个元素里 7 个带
+   color/border-color/background 的 0.12s 过渡），不补会被这一条覆盖掉。 */
+body[data-uni-motion] button,
+body[data-uni-motion] [role='button'],
+body[data-uni-motion] [data-row-key],
+body[data-uni-motion] [data-dockkit-tab],
+body[data-uni-motion] [data-dsh-panel-entry],
+body[data-uni-motion] [data-disclosure-row],
+body[data-uni-motion] [data-sidebar-right-guide-entry],
+body[data-uni-motion] [data-uni-ws-pin-button],
+body[data-uni-motion] [role='menuitem'],
+body[data-uni-motion] [role='menuitemcheckbox'],
+body[data-uni-motion] [role='menuitemradio'],
+body[data-uni-motion] [role='option'],
+body[data-uni-motion] [role='tab'],
+body[data-uni-motion] [role='radio'],
+body[data-uni-motion] [role='checkbox'],
+body[data-uni-motion] [role='switch'],
+body[data-uni-motion] [role='combobox'],
+body[data-uni-motion] [role='treeitem'] {
+  transform-origin: 50% 50%;
+  transition: scale 160ms cubic-bezier(0.2, 0.85, 0.15, 1), color 120ms, border-color 120ms, background-color 120ms;
+  /* 透明面悬停时凭空浮出的那层 6% 底色，是宿主用这支令牌画的。把令牌就地改
+     成 transparent，等于让官方那条规则自己画不出东西 —— 比逐个元素写
+     background-color: transparent 更准：实心面（发送键的蓝、白卡）悬停时改的
+     是自己的填充色，不经过这支令牌，所以不会被误伤。实测：图标按钮悬停底色
+     从 rgba(38,49,72,0.06) 回到透明，发送键仍是 rgb(65,118,230)。
+     accent 那支是同一件事的高亮版（菜单项、列表项悬停走它，实测下拉菜单里
+     `[role='menuitem']` 悬停就是这支），一并压掉；solid / danger / active 三支
+     不动 —— solid 是实心面自己的深浅、danger 是危险操作的红色语义、active 是
+     选中态，压掉会伤状态表达，与「实心面保留宿主填充」「选中态一律不碰」两条
+     定案冲突。
+
+     下面四支是 2026-10-30 补的第二批：宿主不是所有悬停都走 generic 那支。设置
+     面板左侧导航走 `--dsw-specific-sidebar-nav-item-hover`（实测悬停立刻浮出一块
+     实心 rgb(241,243,245)，正是用户说的「设置还是默认背景」），工具条按钮走
+     `-button-tool-bar-hover`，对话轮触发器走 `-turn-trigger-bg-hover`，中性填充
+     面走 `-fill-hover`。这四支在整张表里**只出现在 background 声明里**（逐个扫
+     过 styleSheets 确认，无一处用于 color），所以就地压成 transparent 不会把文
+     字一起弄没。`-button-floating-hover` 与 `-button-primary-hover` 不动：它们
+     是浮动/主按钮自己的填充深浅，属「实心面保留宿主填充」。 */
+  /* 第五十六轮（2026-10-31）复核：这段压制**保留**。用户要的是「悬停时只剩引力
+     收束」，而宿主悬停默认会浮出一层底色 —— 压掉这六支令牌，悬停才真的只剩
+     scale 收束。代价是选中态与悬停共用同一支 interactive-bg-hover，令牌被压成
+     transparent 后选中行也画不出底色，所以选中钩子上单独把两支还原回官方比例
+     （见本表末尾「选中态」一节）。这是「悬停无底色 + 选中官方底色」唯一能同时
+     成立的组合。 */
+  --dsw-alias-interactive-bg-hover: transparent;
+  --dsw-alias-interactive-bg-hover-accent: transparent;
+  --dsw-alias-fill-hover: transparent;
+  --dsw-alias-button-tool-bar-hover: transparent;
+  --dsw-specific-sidebar-nav-item-hover: transparent;
+  --dsw-alias-turn-trigger-bg-hover: transparent;
+}
+
+/* 悬停：向心塌陷。元素整体缩向中心，边界向内收，读作被引力抓住、正在落向
+   视界。矩形上依旧什么都没有。
+   触发面是 [data-uni-grav]（src/runtime/gravity.js 按未缩放的盒子记账），不是
+   :hover —— 后者跟着缩放一起丢掉命中区，边缘会无限抽搐，见本节开头。
+   transform-origin 钉回 50% 50%：实测宿主给这些元素留了各不相同的像素原点
+   （有的 108px 12px、有的 14px 14px），不钉死就变成"朝某个角缩"。
+   行不在这条里 —— 行走下面的「父级悬停」，理由见那里；所以 [role='treeitem']
+   也只进静态那条（拿令牌压制与过渡），不进这条（行的边缘抖动交给父级包装）。
+   角色那批是 2026-10-30 补的覆盖面：设置面板、插件列表、模型选择弹层、权限
+   弹层的行不是 button 也不是 [data-row-key]，是 menuitem / option / tab 这类
+   角色，漏了它们，那些界面悬停就还是官方那层淡色底。 */
+body[data-uni-motion] button:not(:has([data-slot='sidebar.brand.name']))[data-uni-grav],
+body[data-uni-motion] [role='button']:not([aria-selected='true'])[data-uni-grav],
+body[data-uni-motion] [data-dockkit-tab][data-uni-grav],
+body[data-uni-motion] [data-dsh-panel-entry][data-uni-grav],
+body[data-uni-motion] [data-disclosure-row][data-uni-grav],
+body[data-uni-motion] [data-sidebar-right-guide-entry][data-uni-grav],
+body[data-uni-motion] [data-uni-ws-pin-button][data-uni-grav],
+body[data-uni-motion] [role='menuitem']:not([aria-selected='true'])[data-uni-grav],
+body[data-uni-motion] [role='menuitemcheckbox'][data-uni-grav],
+body[data-uni-motion] [role='menuitemradio'][data-uni-grav],
+body[data-uni-motion] [role='option']:not([aria-selected='true'])[data-uni-grav],
+body[data-uni-motion] [role='tab']:not([aria-selected='true'])[data-uni-grav],
+body[data-uni-motion] [role='radio'][data-uni-grav],
+body[data-uni-motion] [role='checkbox'][data-uni-grav],
+body[data-uni-motion] [role='switch'][data-uni-grav],
+body[data-uni-motion] [role='combobox'][data-uni-grav] {
+  scale: 0.97;
+  transform-origin: 50% 50%;
+  transition: scale 220ms cubic-bezier(0.2, 0.85, 0.15, 1), color 120ms, border-color 120ms, background-color 120ms;
+}
+
+/* 纯图标按钮（发送键、添加文件、侧栏折叠）尺寸天然小，同一比例看不出位移，
+   单独走 0.90。:has() 的权重按最具体的参数算，所以这条压得住上一条。
+   2026-10-30 跟着作用域一起放到 body[data-uni-motion]：设置面板、浮层里的关闭
+   按钮同样是小图标，留在 root 里会让它们只缩 3%，与侧栏那批不一致。 */
+body[data-uni-motion] button:has(> svg:only-child)[data-uni-grav] {
+  scale: 0.9;
+}
+
+/* 兜底：凡是 gravity.js 打了 data-uni-grav 的元素都收束（第五十七轮）。
+   用户定案「所有悬停都要有引力收束」，而上面那份角色清单永远漏人 —— 输入框上方
+   的工具条是整条 div、设置导航格与插件分类项各用一套组件，既不是 button 也没有
+   角色属性。gravity.js 于是除了认清单，还认 cursor:pointer 作为兜底判据（见
+   src/runtime/gravity.js 的 pointerTarget）。
+
+   这条的特异性必须压到最低，否则会盖掉上面按角色写的细则（尤其是纯图标按钮的
+   0.90 和带 :not 的选中豁免）。所以三个 :not 全部包在 :where() 里 —— :where()
+   不贡献权重，整条只剩 body[data-uni-motion] 加 [data-uni-grav]，低于任何一条
+   角色规则，只在该元素没有专属规则时生效。 */
+/* 2026-10-31（第七十轮）：品牌按钮必须从这条兜底里排除。
+   兜底是第五十七轮加的，只认 [data-uni-grav]，没有带上 2479 行那条
+   `button:not(:has([data-slot='sidebar.brand.name']))` 的排除。于是指针落在
+   品牌按钮上（SYSTEM 标签、两个 SPAN 之间的 gap、按钮右侧 padding 这些
+   不属于任何 SPAN 的范围）时，gravity.js 按最近的可挂元素把属性挂到按钮
+   本身，这条就把整条品牌按钮缩到 0.97 —— 按钮里的头像、WHALE-01、SYSTEM
+   三件套跟着一起缩，正是用户报的「某个范围悬停时三个标识同时缩」。
+   排除只加在 :where() 里，不贡献权重：品牌按钮在任何情况下都不整体缩，
+   三区各自那条（2540–2560）照旧 —— Logo 与 WHALE-01 缩自己的 SPAN，
+   SYSTEM 缩 button::after，互不连坐。 */
+body[data-uni-motion] [data-uni-grav]:where(:not([aria-selected='true']):not([aria-checked='true']):not([aria-current='true']):not(:is(button:has([data-slot='sidebar.brand.name'])))) {
+  scale: 0.97;
+  transform-origin: 50% 50%;
+  transition: scale 220ms cubic-bezier(0.2, 0.85, 0.15, 1), color 120ms, border-color 120ms, background-color 120ms;
+}
+
+/* 品牌三件套（Logo / WHALE-01 / SYSTEM）没有各自的外层包装，三者同在一个
+   button 里：Logo 与字标是两个 SPAN，SYSTEM 是主题自己用 button::after 画的
+   标签，没有对应元素。所以「父级悬停」这套隔离用不上 —— 它们的最近共同祖先
+   就是那条 216px 的按钮，挂上去等于三者一起缩，正是要修掉的连坐。
+   只能各挂各的：
+   · Logo → 承载它的 SPAN 自己缩到 0.90。它是 24×17.66，命中区只内移 0.36px，
+     指针停在边上也不会抖。
+   · WHALE-01 → 承载它的 SPAN 自己缩到 0.97。这个 SPAN 同时是宿主的「新会话」
+     点击区，命中区与点击区一致，没有凭空多出来的触发范围。
+   · SYSTEM → 缩 button::after 本身。伪元素的缩放不改按钮的盒子，命中区稳定。
+   触发面与上一节同一个属性：指针落在哪个 SPAN 上，就由哪个 SPAN 拿到
+   [data-uni-grav]（引力引擎取最近的可挂元素，按钮是 SPAN 的祖先，不会被顺带
+   激活）；指针落在 SYSTEM 标签区时命中目标就是按钮自己，属性才落到按钮上。
+   三者因此互不连坐，也不带动整条按钮。
+   原来补的那条 :has(> :hover)::after { scale: 1 } 抑制在改成属性触发后成了
+   死规则 —— 指针在 SPAN 上时按钮根本不带属性 —— 已删。 */
+body [data-slot='root'] span:has(> [data-slot='sidebar.brand.mark']),
+body [data-slot='root'] span:has(> [data-slot='sidebar.brand.name']),
+body [data-slot='root'] button:has([data-slot='sidebar.brand.name'])::after {
+  transform-origin: 50% 50%;
+  transition: scale 160ms cubic-bezier(0.2, 0.85, 0.15, 1);
+}
+
+body [data-slot='root'] span:has(> [data-slot='sidebar.brand.mark'])[data-uni-grav] {
+  scale: 0.9;
+  transition: scale 220ms cubic-bezier(0.2, 0.85, 0.15, 1);
+}
+
+body [data-slot='root'] span:has(> [data-slot='sidebar.brand.name'])[data-uni-grav] {
+  scale: 0.97;
+  transition: scale 220ms cubic-bezier(0.2, 0.85, 0.15, 1);
+}
+
+body [data-slot='root'] button:has([data-slot='sidebar.brand.name'])[data-uni-grav]::after {
+  scale: 0.9;
+  transition: scale 220ms cubic-bezier(0.2, 0.85, 0.15, 1);
+}
+
+/* 行的塌陷、底色压制与透镜，一律挂在「父级」悬停上。父级是每行专属的包装
+   （实测 15 行都是同尺寸 SPAN，:only-child 正好把它们挑出来），它不参与缩放，
+   所以指针停在行边缘时命中状态稳定。
+   为什么不能直接写在行上：行缩到 0.97 后左右各内移 4px，指针若落在这 4px 里，
+   命中就 hover→unhover→hover 无限循环 —— 实测光标停在左边 2px 处，scale 在
+   0.97 与 1.0 之间连续振荡，肉眼就是边缘持续抽搐。
+   第四十九轮把其余元素改成了属性记账（gravity.js），这两条不必跟：父级本来
+   就不缩，触发面已经稳定，改成属性反而是多一段没有收益的耦合。 */
+body [data-slot='root'] *:has(> [data-row-key]:only-child):hover > [data-row-key]:not([aria-selected='true']) {
+  scale: 0.97;
+  background-color: transparent;
+  border-color: transparent;
+}
+
+/* 主角透镜的位移图由 src/runtime/lens.js 在挂载时算好，CSS 只负责在悬停时接
+   上。行是透明底，透镜直接透到天空画布；与塌陷同时发生，读作空间被压弯、物
+   体被吸近。 */
+body [data-slot='root'] *:has(> [data-row-key^='session:']:only-child):hover > [data-row-key^='session:']:not([aria-selected='true']) {
+  backdrop-filter: url(#uni-lens-row);
+}
+
+/* 「更多」弹出层里的行没有专属包装（父级同时装 7–8 行，用父级悬停会连坐整
+   列），所以只能自己拿属性：行走的就是 gravity.js 那套未缩放盒子记账，指针在
+   原始行框里就一直塌陷，跨出去才还原，边缘不再来回抽搐。 */
+body [data-slot='root'] [data-row-key]:not(:only-child):not([aria-selected='true'])[data-uni-grav] {
+  scale: 0.97;
+  background-color: transparent;
+  border-color: transparent;
+}
+
+/* reduced-motion：不播塌陷，悬停直接落在终态。这里必须 !important —— 属性
+   那条多了 :not([aria-selected='true'])[data-uni-grav] 两级（属性选择器与 :hover
+   同为 class 级权重，不改变这条结论），权重高过本条的静态规则，不加会被它写回
+   的 220ms 盖掉。 */
+body[data-uni-motion='reduced'] button,
+body[data-uni-motion='reduced'] [role='button'],
+body[data-uni-motion='reduced'] [data-row-key],
+body[data-uni-motion='reduced'] [data-dockkit-tab],
+body[data-uni-motion='reduced'] [data-dsh-panel-entry],
+body[data-uni-motion='reduced'] [data-disclosure-row],
+body[data-uni-motion='reduced'] [data-sidebar-right-guide-entry],
+body[data-uni-motion='reduced'] [role='menuitem'],
+body[data-uni-motion='reduced'] [role='menuitemcheckbox'],
+body[data-uni-motion='reduced'] [role='menuitemradio'],
+body[data-uni-motion='reduced'] [role='option'],
+body[data-uni-motion='reduced'] [role='tab'],
+body[data-uni-motion='reduced'] [role='radio'],
+body[data-uni-motion='reduced'] [role='checkbox'],
+body[data-uni-motion='reduced'] [role='switch'],
+body[data-uni-motion='reduced'] [role='combobox'],
+body[data-uni-motion='reduced'] [role='treeitem'],
+body[data-uni-motion='reduced'] span:has(> [data-slot='sidebar.brand.mark']),
+body[data-uni-motion='reduced'] span:has(> [data-slot='sidebar.brand.name']),
+body[data-uni-motion='reduced'] button:has([data-slot='sidebar.brand.name'])::after,
+body[data-uni-motion='reduced'] [data-uni-grav],
+body[data-uni-motion='reduced'] [data-uni-ws-pin-button] {
+  transition: none !important;
+}
+
+/* ============================================================================
+ * 选中态：引力透镜 + 多普勒红移（2026-10-30 第四十八轮；2026-10-31 第五十轮重做）
+ * ----------------------------------------------------------------------------
+ * 【整段已是历史存档】第五十六轮（2026-10-31）用户定案「只保留鼠标悬停时的引力
+ * 收束，其他全部删除，恢复成官方默认效果」，本节描述的所有规则（引力透镜的 SVG
+ * 位移图、多普勒的两条 text-shadow、入场 WAAPI、--uni-sel-k、文字节点标记）都已
+ * 从本表与 selection.js 中删除。下面只保留建模与取值的历史记录，不再对应任何
+ * 现行规则；选中态现在完全由宿主官方样式表达。
+ *
+ * 第五十轮（2026-10-31）改了什么，为什么改：
+ *   用户当轮逐条给了新规格，与第四十八轮有三处硬冲突，所以两套效果整体重做、
+ *   不是调参：
+ *     ① 多普勒的颜色：旧版是「左品牌青 + 右错误红」的对称双向分离，新规格只要
+ *        暖色副影（香槟金 / 琥珀铜）且要求「有明确方向、不要均匀向四周发光」。
+ *        现在只往右侧长波端拖两层，左侧干净 —— 红移本来就是单侧的。
+ *     ② 引力透镜的形变：旧版是六层对称 text-shadow，本质是「重影」不是「形变」。
+ *        新规格要求「字形局部轮廓非对称弯曲」，所以几何交给
+ *        src/runtime/selection.js 的 #uni-sel-lens（feDisplacementMap + 固定
+ *        径向位移图，光学中心偏右 6% 才有非对称），CSS 这边只留极淡的折射重影。
+ *        位移图不用 feTurbulence —— 随机噪声在文字边缘读作毛刺，规格明确禁止。
+ *     ③ 入场：旧版写死「无动画」。新规格要求选中瞬间一次光谱偏移 / 折射变化，
+ *        由 selection.js 用 WAAPI 跑一次两阶段关键帧（PEAK → 1），CSS 只定义
+ *        稳定值。驱动变量是下面注册的 --uni-sel-k。
+ *   钩子也换了：透镜不再直接挂在六类选中容器上（filter 会连带图标一起扭），
+ *   改挂 selection.js 逐对象找到并标记的文字节点 data-uni-sel-text；找不到文字
+ *   节点的对象整类跳过，宁可没有效果也不整行扭曲。
+ *   多普勒仍只作用于会话行，钩子 [data-row-key^='session:'][aria-selected] 不变。
+ *
+ *   ---
+ *   以下「现象一 / 现象二」两段是第四十八轮的原始描述，记录当时的建模与取值，
+ *   已被第五十轮方案替换；保留以便回溯，不再对应现行规则。
+ *
+ * 与上面「视界引力」悬停是两套独立现象，不共享链：悬停 = 元素向心塌陷，
+ * 选中 = 字形本身被光线改变。选中态一律不位移（scale 不动），只动字形。
+ *
+ * 现象一 · 引力透镜（设置导航、模型列表当前项、权限列表当前项、会话标签页、
+ * 停靠面板标签、右侧栏指南条目）
+ *   物理模型：非奇异等温球（NIS）透镜。偏折角随碰撞参数上升并饱和：
+ *     α(θ) = θE · ( √(θ² + s²) − s ) / θ
+ *   θ → 0 时 α → 0，字形中心不受偏折，所以字芯清晰；θ ≫ s 时 α → θE，
+ *   字形边缘达到饱和偏折。取核心尺度 s = 1.1px（约等于 12px 字号的笔画
+ *   半宽），边界饱和偏折 θE = 0.5px。
+ *   渲染：CSS 无法真正弯曲字形几何，于是按「两级像」画法实现 —— 主像在
+ *   边界处偏折 θE，用 ±0.5px 的极淡副本贴轮廓压出折射边；次级像位于
+ *   3.2θE ≈ 1.6px 处，用 30% 的副本画成与字芯分离的极细重影。原字形始终
+ *   在最上层，所以字芯完全清晰，只有边缘多出一圈重影。
+ *   消色差：副本一律用 currentColor（字形自身颜色），不做任何色相偏移。
+ *   引力透镜对可见光是消色差的 —— 弯曲改变光程，不改变波长。
+ *
+ * 现象二 · 多普勒红移（侧栏会话行，[data-row-key^='session:'] 且 aria-selected）
+ *   物理模型：吸积盘绕转，视线方向速度 β = v/c。相对论多普勒频移
+ *     λ_obs / λ_emit = √( (1+β) / (1−β) )
+ *   取 β = 0.045（约 1.35 万 km/s，黑洞吸积盘内区的量级）：
+ *     远离侧 √(1.045 / 0.955) = 1.046 → 波长拉长 4.6%
+ *     朝向侧 √(0.955 / 1.045) = 0.956 → 波长压缩 4.4%
+ *   盘的一侧朝观察者运动（蓝移），另一侧远离（红移），所以渲染成横向
+ *   光谱分离：左侧 −0.62px 青（短波端）、右侧 +0.62px 红（长波端），
+ *   再各加一层 −1.35px / +1.35px 的淡层做渐次衰减。
+ *   青取 brand-primary（#87cbd5 / #006874），红取 state-error-primary
+ *   （#f1938c / #ab413e），两支都是主题令牌，不写字面色值。
+ *
+ * 禁止项（用户规格，第四十八至五十四轮口径）：眼帘里不许出现主题自绘的容器装饰。
+ * 第五十五轮（2026-10-31）用户改口径并定案：「之前把选中的边框和背景删了，现在
+ * 删除相关代码，恢复成 DSH 官方默认的效果。」于是下面那个七类钩子的压制块
+ * （background-color / border-color / text-decoration-line 归零）与选中标签页的
+ * ::after 下划线压制一并删除 —— 宿主用底色、边框、下划线表达「选中」的样子全部
+ * 原样回归。多普勒红移仍只叠在会话行的字形上，与官方底色共存。
+ *
+ * 参与范围：只有主文字。会话行里图标位（第 1 个子元素）、时间戳与行操作区
+ * （第 3、4 个子元素）全部 reset 掉 text-shadow —— 图标是 svg 本就不吃
+ * text-shadow，时间戳和操作区需要显式清。
+ *
+ * 无动画：选中是即时状态，不加 transition（也避免和悬停的 220ms 打架）。
+ * ========================================================================= */
+
+/* 选中态：引力放大，无底色无边框（第五十八轮，2026-10-31）
+   ----------------------------------------------------------------------------
+   用户定案（m02209）：「修，并且把这些跟那七类一起调整为会话选定状态的放大效果。
+   不要背景和边框。」
+
+   所以选中态现在只有一种表达，与会话行完全同构的三件事：
+     · 字号 1.08em —— 被引力拉近
+     · 字距 0.02em —— 轮廓撑开，不是加粗
+     · 单侧单层偏移像 0.45px 0.45px 0 currentColor —— 只有一条边多出偏移。
+       对称双影会被读成「文字加重」，第四十八轮已证伪，不要再改成对称的。
+   底色与边框一律显式压平：用户要的是「不要背景和边框」，不依赖令牌压制间接达成。
+
+   覆盖九类钩子 —— 原来的七类，加上 `[role='option'][aria-selected='true']` 与
+   `[role='radio'][aria-checked='true']`：
+   命令列表（`/` 与 `@`）的键盘高亮是前者，它的官方规则
+     .pc3rQa_item.pc3rQa_active { background: var(--dsw-alias-interactive-bg-hover) }
+   读的正是被本表压成 transparent 的那支令牌，此前完全看不见位置（用户按键找不到
+   高亮）。面板里的二选一、单选项是后者 —— 用户实测指出 `wnLwla_optionSelected`
+   那支 `role='radio' aria-checked='true'` 当时毫无变化（m02304），补进来才生效。
+   这两支都补了放大与偏移像，不再依赖底色。
+
+   为什么字号挂在直接子 span 上而不是容器上：容器（tab、option、菜单项）自带的
+   字号会被子级显式值覆盖；若同时给容器和子级写 1.08em，会连乘成 1.17。所以容器
+   只承担两个可继承属性（字距、偏移像），放大只给一层直接子 span。
+
+   会话行不走这一段 —— 它的标题是行内第二个 span，由下面「会话行选中：引力放大」
+   单独处理，这里用 :not([data-row-key]) 明确让开，避免双重命中。
+   ------------------------------------------------------------------------- */
+body[data-uni-motion] [aria-current='true']:not([data-row-key]),
+body[data-uni-motion] [role='menuitemradio'][aria-checked='true'],
+body[data-uni-motion] [role='radio'][aria-checked='true'],
+body[data-uni-motion] [role='menuitem'][class*='_selected_'],
+body[data-uni-motion] [role='tab'][aria-selected='true'],
+body[data-uni-motion] [data-dockkit-tab][aria-selected='true'],
+body[data-uni-motion] [data-sidebar-right-guide-entry][aria-selected='true'],
+body[data-uni-motion] [role='option'][aria-selected='true'] {
+  letter-spacing: 0.02em;
+  text-shadow: 0.45px 0.45px 0 currentColor;
+  background-color: transparent;
+  border-color: transparent;
+  transition:
+    letter-spacing 200ms ease-out,
+    text-shadow 200ms ease-out;
+}
+
+body[data-uni-motion] [aria-current='true']:not([data-row-key]) > span,
+body[data-uni-motion] [role='menuitemradio'][aria-checked='true'] > span,
+body[data-uni-motion] [role='radio'][aria-checked='true'] > span,
+body[data-uni-motion] [role='menuitem'][class*='_selected_'] > span,
+body[data-uni-motion] [role='tab'][aria-selected='true'] > span,
+body[data-uni-motion] [data-dockkit-tab][aria-selected='true'] > span,
+body[data-uni-motion] [data-sidebar-right-guide-entry][aria-selected='true'] > span,
+body[data-uni-motion] [role='option'][aria-selected='true'] > span {
+  font-size: 1.08em;
+  transition: font-size 200ms ease-out;
+}
+
+body[data-uni-motion='reduced'] [aria-current='true']:not([data-row-key]),
+body[data-uni-motion='reduced'] [role='menuitemradio'][aria-checked='true'],
+body[data-uni-motion='reduced'] [role='radio'][aria-checked='true'],
+body[data-uni-motion='reduced'] [role='radio'][aria-checked='true'] > span,
+body[data-uni-motion='reduced'] [role='menuitem'][class*='_selected_'],
+body[data-uni-motion='reduced'] [role='tab'][aria-selected='true'],
+body[data-uni-motion='reduced'] [data-dockkit-tab][aria-selected='true'],
+body[data-uni-motion='reduced'] [data-sidebar-right-guide-entry][aria-selected='true'],
+body[data-uni-motion='reduced'] [role='option'][aria-selected='true'],
+body[data-uni-motion='reduced'] [role='option'][aria-selected='true'] > span,
+body[data-uni-motion='reduced'] [role='tab'][aria-selected='true'] > span {
+  transition: none;
+}
+
+/* 底色归还已撤除（第五十八轮）
+   ----------------------------------------------------------------------------
+   第五十五至五十七轮曾在选中的六类钩子上把 --dsw-alias-interactive-bg-hover 与
+   -accent 还原成官方比例（亮 9% / 14%，暗 10.2% / 18%），为的是让宿主那条
+     .sessionRow:hover, .sessionRow.selected { background: var(--dsw-alias-interactive-bg-hover) }
+   画得出底色。用户 m02209 要求「不要背景和边框」，两条还原规则整段删除，选中态
+   改由上面的引力放大表达。悬停侧的令牌压制（本表 2560 行附近）保留不动。
+   ------------------------------------------------------------------------- */
+
+/* 会话行选中：引力放大（第五十七轮，2026-10-31）
+   ----------------------------------------------------------------------------
+   用户定案：「去掉底色，将会话行选中态改为引力放大效果 —— 字体尺寸增加约 8%、
+   字符间距轻微增加、字形边缘产生微妙的透镜折射感」，并逐题选定：只放大标题、
+   字距 0.02em、单层单向偏移像、200ms ease-out 同时过渡、只删会话行这一处底色。
+
+   物理意象：光经过引力场被拉向中心，字的轮廓向外扩张一点、边缘被折射出极细的
+   一条偏移像。三件事必须同时成立才读得对：
+     · 整体放大 1.08 —— 像被引力拉近
+     · 字距 0.02em —— 轮廓被撑开，不是单纯加粗
+     · 单侧单层偏移像 0.45px 0.45px 0 currentColor —— 只有一条边多出偏移。
+       对称双影会被读成「文字加重」，前几轮已经证伪，不要再改成对称的。
+
+   为什么这只删一处底色：底色来自宿主
+     .sessionRow:hover, .sessionRow.selected { background: var(--dsw-alias-interactive-bg-hover) }
+   本表把该令牌压成 transparent 让悬停只剩收束，上一版在七类选中钩子上把它还原成
+   10.2% / 9%。现在只撤会话行这一支，并且显式压回 transparent —— 显式写是因为
+   [aria-current='true'] 等兄弟钩子可能与它同时命中同一元素，光靠「从名单里删掉」
+   不够确定。
+
+   选择器只能用契约属性：标题是行内第二个 span（第一个是图标槽），哈希类名
+   .wnFoaW_title 过不了 css.6。时间戳（第三个 span）与 32px 行高一律不动。
+   ------------------------------------------------------------------------- */
+body[data-uni-motion] [data-row-key^='session:'][aria-selected] > span:nth-of-type(2) {
+  transition:
+    font-size 200ms ease-out,
+    letter-spacing 200ms ease-out,
+    text-shadow 200ms ease-out;
+}
+
+/* 选中放大对 IM 行同样生效：font-size / letter-spacing 写在标题 span 上，dsh-im 的
+ * 重画层是它的伪元素，字号与字距一并继承。唯一要换层的是 text-shadow —— 它会穿过
+ * -webkit-text-fill-color: transparent，把藏起来的原文以阴影形式重新画出来，与重画层
+ * 错位叠成两份字（第八十七轮，2026-11-06）。 */
+body[data-uni-motion] [data-row-key^='session:'][aria-selected='true'] > span:nth-of-type(2) {
+  font-size: 1.08em;
+  letter-spacing: 0.02em;
+  text-shadow: 0.45px 0.45px 0 currentColor;
+}
+
+body[data-uni-motion] [data-row-key^='session:'][aria-selected='true'] > span[data-dsh-im-session-text] {
+  text-shadow: none;
+}
+
+body[data-uni-motion] [data-row-key^='session:'][aria-selected='true'] > span[data-dsh-im-session-text]::after {
+  text-shadow: 0.45px 0.45px 0 currentColor;
+}
+
+body[data-uni-motion] [data-row-key^='session:'][aria-selected='true'] {
+  --dsw-alias-interactive-bg-hover: transparent;
+  --dsw-alias-interactive-bg-hover-accent: transparent;
+}
+
+body[data-uni-motion='reduced'] [data-row-key^='session:'][aria-selected] > span:nth-of-type(2) {
+  transition: none;
+}
+
+/* 其他对象选中：无效果（第五十四轮，2026-10-31）
+   ----------------------------------------------------------------------------
+   用户当轮叫停并定案：「删除其他所有效果，只保留会话行的选中效果。」
+
+   历史轨迹，避免有人再把它加回来：
+     · 第四十八轮：六层对称 text-shadow（被读作「重影不是形变」）。
+     · 第五十至五十二轮：SVG 位移图 + feDisplacementMap + ::after 外侧像 +
+       WAAPI 两阶段入场（被用户判为「根本没法看」）。
+     · 第五十三轮：改成放大 1.07，规则、滚动闸、reduced-motion 都写完并通过自检，
+       落地前被当轮叫停，全部删除。
+
+   现状（第五十五轮更新）：除会话行之外，任何选中对象都不带主题自己加的任何视觉
+   变化 —— 字形不位移、不缩放、不重影、不改色。原先留着的那个「压制块」（七类
+   选中钩子的 background-color / border-color / text-decoration-line 归零）以及
+   选中标签页 ::after 的下划线压制，已在第五十五轮按「恢复成 DSH 官方默认的效果」
+   删除：宿主用底色、边框、下划线表达选中的样子全部原样回归，本表不再碰。
+   ------------------------------------------------------------------------- */
+
+/* 多普勒红移：已删除（第五十六轮，2026-10-31）
+   ----------------------------------------------------------------------------
+   用户定案「只保留鼠标悬停时的引力收束，其他全部删除」。会话行的暖金副影连同
+   它的驱动变量一起撤除，会话行选中现在只剩宿主官方的底色。
+
+   撤掉的东西（都在这一轮）：两条 text-shadow 规则（亮档 0.6/1.3px 78%/46%、
+   暗档 0.75/1.5px 88%/62%）、只清时间戳与行操作区的 `> span:nth-child(n+3)` 复位、
+   `@property --uni-sel-k`（入场强度系数，已无消费方）、以及 body[data-ds-dark-theme]
+   块里的 --uni-sel-warm-near / --uni-sel-warm-far。
+   ------------------------------------------------------------------------- */
+
+/* 本轮改动卡片的头部：悬停与聚焦不留底色（第五十九轮，2026-10-31）
+   ----------------------------------------------------------------------------
+   用户指定：改动卡片头部那个 button 的常态、hover:not(:disabled) 与 focus-visible，
+   background 一律改为透明。官方那条读的是卡片自己声明的令牌
+     HOHHba_card { --changes-fill / --changes-hover }
+     HOHHba_header 常态 { background: var(--changes-fill) }
+     HOHHba_header 的 hover / focus-visible { background: var(--changes-hover) }
+   亮档 --changes-fill 落 --dsw-static-neutral-50、--changes-hover 落 -100，
+   暗档分别落 -850 与 -800。
+
+   为什么不抄那串类名：HOHHba_header 是 CSS-Modules 哈希名，css.6 与 cli.17 都明令
+   禁止，它们的正则只拦以点开头的类选择器与字符串 —— 所以这里用属性子串匹配绕开。
+   代价是官方一改哈希名这条就静默失效，而失效的表现只是回到官方底色，不报错、也
+   不连累别的规则。注释里也不写那串带点的全名，否则同样会被两道门禁抓出来。
+
+   常态那条特异性 (0,2,1) 已经高过官方的 (0,1,0)；官方 hover 也是 (0,2,1)，所以
+   hover / focus-visible 必须单独再写一条更重的 (0,4,1) 把同权重的官方规则压下去，
+   不能只靠常态那条去覆盖。
+   ------------------------------------------------------------------------- */
+body[data-uni-motion] [class*='HOHHba_header'] {
+  background-color: transparent;
+}
+
+body[data-uni-motion] [class*='HOHHba_header']:hover:not(:disabled),
+body[data-uni-motion] [class*='HOHHba_header']:focus-visible {
+  background-color: transparent;
+}
+
+/* --------------------------------------------------------------------------
+ * 编辑卡片（changed-files）的液态玻璃（2026-11-01）
+ *
+ * 用户原话是「去掉这张卡片的全部底色，改成液态玻璃效果」。官方把卡面写成
+ * `background: var(--dsw-alias-bg-layer-1)`（亮档 #f9fafc、暗档 #1e252f），那是一条
+ * 不透明底 —— 玻璃要能看见身后的画面，底必须先清掉，材质才有东西可采样。
+ *
+ * 与输入卡同一套三段式：卡面 `background: transparent`、`::before` 模糊背板（兜底行
+ * + url() 折射行）、`::after` 玻璃厚壁。材质必须落在伪元素上，理由见「输入卡的液态
+ * 玻璃」那节：任何挂在卡片自身的 filter 都会把卡片变成层叠上下文，而这张卡片里有一个
+ * portal 出去的 tooltip。
+ *
+ * 位移图由 src/runtime/glass.js 的 `uni-lg-card` target 按卡片实测尺寸现画。卡片收起
+ * 态高度一致，所以右栏入口卡那种「六个面共享一张图」的限制在这里不发作；只有展开的
+ * 那一张会读到被拉伸的挡板，那是它自己的形状，不是别人的。
+ *
+ * 选择器沿用 header 那条的属性子串匹配（css.6 / css.7 只拦以点开头的类选择器与字符串），
+ * 带 body 前缀是为了让特异性 (0,3,0) 压过官方的 (0,1,0)。
+ * ------------------------------------------------------------------------ */
+body[data-uni-motion] [class*='HOHHba_card'] {
+  position: relative;
+  background: transparent;
+}
+
+body[data-uni-motion] [class*='HOHHba_card']::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  -webkit-backdrop-filter: blur(var(--cp-glass-card)) saturate(135%);
+  backdrop-filter: blur(var(--cp-glass-card)) saturate(135%);
+  -webkit-backdrop-filter: url(#uni-lg-card) blur(var(--cp-glass-card)) saturate(135%);
+  backdrop-filter: url(#uni-lg-card) blur(var(--cp-glass-card)) saturate(135%);
+}
+
+body[data-uni-motion] [class*='HOHHba_card']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--dsw-alias-label-primary) 12%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, var(--dsw-alias-bg-base) 40%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--dsw-alias-label-primary) 6%, transparent),
+    transparent 38%
+  );
+}
+
+/* ------------------------------------------------------------------------ */
+/* 2026-11-02 用户消息气泡：官方给它的底色是 `--dsw-specific-bubble`（亮档
+ * #edf3fe、暗档 #2c2c2e），现在整块撤掉，换成与编辑卡片同一种毛玻璃。
+ *
+ * 只做材质、不做折射：气泡是每条消息一个实例，数量随会话增长，每个都挂位移图会
+ * 持续吃 GPU；卡片与右栏入口卡是低频的，气泡是高频的。所以这里没有折射滤镜那一
+ * 行，也不需要 src/runtime/glass.js 新增 target。
+ *
+ * 区分靠 `::before` 上的淡色调，不靠文字颜色：纯玻璃会把「谁说的」这一层信息抹掉，
+ * 而气泡的 color 与正文、行内代码、链接共用同一套对比关系，单独改它会连带错位。
+ * 色调取官方气泡令牌的 40% —— 亮档 #edf3fe 很浅，再高就回到实底；暗档 #2c2c2e
+ * 比背景亮一档，40% 足够分块。亮暗同值。
+ *
+ * 选择器沿用属性子串匹配（css.6 / css.7 只拦以点开头的类选择器与字符串），
+ * 带 body 前缀让特异性 (0,3,0) 压过官方的 (0,1,0)。
+ * ------------------------------------------------------------------------ */
+body[data-uni-motion] [class*='LOmM4q_bubble'] {
+  position: relative;
+  background: transparent;
+}
+
+body[data-uni-motion] [class*='LOmM4q_bubble']::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: color-mix(in srgb, var(--dsw-specific-bubble) 40%, transparent);
+  -webkit-backdrop-filter: blur(var(--cp-glass-bubble)) saturate(135%);
+  backdrop-filter: blur(var(--cp-glass-bubble)) saturate(135%);
+}
+
+body[data-uni-motion] [class*='LOmM4q_bubble']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--dsw-alias-label-primary) 12%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, var(--dsw-alias-bg-base) 40%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--dsw-alias-label-primary) 6%, transparent),
+    transparent 38%
+  );
+}
+
+/* ------------------------------------------------------------------------ */
+/* 2026-11-02 排队消息面板：从「贴在输入卡上的一块菜单灰板」改成独立悬浮玻璃块。
+ *
+ * 灰不在面板本体上：面板自己不写 background，灰来自官方伪元素
+ *   F07MqG_panel::before { background: var(--dsw-specific-menu);
+ *                          backdrop-filter: var(--dsw-menu-backdrop-filter); inset: 0; z-index: -1 }
+ *
+ * 重叠是同一处的另一半。面板外面还有一层 F07MqG_dock：
+ *   F07MqG_dock { margin: 0 auto calc(0px - var(--dsh-composer-stack-gap) - 3px);
+ *                 padding: 0 var(--dsh-composer-dock-inset) }
+ * 两个变量在宿主里的实测值是 `--dsh-composer-stack-gap: 6px` 与
+ * `--dsh-composer-dock-inset: 8px`，即下边距 -9px —— 面板下沿被塞进输入卡里 9px。
+ * 配套的 F07MqG_panel::after 只描三边、上圆下平，整套写法是为「与不透明输入卡拼成
+ * 一整块」准备的。输入卡换成玻璃以后这个前提没了：那 9px 灰板从卡的顶边透出来，
+ * 读起来就是「面板压住了会话框」。
+ *
+ * 用户 2026-11-02 定案「甲」：不再塞进去，留 8px 缝（与官方 dock-inset 同一节奏），
+ * 四角全圆、补回官方刻意删掉的下边描边，面板自成一块浮层。
+ *
+ * 折射可以给：面板是单元素目标，高度随排队条数变（一条 40px、多到 180px 滚动），
+ * src/runtime/glass.js 的 ResizeObserver 会在尺寸变化时重画位移图；它不像右栏六张
+ * 入口卡那样多个元素共享一张图。bevel 取 10 而不是卡片的 14：面板最矮 40px 时
+ * 14 会被夹到 13，整条板全是边缘。
+ *
+ * 选择器沿用属性子串匹配（css.6 / css.7 只拦以点开头的类选择器与字符串），带 body
+ * 前缀是为了让特异性 (0,3,0) 压过官方 (0,1,0)，::before / ::after 那两条则是
+ * (0,3,1) 压过官方的 (0,1,1)。灰底必须显式清掉，否则背板还在，只是叠了层玻璃。
+ * ------------------------------------------------------------------------ */
+body[data-uni-motion] [class*='F07MqG_dock'] {
+  margin-bottom: 8px;
+}
+
+body[data-uni-motion] [class*='F07MqG_panel'] {
+  border-radius: var(--dsw-radius-lg);
+  background: transparent;
+}
+
+body[data-uni-motion] [class*='F07MqG_panel']::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: transparent;
+  -webkit-backdrop-filter: blur(var(--cp-glass-card)) saturate(135%);
+  backdrop-filter: blur(var(--cp-glass-card)) saturate(135%);
+  -webkit-backdrop-filter: url(#uni-lg-panel) blur(var(--cp-glass-card)) saturate(135%);
+  backdrop-filter: url(#uni-lg-panel) blur(var(--cp-glass-card)) saturate(135%);
+}
+
+body[data-uni-motion] [class*='F07MqG_panel']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  border-bottom: .5px solid var(--dsw-alias-border-l1);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--dsw-alias-label-primary) 12%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, var(--dsw-alias-bg-base) 40%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--dsw-alias-label-primary) 6%, transparent),
+    transparent 38%
+  );
+}
+
+/* ------------------------------------------------------------------------ */
+/* 2026-11-02 附件卡片（deliverable）的液态玻璃
+ *
+ * 用户贴的是卡片里那个 100% 覆盖的预览按钮（`K5rwea_cardPreview`，官方给它的底是
+ * `background: 0 0` —— 它本来就是透明的点击层），看到的底色其实来自它的父级
+ * `K5rwea_file`：
+ *   K5rwea_file { background: var(--deliverable-fill); … overflow: hidden }
+ *   K5rwea_file:hover { background: var(--deliverable-hover) }
+ * `--deliverable-fill` 亮档落 `--dsw-static-neutral-50`、暗档落 `--dsw-static-neutral-850`，
+ * 是一条不透明底。所以清底要清在 `K5rwea_file` 上：按钮自身没有可去的颜色，而父级的
+ * 不透明底会把任何挂在按钮背后的玻璃采样挡死。
+ *
+ * 材质与编辑卡片同一套三段式：面 `background: transparent`、`::before` 模糊背板（兜底行
+ * + url() 折射行）、`::after` 玻璃厚壁。材质仍落在伪元素上，理由同输入卡那节 —— 卡片里
+ * 有 portal 出去的预览提示，自身挂 filter 会把它们吸进坐标。
+ *
+ * 官方那 0.5px 的 `border-l1` 边框保留在卡片本体上，直接压在玻璃上沿。
+ *
+ * 已知代价：`--deliverable-hover` 那层悬停底被这条透明规则一起压住了（常态这条特异性
+ * (0,2,1) 高于官方的 hover (0,2,0)），卡片悬停不再变色。编辑卡片与入口卡也是无悬停反馈
+ * 的玻璃面，保持一致；要反馈再加。
+ *
+ * 选择器走属性子串匹配（css.6 / css.7 只拦以点开头的类选择器与字符串）。
+ * ------------------------------------------------------------------------ */
+body[data-uni-motion] [class*='K5rwea_file'] {
+  background: transparent;
+}
+
+body[data-uni-motion] [class*='K5rwea_file']::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  -webkit-backdrop-filter: blur(var(--cp-glass-card)) saturate(135%);
+  backdrop-filter: blur(var(--cp-glass-card)) saturate(135%);
+  -webkit-backdrop-filter: url(#uni-lg-deliverable) blur(var(--cp-glass-card)) saturate(135%);
+  backdrop-filter: url(#uni-lg-deliverable) blur(var(--cp-glass-card)) saturate(135%);
+}
+
+body[data-uni-motion] [class*='K5rwea_file']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--dsw-alias-label-primary) 12%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, var(--dsw-alias-bg-base) 40%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--dsw-alias-label-primary) 6%, transparent),
+    transparent 38%
+  );
+}
+
+/* --------------------------------------------------------------------------
+ * 启动遮罩的转圈 —— 恢复官方默认（2026-11-05，用户：「把启动时的转圈恢复成官方默认」）
+ *
+ * 宿主启动画面是 [data-dsh-boot] > card > wordmark + spinner + 「Loading plugins…」。
+ * 那枚转圈不自带颜色：底环吃 --dsw-alias-border-l2，旋转弧吃 --dsw-alias-brand-primary，
+ * 两者在 _boot_u7vgf_3 上各有一组官方兜底 --dsh-boot-border / --dsh-boot-brand（亮暗
+ * 各一份）。主题覆盖了这两个全局 token，启动时转圈就变成了主题品牌色。
+ *
+ * 恢复只做在这一格：把 spinner 上的两个 token 指回宿主启动遮罩自己的兜底值。不撤全局
+ * token（应用内其它地方仍在用），也不自造字面色值。背景 --dsw-alias-bg-base 的半透明
+ * veil 不在此列，仍是主题底色；要连背景一起回官方，另说。
+ * ------------------------------------------------------------------------ */
+[data-dsh-boot] [data-dsh-boot-spinner] {
+  --dsw-alias-border-l2: var(--dsh-boot-border);
+  --dsw-alias-brand-primary: var(--dsh-boot-brand);
+}
+

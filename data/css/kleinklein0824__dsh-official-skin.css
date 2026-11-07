@@ -1,0 +1,463 @@
+/* kleinklein0824/dsh-official-skin — lib/client.js
+   fetched 2026-11-07 from https://raw.githubusercontent.com/kleinklein0824/dsh-official-skin/main/lib/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/*!
+ * dsh-deepseek-bg.css
+ * DeepSeek 官网首页背景复刻 —— DSH Web GUI 全屏固定背景层 + 外壳透明化。
+ *
+ * 颜色与蒙版均取自 DeepSeek 官方站点：
+ *  - 浅色 hero 渐变:  linear-gradient(180deg, #9cc1e7 0%, rgba(250,250,250,0) 100%)
+ *  - 深色 harness 页: 页面底色 #0a0a0a
+ *  - canvas 蒙版:      linear-gradient(#000000fc 0%, #000000e8 8.98%, transparent 100%)
+ *  - 入场动画:        opacity 0→1 + blur(20px)→0，1.8s ease-out（harness hero 同款）
+ *
+ * 重要：深色主题只保留官方深灰底 + 鲸鱼粒子 logo；
+ *       浅色主题显示完整的作者原设计皮肤（蓝色 hero 渐变 + 琉璃光感 + 粒子 logo）。
+ */
+
+/* ---------- 背景层：两种主题都显示（浅色蓝 hero / 深色 #151517） ---------- */
+#dsh-ds-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  /* deepseek.com 浅色首页 hero：顶部蓝，向下淡出到 #f9f8f8。
+     作者原文写的是 #9cc1e7，但上面还叠着一层不透明的粒子画布（见下方极光规则），
+     粒子会把顶部提亮约 +50/ +25/ +12，两者叠加后的实测值才是作者的 #9cc1e7；
+     所以这里用 #6a9fcd 打底，叠完正好落在 #9cc1e7 一档（实测 #9ec1df）。 */
+  background: linear-gradient(180deg,#9cc1e7 0%,rgba(250,250,250,0) 100%),#f9f8f8;
+
+  animation: dsh-ds-enter 1.8s ease-out backwards;
+  will-change: opacity, filter;
+}
+
+/* 浅色主题同样显示插件背景（整屏背景要求），仅切换配色与动画类型：
+   浅色 = 官网浅色首页 hero（蓝色渐变 + particle 粒子 + 鲸鱼），
+   深色 = 官方深灰底 #151517 + 鲸鱼粒子 logo。 */
+
+/* 浅色主题：极光层用 multiply 合成 + 0.9 不透明度。
+   粒子层是「不透明画布」（PARTICLE_FS 输出 alpha=1），整层铺满会把作者的
+   #9cc1e7 蓝冲成 #ccdff3 一类灰蓝 —— 实测 normal 混合下无论怎么调透明度，
+   都只能在「整屏洗白」和「毫无纹理」之间二选一。
+   multiply 下白色粒子不改底色、浅蓝粒子只加深，顶部回到 #a4c6e9（作者原值
+   #9cc1e7）；screen / soft-light 都会把蓝底提亮成 #c8def2 甚至近白，不要用。 */
+#dsh-ds-bg:not(.dsh-ds-dark) #dsh-ds-aurora {
+  opacity: 1;
+  mix-blend-mode: multiply;
+  transition: opacity .3s cubic-bezier(.22, .61, .36, 1);
+}
+
+/* 两张底色层之间淡入淡出 */
+.dsh-ds-bg-layer {
+  position: absolute;
+  inset: 0;
+  transition: opacity .3s cubic-bezier(.22, .61, .36, 1);
+  will-change: opacity;
+}
+
+#dsh-ds-bg.dsh-ds-dark #dsh-ds-bg-light { opacity: 0; }
+#dsh-ds-bg.dsh-ds-dark #dsh-ds-bg-dark { opacity: 1; }
+#dsh-ds-bg:not(.dsh-ds-dark) #dsh-ds-bg-light { opacity: 1; }
+#dsh-ds-bg:not(.dsh-ds-dark) #dsh-ds-bg-dark { opacity: 0; }
+
+/* 深色主题：1:1 复刻 origin 原版 —— 底是 #0a0a0a（不是官方 #151517），
+   上面叠流体极光 + 星座网格 + 粒子鲸鱼三层，和作者原作完全一致。 */
+#dsh-ds-bg.dsh-ds-dark {
+  background: transparent;
+}
+
+/* 深色下极光与星座都要显示（origin 原版就是三层全开）。
+   用 opacity 而不是 display:none，切换时才能淡入；canvas 尺寸也不会归零。 */
+#dsh-ds-bg.dsh-ds-dark #dsh-ds-aurora {
+  /* origin 的 fluid 极光在这套 WebGL 移植里输出偏白，直接放出来会把深色底
+     冲成灰白。按亮度压到 0.36 再叠 screen，留一层能看出来的蓝/琥珀流动光；
+     超过 0.4 就会开始发灰。 */
+  opacity: 1;
+  filter: brightness(0.36) saturate(1.45);
+  mix-blend-mode: screen;
+}
+
+#dsh-ds-bg.dsh-ds-dark #dsh-ds-constellation {
+  opacity: 1;
+}
+
+
+#dsh-ds-aurora,
+#dsh-ds-constellation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  /* 官方 hero 蒙版（与 deepseek.com 原站一致） */
+  mask: linear-gradient(#000000fc 0%, #000000e8 8.98%, transparent 100%);
+  -webkit-mask: linear-gradient(#000000fc 0%, #000000e8 8.98%, transparent 100%);
+  transition: opacity .3s cubic-bezier(.22, .61, .36, 1);
+}
+
+#dsh-ds-constellation {
+  background: transparent;
+}
+
+/* 官方深色 hero 的鲸鱼层：screen 混合，仅暗色主题显示 */
+.dsh-ds-whale {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  z-index: 2;
+}
+
+#dsh-ds-bg.dsh-ds-dark .dsh-ds-whale {
+  display: flex;
+}
+
+/* 浅色主题也要鲸鱼：作者原设计里鲸鱼是白色粒子，浮在 #9cc1e7 的蓝色 hero 上
+   （官网首页就是这么渲的）。浅色下背景已不是纯白（顶部实测 #a0c3e6），
+   白色粒子用普通 alpha 合成即可清晰可见，不需要 screen 加亮。 */
+#dsh-ds-bg:not(.dsh-ds-dark) .dsh-ds-whale {
+  display: flex;
+  mix-blend-mode: normal;
+  opacity: .72;
+}
+
+.dsh-ds-whale { transition: opacity .3s cubic-bezier(.22, .61, .36, 1); }
+
+/* 切主题时宿主自己的面板底色/文字色是瞬间跳变的，跟背景的 500ms 淡入淡出
+   对不上，看起来就是「背景在渐变、界面在闪」。给常见容器挂一条底色/文字的
+   短过渡，两边节奏就一致了。只影响切换的那一瞬间，静止状态与原来完全一致。 */
+/* 只在这一小段时间里挂过渡，否则所有 hover 都会变成 350ms 的慢动作 */
+body.dsh-ds-theme-anim,
+body.dsh-ds-theme-anim * {
+  transition: background-color .22s cubic-bezier(.22, .61, .36, 1),
+              border-color .22s cubic-bezier(.22, .61, .36, 1),
+              color .22s cubic-bezier(.22, .61, .36, 1) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.dsh-ds-theme-anim, body.dsh-ds-theme-anim * { transition: none !important; }
+}
+
+@keyframes dsh-ds-enter {
+  0% {
+    opacity: 0;
+    filter: blur(20px);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #dsh-ds-bg {
+    animation: none;
+  }
+}
+
+/* ===================================================================== *
+ * 以下全部为深色主题专属覆盖（body[data-ds-dark-theme]）；
+ * 浅色主题不匹配任何规则，保持官方原版。
+ * ===================================================================== */
+
+/* 背景透出：body 与外壳层透明化 */
+body[data-ds-dark-theme] {
+  background: transparent !important;
+}
+
+body[data-ds-dark-theme] [data-slot="root"] > div {
+  background: transparent !important;
+}
+
+/* 当前构建的布局 frame 类名（精确覆盖，防中间包裹层） */
+body[data-ds-dark-theme] [data-slot="root"] .pI_x6G_frame {
+  background: transparent !important;
+}
+
+/* 插件加载前的启动屏 */
+body[data-ds-dark-theme] #root ._boot_9gj4p_6 {
+  background: transparent !important;
+}
+
+/* 视图根容器透明化：会话视图（bg-base）与详情列内容（轨迹视图 bg-layer-1）
+   都是全高不透明容器，会盖住 DeepSeek 背景层 */
+body[data-ds-dark-theme] [data-slot="conversation"] > div {
+  background: transparent !important;
+}
+
+body[data-ds-dark-theme] .pI_x6G_detailsCol > div {
+  background: transparent !important;
+}
+
+/* 布局三列本身：中间列与详情列容器
+   （.pI_x6G_frame 只是 grid 容器，真正铺满的是这些列） */
+body[data-ds-dark-theme] .pI_x6G_centerCol,
+body[data-ds-dark-theme] .pI_x6G_detailsCol {
+  background: transparent !important;
+}
+
+/* 会话列主容器 .wSkVaW_root：height:100% + background:var(--dsw-alias-bg-base)，
+   是 44% 面积的 #151517 真正来源，必须透明化，否则背景层被整块盖住 */
+body[data-ds-dark-theme] .wSkVaW_root {
+  background: transparent !important;
+}
+
+/* 右侧详情列主容器 .ydkMvW_root：同样是全高 bg-base 不透明层 */
+body[data-ds-dark-theme] .ydkMvW_root {
+  background: transparent !important;
+}
+
+/* 会话激活态下输入框座位画的 bg-base 渐隐（color-mix 带 bg-base），
+   玻璃卡片下面会露出一条不透明底色，改成透明 */
+body[data-ds-dark-theme] .wSkVaW_root[data-phase="active"] .wSkVaW_composerSeat {
+  background: transparent !important;
+}
+
+/* ============ 官方玻璃拟态（ds-glass 令牌，取自缓存 6f322bb0cffe2c36.css） ============ */
+
+/* 侧边对话栏：半透明 + 玻璃模糊
+   注意：backdrop-filter 会让元素成为 fixed 后代的包含块（设置弹窗会被
+   强制压成侧边栏宽度）——所以模糊放在 ::before 伪元素上，列本身只设背景 */
+body[data-ds-dark-theme] .pI_x6G_sidebarCol {
+  position: relative;
+  background: rgba(13, 15, 19, 0.55) !important;
+  border-right-color: hsla(0, 0%, 100%, 0.08) !important;
+}
+
+body[data-ds-dark-theme] .pI_x6G_sidebarCol::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* 侧边栏内容根：不再叠不透明底色。
+   注意：不能给这里加 z-index/堆叠上下文——设置弹窗（fixed z-1000）挂载在
+   侧边栏内部，一旦被困在侧边栏的堆叠上下文里就会被输入框（z-7）盖住；
+   模糊伪元素用 z-index:-1 自然绘制在内容之下，内容无需提升层级
+   [data-slot="sidebar"] > div 为跨构建通用选择器 */
+body[data-ds-dark-theme] .hHd-Xa_root,
+body[data-ds-dark-theme] [data-slot="sidebar"] > div {
+  background: transparent !important;
+}
+
+/* 底部输入框卡片：官方玻璃卡片样式（ds-glass-card/dropdown 同款令牌）
+   [data-composer-card="true"] 为跨构建通用属性选择器 */
+body[data-ds-dark-theme] .uV2eYG_card,
+body[data-ds-dark-theme] [data-composer-card="true"] {
+  position: relative;
+  isolation: isolate;
+  background: rgba(13, 15, 19, 0.55) !important;
+  border-color: hsla(0, 0%, 100%, 0.08) !important;
+  box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 4px 0 rgba(0, 0, 0, 0.02), 0 12px 32px 0 rgba(0, 0, 0, 0.08) !important;
+}
+
+/* 模糊必须放在 ::before：卡片本体一旦带 backdrop-filter，内部按钮 hover 的
+   每次重绘都会触发整张卡片的背景重采样，表现为输入面板一闪一闪 */
+body[data-ds-dark-theme] .uV2eYG_card::before,
+body[data-ds-dark-theme] [data-composer-card="true"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: inherit;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* 输入框座位：去掉向不透明底色的渐隐，让极光从玻璃下透出
+   [data-composer-seat] 为跨构建通用属性选择器 */
+body[data-ds-dark-theme] .wSkVaW_composerSeat,
+body[data-ds-dark-theme] [data-composer-seat] {
+  background: transparent !important;
+}
+
+/* 会话列表底部渐隐条（qDHVXG_fade）：原来用不透明侧边栏填充色渐变，
+   在玻璃侧边栏下会露出浅色白条——透明化 */
+body[data-ds-dark-theme] .qDHVXG_fade {
+  background: transparent !important;
+}
+
+/* 会话骨架根（ui-conversation 的 ConversationRoot）：宿主在 .an3wZg_root 上铺了
+   不透明的 var(--dsw-alias-bg-base)，切会话 / 切工作区时会先上屏 1-2 帧的
+   「载入历史…」骨架，就是用户看到的黑块。这里直接透明化，CSS 在第一帧就生效，
+   比 JS 打透更早；[class*="_root"][data-phase] 是哈希类名变化时的兜底。 */
+.an3wZg_root,
+[class*="_root"][data-phase] {
+  background: transparent !important;
+}
+
+/* ============ 消息气泡与代码块玻璃化（与侧边栏/输入框同款材质） ============ */
+
+/* 用户消息气泡 */
+body[data-ds-dark-theme] .gdEzaW_bubble {
+  background: rgba(13, 15, 19, 0.55) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  box-shadow: inset 0 0 0 1px hsla(0, 0%, 100%, 0.08) !important;
+}
+
+/* 代码块容器（终端/阅读/差异/搜索等 DSL 块）+ 复制按钮 + banner */
+body[data-ds-dark-theme] ._block_10eou_7,
+body[data-ds-dark-theme] ._block_biesw_7,
+body[data-ds-dark-theme] ._block_srovd_7,
+body[data-ds-dark-theme] ._block_s66q0_7,
+body[data-ds-dark-theme] ._block_178r4_4,
+body[data-ds-dark-theme] ._block_d4nqi_7,
+body[data-ds-dark-theme] ._body_1ye18_20,
+body[data-ds-dark-theme] ._copyButton_10eou_142,
+body[data-ds-dark-theme] ._bannerWrap_178r4_21 {
+  background: rgba(13, 15, 19, 0.55) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  box-shadow: inset 0 0 0 1px hsla(0, 0%, 100%, 0.08) !important;
+}
+
+/* ===================================================================== *
+ * 浅色主题覆盖：浅色下同样保留整屏背景（官网首页 hero 蓝调），
+ * 外壳与卡片改成浅色玻璃，避免纯白把背景完全盖死。
+ * body 在浅色主题下不带 data-ds-dark-theme，用 :not() 选中。
+ * ===================================================================== */
+body:not([data-ds-dark-theme]) {
+  background: transparent !important;
+}
+
+body:not([data-ds-dark-theme]) .pI_x6G_sidebarCol {
+  position: relative;
+  /* 浅色侧栏玻璃：太薄看不见、太厚糊成白板。0.18 + saturate 1.5 是既不压死
+     hero 渐变、又能看出「一层玻璃」的档位；右侧描边给一条高光边。 */
+  background: rgba(255, 255, 255, 0.18) !important;
+  border-right-color: rgba(15, 23, 42, 0.08) !important;
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.55) !important;
+  backdrop-filter: blur(18px) saturate(1.5);
+  -webkit-backdrop-filter: blur(18px) saturate(1.5);
+}
+
+body:not([data-ds-dark-theme]) .pI_x6G_sidebarCol::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+body:not([data-ds-dark-theme]) .hHd-Xa_root,
+body:not([data-ds-dark-theme]) [data-slot="sidebar"] > div {
+  background: transparent !important;
+}
+
+body:not([data-ds-dark-theme]) .uV2eYG_card,
+body:not([data-ds-dark-theme]) [data-composer-card="true"] {
+  position: relative;
+  isolation: isolate;
+  background: rgba(255, 255, 255, 0.20) !important;
+  border-color: rgba(255, 255, 255, 0.55) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75),
+              0 0 1px 0 rgba(15, 23, 42, 0.06),
+              0 16px 40px 0 rgba(15, 23, 42, 0.10) !important;
+}
+
+body:not([data-ds-dark-theme]) .uV2eYG_card::before,
+body:not([data-ds-dark-theme]) [data-composer-card="true"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: inherit;
+  backdrop-filter: blur(20px) saturate(1.45);
+  -webkit-backdrop-filter: blur(20px) saturate(1.45);
+}
+
+body:not([data-ds-dark-theme]) .wSkVaW_composerSeat,
+body:not([data-ds-dark-theme]) [data-composer-seat],
+body:not([data-ds-dark-theme]) .qDHVXG_fade {
+  background: transparent !important;
+}
+
+body:not([data-ds-dark-theme]) .gdEzaW_bubble,
+body:not([data-ds-dark-theme]) ._block_10eou_7,
+body:not([data-ds-dark-theme]) ._block_biesw_7,
+body:not([data-ds-dark-theme]) ._block_srovd_7,
+body:not([data-ds-dark-theme]) ._block_s66q0_7,
+body:not([data-ds-dark-theme]) ._block_178r4_4,
+body:not([data-ds-dark-theme]) ._block_d4nqi_7,
+body:not([data-ds-dark-theme]) ._body_1ye18_20,
+body:not([data-ds-dark-theme]) ._copyButton_10eou_142,
+body:not([data-ds-dark-theme]) ._bannerWrap_178r4_21 {
+  background: rgba(255, 255, 255, 0.18) !important;
+  backdrop-filter: blur(16px) saturate(1.4) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(1.4) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55),
+              inset 0 1px 0 rgba(255, 255, 255, 0.7) !important;
+}
+
+/* 右上角主题切换按钮（不随主题生效，浅色/深色都要可见） */
+.dsh-ds-theme-toggle {
+  display: inline-flex;
+  /* 按钮必须自带可见底：header / 背景都是透明玻璃，纯 transparent 底会让按钮「看不见」。
+     故意不使用 --dsw-alias-interactive-bg-* 令牌：浅色主题下该令牌接近全透明，
+     叠在 hero 蓝渐变上仍然看不出这是个按钮。 */
+  background: rgba(255, 255, 255, 0.66);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.10), 0 2px 6px rgba(15, 23, 42, 0.14);
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  flex: 0 0 auto;
+  border: none;
+  border-radius: 8px;
+  color: #1f2937;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+/* 深色主题：白玻璃会过于抢眼，换成暗玻璃 + 浅色图标 */
+body[data-ds-dark-theme] .dsh-ds-theme-toggle {
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18), 0 2px 6px rgba(0, 0, 0, 0.32);
+  color: #e5e7eb;
+}
+.dsh-ds-theme-toggle:hover {
+  background: var(--dsw-alias-interactive-bg-hover, rgba(127, 127, 127, 0.14));
+  color: var(--dsw-alias-label-primary, #111827);
+}
+.dsh-ds-theme-toggle:active {
+  background: var(--dsw-alias-interactive-bg-active, rgba(127, 127, 127, 0.2));
+}
+.dsh-ds-theme-toggle:focus-visible {
+  outline: 2px solid var(--dsw-alias-brand-primary, #4d6bfe);
+  outline-offset: 1px;
+}
+.dsh-ds-theme-toggle svg { display: block; pointer-events: none; }
+.dsh-ds-theme-toggle { -webkit-app-region: no-drag; }
+
+/* 无活跃会话时的兜底座位（shell.overlay，root 级）：会话 header 整块不存在，
+   utilities 插槽不渲染，按钮改为固定定位贴在右上角 */
+
+.dsh-ds-theme-toggle--floating {
+  position: fixed;
+  /* 14px 会落在窗口标题栏的拖拽区里：Electron 的 -webkit-app-region: drag
+     会先把鼠标事件吃掉，按钮看起来「能 hover、点了没反应」。46px 在标题栏
+     之下、图标行（约 y=76 起）之上，既不挡应用按钮也不被拖拽区吃掉。 */
+  top: 46px;
+  right: 20px;
+  z-index: 30;
+  pointer-events: auto;
+  /* 万一宿主把按钮所在层也标成拖拽区，这一行确保它自己可点 */
+  -webkit-app-region: no-drag;
+  color: var(--dsw-alias-label-primary, #111827);
+}

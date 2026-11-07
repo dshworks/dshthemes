@@ -1,0 +1,2578 @@
+/* Shirolin/dsh-theme-animal-island-ui — src/client/skin.css
+   fetched 2026-11-07 from https://raw.githubusercontent.com/Shirolin/dsh-theme-animal-island-ui/main/src/client/skin.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* Animal Island DSH skin. Production selectors are either plugin-owned classes,
+   semantic elements/roles, or a small reviewed DSH data-hook allowlist. */
+
+html[data-dsh-animal-island-skin] {
+  --animal-ink: #6f451f;
+  --animal-body: #654a2f;
+  --animal-muted: #725f48;
+  --animal-cream: #faf8f3;
+  --animal-cream-deep: #f7f3df;
+  --animal-mint: #19c8b9;
+  --animal-mint-deep: #0b6d64;
+  --animal-border: #dcd8d1;
+  --animal-border-strong: #c4b89e;
+  --animal-control-border: #8f765e;
+  --animal-slider-track: #e9dfc9;
+  --animal-shadow-button: #bdaea0;
+  --animal-shadow-input: #d4c9b4;
+  --animal-shadow-soft: rgba(61, 52, 40, 0.1);
+  --animal-shadow-card: rgba(61, 52, 40, 0.14);
+  --animal-canvas-veil: 0.4;
+  --animal-font-family: Nunito, "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --animal-code-family: "SFMono-Regular", "Cascadia Code", "Fira Code", Consolas, "Liberation Mono", monospace;
+  --animal-system-font-family: system-ui, -apple-system, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  /* Canvas illustration layers and paper grain are variables so the appearance
+     panel can remove them without rewriting the background stacks (a `none`
+     layer keeps every position/size slot aligned). The boot screen keeps its
+     own direct URLs: it renders before the plugin and its settings exist. */
+  --animal-decor-horizon: url("__ANIMAL_ISLAND_HORIZON__");
+  --animal-decor-leaves: url("__ANIMAL_ISLAND_LEAVES__");
+  --animal-decor-wave: url("__ANIMAL_ISLAND_WAVE__");
+  --animal-decor-night-leaves: url("__ANIMAL_ISLAND_NIGHT_LEAVES__");
+  --animal-decor-night-horizon: url("__ANIMAL_ISLAND_NIGHT_HORIZON__");
+  --animal-decor-night-glow: radial-gradient(circle at 78% 14%, rgba(255, 238, 190, 0.16) 0 80px, rgba(255, 238, 190, 0.06) 130px, transparent 210px);
+  --animal-paper-grain: url("__ANIMAL_ISLAND_GRAIN__");
+  background-color: #8fcaa5;
+  background-image:
+    radial-gradient(circle, rgba(74, 126, 83, 0.24) 1.25px, transparent 1.4px), radial-gradient(circle, rgba(245, 250, 222, 0.22) 0.85px, transparent 1px),
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0 2px, transparent 2px 9px);
+  background-position:
+    0 0,
+    8px 8px,
+    0 0;
+  background-size:
+    30px 30px,
+    15px 15px,
+    auto;
+  background-attachment: fixed;
+}
+
+html[data-dsh-animal-island-skin] body {
+  --dsw-alias-bg-base: rgba(248, 248, 240, var(--animal-canvas-veil, 0.4)) !important;
+  --dsw-specific-sidebar-fill: rgba(250, 248, 243, 0.82) !important;
+  isolation: isolate;
+  color: var(--animal-body);
+  background-color: #8fcaa5;
+  background-image:
+    var(--animal-decor-horizon, none), var(--animal-decor-leaves, none), var(--animal-decor-wave, none),
+    radial-gradient(circle, rgba(74, 126, 83, 0.28) 1.25px, transparent 1.4px), radial-gradient(circle, rgba(245, 250, 222, 0.26) 0.85px, transparent 1px),
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0 2px, transparent 2px 9px);
+  background-position:
+    center bottom,
+    0 0,
+    left bottom,
+    0 0,
+    8px 8px,
+    0 0;
+  background-size:
+    100% 180px,
+    520px 520px,
+    280px 112px,
+    30px 30px,
+    15px 15px,
+    auto;
+  background-repeat: no-repeat, repeat, no-repeat, repeat, repeat, repeat;
+  background-attachment: fixed, fixed, fixed, fixed, fixed, fixed;
+  font-family: var(--animal-font-family);
+  font-weight: 500;
+}
+
+/* Windows parity block — the only platform branch in the theme. DSH's Windows
+   shell paints the outer AppFrame with --dsw-specific-sidebar-fill and gives the
+   content column a 16px top-left radius; macOS/web do neither. Clear the shell
+   back to the canvas and flatten that shell-only corner so the themed surface is
+   continuous. DSH declares the token on .frame itself
+   ([data-windows-titlebar] .frame { --dsh-windows-content-radius: 16px }), so a
+   value on <html> is shadowed; it has to be set on the frame element.
+   Workaround for deepseek-harness discussion #9490.
+   The 40px caption strip is a native titleBarOverlay managed by the Desktop host
+   over the windowsAppearance IPC; CSS cannot retheme it. */
+html[data-windows-titlebar] #root > div > div {
+  --dsh-windows-content-radius: 0px;
+  background: transparent !important;
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] {
+  --animal-ink: #f7e7c7;
+  --animal-body: #ead9bd;
+  --animal-muted: #aa987c;
+  --animal-cream: #40362b;
+  --animal-cream-deep: #29231c;
+  --animal-mint: #61d9cb;
+  --animal-mint-deep: #7be2d5;
+  --animal-border: #59493a;
+  --animal-border-strong: #8a7057;
+  --animal-slider-track: #5a4b3d;
+  --animal-shadow-button: #1f1a15;
+  --animal-shadow-input: #18130f;
+  --animal-shadow-soft: rgba(8, 6, 4, 0.28);
+  --animal-shadow-card: rgba(8, 6, 4, 0.42);
+  /* Dark paper also follows the slider; 0.40 still lands on the old 0.84 so the
+     default look is unchanged, while "island" lets more of the night canvas in. */
+  --dsw-alias-bg-base: rgba(41, 35, 28, clamp(0.55, calc(0.84 + (var(--animal-canvas-veil, 0.4) - 0.4) * 0.8), 0.96)) !important;
+  --dsw-specific-sidebar-fill: rgba(48, 52, 68, 0.9) !important;
+  color: var(--animal-body);
+  background-color: #14242a;
+  background-image:
+    var(--animal-decor-night-leaves, none), var(--animal-decor-night-glow, none), var(--animal-decor-night-horizon, none),
+    radial-gradient(circle, rgba(255, 248, 220, 0.45) 1px, transparent 1.5px), radial-gradient(circle, rgba(160, 230, 220, 0.3) 0.8px, transparent 1.2px),
+    repeating-linear-gradient(135deg, rgba(134, 200, 179, 0.025) 0 2px, transparent 2px 9px);
+  background-position:
+    0 0,
+    center top,
+    center bottom,
+    0 0,
+    44px 62px,
+    0 0;
+  background-size:
+    520px 520px,
+    100% 100%,
+    100% 240px,
+    96px 96px,
+    148px 148px,
+    auto;
+  background-repeat: repeat, no-repeat, no-repeat, repeat, repeat, repeat;
+  background-attachment: fixed, fixed, fixed, fixed, fixed, fixed;
+}
+
+/* Appearance preferences owned by the skin. These are plugin-owned root
+   attributes, not DSH seams, and each rule only removes a decorative layer or
+   swaps a font stack — never geometry, spacing or DSH-owned state. */
+html[data-dsh-animal-island-skin][data-animal-decor="off"] {
+  --animal-decor-horizon: none;
+  --animal-decor-leaves: none;
+  --animal-decor-wave: none;
+  --animal-decor-night-leaves: none;
+  --animal-decor-night-horizon: none;
+  --animal-decor-night-glow: none;
+}
+
+html[data-dsh-animal-island-skin][data-animal-grain="off"] {
+  --animal-paper-grain: none;
+}
+
+html[data-dsh-animal-island-skin][data-animal-font="system"] {
+  --animal-font-family: var(--animal-system-font-family);
+}
+
+/* The native Windows caption and sidebar both read
+   --dsw-specific-sidebar-fill. In dark mode that collapses the caption into
+   the sidebar, so give the caption a third night-sky surface and restore the
+   sidebar through its direct semantic nav. Restore the sidebar-local token too:
+   DSH's session-list fade consumes it, so leaving the caption color there draws
+   a darker rectangle above the account row. Light caption and sidebar use the
+   same split below; neither branch changes sidebar geometry. */
+html[data-windows-titlebar] body[data-ds-dark-theme] {
+  --dsw-specific-sidebar-fill: #1f3034 !important;
+}
+
+html[data-windows-titlebar] body[data-ds-dark-theme] div:has(> nav[aria-label]) {
+  --dsw-specific-sidebar-fill: #303444 !important;
+  background-color: #303444 !important;
+}
+
+/* In light mode the Windows overlay also reads sidebar-fill. A translucent
+   cream leaves the canvas visible on the left but composites the native
+   controls area to cream, so make the caption token the canvas mint and restore
+   the app's cream token inside #root. The sidebar root is explicit for the
+   fixture/older shell shapes that do not include the #root wrapper. */
+html[data-windows-titlebar] body:not([data-ds-dark-theme]) {
+  --dsw-specific-sidebar-fill: #e7efe5 !important;
+}
+
+html[data-windows-titlebar] body:not([data-ds-dark-theme]) #root {
+  --dsw-specific-sidebar-fill: rgba(250, 248, 243, 0.82) !important;
+}
+
+html[data-windows-titlebar] body:not([data-ds-dark-theme]) div:has(> nav[aria-label]) {
+  --dsw-specific-sidebar-fill: rgba(250, 248, 243, 0.82) !important;
+  background-color: rgba(250, 248, 243, 0.82) !important;
+}
+
+/* The split open-target control uses DSH's faint border-l4 for both its outer
+   boundary and the clickable split. In light mode that border nearly disappears
+   against the island canvas, so strengthen only this functional boundary. */
+html[data-dsh-animal-island-skin] body:not([data-ds-dark-theme]) [data-open-target] {
+  border-color: var(--animal-control-border) !important;
+}
+
+html[data-dsh-animal-island-skin] body:not([data-ds-dark-theme]) [data-open-target] > button[aria-haspopup="menu"] {
+  border-left-color: var(--animal-control-border) !important;
+}
+
+/* The plugin manager uses DSH's standard switch role. Its light-mode border-l3
+   track is nearly invisible on the green canvas, although the switch is the
+   primary action in this list. The inset ring strengthens the boundary without
+   changing the 36x20 geometry or the thumb's 16px travel. */
+html[data-dsh-animal-island-skin] body:not([data-ds-dark-theme]) button[role="switch"] {
+  background-color: #f5ecd9;
+  box-shadow:
+    inset 0 0 0 1.5px var(--animal-control-border),
+    0 1px 2px rgba(61, 52, 40, 0.12);
+}
+
+html[data-dsh-animal-island-skin] body:not([data-ds-dark-theme]) button[role="switch"][aria-checked="true"] {
+  background-color: var(--animal-mint-deep);
+  box-shadow:
+    inset 0 0 0 1.5px var(--animal-mint-deep),
+    0 1px 2px rgba(61, 52, 40, 0.12);
+}
+
+html[data-dsh-animal-island-skin] body:not([data-ds-dark-theme]) button[role="switch"] > span {
+  background-color: #fffaf0;
+  box-shadow:
+    inset 0 0 0 1px var(--animal-control-border),
+    0 1px 2px rgba(61, 52, 40, 0.18);
+}
+
+html[data-dsh-animal-island-skin] body:not([data-ds-dark-theme]) button[role="switch"][aria-checked="true"] > span {
+  background-color: #f8fffb;
+  box-shadow:
+    inset 0 0 0 1px rgba(11, 109, 100, 0.28),
+    0 1px 2px rgba(61, 52, 40, 0.18);
+}
+
+/* Plugin rows are transparent, so the fixed canvas waves run through their
+   descriptions. Give only the plugin-manager rows a quiet paper wash; keep DSH's
+   padding, margins, radius and list layout untouched. The manager writes these
+   identity attributes for its own built-in and installed rows. */
+html[data-dsh-animal-island-skin] body:not([data-ds-dark-theme]) li:is([data-plugin-item], [data-plugin-package]) {
+  background-color: rgba(250, 248, 243, 0.48);
+}
+
+html[data-dsh-animal-island-skin] body:not([data-ds-dark-theme]) li:is([data-plugin-item], [data-plugin-package]):hover {
+  background-color: rgba(240, 226, 200, 0.72);
+}
+
+/* DSH renders the boot screen before the app shell. The two data attributes are
+   written by that renderer; styling only its root, card, wordmark, status and
+   progress seal leaves failure markup and the live --dsh-boot-arc untouched. */
+html[data-dsh-animal-island-skin] [data-dsh-boot] {
+  --animal-boot-paper: #fbf5df;
+  --animal-boot-ink: #245738;
+  --animal-boot-muted: #725f48;
+  --animal-boot-border: #6f451f;
+  --animal-boot-ring: #d7cba8;
+  --animal-boot-accent: #12b8a7;
+  --animal-boot-shadow: rgba(83, 57, 29, 0.22);
+  --animal-boot-scrim: rgba(250, 248, 243, 0.9);
+  position: relative;
+  isolation: isolate;
+  box-sizing: border-box;
+  min-height: 100vh;
+  padding: 22px;
+  overflow-x: auto;
+  overflow-y: auto;
+  place-items: safe center;
+  color: var(--animal-boot-muted);
+  background-color: #8fcaa5;
+  background-image:
+    radial-gradient(circle at 79% 17%, #fff2a8 0 27px, rgba(255, 239, 167, 0.36) 28px 92px, transparent 165px), url("__ANIMAL_ISLAND_LEAVES__"),
+    url("__ANIMAL_ISLAND_HORIZON__"), radial-gradient(circle, rgba(74, 126, 83, 0.22) 1.15px, transparent 1.35px),
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.055) 0 2px, transparent 2px 9px);
+  background-position:
+    center,
+    center,
+    center bottom,
+    0 0,
+    0 0;
+  background-size:
+    100% 100%,
+    620px 620px,
+    100% 210px,
+    30px 30px,
+    auto;
+  background-repeat: no-repeat, no-repeat, no-repeat, repeat, repeat;
+  font-family: var(--animal-font-family);
+}
+
+/* The failure page uses the same direct-child wrapper as the loading card.
+   Keep its neutral paper surface as the default; the loading branch below
+   overrides it only while the public spinner hook is present. */
+html[data-dsh-animal-island-skin] [data-dsh-boot] > * {
+  position: relative;
+  box-sizing: border-box;
+  width: min(calc(100vw - 44px), 980px);
+  margin: 24px 0;
+  padding: clamp(20px, 4vw, 36px);
+  border: 1.5px solid var(--animal-boot-border);
+  border-radius: 24px;
+  background-color: var(--animal-boot-scrim);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    0 8px 24px rgba(39, 78, 47, 0.18);
+}
+
+/* DSH's spinner is the stable public loading marker. Set the style container
+   once here instead of repeating :has() on every card, wordmark and pseudo
+   rule; streaming text then invalidates one ancestor check instead of ten. */
+html[data-dsh-animal-island-skin] [data-dsh-boot]:has([data-dsh-boot-spinner]) {
+  --animal-boot-loading: 1;
+  container-name: animal-boot;
+  container-type: style;
+}
+
+@container animal-boot style(--animal-boot-loading: 1) {
+  html[data-dsh-animal-island-skin] [data-dsh-boot] > * {
+    position: relative;
+    box-sizing: border-box;
+    width: min(calc(100vw - 44px), 340px);
+    max-width: 340px;
+    overflow: visible;
+    gap: 18px;
+    margin: 0;
+    padding: 43px 30px 38px;
+    border: 2px solid var(--animal-boot-border);
+    border-radius: 28px;
+    color: var(--animal-boot-muted);
+    background-color: var(--animal-boot-paper);
+    background-image: linear-gradient(145deg, rgba(255, 255, 255, 0.35), transparent 48%), url("__ANIMAL_ISLAND_GRAIN__");
+    background-size:
+      auto,
+      180px 180px;
+    box-shadow:
+      inset 0 2px rgba(255, 255, 255, 0.72),
+      inset 0 -2px rgba(90, 55, 25, 0.08),
+      0 6px 0 var(--animal-boot-shadow),
+      0 18px 42px rgba(39, 78, 47, 0.2);
+    animation: animal-island-boot-card-in 420ms cubic-bezier(0.22, 0.82, 0.3, 1) both;
+  }
+
+  html[data-dsh-animal-island-skin] [data-dsh-boot] > *::before {
+    content: "";
+    position: absolute;
+    z-index: 2;
+    top: -30px;
+    left: 50%;
+    box-sizing: border-box;
+    width: 56px;
+    height: 56px;
+    border: 2px solid var(--animal-boot-border);
+    border-radius: 50%;
+    corner-shape: round;
+    background-color: var(--animal-boot-paper);
+    background-image: url("__ANIMAL_ISLAND_BOOT_LEAF__");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 40px 40px;
+    box-shadow:
+      inset 0 2px rgba(255, 255, 255, 0.7),
+      0 3px 0 var(--animal-boot-shadow);
+    transform: translateX(-50%) rotate(-3deg);
+  }
+
+  html[data-dsh-animal-island-skin] [data-dsh-boot] > *::after {
+    content: "ANIMAL ISLAND / ISLAND TRANSIT";
+    position: absolute;
+    right: 24px;
+    bottom: 11px;
+    left: 24px;
+    padding-top: 7px;
+    border-top: 1px dashed color-mix(in srgb, var(--animal-boot-border) 34%, transparent);
+    color: color-mix(in srgb, var(--animal-boot-muted) 78%, transparent);
+    font-size: 8px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: 0.16em;
+    text-align: center;
+  }
+
+  html[data-dsh-animal-island-skin] body[data-ds-dark-theme] [data-dsh-boot] > * {
+    background-image: linear-gradient(145deg, rgba(255, 240, 205, 0.055), transparent 52%), url("__ANIMAL_ISLAND_GRAIN__");
+    box-shadow:
+      inset 0 2px rgba(255, 247, 222, 0.08),
+      inset 0 -2px rgba(0, 0, 0, 0.24),
+      0 6px 0 var(--animal-boot-shadow),
+      0 20px 54px rgba(0, 0, 0, 0.38);
+  }
+
+  /* The loading card has one non-spinner label before the seal and one hint
+     after it. This keeps the text hidden and its pseudo-content decorated
+     without asking the engine to re-evaluate previous-sibling :has(). */
+  html[data-dsh-animal-island-skin] [data-dsh-boot] > * > :not([data-dsh-boot-spinner]):not([data-dsh-boot-spinner] + *) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    font-size: 0;
+    line-height: 1;
+    letter-spacing: 0;
+    text-align: center;
+  }
+
+  html[data-dsh-animal-island-skin] [data-dsh-boot] > * > :not([data-dsh-boot-spinner]):not([data-dsh-boot-spinner] + *)::before {
+    content: "HARNESS / DSH";
+    color: color-mix(in srgb, var(--animal-boot-muted) 82%, transparent);
+    font-size: 8px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: 0.22em;
+  }
+
+  html[data-dsh-animal-island-skin] [data-dsh-boot] > * > :not([data-dsh-boot-spinner]):not([data-dsh-boot-spinner] + *)::after {
+    content: "动森岛";
+    color: var(--animal-boot-ink);
+    font-size: 27px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: 0.13em;
+    text-shadow:
+      0 1px rgba(255, 255, 255, 0.82),
+      0 3px rgba(58, 90, 54, 0.12);
+  }
+
+  html[data-dsh-animal-island-skin] body[data-ds-dark-theme] [data-dsh-boot] > * > :not([data-dsh-boot-spinner]):not([data-dsh-boot-spinner] + *)::after {
+    text-shadow:
+      0 1px rgba(0, 0, 0, 0.7),
+      0 4px rgba(0, 0, 0, 0.22);
+  }
+}
+
+html[data-dsh-animal-island-skin] [data-dsh-boot-spinner] {
+  position: relative;
+  box-sizing: border-box;
+  width: 74px;
+  height: 74px;
+  margin: 6px 0 4px;
+  border: 0;
+  border-radius: 50%;
+  corner-shape: round;
+  clip-path: circle(50%);
+  background-color: transparent;
+  background-image: conic-gradient(
+    from -90deg,
+    var(--animal-boot-accent) 0 var(--dsh-boot-arc, 72deg),
+    var(--animal-boot-ring) var(--dsh-boot-arc, 72deg) 360deg
+  );
+  box-shadow: none;
+  animation: none;
+  transform: none;
+}
+
+html[data-dsh-animal-island-skin] [data-dsh-boot-spinner]::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  corner-shape: round;
+  clip-path: circle(50%);
+  background-color: var(--animal-boot-paper);
+  background-image: url("__ANIMAL_ISLAND_BOOT_LEAF__"), radial-gradient(circle at 44% 24%, rgba(255, 255, 255, 0.11), transparent 54%);
+  background-position: center, center;
+  background-repeat: no-repeat, no-repeat;
+  background-size:
+    40px 40px,
+    100% 100%;
+}
+
+html[data-dsh-animal-island-skin] [data-dsh-boot-spinner]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  corner-shape: round;
+  clip-path: circle(50%);
+  background: radial-gradient(circle at 50% 3px, #ffd866 0 2.4px, rgba(255, 240, 176, 0.46) 2.8px 4.8px, transparent 5.4px);
+  animation: animal-island-boot-orbit 2.8s linear infinite;
+}
+
+html[data-dsh-animal-island-skin] [data-dsh-boot-spinner] + * {
+  margin-top: -2px;
+  font-size: 0;
+  line-height: 1;
+  text-align: center;
+}
+
+html[data-dsh-animal-island-skin] [data-dsh-boot-spinner] + *::after {
+  content: "正在登陆无人岛…";
+  color: var(--animal-boot-muted);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.06em;
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] [data-dsh-boot] {
+  --animal-boot-paper: #352d24;
+  --animal-boot-ink: #f4e7c9;
+  --animal-boot-muted: #c9b895;
+  --animal-boot-border: #8a7057;
+  --animal-boot-ring: #665742;
+  --animal-boot-accent: #61d9cb;
+  --animal-boot-shadow: rgba(4, 5, 3, 0.55);
+  --animal-boot-scrim: rgba(41, 35, 28, 0.9);
+  background-color: #14242a;
+  background-image:
+    radial-gradient(circle at 78% 16%, #f7e8b4 0 25px, rgba(247, 232, 180, 0.22) 26px 92px, transparent 170px), url("__ANIMAL_ISLAND_NIGHT_LEAVES__"),
+    url("__ANIMAL_ISLAND_NIGHT_HORIZON__"), radial-gradient(circle, rgba(255, 248, 220, 0.4) 1px, transparent 1.4px),
+    radial-gradient(circle, rgba(160, 230, 220, 0.26) 0.8px, transparent 1.2px),
+    repeating-linear-gradient(135deg, rgba(134, 200, 179, 0.035) 0 2px, transparent 2px 9px);
+  background-position:
+    center,
+    center,
+    center bottom,
+    0 0,
+    44px 62px,
+    0 0;
+  background-size:
+    100% 100%,
+    620px 620px,
+    100% 220px,
+    96px 96px,
+    148px 148px,
+    auto;
+  background-repeat: no-repeat, no-repeat, no-repeat, repeat, repeat, repeat;
+}
+
+@keyframes animal-island-boot-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes animal-island-boot-orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+html[data-dsh-animal-island-skin] :where(button, input, textarea, select, [role="button"]),
+html[data-dsh-animal-island-skin] :where(input, textarea, [contenteditable="true"], select) {
+  font-family: inherit;
+  transition:
+    color 180ms cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 180ms cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 180ms cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 180ms cubic-bezier(0.4, 0, 0.2, 1),
+    transform 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 3D treatment is limited to text-bearing controls in stable DSH surfaces.
+   Controls inside a popover layer — a menu, a listbox, or the composer's own
+   trigger panel (breadcrumbs included) — are excluded outright. Those layers
+   carry DSH's own row geometry; resetting their padding/min-height after the
+   fact (the previous guard) shrank the command palette's rows while the
+   breadcrumb buttons still took the pill. */
+html[data-dsh-animal-island-skin]
+  [data-composer-card]
+  :is(button, [role="button"]):not([aria-pressed]):not([role="switch"]):not([role="checkbox"]):not([role="radio"]):not([role="menuitem"]):not(
+    [role="menuitemradio"]
+  ):not([role="option"]):not(:has(svg)):not(:has(img)):not(:has(video)):not(:has(canvas)):not([role="menu"] *):not([role="listbox"] *):not(
+    [data-trigger-menu] *
+  ) {
+  min-height: 36px;
+  padding-inline: 18px;
+  border: 2px solid var(--animal-border);
+  border-radius: 999px;
+  background: var(--animal-cream);
+  color: var(--animal-ink);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.55),
+    0 4px 0 var(--animal-shadow-button);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  transition:
+    transform 160ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    background-color 160ms ease;
+}
+
+html[data-dsh-animal-island-skin]
+  [data-composer-card]
+  :is(button, [role="button"]):not([aria-pressed]):not([role="switch"]):not([role="checkbox"]):not([role="radio"]):not([role="menuitem"]):not(
+    [role="menuitemradio"]
+  ):not([role="option"]):not(:has(svg)):not(:has(img)):not(:has(video)):not(:has(canvas)):not([role="menu"] *):not([role="listbox"] *):not(
+    [data-trigger-menu] *
+  ):not(:disabled):hover {
+  border-color: var(--animal-mint);
+  color: var(--animal-mint-deep);
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.55),
+    0 5px 0 var(--animal-shadow-button);
+}
+
+html[data-dsh-animal-island-skin]
+  [data-composer-card]
+  :is(button, [role="button"]):not([aria-pressed]):not([role="switch"]):not([role="checkbox"]):not([role="radio"]):not([role="menuitem"]):not(
+    [role="menuitemradio"]
+  ):not([role="option"]):not(:has(svg)):not(:has(img)):not(:has(video)):not(:has(canvas)):not([role="menu"] *):not([role="listbox"] *):not(
+    [data-trigger-menu] *
+  ):not(:disabled):active {
+  transform: translateY(2px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    0 1px 0 var(--animal-shadow-button);
+}
+
+/* Popover rows (command palette, dropdowns, lists) take the mint interaction
+   tint. The generic --dsw-alias-interactive-bg-hover is the warm wood wash the
+   sidebar's session rows share. */
+html[data-dsh-animal-island-skin] :where([role="option"], [role="menuitem"], [role="menuitemradio"]):where(:hover:not(:disabled), [aria-selected="true"]) {
+  background: var(--dsw-alias-interactive-bg-hover-accent) !important;
+}
+
+/* Selected sidebar rows and panel entries read as wooden planks: the token
+   supplies the warm base, the grain and inner bevel make it a sign rather than
+   a flat pill. Only selected/current items get this; hover stays the lighter
+   wash. */
+html[data-dsh-animal-island-skin] :where([role="treeitem"][aria-selected="true"], [aria-current="page"]) {
+  background-color: #e5c99b !important;
+  background-image: repeating-linear-gradient(90deg, rgba(90, 55, 25, 0.07) 0 2px, transparent 2px 9px) !important;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.38),
+    inset 0 -2px 0 rgba(90, 55, 25, 0.22) !important;
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] :where([role="treeitem"][aria-selected="true"], [aria-current="page"]) {
+  background-color: #6b4a2c !important;
+  background-image: repeating-linear-gradient(90deg, rgba(20, 12, 6, 0.2) 0 2px, transparent 2px 9px) !important;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 230, 180, 0.16),
+    inset 0 -2px 0 rgba(20, 10, 4, 0.45) !important;
+}
+
+/* DSH paints selected-row metadata with label-tertiary, which is too light for
+   the warm plank in light mode and too dim on the dark plank. Keep the selected
+   row's hierarchy readable by raising all of its span content to label-secondary. */
+html[data-dsh-animal-island-skin] :where([role="treeitem"][aria-selected="true"], [aria-current="page"]) :where(span) {
+  color: var(--dsw-alias-label-secondary) !important;
+}
+
+/* The composer's "/" and "@" trigger panel is a scroll area whose max-height DSH
+   computes from the space above the composer and sets inline, so CSS must not
+   fight that number. A row at the cut edge is clipped mid-line; fading the panel's
+   bottom edge makes that read as "more below" instead of a broken row. The panel
+   owns no pseudo-element of its own, and the fade follows the panel surface. */
+html[data-dsh-animal-island-skin] [data-trigger-menu]::after {
+  content: "";
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  left: 4px;
+  height: 16px;
+  border-radius: 0 0 16px 16px;
+  background: linear-gradient(to bottom, transparent, var(--dsw-specific-menu, #ffffff) 80%);
+  pointer-events: none;
+}
+
+/* Reserve vertical space in the settings header for the open-config-file
+   action and the icon-only close button, without changing the button itself.
+   The list/nav guards keep it off list rows, card footers and the settings side
+   navigation, whose icon buttons would otherwise turn the nav column into a
+   centered stack on top of DSH's stretched full-width rows. */
+html[data-dsh-animal-island-skin] [role="dialog"] :where(div):has(> button > svg):not(li *):not(nav *) {
+  min-height: 64px;
+  height: auto;
+  align-items: center;
+  padding-top: 16px;
+  padding-bottom: 12px;
+}
+
+html[data-dsh-animal-island-skin]
+  :where([data-composer-card], [role="dialog"], [role="menu"])
+  :where(input:not([type="checkbox"]):not([type="radio"]), textarea, select, [contenteditable="true"]) {
+  border: 2.5px solid var(--animal-border-strong);
+  border-radius: 24px;
+  background: #fffbe7;
+  color: var(--animal-ink);
+  box-shadow: 0 3px 0 var(--animal-shadow-input);
+}
+
+html[data-dsh-animal-island-skin]
+  [data-composer-card]
+  :where(input, textarea, select, [contenteditable="true"]):not([role="menu"] *):not([role="listbox"] *):not([data-trigger-menu] *) {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* DSH composes most dialog fields as a shell that already draws the box:
+   span > icon + input. Painting the inner input as well produced a second box
+   inside the shell, so the shell carries the field look and the input inside it
+   stays transparent. Only the shell's own box changes; DSH keeps its padding,
+   so callers that reserve room for a trailing control still work. */
+html[data-dsh-animal-island-skin] :where([role="dialog"], [role="menu"]) span:has(> input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"])) {
+  box-sizing: border-box;
+  border: 2.5px solid var(--animal-border-strong);
+  border-radius: 24px;
+  background: #fffbe7;
+  box-shadow: 0 3px 0 var(--animal-shadow-input);
+}
+
+html[data-dsh-animal-island-skin]
+  :where([role="dialog"], [role="menu"])
+  span:has(> input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]))
+  > input {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  outline: none !important;
+}
+
+/* The shell is the field now, so the keyboard focus ring moves onto it. */
+html[data-dsh-animal-island-skin] :where([role="dialog"], [role="menu"]) span:has(> input:focus-visible) {
+  outline: 3px solid var(--animal-mint-deep);
+  outline-offset: 2px;
+}
+
+/* DSH's shortcut reference uses a standard role=search wrapper around the
+   input rather than the span>input shape handled above. Let the wrapper carry
+   the field surface so the global dialog input rule cannot paint a second box.
+   Border and spread share the same mint color on focus, reading as one 2px
+   ring instead of stacked border/outline rings. */
+html[data-dsh-animal-island-skin] :where([role="dialog"], [role="menu"]) [role="search"] {
+  box-sizing: border-box;
+  border: 1px solid var(--animal-border-strong) !important;
+  border-radius: 12px !important;
+  background: var(--animal-cream-deep) !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+
+html[data-dsh-animal-island-skin] :where([role="dialog"], [role="menu"]) [role="search"] > input[type="search"] {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  outline: none !important;
+}
+
+html[data-dsh-animal-island-skin] :where([role="dialog"], [role="menu"]) [role="search"]:focus-within {
+  border-color: var(--animal-mint-deep) !important;
+  outline: none !important;
+  box-shadow:
+    0 0 0 1px var(--animal-mint-deep),
+    inset 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+
+html[data-dsh-animal-island-skin]
+  body[data-ds-dark-theme]
+  :where([data-composer-card], [role="dialog"], [role="menu"])
+  :where(input:not([type="checkbox"]):not([type="radio"]), textarea, select, [contenteditable="true"]) {
+  background: #2a2520;
+  color: var(--animal-ink);
+}
+
+html[data-dsh-animal-island-skin]
+  body[data-ds-dark-theme]
+  :where([role="dialog"], [role="menu"])
+  span:has(> input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"])) {
+  background: #2a2520;
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] :where([role="dialog"], [role="menu"]) [role="search"] {
+  background: var(--animal-cream-deep) !important;
+}
+
+html[data-dsh-animal-island-skin] :where(input, textarea, select, [contenteditable="true"])::placeholder {
+  color: var(--animal-muted);
+  opacity: 1;
+}
+
+/* DSH uses scroll containers and clipped rows throughout the sidebar, menus,
+   settings, and right rail. An outward ring is therefore cut at row edges.
+   Paint one consistent keyboard ring inside the control instead; the ticket
+   brand and composer keep their own larger focus treatments below. */
+html[data-dsh-animal-island-skin]
+  :where(
+    button,
+    input,
+    textarea,
+    select,
+    [contenteditable="true"],
+    [role="button"],
+    [role="checkbox"],
+    [role="menuitem"],
+    [role="menuitemradio"],
+    [role="option"],
+    [role="radio"],
+    [role="switch"],
+    [role="treeitem"],
+    [tabindex]
+  ):focus-visible {
+  outline: 2px solid var(--animal-mint-deep) !important;
+  outline-offset: -2px;
+  border-color: var(--animal-mint-deep) !important;
+}
+
+/* The composer card already renders the composed focus state. DSH's inner
+   editor is nested in a scroll box, so its own ring can only paint clipped
+   corner fragments; leave the card as the single visible focus carrier. */
+html[data-dsh-animal-island-skin] [data-composer-card] [contenteditable="true"]:focus-visible {
+  outline: none !important;
+}
+
+/* Keep the settings rail explicit: this was the first verified clipped surface
+   and its full-width rows remain a useful regression target. */
+html[data-dsh-animal-island-skin] [role="dialog"] nav :where(button, [role="button"]):focus-visible {
+  outline: 2px solid var(--animal-mint-deep) !important;
+  outline-offset: -2px;
+}
+
+/* Menus and listboxes keep DSH's own popover chrome (radius, elevation stroke,
+   shadow) and take their surface from --dsw-specific-menu; forcing the dialog
+   card treatment on them only made popovers repeat the composer's colour. */
+html[data-dsh-animal-island-skin] body {
+  --dsw-menu-surface-fill: var(--dsw-specific-menu) !important;
+}
+
+html[data-dsh-animal-island-skin] [data-composer-card],
+html[data-dsh-animal-island-skin] [role="dialog"] {
+  border: 1.5px solid var(--animal-border) !important;
+  border-radius: 24px !important;
+  background: var(--animal-cream) !important;
+  box-shadow: 0 8px 24px var(--animal-shadow-card) !important;
+}
+
+/* The composer is the island's speech bubble: deeper ink outline, a top light
+   and a small tail. DSH already spends the card's ::after on its
+   workspace-trigger dashed ring, so the tail has to live on ::before. */
+html[data-dsh-animal-island-skin] [data-composer-card] {
+  border: 2px solid var(--animal-border-strong) !important;
+  border-radius: 26px !important;
+  background-color: #fffbe7 !important;
+  background-image: url("__ANIMAL_ISLAND_LEAF__"), var(--animal-paper-grain, none) !important;
+  background-position:
+    64% 56%,
+    0 0 !important;
+  background-size:
+    76px 76px,
+    180px 180px !important;
+  background-repeat: no-repeat, repeat !important;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.7),
+    0 10px 22px var(--animal-shadow-card) !important;
+}
+
+html[data-dsh-animal-island-skin] [data-composer-card]::before {
+  content: "";
+  position: absolute;
+  left: 42px;
+  bottom: -8px;
+  box-sizing: border-box;
+  width: 18px;
+  height: 18px;
+  border-right: 2px solid var(--animal-border-strong);
+  border-bottom: 2px solid var(--animal-border-strong);
+  border-radius: 0 0 5px 0;
+  background: #fffbe7;
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] [data-composer-card] {
+  background-color: #2a2520 !important;
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] [data-composer-card]::before {
+  background: #2a2520;
+}
+
+/* Typing lifts the bubble: deep mint owns focus, while the pale gap keeps the
+   ring legible against both the cream card and the green canvas. */
+html[data-dsh-animal-island-skin] [data-composer-card]:focus-within {
+  border-color: var(--animal-mint-deep) !important;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.7),
+    0 0 0 2px #fffbe7,
+    0 0 0 5px var(--animal-mint-deep),
+    0 10px 22px var(--animal-shadow-card) !important;
+}
+
+html[data-dsh-animal-island-skin] [data-composer-card]:focus-within::before {
+  border-right-color: var(--animal-mint-deep);
+  border-bottom-color: var(--animal-mint-deep);
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] [data-composer-card]:focus-within {
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.12),
+    0 0 0 2px #2a2520,
+    0 0 0 5px var(--animal-mint-deep),
+    0 10px 22px var(--animal-shadow-card) !important;
+}
+
+/* Dialogs are sheets of island paper: grain, a soft inner margin and a
+   stitched edge. The outline sits inside the card so it never changes
+   geometry, and the :not(:focus-visible) guard leaves the focus ring alone. */
+html[data-dsh-animal-island-skin] [role="dialog"] {
+  background-image: var(--animal-paper-grain, none) !important;
+  background-size: 180px 180px !important;
+  background-repeat: repeat !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5),
+    inset 0 0 0 6px rgba(196, 184, 158, 0.14),
+    0 8px 24px var(--animal-shadow-card) !important;
+}
+
+html[data-dsh-animal-island-skin] [role="dialog"]:not(:focus-visible) {
+  outline: 2px dashed var(--animal-border) !important;
+  outline-offset: -10px;
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] [role="dialog"] {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+    inset 0 0 0 6px rgba(138, 112, 87, 0.18),
+    0 8px 24px var(--animal-shadow-card) !important;
+}
+
+/* Send / stop is the only icon-only aria-labelled button in the card. The
+   workspace trigger also has an aria-label and SVG, but it contains label
+   spans, so it must not inherit the send key's 3D rim. */
+html[data-dsh-animal-island-skin]
+  [data-composer-card]
+  button[aria-label]:not([aria-haspopup]):not([aria-expanded]):not([role]):not(:has(img)):has(svg):not(:has(span)) {
+  position: relative;
+  box-shadow:
+    inset 0 0 0 2px rgba(11, 63, 60, 0.45),
+    inset 0 3px 0 rgba(255, 255, 255, 0.32),
+    0 3px 0 rgba(11, 63, 60, 0.28);
+  transition:
+    transform 150ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 150ms ease,
+    background-color 150ms ease;
+}
+
+html[data-dsh-animal-island-skin]
+  [data-composer-card]
+  button[aria-label]:not([aria-haspopup]):not([aria-expanded]):not([role]):not(:has(img)):has(svg):not(:has(span)):hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow:
+    inset 0 0 0 2px rgba(11, 63, 60, 0.45),
+    inset 0 3px 0 rgba(255, 255, 255, 0.32),
+    0 4px 0 rgba(11, 63, 60, 0.28);
+}
+
+html[data-dsh-animal-island-skin]
+  [data-composer-card]
+  button[aria-label]:not([aria-haspopup]):not([aria-expanded]):not([role]):not(:has(img)):has(svg):not(:has(span)):active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow:
+    inset 0 0 0 2px rgba(11, 63, 60, 0.45),
+    inset 0 2px 0 rgba(255, 255, 255, 0.24),
+    0 1px 0 rgba(11, 63, 60, 0.28);
+}
+
+/* Press ripple: a mint ring expands from the send/stop key. It is triggered by
+   :active because the plugin gets no send-event hook, and it never changes the
+   key's geometry. */
+html[data-dsh-animal-island-skin]
+  [data-composer-card]
+  button[aria-label]:not([aria-haspopup]):not([aria-expanded]):not([role]):not(:has(img)):has(svg):not(:has(span))::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border: 2px solid rgba(25, 200, 185, 0.6);
+  border-radius: 999px;
+  opacity: 0;
+  transform: scale(0.85);
+  pointer-events: none;
+  transition:
+    opacity 120ms ease,
+    transform 180ms ease-out;
+}
+
+html[data-dsh-animal-island-skin]
+  [data-composer-card]
+  button[aria-label]:not([aria-haspopup]):not([aria-expanded]):not([role]):not(:has(img)):has(svg):not(:has(span)):active:not(:disabled)::after {
+  opacity: 1;
+  transform: scale(1.5);
+}
+
+html[data-dsh-animal-island-skin]
+  body[data-ds-dark-theme]
+  [data-composer-card]
+  button[aria-label]:not([aria-haspopup]):not([aria-expanded]):not([role]):not(:has(img)):has(svg):not(:has(span))::after {
+  border-color: rgba(97, 217, 203, 0.65);
+}
+
+/* The markdown code block is a container (banner + pre) whose radius, banner
+   and background all come from DSH's --dsl-code-block-* variables, and whose
+   inner pre only rounds its bottom corners. Styling the pre box made its arc
+   disagree with the container's, so the pre no longer paints a box at all —
+   and the radius stays DSH's own: declaring 20px on the container would also
+   override the document preview, which deliberately sets 0px for its flat code
+   view (it renders the same CodeBlock). */
+/* The code island is dark in both palettes, but the banner inherits
+   --dsw-alias-label-primary, which is warm brown in light mode — unreadable on
+   the dark banner. The language label declares that colour itself, so the
+   banner's own colour is not enough: the label and the action slot (whose copy
+   button only inherits) are both driven from the code foreground. */
+html[data-dsh-animal-island-skin] [data-code-block-banner],
+html[data-dsh-animal-island-skin] [data-code-block-banner] > :where(div, span, button, code) {
+  color: var(--shiki-foreground, #e8d5bc);
+}
+
+/* Code typography and the code foreground are for the dark island. The right
+   sidebar's document preview is not an island: it renders flat views on the
+   sidebar surface (highlighted body = data-code-preview, plain-text pages =
+   data-textpreview-plain, one <pre> per page, 0 radius, transparent background).
+   Excluding those subtrees keeps DSH's own padding, colour and metrics there —
+   in light mode our foreground had left the plain view at ~1.35:1. */
+html[data-dsh-animal-island-skin] pre:not([data-code-preview] *):not([data-textpreview-plain] *) {
+  padding: 20px 24px !important;
+  color: var(--shiki-foreground, #e8d5bc) !important;
+  font-family: var(--animal-code-family) !important;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.7;
+  tab-size: 4;
+}
+
+/* Inline code chips apply to plain prose code only. Components that bring their
+   own code styling (a preset id caption, for example) keep it — the chip would
+   stretch full width inside their flex column and read as a text field. */
+html[data-dsh-animal-island-skin] :not(pre) > code:not([class]) {
+  border: 1px solid #e8dcc8;
+  border-radius: 10px;
+  background: #f0e8d8;
+  color: #6f451f;
+  padding: 0.12em 0.36em;
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] :not(pre) > code:not([class]) {
+  border-color: #59493a;
+  background: #362e25;
+  color: #ead9bd;
+}
+
+/* The deliverables review (right sidebar / turn-tail preview) is a FLAT code
+   comparison painted on the light paper surface, not on a dark code island: its
+   own FileDiff.module.css leaves the body transparent and only tints added and
+   deleted rows through --dsw-alias-file-diff-*. The skin's global --shiki-*
+   tokens are the dark code palette (bright pastels) chosen for the dark code
+   blocks, so on this light surface the syntax washes out to ~1.4:1 — the exact
+   failure the document preview had. Restore a light-surface syntax palette
+   inside the diff only, scoped to DSH's own semantic `data-review-view` hook;
+   dark mode keeps the theme palette on its dark surface. Colours only — the
+   component owns its line, gutter and column geometry. */
+html[data-dsh-animal-island-skin] body:not([data-ds-dark-theme]) [data-review-view] {
+  --shiki-foreground: var(--dsw-alias-label-primary);
+  --shiki-token-comment: #7d6b52;
+  --shiki-token-keyword: #a13d7a;
+  --shiki-token-string: #3f7d2a;
+  --shiki-token-string-expression: #3f7d2a;
+  --shiki-token-constant: #9a6412;
+  --shiki-token-function: #1f6f8b;
+  --shiki-token-parameter: #a8451a;
+  --shiki-token-punctuation: #5f4d3a;
+  --shiki-token-link: #0b6d64;
+}
+
+/* 「动森外观」→ diff 语法配色 = DSH 原生：同一块浅色纸面 diff，换回 DSH 自带的
+   中性亮色语法色。只在亮色分支生效；暗色模式继续使用深色代码岛的亮色语法。
+   这是用户可选的替代配色，不是默认值。 */
+html[data-dsh-animal-island-skin][data-animal-diff-syntax="native"] body:not([data-ds-dark-theme]) [data-review-view] {
+  --shiki-foreground: var(--dsw-alias-label-primary);
+  --shiki-token-comment: #868e96;
+  --shiki-token-keyword: #d6336c;
+  --shiki-token-string: #2f9e44;
+  --shiki-token-string-expression: #2b8a3e;
+  --shiki-token-constant: #1c7ed6;
+  --shiki-token-function: #6741d9;
+  --shiki-token-parameter: #e8590c;
+  --shiki-token-punctuation: #495057;
+  --shiki-token-link: #1971c2;
+}
+
+/* Keep the sticky conversation header separate from scrolling content without
+   turning the full-width divider into a competing control border. */
+html[data-dsh-animal-island-skin] body:not([data-ds-dark-theme]) header:has([data-conversation-header-corner]) {
+  border-bottom-color: #b9aa90 !important;
+}
+
+/* DSH paints a cream backing behind the title cluster. Keep it transparent so
+   the island canvas shows through in both themes; the wooden nav sign supplies
+   the title surface. */
+html[data-dsh-animal-island-skin] header:has([data-conversation-header-corner]) div:has(> nav[aria-label]) {
+  background-color: transparent !important;
+}
+
+/* Header ribbon, built inside the nav box because DSH clips it
+   (.crumbs carries overflow: hidden). It is a painted wooden sign: the front
+   plank is the top layer (::after), the swallowtail tails and their fold
+   shading are the back layer (::before), and the title text stays above both. */
+html[data-dsh-animal-island-skin] header:has([data-conversation-header-corner]) nav {
+  position: relative;
+  z-index: 0;
+  margin-left: 22px !important;
+  padding: 3px 24px 11px !important;
+  border: 0;
+  background: none !important;
+  color: #fff3d6 !important;
+  filter: drop-shadow(0 2px 2px rgba(74, 44, 20, 0.3)) !important;
+  transform: none;
+}
+
+html[data-dsh-animal-island-skin] header:has([data-conversation-header-corner]) nav::before {
+  content: "";
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  background-color: #6e4527;
+  background-image: linear-gradient(to bottom left, #5a3719 0 50%, transparent 50%), linear-gradient(to bottom right, #5a3719 0 50%, transparent 50%);
+  background-size:
+    14px 7px,
+    14px 7px;
+  background-position:
+    9px 33px,
+    calc(100% - 9px) 33px;
+  background-repeat: no-repeat;
+  clip-path: polygon(
+    0 15px,
+    6px 27px,
+    0 39px,
+    20px 39px,
+    20px 34px,
+    calc(100% - 20px) 34px,
+    calc(100% - 20px) 39px,
+    100% 39px,
+    calc(100% - 6px) 27px,
+    100% 15px
+  );
+  pointer-events: none;
+}
+
+html[data-dsh-animal-island-skin] header:has([data-conversation-header-corner]) nav::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0 8px 8px;
+  border-radius: 6px;
+  background-color: #8a5a33;
+  background-image:
+    radial-gradient(circle at 16px 50%, #f3d9a8 0 2px, #5a3719 2px 3.4px, transparent 3.6px),
+    radial-gradient(circle at calc(100% - 16px) 50%, #f3d9a8 0 2px, #5a3719 2px 3.4px, transparent 3.6px),
+    repeating-linear-gradient(90deg, rgba(74, 44, 20, 0.16) 0 2px, transparent 2px 9px), linear-gradient(180deg, #9a6636 0%, #7d4f28 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 230, 180, 0.28),
+    inset 0 -3px 0 rgba(60, 35, 15, 0.35);
+  pointer-events: none;
+}
+
+html[data-dsh-animal-island-skin] header:has([data-conversation-header-corner]) nav button,
+html[data-dsh-animal-island-skin] header:has([data-conversation-header-corner]) nav button:disabled {
+  color: #fff3d6 !important;
+  font-weight: 800;
+  text-shadow: 0 1px 0 rgba(60, 35, 15, 0.45) !important;
+}
+
+/* 0.2.x paints the current crumb with `--dsw-alias-label-primary` (dark brown)
+   directly on the span. On the wooden ribbon that is brown-on-brown, so the
+   desktop title looked like an empty plank while web inherited the nav colour.
+   Color the crumb spans explicitly, not just the ancestor nav. */
+html[data-dsh-animal-island-skin] header:has([data-conversation-header-corner]) nav :where(span) {
+  color: #fff3d6 !important;
+  text-shadow: 0 1px 0 rgba(60, 35, 15, 0.45) !important;
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] header:has([data-conversation-header-corner]) nav :where(span) {
+  color: #f6e6c8 !important;
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] header:has([data-conversation-header-corner]) nav {
+  color: #f6e6c8 !important;
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] header:has([data-conversation-header-corner]) nav::before {
+  background-color: #3f2a18;
+  background-image: linear-gradient(to bottom left, #2c1c0f 0 50%, transparent 50%), linear-gradient(to bottom right, #2c1c0f 0 50%, transparent 50%);
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] header:has([data-conversation-header-corner]) nav::after {
+  background-color: #5a3d24;
+  background-image:
+    radial-gradient(circle at 16px 50%, #c9a877 0 2px, #2c1c0f 2px 3.4px, transparent 3.6px),
+    radial-gradient(circle at calc(100% - 16px) 50%, #c9a877 0 2px, #2c1c0f 2px 3.4px, transparent 3.6px),
+    repeating-linear-gradient(90deg, rgba(20, 12, 6, 0.22) 0 2px, transparent 2px 9px), linear-gradient(180deg, #6b4a2c 0%, #4a3018 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 230, 180, 0.18),
+    inset 0 -3px 0 rgba(20, 10, 4, 0.5);
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] header:has([data-conversation-header-corner]) nav button,
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] header:has([data-conversation-header-corner]) nav button:disabled {
+  color: #f6e6c8 !important;
+}
+
+.animal-island-brand__mark,
+.animal-island-hero__brand {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+}
+
+.animal-island-brand__mark {
+  filter: drop-shadow(0 2px 0 rgba(61, 52, 40, 0.12));
+  transition: transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.animal-island-brand__mark:hover {
+  transform: rotate(-6deg) scale(1.06);
+}
+
+/* The brand slot sits inside DSH's new-session button at the head of the
+   sidebar. DSH sizes that button as a 24px text box; the theme turns it into a
+   ferry ticket: a cream paper face, a mint counterfoil, and a punched tear
+   seam. Only a wrapper that actually holds this slot is touched, so the
+   collapsed rail and the fallback brand keep DSH's geometry. */
+html[data-dsh-animal-island-skin] div[class]:has(> button .animal-island-brand__name) {
+  height: 80px;
+  overflow: visible;
+}
+
+html[data-dsh-animal-island-skin] :is(button, a):has(.animal-island-brand__name) {
+  --animal-ticket-stub-width: clamp(44px, 24%, 54px);
+  --animal-ticket-edge: 2px;
+  --animal-ticket-notch-cut: 7px;
+  --animal-ticket-notch-rim: calc(var(--animal-ticket-notch-cut) + var(--animal-ticket-edge));
+  --animal-ticket-notch:
+    radial-gradient(
+      circle at var(--animal-ticket-stub-width) 0,
+      transparent 0 calc(var(--animal-ticket-notch-cut) - 0.4px),
+      #000 calc(var(--animal-ticket-notch-cut) + 0.1px)
+    ),
+    radial-gradient(
+      circle at var(--animal-ticket-stub-width) 100%,
+      transparent 0 calc(var(--animal-ticket-notch-cut) - 0.4px),
+      #000 calc(var(--animal-ticket-notch-cut) + 0.1px)
+    );
+  --animal-ticket-paper-notch:
+    radial-gradient(
+      circle at var(--animal-ticket-stub-width) 0,
+      transparent 0 calc(var(--animal-ticket-notch-rim) - 0.4px),
+      #000 calc(var(--animal-ticket-notch-rim) + 0.1px)
+    ),
+    radial-gradient(
+      circle at var(--animal-ticket-stub-width) 100%,
+      transparent 0 calc(var(--animal-ticket-notch-rim) - 0.4px),
+      #000 calc(var(--animal-ticket-notch-rim) + 0.1px)
+    );
+  position: relative;
+  isolation: isolate;
+  flex: 0 1 216px;
+  width: 216px;
+  max-width: 100%;
+  height: 60px;
+  margin-inline: auto;
+  padding: 0 !important;
+  justify-content: flex-start;
+  overflow: visible;
+  border: 0;
+  border-radius: 9px;
+  background: #5a3719;
+  -webkit-mask-image: var(--animal-ticket-notch);
+  -webkit-mask-composite: source-in;
+  mask-image: var(--animal-ticket-notch);
+  mask-composite: intersect;
+  box-shadow:
+    0 3px 0 #5a3719,
+    0 6px 9px rgba(69, 47, 24, 0.16);
+  transition:
+    transform 150ms ease,
+    box-shadow 150ms ease;
+}
+
+/* The button is the continuous 2px rim. A single paper layer sits above it
+   with a transparent border and a two-pixel-larger notch cut, so the rounded
+   frame, straight edges and both punched corners are all formed by the same
+   geometry rather than by separately placed arcs. */
+html[data-dsh-animal-island-skin] :is(button, a):has(.animal-island-brand__name)::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  box-sizing: border-box;
+  border: var(--animal-ticket-edge) solid transparent;
+  border-radius: inherit;
+  background-image: linear-gradient(90deg, #7bc99a 0 var(--animal-ticket-stub-width), #fff8e7 var(--animal-ticket-stub-width));
+  background-clip: padding-box;
+  background-origin: border-box;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 253, 246, 0.55),
+    inset 0 -1px 0 rgba(112, 86, 56, 0.12);
+  -webkit-mask-image: var(--animal-ticket-paper-notch);
+  -webkit-mask-composite: source-in;
+  mask-image: var(--animal-ticket-paper-notch);
+  mask-composite: intersect;
+  pointer-events: none;
+}
+
+html[data-dsh-animal-island-skin] :is(button, a):has(.animal-island-brand__name):not(:disabled):hover {
+  box-shadow:
+    0 5px 0 #5a3719,
+    0 9px 14px rgba(69, 47, 24, 0.2);
+  transform: translateY(-1px);
+}
+
+html[data-dsh-animal-island-skin] :is(button, a):has(.animal-island-brand__name):not(:disabled):active {
+  box-shadow:
+    0 1px 0 #5a3719,
+    0 3px 5px rgba(69, 47, 24, 0.14);
+  transform: translateY(2px);
+}
+
+html[data-dsh-animal-island-skin] :is(button, a):has(.animal-island-brand__name):focus-visible {
+  outline: 3px solid var(--animal-mint-deep);
+  outline-offset: 3px;
+}
+
+/* The counterfoil is structural: the mark wrapper stretches to the ticket
+   edge, rather than sitting on it like a separate badge. */
+html[data-dsh-animal-island-skin] :is(button, a):has(.animal-island-brand__name) > span {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform: none !important;
+}
+
+html[data-dsh-animal-island-skin] :is(button, a):has(.animal-island-brand__name) > span > span:has(.animal-island-brand__mark) {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  align-self: stretch;
+  flex: 0 0 var(--animal-ticket-stub-width);
+  min-width: 44px;
+  height: auto;
+  overflow: visible;
+  transform: none !important;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.24) 0 0.8px, transparent 1px);
+  background-size: 8px 8px;
+  -webkit-mask-image:
+    radial-gradient(circle at 100% 0, transparent 0 calc(var(--animal-ticket-notch-rim) - 0.4px), #000 calc(var(--animal-ticket-notch-rim) + 0.1px)),
+    radial-gradient(circle at 100% 100%, transparent 0 calc(var(--animal-ticket-notch-rim) - 0.4px), #000 calc(var(--animal-ticket-notch-rim) + 0.1px));
+  -webkit-mask-composite: source-in;
+  mask-image:
+    radial-gradient(circle at 100% 0, transparent 0 calc(var(--animal-ticket-notch-rim) - 0.4px), #000 calc(var(--animal-ticket-notch-rim) + 0.1px)),
+    radial-gradient(circle at 100% 100%, transparent 0 calc(var(--animal-ticket-notch-rim) - 0.4px), #000 calc(var(--animal-ticket-notch-rim) + 0.1px));
+  mask-composite: intersect;
+}
+
+/* The tear seam is centred exactly on the mask origin, so it disappears behind
+   the punched rim on both ends instead of ending beside it. */
+html[data-dsh-animal-island-skin] :is(button, a):has(.animal-island-brand__name) > span > span:has(.animal-island-brand__mark)::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  right: -1px;
+  bottom: 0;
+  width: 2px;
+  background: repeating-linear-gradient(180deg, #5a3719 0 5px, transparent 5px 9px);
+  pointer-events: none;
+}
+
+/* A small punched counter number keeps the paper-stock detail without adding
+   another label to the visual hierarchy. */
+html[data-dsh-animal-island-skin] :is(button, a):has(.animal-island-brand__name)::before {
+  content: "NO. 003";
+  position: absolute;
+  z-index: 2;
+  right: 8px;
+  bottom: 4px;
+  color: #a18a67;
+  font-size: 6px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  line-height: 1;
+}
+
+/* The leaf sits on a cream disc so its green silhouette still separates from
+   the mint counterfoil. */
+html[data-dsh-animal-island-skin] :is(button, a):has(.animal-island-brand__name) > span > span:has(.animal-island-brand__name) {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  min-width: 0;
+  height: auto;
+  padding: 0 10px 0 11px;
+  overflow: visible;
+  letter-spacing: normal;
+  background-image: radial-gradient(circle, rgba(122, 94, 58, 0.035) 0 0.7px, transparent 0.9px);
+  background-size: 7px 7px;
+  -webkit-mask-image:
+    radial-gradient(circle at 0 0, transparent 0 calc(var(--animal-ticket-notch-rim) - 0.4px), #000 calc(var(--animal-ticket-notch-rim) + 0.1px)),
+    radial-gradient(circle at 0 100%, transparent 0 calc(var(--animal-ticket-notch-rim) - 0.4px), #000 calc(var(--animal-ticket-notch-rim) + 0.1px));
+  -webkit-mask-composite: source-in;
+  mask-image:
+    radial-gradient(circle at 0 0, transparent 0 calc(var(--animal-ticket-notch-rim) - 0.4px), #000 calc(var(--animal-ticket-notch-rim) + 0.1px)),
+    radial-gradient(circle at 0 100%, transparent 0 calc(var(--animal-ticket-notch-rim) - 0.4px), #000 calc(var(--animal-ticket-notch-rim) + 0.1px));
+  mask-composite: intersect;
+}
+
+html[data-dsh-animal-island-skin] :is(button, a):has(.animal-island-brand__name) > span > span:has(.animal-island-brand__mark) .animal-island-brand__mark {
+  box-sizing: content-box;
+  width: 30px;
+  height: 30px;
+  padding: 3px;
+  border-radius: 50%;
+  background: #fff8e7;
+  box-shadow:
+    inset 0 2px 0 #fffdf6,
+    0 2px 0 rgba(70, 43, 20, 0.34);
+  filter: none;
+}
+
+html[data-dsh-animal-island-skin] :where(span, div):has(> .animal-island-brand__name),
+html[data-dsh-animal-island-skin] :where(span, div):has(> :where(span, div) > .animal-island-brand__name) {
+  height: auto;
+  line-height: normal;
+  letter-spacing: normal;
+}
+
+.animal-island-brand__name {
+  display: grid;
+  justify-items: start;
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  overflow: visible;
+  line-height: 1;
+  text-align: left;
+}
+
+.animal-island-brand__name strong,
+.animal-island-brand__name small {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Ink on paper: the Chinese wordmark takes the deep island green, while the
+   Latin line uses the warmer counter ink at a tighter step. */
+.animal-island-brand__name strong {
+  color: #2b5134;
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  line-height: 24px;
+  text-shadow: none;
+}
+
+.animal-island-brand__name strong::after {
+  display: none;
+}
+
+.animal-island-brand__name small {
+  margin-top: 1px;
+  color: #705638;
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  line-height: 9px;
+  text-shadow: none;
+}
+
+.animal-island-hero__brand {
+  position: static;
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 10px;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  color: var(--animal-ink);
+}
+
+.animal-island-hero__wordmark {
+  color: #1f6b46;
+  font-size: 21px;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  text-shadow:
+    0 2px 0 rgba(255, 248, 231, 0.92),
+    0 5px 8px rgba(47, 61, 45, 0.18);
+  transform: rotate(-2deg);
+}
+
+body[data-ds-dark-theme] .animal-island-hero__wordmark {
+  color: #a9e6a0;
+  text-shadow:
+    0 2px 0 rgba(8, 6, 4, 0.55),
+    0 5px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* The conversation hero is a small island title scene rather than a framed
+   sign. DSH renders the public mark slot one level below the headline, so the
+   :has() branch selects only the headline that owns this theme's brand. Once
+   inside the hero, the brand's own class is the stable scope; repeating the
+   outer :has() on every descendant made each streaming update invalidate far
+   more rules than necessary. */
+html[data-dsh-animal-island-skin] div[class]:has(> span > div > .animal-island-hero__brand) {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  box-sizing: border-box;
+  width: min(100%, 700px);
+  max-width: 100%;
+  min-height: 142px;
+  margin-inline: auto;
+  padding: 12px 26px 17px;
+  border: 0;
+  border-radius: 34px;
+  background: radial-gradient(ellipse at 52% 40%, rgba(255, 250, 224, 0.36), transparent 62%);
+  box-shadow: none;
+  overflow: hidden;
+  color: #1f4c33;
+  /* The Hero stays mounted for theme transitions, but offscreen island paint
+     does not need to join every conversation scroll frame. */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 142px;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-hero__brand .animal-island-hero__scenery {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 320ms ease;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-hero__brand .animal-island-hero__scenery--day {
+  opacity: 1;
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] .animal-island-hero__brand .animal-island-hero__scenery--day {
+  opacity: 0;
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] .animal-island-hero__brand .animal-island-hero__scenery--night {
+  opacity: 1;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-hero__brand .animal-island-hero__identity {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-hero__brand .animal-island-hero__divider {
+  width: 22px;
+  height: 1px;
+  margin-inline: 2px;
+  background: linear-gradient(90deg, transparent, rgba(64, 112, 79, 0.62));
+}
+
+html[data-dsh-animal-island-skin] .animal-island-hero__brand .animal-island-hero__english {
+  color: #315b3a;
+  font-size: 8px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.19em;
+  white-space: nowrap;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-hero__brand .animal-island-hero__identity .animal-island-brand__mark {
+  box-sizing: content-box;
+  width: 27px;
+  height: 27px;
+  padding: 2px;
+  border-radius: 50%;
+  background: rgba(255, 250, 232, 0.9);
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.82));
+  box-shadow:
+    inset 0 1px 0 #fffdf6,
+    0 1px 0 rgba(42, 83, 54, 0.12);
+}
+
+html[data-dsh-animal-island-skin] .animal-island-hero__brand .animal-island-hero__wordmark {
+  color: #235d3d;
+  font-size: 15px;
+  line-height: 1;
+  letter-spacing: 0.09em;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.86);
+  transform: none;
+}
+
+html[data-dsh-animal-island-skin] div[class]:has(> span > div > .animal-island-hero__brand) > span:has(> span + span) {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 0;
+  margin: 0;
+  color: #183e2a;
+  font-size: 41px;
+  font-weight: 900;
+  line-height: 1.12;
+  letter-spacing: 0.055em;
+  white-space: nowrap;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.95),
+    0 3px 0 rgba(42, 83, 54, 0.16),
+    0 8px 16px rgba(45, 87, 58, 0.12);
+  animation: animal-island-hero-title-in 460ms cubic-bezier(0.22, 0.82, 0.3, 1) both;
+}
+
+html[data-dsh-animal-island-skin] div[class]:has(> span > div > .animal-island-hero__brand) > span:has(> span + span)::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -10px;
+  width: 52px;
+  height: 1px;
+  background: var(--animal-island-hero-title-rule, linear-gradient(90deg, transparent, rgba(95, 150, 111, 0.7), transparent));
+  transform: translateX(-50%);
+}
+
+html[data-dsh-animal-island-skin] div[class]:has(> span > div > .animal-island-hero__brand) > span:has(> span + span) > span + span {
+  margin: 0;
+  padding: 3px 7px 4px;
+  border: 1px solid rgba(61, 125, 79, 0.6);
+  border-radius: 999px;
+  background: rgba(242, 248, 230, 0.78);
+  color: #315b3a;
+  font-family: "Nunito", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  font-size: 8px;
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: 0.11em;
+  transform: translateY(4px) rotate(2deg);
+  box-shadow: 0 1px 0 rgba(47, 125, 60, 0.1);
+}
+
+html[data-dsh-animal-island-skin]
+  body:not([data-ds-dark-theme])
+  .animal-island-hero__brand
+  .animal-island-hero__scenery--day
+  .animal-island-hero__scene-sun-glow {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: animal-island-hero-sky-breathe 7s ease-in-out infinite;
+}
+
+html[data-dsh-animal-island-skin] body:not([data-ds-dark-theme]) .animal-island-hero__brand .animal-island-hero__scenery--day .animal-island-hero__scene-cloud {
+  animation: animal-island-hero-cloud-drift 9s ease-in-out infinite;
+}
+
+html[data-dsh-animal-island-skin]
+  body:not([data-ds-dark-theme])
+  .animal-island-hero__brand
+  .animal-island-hero__scenery--day
+  .animal-island-hero__scene-cloud--two {
+  animation-delay: -3s;
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] .animal-island-hero__brand .animal-island-hero__scenery--night .animal-island-hero__scene-moon-glow {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: animal-island-hero-sky-breathe 7s ease-in-out infinite;
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] .animal-island-hero__brand .animal-island-hero__scenery--night .animal-island-hero__scene-stars {
+  animation: animal-island-hero-stars-twinkle 5.5s ease-in-out infinite;
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] .animal-island-hero__brand .animal-island-hero__scenery--night .animal-island-hero__scene-fireflies {
+  animation: animal-island-hero-fireflies 4.8s ease-in-out infinite;
+}
+
+@keyframes animal-island-hero-title-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes animal-island-hero-sky-breathe {
+  0%,
+  100% {
+    opacity: 0.76;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes animal-island-hero-cloud-drift {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(7px);
+  }
+}
+
+@keyframes animal-island-hero-stars-twinkle {
+  0%,
+  100% {
+    opacity: 0.62;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes animal-island-hero-fireflies {
+  0%,
+  100% {
+    opacity: 0.46;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] div[class]:has(> span > div > .animal-island-hero__brand) {
+  --animal-island-hero-title-rule: linear-gradient(90deg, transparent, rgba(164, 214, 159, 0.52), transparent);
+  background: radial-gradient(ellipse at 52% 40%, rgba(44, 91, 72, 0.27), transparent 64%);
+  box-shadow: none;
+  color: #f4e9ca;
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] .animal-island-hero__brand .animal-island-hero__identity .animal-island-brand__mark {
+  background: rgba(246, 232, 195, 0.9);
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.42));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 1px 0 rgba(0, 0, 0, 0.34);
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] .animal-island-hero__brand .animal-island-hero__wordmark {
+  color: #c9edb8;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] .animal-island-hero__brand .animal-island-hero__divider {
+  background: linear-gradient(90deg, transparent, rgba(169, 218, 165, 0.55));
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] .animal-island-hero__brand .animal-island-hero__english {
+  color: #94b79a;
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] div[class]:has(> span > div > .animal-island-hero__brand) > span:has(> span + span) {
+  color: #f3edcf;
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.55),
+    0 4px 0 rgba(15, 43, 34, 0.44),
+    0 9px 18px rgba(0, 0, 0, 0.24);
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] div[class]:has(> span > div > .animal-island-hero__brand) > span:has(> span + span) > span + span {
+  border-color: rgba(169, 222, 161, 0.54);
+  background: rgba(25, 55, 48, 0.66);
+  color: #c7e3ba;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 520px) {
+  html[data-dsh-animal-island-skin] div[class]:has(> span > div > .animal-island-hero__brand) {
+    gap: 3px;
+    width: 100%;
+    min-height: 124px;
+    padding: 9px 14px 12px;
+    border-radius: 27px;
+  }
+
+  html[data-dsh-animal-island-skin] .animal-island-hero__brand .animal-island-hero__identity {
+    gap: 5px;
+  }
+
+  html[data-dsh-animal-island-skin] .animal-island-hero__brand .animal-island-hero__divider {
+    width: 14px;
+    margin-inline: 1px;
+  }
+
+  html[data-dsh-animal-island-skin] .animal-island-hero__brand .animal-island-hero__identity .animal-island-brand__mark {
+    width: 24px;
+    height: 24px;
+  }
+
+  html[data-dsh-animal-island-skin] .animal-island-hero__brand .animal-island-hero__wordmark {
+    font-size: 13px;
+  }
+
+  html[data-dsh-animal-island-skin] .animal-island-hero__brand .animal-island-hero__english {
+    font-size: 7px;
+    letter-spacing: 0.15em;
+  }
+
+  html[data-dsh-animal-island-skin] div[class]:has(> span > div > .animal-island-hero__brand) > span:has(> span + span) {
+    gap: 6px;
+    font-size: 34px;
+    letter-spacing: 0.035em;
+  }
+
+  html[data-dsh-animal-island-skin] div[class]:has(> span > div > .animal-island-hero__brand) > span:has(> span + span) > span + span {
+    padding: 3px 6px;
+    font-size: 8px;
+  }
+}
+
+@media (max-width: 360px) {
+  html[data-dsh-animal-island-skin] div[class]:has(> span > div > .animal-island-hero__brand) > span:has(> span + span) {
+    font-size: 30px;
+  }
+
+  html[data-dsh-animal-island-skin] .animal-island-hero__brand .animal-island-hero__english {
+    display: none;
+  }
+
+  html[data-dsh-animal-island-skin] .animal-island-hero__brand .animal-island-hero__divider {
+    display: none;
+  }
+}
+
+/* Keep settings surfaces calm without touching card/selectable geometry. */
+html[data-dsh-animal-island-skin] [role="dialog"] :where(button:not([aria-pressed]), [role="button"]:not([aria-pressed])):not(:focus-visible) {
+  border-color: var(--animal-border) !important;
+}
+
+/* Plugin settings pages that render their own two-column layout (a nav plus a
+   detail pane) own that layout: the opencode-go model list ships its own grid,
+   row flex and scrolling, and overriding them reshuffled its rows. Only the
+   detail container keeps a min-width guard. */
+html[data-dsh-animal-island-skin] [role="dialog"] section[aria-label] {
+  min-width: 0;
+}
+
+html[data-dsh-animal-island-skin] [role="dialog"] [role="group"] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+
+html[data-dsh-animal-island-skin] [role="dialog"] :where(code) {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+html[data-dsh-animal-island-skin] ::selection {
+  background: rgba(25, 200, 185, 0.28);
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] ::selection {
+  background: rgba(97, 217, 203, 0.3);
+}
+
+/* Settings → Plugins → 动森外观. A public `settings.plugins.tab` entry; the card
+   only draws its own internals. Presets map to the same veil the CSS variable
+   already drives, so the control and the canvas can never disagree. */
+html[data-dsh-animal-island-skin] .animal-island-appearance {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 560px;
+  padding: 4px 2px 18px;
+  color: var(--animal-body);
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance h3 {
+  margin: 0;
+  color: var(--animal-ink);
+  font-size: 16px;
+  font-weight: 900;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance p {
+  margin: 0;
+  color: var(--animal-muted);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+/* A miniature of the real canvas: the same mint-green dotted ground under the
+   same cream veil. Dragging paints only the panel-local draft variable so the
+   full app does not restyle on every pointer frame; the released value is then
+   committed to --animal-canvas-veil for the actual canvas. */
+html[data-dsh-animal-island-skin] .animal-island-appearance__preview {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  height: 124px;
+  border: 2px solid var(--animal-border);
+  border-radius: 16px;
+  background-color: #8fcaa5;
+  background-image:
+    radial-gradient(circle, rgba(74, 126, 83, 0.24) 1.25px, transparent 1.4px), radial-gradient(circle, rgba(245, 250, 222, 0.22) 0.85px, transparent 1px),
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0 2px, transparent 2px 9px);
+  background-position:
+    0 0,
+    8px 8px,
+    0 0;
+  background-size:
+    30px 30px,
+    15px 15px,
+    auto;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__preview-sheet {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding: 16px 20px;
+  /* The real centre column stacks TWO bg-base layers (layout centreCol + the
+     conversation root), so a single sheet here would read greener than the app.
+     Colour + one gradient layer reproduce that 1-(1-v)^2 composite. */
+  background-color: rgba(248, 248, 240, var(--animal-appearance-draft, var(--animal-canvas-veil, 0.4)));
+  background-image: linear-gradient(
+    rgba(248, 248, 240, var(--animal-appearance-draft, var(--animal-canvas-veil, 0.4))),
+    rgba(248, 248, 240, var(--animal-appearance-draft, var(--animal-canvas-veil, 0.4)))
+  );
+  color: var(--animal-ink);
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__preview-sheet strong {
+  font-size: 15px;
+  font-weight: 900;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__preview-sheet span {
+  color: var(--animal-body);
+  font-size: 13px;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__preview-tag {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--animal-muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] .animal-island-appearance__preview {
+  background-color: #14242a;
+  background-image:
+    radial-gradient(circle at 78% 14%, rgba(255, 238, 190, 0.16) 0 80px, rgba(255, 238, 190, 0.06) 130px, transparent 210px),
+    radial-gradient(circle, rgba(255, 248, 220, 0.45) 1px, transparent 1.5px), radial-gradient(circle, rgba(160, 230, 220, 0.3) 0.8px, transparent 1.2px);
+  background-position:
+    center top,
+    0 0,
+    44px 62px;
+  background-size:
+    100% 100%,
+    96px 96px,
+    148px 148px;
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] .animal-island-appearance__preview-sheet {
+  /* Mirror the dark `--dsw-alias-bg-base` curve below so the swatch never lies;
+     two layers match the real centre column's double bg-base stack. */
+  background-color: rgba(41, 35, 28, clamp(0.55, calc(0.84 + (var(--animal-appearance-draft, var(--animal-canvas-veil, 0.4)) - 0.4) * 0.8), 0.96));
+  background-image: linear-gradient(
+    rgba(41, 35, 28, clamp(0.55, calc(0.84 + (var(--animal-appearance-draft, var(--animal-canvas-veil, 0.4)) - 0.4) * 0.8), 0.96)),
+    rgba(41, 35, 28, clamp(0.55, calc(0.84 + (var(--animal-appearance-draft, var(--animal-canvas-veil, 0.4)) - 0.4) * 0.8), 0.96))
+  );
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] .animal-island-appearance__preview-tag {
+  background: rgba(0, 0, 0, 0.28);
+  color: #d8c2a0;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__preset {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 112px;
+  padding: 8px 14px;
+  border: 2px solid var(--animal-border);
+  border-radius: 14px;
+  background: var(--animal-cream);
+  color: var(--animal-ink);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  text-align: left;
+  cursor: pointer;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.55),
+    0 3px 0 var(--animal-shadow-button);
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__preset small {
+  color: var(--animal-muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__preset[aria-pressed="true"] {
+  border-color: var(--animal-border-strong);
+  background-color: #e5c99b;
+  background-image: repeating-linear-gradient(90deg, rgba(90, 55, 25, 0.07) 0 2px, transparent 2px 9px);
+  color: #4a2f17;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -2px 0 rgba(90, 55, 25, 0.2);
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__preset[aria-pressed="true"] small {
+  color: #6b4a2c;
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] .animal-island-appearance__preset[aria-pressed="true"] {
+  border-color: #8a7057;
+  background-color: #6b4a2c;
+  background-image: repeating-linear-gradient(90deg, rgba(20, 12, 6, 0.2) 0 2px, transparent 2px 9px);
+  color: #f6e6c8;
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] .animal-island-appearance__preset[aria-pressed="true"] small {
+  color: #d8c2a0;
+}
+
+/* 「diff 语法配色」reuses the preset plank buttons so the two visual choices
+   read as one family; the fieldset only lays out its own legend and options. */
+html[data-dsh-animal-island-skin] .animal-island-appearance__diff {
+  display: grid;
+  gap: 8px;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__diff-title {
+  padding: 0;
+  color: var(--animal-ink);
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__diff-hint {
+  max-width: 52ch;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__diff-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__custom {
+  display: grid;
+  gap: 10px;
+  min-inline-size: 0;
+  padding: 12px 14px;
+  border: 1.5px solid var(--animal-border);
+  border-radius: 16px;
+  background-color: var(--animal-cream-deep);
+  background-image: radial-gradient(circle, rgba(115, 87, 52, 0.055) 0 0.6px, transparent 0.8px);
+  background-size: 7px 7px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -1px 0 rgba(143, 118, 94, 0.08);
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] .animal-island-appearance__custom {
+  background-image: radial-gradient(circle, rgba(255, 244, 218, 0.035) 0 0.6px, transparent 0.8px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    inset 0 -1px 0 rgba(8, 6, 4, 0.2);
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__slider {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px 12px;
+  min-inline-size: 0;
+  color: var(--animal-ink);
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__slider-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__slider-title::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--animal-mint);
+  box-shadow: 0 0 0 2px var(--animal-cream);
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__slider input[type="range"] {
+  box-sizing: border-box;
+  grid-column: 1 / -1;
+  width: 100%;
+  min-width: 0;
+  height: 24px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  box-shadow: none;
+  accent-color: var(--animal-mint);
+  appearance: none;
+  cursor: pointer;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__slider input[type="range"]:focus-visible {
+  outline-offset: 2px;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__slider input[type="range"]::-webkit-slider-runnable-track {
+  box-sizing: border-box;
+  height: 8px;
+  border: 1.5px solid var(--animal-border-strong);
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--animal-mint) 0 var(--animal-slider-progress, 0%), var(--animal-slider-track) var(--animal-slider-progress, 0%) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__slider input[type="range"]::-webkit-slider-thumb {
+  box-sizing: border-box;
+  width: 20px;
+  height: 20px;
+  margin-top: -6px;
+  border: 2px solid var(--animal-border-strong);
+  border-radius: 50%;
+  background: var(--animal-mint);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.68),
+    0 0 0 2px var(--animal-cream-deep),
+    0 2px 0 rgba(90, 55, 25, 0.22);
+  appearance: none;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__slider input[type="range"]::-moz-range-track {
+  box-sizing: border-box;
+  height: 8px;
+  border: 1.5px solid var(--animal-border-strong);
+  border-radius: 999px;
+  background: var(--animal-slider-track);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__slider input[type="range"]::-moz-range-progress {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--animal-mint);
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__slider input[type="range"]::-moz-range-thumb {
+  box-sizing: border-box;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--animal-border-strong);
+  border-radius: 50%;
+  background: var(--animal-mint);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.68),
+    0 0 0 2px var(--animal-cream-deep),
+    0 2px 0 rgba(90, 55, 25, 0.22);
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__slider-value {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-width: 50px;
+  padding: 2px 9px;
+  border: 1px solid var(--animal-border);
+  border-radius: 999px;
+  background: var(--animal-cream);
+  color: var(--animal-ink);
+  font-size: 11px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  line-height: 18px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__slider-value::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--animal-mint);
+}
+
+/* 「细节」reuses the plank buttons and diff fieldset rhythm: one label plus a
+   pair of choices per row, wrapping to a second line at 320px. */
+html[data-dsh-animal-island-skin] .animal-island-appearance__details {
+  display: grid;
+  gap: 10px;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__details-title {
+  padding: 0;
+  color: var(--animal-ink);
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__details-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  min-inline-size: 0;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__details-label {
+  min-width: 62px;
+  color: var(--animal-ink);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__details-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__details-hint {
+  max-width: 52ch;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__actions {
+  display: flex;
+  justify-content: flex-end;
+  min-inline-size: 0;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__reset-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px 20px;
+  width: 100%;
+  min-inline-size: 0;
+  margin-top: 6px;
+  padding: 12px 14px;
+  border: 1.5px solid var(--animal-border);
+  border-radius: 16px;
+  background-color: var(--animal-cream-deep);
+  background-image: radial-gradient(circle, rgba(115, 87, 52, 0.055) 0 0.6px, transparent 0.8px);
+  background-size: 7px 7px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 -1px 0 rgba(115, 87, 52, 0.08);
+}
+
+html[data-dsh-animal-island-skin] body[data-ds-dark-theme] .animal-island-appearance__reset-card {
+  background-image: radial-gradient(circle, rgba(255, 244, 218, 0.035) 0 0.6px, transparent 0.8px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    inset 0 -1px 0 rgba(8, 6, 4, 0.2);
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__reset-info {
+  display: grid;
+  gap: 4px;
+  flex: 1 1 260px;
+  min-width: 0;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__reset-title {
+  color: var(--animal-ink);
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__reset-info .animal-island-appearance__note {
+  margin: 0;
+  max-width: 48ch;
+  font-size: 11px;
+  color: var(--animal-muted);
+  line-height: 1.45;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__custom-hint {
+  color: var(--animal-muted);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__reset {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  padding: 5px 10px 5px 7px;
+  border: 1.5px solid var(--animal-border);
+  border-radius: 12px;
+  background: var(--animal-cream);
+  color: var(--animal-ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    0 2px 0 var(--animal-shadow-button);
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__reset-icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--animal-cream-deep);
+  color: var(--animal-mint-deep);
+  box-shadow: inset 0 0 0 1px var(--animal-border);
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__reset-icon svg {
+  width: 15px;
+  height: 15px;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__reset-copy {
+  display: grid;
+  gap: 1px;
+  line-height: 1.1;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__reset-copy > span {
+  font-size: 12px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__reset-copy small {
+  color: var(--animal-muted);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__reset:hover {
+  border-color: var(--animal-mint);
+  color: var(--animal-mint-deep);
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__reset:hover .animal-island-appearance__reset-icon {
+  background: var(--animal-mint);
+  color: #173d35;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__note {
+  font-size: 11px;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__about {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--animal-border);
+  font-size: 11px;
+  color: var(--animal-muted);
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__about-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__about-title {
+  font-weight: 800;
+  color: var(--animal-ink);
+  letter-spacing: 0.02em;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__about-author {
+  font-weight: 600;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__about-links {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__about-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--animal-muted);
+  text-decoration: none;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--animal-cream);
+  border: 1px solid var(--animal-border);
+  transition: all 0.15s ease;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__about-icon {
+  flex: none;
+  opacity: 0.8;
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__about-icon--afdian {
+  color: #ff4070;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__about-icon--kofi {
+  color: #ff5e5b;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__about-link:hover {
+  color: var(--animal-mint-deep);
+  border-color: var(--animal-mint);
+  background: var(--animal-cream-deep);
+  text-decoration: none;
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__about-link:hover .animal-island-appearance__about-icon {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+html[data-dsh-animal-island-skin] .animal-island-appearance__about-dot {
+  color: var(--animal-border);
+  font-weight: 900;
+}
+
+/* Accessibility: a system request for more contrast wins over the slider. */
+@media (prefers-contrast: more) {
+  html[data-dsh-animal-island-skin] {
+    --animal-canvas-veil: 0.52 !important;
+  }
+
+  html[data-dsh-animal-island-skin] .animal-island-appearance {
+    --animal-appearance-draft: 0.52 !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-dsh-animal-island-skin] :where(button, input, textarea, select, [role="button"], [contenteditable="true"]) {
+    transition-duration: 0.01ms !important;
+  }
+
+  html[data-dsh-animal-island-skin] :where(button, [role="button"]):hover,
+  html[data-dsh-animal-island-skin] :where(button, [role="button"]):active {
+    transform: none;
+  }
+
+  html[data-dsh-animal-island-skin] .animal-island-brand__mark {
+    transition-duration: 0.01ms !important;
+  }
+
+  html[data-dsh-animal-island-skin] .animal-island-brand__mark:hover {
+    transform: none;
+  }
+
+  html[data-dsh-animal-island-skin] .animal-island-hero__scenery *,
+  html[data-dsh-animal-island-skin] div[class]:has(> span > div > .animal-island-hero__brand) > span:has(> span + span) {
+    animation: none !important;
+  }
+
+  html[data-dsh-animal-island-skin] [data-dsh-boot] > *,
+  html[data-dsh-animal-island-skin] [data-dsh-boot-spinner]::before,
+  html[data-dsh-animal-island-skin] [data-dsh-boot-spinner]::after {
+    animation: none !important;
+  }
+
+  html[data-dsh-animal-island-skin]
+    [data-composer-card]
+    button[aria-label]:not([aria-haspopup]):not([aria-expanded]):not([role]):not(:has(img)):has(svg):not(:has(span))::after {
+    transition: none;
+  }
+}
+

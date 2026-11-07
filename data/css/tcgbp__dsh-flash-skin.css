@@ -1,0 +1,1980 @@
+/* tcgbp/dsh-flash-skin — src/client/skin.css
+   fetched 2026-11-07 from https://raw.githubusercontent.com/tcgbp/dsh-flash-skin/master/src/client/skin.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+.flash-skin-backdrop {
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--flash-page, #f5f6f8);
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+body[data-flash-skin="on"] .flash-skin-backdrop {
+  opacity: 1;
+}
+
+/* Portrait sequence layer: a person image that changes with the slider.
+   Width scales by the user-tuned --flash-portrait-size (factor, default 1) so
+   the displayed portrait can be made bigger or smaller; object-fit keeps the
+   crop centered. */
+.flash-skin-backdrop .flash-skin-sequence-frame {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  display: block;
+  width: calc(min(42vw, 720px) * var(--flash-portrait-size, 1));
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 42%;
+  opacity: var(--flash-portrait-opacity, 1);
+  transform: translateY(-50%);
+  filter: none;
+  mask-image: linear-gradient(90deg, transparent 0%, rgb(0 0 0 / 20%) 10%, black 30%, black 100%);
+  transition: filter 180ms linear;
+}
+
+/* Mirrored left portrait for dual left+right mode. Anchored to the LEFT edge.
+   EXPERIMENT: no scaleX(-1) flip — instead the fade is pre-mirrored with a
+   reversed 270deg gradient so the face stays visible at the screen edge and
+   fades in from the screen center, symmetric with the right side, while the
+   element is NOT flipped (avoids any scaleX(-1) GPU re-sampling blur).
+   Both frames share --flash-portrait-size / --flash-portrait-opacity and the
+   [data-media="sequence"] visibility gate below, so the generic frame rule
+   already reveals the left frame whenever the presenter attaches it. */
+.flash-skin-backdrop .flash-skin-sequence-frame--left {
+  right: auto;
+  left: 0;
+  transform: translateY(-50%);
+  mask-image: linear-gradient(270deg, transparent 0%, rgb(0 0 0 / 20%) 10%, black 30%, black 100%);
+}
+
+.flash-skin-backdrop img {
+  display: none;
+}
+
+.flash-skin-backdrop[data-media="sequence"] .flash-skin-sequence-frame {
+  display: block;
+  opacity: var(--flash-portrait-opacity, 1);
+}
+
+/* Stage-wide readability scrim (幕布): a full-viewport translucent dim layer
+   that floats ABOVE the app content (it is position:fixed with a high z-index,
+   unlike the -1 backdrop portraits, so it is actually visible) and spans the
+   ENTIRE width — left, center and right alike — dimming all three columns when
+   the strength is raised. The colour source is --flash-mask-soft (from
+   applyPalette, rgba over the active shell page); --flash-scrim-strength
+   (0..100%, driven by the 幕布强度 slider) scales that alpha — at 0 the mix is
+   fully transparent (off), so there is no separate on/off switch. It renders
+   only when the skin is enabled (gated by `data-scrim="on"` on <body>), and is
+   pointer-events:none so it never blocks clicking/selection. Purely cosmetic,
+   own element + own CSS — no host coupling. */
+.flash-skin-scrim {
+  position: fixed;
+  z-index: 900;
+  inset: 0;
+  display: none;
+  pointer-events: none;
+  background: color-mix(in srgb, var(--flash-mask-soft, rgb(0 0 0 / 20%)) var(--flash-scrim-strength, 100%), transparent);
+  transition: background 120ms ease;
+}
+
+body[data-flash-skin="on"][data-scrim="on"] .flash-skin-scrim {
+  display: block;
+}
+
+.flash-skin-backdrop[data-media="color"] img {
+  display: none;
+}
+
+/* 主题色/按钮/accent/边框/文字/layer 等 token 染色 —— 已按要求移除，
+ * 页面恢复 App 原生主题样式。仅保留“背景透出”最小必要规则：
+ * .flash-skin-backdrop 人物照层是 z-index:-1 的底层固定层，
+ * 必须让 App 基础背景透明才能透出来（否则被原生不透明背景盖住）。
+ * body 底色仍由 backdrop 层自身的 --flash-page 提供。 */
+body[data-flash-skin="on"] {
+  --dsw-alias-bg-base: transparent !important;
+  background: var(--flash-page) !important;
+}
+
+body[data-flash-skin="on"] > #root {
+  background: transparent !important;
+}
+
+/* 只给“没有特殊背景（或该富内容本身无底色）的正文、列表项、行内 code、
+ * 表格单元格与代码块”加半透明灰底（深浅色通用，随 flashStage 自适应）：
+ * - 普通正文在宿主 markdown 渲染里是 <p>，列表项是 <li>；行内 code 是不在
+ *   <pre> 内的 <code>，表格内文字是 <td>/<th>；代码块是宿主 .md-code-block
+ *   卡片（banner 头 + data-code-block-content 内嵌 pre / pre.plain）；数学
+ *   公式是 <math>/katex、引用块是 <blockquote>。
+ * - 用 :not() 把「嵌套在这些特殊容器内的元素」显式排除，让公式、引用各自
+ *   保持其自带的底色，不再叠加本面板。块级 <pre> 内整体排除，故行内 <code>
+ *   （不在 <pre> 内）单独命中并套同款面板；列表项自成一块。
+ * - 代码块与正文同一套浓度：卡片与 banner 的宿主底色改为透明，只由 pre 内容
+ *   区与 banner 承担同一层半透明灰底（圆角沿用宿主的 radius-lg：banner 顶圆角、
+ *   pre 底圆角）；shiki 变体的 pre 带 !important，插件这里同样用 !important
+ *   压住，保证深浅色都一致且只在内容区吃一层、不双叠。
+ * - li 与 li 内的 p 不双叠：普通段 p 排除 li 内 p（列表项已由 li 整块覆盖）。
+ * - 每块各自一个圆角小面板（不铺满整个区域）。
+ * - 半透明灰取当前 --flash-surface（浅色阶段白、深色阶段暗，见 palette.ts），
+ *   浓度由 --flash-text-bg-strength 控制（默认 80%，设置滑块改写该变量）；
+ *   使浅色文字与深色文字在人像背景上都保持可读；
+ *   选择器只依赖宿主的稳定类名/属性（.md-code-block、data-code-block-*），
+ *   无 dsh-flash 耦合。 */
+body[data-flash-skin="on"] [class*="_column"]
+  p:not(blockquote p):not(li p):not(pre p):not(td p):not(th p):not(math p):not(.katex p) {
+  background: color-mix(in srgb, var(--flash-surface, #f5f6f8) var(--flash-text-bg-strength, 80%), transparent);
+  border-radius: 10px;
+  padding: 4px 10px;
+  width: fit-content;
+}
+body[data-flash-skin="on"] [class*="_column"]
+  li:not(blockquote li):not(pre li):not(math li):not(.katex li) {
+  background: color-mix(in srgb, var(--flash-surface, #f5f6f8) var(--flash-text-bg-strength, 80%), transparent);
+  border-radius: 10px;
+  padding: 2px 10px;
+  width: fit-content;
+}
+body[data-flash-skin="on"] [class*="_column"]
+  code:not(pre code) {
+  background: color-mix(in srgb, var(--flash-surface, #f5f6f8) var(--flash-text-bg-strength, 80%), transparent);
+  border-radius: 6px;
+  padding: 1px 6px;
+}
+body[data-flash-skin="on"] [class*="_column"]
+  td:not(pre td):not(math td):not(.katex td),
+body[data-flash-skin="on"] [class*="_column"]
+  th:not(pre th):not(math th):not(.katex th) {
+  background: color-mix(in srgb, var(--flash-surface, #f5f6f8) var(--flash-text-bg-strength, 80%), transparent);
+}
+/* 代码块并入同一浓度控制：
+ * - 卡片 .md-code-block 本身撤掉宿主实心底色，避免与下方 pre 面板双叠；
+ * - pre（含 plain 与 shiki 变体）与 banner 头各吃一层同款半透明面板；
+ * - shiki 的 pre 带 !important，这里同规格 !important + 更高特异性压住；
+ * - 引用/公式内的代码块继续保留各自容器底色，故排除。 */
+body[data-flash-skin="on"] [class*="_column"]
+  .md-code-block:not(blockquote .md-code-block):not(math .md-code-block):not(.katex .md-code-block) {
+  background: transparent !important;
+}
+body[data-flash-skin="on"] [class*="_column"]
+  .md-code-block:not(blockquote .md-code-block):not(math .md-code-block):not(.katex .md-code-block) pre,
+body[data-flash-skin="on"] [class*="_column"]
+  .md-code-block:not(blockquote .md-code-block):not(math .md-code-block):not(.katex .md-code-block) [data-code-block-banner] {
+  background: color-mix(in srgb, var(--flash-surface, #f5f6f8) var(--flash-text-bg-strength, 80%), transparent) !important;
+}
+
+/* 已编辑文件面板并入同一浓度控制：宿主 [data-changed-files] 卡片原本自带实心
+ * 底（.card → bg-layer-1、.header → --changes-fill，含 hover 的 --changes-hover），
+ * 导致不跟随“文字背景浓度”；这里把卡片与头条改成与正文/代码块同款的半透明灰底。
+ * 行内 _row/_tile 本就是透明的，由卡片这一层承担底色，不双叠。仅居中内容列命中，
+ * 右侧栏保持其不透明白（.rightbarCol 规则），引用/公式照旧保留各自底色。 */
+body[data-flash-skin="on"] [class*="_column"] [data-changed-files],
+body[data-flash-skin="on"] [class*="_column"] [data-changed-files] [class*="_header"] {
+  background: color-mix(in srgb, var(--flash-surface, #f5f6f8) var(--flash-text-bg-strength, 80%), transparent) !important;
+}
+
+/* 用户消息气泡与助手工具卡片并入同一浓度控制：
+ * - 用户气泡宿主为 MessageItem 的 _userRow > _userStack（右对齐），气泡表面
+ *   _bubble 自带实心底（--dsw-specific-bubble），导致不跟随“文字背景浓度”；
+ *   这里把气泡表面、以及同款 pending/steering/echo 气泡统一换成同款半透明灰底。
+ *   选择器只用宿主的稳定 CSS 类后缀（_userRow/_userStack/_bubble），哈希前缀
+ *   随构建变化可免，与上方 _column 约定一致；不依赖 dsh-flash。
+ * - 助手工具卡片宿主为 tool 插件的 [data-tool] 行（present 卡片同为 data-tool），
+ *   其表面自带实心底（ToolRow 的 _root/_header），一并换为同款半透明灰底，
+ *   使工具卡片跟随浓度控制。仅居中内容列命中，右侧栏保持的不透明（.rightbarCol）。
+ * - 已在各容器内的正文/代码块规则不与之双叠：气泡/卡片只吃这一层半透明底。 */
+body[data-flash-skin="on"] [class*="_column"] [class*="_userRow"] [class*="_userStack"] [class*="_bubble"] {
+  background: color-mix(in srgb, var(--flash-surface, #f5f6f8) var(--flash-text-bg-strength, 80%), transparent) !important;
+}
+body[data-flash-skin="on"] [class*="_column"] [data-tool] [class*="_root"],
+body[data-flash-skin="on"] [class*="_column"] [data-tool] [class*="_header"] {
+  background: color-mix(in srgb, var(--flash-surface, #f5f6f8) var(--flash-text-bg-strength, 80%), transparent) !important;
+}
+
+/* Desktop (Electron) specifics — the port is what lets the z-index:-1
+ * backdrop show through the native host frame, mirroring the predecessor
+ * skin on the same host. Transparent here only: no token tinting. */
+/* Windows paints the sidebar/header fill across the host frame, covering the
+   portrait. Make that frame transparent while flash is on so the backdrop
+   shows through (content columns keep their own native surfaces). */
+html[data-windows-titlebar] body[data-flash-skin="on"] #root [class*="_frame"]:has(> [class*="_centerCol"]) {
+  background: transparent !important;
+}
+
+/* Keep the right-hand column an opaque, skin-toned surface so the portrait
+   only shows through the center column. Applies in both the web shell and the
+   desktop host (the preceding :has() rule makes the whole frame transparent,
+   which would otherwise bleed the backdrop behind the rightbar too). The left
+   sidebar keeps its own native surface. */
+body[data-flash-skin="on"] #root [class*="_rightbarCol"] {
+  background: var(--flash-surface, #f5f6f8) !important;
+}
+
+/* In desktop modes the host owns a top frame (caption/controls); offset the
+   fixed backdrop below it so the portrait isn't hidden under the frame. */
+body[data-flash-skin="on"]:is(
+  [data-dsh-desktop-mode="compatibility"],
+  [data-dsh-desktop-mode="extended"]
+) .flash-skin-backdrop {
+  top: var(--dsh-desktop-frame-height, 0px);
+}
+
+body[data-flash-skin="on"] button,
+body[data-flash-skin="on"] input,
+body[data-flash-skin="on"] textarea {
+  transition: color 160ms linear, background-color 160ms linear, border-color 160ms linear;
+}
+
+.flash-level-control {
+  --flash-control-accent: var(--flash-accent, #4176e6);
+  --flash-control-rail: var(--dsw-alias-border-l3, rgb(0 0 0 / 16%));
+  position: relative;
+  display: flex;
+  width: 124px;
+  height: 28px;
+  align-items: center;
+  margin: 0 3px;
+}
+
+.flash-level-control__range {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 28px;
+  cursor: ew-resize;
+  appearance: none;
+  background: transparent;
+  touch-action: pan-y;
+}
+
+.flash-level-control__range::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--flash-accent, #4176e6), var(--flash-ink, #191b1e));
+}
+
+.flash-level-control__range::-webkit-slider-thumb {
+  width: 15px;
+  height: 15px;
+  margin-top: -4.5px;
+  border: 2px solid var(--flash-accent, #4176e6);
+  border-radius: 50%;
+  appearance: none;
+  background: #fff;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 20%);
+}
+
+.flash-level-control__range::-moz-range-track {
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--flash-accent, #4176e6), var(--flash-ink, #191b1e));
+}
+
+.flash-level-control__range::-moz-range-thumb {
+  width: 11px;
+  height: 11px;
+  border: 2px solid var(--flash-accent, #4176e6);
+  border-radius: 50%;
+  background: #fff;
+}
+
+.flash-level-control__range:focus-visible {
+  outline: none;
+}
+
+.flash-level-control__ticks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.flash-level-control__tick {
+  position: absolute;
+  top: 11px;
+  width: 2px;
+  height: 6px;
+  border-radius: 1px;
+  background: var(--flash-control-rail, rgb(0 0 0 / 16%));
+}
+
+.flash-level-control__tooltip {
+  position: absolute;
+  bottom: 30px;
+  left: calc(var(--flash-slider-ratio, 0) * 100%);
+  transform: translateX(-50%);
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--flash-ink, #191b1e);
+  color: var(--flash-page, #f5f6f8);
+  font-size: 11px;
+  line-height: 1.4;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.flash-appearance-binding {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  margin: 2px 0;
+}
+
+.flash-appearance-binding[data-plugin] {
+  min-width: 260px;
+}
+
+.flash-portrait-set[data-plugin] {
+  box-sizing: border-box;
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  margin: 2px 0;
+}
+
+.flash-portrait-set__label {
+  color: var(--dsw-alias-label-secondary);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.flash-appearance-sets {
+  box-sizing: border-box;
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  margin: 2px 0;
+}
+
+.flash-appearance-sets[data-plugin] {
+  grid-template-columns: 1fr;
+}
+
+/* 每组人物肖像占一整行：左侧为身份（◈ + 组名），右侧胶片条铺满剩余宽度，
+ * 逐帧展示该组的全部素材；一行放不下时自动换行，不产生横向滚动条。 */
+.flash-appearance-choice {
+  box-sizing: border-box;
+  border: 1px solid var(--dsw-alias-border-l2);
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  font: inherit;
+  color: var(--dsw-alias-label-primary);
+  cursor: pointer;
+  background: transparent;
+  font-size: 14px;
+  line-height: 22px;
+  text-align: left;
+  display: flex;
+}
+
+.flash-appearance-choice:hover:not([aria-checked="true"]) {
+  background: var(--dsw-alias-interactive-bg-hover);
+}
+
+.flash-appearance-choice[aria-checked="true"],
+.flash-appearance-choice.flash-appearance-choice--on {
+  border-color: var(--dsw-static-neutral-bluish-400);
+  background: var(--dsw-alias-bg-module-platform);
+}
+
+.flash-appearance-choice__identity {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+  min-width: 92px;
+  white-space: nowrap;
+}
+
+.flash-appearance-choice__filmstrip {
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1 1 auto;
+  min-width: 0;
+  align-items: center;
+  gap: 6px;
+  overflow: visible;
+  padding: 2px 2px 6px;
+}
+
+.flash-appearance-choice__frame {
+  display: block;
+  flex: 0 0 auto;
+  width: 52px;
+  height: 52px;
+  border-radius: 6px;
+  object-fit: cover;
+  object-position: 50% 30%;
+}
+
+/* Light/dark divider marker in the general-settings filmstrip, mirroring the
+   threshold line shown on the config card. Non-interactive: it only previews
+   where the dark shell begins among the frames. */
+.flash-appearance-choice__divider {
+  display: block;
+  flex: 0 0 auto;
+  align-self: stretch;
+  width: 3px;
+  border-radius: 999px;
+  background: var(--dsw-alias-border-l2);
+}
+
+.flash-appearance-choice__divider::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 8px;
+  margin-top: 22px;
+  border-radius: 999px;
+  background: var(--dsw-static-neutral-bluish-400);
+}
+
+.flash-appearance-choice__icon {
+  display: block;
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  color: currentColor;
+  font-size: 16px;
+  line-height: 16px;
+}
+
+.flash-appearance-choice__label {
+  display: block;
+}
+
+.flash-appearance-choice:disabled {
+  cursor: progress;
+  opacity: 0.7;
+}
+
+@media (max-width: 760px) {
+  .flash-level-control {
+    width: 92px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flash-skin-backdrop {
+    transition: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * 自定义配置页：肖像皮肤组管理器（plugins.bundle.config 页面视图）
+ * 沿用上层 --dsw-* 别名与 --flash-* 变量，适配明暗两套主题。
+ * ------------------------------------------------------------------------- */
+
+.flash-portrait-groups {
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--dsw-alias-label-primary);
+  border: 1px solid var(--dsw-alias-border-l2, #e5e7eb);
+  background: var(--dsw-alias-bg-layer-3, #fff);
+  border-radius: 12px;
+  transition: border-color 0.16s, background 0.16s;
+}
+
+.flash-portrait-groups:hover {
+  border-color: var(--dsw-alias-label-dimmed, #c8ccd4);
+}
+
+.flash-portrait-groups--open {
+  background: var(--dsw-alias-bg-layer-2, #f7f8fa);
+  border-color: var(--dsw-alias-label-dimmed, #c8ccd4);
+}
+
+/* 插件详情页整卡折叠（参照 dshmarket 设置卡交互）：整行 header 可点击，
+ * 左侧标题 + 描述，右侧 chevron 展开时旋转 180°；主体默认收起，每次进入
+ * 详情页重置，不做持久化。折叠仅隐藏 body、保留挂载，以保全编辑中瞬时状态。 */
+.flash-portrait-groups__head {
+  appearance: none;
+  width: 100%;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+}
+
+.flash-portrait-groups__head-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 4px;
+  min-width: 0;
+}
+
+.flash-portrait-groups__title {
+  margin: 0;
+  color: var(--dsw-alias-label-primary);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.flash-portrait-groups__desc {
+  margin: 0;
+  color: var(--dsw-alias-label-tertiary);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.flash-portrait-groups__chevron {
+  color: var(--dsw-alias-label-tertiary);
+  flex: none;
+  display: block;
+  transform-origin: 50% 50%;
+  transition: transform 0.16s;
+}
+
+.flash-portrait-groups__chevron--open {
+  transform: rotate(180deg);
+}
+
+.flash-portrait-groups:not(.flash-portrait-groups--open) .flash-portrait-groups__body {
+  display: none;
+}
+
+.flash-portrait-groups__body {
+  border-top: 1px solid var(--dsw-alias-border-l2, #e5e7eb);
+  margin: 0 16px;
+  padding-bottom: 8px;
+}
+
+/* 卡片根级提示（加载态 / 只读提示）：与 header/body 内容同侧留白。 */
+.flash-portrait-groups__notice--root {
+  padding: 14px 16px;
+  margin: 0;
+}
+
+.flash-portrait-groups__hint,
+.flash-portrait-groups__notice {
+  margin: 6px 0 14px;
+  color: var(--dsw-alias-label-tertiary);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+/* 图片不足提示：在普通 hint 之上叠加预警色，提醒还需补图才能分享/导出。 */
+.flash-portrait-group__too-few {
+  color: var(--dsw-static-severity-warning-default, #d97706);
+  border: 1px solid
+    color-mix(in srgb, var(--dsw-static-severity-warning-default, #d97706) 45%, transparent);
+  border-radius: 8px;
+  padding: 6px 10px;
+  background: color-mix(in srgb, var(--dsw-static-severity-warning-default, #d97706) 8%, transparent);
+}
+
+.flash-portrait-groups__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 16px;
+  border: 1px dashed var(--dsw-alias-border-l2);
+  border-radius: 12px;
+}
+
+.flash-portrait-group {
+  padding: 14px 0 16px;
+  border-bottom: 1px solid var(--dsw-alias-border-l1);
+}
+
+.flash-portrait-group:last-child {
+  border-bottom: none;
+}
+
+.flash-portrait-group__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+/* 身份行：set id + 中英文名称三个内联输入卡，id 输入窄一些以示其为持久化标识。
+   每张输入卡自带一个可见的文字标签（caption），说明该字段是什么。 */
+.flash-portrait-group__identity {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.flash-portrait-group__field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.flash-portrait-group__field-caption {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--dsw-alias-label-tertiary, var(--dsw-alias-label-secondary));
+  text-transform: none;
+  user-select: none;
+}
+
+.flash-portrait-group__name--id {
+  font-family: ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;
+  font-size: 12px;
+}
+
+/* id 列稍窄，保持三个输入卡的横向辨识度（整卡宽度由 label 控制）。 */
+.flash-portrait-group__field--id {
+  flex: 0 1 220px;
+}
+
+.flash-portrait-group__name--lang {
+  font-weight: 600;
+}
+
+.flash-portrait-group__name {
+  min-width: 0;
+  flex: 1 1 auto;
+  box-sizing: border-box;
+  padding: 4px 8px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font: inherit;
+  font-weight: 600;
+  color: var(--dsw-alias-label-primary);
+  background: transparent;
+}
+
+.flash-portrait-group__name:hover {
+  border-color: var(--dsw-alias-border-l2);
+}
+
+.flash-portrait-group__name:focus {
+  border-color: var(--dsw-static-neutral-bluish-400);
+  background: var(--dsw-alias-bg-module-platform);
+  outline: none;
+}
+
+.flash-portrait-group__divider-hint {
+  margin: 0 0 10px;
+}
+
+/* Light/dark divider that sits between the portrait thumbnails. The threshold
+   is moved step by step with the flanking arrow buttons, not by mouse drag. */
+.flash-portrait-group__divider {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 128px;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.flash-portrait-group__divider::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: var(--dsw-alias-border-l2);
+}
+
+.flash-portrait-group__divider-arrow {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 999px;
+  font-size: 10px;
+  line-height: 1;
+  color: var(--dsw-alias-label-secondary);
+  background: var(--dsw-alias-bg-module-platform);
+}
+
+.flash-portrait-group__divider-arrow:hover:not(:disabled) {
+  border-color: var(--dsw-static-neutral-bluish-400);
+  color: var(--dsw-static-neutral-bluish-400);
+}
+
+.flash-portrait-group__divider-arrow:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.flash-portrait-group__divider-handle {
+  position: relative;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 999px;
+  background: var(--dsw-alias-bg-module-platform);
+}
+
+.flash-portrait-group__divider-handle::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 10px;
+  height: 12px;
+  background: linear-gradient(
+    to right,
+    currentColor 0 1.5px,
+    transparent 1.5px 3px,
+    currentColor 3px 4.5px,
+    transparent 4.5px 6px,
+    currentColor 6px 7.5px
+  );
+  color: var(--dsw-alias-label-tertiary);
+}
+
+.flash-portrait-group__divider:hover::before {
+  background: var(--dsw-static-neutral-bluish-400);
+}
+
+.flash-portrait-group__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.flash-portrait-group__actions button,
+.flash-portrait-group__image-actions button,
+.flash-portrait-groups__empty button,
+.flash-portrait-group__add button,
+.flash-portrait-groups__foot button {
+  padding: 3px 10px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 8px;
+  font: inherit;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--dsw-alias-label-primary);
+  background: transparent;
+  cursor: pointer;
+}
+
+.flash-portrait-group__actions button:hover:not(:disabled),
+.flash-portrait-group__image-actions button:hover:not(:disabled),
+.flash-portrait-groups__empty button:hover:not(:disabled),
+.flash-portrait-group__add button:hover:not(:disabled),
+.flash-portrait-groups__foot button:hover:not(:disabled) {
+  background: var(--dsw-alias-interactive-bg-hover);
+}
+
+.flash-portrait-group__actions button:disabled,
+.flash-portrait-group__image-actions button:disabled,
+.flash-portrait-group__add button:disabled,
+.flash-portrait-groups__foot button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.flash-portrait-group__danger {
+  border-color: color-mix(in srgb, var(--dsw-static-severity-error-default, #d54343) 55%, transparent) !important;
+  color: var(--dsw-static-severity-error-default, #d54343) !important;
+}
+
+/* Export is a neutral, non-destructive action — give it a hint of the accent
+   so it reads as the group's "pack this set" action without shouting. */
+.flash-portrait-group__export {
+  color: var(--dsw-alias-interactive-fg-default, var(--dsw-alias-label-primary)) !important;
+  border-color: color-mix(in srgb, var(--dsw-alias-interactive-fg-default, #4d8df5) 45%, transparent) !important;
+}
+
+.flash-portrait-group__images {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.flash-portrait-group__image {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 128px;
+}
+
+.flash-portrait-group__image img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 10px;
+  background: var(--dsw-alias-bg-module-platform);
+  transition: opacity 160ms linear;
+}
+
+.flash-portrait-group__img {
+  cursor: zoom-in;
+}
+
+.flash-portrait-group__img:hover {
+  opacity: 0.9;
+}
+
+.flash-portrait-group__preview-hint {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  font-size: 10px;
+  line-height: 16px;
+  color: #fff;
+  background: rgb(0 0 0 / 55%);
+  pointer-events: none;
+}
+
+/* Full-size "view original" lightbox shown while a portrait thumbnail is clicked. */
+.flash-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  background: rgb(0 0 0 / 72%);
+  cursor: zoom-out;
+}
+
+.flash-lightbox__img {
+  max-width: min(92vw, calc(100vh * 0.9));
+  max-height: 92vh;
+  object-fit: contain;
+  border-radius: 8px;
+  background: var(--dsw-alias-bg-module-platform);
+  box-shadow: 0 24px 80px rgb(0 0 0 / 55%);
+  cursor: default;
+}
+
+.flash-lightbox__close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  font-size: 16px;
+  line-height: 1;
+  color: #fff;
+  background: rgb(0 0 0 / 55%);
+  cursor: pointer;
+}
+
+.flash-lightbox__close:hover {
+  background: rgb(0 0 0 / 75%);
+}
+
+.flash-portrait-group__image-index {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  min-width: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  font-size: 11px;
+  line-height: 18px;
+  text-align: center;
+  color: #fff;
+  background: rgb(0 0 0 / 55%);
+}
+
+.flash-portrait-group__image-actions {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  left: 6px;
+  display: none;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+}
+
+.flash-portrait-group__image:hover .flash-portrait-group__image-actions {
+  display: flex;
+}
+
+.flash-portrait-group__image-actions button {
+  padding: 2px 7px;
+  font-size: 11px;
+  background: var(--dsw-alias-bg-module-platform);
+}
+
+.flash-portrait-group__url {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 5px 8px;
+  border: 1px solid var(--dsw-static-neutral-bluish-400);
+  border-radius: 8px;
+  font: inherit;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--dsw-alias-label-primary);
+  background: var(--dsw-alias-bg-module-platform);
+}
+
+.flash-portrait-group__url:focus {
+  outline: none;
+}
+
+.flash-portrait-group__add button {
+  align-self: stretch;
+  min-height: 128px;
+  border-style: dashed;
+  color: var(--dsw-alias-label-tertiary);
+}
+
+.flash-portrait-group__add button.flash-portrait-group__add-pick {
+  align-self: auto;
+  min-height: 0;
+  border-style: solid;
+  color: var(--dsw-alias-label-primary);
+}
+
+.flash-portrait-group__add button:hover:not(:disabled) {
+  border-style: dashed;
+  color: var(--dsw-alias-label-primary);
+}
+
+.flash-portrait-group__add button.flash-portrait-group__add-pick:hover:not(:disabled) {
+  border-style: solid;
+}
+
+.flash-portrait-groups__notice--error {
+  color: var(--dsw-static-severity-error-default, #d54343);
+}
+
+.flash-portrait-groups__conflict {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--dsw-static-severity-error-default, #d54343);
+  border-radius: 8px;
+}
+
+.flash-portrait-groups__conflict-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.flash-portrait-groups__foot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.flash-portrait-groups__foot button {
+  padding: 5px 12px;
+}
+
+/* Network import: bundled example-archive quick picks (left) and a paste-any-URL
+ * field (right). Both funnel into the same archive-import engine as the local
+ * picker, so presentation stays light: flex rows + the shared input style. */
+.flash-import-net {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+  margin-top: 12px;
+}
+
+.flash-import-net__label {
+  font-size: 12px;
+  color: var(--dsw-alias-label-secondary, #7a818b);
+  margin-right: 2px;
+}
+
+.flash-import-net__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.flash-import-net__example {
+  padding: 3px 10px;
+}
+
+.flash-import-net__example em {
+  font-style: normal;
+  opacity: 0.72;
+  margin-left: 2px;
+}
+
+.flash-import-net__url {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 320px;
+  min-width: 0;
+}
+
+.flash-import-net__url .flash-weights__input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.flash-import-net__url button {
+  padding: 5px 12px;
+  flex: 0 0 auto;
+}
+
+/* =========================================================================
+ * 居左布局覆盖 —— 可调宽度对话内容区（目标宿主 0.2.1-rc.2）
+ *
+ * 需覆盖的原生规则（dsh-client-ui-chat / -conversation 编译产物）：
+ *   .EvIC1a_column{max-width:var(--dsh-chat-content-width);width:100%;margin:0 auto}
+ *   .wSkVaW_widthHandle{width:min(10px,calc((100% - var(--dsh-chat-content-width)) / 2 - 24px - 24px));...}
+ *   .wSkVaW_widthHandle[data-side=left ]{right:calc(50% + var(--dsh-chat-content-width) / 2 + 24px)}
+ *   .wSkVaW_widthHandle[data-side=right]{left :calc(50% + var(--dsh-chat-content-width) / 2 + 24px)}
+ *
+ * 目标：内容列由“以视口中点为对称轴居中”改为“靠左对齐”，并在左侧预留一段
+ *       timeline 槽宽（默认 50px，可覆盖改）。只保留右侧拖把，并把右拖把重新
+ *       钉到内容列右缘。纯 CSS，右拖把沿用原生 ×2 拖拽手感。
+ * ========================================================================= */
+body[data-flash-skin="on"][data-flash-layout="left"] {
+  /* 左侧为 timeline 预留的槽宽（px）。需要更大/更小时直接改这里。 */
+  --dsh-flash-timeline-gutter: 40px;
+  /* 右拖把与内容列右缘的间隙（继承原生 24px 手感）。 */
+  --dsh-flash-handle-gap: 24px;
+  /* 对齐基准轴 = “输入卡最左侧”。槽宽(50) + 内容列父滚动区左侧内边距(侧余量16 + 16)，
+   * 使内容列左缘与输入卡左缘落在同一根垂直线。残余结构差用 nudge 微调（默认 0，正右移）。 */
+  --dsh-flash-content-left: calc(
+    var(--dsh-flash-timeline-gutter, 50px)
+    + var(--dsh-composer-side-clearance, 16px) + 16px
+  );
+  --dsh-flash-align-nudge: 0px;
+}
+
+/* 0) 输入卡与内容列“完全一样宽”。
+ *    原生 .wSkVaW_body 把 --dsh-composer-card-max-width 设为
+ *    calc(var(--dsh-chat-content-width) + 32px)，输入卡比内容列宽 32px。
+ *    此处直接在 .wSkVaW_body 级覆写为 = 内容列宽，让输入卡(+todo+排队条)
+ *    与内容列同宽、同左缘，右缘也逐点对齐。 */
+body[data-flash-skin="on"][data-flash-layout="left"] [class*="_body"] {
+  --dsh-composer-card-max-width: var(--dsh-chat-content-width);
+}
+
+/* 1) 内容列改为贴左：左缘对齐“输入卡最左侧”(= content-left，nudge 可微调)，
+ *    右边距 auto（不再对半居中）。
+ *    注：.EvIC1a_scroll 自带 padding:16px calc(侧余量+16)，故这里去掉父 padding，
+ *    让内容列净左缘 = content-left，与输入卡左缘同基准。 */
+body[data-flash-skin="on"][data-flash-layout="left"] [class*="_column"] {
+  margin-right: auto !important;
+  margin-left: calc(
+    var(--dsh-flash-timeline-gutter, 50px)
+    + var(--dsh-flash-align-nudge, 0px)
+  ) !important;
+}
+
+/* 2) 隐藏左侧拖把，只保留右侧。 */
+body[data-flash-skin="on"][data-flash-layout="left"] [class*="_widthHandle"][data-side="left"] {
+  display: none !important;
+}
+
+/* 3) 右侧拖把钉到内容列右缘。
+ *    列右缘相对（全宽的）定位祖先的水平位移 =
+ *       滚动区左侧内容内边距(var(--dsh-composer-side-clearance) + 16px)
+ *     + timeline 槽 50px
+ *     + 列宽 var(--dsh-chat-content-width)
+ *     + 拖把间隙 24px
+ *    拖把自身宽度固定为 10px（原生 min(10px,…) 是专为居中布局写的）。
+ */
+body[data-flash-skin="on"][data-flash-layout="left"] [class*="_widthHandle"][data-side="right"] {
+  left: calc(
+    var(--dsh-composer-side-clearance, 16px) + 16px
+    + var(--dsh-flash-timeline-gutter, 50px)
+    + var(--dsh-chat-content-width)
+    + var(--dsh-flash-handle-gap, 24px)
+  ) !important;
+  width: 10px !important;
+}
+
+/* 4) 输入卡片与内容列一起居左（同样预留左侧 timeline 槽）。
+ *    原生居中来自两层：
+ *       .uV2eYG_root{...;align-items:center}            -> 让输入卡水平居中
+ *       [class*="_composerHero"]{...;align-self:center}  -> 让 hero 输入表整体居中
+ *    输入卡宽已由第 0 段覆盖为“与内容列同宽”(--dsh-composer-card-max-width
+ *    = --dsh-chat-content-width)，故只需对齐左缘：
+ *       内容列左缘 = 滚动区左 padding(= 侧余量+16px) + 槽宽
+ *       卡片左缘   = 输入根左 padding(= 侧余量) + 卡片 margin
+ *       => margin = （侧余量+16px + 槽宽）- 侧余量 = 16px + 槽宽
+ *    与皮肤变量/主题耦合低，改槽宽时输入卡与内容列同步移动。同宽 + 同左缘
+ *    => 输入卡右缘 = 内容列右缘，滚动到最下按钮(第 7 段)即钉在其上方。
+ *    注：输入卡根用 [class*="_root"]:has(> [class*="_card"]) 跨构建定位 ——
+ *    输入卡根(.uV2eYG_root)是“直接子节点含卡片”的 * _root；todo 根
+ *    (.lXshSW_root)等其它同名 *_root 没有直接 card 子节点，故用 :has()
+ *    区分，不再依赖单次编译的哈希前缀。
+ */
+body[data-flash-skin="on"][data-flash-layout="left"] [class*="_root"]:has(> [class*="_card"]) {
+  align-items: flex-start !important;
+}
+body[data-flash-skin="on"][data-flash-layout="left"] [class*="_root"] > [class*="_card"] {
+  margin-left: calc(16px + var(--dsh-flash-timeline-gutter, 50px)) !important;
+}
+body[data-flash-skin="on"][data-flash-layout="left"] [class*="_composerHero"] {
+  align-self: flex-start !important;
+}
+
+/* 4a) 输入框下方的会话统计行（会话统计 Pill，conversation.composer.dock
+ *     槽位的 ActivityPill/UsagePill，容器 .uV2eYG_dock[data-composer-dock]）。
+ *     与输入卡左缘对齐。原生该行 justify-content:center 居中，且皮肤输入卡根
+ *     改为 align-items:flex-start 后该行会缩到内容宽、贴住根左内边距，落在
+ *     输入卡左侧。这里把该行改为左对齐并施加与输入卡相同的 margin-left。
+ *     用稳定属性 [data-composer-dock] 区分其它 * _dock 同名节点。
+ */
+body[data-flash-skin="on"][data-flash-layout="left"] [class*="_dock"][data-composer-dock] {
+  justify-content: flex-start !important;
+  margin-left: calc(16px + var(--dsh-flash-timeline-gutter, 50px)) !important;
+}
+
+/* 4b) 新会话空态里的“选择工作区”行([class*="_heroWorkspaceRow"])与输入卡左缘对齐。
+ *     它是 [class*="_composerStack"] 的直接子节点（与输入卡、todo、排队条同原点，
+ *     并不在 HeroShell 内部），原生靠内边距 padding-left:20px 落在偏左位置，与已
+ *     左移的输入卡左缘错位。此处用与 todo/排队条完全相同的 margin-left 基准，
+ *     并去掉那 20px 原生内边距，让芯片左缘与输入卡左缘落在同一根垂直线上。
+ */
+body[data-flash-skin="on"][data-flash-layout="left"] [class*="_heroWorkspaceRow"] {
+  margin-left: calc(
+    var(--dsh-composer-side-clearance, 16px) + 16px
+    + var(--dsh-flash-timeline-gutter, 50px)
+  ) !important;
+  margin-right: auto !important;
+  padding-left: 0 !important;
+}
+
+/* 4c) 「+ 命令按钮 → 权限/模式下拉」之间的行内间距。
+ *     原生 .uV2eYG_tools{gap:12px}（容器 ≤560px 时收窄为 8px），叠加 + 按钮
+ *     内图标的自身内缩，视觉上在 + 与权限下拉之间留下一段明显空白。这里仅把
+ *     该行内部 gap 收窄到 4px，让 + 与下拉真正贴合；+ 按钮的左缘及其与输入卡
+ *     左缘的原生对齐完全保持（行内边距 8px 未动），不做任何位移/重排。仅作用
+ *     于左对齐布局，且限定在输入卡内（避开配置卡等其它同名 *_tools 节点）。
+ */
+body[data-flash-skin="on"][data-flash-layout="left"] [class*="_root"] > [class*="_card"] [class*="_tools"] {
+  gap: 4px !important;
+}
+
+/* 5) todo 任务栏与内容列一起居左。
+ *    TodoPanel 挂载在 conversation.input.dock，与输入卡同处
+ *    [class*="_composerStack"]；原生其根加了 margin:0 auto 居中。
+ *    输入卡左缘相对 stack 原点的位移 = 根 padding 左(侧余量) + 卡 margin(16+槽)
+ *      = 侧余量 + 16 + 槽。这里 TodoPanel 与输入卡同原点，
+ *    故把 margin:0 auto 改为 margin-left = 同值、margin-right 保持 auto，
+ *    让 todo 条带的左缘与输入卡左缘对齐。
+ *    注：todo 根与输入卡根同为 *_root，但 todo 根不含直接 _card 子节点，
+ *    用「composerStack 内非卡片 _root」跨构建定位，不再依赖单次编译的哈希前缀
+ *    （与第 4 段输入卡根的定位方式对称互补，二者在栈内互斥）。
+ *    陷阱：菜单（Menu）组件的包装层类名形如 _root_<hash>_<n>，同样含 "_root"，
+ *    且存在于输入卡内部（权限下拉、模型选择等每一下拉各有一个）。若只按
+ *    "_root 且不含 _card 子节点" 匹配，会把它们一并左移 72px，在 `+` 与权限
+ *    下拉之间撑出一大段空白。故再排除「输入卡内部」的 _root，只留栈内面板根。
+ */
+body[data-flash-skin="on"][data-flash-layout="left"] [class*="_composerStack"] [class*="_root"]:not(:has(> [class*="_card"])):not([class*="_card"] *) {
+  margin-left: calc(
+    var(--dsh-composer-side-clearance, 16px) + 16px
+    + var(--dsh-flash-timeline-gutter, 50px)
+  ) !important;
+  margin-right: auto !important;
+}
+
+/* 6) 排队消息条（待发消息条，QueueDock，conversation.input.dock）与输入卡一起居左。
+ *    QueueDock 挂在 conversation.input.dock，与 TodoPanel 同处
+ *    [class*="_composerStack"]，原生其 dock 容器 margin:0 auto 居中。
+ *    与 todo 用同一个 margin-left 位移，让排队条左缘与输入卡/内容列左缘对齐。
+ *    注：排队条 dock 根同时带稳定的 data-queue-dock 属性，据此定位，
+ *    不依赖每次构建会重排哈希的精确类名（旧写法 .F07MqG_dock 在宿主
+ *    重建哈希后失效，是排队条不随居左的根因）。
+ */
+body[data-flash-skin="on"][data-flash-layout="left"] [class*="_composerStack"] [data-queue-dock] {
+  margin-left: calc(
+    var(--dsh-composer-side-clearance, 16px) + 16px
+    + var(--dsh-flash-timeline-gutter, 50px)
+  ) !important;
+  margin-right: auto !important;
+}
+
+/* 6a) 目标显示条（GoalBar，dsh-client-ui-goal，挂 conversation.input.dock，
+ *     与 todo/排队条同处 [class*="_composerStack"]）。
+ *     原生其 dock{width:calc(100% - …);margin:0 auto} 把整条在输入栈里居中，
+ *     [class*="_bar"]{margin:0 auto} 再在 dock 内部把白色条居中 —— 两层居中叠加
+ *     导致目标条仍贴着视口中线，没跟着左移。这里先把 dock 从左钉死（去掉 auto
+ *     居中，使公允左缘 = composerStack 原点），再给可见的 [class*="_bar"] 施加
+ *     与 todo/排队条完全相同的 margin-left 基准，让白色目标条左缘与输入卡/内容列
+ *     左缘落在同一根垂直线上。注：目标条 dock 根同时带稳定的 data-goal-bar 属性，
+ *     据此定位，不依赖每次构建会重排哈希的精确类名（旧写法 .Gc24Bq_dock 在宿主
+ *     重建哈希后失效，与排队条同样需同步修正）。
+ */
+body[data-flash-skin="on"][data-flash-layout="left"] [class*="_composerStack"] [data-goal-bar] {
+  margin-left: 0 !important;
+  margin-right: auto !important;
+}
+body[data-flash-skin="on"][data-flash-layout="left"] [class*="_composerStack"] [data-goal-bar] [class*="_bar"] {
+  margin-left: calc(
+    var(--dsh-composer-side-clearance, 16px) + 16px
+    + var(--dsh-flash-timeline-gutter, 50px)
+  ) !important;
+}
+
+/* 7) “滚动到最下”按钮与左移后的内容列右缘对齐。
+ *    原生 [class*="_toBottomSlot"] 铺满整宽(left:0 right:0)，用
+ *    justify-content:flex-end + padding-right 把按钮钉在“居中对齐时”
+ *    内容列的右缘。内容列左移槽宽后，右缘也跟着左移，故把 padding-right
+ *    改为“右侧实际空余”= 100% − 槽宽 − (侧余量+16) − 列宽。
+ */
+body[data-flash-skin="on"][data-flash-layout="left"] [class*="_toBottomSlot"] {
+  padding-right: calc(
+    100% - var(--dsh-flash-timeline-gutter, 50px)
+    - var(--dsh-composer-side-clearance, 16px) - 16px
+    - var(--dsh-chat-content-width)
+  ) !important;
+}
+
+/* 8) 强度驱动模式选择行（DriverRow）。
+ *    手动 / 综合加权 的下拉选择。以原生 <select> 渲染，pick 自一个菜单
+ *    （与快捷面板的 DRIVER_SWITCH select 同源同过场），外观用宿主令牌上色，
+ *    避免自绘按钮组依赖宿主的 SegmentedControl CSS-modules。
+ */
+.flash-appearance-binding--driver {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  margin: 2px 0;
+}
+
+.flash-driver-select {
+  min-width: 96px;
+  padding: 4px 20px 4px 8px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 6px;
+  background: var(--dsw-alias-surface, var(--flash-surface, #fff));
+  color: var(--dsw-alias-label-primary);
+  font-size: 13px;
+  line-height: 18px;
+  cursor: pointer;
+}
+
+.flash-driver-select:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.flash-appearance-binding__label {
+  color: var(--dsw-alias-label-secondary);
+  font-size: 13px;
+  line-height: 18px;
+  white-space: nowrap;
+}
+
+/* 通用设置里的「左右双人物」开关。以宿主原生语义 button[role=switch] 渲染，
+ * 外观沿用 --flash-accent / --flash-surface，明暗两套主题都可辨。 */
+.flash-appearance-binding--dual {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  margin: 2px 0;
+}
+
+.flash-appearance-binding--dual[data-plugin] {
+  min-width: 260px;
+}
+
+.flash-dual-switch {
+  display: inline-flex;
+  align-items: center;
+}
+
+.flash-dual-switch__track {
+  position: relative;
+  display: inline-flex;
+  width: 40px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 999px;
+  background: var(--dsw-alias-interactive-bg-hover, rgb(0 0 0 / 10%));
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: background 180ms ease, border-color 180ms ease;
+}
+
+.flash-dual-switch__track--on {
+  background: var(--flash-accent, #4176e6);
+  border-color: var(--flash-accent, #4176e6);
+}
+
+.flash-dual-switch__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--flash-page, #ffffff);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 30%);
+  transition: transform 180ms ease;
+}
+
+.flash-dual-switch__track--on .flash-dual-switch__thumb {
+  transform: translateX(18px);
+}
+
+.flash-dual-switch__track:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* 9) 综合加权实时仪表。加权模式下不显示滑杆，仅以 output 逐路显示
+ *    加权公式（实时代入权重与各信号因子）与实时计算出的得分、帧位。
+ */
+.flash-level-control--composite {
+  width: auto;
+  height: auto;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.flash-level-control__gauge {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+  align-items: center;
+  margin-top: 2px;
+  padding-left: 2px;
+  color: var(--flash-secondary, #5b6470);
+  font-size: 11px;
+  line-height: 1.25;
+  font-variant-numeric: tabular-nums;
+}
+
+.flash-level-control__formula {
+  white-space: normal;
+  word-break: break-all;
+}
+
+.flash-level-control__term {
+  white-space: nowrap;
+}
+
+/* 「加权数值 → 得分」的中间环节:每路的 =贡献 用强调色,预示其将并入总分。
+ * eq(=) 为运算符,part(贡献)/sum(总和) 为权重×因子后落到得分刻度的数值。 */
+.flash-level-control__eq {
+  margin: 0 4px;
+  color: var(--flash-secondary, #5b6470);
+  font-style: normal;
+  font-weight: 600;
+}
+
+.flash-level-control__part {
+  color: var(--flash-accent, #4176e6);
+  font-weight: 800;
+}
+
+.flash-level-control__sum {
+  color: var(--flash-ink, #191b1e);
+  font-weight: 800;
+}
+
+.flash-level-control__arrow {
+  margin: 0 4px;
+  color: var(--flash-secondary, #5b6470);
+  font-style: normal;
+  font-weight: 600;
+}
+
+.flash-level-control__term b {
+  margin-right: 0;
+  /* ink 为自适应正文色：浅色下近黑，深色下近白，公式才能在深色底上可读。
+   * 此前误用未定义的 --flash-primary，恒回退到深色 #2b3440，深色下与底撞色。 */
+  color: var(--flash-ink, #191b1e);
+  font-weight: 600;
+}
+
+.flash-level-control__term--bonus b {
+  color: var(--flash-accent, #4176e6);
+}
+
+.flash-level-control__bonus {
+  color: var(--flash-accent, #4176e6);
+  font-weight: 800;
+}
+
+/* 压缩脉冲激活时,整段「压缩加分」作为高亮加分块凸显:浅色强调底 + 圆角胶囊 +
+ * 弹入动效。该块在 index.tsx 里以脉冲时间戳为 key,每次新的压缩事件都会重新
+ * 挂载并重播动画,把只持续几秒的加分凸显得更醒眼;平时整体隐藏不占位。 */
+.flash-level-control__pulse {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  padding: 1px 7px 1px 8px;
+  margin: -1px 0;
+  border-radius: 999px;
+  /* color-mix 前的实色回退,旧浏览器至少保留强调色而非透明消失。 */
+  background: rgba(98, 126, 233, 0.16);
+  background: color-mix(in srgb, var(--flash-accent, #4176e6) 16%, transparent);
+  outline: 1px solid rgba(98, 126, 233, 0.4);
+  outline: 1px solid color-mix(in srgb, var(--flash-accent, #4176e6) 40%, transparent);
+  animation: flash-pulse-pop 0.45s ease-out;
+}
+
+.flash-level-control__pop {
+  display: inline-flex;
+  align-items: center;
+}
+
+.flash-level-control__pulse .flash-level-control__term--bonus b,
+.flash-level-control__pulse .flash-level-control__bonus {
+  color: var(--flash-accent, #4176e6);
+}
+
+.flash-level-control__pulse .flash-level-control__bonus {
+  font-size: 12px;
+  padding-left: 2px;
+}
+
+@keyframes flash-pulse-pop {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  55% {
+    transform: scale(1.12);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.flash-level-control__plus {
+  display: inline-block;
+  margin: 0 2px;
+  /* 同 .flash-level-control__term b，用自适应 ink 而非未定义的 --flash-primary。 */
+  color: var(--flash-ink, #191b1e);
+  font-style: normal;
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.flash-level-control__score {
+  color: var(--flash-page, #f5f7fa);
+  background: var(--flash-ink, #171d26);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-weight: 600;
+}
+
+.flash-level-control__gauge .flash-level-control__frame {
+  color: var(--flash-accent, #4176e6);
+  font-weight: 600;
+}
+
+/* 10) 综合加权权重输入（插件详情配置卡）。
+ *     四个 step=0.05 的数字输入 + 恢复默认按钮，写入 localStorage 由运行时读取。
+ */
+.flash-weights {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--dsw-alias-border-l3, rgb(0 0 0 / 12%));
+}
+
+.flash-weights__head {
+  margin: 0 0 6px;
+}
+
+.flash-weights__title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.flash-weights__subtitle {
+  margin: 14px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+  color: var(--dsw-alias-label-primary);
+}
+
+.flash-weights__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(116px, 1fr));
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.flash-weights__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.flash-weights__caption {
+  color: var(--dsw-alias-label-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.flash-weights__desc {
+  color: var(--dsw-alias-label-tertiary);
+  font-size: 11px;
+  line-height: 15px;
+  min-height: 30px;
+}
+
+.flash-weights__input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 4px 6px;
+  border: 1px solid var(--dsw-alias-border-l3, rgb(0 0 0 / 16%));
+  border-radius: 6px;
+  background: var(--dsw-alias-bg-base, #fff);
+  color: var(--dsw-alias-label-primary);
+  font-size: 13px;
+}
+
+.flash-weights__input:focus {
+  outline: none;
+  border-color: var(--flash-accent, #4176e6);
+}
+
+.flash-weights__reset {
+  padding: 4px 12px;
+  border: 1px solid var(--dsw-alias-border-l3, rgb(0 0 0 / 16%));
+  border-radius: 6px;
+  background: transparent;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 12px;
+  line-height: 16px;
+  cursor: pointer;
+}
+
+.flash-weights__reset:hover:not(:disabled) {
+  background: var(--dsw-alias-hover, rgb(0 0 0 / 4%));
+  color: var(--dsw-alias-label-primary);
+}
+
+.flash-weights__reset:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* ── Social: like + share (C1) ───────────────────────────────────────────── */
+
+/* Like is read-only bookkeeping; the filled heart marks the local liked state. */
+.flash-portrait-group__like {
+  color: var(--dsw-alias-label-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+
+.flash-portrait-group__like--on {
+  color: var(--dsw-static-severity-warning-default, #d97706) !important;
+  border-color: color-mix(in srgb, var(--dsw-static-severity-warning-default, #d97706) 55%, transparent) !important;
+  background: color-mix(in srgb, var(--dsw-static-severity-warning-default, #d97706) 10%, transparent);
+}
+
+/* Share packs this group into text; give it the neutral "pack this set" look. */
+.flash-portrait-group__share {
+  color: var(--dsw-alias-interactive-fg-default, var(--dsw-alias-label-primary)) !important;
+  border-color: color-mix(in srgb, var(--dsw-alias-interactive-fg-default, #4d8df5) 42%, transparent) !important;
+}
+
+/* Share modal sits above the lightbox so a preview can stay open behind it. */
+.flash-share {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgb(0 0 0 / 60%);
+}
+
+.flash-share__box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-sizing: border-box;
+  width: min(680px, 94vw);
+  max-height: min(86vh, 900px);
+  overflow: auto;
+  padding: 18px 20px 20px;
+  border-radius: 14px;
+  background: var(--dsw-alias-bg-module-platform, #fff);
+  color: var(--dsw-alias-label-primary);
+  box-shadow: 0 24px 80px rgb(0 0 0 / 55%);
+}
+
+.flash-share__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.flash-share__title {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-size: 16px;
+  line-height: 22px;
+  overflow-wrap: anywhere;
+}
+
+.flash-share__text {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 120px;
+  resize: vertical;
+  padding: 8px 10px;
+  border: 1px solid var(--dsw-alias-border-l3, rgb(0 0 0 / 16%));
+  border-radius: 8px;
+  background: var(--dsw-alias-bg-base, #fff);
+  color: var(--dsw-alias-label-primary);
+  font: 12px/1.5 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  overflow-wrap: anywhere;
+}
+
+.flash-share__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.flash-share__copy {
+  color: var(--dsw-alias-interactive-fg-default, #4073e0) !important;
+  border-color: color-mix(in srgb, var(--dsw-alias-interactive-fg-default, #4073e0) 45%, transparent) !important;
+  font-weight: 600;
+}
+
+.flash-share__copy:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--dsw-alias-interactive-fg-default, #4073e0) 12%, transparent);
+}
+
+.flash-share__community {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 6px;
+  padding-top: 12px;
+  border-top: 1px solid var(--dsw-alias-border-l2);
+}
+
+.flash-share__community-title {
+  margin: 0;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 600;
+}
+
+/* ── C2: community directory panel ───────────────────────────────────────── */
+
+.flash-community {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--dsw-alias-bg-base, #fff) 60%, transparent);
+}
+
+.flash-community__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.flash-community__title {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+}
+
+.flash-community__learn {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--dsw-alias-link-text, var(--dsw-alias-interactive-fg-default));
+  text-decoration: none;
+}
+
+.flash-community__refresh,
+.flash-community__toggle {
+  padding: 3px 10px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 8px;
+  font: inherit;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--dsw-alias-label-primary);
+  background: transparent;
+  cursor: pointer;
+}
+
+.flash-community__refresh:hover:not(:disabled),
+.flash-community__toggle:hover:not(:disabled) {
+  background: var(--dsw-alias-interactive-bg-hover);
+}
+
+.flash-community__refresh:disabled,
+.flash-community__toggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.flash-community__tablewrap {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.flash-community__table {
+  width: 100%;
+  min-width: 480px;
+  border-collapse: collapse;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--dsw-alias-label-primary);
+}
+
+.flash-community__th {
+  text-align: left;
+  padding: 6px 10px;
+  font-size: 11px;
+  line-height: 15px;
+  font-weight: 600;
+  color: var(--dsw-alias-label-tertiary);
+  border-bottom: 1px solid var(--dsw-alias-border-l2);
+  white-space: nowrap;
+}
+
+.flash-community__th--index {
+  width: 40px;
+}
+
+.flash-community__th--actions {
+  text-align: right;
+}
+
+.flash-community__th--set {
+  width: 110px;
+}
+
+.flash-community__th--author {
+  width: 100px;
+}
+
+.flash-community__row + .flash-community__row .flash-community__td {
+  border-top: 1px solid var(--dsw-alias-border-l1, var(--dsw-alias-border-l2));
+}
+
+.flash-community__td {
+  padding: 6px 10px;
+  vertical-align: middle;
+}
+
+.flash-community__td--index {
+  width: 40px;
+  font-variant-numeric: tabular-nums;
+  color: var(--dsw-alias-label-tertiary);
+  white-space: nowrap;
+}
+
+.flash-community__td--set {
+  width: 110px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.flash-community__td--author {
+  width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.flash-community__td--actions {
+  text-align: right;
+  width: 150px;
+  white-space: nowrap;
+}
+
+.flash-community__set {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  color: var(--dsw-alias-label-primary);
+  white-space: nowrap;
+}
+
+.flash-community__author {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--dsw-alias-label-secondary, var(--dsw-alias-label-primary));
+}
+
+.flash-community__url {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--dsw-alias-link-text, var(--dsw-alias-interactive-fg-default));
+  text-decoration: none;
+  display: block;
+  word-break: break-all;
+  overflow-wrap: anywhere;
+}
+
+.flash-community__url:hover {
+  text-decoration: underline;
+}
+
+/* Community-entry like: read-only bookkeeping keyed to the setId; the filled
+   heart marks the local liked state, mirroring the group-like treatment. */
+.flash-community__actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+}
+
+.flash-community__like {
+  flex: none;
+  padding: 3px 10px;
+  border: 1px solid color-mix(in srgb, var(--dsw-alias-label-tertiary) 35%, transparent);
+  border-radius: 8px;
+  font: inherit;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--dsw-alias-label-tertiary);
+  background: transparent;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.flash-community__like--on {
+  color: var(--dsw-static-severity-warning-default, #d97706) !important;
+  border-color: color-mix(in srgb, var(--dsw-static-severity-warning-default, #d97706) 55%, transparent) !important;
+  background: color-mix(in srgb, var(--dsw-static-severity-warning-default, #d97706) 10%, transparent);
+}
+
+.flash-community__like:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--dsw-alias-interactive-fg-default, #4073e0) 12%, transparent);
+}
+
+.flash-community__like:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.flash-community__import {
+  flex: none;
+  padding: 3px 10px;
+  border: 1px solid color-mix(in srgb, var(--dsw-alias-interactive-fg-default, #4073e0) 45%, transparent);
+  border-radius: 8px;
+  font: inherit;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--dsw-alias-interactive-fg-default, #4073e0);
+  background: transparent;
+  cursor: pointer;
+}
+
+.flash-community__import:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--dsw-alias-interactive-fg-default, #4073e0) 12%, transparent);
+}
+
+.flash-community__import:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+/* Token/url /zip-url fields reuse .flash-weights__input; only wrap + labels. */
+.flash-community__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.flash-community__field-label {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  color: var(--dsw-alias-label-primary);
+}
+
+.flash-community__field-hint {
+  font-style: normal;
+  font-size: 11px;
+  line-height: 15px;
+  color: var(--dsw-alias-label-tertiary);
+}
+
+.flash-community__submit {
+  padding: 4px 12px;
+  border: none;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--flash-accent, #4176e6);
+  cursor: pointer;
+}
+
+.flash-community__submit:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+
+.flash-community__submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+

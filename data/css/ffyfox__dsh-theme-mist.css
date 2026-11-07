@@ -1,0 +1,551 @@
+/* ffyfox/dsh-theme-mist — src/client/material.module.css
+   fetched 2026-11-07 from https://raw.githubusercontent.com/ffyfox/dsh-theme-mist/main/src/client/material.module.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/*
+ * Material layer, part 1 — the page surface (T2.2) and the translucency that
+ * lets it through the app shell (T2.7).
+ *
+ * This file deliberately declares no classes. CSS Modules only rewrites class
+ * names, so every selector below stays global: the app shell is somebody
+ * else's DOM. Every hook is a semantic attribute (data-dsh-theme-mist,
+ * role / aria-modal), never a hashed class name — class names change with the
+ * upstream build, attributes do not.
+ *
+ * All values arrive as --dsh-theme-mist-* variables written by tokens.ts through the
+ * theme service, so each accent gets its own gradient, light/dark resolves
+ * itself, and teardown happens with the tokens.
+ */
+
+/* The page canvas.
+ *
+ * background-color is the opaque palette colour: a safety net for the one frame
+ * before the variables land, and for anything that reads the body box directly.
+ * On top of it sit three viewport-anchored layers — the accent glow at the top
+ * right, the neighbouring haze at the bottom left, and the palette's own
+ * vertical ramp underneath. Fixed attachment keeps the gradient still while the
+ * panes scroll over it; without it the gradient would slide with the scrolling
+ * content and read as a moving backdrop rather than as the page. */
+body[data-dsh-theme-mist] {
+  background-color: var(--dsh-theme-mist-page-base);
+  /* The geometry is upstream's, not an approximation of it. backdrop.dart:303-333
+     paints a *circle* of radius 0.62 x the longest side anchored at (92%, 0),
+     and the haze at (0, 100%) at 0.55 x the same side, each fading linearly to
+     zero at its radius. vmax *is* the longest side, so 62vmax reproduces the
+     same radius at any viewport — 793.6px at 1280x800, the number the Flutter
+     painter uses.
+
+     What this replaces: an ellipse of 120% x 80% cut off at 70%, which died
+     448px down the page instead of 794 and left the lower half of the window
+     with no colour in it at all. Measured cost: the mean glow alpha over the
+     page was 0.052 where DSH Go paints 0.084. */
+  background-image:
+    radial-gradient(circle 62vmax at 92% 0%, var(--dsh-theme-mist-glow) 0%, transparent 100%),
+    radial-gradient(circle 55vmax at 0% 100%, var(--dsh-theme-mist-haze) 0%, transparent 100%),
+    linear-gradient(to bottom, var(--dsh-theme-mist-page-top), var(--dsh-theme-mist-page-bottom));
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* Full-window takeovers stay opaque.
+ *
+ * --dsw-alias-bg-base is translucent so the gradient can reach the app shell.
+ * That same token is also the fill of surfaces that claim the entire window
+ * (the sign-in viewport, onboarding), where letting messages ghost through a
+ * dialog standing in front of the app would be a visual break.
+ *
+ * Only the variable is re-bound here, never a component's own background: a
+ * dialog that already painted itself from another token keeps that paint, and
+ * the true full-window cases simply get the opaque page colour back. aria-modal
+ * is the semantic (non-hashed) way to name exactly that set. */
+body[data-dsh-theme-mist] [role='dialog'][aria-modal='true'] {
+  --dsw-alias-bg-base: var(--dsh-theme-mist-sheet-token);
+}
+
+/* The desktop window backdrop belongs to the page, not to the sheet (T5.6).
+ *
+ * Electron runs with `data-windows-titlebar` on <html>, and the layout package
+ * paints that whole frame with the *sidebar* fill
+ * (`[data-windows-titlebar] .frame { background: var(--dsw-specific-sidebar-fill) }`,
+ * plus the same colour on `.frame::before` for the drag strip). The web build has
+ * no such wrapper, which is why the previews looked right while the desktop app
+ * did not: our sidebar fill is the sheet tier (mistLow @ 0.82), so over the page
+ * it turns the whole window into a near-opaque sheet and the accent glow is left
+ * at 18%. Measured at 1524x903@2x, mist light, top-right corner:
+ *   web (no wrapper)     211,224,253  — the T5.5 acceptance value
+ *   desktop (wrapper)    240,244,253  — flat mist, i.e. the page colour alone
+ * Painting the frame transparent hands the backdrop back to the page gradient;
+ * the sidebar column keeps its own fill because that element paints the same
+ * token itself. Structural, hash-free hook: the frame is the one child of
+ * [data-slot='root'] that contains the sidebar slot. */
+html[data-windows-titlebar] body[data-dsh-theme-mist] [data-slot='root'] > :has([data-slot='sidebar']),
+html[data-windows-titlebar] body[data-dsh-theme-mist] [data-slot='root'] > :has([data-slot='sidebar'])::before {
+  background: transparent;
+}
+
+/* --- The sidebar is a pane of glass, not a plate (T5.7-A) ----------------
+ *
+ * Upstream's sidebar is the drawer's own glass: GlassSurface(tier: sheet)
+ * (sessions_drawer.dart), with the sheet's fill, its hairline, its white rim,
+ * and a radius on the *right* corners only — the left edge is the window edge
+ * (sessions_drawer.dart:198-203). The sheet tier is five things
+ * (surfaces.dart:216-224): fill, hairline, rim, blur, shadow. The theme had
+ * copied only the fill, so the column read as a white rectangle pasted onto
+ * the page rather than a pane in front of it: measured at 1524x903@2x the
+ * 245,249,254 plate met the 236,236,248 page in a single pixel, with no
+ * hairline, no highlight and no corner.
+ *
+ * DSH paints the same token on two boxes — the column and the sidebar's own
+ * root — and the column clips its contents, so the shape has to live on the
+ * root. The column keeps nothing: its fill would square off the corners the
+ * root rounds.
+ *
+ * Radius 28 is the sheet tier's own (shapes.dart xl, GlassSurface's default for
+ * chrome and sheet). Hooks are structural: the column is the frame child that
+ * contains the sidebar slot, the root is that slot's first child. */
+body[data-dsh-theme-mist] [data-slot='root'] > :has([data-slot='sidebar']) > :has(> [data-slot='sidebar']) {
+  background: transparent;
+  border-right: 0;
+}
+
+body[data-dsh-theme-mist] [data-slot='sidebar'] > :first-child {
+  /* The tier token, not the raw fill: the two OS-level degradation paths swap
+     every tier to its near-opaque fallback in one place (see above). */
+  background-color: var(--dsh-theme-mist-sheet-token);
+  border-radius: 0 28px 28px 0;
+  box-shadow:
+    inset 0 0 0 0.5px var(--dsw-alias-border-l1),
+    inset 0 1px 0 var(--dsh-theme-mist-highlight);
+}
+
+/* --- ...and the same column, flat (T5.8, `sidebarMaterial: 'flat'`) ------
+ *
+ * Upstream draws its two columns differently on purpose (adaptive_scaffold
+ * .dart): "The panel is a flat column on the page (not a card), set off from
+ * the chat by a hairline. The sidebar keeps the drawer's own glass." This
+ * branch of the preference applies the panel's language to the sidebar — no
+ * fill, the page gradient running straight through, one hairline where the
+ * column ends — and accepts the deviation: the sheet tier's fill is gone, so
+ * the sidebar stops matching the upstream golden (244,247,254 → 235,235,248).
+ *
+ * That is why it is opt-in and not the default. The setting exists because the
+ * desktop window has no titlebar seam to anchor the sheet: on a 1524-wide window
+ * the column reaches the top of the window on web and starts under a 40px
+ * gradient bar in the app (T5.6), and the sheet edge has to carry the whole
+ * separation by itself.
+ *
+ * Three painters have to be turned off, not one: the layout paints the token on
+ * the column, the sidebar paints it again on its own root, and the session list
+ * fades its last 24px into it (`linear-gradient(transparent, var(--dsw-specific
+ * -sidebar-fill))`). The list has no semantic attribute, so the token itself is
+ * re-pointed to transparent *inside* the sidebar subtree: the fade then fades to
+ * nothing instead of leaving a 24px band of sheet colour over the page. The row
+ * drag preview is rendered in a portal outside this subtree and keeps its fill.
+ *
+ * The hairline is border-l1 (ink 0.08) — the value upstream uses for the panel
+ * (chrome.hairline, ink 0.08) and for the sheet's edge (ink 0.07). The host's own
+ * column divider is border-l3 (ink 0.25), three times heavier. */
+body[data-dsh-theme-mist][data-dsh-theme-mist-sidebar='flat'] [data-slot='sidebar'] {
+  --dsw-specific-sidebar-fill: transparent;
+}
+
+body[data-dsh-theme-mist][data-dsh-theme-mist-sidebar='flat'] [data-slot='root'] > :has([data-slot='sidebar']) > :has(> [data-slot='sidebar']) {
+  background: transparent;
+  border-right: 0;
+  box-shadow: inset -0.5px 0 0 var(--dsw-alias-border-l1);
+}
+
+body[data-dsh-theme-mist][data-dsh-theme-mist-sidebar='flat'] [data-slot='sidebar'] > :first-child {
+  background-color: transparent;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* --- Glass tiers, re-bound (T5.5) ---------------------------------------
+ *
+ * bg-base is transparent now (tokens.ts TRANSPARENT), so every surface that was
+ * using it as its fill has a hole. Painting backgrounds ourselves would fight
+ * whatever the host already draws there — borders, dividers, pressed states —
+ * so instead we re-bind the same variable on a semantic container and let the
+ * host keep painting. Numbers are DSH Go's (surfaces.dart:159-259).
+ *
+ * Hooks, never class names: the host's class names carry a per-build hash.
+ * The three surfaces we could not reach — cordis' business card, trajectory's
+ * tool-catalog row and the conversation's image thumbnail — have no semantic
+ * attribute; they are listed in README's known limits. */
+body[data-dsh-theme-mist] [data-message-bubble],
+body[data-dsh-theme-mist] [data-tool],
+body[data-dsh-theme-mist] [data-chat-call-id],
+body[data-dsh-theme-mist] [data-disclosure-header],
+body[data-dsh-theme-mist] [data-compaction-disclosure],
+body[data-dsh-theme-mist] [data-schedule-reminder-entry],
+body[data-dsh-theme-mist] [data-session-schedule-task] {
+  --dsw-alias-bg-base: var(--dsh-theme-mist-card-token);
+}
+
+body[data-dsh-theme-mist] [role='menu'],
+body[data-dsh-theme-mist] [role='listbox'] {
+  --dsw-alias-bg-base: var(--dsh-theme-mist-sheet-token);
+}
+
+/* --- Glass, tier 1 of 2: chrome (T2.3) -----------------------------------
+ *
+ * Chrome is the tier that floats over things that move — DSH Go blurs it and
+ * skips the blur everywhere else. On this layout exactly one surface qualifies:
+ * the composer seat, sticky at the bottom of the conversation, with the message
+ * flow scrolling behind it.
+ *
+ * The blur sits on the seat, not on the card inside it. One blur then covers
+ * the whole bottom band, while the card — a translucent fill painted above the
+ * blurred backdrop — still reads as glass. A second blur on the card would
+ * sample an already-blurred backdrop and pay for it twice.
+ *
+ * The material variables are declared on the two surfaces themselves, never on
+ * body. Measured on Chromium 156: a gradient built from an *inherited* custom
+ * property does not re-resolve when the ancestor's value changes — swapping the
+ * token layer changed the card's fill but left the seat's fade painting the
+ * old colour. Declaring the variables where they are used keeps
+ * every value local, so both repaint on the same frame.
+ */
+/* The second attribute is there for specificity, not for meaning: the official
+   rule that paints this fade is .root[data-phase=active] .composerSeat (0,3,0),
+   which out-specifies a bare attribute selector. Matching on both attributes
+   we already know are on this node reaches (0,3,1) and wins without
+   !important. */
+body[data-dsh-theme-mist] [data-composer-seat][data-conversation-region='composer'] {
+  --dsh-theme-mist-glass-blur: blur(18px) saturate(1.3);
+  --dsh-theme-mist-veil-mask: linear-gradient(180deg, transparent 0, #000 36px);
+  /* The host's own fade ends in bg-base, which is transparent now, so it paints
+     nothing at all. The band is repainted by the next rule instead. */
+  background-image: none;
+  backdrop-filter: var(--dsh-theme-mist-glass-blur);
+}
+
+/* The veil: DSH Go's BackdropVeil, in CSS (backdrop.dart:111-230).
+ *
+ * The band under the composer has to hide the message flow scrolling behind it
+ * without reading as a strip of paint, so upstream repaints the *backdrop
+ * itself* in that band and feathers the top edge. Same here: the pseudo carries
+ * the same three layers, anchored to the viewport like body's, and is masked
+ * 0 -> 1 over the first 36px — the same stop the official fade used.
+ *
+ * A pseudo rather than a mask on the seat, which would feather the composer
+ * card sitting inside it. z-index -1 keeps it above the seat's own (now empty)
+ * background and below that card: the seat is already a stacking context
+ * (position: sticky, z-index 7).
+ *
+ * The layers are anchored to the viewport, and the one CSS-native way to say that
+ * is `background-attachment: fixed` — the same declaration the page canvas above
+ * makes. A seat-sized image is simply the wrong box whenever the composer floats:
+ * on the hero page at 2463x725 the seat is 2176x238 with its bottom 223px above
+ * the viewport's, so every layer lands on a colour from higher up the ramp.
+ *
+ * Fixed attachment stops tracking the viewport as soon as the element becomes a
+ * containing block for fixed backgrounds, and 0.2.2-alpha.3 made the seat one:
+ * `.root[data-phase=active] .composerSeat` now carries `will-change: transform`
+ * (alpha.2 has no such declaration). The gradients then expanded across the seat
+ * box — 1237x128 — instead of the viewport, 1524x903, so every layer landed on
+ * the wrong colour (T5.12). Measured inside the band, at the four columns
+ * 292/382/898/1505:
+ *
+ *   page itself (veil hidden)   237,235,248  238,237,248  252,252,254  241,243,252
+ *   alpha.2, fixed attachment   237,235,247  238,237,248  252,252,254  241,243,252
+ *   alpha.3, fixed attachment   230,229,246  230,230,247  245,248,254  213,225,252
+ *   alpha.3, sized + anchored   237,235,248  238,237,248  252,252,254  241,243,252
+ *
+ * That is the dark strip around the input: a 28-step drop in the pale mist
+ * palette, visible as a band because the seat is 128px tall while the image is
+ * 903px.
+ *
+ * The anchored variant, though, is only exact where the seat is *docked*: sizing
+ * the image to the viewport and pinning its bottom-right corner reproduces the
+ * page's geometry only when those two corners are the same point. On a session
+ * page they are (the seat is sticky to the bottom) and it measures 1/255 against
+ * the page where fixed attachment measures 16 to 18. On the hero page they are
+ * not: the anchored variant is 6 to 8/255 off at 2463x725 and 12 to 15/255 at
+ * 1512x982, the rectangle the eye picks up around the composer (T5.13).
+ *
+ * So the attachment follows the host's phase, which is also the rule that decides
+ * the containing block: `active` anchors the corner, everything else keeps fixed
+ * attachment. Both land on the page's own gradient, so neither draws a band. */
+body[data-dsh-theme-mist] [data-composer-seat][data-conversation-region='composer']::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-color: var(--dsh-theme-mist-page-base);
+  background-image:
+    radial-gradient(circle 62vmax at 92% 0%, var(--dsh-theme-mist-glow) 0%, transparent 100%),
+    radial-gradient(circle 55vmax at 0% 100%, var(--dsh-theme-mist-haze) 0%, transparent 100%),
+    linear-gradient(to bottom, var(--dsh-theme-mist-page-top), var(--dsh-theme-mist-page-bottom));
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  -webkit-mask-image: var(--dsh-theme-mist-veil-mask);
+  mask-image: var(--dsh-theme-mist-veil-mask);
+}
+
+/* Docked, the seat is a fixed-background containing block — the host's own
+ * `[data-phase=active]` rule is what adds `will-change: transform` — so fixed
+ * attachment would measure the layers against a 2183x128 box. But docked is also
+ * the one state where the seat's bottom-right corner *is* the viewport's, so the
+ * viewport-sized image pinned to that corner lands on the page's own colour
+ * again. Scroll attachment keeps the band out of the fixed-background path while
+ * the transcript scrolls behind it. */
+body[data-dsh-theme-mist] [data-phase='active'] [data-composer-seat][data-conversation-region='composer']::before {
+  background-attachment: scroll;
+  background-size: 100vw 100vh;
+  background-position: 100% 100%;
+}
+
+/* --- A menu opened from the composer keeps the page behind it (T5.9) -----
+ *
+ * `/` and `@` open the host's MenuSurface *inside* the composer: the popover's
+ * ancestors are the composer card and this seat. Both of them are painted by
+ * the theme in a way that puts a flat, opaque surface between the popover and
+ * the page — the seat is a backdrop root (its own backdrop-filter) and its veil
+ * paints the page colour at full opacity below 36px. The menu's own
+ * `backdrop-filter: blur(40px)` (host style, `--dsw-menu-surface-fill` 58 %
+ * white over it) then has nothing to sample, and a 58 % white panel over a flat
+ * colour reads as "translucent with nothing behind it" — while the part of the
+ * menu that reaches past the composer lets sharp text show through.
+ *
+ * Measured with the plugin disabled (host glass only): the menu blurs normally.
+ * So while a menu is open the seat steps out of the way — no frost, no veil —
+ * and hands the page back to the popover. Nothing is visible behind the menu's
+ * own panel that the menu does not already cover, and the bar returns to its
+ * frosted self the moment the menu closes. */
+body[data-dsh-theme-mist] [data-composer-seat]:has([data-menu-material]) {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+body[data-dsh-theme-mist] [data-composer-seat]:has([data-menu-material])::before {
+  display: none;
+}
+
+/* The card itself: fill, hairline, top highlight, soft lift. Radius and
+   geometry stay official — only the material is ours. */
+body[data-dsh-theme-mist] [data-composer-card] {
+  --dsh-theme-mist-glass-fill: var(--dsh-theme-mist-chrome-fill);
+  background-color: var(--dsh-theme-mist-glass-fill);
+  box-shadow:
+    inset 0 0 0 0.5px var(--dsw-alias-border-l1),
+    inset 0 1px 0 var(--dsh-theme-mist-highlight),
+    0 8px 24px var(--dsh-theme-mist-shadow),
+    0 1px 3px var(--dsh-theme-mist-shadow);
+}
+
+/* --- Degradation ---------------------------------------------------------
+ *
+ * Three paths, one effect: no backdrop-filter support, an OS-level request for
+ * less transparency, or the in-app switch. Each swaps the fill to the near
+ * opaque chrome solid, drops the blur, and makes the seat's fade opaque.
+ * Half-transparent *without* blur is the worst of both worlds — scrolled text
+ * then runs straight into the input line, which reads worse than losing the
+ * material altogether.
+ *
+ * The @supports / @media blocks below carry the same specificity as the two
+ * rules above and rely on source order; the attribute rule is more specific so
+ * the in-app switch wins either way.
+ */
+@supports not (backdrop-filter: blur(1px)) {
+  /* html-qualified so this out-specifies the defaults on body further down
+     (same element, equal specificity, later in the sheet). */
+  html body[data-dsh-theme-mist] {
+    --dsh-theme-mist-card-token: var(--dsh-theme-mist-card-solid);
+    --dsh-theme-mist-sheet-token: var(--dsh-theme-mist-sheet-solid);
+    --dsh-theme-mist-pill-token: var(--dsh-theme-mist-pill-solid);
+  }
+  body[data-dsh-theme-mist] [data-composer-seat][data-conversation-region='composer'] {
+    --dsh-theme-mist-glass-blur: none;
+    --dsh-theme-mist-veil-mask: none;
+  }
+  body[data-dsh-theme-mist] [data-composer-card] {
+    --dsh-theme-mist-glass-fill: var(--dsh-theme-mist-chrome-solid);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  html body[data-dsh-theme-mist] {
+    --dsh-theme-mist-card-token: var(--dsh-theme-mist-card-solid);
+    --dsh-theme-mist-sheet-token: var(--dsh-theme-mist-sheet-solid);
+    --dsh-theme-mist-pill-token: var(--dsh-theme-mist-pill-solid);
+  }
+  body[data-dsh-theme-mist] [data-composer-seat][data-conversation-region='composer'] {
+    --dsh-theme-mist-glass-blur: none;
+    --dsh-theme-mist-veil-mask: none;
+  }
+  body[data-dsh-theme-mist] [data-composer-card] {
+    --dsh-theme-mist-glass-fill: var(--dsh-theme-mist-chrome-solid);
+  }
+}
+
+/* --- Card & pill, tier 2 of 2 (T2.4) ------------------------------------
+ *
+ * Neither tier blurs: what sits behind them is the page gradient, not moving
+ * content, so a blur would cost a compositing layer and show nothing
+ * (surfaces.dart:17-19). They are built from three things instead — a
+ * translucent fill, a 0.5px rim, and a 1px highlight along the top edge.
+ *
+ * The fills are mostly free: every card painted with --dsw-alias-bg-base went
+ * translucent back in T2.7. These rules only add the rim and the highlight.
+ */
+body[data-dsh-theme-mist] [data-message-bubble] {
+  box-shadow:
+    inset 0 0 0 0.5px var(--dsw-alias-border-l1),
+    inset 0 1px 0 var(--dsh-theme-mist-highlight);
+}
+
+/* Markdown code blocks. The renderer keeps one stable, non-hashed class name
+   here, which is the intended hook — but this file is a CSS Module, so the
+   class has to be escaped with  or lightningcss would localise it and
+   the rule would silently match nothing. The fill stays the codeWell token: a
+   well is a recessed surface, not a translucent card. */
+body[data-dsh-theme-mist] .md-code-block {
+  box-shadow:
+    inset 0 0 0 0.5px var(--dsw-alias-border-l1),
+    inset 0 1px 0 var(--dsh-theme-mist-highlight);
+}
+
+/* Pill tier: the model capsule in the composer footer — the one pill on this
+   layout with a stable semantic hook. The shape belongs to the button inside
+   the slot (8px radius); the slot's own child wrapper is a square box, so
+   painting it would show corners behind the pill. Fill is derived from the
+   chrome glass, so the pill reads as part of the same material family. */
+body[data-dsh-theme-mist] [data-slot='conversation.input.model'] button {
+  background-color: var(--dsh-theme-mist-pill-token);
+  box-shadow:
+    inset 0 0 0 0.5px var(--dsw-alias-border-l1),
+    inset 0 1px 0 var(--dsh-theme-mist-highlight);
+}
+
+/* --- Shape: the DSH Go radius ladder (T2.1) ------------------------------
+ *
+ * DSH Go's ladder is 6 / 10 / 14 / 20 / 28 + pill (shapes.dart:9-28); the
+ * official one is 4 / 8 / 12 / 16 / 20 / 28. The two meet at the ends — the
+ * composer is already 28 and bubbles are already 20 — so this is not a global
+ * "make everything rounder": only the steps that sit between those anchors are
+ * re-pointed, and only on the containers that exist in DSH Go.
+ *
+ * The official --dsw-radius-* tokens are deliberately NOT overridden: they live
+ * on :root and feed every component, so changing them would move radii on
+ * surfaces DSH Go has no opinion about (sidebar rows, menus of third-party
+ * plugins, the terminal). See visual-spec §1.1.
+ */
+body[data-dsh-theme-mist] {
+  --dsh-theme-mist-radius-xs: 6px;
+  --dsh-theme-mist-radius-sm: 10px;
+  --dsh-theme-mist-radius-md: 14px;
+  --dsh-theme-mist-radius-lg: 20px;
+  --dsh-theme-mist-radius-xl: 28px;
+  --dsh-theme-mist-radius-pill: 999px;
+}
+
+/* Card tier: markdown code blocks move 16 -> 14 (official md 12 / lg 16 sit on
+   either side of the DSH Go md step). */
+body[data-dsh-theme-mist] .md-code-block {
+  border-radius: var(--dsh-theme-mist-radius-md);
+}
+
+/* Inline code: 8 -> 6. :not(pre) keeps the block's own <code> out of it. */
+body[data-dsh-theme-mist] :not(pre) > code {
+  border-radius: var(--dsh-theme-mist-radius-xs);
+}
+
+/* Menu surfaces: 16 -> 14. Semantic hook, no class names. */
+body[data-dsh-theme-mist] [role='menu'] {
+  border-radius: var(--dsh-theme-mist-radius-md);
+}
+
+
+/* Chip / model capsule: 8 -> stadium. corner-shape: round is required — the
+   official sheet applies superellipse(1.5) to every element, which would bend
+   the caps of a 999px radius away from a true semicircle. */
+body[data-dsh-theme-mist] [data-slot='conversation.input.model'] button {
+  border-radius: var(--dsh-theme-mist-radius-pill);
+  corner-shape: round;
+}
+
+
+/* --- Elevation: one recipe for every surface we did not paint (T2.5) -----
+ *
+ * The --dsw-elevation-* variables are declared by the official theme on
+ * "body, body *", so overriding them on body alone is inert (visual-spec §8.1
+ * R1) — every element keeps its own computed value. Re-declaring them across
+ * our own scope reaches the 30 declarations in ~15 packages that read them.
+ *
+ * The change is deliberately small: keep the official stroke reference (each
+ * component picks its own stroke colour, and all of those are our border
+ * alphas), add the DSH Go top highlight, and swap the neutral-black ambient
+ * shadow for the palette's cold ink at a low alpha.
+ */
+body[data-dsh-theme-mist],
+body[data-dsh-theme-mist] * {
+  --dsw-elevation-panel:
+    var(--dsw-elevation-stroke),
+    inset 0 1px 0 var(--dsh-theme-mist-highlight),
+    0 2px 8px var(--dsh-theme-mist-shadow);
+  --dsw-elevation-prominent:
+    var(--dsw-elevation-stroke),
+    inset 0 1px 0 var(--dsh-theme-mist-highlight),
+    0 6px 20px var(--dsh-theme-mist-shadow);
+  --dsw-elevation-soft:
+    var(--dsw-elevation-stroke),
+    inset 0 1px 0 var(--dsh-theme-mist-highlight),
+    0 4px 16px var(--dsh-theme-mist-shadow);
+}
+
+/* --- Motion (T2.6) -------------------------------------------------------
+ *
+ * Only two things on this layout are ours to animate: the hover feedback on
+ * the model capsule (our fill replaced the official base colour, so the switch
+ * between them now needs a transition of its own) and the composer's material,
+ * whose fill the OS "reduce transparency" setting can swap live. Both are short
+ * and sit in the same register as the official motion.
+ *
+ * The durations are the DSH Go scale (motion.dart:13-37), shortened by ~20%
+ * for a pointer device (visual-spec §9): press 90 / quick 160 / standard 240.
+ * They are our own variables on purpose — the official --ds-transition-*
+ * tokens are shared with the sidebar and panel drag animations, and redefining
+ * them would move the layout, not the theme (visual-spec §4).
+ *
+ * Deliberately NOT animated: the page glow. It lives in body's background-image,
+ * so a "breathing" effect would repaint the whole viewport every frame — and
+ * DSH Go reserves its ambient 2.4s breath for the connection status dot, which
+ * is official DOM we do not own.
+ */
+body[data-dsh-theme-mist] {
+  /* Tier fills, indirected so the degradation paths can swap all of them at
+     once. The `-fill` values are the blurred/translucent ones, `-solid` the
+     near-opaque fallbacks (surfaces.dart's fallbackFill). */
+  --dsh-theme-mist-card-token: var(--dsh-theme-mist-card-fill);
+  --dsh-theme-mist-sheet-token: var(--dsh-theme-mist-sheet-fill);
+  --dsh-theme-mist-pill-token: var(--dsh-theme-mist-pill-fill);
+  --dsh-theme-mist-duration-press: 90ms;
+  --dsh-theme-mist-duration-quick: 160ms;
+  --dsh-theme-mist-duration-standard: 240ms;
+  --dsh-theme-mist-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body[data-dsh-theme-mist] [data-slot='conversation.input.model'] button {
+  transition: background-color var(--dsh-theme-mist-duration-quick) var(--dsh-theme-mist-ease-standard);
+}
+
+body[data-dsh-theme-mist] [data-composer-card] {
+  transition:
+    background-color var(--dsh-theme-mist-duration-standard) var(--dsh-theme-mist-ease-standard),
+    box-shadow var(--dsh-theme-mist-duration-standard) var(--dsh-theme-mist-ease-standard);
+}
+
+/* Reduced motion: our transitions are decorative, so they go away entirely.
+ * Nothing in this stylesheet animates, and this guard is what keeps that true
+ * if something is added later. */
+@media (prefers-reduced-motion: reduce) {
+  body[data-dsh-theme-mist] [data-slot='conversation.input.model'] button,
+  body[data-dsh-theme-mist] [data-composer-card],
+  body[data-dsh-theme-mist] [data-composer-seat] {
+    transition: none;
+    animation: none;
+  }
+}
+

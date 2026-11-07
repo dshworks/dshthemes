@@ -1,0 +1,29 @@
+/* haoranx98/dsh-skin-galaxy — src/styles.ts
+   fetched 2026-11-07 from https://raw.githubusercontent.com/haoranx98/dsh-skin-galaxy/main/src/styles.ts
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+[data-galaxy-sky] {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+  background: radial-gradient(ellipse at 75% 20%,#29376c80,transparent 55%),
+    radial-gradient(ellipse at 35% 65%,#603f7455,transparent 55%),#040817;
+}
+[data-galaxy-sky] canvas { width: 100%; height: 100%; display: block; opacity: 0; }
+body[data-galaxy-active] { background: #040817; isolation: isolate; }
+body[data-galaxy-active] #root { position: relative; z-index: 1; }
+/* The prose backing isolates glyphs from bright dust lanes without obscuring the sky. */
+body[data-galaxy-active] [class*="_markdown_"] {
+  background: rgba(14, 23, 44, 0.88);
+  border: 1px solid rgba(183, 201, 255, 0.15);
+  border-radius: 16px;
+  padding: 18px 22px;
+  color: var(--dsw-alias-label-primary);
+}
+body[data-galaxy-active] [class*="_markdown_"] :is(th, td) {
+  border-color: rgba(183, 201, 255, 0.24);
+}
+@media (max-width: 700px) {
+  body[data-galaxy-active] [class*="_markdown_"] { padding: 14px; }
+}
+body[data-galaxy-active] ::selection { background: #9a91ff66; color: #fff; }
+body[data-galaxy-active] [data-galaxy-panel] {
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+}

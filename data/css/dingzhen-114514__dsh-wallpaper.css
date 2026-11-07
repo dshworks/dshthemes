@@ -1,0 +1,227 @@
+/* dingzhen-114514/dsh-wallpaper — client.js
+   fetched 2026-11-07 from https://raw.githubusercontent.com/dingzhen-114514/dsh-wallpaper/main/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+:root {
+  --dw-canvas-a: 60%;
+  --dw-sidebar-a: 72%;
+  --dw-veil-a: 18%;
+  --dw-brightness: 1;
+  --dw-blur: 1px;
+  --dw-image: none;
+}
+
+body {
+  --dsw-alias-bg-base: rgb(255 255 255 / var(--dw-canvas-a)) !important;
+  --dsw-specific-sidebar-fill: rgb(249 250 251 / var(--dw-sidebar-a)) !important;
+}
+
+body[data-ds-dark-theme] {
+  --dsw-alias-bg-base: rgb(21 21 23 / var(--dw-canvas-a)) !important;
+  --dsw-specific-sidebar-fill: rgb(27 27 28 / var(--dw-sidebar-a)) !important;
+}
+
+/* The system Canvas color keeps a theme-appropriate backdrop while the image
+   is still loading, and the shell canvas shows the wallpaper through it. */
+html {
+  background-color: Canvas !important;
+}
+
+body {
+  background: transparent !important;
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+}
+
+.dsh-wallpaper {
+  position: fixed;
+  inset: -2px;
+  z-index: 0;
+  pointer-events: none;
+  background-color: Canvas;
+  background-image: var(--dw-image, none);
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  filter: blur(var(--dw-blur)) brightness(var(--dw-brightness)) saturate(1.05);
+}
+
+.dsh-wallpaper::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgb(248 249 251 / var(--dw-veil-a));
+}
+
+body[data-ds-dark-theme] .dsh-wallpaper::after {
+  background: rgb(6 8 11 / var(--dw-veil-a));
+}
+
+/* ---- Settings section -------------------------------------------------- */
+.dw-page {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 2px 2px 18px;
+  color: var(--dsw-alias-label-primary);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.dw-head h2 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 22px;
+}
+
+.dw-head p {
+  margin: 2px 0 0;
+  color: var(--dsw-alias-label-tertiary);
+}
+
+.dw-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  border: 1px solid var(--dsw-alias-border-l1);
+  border-radius: var(--dsw-radius-lg, 12px);
+  background: var(--dsw-alias-bg-layer-1);
+}
+
+.dw-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.dw-card-title {
+  font-weight: 600;
+}
+
+.dw-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--dsw-alias-label-secondary);
+  cursor: pointer;
+}
+
+.dw-switch input {
+  accent-color: var(--dsw-alias-brand-primary);
+  margin: 0;
+}
+
+.dw-row {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr) 52px;
+  align-items: center;
+  gap: 12px;
+}
+
+.dw-row > label {
+  color: var(--dsw-alias-label-secondary);
+}
+
+.dw-row input[type='range'] {
+  width: 100%;
+  margin: 0;
+  accent-color: var(--dsw-alias-brand-primary);
+}
+
+.dw-row output {
+  color: var(--dsw-alias-label-tertiary);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.dw-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  min-height: 96px;
+  border: 1px solid var(--dsw-alias-border-l1);
+  border-radius: var(--dsw-radius-md, 8px);
+  background: var(--dsw-alias-bg-layer-2);
+}
+
+.dw-preview img {
+  display: block;
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+}
+
+.dw-preview img[data-off='true'] {
+  opacity: 0.45;
+}
+
+.dw-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dw-btn {
+  padding: 5px 12px;
+  border: 1px solid var(--dsw-alias-border-l1);
+  border-radius: var(--dsw-radius-md, 8px);
+  background: var(--dsw-alias-button-tool-bar-fill);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.dw-btn:hover {
+  background: var(--dsw-alias-button-tool-bar-hover);
+}
+
+.dw-btn:focus-visible {
+  outline: 2px solid var(--dsw-alias-brand-primary);
+  outline-offset: 1px;
+}
+
+.dw-btn-primary {
+  border-color: transparent;
+  background: var(--dsw-alias-button-primary-fill, #3964fe);
+  color: var(--dsw-alias-label-inverse, #fff);
+}
+
+.dw-btn-primary:hover {
+  background: var(--dsw-alias-button-primary-hover, #2f55d4);
+}
+
+.dw-file {
+  overflow: hidden;
+  max-width: 55%;
+  color: var(--dsw-alias-label-tertiary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dw-drop {
+  padding: 10px;
+  border: 1px dashed var(--dsw-alias-border-l2);
+  border-radius: var(--dsw-radius-md, 8px);
+  color: var(--dsw-alias-label-tertiary);
+  text-align: center;
+}
+
+.dw-drop[data-over='true'] {
+  border-color: var(--dsw-alias-brand-primary);
+  color: var(--dsw-alias-brand-primary);
+}
+
+.dw-status {
+  min-height: 16px;
+  color: var(--dsw-alias-label-tertiary);
+}
+
+.dw-status[data-error='true'] {
+  color: var(--dsw-alias-state-error-primary);
+}
