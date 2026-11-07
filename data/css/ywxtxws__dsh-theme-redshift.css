@@ -1,0 +1,1091 @@
+/* ywxtxws/dsh-theme-redshift — lib/client.js
+   fetched 2026-11-07 from https://raw.githubusercontent.com/ywxtxws/dsh-theme-redshift/main/lib/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/* ============ 底景：舷窗外的赤色深空 ============ */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -3;
+  pointer-events: none;
+  background-color: #050208;
+  background-size: cover, cover, cover;
+  background-position: center, center, center bottom;
+  background-repeat: no-repeat;
+  transform-origin: 78% 36%;
+  animation: rs-drift 84s ease-in-out infinite alternate;
+}
+
+/* 整片星空极慢地推近、平移 —— 黑洞和飞船就这样“活”起来 */
+@keyframes rs-drift {
+  0%   { transform: scale(1.01) translate3d(0, 0, 0); }
+  100% { transform: scale(1.06) translate3d(-1.4%, -0.9%, 0); }
+}
+
+/* ============ 纹层：网格 / 星尘 / 星云 / 扫描线 / 噪点 / 暗角 ============ */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background-size: auto, auto, auto, auto, auto, auto, auto, auto, auto, auto, auto, 160px 160px;
+  opacity: 0.96;
+  animation: rs-twinkle 21s ease-in-out infinite;
+}
+
+@keyframes rs-twinkle {
+  0%, 100% { opacity: 0.96; }
+  36%      { opacity: 0.78; }
+  53%      { opacity: 1; }
+  74%      { opacity: 0.84; }
+}
+
+/* ============ HUD：四角角标 + 边缘刻度 ============ */
+.rs-hud {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.rs-corner {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 0 solid rgba(255, 60, 95, 0.55);
+  box-shadow: 0 0 10px rgba(255, 30, 70, 0.28);
+}
+
+.rs-corner.tl { top: 9px; left: 9px; border-top-width: 1px; border-left-width: 1px; }
+.rs-corner.tr { top: 9px; right: 9px; border-top-width: 1px; border-right-width: 1px; }
+.rs-corner.bl { bottom: 9px; left: 9px; border-bottom-width: 1px; border-left-width: 1px; }
+.rs-corner.br { bottom: 9px; right: 9px; border-bottom-width: 1px; border-right-width: 1px; }
+
+.rs-ruler-b {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 7px;
+  background-image: repeating-linear-gradient(to right,
+    rgba(255, 70, 100, 0.38) 0 1px, rgba(255, 70, 100, 0) 1px 26px);
+  -webkit-mask-image: linear-gradient(to top, #000 32%, transparent 100%);
+  mask-image: linear-gradient(to top, #000 32%, transparent 100%);
+}
+
+.rs-ruler-l {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 4px;
+  background-image: repeating-linear-gradient(to bottom,
+    rgba(255, 70, 100, 0.22) 0 1px, rgba(255, 70, 100, 0) 1px 26px);
+  -webkit-mask-image: linear-gradient(to right, #000 32%, transparent 100%);
+  mask-image: linear-gradient(to right, #000 32%, transparent 100%);
+}
+
+/* 屏幕边缘的霓虹余晖 */
+.rs-hud::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 140px rgba(255, 45, 85, 0.075);
+}
+
+/* 下扫光带：像雷达扫过整屏 */
+.rs-scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 220px;
+  mix-blend-mode: screen;
+  background: linear-gradient(to bottom,
+    rgba(255, 60, 95, 0) 0%,
+    rgba(255, 60, 95, 0.030) 54%,
+    rgba(255, 140, 160, 0.055) 72%,
+    rgba(255, 60, 95, 0) 100%);
+  animation: rs-scan 12.5s linear infinite;
+}
+
+@keyframes rs-scan {
+  from { transform: translateY(-240px); }
+  to   { transform: translateY(100vh); }
+}
+
+/* 数据流：垂直下落的细光柱 */
+.rs-stream {
+  position: absolute;
+  top: 0;
+  width: 1px;
+  mix-blend-mode: screen;
+  background: linear-gradient(to bottom,
+    rgba(255, 60, 95, 0) 0%,
+    rgba(255, 60, 95, 0.16) 18%,
+    rgba(255, 200, 210, 0.30) 50%,
+    rgba(255, 60, 95, 0.16) 82%,
+    rgba(255, 60, 95, 0) 100%);
+  animation-name: rs-stream;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes rs-stream {
+  from { transform: translateY(-34vh); }
+  to   { transform: translateY(108vh); }
+}
+
+/* ============ 雷达扫掠（2026-10-29）============
+   同心圆旋转是看不出来的（旋转对称），所以这里用 conic-gradient 画一道扇形扫掠，
+   120 秒一圈 —— 慢到只有余光能察觉，但界面会"活着"。 */
+.rs-radar {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.rs-radar::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: 160vmax;
+  height: 160vmax;
+  transform: translate(-50%, -50%) rotate(0deg);
+  background: conic-gradient(from 0deg,
+    rgba(255, 45, 85, 0.085) 0deg,
+    rgba(255, 45, 85, 0.030) 6deg,
+    rgba(255, 45, 85, 0.000) 17deg 360deg);
+  animation: rs-radar-spin 120s linear infinite;
+  will-change: transform;
+}
+@keyframes rs-radar-spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* ============ 四周霓虹侵蚀带（2026-10-29）============
+   四条细带沿屏幕边缘绕一圈（上/下/左/右），content 是横/竖排乱码，
+   clip-path 把内侧边缘切成参差阶梯 + skew 挤压 + 间歇抽搐。
+   ★ 上边和右边都避开了右上角立绘区域，不挡人。 */
+.rs-erode {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+.rs-erode i {
+  position: absolute;
+  overflow: hidden;
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 11px;
+  line-height: 1.05;
+  letter-spacing: 0.06em;
+  white-space: pre;   /* 上/下条用 
+ 分多行；左右条是竖排单行 */
+  color: rgba(255, 45, 85, 0.42);
+  text-shadow: 0 0 6px rgba(255, 30, 60, 0.5), 0 0 16px rgba(255, 30, 60, 0.22);
+  will-change: transform, opacity;
+}
+/* 上边：右侧留出 250px 给立绘 */
+.rs-erode-top {
+  left: 0; right: 250px; top: 0; height: 42px;
+  padding: 2px 0 0 2px;
+  clip-path: polygon(0 0, 100% 0, 100% 62%, 92% 62%, 92% 78%, 80% 78%,
+                     80% 90%, 64% 90%, 64% 100%, 38% 100%, 38% 88%, 22% 88%, 22% 74%, 8% 74%, 8% 58%, 0 58%);
+}
+/* 下边：整条铺满 */
+.rs-erode-bottom {
+  left: 0; right: 0; bottom: 0; height: 42px;
+  padding: 0 0 2px 2px;
+  clip-path: polygon(0 38%, 10% 38%, 10% 22%, 26% 22%, 26% 10%, 44% 10%,
+                     44% 0, 68% 0, 68% 12%, 82% 12%, 82% 26%, 94% 26%, 94% 44%, 100% 44%, 100% 100%, 0 100%);
+}
+/* 左边：整条，竖排字符 */
+.rs-erode-left {
+  left: 0; top: 0; bottom: 0; width: 34px;
+  padding: 2px 0 0 2px;
+  writing-mode: vertical-rl;
+  clip-path: polygon(0 0, 58% 0, 58% 8%, 78% 8%, 78% 22%, 90% 22%,
+                     90% 38%, 100% 38%, 100% 64%, 88% 64%, 88% 80%, 72% 80%, 72% 92%, 54% 92%, 54% 100%, 0 100%);
+}
+/* 右边：从立绘下方开始，竖排字符 */
+.rs-erode-right {
+  right: 0; top: 185px; bottom: 0; width: 34px;
+  padding: 0 2px 0 0;
+  writing-mode: vertical-rl;
+  clip-path: polygon(42% 0, 100% 0, 100% 100%, 0 100%, 0 86%, 12% 86%,
+                     12% 68%, 24% 68%, 24% 52%, 34% 52%, 34% 34%, 42% 34%);
+}
+/* 四条各自不同的抽搐节奏（互质，避免同时抽） */
+.rs-erode i { animation: rs-erode-twitch 7.3s steps(1, end) infinite; }
+.rs-erode-bottom { animation-duration: 9.1s; animation-delay: -2.4s; }
+.rs-erode-left   { animation-duration: 8.3s; animation-delay: -5.1s; }
+.rs-erode-right  { animation-duration: 11s;  animation-delay: -7.6s; }
+
+@keyframes rs-erode-twitch {
+  0%, 74%   { opacity: 0.9;  transform: translate(0, 0) skewX(0deg); }
+  75%       { opacity: 1;    transform: translate(-2px, 1px) skewX(-1.6deg); }
+  77%       { opacity: 0.4;  transform: translate(2px, -1px) skewX(1.2deg); }
+  79%       { opacity: 0.95; transform: translate(-1px, 1px) skewX(-0.8deg); }
+  81%, 100% { opacity: 0.9;  transform: translate(0, 0) skewX(0deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rs-erode i { animation: none; }
+}
+
+/* ============ 撕裂：横向光带 + 竖向裂缝 + 色散 ============ */
+.rs-rift {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.rs-rift i {
+  position: absolute;
+  left: -6%;
+  width: 112%;
+  display: block;
+  opacity: 0;
+  filter: blur(0.35px);
+  animation-name: rs-tear;
+  animation-timing-function: steps(1, end);
+  animation-iteration-count: infinite;
+  background: linear-gradient(90deg,
+    rgba(255, 40, 85, 0) 0%,
+    rgba(255, 60, 95, 0.10) 18%,
+    rgba(255, 214, 196, 0.72) 46%,
+    rgba(255, 90, 120, 0.32) 58%,
+    rgba(255, 50, 90, 0.10) 78%,
+    rgba(255, 40, 85, 0) 100%);
+}
+
+.rs-rift i.rs-hot {
+  background: linear-gradient(90deg,
+    rgba(255, 45, 85, 0) 0%,
+    rgba(255, 80, 115, 0.18) 15%,
+    rgba(255, 246, 240, 0.92) 47%,
+    rgba(255, 110, 140, 0.44) 60%,
+    rgba(255, 45, 85, 0.13) 80%,
+    rgba(255, 45, 85, 0) 100%);
+  box-shadow: 0 0 24px rgba(255, 45, 85, 0.34);
+}
+
+/* 色散带：红 / 青分离，赛博朋克签名 */
+.rs-rift i.rs-chroma {
+  background: linear-gradient(90deg,
+    rgba(255, 45, 85, 0) 0%,
+    rgba(0, 214, 255, 0.16) 40%,
+    rgba(255, 246, 240, 0.88) 50%,
+    rgba(255, 45, 85, 0.34) 60%,
+    rgba(255, 45, 85, 0) 100%);
+  filter: blur(0.6px);
+  box-shadow: 0 0 18px rgba(0, 200, 255, 0.18);
+}
+
+@keyframes rs-tear {
+  0%    { opacity: 0;    transform: translateX(0) scaleX(1); }
+  0.7%  { opacity: 0.90; }
+  1.2%  { opacity: 0.12; }
+  1.8%  { opacity: 0.66; }
+  2.5%  { opacity: 0;    transform: translateX(-2.2%) scaleX(0.988); }
+  100%  { opacity: 0;    transform: translateX(-2.2%) scaleX(0.988); }
+}
+
+.rs-rift u {
+  position: absolute;
+  top: -6%;
+  height: 112%;
+  display: block;
+  opacity: 0;
+  filter: blur(0.4px);
+  animation: rs-tear-v 23.1s steps(1, end) 12.4s infinite;
+  background: linear-gradient(180deg,
+    rgba(255, 45, 85, 0) 0%,
+    rgba(255, 214, 196, 0.34) 42%,
+    rgba(255, 246, 240, 0.66) 50%,
+    rgba(255, 214, 196, 0.34) 58%,
+    rgba(255, 45, 85, 0) 100%);
+}
+
+@keyframes rs-tear-v {
+  0%    { opacity: 0; }
+  0.5%  { opacity: 0.55; }
+  0.9%  { opacity: 0; }
+  100%  { opacity: 0; }
+}
+
+/* ============ 引力波 ============ */
+.rs-wave {
+  position: absolute;
+  left: -12%;
+  width: 124%;
+  height: 130px;
+  display: block;
+  pointer-events: none;
+  filter: blur(28px);
+  background: radial-gradient(ellipse 46% 50% at 66% 50%,
+    rgba(255, 45, 85, 0.16),
+    rgba(255, 45, 85, 0.045) 56%,
+    rgba(255, 45, 85, 0) 78%);
+  animation: rs-wave 31s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+@keyframes rs-wave {
+  0%   { opacity: 0;    transform: translateY(-18vh); }
+  12%  { opacity: 0.66; }
+  58%  { opacity: 0.38; }
+  88%  { opacity: 0.08; }
+  100% { opacity: 0;    transform: translateY(108vh); }
+}
+
+/* ============ 天体：行星 / 彗星 / 脉冲星 / 小行星带 ============ */
+
+/* 行星已并入背景合成图，这里只留 CSS 天体：彗星 / 脉冲星 / 小行星带 */
+
+
+/* 彗星：27 秒从左上掠过 */
+.rs-comet {
+  position: absolute;
+  left: -8%;
+  top: 10%;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  background: #fff6f2;
+  box-shadow: 0 0 10px 3px rgba(255, 190, 170, 0.7);
+  animation: rs-comet 27s linear 5s infinite;
+}
+
+.rs-comet::after {
+  content: "";
+  position: absolute;
+  right: 2px;
+  top: 50%;
+  width: 190px;
+  height: 1.4px;
+  transform: translateY(-50%) rotate(21deg);
+  transform-origin: right center;
+  background: linear-gradient(to left,
+    rgba(255, 236, 228, 0.90),
+    rgba(255, 120, 140, 0.34) 42%,
+    rgba(255, 45, 85, 0) 100%);
+  filter: blur(0.4px);
+}
+
+@keyframes rs-comet {
+  0%   { opacity: 0; transform: translate(0, 0); }
+  1.5% { opacity: 1; }
+  16%  { opacity: 1; }
+  20%  { opacity: 0; }
+  100% { opacity: 0; transform: translate(88vw, 52vh); }
+}
+
+/* 脉冲星 */
+.rs-pulsar {
+  position: absolute;
+  left: 21%;
+  top: 16%;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: #dff0ff;
+  box-shadow: 0 0 14px 4px rgba(180, 220, 255, 0.45);
+  animation: rs-pulsar 5.8s ease-in-out infinite;
+}
+
+@keyframes rs-pulsar {
+  0%, 100% { opacity: 0.18; transform: scale(0.75); }
+  46%      { opacity: 1;    transform: scale(1.30); }
+  54%      { opacity: 0.88; transform: scale(1.08); }
+}
+
+/* 小行星带 */
+.rs-belt {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.rs-belt i {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(198, 138, 128, 0.40);
+  box-shadow: 0 0 6px rgba(255, 80, 100, 0.16);
+}
+
+/* ============ 观景窗：驻站数据（2026-10-31 替换立绘 · 零外部素材） ============ */
+.rs-window {
+  position: fixed;
+  right: 22px;
+  top: 20px;
+  width: 112px;
+  height: 150px;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+  border: 1px solid rgba(255, 45, 85, 0.36);
+  background: radial-gradient(circle at 50% 46%, rgba(255, 45, 85, 0.16), rgba(10, 4, 7, 0.72) 62%);
+  box-shadow:
+    0 0 0 1px rgba(255, 45, 85, 0.10),
+    0 0 20px rgba(255, 45, 85, 0.30),
+    inset 0 0 26px rgba(255, 45, 85, 0.12);
+}
+.rs-window::before,
+.rs-window::after {
+  content: "";
+  position: absolute;
+  left: 8px; right: 8px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 45, 85, 0.55), transparent);
+}
+.rs-window::before { top: 10px; }
+.rs-window::after { bottom: 12px; }
+
+.rs-w-ring {
+  position: absolute;
+  left: 50%; top: 46%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(255, 60, 95, 0.45);
+}
+.rs-w-ring.a { width: 84px; height: 84px; animation: rs-w-spin 26s linear infinite; }
+.rs-w-ring.b { width: 58px; height: 58px; border-style: dashed; opacity: .55; animation: rs-w-spin 17s linear infinite reverse; }
+
+.rs-w-ticks {
+  position: absolute;
+  left: 50%; top: 46%;
+  width: 96px; height: 96px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg, rgba(255, 70, 100, .55) 0deg .7deg, transparent .7deg 12deg);
+  -webkit-mask: radial-gradient(circle, transparent 44px, #000 45px, #000 47px, transparent 48px);
+  mask: radial-gradient(circle, transparent 44px, #000 45px, #000 47px, transparent 48px);
+  animation: rs-w-spin 40s linear infinite;
+  opacity: .7;
+}
+
+.rs-w-cross::before,
+.rs-w-cross::after {
+  content: "";
+  position: absolute;
+  left: 50%; top: 46%;
+  background: rgba(255, 80, 110, 0.35);
+}
+.rs-w-cross::before { width: 22px; height: 1px; transform: translate(-11px, 0); }
+.rs-w-cross::after { width: 1px; height: 22px; transform: translate(0, -11px); }
+
+.rs-w-dot {
+  position: absolute;
+  left: 50%; top: 46%;
+  width: 5px; height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+  border-radius: 50%;
+  background: #ff5a7d;
+  box-shadow: 0 0 10px 2px rgba(255, 60, 100, 0.55);
+  animation: rs-w-pulse 3.2s ease-in-out infinite;
+}
+
+.rs-w-scan {
+  position: absolute;
+  left: 0; right: 0; height: 18px;
+  background: linear-gradient(180deg, rgba(255, 60, 100, 0) 0%, rgba(255, 60, 100, 0.16) 55%, rgba(255, 60, 100, 0) 100%);
+  animation: rs-w-scan 7.5s linear infinite;
+}
+
+.rs-w-read, .rs-w-read2 {
+  position: absolute;
+  left: 8px;
+  font: 7px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: .18em;
+  color: rgba(255, 120, 140, 0.62);
+}
+.rs-w-read { bottom: 20px; }
+.rs-w-read2 { bottom: 8px; color: rgba(255, 120, 140, 0.4); font-size: 6px; }
+
+@keyframes rs-w-spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+@keyframes rs-w-pulse { 0%, 100% { opacity: .45; } 50% { opacity: 1; } }
+@keyframes rs-w-scan { 0% { top: -20px; } 100% { top: 152px; } }
+
+/* ============ 侧栏的霓虹竖线 ============ */
+[class*="sidebarCol"] {
+  border-right: 1px solid rgba(255, 45, 85, 0.42) !important;
+  box-shadow:
+    2px 0 24px -4px rgba(255, 45, 85, 0.55),
+    inset -1px 0 0 rgba(255, 140, 165, 0.22);
+}
+
+/* ============ 角落读数 ============ */
+.rs-readout {
+  position: fixed;
+  right: 30px;
+  bottom: 10px;
+  pointer-events: none;
+  font-family: ui-monospace, "Cascadia Mono", "Consolas", monospace;
+  font-size: 9px;
+  line-height: 1;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: rgba(94, 234, 255, 0.52);
+  text-shadow: 0 0 9px rgba(0, 214, 255, 0.45);
+}
+
+/* ============ 观测站状态灯（带外圈脉冲） ============ */.rs-beacon {
+  position: fixed;
+  right: 15px;
+  bottom: 13px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: #ff2d55;
+  box-shadow: 0 0 0 0 rgba(255, 45, 85, 0.6), 0 0 12px rgba(255, 45, 85, 0.9);
+  animation: rs-beacon 3.2s ease-in-out infinite;
+}
+
+.rs-beacon::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 45, 85, 0.5);
+  animation: rs-beacon-ring 3.2s ease-out infinite;
+}
+
+@keyframes rs-beacon {
+  0%, 100% { opacity: 0.62; }
+  50%      { opacity: 1; }
+}
+
+@keyframes rs-beacon-ring {
+  0%   { transform: scale(0.8); opacity: 0.7; }
+  70%  { transform: scale(2.4); opacity: 0; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+
+/* ============ 面板质感 ============ */
+[data-composer-card] {
+  position: relative;
+}
+
+/* 输入区的霓虹灯箱边 */
+[data-composer-card]::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow:
+    0 0 26px -6px rgba(255, 45, 85, 0.32),
+    inset 0 0 0 1px rgba(255, 45, 85, 0.10);
+}
+
+[data-composer-card]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 200, 210, 0.085),
+    inset 0 0 78px rgba(255, 45, 85, 0.032),
+    inset 0 -18px 40px -20px rgba(0, 0, 0, 0.62);
+}
+
+[data-composer-input]::placeholder {
+  color: rgba(180, 152, 160, 0.72);
+}
+
+[data-conversation-content] {
+  background-image: linear-gradient(to bottom,
+    rgba(255, 45, 85, 0.04) 0,
+    rgba(255, 45, 85, 0) 64px);
+  background-repeat: no-repeat;
+}
+
+/* ============ 细节 ============ */
+::selection {
+  background: rgba(255, 45, 85, 0.42);
+  color: #fff4f6;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(150, 35, 65, 0.58) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(150, 35, 65, 0.55);
+  border: 2px solid transparent;
+  border-radius: 6px;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(210, 55, 95, 0.68);
+  background-clip: content-box;
+}
+
+
+/* ============ 品牌：观测中枢 ============ */
+.rs-brand-name {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.06;
+  gap: 1px;
+}
+
+.rs-brand-zh {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #f7e9ea;
+  text-shadow: 0 0 12px rgba(255, 45, 85, 0.45);
+}
+
+.rs-brand-en {
+  font-size: 8px;
+  letter-spacing: 0.26em;
+  color: rgba(255, 120, 145, 0.55);
+}
+
+/* ============ Hero 标题：探索未至之境 → 观测中枢 ============ */
+[class*="titleGroup"] > span:first-child {
+  font-size: 0 !important;
+  line-height: 1;
+}
+
+[class*="titleGroup"] > span:first-child::before {
+  content: "赤色观测站";
+  display: inline-block;
+  font-size: 44px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  color: #f7e9ea;
+  text-shadow:
+    0 0 20px rgba(255, 90, 120, 0.55),
+    0 0 52px rgba(255, 45, 85, 0.35);
+}
+
+[class*="titleGroup"] > span:first-child::after {
+  content: "REDSHIFT OBSERVATORY";
+  display: block;
+  margin-top: 8px;
+  font-family: ui-monospace, "Cascadia Mono", monospace;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.42em;
+  color: rgba(255, 130, 155, 0.55);
+}
+
+/* ============ 线框层：赛博朋克的红黑线条 ============ */
+.rs-wire {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.62;
+  mix-blend-mode: screen;
+  shape-rendering: geometricPrecision;
+}
+
+.rs-wire .w-slow {
+  animation: rs-wire-spin 90s linear infinite;
+  transform-origin: 1180px 262px;
+}
+
+@keyframes rs-wire-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* 故障位移：偶尔整屏错切一下 */
+.rs-glitch {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  background:
+    repeating-linear-gradient(to bottom,
+      rgba(255, 45, 85, 0) 0 3px,
+      rgba(255, 45, 85, 0.10) 3px 4px,
+      rgba(255, 45, 85, 0) 4px 9px);
+  animation: rs-glitch 11s steps(1, end) infinite;
+}
+
+@keyframes rs-glitch {
+  0%, 91%   { opacity: 0; transform: translateX(0); }
+  92%       { opacity: 0.55; transform: translateX(-4px); }
+  92.8%     { opacity: 0;    transform: translateX(0); }
+  94%       { opacity: 0.75; transform: translateX(5px); }
+  94.6%     { opacity: 0;    transform: translateX(-2px); }
+  95.4%     { opacity: 0.35; transform: translateX(0); }
+  96%       { opacity: 0; }
+  100%      { opacity: 0; }
+}
+
+/* ============ 青色系统状态：唯一的一处冷色 ============ */
+.rs-sys {
+  position: fixed;
+  right: 15px;
+  bottom: 30px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  pointer-events: none;
+}
+
+.rs-sys i {
+  display: block;
+  width: 2px;
+  border-radius: 0;
+  background: rgba(94, 234, 255, 0.75);
+  box-shadow: 0 0 6px rgba(0, 214, 255, 0.6);
+  animation: rs-sys-bar 2.6s ease-in-out infinite;
+}
+
+.rs-sys i:nth-child(1) { height: 5px;  animation-delay: 0s; }
+.rs-sys i:nth-child(2) { height: 10px; animation-delay: 0.18s; }
+.rs-sys i:nth-child(3) { height: 7px;  animation-delay: 0.36s; }
+.rs-sys i:nth-child(4) { height: 12px; animation-delay: 0.54s; }
+.rs-sys i:nth-child(5) { height: 6px;  animation-delay: 0.72s; }
+
+@keyframes rs-sys-bar {
+  0%, 100% { opacity: 0.35; transform: scaleY(0.6); }
+  50%      { opacity: 1;    transform: scaleY(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rs-sys i { animation: none !important; opacity: 0.7; }
+}
+
+/* ============ 过载：数据雨 / 扫描环 / 呼吸灯 ============ */
+
+/* 数据雨：垂直下落的短横线 */
+.rs-rain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  mix-blend-mode: screen;
+}
+
+.rs-rain i {
+  position: absolute;
+  width: 1px;
+  display: block;
+  background: linear-gradient(to bottom,
+    rgba(255, 45, 85, 0) 0%,
+    rgba(255, 90, 120, 0.55) 30%,
+    rgba(255, 200, 200, 0.75) 55%,
+    rgba(255, 60, 95, 0.25) 85%,
+    rgba(255, 45, 85, 0) 100%);
+  animation-name: rs-rain-fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes rs-rain-fall {
+  from { transform: translateY(-120%); opacity: 0; }
+  6%   { opacity: 1; }
+  92%  { opacity: 0.5; }
+  to   { transform: translateY(120vh); opacity: 0; }
+}
+
+/* 扫描环：从黑洞圆心往外扩散的虚线环 */
+.rs-ring {
+  position: fixed;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 50%;
+  border: 1px dashed rgba(255, 60, 95, 0.30);
+  width: 140px;
+  height: 140px;
+  margin: -70px 0 0 -70px;
+  animation: rs-ring-out 4.6s ease-out infinite;
+}
+
+@keyframes rs-ring-out {
+  0%   { transform: scale(0.4) rotate(0deg); opacity: 0; }
+  10%  { opacity: 0.75; }
+  100% { transform: scale(6) rotate(120deg); opacity: 0; }
+}
+
+/* 基地呼吸灯：左下的建筑窗光 */
+.rs-dock {
+  position: fixed;
+  left: 3%;
+  bottom: 3%;
+  width: 34%;
+  height: 26%;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 22% 46%, rgba(255, 70, 90, 0.55) 0 2px, rgba(255, 70, 90, 0) 7px),
+    radial-gradient(circle at 35% 38%, rgba(255, 90, 110, 0.45) 0 1.5px, rgba(255, 90, 110, 0) 6px),
+    radial-gradient(circle at 47% 50%, rgba(255, 70, 90, 0.50) 0 2px, rgba(255, 70, 90, 0) 7px),
+    radial-gradient(circle at 58% 42%, rgba(255, 100, 120, 0.40) 0 1.5px, rgba(255, 100, 120, 0) 6px),
+    radial-gradient(circle at 68% 52%, rgba(255, 70, 90, 0.45) 0 2px, rgba(255, 70, 90, 0) 7px),
+    radial-gradient(ellipse 70% 60% at 44% 50%, rgba(255, 45, 85, 0.18), rgba(255, 45, 85, 0) 72%);
+  animation: rs-dock-breath 4.2s ease-in-out infinite;
+}
+
+@keyframes rs-dock-breath {
+  0%, 100% { opacity: 0.32; filter: brightness(0.8); }
+  50%      { opacity: 1;    filter: brightness(1.5); }
+}
+
+/* 故障层加频：11s -> 5.5s */
+.rs-glitch {
+  animation-duration: 5.5s !important;
+}
+
+/* ============ 过载：设备故障 / 信息错误 / 能量溢出 ============ */
+
+/* 爆发时整屏错切 + 色偏 */
+.rs-overload {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  mix-blend-mode: screen;
+}
+
+.rs-overload.on {
+  animation: rs-burst 0.46s steps(3, end) 1;
+}
+
+@keyframes rs-burst {
+  0%   { opacity: 0;    transform: translate(0, 0); }
+  10%  { opacity: 0.92; transform: translate(-7px, 3px) skewX(0.7deg); }
+  22%  { opacity: 0.55; transform: translate(6px, -4px) skewX(-0.5deg); }
+  38%  { opacity: 0.95; transform: translate(-4px, 1px); }
+  55%  { opacity: 0.40; transform: translate(5px, 2px) skewX(0.35deg); }
+  74%  { opacity: 0.78; transform: translate(-2px, 0); }
+  100% { opacity: 0;    transform: translate(0, 0); }
+}
+
+/* 爆发时那层红白条纹 */
+.rs-overload.on::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(to bottom,
+      rgba(255, 60, 90, 0.00) 0 5px,
+      rgba(255, 60, 90, 0.16) 5px 7px,
+      rgba(255, 200, 200, 0.05) 7px 9px,
+      rgba(255, 60, 90, 0.00) 9px 15px);
+}
+
+/* 爆发时整屏色差（红/青分离） */
+.rs-overload.on::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+    rgba(255, 40, 70, 0.10) 0%,
+    rgba(0, 220, 255, 0.07) 100%);
+  mix-blend-mode: screen;
+}
+
+/* 乱码文字：平时透明，爆发时闪现 */
+.rs-corrupt {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0;
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: 0.10em;
+  color: rgba(255, 74, 96, 0.85);
+  text-shadow: 0 0 8px rgba(255, 30, 60, 0.7);
+}
+
+.rs-corrupt.on {
+  opacity: 1;
+  animation: rs-corrupt-flash 0.46s steps(2, end) 1;
+}
+
+@keyframes rs-corrupt-flash {
+  0%   { opacity: 0; }
+  12%  { opacity: 1; }
+  30%  { opacity: 0.15; }
+  46%  { opacity: 0.9; }
+  66%  { opacity: 0.2; }
+  82%  { opacity: 0.75; }
+  100% { opacity: 0; }
+}
+
+.rs-corrupt span {
+  position: absolute;
+  white-space: nowrap;
+}
+
+/* 溢出光：从黑洞方向扫出来的能量弧 */
+.rs-surge {
+  position: fixed;
+  pointer-events: none;
+  z-index: 2;
+  left: 50%;
+  top: 22%;
+  width: 180vmax;
+  height: 180vmax;
+  margin: -90vmax 0 0 -90vmax;
+  border-radius: 50%;
+  opacity: 0;
+  background: radial-gradient(circle,
+    rgba(255, 60, 90, 0.00) 0%,
+    rgba(255, 60, 90, 0.00) 33%,
+    rgba(255, 70, 100, 0.34) 42%,
+    rgba(255, 160, 160, 0.20) 46%,
+    rgba(255, 60, 90, 0.00) 54%);
+}
+
+.rs-surge.on {
+  animation: rs-surge-out 0.9s ease-out 1;
+}
+
+@keyframes rs-surge-out {
+  0%   { opacity: 0;    transform: scale(0.28); }
+  18%  { opacity: 0.95; }
+  100% { opacity: 0;    transform: scale(1.05); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rs-overload.on,
+  .rs-corrupt.on,
+  .rs-surge.on { animation: none !important; opacity: 0 !important; }
+}
+
+/* ============ 常驻数据流：竖排字符缓慢下落 ============ */
+.rs-code {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: 0.08em;
+  color: rgba(255, 74, 100, 0.85);
+  text-shadow: 0 0 7px rgba(255, 30, 60, 0.65);
+}
+
+.rs-code span {
+  position: absolute;
+  top: 0;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  white-space: pre;
+  animation-name: rs-code-fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+@keyframes rs-code-fall {
+  from { transform: translateY(-42%); }
+  to   { transform: translateY(112%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rs-code span { animation: none !important; }
+  .rs-code { opacity: 0.18; }
+}
+
+/* ============ 交互增强（2026-10-29）============
+   DSH 的输入框/按钮没有可依赖的稳定类名（client 样式全打在 bundle 里、带哈希），
+   所以只挂通用元素选择器：textarea / contenteditable / button。
+   风险很低 —— 不碰布局、不改尺寸，只加描边和辉光。 */
+textarea:focus,
+[contenteditable="true"]:focus {
+  outline: 1px solid rgba(255, 45, 85, 0.55);
+  outline-offset: 2px;
+  box-shadow:
+    0 0 18px rgba(255, 45, 85, 0.22),
+    inset 0 0 14px rgba(255, 45, 85, 0.06);
+  transition: box-shadow 180ms ease-out, outline-color 180ms ease-out;
+  /* ── 四角瞄准括号（2026-10-29）──
+     纯 background-image 画，不碰 DOM。textarea 不支持伪元素，这是唯一的纯 CSS 做法。
+     只覆盖 background-image，输入框自己的 background-color 不受影响。 */
+  --rs-aim: rgba(255, 60, 100, 0.9);
+  background-image:
+    linear-gradient(var(--rs-aim), var(--rs-aim)),
+    linear-gradient(var(--rs-aim), var(--rs-aim)),
+    linear-gradient(var(--rs-aim), var(--rs-aim)),
+    linear-gradient(var(--rs-aim), var(--rs-aim)),
+    linear-gradient(var(--rs-aim), var(--rs-aim)),
+    linear-gradient(var(--rs-aim), var(--rs-aim)),
+    linear-gradient(var(--rs-aim), var(--rs-aim)),
+    linear-gradient(var(--rs-aim), var(--rs-aim));
+  background-repeat: no-repeat;
+  background-size:
+    13px 1.5px, 1.5px 13px,
+    13px 1.5px, 1.5px 13px,
+    13px 1.5px, 1.5px 13px,
+    13px 1.5px, 1.5px 13px;
+  background-position:
+    left 7px top 7px,   left 7px top 7px,
+    right 7px top 7px,  right 7px top 7px,
+    left 7px bottom 7px, left 7px bottom 7px,
+    right 7px bottom 7px, right 7px bottom 7px;
+}
+
+/* 按钮悬停：像物理按键一样透出一点红光 */
+button:hover {
+  box-shadow:
+    0 0 10px rgba(255, 45, 85, 0.26),
+    inset 0 0 6px rgba(255, 45, 85, 0.10);
+  transition: box-shadow 160ms ease-out;
+}
+button:active {
+  box-shadow:
+    0 0 4px rgba(255, 45, 85, 0.35),
+    inset 0 0 10px rgba(255, 45, 85, 0.18);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  textarea:focus, [contenteditable="true"]:focus, button:hover { transition: none; }
+}
+
+/* ============ 尊重“减少动态效果” ============ */
+@media (prefers-reduced-motion: reduce) {
+  .rs-rift i, .rs-rift u, .rs-wave, .rs-beacon, .rs-beacon::after,
+  .rs-scan, .rs-stream, body::after { animation: none !important; }
+  .rs-rift i { opacity: 0.09; }
+  .rs-rift u { opacity: 0.05; }
+  .rs-wave { opacity: 0.16; }
+  .rs-scan { opacity: 0.35; }
+  .rs-stream { opacity: 0.25; }
+}

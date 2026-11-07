@@ -1,0 +1,35 @@
+/* zdjmrq/dsh-shadertoy-skin — client.js
+   fetched 2026-11-07 from https://raw.githubusercontent.com/zdjmrq/dsh-shadertoy-skin/main/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+html, body { background: transparent !important; }
+            [role="dialog"], [role="alertdialog"], [data-shortcut-modal="settings"] {
+              background-color: var(--shader-skin-dialog-surface) !important;
+            }
+            /* These component-local fills shadow inherited theme tokens. Keep
+               the outer card's fill, but never stack a second fill in its head. */
+            html[data-shader-skin-panels] [class*="_card"] {
+              --changes-fill: transparent !important;
+              --changes-hover: transparent !important;
+              --plan-card-fill: var(--shader-skin-surface) !important;
+              --plan-card-hover: var(--shader-skin-surface) !important;
+            }
+            html[data-shader-skin-panels] [class*="_root"] {
+              --deliverable-fill: var(--shader-skin-surface) !important;
+              --deliverable-hover: var(--shader-skin-surface) !important;
+            }
+            /* Stable DSH Markdown attributes cover plain, highlighted and card
+               code blocks. Only the wrapper paints, including its sticky head. */
+            html[data-shader-skin-panels] .md-code-block {
+              background: var(--shader-skin-surface) !important;
+              --dsl-code-block-background: transparent !important;
+              --dsl-code-block-banner-background-color: transparent !important;
+            }
+            html[data-shader-skin-panels] .md-code-block [data-code-block-banner],
+            html[data-shader-skin-panels] .md-code-block [data-code-block-content],
+            html[data-shader-skin-panels] .md-code-block pre {
+              background: transparent !important;
+            }
+            /* macOS hardcodes this button's fill instead of using the token. */
+            html[data-shader-skin-panels] button[class*="_newSession"] {
+              background: var(--shader-skin-surface) !important;
+            }

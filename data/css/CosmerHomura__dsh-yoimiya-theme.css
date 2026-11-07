@@ -1,0 +1,897 @@
+/* CosmerHomura/dsh-yoimiya-theme — bundle/client.js
+   fetched 2026-11-07 from https://raw.githubusercontent.com/CosmerHomura/dsh-yoimiya-theme/main/bundle/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+background-color: transparent !important; }
+
+/* ── 1 · 程序化天空（body）─────────────────────────────────────────
+   这里有意利用一条 CSS 规范：根元素背景为 transparent 时，body 的背景
+   会【传播到画布】，从而无条件铺满整个视口。若给 html 一个不透明背景，
+   传播被切断，body 盒子高度一旦不足就会露底。 */
+body[data-ds-dark-theme] {
+  background-color: #14111C !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+}
+
+body:not([data-ds-dark-theme]) {
+  background-color: #F3EADA !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+}
+
+/* ── 2 · 宵宫立绘（body::before）──────────────────────────────────
+   分阶段背景的核心：
+     首页 hero         全幅 cover、全亮
+     对话 active/settling  降到 34%，只留一层氛围，把中心让给阅读卡
+   阶段读 DSH 自己的 data-phase（会话根节点，取值 hero/active/settling）。
+   输入框上也有 data-phase，但取值是 plain/claimed/submitting 之类，所以
+   这里一律【按值匹配】，不会误命中。:has() 在本版 DSH 自己的样式表里
+   已经在用，可以安全依赖。
+
+   壁纸是 16:9 宽幅（1672×941），人物占 x 0–50%。用 cover + 左对齐：
+   16:9 视口下 1:1 映射；窄高视口横向裁切时永远从左侧切，保住人物。
+   纵向定位取 38% 而非 center——带鱼屏上 cover 会纵向裁切，
+   center 会把她的头发切掉一截，38% 让裁切偏向上方、优先保住头部。 */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: left 38%;
+}
+
+/* 进入对话后退让（settling 与 active 同处理，避免首条消息时回弹）。
+   只降不透明度、不做 transform：宽幅图 cover 已铺满，缩放会在边缘露出
+   下层程序化天空，看着像 bug。这是第一版的行为，实测长对话下观感更稳。 */
+body[data-ds-dark-theme]:has([data-phase="active"])::before,
+body[data-ds-dark-theme]:has([data-phase="settling"])::before {
+  opacity: .62;
+}
+body:not([data-ds-dark-theme]):has([data-phase="active"])::before,
+body:not([data-ds-dark-theme]):has([data-phase="settling"])::before {
+  opacity: .52;
+}
+
+/* 亮档：立绘是dusk 色调，加一层和纸洗色，让它像印在纸上而不是贴在屏幕上 */
+body:not([data-ds-dark-theme])::before {
+  filter: sepia(.22) saturate(.84) brightness(1.07) contrast(.96);
+}
+
+
+/* ── 2 · 会话流：抬到稳定亮度的阅读卡上 ──────────────────────────
+   [data-chat-flow] 是 ChatView 的消息列容器（整段对话，非单条）。
+   用半透明底面 + 描边做出玻璃质感。这里【刻意不用 backdrop-filter】：
+   它会为元素创建固定定位后代的包含块，DSH 的设置面板等浮层一旦挂在这棵
+   子树里就会以本元素为参照定位（实测：设置面板跑到侧边栏里展开）。
+   半透明底面本身已足够，模糊只是锦上添花，不值得用定位正确性去换。 */
+[data-chat-flow] {
+  background: rgba(20,17,28,0.52);
+  border: 1px solid rgba(240,200,140,0.10);
+  border-radius: 18px;
+  padding: 14px 16px 22px;
+}
+body:not([data-ds-dark-theme]) [data-chat-flow] {
+  background: rgba(248,241,229,0.74);
+  border-color: rgba(120,80,40,0.12);
+}
+
+/* ── 3 · 输入卡 ──────────────────────────────────────────────────── */
+[data-composer-card] {
+  background: rgba(28,22,34,0.72) !important;
+  border: 1px solid rgba(240,200,140,0.20) !important;
+  border-radius: 18px !important;
+}
+body:not([data-ds-dark-theme]) [data-composer-card] {
+  background: rgba(248,241,229,0.88) !important;
+  border-color: rgba(120,80,40,0.22) !important;
+}
+
+/* 聚焦环：只在原生 outline 生效的输入区上补一笔暖色，保证键盘可达性。
+   组件自绘焦点环的地方不动，避免出现双环。 */
+[data-composer-card] :focus-visible,
+[data-input-scroll]:focus-visible {
+  outline: 2px solid rgba(224,138,60,0.50) !important;
+  outline-offset: 2px !important;
+}
+
+/* 占位文案配色：硬编码值，verify.mjs 会按卡片底面核算，须 >=4.5:1。 */
+[data-composer-placeholder] { color: #9C9184 !important; }
+body:not([data-ds-dark-theme]) [data-composer-placeholder] { color: #7C6A56 !important; }
+/* ── 3 · 阅读遮罩（.dsh-yoimiya-scrim）───────────────────────────────────
+   两副面孔，按 DSH 自己发布的 data-phase 切换（取值 hero / active /
+   settling；输入框上也有 data-phase 但取值不相交，所以按值匹配不会误命中）：
+     首页 hero          左轻右重的横向渐变——人物在左几乎不压，
+                        38% 起快速加深，给居中标题让出暗底
+     对话 active/settling 中心椭圆——压住正文背后的亮度方差
+   这是第一版的构图，也是本主题可读性的第一道保障：不要为了「更透」把它
+   删掉，正文背后一旦出现亮度 255 的光柱，浅色正文就会读不出来。 */
+.dsh-yoimiya-scrim {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+}
+body[data-ds-dark-theme] .dsh-yoimiya-scrim {
+}
+body:not([data-ds-dark-theme]) .dsh-yoimiya-scrim {
+}
+body[data-ds-dark-theme]:has([data-phase="hero"]) .dsh-yoimiya-scrim {
+}
+body:not([data-ds-dark-theme]):has([data-phase="hero"]) .dsh-yoimiya-scrim {
+}
+/* 会话卡底面降到 0.30 之后，正文可能压在壁纸的高亮光柱上。给卡片内的文字
+   加一层极轻的投影，让它在亮底上依然清晰——这样才敢把卡片继续做透。
+   投影只针对 [data-chat-flow] 内部，不影响 UI 其余部分。 */
+[data-chat-flow] { text-shadow: 0 1px 3px rgba(6, 4, 12, 0.6); }
+body:not([data-ds-dark-theme]) [data-chat-flow] { text-shadow: 0 1px 2px rgba(255, 252, 246, 0.72); }
+
+/* ── 4 · 侧边栏：比会话区更透，露出背景 ──────────────────────────── */
+[data-dsh-sidebar-root] {
+  background: transparent !important;
+  /* 侧边栏底色被 ._1tdjgG_sidebarCol 与 .IrIWsq_root 各画一次，叠加后
+     比主区域实得多；这里给侧边栏加一层毛玻璃，既统一质感，也让压在
+     人物上的文字背景更均匀。 */
+}
+
+/* ── 5 · 品牌标识：自绘金鱼替换默认 mark ──────────────────────────
+   官方 mark 由 dsh-client-ui-brand-official 注册进 sidebar.brand.mark，
+   而该 slot 是 kind:"single"（唯一认领），第三方再注册会抛错，
+   所以这里走 CSS 替换而不是插槽。用 [class*="_局部名"] 匹配，
+   哈希前缀变化不影响。 */
+[data-dsh-sidebar-brand-identity] [class*="_brandMark"] svg,
+[class*="_railMark"] svg {
+  display: none !important;
+}
+[data-dsh-sidebar-brand-identity] [class*="_brandMark"]::before,
+[class*="_railMark"]::before {
+  content: '';
+  display: block;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+body:not([data-ds-dark-theme]) [data-dsh-sidebar-brand-identity] [class*="_brandMark"]::before,
+body:not([data-ds-dark-theme]) [class*="_railMark"]::before {
+}
+
+/* ── 6 · 会话激活项：橙色「引线」竖条 ─────────────────────────────
+   用 inset box-shadow 而不是伪元素：行组件可能已占用 ::before/::after，
+   内阴影不会撞车，且自动跟随行的圆角。
+   会话行类名局部名 sessionRow / selected，哈希前缀无关。 */
+[class*="_sessionRow"][class*="_selected"] {
+  background: rgba(224,138,60,0.10) !important;
+  box-shadow:
+    inset 2px 0 0 0 rgba(224,138,60,0.90),
+    inset 16px 0 14px -14px rgba(224,138,60,0.55) !important;
+}
+body:not([data-ds-dark-theme]) [class*="_sessionRow"][class*="_selected"] {
+  background: rgba(181,80,42,0.10) !important;
+  box-shadow:
+    inset 2px 0 0 0 rgba(181,80,42,0.90),
+    inset 16px 0 14px -14px rgba(181,80,42,0.45) !important;
+}
+
+/* ── 7 · 浮层 / 菜单：近实色保证可读，不叠多层 blur ───────────────── */
+[data-radix-popper-content-wrapper] > div,
+div[role="menu"],
+div[role="dialog"][class*="popover"],
+div[class*="popover"],
+div[class*="dropdown-menu"] {
+  background: rgba(26,22,34,0.96) !important;
+  border: 1px solid rgba(240,200,140,0.22) !important;
+  border-radius: 12px !important;
+}
+body:not([data-ds-dark-theme]) [data-radix-popper-content-wrapper] > div,
+body:not([data-ds-dark-theme]) div[role="menu"],
+body:not([data-ds-dark-theme]) div[role="dialog"][class*="popover"],
+body:not([data-ds-dark-theme]) div[class*="popover"],
+body:not([data-ds-dark-theme]) div[class*="dropdown-menu"] {
+  background: rgba(255,253,248,0.97) !important;
+  border-color: rgba(120,80,40,0.20) !important;
+}
+
+/* ── 8 · 代码块：暖调底 + 代码字体保真 ────────────────────────────
+   语法高亮的颜色由 --shiki-token-* 提供（见 TOKENS），此处只管底色
+   与排版。不放大行高、不加发光，避免糊字。 */
+[data-ds-markdown] pre,
+pre[class*="shiki"],
+div[class*="codeBlock"] pre {
+  border-radius: 12px;
+  border: 1px solid rgba(240,200,140,0.10);
+}
+body:not([data-ds-dark-theme]) [data-ds-markdown] pre,
+body:not([data-ds-dark-theme]) pre[class*="shiki"],
+body:not([data-ds-dark-theme]) div[class*="codeBlock"] pre {
+  border-color: rgba(120,80,40,0.12);
+}
+
+/* ── 烟花粒子层 ────────────────────────────────────────────────────
+   挂在阅读遮罩之后，所以叠在遮罩之上、内容之下。pointer-events 关掉，
+   绝不拦截任何交互。 */
+.dsh-yoimiya-particles {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* ── 右下角烟花控制 ────────────────────────────────────────────────
+   刻意【不用 backdrop-filter】：它会创建固定定位后代的包含块，破坏浮层
+   定位（设置面板就是这么坏的），所以这里用不透明暖色底。
+   位置抬到 bottom 52px，避开 DSH 自己右下角的状态栏。 */
+.dsh-yoimiya-dock {
+  position: fixed;
+  right: 16px;
+  bottom: 52px;
+  z-index: 2147483000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  font: 12px/1.45 ui-sans-serif, system-ui, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+.dsh-yoimiya-dock-btn {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid rgba(224, 138, 60, 0.46);
+  background: rgba(26, 20, 32, 0.94);
+  color: #F0B068;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(10, 6, 16, 0.38);
+  transition: transform .18s ease, border-color .18s ease, color .18s ease;
+}
+.dsh-yoimiya-dock-btn:hover { transform: translateY(-1px); border-color: rgba(224, 138, 60, 0.85); color: #F6C489; }
+.dsh-yoimiya-dock-btn[aria-expanded="true"] { border-color: rgba(224, 138, 60, 0.95); color: #F6C489; }
+
+.dsh-yoimiya-dock-panel {
+  display: none;
+  min-width: 176px;
+  padding: 11px 12px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(224, 138, 60, 0.34);
+  background: rgba(24, 18, 30, 0.97);
+  color: #EDE3D3;
+  box-shadow: 0 14px 34px rgba(10, 6, 16, 0.5);
+}
+.dsh-yoimiya-dock-panel[data-open="true"] { display: block; }
+
+.dsh-yoimiya-dock-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 9px;
+}
+.dsh-yoimiya-dock-row:first-child { margin-top: 0; }
+.dsh-yoimiya-dock-label { color: #B9AC9C; font-size: 11px; letter-spacing: .05em; }
+/* 开销读数：沿用 label 的次要文本色（已过对比度校验），等宽数字免得跳动时宽度抖 */
+.dsh-yoimiya-dock-stat {
+  color: #B9AC9C;
+  font-size: 10px;
+  letter-spacing: .02em;
+  font-variant-numeric: tabular-nums;
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+
+.dsh-yoimiya-seg {
+  display: inline-flex;
+  border: 1px solid rgba(224, 138, 60, 0.30);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.dsh-yoimiya-seg button,
+.dsh-yoimiya-dock-toggle {
+  border: 0;
+  background: transparent;
+  color: #B9AC9C;
+  font: inherit;
+  cursor: pointer;
+  padding: 3px 10px;
+  transition: background .15s ease, color .15s ease;
+}
+.dsh-yoimiya-dock-toggle {
+  border: 1px solid rgba(224, 138, 60, 0.30);
+  border-radius: 8px;
+  min-width: 44px;
+}
+.dsh-yoimiya-seg button[aria-pressed="true"],
+.dsh-yoimiya-dock-toggle[aria-pressed="true"] {
+  background: rgba(224, 138, 60, 0.22);
+  color: #F0B068;
+}
+.dsh-yoimiya-seg button:hover,
+.dsh-yoimiya-dock-toggle:hover { color: #F0B068; }
+.dsh-yoimiya-seg button:focus-visible,
+.dsh-yoimiya-dock-toggle:focus-visible,
+.dsh-yoimiya-dock-btn:focus-visible {
+  outline: 2px solid rgba(224, 138, 60, 0.60);
+  outline-offset: 2px;
+}
+
+/* 亮档：翻成暖米纸面，与「和纸昼」同一套色 */
+body:not([data-ds-dark-theme]) .dsh-yoimiya-dock-btn {
+  background: rgba(248, 241, 229, 0.96);
+  border-color: rgba(181, 80, 42, 0.44);
+  color: #B5502A;
+  box-shadow: 0 4px 14px rgba(90, 60, 30, 0.18);
+}
+body:not([data-ds-dark-theme]) .dsh-yoimiya-dock-btn:hover,
+body:not([data-ds-dark-theme]) .dsh-yoimiya-dock-btn[aria-expanded="true"] { color: #8E3A1E; border-color: rgba(181, 80, 42, 0.8); }
+body:not([data-ds-dark-theme]) .dsh-yoimiya-dock-panel {
+  background: rgba(250, 244, 234, 0.98);
+  border-color: rgba(181, 80, 42, 0.30);
+  color: #33261C;
+  box-shadow: 0 14px 34px rgba(90, 60, 30, 0.22);
+}
+body:not([data-ds-dark-theme]) .dsh-yoimiya-dock-label { color: #6B5A4A; }
+body:not([data-ds-dark-theme]) .dsh-yoimiya-dock-stat { color: #6B5A4A; }
+body:not([data-ds-dark-theme]) .dsh-yoimiya-seg { border-color: rgba(181, 80, 42, 0.28); }
+body:not([data-ds-dark-theme]) .dsh-yoimiya-seg button,
+body:not([data-ds-dark-theme]) .dsh-yoimiya-dock-toggle { color: #6B5A4A; }
+body:not([data-ds-dark-theme]) .dsh-yoimiya-dock-toggle { border-color: rgba(181, 80, 42, 0.28); }
+body:not([data-ds-dark-theme]) .dsh-yoimiya-seg button[aria-pressed="true"],
+body:not([data-ds-dark-theme]) .dsh-yoimiya-dock-toggle[aria-pressed="true"] {
+  background: rgba(181, 80, 42, 0.16);
+  color: #B5502A;
+}
+
+/* ── 音乐控制（系统媒体会话）────────────────────────────────────── */
+.dsh-yoimiya-dock-divider {
+  height: 1px;
+  margin: 10px 0 9px;
+  background: rgba(224, 138, 60, 0.22);
+}
+.dsh-yoimiya-music-now {
+  max-width: 208px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  color: #B9AC9C;
+}
+.dsh-yoimiya-music-now[data-state="playing"] { color: #F0B068; }
+.dsh-yoimiya-music-now[data-state="idle"] { color: #8A7F72; }
+.dsh-yoimiya-music-bar {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+.dsh-yoimiya-music-btn {
+  flex: 1;
+  border: 1px solid rgba(224, 138, 60, 0.28);
+  border-radius: 8px;
+  background: transparent;
+  color: #B9AC9C;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1;
+  padding: 5px 0;
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+.dsh-yoimiya-music-btn:hover {
+  color: #F0B068;
+  border-color: rgba(224, 138, 60, 0.60);
+  background: rgba(224, 138, 60, 0.12);
+}
+.dsh-yoimiya-music-btn:focus-visible {
+  outline: 2px solid rgba(224, 138, 60, 0.60);
+  outline-offset: 2px;
+}
+body:not([data-ds-dark-theme]) .dsh-yoimiya-dock-divider { background: rgba(181, 80, 42, 0.20); }
+body:not([data-ds-dark-theme]) .dsh-yoimiya-music-now { color: #6B5A4A; }
+body:not([data-ds-dark-theme]) .dsh-yoimiya-music-now[data-state="playing"] { color: #B5502A; }
+body:not([data-ds-dark-theme]) .dsh-yoimiya-music-now[data-state="idle"] { color: #7C6A56; }
+body:not([data-ds-dark-theme]) .dsh-yoimiya-music-btn { border-color: rgba(181, 80, 42, 0.26); color: #6B5A4A; }
+body:not([data-ds-dark-theme]) .dsh-yoimiya-music-btn:hover {
+  color: #B5502A;
+  border-color: rgba(181, 80, 42, 0.60);
+  background: rgba(181, 80, 42, 0.10);
+}
+
+/* ── 控件坞：两个并列按钮 ─────────────────────────────────────────── */
+.dsh-yoimiya-dock-btns {
+  display: flex;
+  gap: 8px;
+}
+.dsh-yoimiya-dock-note {
+  max-width: 208px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #8A7F72;
+}
+
+
+/* ── 本地曲库播放器 ───────────────────────────────────────────────── */
+.dsh-yoimiya-music { width: 232px; }
+.dsh-yoimiya-music-prog {
+  height: 3px;
+  margin-top: 7px;
+  border-radius: 999px;
+  background: rgba(224, 138, 60, 0.20);
+  cursor: pointer;
+  overflow: hidden;
+}
+.dsh-yoimiya-music-fill {
+  height: 100%;
+  width: 0;
+  border-radius: 999px;
+  background: rgba(224, 138, 60, 0.85);
+  transition: width .15s linear;
+}
+.dsh-yoimiya-music-add:focus-visible {
+  outline: 2px solid rgba(224, 138, 60, 0.60);
+  outline-offset: 2px;
+}
+.dsh-yoimiya-music-picker { display: none; }
+
+.dsh-yoimiya-music-list {
+  max-height: 184px;
+  overflow-y: auto;
+  margin-top: 9px;
+  font-size: 11px;
+  color: #8A7F72;
+}
+.dsh-yoimiya-music-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 5px;
+  border-radius: 7px;
+}
+.dsh-yoimiya-music-row:hover { background: rgba(224, 138, 60, 0.09); }
+.dsh-yoimiya-music-row[data-current="true"] { background: rgba(224, 138, 60, 0.16); }
+.dsh-yoimiya-music-thumb {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  background-color: rgba(224, 138, 60, 0.16);
+  background-size: cover;
+  background-position: center;
+}
+.dsh-yoimiya-music-title {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  padding: 0;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dsh-yoimiya-music-title:hover { color: #F0B068; }
+.dsh-yoimiya-music-title:focus-visible {
+  outline: 2px solid rgba(224, 138, 60, 0.60);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.dsh-yoimiya-music-row[data-current="true"] .dsh-yoimiya-music-title { color: #F0B068; }
+.dsh-yoimiya-music-del {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: #8A7F72;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+}
+.dsh-yoimiya-music-del:hover { background: rgba(196, 74, 60, 0.22); color: #E0909E; }
+.dsh-yoimiya-music-del:focus-visible {
+  outline: 2px solid rgba(224, 138, 60, 0.60);
+  outline-offset: 2px;
+}
+.dsh-yoimiya-music-empty { line-height: 1.55; }
+.dsh-yoimiya-music-dir {
+  display: block;
+  margin-top: 5px;
+  padding: 4px 5px;
+  border-radius: 5px;
+  background: rgba(224, 138, 60, 0.10);
+  color: #B9AC9C;
+  font-size: 10px;
+  word-break: break-all;
+}
+
+body:not([data-ds-dark-theme]) .dsh-yoimiya-music-prog { background: rgba(181, 80, 42, 0.18); }
+body:not([data-ds-dark-theme]) .dsh-yoimiya-music-fill { background: rgba(181, 80, 42, 0.80); }
+body:not([data-ds-dark-theme]) .dsh-yoimiya-music-add { border-color: rgba(181, 80, 42, 0.36); color: #B5502A; }
+body:not([data-ds-dark-theme]) .dsh-yoimiya-music-add:hover {
+  background: rgba(181, 80, 42, 0.10);
+  border-color: rgba(181, 80, 42, 0.70);
+}
+body:not([data-ds-dark-theme]) .dsh-yoimiya-music-list { color: #7C6A56; }
+body:not([data-ds-dark-theme]) .dsh-yoimiya-music-row:hover { background: rgba(181, 80, 42, 0.08); }
+body:not([data-ds-dark-theme]) .dsh-yoimiya-music-row[data-current="true"] { background: rgba(181, 80, 42, 0.14); }
+body:not([data-ds-dark-theme]) .dsh-yoimiya-music-thumb { background-color: rgba(181, 80, 42, 0.14); }
+body:not([data-ds-dark-theme]) .dsh-yoimiya-music-title:hover,
+body:not([data-ds-dark-theme]) .dsh-yoimiya-music-row[data-current="true"] .dsh-yoimiya-music-title { color: #B5502A; }
+body:not([data-ds-dark-theme]) .dsh-yoimiya-music-del { color: #7C6A56; }
+body:not([data-ds-dark-theme]) .dsh-yoimiya-music-del:hover { background: rgba(181, 80, 42, 0.16); color: #8E3A1E; }
+body:not([data-ds-dark-theme]) .dsh-yoimiya-music-dir { background: rgba(181, 80, 42, 0.09); color: #6B5A4A; }
+
+/* ── 添加歌曲弹窗 ─────────────────────────────────────────────────── */
+.dsh-yoimiya-modal-back {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2147483001;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 6, 16, 0.62);
+}
+.dsh-yoimiya-modal-back[data-open="true"] { display: flex; }
+.dsh-yoimiya-modal {
+  width: 320px;
+  max-width: calc(100vw - 32px);
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(224, 138, 60, 0.34);
+  background: rgba(24, 18, 30, 0.99);
+  color: #EDE3D3;
+  box-shadow: 0 22px 60px rgba(10, 6, 16, 0.6);
+  font: 12px/1.5 ui-sans-serif, system-ui, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+.dsh-yoimiya-modal-title {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  margin-bottom: 12px;
+}
+
+.dsh-yoimiya-drop {
+  display: block;
+  margin-top: 9px;
+  padding: 11px 12px;
+  border: 1px dashed rgba(224, 138, 60, 0.42);
+  border-radius: 10px;
+  background: rgba(224, 138, 60, 0.05);
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease;
+}
+.dsh-yoimiya-drop:focus-visible {
+  outline: 2px solid rgba(224, 138, 60, 0.6);
+  outline-offset: 2px;
+}
+/* dragover 必须有明确反馈，否则用户不知道松手会不会生效 */
+.dsh-yoimiya-drop[data-over="true"] {
+  border-color: rgba(224, 138, 60, 0.95);
+  background: rgba(224, 138, 60, 0.16);
+}
+.dsh-yoimiya-drop[data-filled="true"] {
+  border-style: solid;
+  border-color: rgba(224, 138, 60, 0.60);
+  background: rgba(224, 138, 60, 0.10);
+}
+.dsh-yoimiya-drop-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.dsh-yoimiya-drop-label { color: #EDE3D3; font-size: 12px; }
+.dsh-yoimiya-drop-badge {
+  font-size: 10px;
+  letter-spacing: .06em;
+  padding: 1px 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(224, 138, 60, 0.45);
+  color: #F0B068;
+}
+.dsh-yoimiya-drop-badge[data-required="false"] {
+  border-color: rgba(185, 172, 156, 0.35);
+  color: #B9AC9C;
+}
+.dsh-yoimiya-drop-hint {
+  margin-top: 5px;
+  font-size: 11px;
+  color: #8A7F72;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dsh-yoimiya-drop[data-filled="true"] .dsh-yoimiya-drop-hint { color: #F0B068; }
+
+.dsh-yoimiya-modal-error {
+  margin-top: 9px;
+  font-size: 11px;
+  color: #E0909E;
+}
+.dsh-yoimiya-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 14px;
+}
+.dsh-yoimiya-modal-btn {
+  border: 1px solid rgba(224, 138, 60, 0.32);
+  border-radius: 8px;
+  background: transparent;
+  color: #B9AC9C;
+  font: inherit;
+  padding: 5px 16px;
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+.dsh-yoimiya-modal-btn:hover:not(:disabled) {
+  color: #F0B068;
+  border-color: rgba(224, 138, 60, 0.7);
+  background: rgba(224, 138, 60, 0.12);
+}
+.dsh-yoimiya-modal-btn:disabled { opacity: .45; cursor: default; }
+.dsh-yoimiya-modal-primary {
+  border-color: rgba(224, 138, 60, 0.75);
+  color: #F0B068;
+  background: rgba(224, 138, 60, 0.16);
+}
+.dsh-yoimiya-modal-btn:focus-visible {
+  outline: 2px solid rgba(224, 138, 60, 0.6);
+  outline-offset: 2px;
+}
+
+body:not([data-ds-dark-theme]) .dsh-yoimiya-modal-back { background: rgba(60, 44, 30, 0.42); }
+body:not([data-ds-dark-theme]) .dsh-yoimiya-modal {
+  background: rgba(250, 244, 234, 0.99);
+  border-color: rgba(181, 80, 42, 0.30);
+  color: #33261C;
+  box-shadow: 0 22px 60px rgba(90, 60, 30, 0.28);
+}
+body:not([data-ds-dark-theme]) .dsh-yoimiya-drop {
+  border-color: rgba(181, 80, 42, 0.38);
+  background: rgba(181, 80, 42, 0.04);
+}
+body:not([data-ds-dark-theme]) .dsh-yoimiya-drop[data-over="true"] {
+  border-color: rgba(181, 80, 42, 0.9);
+  background: rgba(181, 80, 42, 0.14);
+}
+body:not([data-ds-dark-theme]) .dsh-yoimiya-drop[data-filled="true"] {
+  border-color: rgba(181, 80, 42, 0.55);
+  background: rgba(181, 80, 42, 0.09);
+}
+body:not([data-ds-dark-theme]) .dsh-yoimiya-drop-label { color: #33261C; }
+body:not([data-ds-dark-theme]) .dsh-yoimiya-drop-badge {
+  border-color: rgba(181, 80, 42, 0.4);
+  color: #B5502A;
+}
+body:not([data-ds-dark-theme]) .dsh-yoimiya-drop-badge[data-required="false"] {
+  border-color: rgba(107, 90, 74, 0.32);
+  color: #6B5A4A;
+}
+body:not([data-ds-dark-theme]) .dsh-yoimiya-drop-hint { color: #7C6A56; }
+body:not([data-ds-dark-theme]) .dsh-yoimiya-drop[data-filled="true"] .dsh-yoimiya-drop-hint { color: #B5502A; }
+body:not([data-ds-dark-theme]) .dsh-yoimiya-modal-error { color: #8E3A1E; }
+body:not([data-ds-dark-theme]) .dsh-yoimiya-modal-btn { border-color: rgba(181, 80, 42, 0.3); color: #6B5A4A; }
+body:not([data-ds-dark-theme]) .dsh-yoimiya-modal-btn:hover:not(:disabled) {
+  color: #B5502A;
+  border-color: rgba(181, 80, 42, 0.7);
+  background: rgba(181, 80, 42, 0.1);
+}
+body:not([data-ds-dark-theme]) .dsh-yoimiya-modal-primary {
+  border-color: rgba(181, 80, 42, 0.7);
+  color: #B5502A;
+  background: rgba(181, 80, 42, 0.14);
+}
+
+/* ── 封面裁切弹窗 ─────────────────────────────────────────────────── */
+.dsh-yoimiya-crop-back { z-index: 2147483002; }
+.dsh-yoimiya-crop-stage {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 11px;
+}
+.dsh-yoimiya-crop-canvas {
+  width: 224px;
+  height: 224px;
+  border-radius: 12px;
+  border: 1px solid rgba(224, 138, 60, 0.45);
+  background: rgba(10, 6, 16, 0.5);
+  /* 取景框本身就是这块画布，所见即所得：画布外的东西一律不在封面里 */
+  cursor: grab;
+  /* 触摸设备上必须关掉默认手势，否则拖动会被当成滚动 */
+  touch-action: none;
+  display: block;
+}
+.dsh-yoimiya-crop-canvas[data-dragging="true"] { cursor: grabbing; }
+.dsh-yoimiya-crop-canvas:focus-visible {
+  outline: 2px solid rgba(224, 138, 60, 0.6);
+  outline-offset: 3px;
+}
+.dsh-yoimiya-crop-zoom {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.dsh-yoimiya-crop-range {
+  flex: 1;
+  min-width: 0;
+  accent-color: #E08A3C;
+  cursor: pointer;
+}
+.dsh-yoimiya-crop-hint {
+  margin-top: 7px;
+  font-size: 11px;
+  color: #8A7F72;
+}
+
+body:not([data-ds-dark-theme]) .dsh-yoimiya-crop-canvas {
+  border-color: rgba(181, 80, 42, 0.40);
+  background: rgba(90, 60, 30, 0.12);
+}
+body:not([data-ds-dark-theme]) .dsh-yoimiya-crop-range { accent-color: #B5502A; }
+body:not([data-ds-dark-theme]) .dsh-yoimiya-crop-hint { color: #7C6A56; }
+
+/* ── 音乐面板：音量行 / 列表折叠 ───────────────────────────────────── */
+.dsh-yoimiya-music-vol {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+.dsh-yoimiya-music-volbtn {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #B9AC9C;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+}
+.dsh-yoimiya-music-volbtn:hover { background: rgba(224, 138, 60, 0.12); }
+.dsh-yoimiya-music-volbtn:focus-visible {
+  outline: 2px solid rgba(224, 138, 60, 0.6);
+  outline-offset: 2px;
+}
+.dsh-yoimiya-music-volrange {
+  flex: 1;
+  min-width: 0;
+  accent-color: #E08A3C;
+  cursor: pointer;
+}
+/* 列表默认收起：面板上只留图标，点一下才展开 */
+.dsh-yoimiya-music-list[data-open="false"] { display: none; }
+.dsh-yoimiya-music-listbtn[aria-expanded="true"],
+.dsh-yoimiya-music-addbtn { color: #F0B068; }
+
+body:not([data-ds-dark-theme]) .dsh-yoimiya-music-volbtn { color: #6B5A4A; }
+body:not([data-ds-dark-theme]) .dsh-yoimiya-music-volbtn:hover { background: rgba(181, 80, 42, 0.10); }
+body:not([data-ds-dark-theme]) .dsh-yoimiya-music-volrange { accent-color: #B5502A; }
+body:not([data-ds-dark-theme]) .dsh-yoimiya-music-listbtn[aria-expanded="true"],
+body:not([data-ds-dark-theme]) .dsh-yoimiya-music-addbtn { color: #B5502A; }
+
+/* 播放器本体不进布局，只作为播放通道 */
+.dsh-yoimiya-music-audio { display: none; }
+
+/* 缩略图是按钮：加 / 换封面 */
+.dsh-yoimiya-music-thumb {
+  padding: 0;
+  border: 0;
+  position: relative;
+  cursor: pointer;
+}
+.dsh-yoimiya-music-thumb[data-empty="true"] {
+  border: 1px dashed rgba(224, 138, 60, 0.45);
+}
+.dsh-yoimiya-music-thumb[data-empty="true"]::after {
+  content: '＋';
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: rgba(224, 138, 60, 0.75);
+  font-size: 12px;
+  line-height: 1;
+}
+.dsh-yoimiya-music-thumb:hover { box-shadow: 0 0 0 1px rgba(224, 138, 60, 0.75); }
+.dsh-yoimiya-music-thumb:focus-visible {
+  outline: 2px solid rgba(224, 138, 60, 0.6);
+  outline-offset: 2px;
+}
+body:not([data-ds-dark-theme]) .dsh-yoimiya-music-thumb[data-empty="true"] {
+  border-color: rgba(181, 80, 42, 0.40);
+}
+body:not([data-ds-dark-theme]) .dsh-yoimiya-music-thumb[data-empty="true"]::after {
+  color: rgba(181, 80, 42, 0.7);
+}
+body:not([data-ds-dark-theme]) .dsh-yoimiya-music-thumb:hover {
+  box-shadow: 0 0 0 1px rgba(181, 80, 42, 0.7);
+}
+
+/* 版本标记：低对比，只为排查用 */
+.dsh-yoimiya-build {
+  margin-top: 8px;
+  font-size: 10px;
+  letter-spacing: .06em;
+  color: rgba(138, 127, 114, 0.7);
+  text-align: right;
+}
+body:not([data-ds-dark-theme]) .dsh-yoimiya-build { color: rgba(124, 106, 86, 0.65); }
+/* 列表在播放控件上方，分隔线放底部；数量多时滚动而不是无限长高 */
+.dsh-yoimiya-music-list {
+  margin-top: 0;
+  margin-bottom: 9px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid rgba(224, 138, 60, 0.18);
+}
+body:not([data-ds-dark-theme]) .dsh-yoimiya-music-list { border-bottom-color: rgba(181, 80, 42, 0.16); }
+
+/* 曲目列表【从侧方展开】：面板锚在右下角，向左侧展开比上下生长更稳——
+   不挤压播放控件，也不受面板高度限制。超长时在自身内部滚动。 */
+.dsh-yoimiya-music { position: relative; }
+.dsh-yoimiya-music-list {
+  position: absolute;
+  right: calc(100% + 10px);
+  bottom: 0;
+  width: 212px;
+  max-height: min(300px, 60vh);
+  overflow-y: auto;
+  margin: 0;
+  padding: 8px;
+  border: 1px solid rgba(224, 138, 60, 0.30);
+  border-radius: 12px;
+  background: rgba(24, 18, 30, 0.97);
+  box-shadow: 0 14px 34px rgba(10, 6, 16, 0.5);
+}
+/* 侧栏里的行不再需要分隔线 */
+.dsh-yoimiya-music-list .dsh-yoimiya-music-row { border-bottom: 0; }
+body:not([data-ds-dark-theme]) .dsh-yoimiya-music-list {
+  border-color: rgba(181, 80, 42, 0.28);
+  background: rgba(250, 244, 234, 0.99);
+  box-shadow: 0 14px 34px rgba(90, 60, 30, 0.24);
+}
+
+/* ── 播放条上方的封面区 ────────────────────────────────────────────
+   基础规则【不写 background-image】：封面由 JS 设成内联值，默认金鱼写在
+   [data-cover="false"] 里。若基础规则也写了图，会盖过内联封面。 */
+.dsh-yoimiya-music-art {
+  /* 与裁切输出同形：封面是 512 方图，播放区也做成正方形，
+     这样看到的就是裁切时的构图，不会被横幅的比例裁掉上下。 */
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  height: auto;
+  margin-bottom: 9px;
+  border-radius: 10px;
+  background-color: rgba(224, 138, 60, 0.08);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+}
+.dsh-yoimiya-music-art[data-cover="false"] {
+  background-size: 42% 42%;
+  opacity: .9;
+}
+body:not([data-ds-dark-theme]) .dsh-yoimiya-music-art {
+  background-color: rgba(181, 80, 42, 0.07);
+}
+body:not([data-ds-dark-theme]) .dsh-yoimiya-music-art[data-cover="false"] {
+}
