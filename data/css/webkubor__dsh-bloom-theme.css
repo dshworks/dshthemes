@@ -1,56 +1,6 @@
 /* webkubor/dsh-bloom-theme — lib/client.js
-   fetched 2026-10-31 from https://raw.githubusercontent.com/webkubor/dsh-bloom-theme/main/lib/client.js
+   fetched 2026-11-08 from https://raw.githubusercontent.com/webkubor/dsh-bloom-theme/main/lib/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
-/* ═══ 落霞流线（v0.9.0，仅 aurora 变体）═══════════════════════════
-   用户要的「流线」—— body 背后挂两条斜向渐变丝带，transform 缓慢漂移 +
-   blur 软化，做出光帘的视差感。
-   用 ::before 而非改 body background 的原因：动 body 的 background-image
-   每帧重绘整个 viewport；伪元素独立合成层，transform 走 GPU，便宜得多。
-   z-index:-1 + position:fixed —— body 的背景透传规则下，负 z-index 落在根
-   堆叠上下文的负层，画在 body 背景之上、应用内容之下。
-   颜色走 --bloom-aurora-stream-1/2/3（在 tokens.ts 由 motion 谱混透明得到），
-   v0.12.x 起 aurora 换橙黄系，切到该变体时呈现金→橙→珊瑚的晚霞流光，
-   其它变体保持原样不显示。 */
-body[data-bloom-variant="aurora"]::before {
-  content: '';
-  position: fixed;
-  inset: -40%;
-  z-index: -1;
-  pointer-events: none;
-  background-image:
-    linear-gradient(115deg,
-      transparent 38%, var(--bloom-aurora-stream-1) 50%, transparent 62%),
-    linear-gradient(70deg,
-      transparent 32%, var(--bloom-aurora-stream-2) 46%, transparent 60%),
-    radial-gradient(60% 40% at 50% 60%,
-      var(--bloom-aurora-stream-3), transparent 70%);
-  background-size: 220% 220%, 260% 240%, 100% 100%;
-  background-position: 25% 30%, 80% 15%, 50% 50%;
-  background-repeat: no-repeat;
-  /* v0.12.1：这层是「脏」的真正来源（owner 2026-09-15）。原来 opacity .6 +
-     saturate(1.2) + blur 60px 铺满整个视口 —— 三条金橙渐变糊成一片盖在界面上，
-     底色再干净也被这层罩住。saturate 尤其致命：它在已经糊开的大色块上继续加彩度，
-     等于把浑浊放大。
-     氛围层的作用是「若隐若现的呼吸感」，不是给界面上色：不透明度砍到三分之一，
-     去掉饱和增益，blur 加大让边界更软。 */
-  filter: blur(76px);
-  opacity: 0.2;
-  transform: translate3d(0, 0, 0);
-  animation: bloom-aurora-drift 28s ease-in-out infinite alternate;
-  will-change: transform, background-position;
-}
-@keyframes bloom-aurora-drift {
-  from { transform: translate3d(-2.5%, -1.5%, 0); background-position: 25% 30%, 80% 15%, 50% 50%; }
-  to   { transform: translate3d(3%, 2%, 0);      background-position: 65% 55%, 35% 45%, 55% 45%; }
-}
-@media (prefers-reduced-motion: reduce) {
-  body[data-bloom-variant="aurora"]::before {
-    animation: none !important;
-    transform: none !important;
-    opacity: 0.4 !important;
-  }
-}
-
 /* ═══ 顶栏 tab 条：不做玻璃,只留一条发丝底边 ═══════════════════
    这里曾和侧栏/排队条共用「面级玻璃」档位(半透底 + backdrop blur +
    inset 白描边)。但 tab 条只有 27px 高、1400px 宽 —— 那套玻璃在这个尺寸上
@@ -59,7 +9,7 @@ body[data-bloom-variant="aurora"]::before {
 
    玻璃需要面积才成立。窄条带该做的是「分界」而不是「面」,所以只留一条
    morandi 发丝底边,底色完全交给 body 的氛围渐变。 */
-body[data-bloom-variant] div[class*="_tabs"] {
+body[data-bloom-variant] header[class*="_header"] > div[class*="_tabs"] {
   background-color: transparent;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
@@ -127,8 +77,12 @@ body[data-bloom-variant] [class*="_sidebarCol"] {
     /* 右缘冷光必须走 box-shadow：侧栏 overflow:hidden，伪元素画的光带只能落在
        容器内侧，看上去是「向内发光」（owner 2026-09-10 反馈）；外阴影不受自身
        overflow 裁剪，是唯一真正往外散的做法。offset 与 spread 同量（24/-24），
-       让光只出现在右侧，不糊到上下边。 */
-    24px 0 40px -24px color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent 45%),
+       让光只出现在右侧，不糊到上下边。
+       2026-11-03：原 transparent 45%（≈55% accent）在朱砂浅色截图里实测是一条
+       ~45px 宽的玫红带（边缘 (219,183,181) vs 侧栏底 (236,232,231)），像渲染残影
+       不像分界线。收窄到 16/-16 + 28px 模糊、浓度降到 ≈20%：仍能读出「侧栏有边」，
+       但不再是左半屏最亮的东西。 */
+    16px 0 28px -16px color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent 80%),
     0 14px 44px -16px rgba(0,0,0,0.22);
 }
 body[data-bloom-variant] [class*="_sidebarCol"]::before {
@@ -147,7 +101,8 @@ body[data-ds-dark-theme] [class*="_sidebarCol"] {
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.10),
     inset 0 0 0 1px rgba(255,255,255,0.05),
-    24px 0 40px -24px color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent 35%),
+    /* 暗色同步收：35%（≈65% accent）→ 72%（≈28%），深底上光更显眼，所以留得比浅色多一点 */
+    16px 0 28px -16px color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent 72%),
     0 16px 48px -18px rgba(0,0,0,0.5);
 }
 body[data-ds-dark-theme] [class*="_sidebarCol"]::before {
@@ -157,8 +112,7 @@ body[data-ds-dark-theme] [class*="_sidebarCol"]::before {
 /* v0.6.2: 「对话 / 轨迹」tab 字号上限保护 —— 用户在窄屏 / 浏览器 zoom>100% 下
    反馈 tab 视觉上被放大、撑得过宽。DSH 原生 tab 是 wSkVaW_tab（默认 13px），
    这里兜底 clamp 到 14px，避免任何状态下字号异常撑开。 */
-div[class*="_tabs"] button[class*="_tab"],
-div[class*="_tabs"] [class*="_tab"] {
+header[class*="_header"] > div[class*="_tabs"] [class*="_tab"] {
   font-size: clamp(13px, 0.9vw, 14px) !important;
   font-weight: 500 !important;
   letter-spacing: normal !important;
@@ -187,9 +141,11 @@ body[data-bloom-variant] div[class*="_composer"] div[class*="_card"] {
     inset 0 1px 0 rgba(255,255,255,0.28),
     0 1px 2px -1px rgba(0, 0, 0, 0.18),
     0 18px 52px -20px rgba(0,0,0,0.26),
-    /* 外晕浓度由 --bloom-halo 驱动（component.ts §7 的呼吸动画在推它）：
-       halo=0.73 时等于原来的 78%，0.3 时淡到 91%，0.85 时浓到 74.5%。 */
-    0 0 48px -16px color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent calc(100% - var(--bloom-halo, 0.73) * 30%));
+    /* 外晕浓度由 --bloom-halo 驱动（component.ts §7 的呼吸动画在推它）。
+       这条只在**浅色**生效（暗色由下方 data-ds-dark-theme 规则整条覆盖）。
+       原系数 ×30%：截图实测朱砂浅色卡片周围一圈粉晕 + 粉描边 (221,158,154) +
+       红发送键，三层同色相，主角成了光晕（2026-11-03 评审）。降到 ×16%。 */
+    0 0 48px -16px color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent calc(100% - var(--bloom-halo, 0.73) * 16%));
 }
 body[data-bloom-variant] div[class*="_composer"] div[class*="_card"]::before {
   content: '';
@@ -219,7 +175,22 @@ body[data-bloom-variant] div[class*="_composer"] div[class*="_card"]:focus-withi
     0 1px 2px -1px rgba(0, 0, 0, 0.18),
     0 0 0 2px color-mix(in oklch, var(--bloom-accent) 25%, transparent),
     0 18px 52px -20px rgba(0,0,0,0.26),
-    0 0 56px -16px color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent 74%);
+    /* 同上只在浅色生效：聚焦信号交给 2px accent 环，外晕不再跟着加浓（26% → 16%） */
+    0 0 56px -16px color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent 84%);
+}
+/* 浅色输入卡描边走中性色。--bloom-hairline 是 rgba(morandi, .3)，浅底上读成主题色相
+   的淡粉/淡绿边。浅色下主题色只留给「发送键 + 聚焦环」两个有语义的位置，描边改用
+   正文字色的低比例混合（各变体 txL 都是近黑，跨变体是一致的灰）。暗色不动。
+   特异性：base (0,4,3) 高于 COMPONENT_CSS 描边 (0,2,2)；:hover / :focus-within 版
+   (0,5,3) 高于 COMPONENT_CSS :hover (0,3,2) 与上面玻璃 :focus-within (0,4,3)。 */
+body[data-bloom-variant]:not([data-ds-dark-theme]) div[class*="_composer"] div[class*="_card"] {
+  border-color: color-mix(in oklch, var(--dsw-alias-label-primary, #222) 12%, transparent);
+}
+body[data-bloom-variant]:not([data-ds-dark-theme]) div[class*="_composer"] div[class*="_card"]:hover {
+  border-color: color-mix(in oklch, var(--dsw-alias-label-primary, #222) 20%, transparent);
+}
+body[data-bloom-variant]:not([data-ds-dark-theme]) div[class*="_composer"] div[class*="_card"]:focus-within {
+  border-color: color-mix(in oklch, var(--dsw-alias-label-primary, #222) 26%, transparent);
 }
 body[data-ds-dark-theme] div[class*="_composer"] div[class*="_card"]:focus-within {
   box-shadow:
@@ -345,18 +316,33 @@ body[data-bloom-variant] button[class*="_themeCube"][class*="_selected"] {
   border-color: var(--bloom-accent);
 }
 
-body[data-bloom-variant] .md-code-block,
-body[data-bloom-variant] :is([class*="_tableScroll"], [class*="_tablePane"]) {
+body[data-bloom-variant] .md-code-block {
   background-color: color-mix(in oklch, var(--dsw-alias-bg-layer-1, #fff), transparent 70%);
   backdrop-filter: blur(var(--bloom-glass-blur, 24px)) saturate(1.2);
   -webkit-backdrop-filter: blur(var(--bloom-glass-blur, 24px)) saturate(1.2);
 }
-body[data-ds-dark-theme] .md-code-block,
-body[data-ds-dark-theme] :is([class*="_tableScroll"], [class*="_tablePane"]) {
+body[data-ds-dark-theme] .md-code-block {
   background-color: color-mix(in oklch, var(--dsw-alias-bg-layer-1, #101010), transparent 56%);
 }
 body[data-bloom-variant] .md-code-block pre,
 body[data-bloom-variant] .md-code-block code { background: transparent; }
+
+/* #76: the viewport must stay unpainted. Avoid backdrop-filter on the
+   scrolling wrapper: it turns fixed descendants into locally positioned ones. */
+body[data-bloom-variant] :is([class*="_tableScroll"], [class*="_tablePane"]) > table {
+  background-color: color-mix(in oklch, var(--dsw-alias-bg-layer-1), transparent 70%);
+}
+body[data-bloom-variant][data-ds-dark-theme] :is([class*="_tableScroll"], [class*="_tablePane"]) > table {
+  background-color: color-mix(in oklch, var(--dsw-alias-bg-layer-1), transparent 56%);
+}
+
+/* Host HoverCard preview has BOTH card and preview classes. The general card
+   hover wash made file/diff previews transparent (#57). Keep this overlay
+   opaque in both states, without changing regular cards or queue previews. */
+body[data-bloom-variant] div[class*="_card"][class*="_preview"],
+body[data-bloom-variant] div[class*="_card"][class*="_preview"]:hover {
+  background: var(--dsw-alias-bg-layer-1);
+}
 
 /* ═══ 表格内部分隔线加强（v0.9.0）用户截图反馈列线几乎不可见 ═══
    原 CSS 用 var(--bloom-hairline)（莫兰迪 30% alpha）做列分隔，
@@ -379,73 +365,421 @@ body[data-ds-dark-theme] :is([class*="_tableScroll"], [class*="_tablePane"]) tbo
   background: rgba(var(--bloom-morandi), 0.04);
 }
 
-/* ═══ v0.15 流光反应层：body::after 鼠标跟随光斑 ═════════════════════════
-   这是 0.15 唯一的「亮点」——你刷新页面、在主区里晃鼠标，背景会有一道柔光
-   跟着你走。不需要 hover 触发、不需要点什么东西，常驻、安静、live。
 
-   只在 aurora + cinnabar 两套本身有「色」的变体里启用 —— 它 8 套根本不会渲染
-   这道光（owner 反复强调「不要让花里胡哨覆盖原本的气质」：mist/petal/ripple 等
-   6 套清淡氛围应该保持纯静，光斑只属于那两个「本身有戏剧张力」的色）。
 
-   设计约束：
-   · 透明度 ≤ 0.4（v0.12.1 owner 砍 saturate 那次的教训：aurora 流光只要太重就脏）
-   · 不用 saturate() / contrast() / backdrop-filter —— 0 依赖、纯 GPU 层
-   · 不用 isolation / transform / perspective / contain —— v0.8 backdrop-filter 那次的
-     教训：这些属性会让 fixed 后代变成相对自己的 containing block
-   · 不进 `--bloom-accent`（气质轨），只动 `--bloom-aurora-stream-1`（v0.9 已经
-     写好的 motion 色，色相跟着变体走）
-   · prefers-reduced-motion 下隐藏（尊重系统设置）
-   · 用 body 自身而不是 _root 或 main，因为 DSH 重渲染时这两个会被替换；
-     body 是稳定的宿主，跟 sidebar 那种 fixed 一样是相对视口 */
-body[data-bloom-variant="aurora"]::after,
-body[data-bloom-variant="cinnabar"]::after {
+
+
+/* [LES-04][LES-10][LES-12][LES-17][LES-27] */
+body[data-bloom-variant] {
+  
+  --bloom-ambience:
+    
+    radial-gradient(1200px circle at 8% -6%, color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent 86%), transparent 48%),
+    
+    radial-gradient(1000px circle at 95% -4%, color-mix(in oklch, var(--bloom-aurora-stream-2), transparent 88%), transparent 45%);
+}
+/* The desktop host clears html[data-platform] body later in the cascade. */
+html body[data-bloom-variant]:is([data-ds-dark-theme], :not([data-ds-dark-theme])) {
+  background-attachment: fixed;
+  background-image: var(--bloom-ambience);
+}
+
+/* Restore the four-corner colour distribution from the released visual reference. */
+body[data-bloom-variant][data-ds-dark-theme] {
+  --bloom-ambience:
+    radial-gradient(1400px circle at 6% -4%, color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent 80%), transparent 50%),
+    radial-gradient(1100px circle at 100% 8%, color-mix(in oklch, var(--bloom-aurora-stream-2), transparent 50%), transparent 60%),
+    radial-gradient(900px circle at 96% 100%, color-mix(in oklch, var(--bloom-aurora-stream-3), transparent 50%), transparent 62%),
+    radial-gradient(1000px circle at 2% 96%, color-mix(in oklch, var(--bloom-aurora-stream-1), transparent 50%), transparent 60%);
+}
+
+body[data-bloom-variant]:not([data-ds-dark-theme]) {
+  /* [LES-33] */
+  --bloom-companion-3: var(--bloom-motion-3, var(--bloom-accent));
+  --bloom-tint-1: color-mix(in oklch, var(--bloom-motion-1, var(--bloom-accent)) 22%, #fff);
+  --bloom-tint-2: color-mix(in oklch, var(--bloom-motion-2, var(--bloom-accent)) 18%, #fff);
+  --bloom-tint-3: color-mix(in oklch, var(--bloom-companion-3) 18%, #fff);
+  --bloom-veil: linear-gradient(to bottom, transparent 0%, rgba(255,255,255,.05) 28%, rgba(255,255,255,.30) 58%, rgba(255,255,255,.72) 84%, #fff 100%);
+  --bloom-fog-mask: url("#dsh-bloom-fog-stream");
+  --bloom-fog-glaze: linear-gradient(rgba(255,255,255,.92), rgba(255,255,255,.92));
+  --bloom-ambience:
+    var(--bloom-veil),
+    linear-gradient(125deg,
+      var(--bloom-tint-1) 0%,
+      var(--bloom-tint-2) 48%,
+      var(--bloom-tint-3) 100%);
+}
+@supports (color: oklch(from red l c h)) {
+  body[data-bloom-variant]:not([data-ds-dark-theme]) {
+    --bloom-companion-3: color-mix(in oklch, var(--bloom-motion-3, var(--bloom-accent)) 50%, oklch(from var(--bloom-motion-1, var(--bloom-accent)) l c calc(h + 150)));
+  }
+}
+body[data-bloom-variant]:not([data-ds-dark-theme])[data-bloom-ambience-light="wash"] {
+  --bloom-fog-mask: url("#dsh-bloom-fog-wash");
+  --bloom-veil: linear-gradient(to bottom, transparent 0%, rgba(255,255,255,.06) 30%, rgba(255,255,255,.34) 60%, rgba(255,255,255,.76) 86%, #fff 100%);
+  --bloom-ambience:
+    var(--bloom-veil),
+    radial-gradient(96% 78% at 50% 6%, var(--bloom-tint-1), transparent 68%),
+    radial-gradient(86% 70% at 6% 22%, var(--bloom-tint-2), transparent 70%),
+    radial-gradient(86% 70% at 94% 26%, var(--bloom-tint-3), transparent 70%);
+}
+
+body[data-bloom-variant]:not([data-ds-dark-theme])[data-bloom-ambience-light="clear"] {
+  --bloom-fog-mask: url("#dsh-bloom-fog-clear");
+  --bloom-veil: linear-gradient(to bottom, transparent 0%, rgba(255,255,255,.10) 34%, rgba(255,255,255,.46) 66%, #fff 100%);
+  --bloom-ambience:
+    var(--bloom-veil),
+    linear-gradient(180deg, var(--bloom-tint-1) 0%, var(--bloom-tint-2) 16%, var(--bloom-tint-3) 32%, rgba(255,255,255,0) 62%);
+}
+body[data-bloom-variant]:not([data-ds-dark-theme])[data-bloom-ambience-light="off"],
+body[data-bloom-variant][data-ds-dark-theme][data-bloom-ambience-dark="off"] { --bloom-ambience: none; --bloom-fog-mask: none; --bloom-fog-glaze: none; }
+
+
+body::before {
   content: '';
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background: radial-gradient(
-    360px 360px at var(--bloom-cursor-x, 50%) var(--bloom-cursor-y, 50%),
-    color-mix(in oklch, var(--bloom-aurora-stream-1), transparent 65%),
-    transparent 72%
-  );
-  opacity: 0.95;
-  /* GPU 合成层 —— transform / opacity 不重绘文本 */
-  transform: translate3d(0, 0, 0);
-  will-change: background;
+  
+  background-image: var(--bloom-ambience);
 }
+/* Dark colour is painted once on the body; the fixed seat repeats that same image. */
+body[data-bloom-variant][data-ds-dark-theme]::before { background-image: none; }
+body[data-bloom-variant]:not([data-ds-dark-theme]):not([data-bloom-ambience-light="off"])::after {
+  content: '';
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: var(--bloom-fog-glaze);
+  -webkit-mask-image: var(--bloom-fog-mask);
+  mask-image: var(--bloom-fog-mask);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+body[data-bloom-variant] [class*="_root"] [class*="_composerSeat"] {
+  background-image: none;
+  /* Keep the fixed backdrop aligned to the viewport. */
+  will-change: auto;
+}
+body[data-bloom-variant] [class*="_root"] [class*="_composerSeat"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-color: var(--dsw-alias-bg-layer-1, #101010);
+  background-image: var(--bloom-ambience);
+  background-attachment: fixed;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 56px);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 56px);
+}
+
+
+body[data-bloom-variant]:not([data-ds-dark-theme]) [class*="_root"] [class*="_composerSeat"]::before {
+  background: rgba(255, 255, 255, .28);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000);
+  mask-image: linear-gradient(to bottom, transparent, #000);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+}
+@media (prefers-contrast: more), (forced-colors: active) {
+  html body[data-bloom-variant]:is([data-ds-dark-theme],:not([data-ds-dark-theme])) [class*="_root"] [class*="_composerSeat"]::before {
+    background: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  html body[data-bloom-variant]:not([data-bloom-glass]):is([data-ds-dark-theme],:not([data-ds-dark-theme])) [class*="_root"] [class*="_composerSeat"]::before {
+    background: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+body[data-bloom-variant="aurora"]::after,
+body[data-bloom-variant="cinnabar"]::after { display: none; }
 @media (prefers-reduced-motion: reduce) {
   body[data-bloom-variant="aurora"]::after,
   body[data-bloom-variant="cinnabar"]::after { display: none; }
 }
+.dsh-bloom-sparkles {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 360px;
+  height: 220px;
+  z-index: 0;
+  opacity: 0.7;
+  overflow: hidden;
+  pointer-events: none;
+  background: none;
+}
+body[data-ds-dark-theme] .dsh-bloom-sparkles { display: block; }
+body[data-ds-dark-theme][data-bloom-ambience-dark="off"] .dsh-bloom-sparkles { display: none; }
+body[data-ds-dark-theme][data-bloom-ambience-dark="diagonal"] .dsh-bloom-sparkles,
+body[data-ds-dark-theme][data-bloom-ambience-dark="galaxy"] .dsh-bloom-sparkles {
+  width: 100vw;
+  height: 100vh;
+  -webkit-mask-image: radial-gradient(ellipse 62% 52% at 50% 52%, transparent 38%, black 86%);
+  mask-image: radial-gradient(ellipse 62% 52% at 50% 52%, transparent 38%, black 86%);
+}
+body[data-ds-dark-theme][data-bloom-ambience-dark="galaxy"] .dsh-bloom-sparkles {
+  opacity: 1;
+  -webkit-mask-image: radial-gradient(ellipse 56% 46% at 50% 54%, rgba(0, 0, 0, 0.25) 30%, black 80%);
+  mask-image: radial-gradient(ellipse 56% 46% at 50% 54%, rgba(0, 0, 0, 0.25) 30%, black 80%);
+}
+
+.dsh-bloom-sparkles > b.s-met { display: none; }
+@media (prefers-reduced-motion: no-preference) {
+  body[data-ds-dark-theme][data-bloom-ambience-dark="galaxy"] .dsh-bloom-sparkles > b.s-met { display: block; }
+}
+body[data-ds-dark-theme][data-bloom-ambience-dark="galaxy"] .dsh-bloom-sparkles > b.s-met {
+  position: absolute;
+  border-radius: 999px;
+  opacity: 0;
+  transform-origin: 0 50%;
+  --c: var(--meteor-color, var(--bloom-motion-1, var(--bloom-accent, #6b8f71)));
+  background: linear-gradient(90deg, #fff 0%, color-mix(in oklch, var(--c) 70%, #fff) 6%, color-mix(in oklch, var(--c), transparent 35%) 30%, transparent 100%);
+  filter: drop-shadow(0 0 3px color-mix(in oklch, var(--c) 80%, #fff)) drop-shadow(0 0 10px var(--c));
+  animation: bloom-meteor linear infinite;
+  will-change: transform, opacity;
+}
+.dsh-bloom-sparkles > b.s-met.m2 { --c: var(--meteor-color, var(--bloom-motion-2, var(--bloom-accent, #6b8f71))); }
+.dsh-bloom-sparkles > b.s-met.m3 { --c: var(--meteor-color, var(--bloom-motion-3, var(--bloom-accent, #6b8f71))); }
+
+body[data-ds-dark-theme][data-bloom-ambience-dark="galaxy"] .dsh-bloom-sparkles > i.s-amb.t,
+body[data-ds-dark-theme][data-bloom-ambience-dark="galaxy"] .dsh-bloom-sparkles > i.s-bl.t {
+  background: color-mix(in oklch, var(--bloom-motion-2, var(--bloom-accent, #6b8f71)) 55%, #fff);
+  box-shadow: 0 0 calc(var(--glow, 3px) * 1.6) var(--bloom-motion-2, var(--bloom-accent, #6b8f71));
+}
+body[data-ds-dark-theme][data-bloom-ambience-dark="galaxy"] .dsh-bloom-sparkles > i.s-amb:not(.t) {
+  background: color-mix(in oklch, var(--bloom-motion-3, var(--bloom-accent, #6b8f71)) 45%, #fff);
+  box-shadow: 0 0 calc(var(--glow, 3px) * 1.6) var(--bloom-motion-3, var(--bloom-accent, #6b8f71));
+}
+@keyframes bloom-meteor {
+  0%   { transform: rotate(var(--rot)) translateX(0); opacity: 0; }
+  2%   { opacity: var(--peak); }
+  18%  { opacity: var(--peak); }
+  24%  { transform: rotate(var(--rot)) translateX(calc(var(--travel) * -1)); opacity: 0; }
+  100% { transform: rotate(var(--rot)) translateX(calc(var(--travel) * -1)); opacity: 0; }
+}
+
+.dsh-bloom-sparkles > i.s-bl,
+.dsh-bloom-sparkles > i.s-amb,
+.dsh-bloom-sparkles > i.s-galaxy-edge { display: none; }
+body[data-ds-dark-theme][data-bloom-ambience-dark="diagonal"] .dsh-bloom-sparkles > i.s-bl,
+body[data-ds-dark-theme][data-bloom-ambience-dark="galaxy"] .dsh-bloom-sparkles > i.s-bl,
+body[data-ds-dark-theme][data-bloom-ambience-dark="galaxy"] .dsh-bloom-sparkles > i.s-amb,
+body[data-ds-dark-theme][data-bloom-ambience-dark="galaxy"] .dsh-bloom-sparkles > i.s-galaxy-edge { display: block; }
+body[data-ds-dark-theme][data-bloom-ambience-dark="galaxy"] .dsh-bloom-sparkles > i.s-amb,
+body[data-ds-dark-theme][data-bloom-ambience-dark="galaxy"] .dsh-bloom-sparkles > i.s-galaxy-edge {
+  animation-name: bloom-spark-drift, bloom-galaxy-firefly;
+}
+@keyframes bloom-galaxy-firefly {
+  0%, 100% { opacity: calc(var(--peak) * .24); }
+  22% { opacity: var(--peak); }
+  42% { opacity: calc(var(--peak) * .4); }
+  66% { opacity: calc(var(--peak) * .9); }
+  84% { opacity: calc(var(--peak) * .3); }
+}
+.dsh-bloom-sparkles > i {
+  display: block;
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0;
+  background: #fff;
+  box-shadow: 0 0 var(--glow, 3px) rgba(255, 255, 255, 0.7);
+  animation-name: bloom-spark-drift, bloom-spark-twinkle;
+  animation-timing-function: cubic-bezier(.25, .6, .35, 1), ease-in-out;
+  animation-iteration-count: infinite, infinite;
+  will-change: transform, opacity;
+}
+.dsh-bloom-sparkles > i.t {
+  background: color-mix(in oklch, var(--bloom-accent, #6b8f71) 40%, #fff);
+  box-shadow: 0 0 var(--glow, 3px) color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent 15%);
+}
+
+@keyframes bloom-spark-drift {
+  0%   { transform: translate(0, 0) scale(.3); }
+  25%  { transform: translate(calc(var(--dx) * .35), calc(var(--dy) * .35)) scale(.9); }
+  100% { transform: translate(var(--dx), var(--dy)) scale(1); }
+}
+
+@keyframes bloom-spark-twinkle {
+  0%   { opacity: 0; }
+  20%  { opacity: var(--peak); }
+  35%  { opacity: calc(var(--peak) * .3); }
+  55%  { opacity: var(--peak); }
+  75%  { opacity: calc(var(--peak) * .15); }
+  100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dsh-bloom-sparkles > i,
+  body[data-ds-dark-theme][data-bloom-ambience-dark="galaxy"] .dsh-bloom-sparkles > i.s-amb,
+  body[data-ds-dark-theme][data-bloom-ambience-dark="galaxy"] .dsh-bloom-sparkles > i.s-galaxy-edge { animation: none; opacity: .4; }
+}
 
 
 
+/* [LES-35] */
+body[data-bloom-variant]:not([data-ds-dark-theme]) div[class*="_composer"] button[class*="_primary"] {
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  padding: 0;
+  color: color-mix(in oklch, var(--bloom-accent, #666) 70%, #7b7b7b);
+  background-color: transparent;
+  background-image:
+    radial-gradient(ellipse at 28% 13%, rgba(255,255,255,.98), rgba(255,255,255,.45) 28%, transparent 54%),
+    radial-gradient(ellipse at 79% 82%, color-mix(in oklch, var(--bloom-motion-3, var(--bloom-accent)) 20%, transparent), transparent 64%),
+    linear-gradient(145deg, color-mix(in oklch, var(--bloom-motion-1, var(--bloom-accent)) 7%, rgba(255,255,255,.92)), color-mix(in oklch, var(--bloom-motion-2, var(--bloom-accent)) 14%, rgba(255,255,255,.78)));
+  -webkit-backdrop-filter: blur(2px) url("#dsh-bloom-liquid-lens") saturate(1.15);
+  backdrop-filter: blur(2px) url("#dsh-bloom-liquid-lens") saturate(1.15);
+  box-shadow: inset 0 1px 2px rgba(255,255,255,.98), inset 0 -2px 3px color-mix(in oklch, var(--bloom-motion-2, var(--bloom-accent)) 18%, transparent), 0 7px 14px -6px color-mix(in oklch, var(--bloom-motion-1, var(--bloom-accent)) 26%, transparent), 0 2px 4px rgba(50,50,50,.10);
+}
+body[data-bloom-variant]:not([data-ds-dark-theme]) div[class*="_composer"] button[class*="_primary"]:not(:disabled):hover {
+  background-image:
+    radial-gradient(ellipse at 28% 13%, rgba(255,255,255,1), rgba(255,255,255,.56) 28%, transparent 54%),
+    radial-gradient(ellipse at 79% 82%, color-mix(in oklch, var(--bloom-motion-3, var(--bloom-accent)) 25%, transparent), transparent 64%),
+    linear-gradient(145deg, color-mix(in oklch, var(--bloom-motion-1, var(--bloom-accent)) 8%, rgba(255,255,255,.95)), color-mix(in oklch, var(--bloom-motion-2, var(--bloom-accent)) 16%, rgba(255,255,255,.84)));
+}
+body[data-bloom-variant][data-ds-dark-theme] div[class*="_composer"] button[class*="_primary"] {
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  padding: 0;
+  color: var(--dsw-alias-label-primary, #eee);
+  background-color: transparent;
+  background-image:
+    radial-gradient(ellipse at 28% 17%, rgba(255,255,255,.26), transparent 62%),
+    radial-gradient(ellipse at 79% 82%, color-mix(in oklch, var(--bloom-motion-3, var(--bloom-accent)) 16%, transparent), transparent 64%),
+    linear-gradient(145deg, color-mix(in oklch, var(--dsw-alias-bg-layer-2, #343943) 88%, var(--bloom-motion-1)), color-mix(in oklch, var(--dsw-alias-bg-layer-1, #1b2028) 90%, var(--bloom-motion-2)));
+  -webkit-backdrop-filter: blur(2px) url("#dsh-bloom-liquid-lens") saturate(1.15);
+  backdrop-filter: blur(2px) url("#dsh-bloom-liquid-lens") saturate(1.15);
+  box-shadow: inset 0 1px 1px rgba(255,255,255,.34), inset 0 -2px 3px rgba(0,0,0,.28), 0 6px 12px -6px rgba(0,0,0,.35);
+}
+body[data-bloom-variant][data-ds-dark-theme] div[class*="_composer"] button[class*="_primary"]:not(:disabled):hover {
+  background-image:
+    radial-gradient(ellipse at 28% 17%, rgba(255,255,255,.34), transparent 62%),
+    radial-gradient(ellipse at 79% 82%, color-mix(in oklch, var(--bloom-motion-3, var(--bloom-accent)) 22%, transparent), transparent 64%),
+    linear-gradient(145deg, color-mix(in oklch, var(--dsw-alias-bg-layer-2, #343943) 84%, var(--bloom-motion-1)), color-mix(in oklch, var(--dsw-alias-bg-layer-1, #1b2028) 86%, var(--bloom-motion-2)));
+}
+@supports ((mask-composite: exclude) or (-webkit-mask-composite: xor)) {
+  body[data-bloom-variant] div[class*="_composer"] button[class*="_primary"] { position: relative; }
+  body[data-bloom-variant] div[class*="_composer"] button[class*="_primary"]::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    box-sizing: border-box;
+    border-radius: inherit;
+    padding: 1px;
+    pointer-events: none;
+    background: conic-gradient(from -40deg, rgba(255,255,255,.88), color-mix(in oklch, var(--bloom-motion-2, var(--bloom-accent)) 22%, rgba(255,255,255,.50)), rgba(255,255,255,.16), color-mix(in oklch, var(--bloom-motion-3, var(--bloom-accent)) 24%, rgba(255,255,255,.35)), rgba(255,255,255,.88));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+  }
+}
+body[data-bloom-variant] div[class*="_composer"] button[class*="_primary"]:disabled:not([data-sending]) { opacity: .68; }
+@media (prefers-reduced-transparency: reduce) {
+  html body[data-bloom-variant]:not([data-bloom-glass]) div[class*="_composer"] button[class*="_primary"]::before { display: none; }
+  html body[data-bloom-variant]:not([data-bloom-glass]) div[class*="_composer"] button[class*="_primary"] {
+    background: var(--dsw-alias-bg-layer-1, #fff);
+    color: var(--dsw-alias-label-primary, #222);
+    border: 1px solid currentColor;
+    box-shadow: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+@media (prefers-contrast: more), (forced-colors: active) {
+  html body[data-bloom-variant]:is([data-ds-dark-theme],:not([data-ds-dark-theme])) div[class*="_composer"] button[class*="_primary"]::before { display: none; }
+  html body[data-bloom-variant]:is([data-ds-dark-theme],:not([data-ds-dark-theme])) div[class*="_composer"] button[class*="_primary"] {
+    background: var(--dsw-alias-bg-layer-1, Canvas);
+    color: var(--dsw-alias-label-primary, CanvasText);
+    border: 1px solid currentColor;
+    box-shadow: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+
+
+@media (prefers-reduced-transparency: no-preference) and (not (prefers-contrast: more)) {
+@media (prefers-reduced-transparency: reduce) {
+@media (prefers-contrast: more), (forced-colors: active) {
+    --bloom-ambience: none;
+    --bloom-fog-glaze: none;
+    --bloom-fog-mask: none;
+    --bloom-hairline: color-mix(in oklch, var(--dsw-alias-label-primary, #222) 45%, transparent);
+    --bloom-hairline-strong: color-mix(in oklch, var(--dsw-alias-label-primary, #222) 65%, transparent);
+    background-image: none !important;
+  } display: none !important; }
+  html :focus-visible { outline-width: 3px !important; }
+}
+@media (forced-colors: active) {
+  html body[data-bloom-typing="true"] div[class*="_composer"] div[class*="_card"]::after { display: none !important; }
+  .dsh-bloom-option[data-active="true"],
+  .dsh-bloom-appearance__btn[data-active="true"] { outline: 2px solid Highlight; outline-offset: -2px; }
+  .dsh-bloom-check { color: Highlight; }
+  .dsh-bloom-telemetry__box-ui { forced-color-adjust: none; background: Canvas; border: 1px solid ButtonText; }
+  .dsh-bloom-telemetry__box-ui::after { forced-color-adjust: none; background: ButtonText; }
+  .dsh-bloom-telemetry__box:checked + .dsh-bloom-telemetry__box-ui { background: Highlight; border-color: Highlight; }
+  .dsh-bloom-telemetry__box:checked + .dsh-bloom-telemetry__box-ui::after { background: HighlightText; }
+  .dsh-bloom-dot { forced-color-adjust: none; }
+  html :focus-visible { outline-color: Highlight !important; }
+}
+html[data-input-modality="pointer"] body :focus-visible:not(:read-write) {
+  --dsw-focus-ring-color: transparent !important;
+}
+@media (pointer: coarse) {
+  .dsh-bloom-option, .dsh-bloom-appearance__btn, .dsh-bloom-dsh-btn,
+  .dsh-bloom-foot__link, .dsh-bloom-rotation__select { min-height: 44px; }
+}
+body[data-bloom-variant] {
+  accent-color: var(--bloom-accent);
+  --dsh-scrollbar-thumb: color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent 70%);
+  --dsh-scrollbar-thumb-hover: color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent 45%);
+}
+.dsh-bloom-menu { overscroll-behavior: contain; }
+@media print { --bloom-ambience: none; --bloom-fog-glaze: none; --bloom-fog-mask: none; background: none !important; } display: none !important; } backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+  html .dsh-bloom-trigger, html .dsh-bloom-menu { display: none !important; }
+}
+
+
+
+/* Move only the empty Slot anchor into the host's existing leading clearance. */
+.dsh-bloom-slot { display: inline-block; flex: none; transform: translateX(max(0px, calc(var(--dsh-frame-leading-clearance, 0px) - 20px))); }
+.dsh-bloom-slot:dir(rtl) { transform: translateX(calc(-1 * max(0px, calc(var(--dsh-frame-leading-clearance, 0px) - 20px)))); }
+.dsh-bloom-overlay { pointer-events: none; }
+.dsh-bloom-overlay #dsh-bloom-update-banner { pointer-events: auto; }
+.dsh-bloom-switcher[data-slotted="true"] { --bloom-menu-max-h: calc(100vh - 80px); position: fixed; pointer-events: auto; z-index: 80; }
+.dsh-bloom-switcher[data-slotted="true"] .dsh-bloom-menu { left: 0; right: auto; max-width: calc(100vw - 96px); max-height: var(--bloom-menu-max-h, calc(100vh - 80px)); overflow-y: auto; overscroll-behavior: contain; }
 .dsh-bloom-switcher {
   position: relative;
   display: inline-flex;
   align-items: center;
   font: 12px/1.2 -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
   user-select: none;
+  /* The macOS/Windows frameless header must let its own controls receive clicks. */
+  -webkit-app-region: no-drag;
 }
-/* 兜底形态：挂不进 DSH header 时才浮起来。位置放在 header 下方，
-   避开右上角原生控件（Session log 等）—— 决不能再压住它们。 */
-.dsh-bloom-switcher[data-floating="true"] {
-  position: fixed;
-  top: 84px;
-  right: 16px;
-  z-index: 9999;
-  /* 触摸设备上拖动不要连带滚页面 */
-  touch-action: none;
-}
-/* 浮动形态可拖动（#14）：这个形态钉在固定坐标上，会压住什么取决于用户
-   装了哪些插件（报告里是侧边栏展开后顶部那排按钮）。给 grab 光标是为了
-   让「它挡住我了」的人第一反应就是把它拖开；点击打开菜单照旧可用。 */
-.dsh-bloom-switcher[data-floating="true"] .dsh-bloom-trigger { cursor: grab; }
-.dsh-bloom-switcher[data-dragging="true"] .dsh-bloom-trigger { cursor: grabbing; }
-.dsh-bloom-switcher[data-dragging="true"] .dsh-bloom-trigger { transition: none; }
-/* 拖到屏幕左半边时菜单改左对齐，否则 right:0 的菜单会伸出视口 */
-.dsh-bloom-switcher[data-menu-side="left"] .dsh-bloom-menu { left: 0; right: auto; }
+.dsh-bloom-switcher * { -webkit-app-region: no-drag; }
 
 .dsh-bloom-trigger {
   display: inline-flex;
@@ -486,15 +820,39 @@ body[data-bloom-variant="cinnabar"]::after {
   flex: none;
   box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12);
 }
+/* 色点是这身皮肤的「配色样本」，不能只是一块平涂 —— 它是用户判断「这个配色长什么样」
+   的唯一依据。给它玻璃质感：顶部一道内高光（球面反光）+ 底部柔光晕（离开发光面）。
+   跟整套皮肤的玻璃语言一致，而不是十个平涂小方块。
+ *
+ * ⚠️ 不要在这里用 color-mix 配 var(--bloom-morandi)：
+ * --bloom-morandi 存的是 RGB 三元组（"146, 168, 179"，供 rgba(var(...)) 用），
+ * 不是色值 —— 塞进 oklch 语法非法，**整条 box-shadow 一起失效**（computed 变 none）。
+ * 实测踩过：规则命中、优先级也对，但画面上一点影子都没有。
+ * （--bloom-accent 才是色值，可以用 color-mix。） */
+.dsh-bloom-option .dsh-bloom-dot {
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.38),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.14),
+    0 0 0 1px rgba(146, 168, 179, 0.22),
+    0 1px 4px rgba(0, 0, 0, 0.22);
+  transition: box-shadow var(--bloom-dur-fast, 130ms) var(--bloom-ease, cubic-bezier(0.2,0.8,0.2,1));
+}
+.dsh-bloom-option:hover .dsh-bloom-dot,
+.dsh-bloom-option[data-active="true"] .dsh-bloom-dot {
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.45),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.14),
+    0 0 0 1px rgba(146, 168, 179, 0.38),
+    0 2px 7px rgba(0, 0, 0, 0.28);
+}
 
-/* ── 面板头部：标题 + 当前配色胶囊 + 关闭（按 owner 2026-09-10 的设计图） ── */
+/* 面板头部：标题、配色胶囊与关闭按钮 */
 .dsh-bloom-head {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 12px 14px 10px;
-  /* 用阴影代替分隔线：硬线在圆角面板里显得生硬、没有过渡（owner 2026-09-10）。
-     一道极浅的向下扩散阴影同样能分出层次，边界是渐隐的。 */
+  /* 使用柔和微阴影替代硬边框分割，形成平滑过渡 */
   box-shadow: 0 6px 10px -8px color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent 78%);
 }
 /* 有新版时的小红点：徽标本体在「版本与更新」折叠区里，默认看不见，
@@ -544,17 +902,24 @@ body[data-bloom-variant="cinnabar"]::after {
 }
 .dsh-bloom-section[hidden] { display: none; }
 
-/* 「版本与更新 ›」：默认收起，日常用不到的信息不占版面 */
+/* 底栏：版本信息与快捷功能区保持单行布局 */
 .dsh-bloom-more {
-  display: flex; align-items: center; justify-content: center; gap: 5px;
-  width: 100%; appearance: none; border: 0; background: transparent; cursor: pointer;
-  margin-top: 8px; padding: 9px 14px;
-  box-shadow: 0 -6px 10px -8px color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent 78%);
-  font: inherit; font-size: 12px;
-  color: var(--dsw-alias-label-secondary, #777);
+  display: inline-flex; align-items: center; gap: 5px;
+  appearance: none; border: 0; background: transparent; cursor: pointer;
+  padding: 0;
+  font: inherit; font-size: 11px; line-height: 1;
+  color: var(--dsw-alias-label-tertiary, #999);
+  transition: color .15s ease;
 }
-.dsh-bloom-more:hover { color: var(--dsw-alias-label-primary, #222); }
-.dsh-bloom-more[aria-expanded="true"] .dsh-bloom-more__arrow { transform: rotate(90deg); }
+.dsh-bloom-more__name { font-weight: 600; color: var(--dsw-alias-label-secondary, #777); }
+.dsh-bloom-more__ver { font-variant-numeric: tabular-nums; }
+.dsh-bloom-more:hover, .dsh-bloom-more:hover .dsh-bloom-more__name { color: var(--dsw-alias-label-primary, #222); }
+.dsh-bloom-more:focus-visible {
+  outline: 2px solid var(--bloom-accent, #6b8f71);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.dsh-bloom-more[aria-expanded="true"] .dsh-bloom-more__arrow { transform: rotate(-90deg); }
 .dsh-bloom-more__arrow { transition: transform .16s ease; }
 .dsh-bloom-more-body[hidden] { display: none; }
 
@@ -585,22 +950,117 @@ body[data-bloom-variant="cinnabar"]::after {
   gap: 2px;
 }
 .dsh-bloom-menu[hidden] { display: none; }
-/* 菜单入场：从右上角 scale+fade 打开（hidden 移除触发；只在打开时播放一次） */
+/* 菜单入场：从右上角 scale+fade 打开。
+ *
+ * ⚠️ 重播靠的是 JS 里的 playEnter()（见 switcher.ts）：先摘掉 .is-entering、
+ * 读一次 offsetWidth 强制重排、再加回来。只靠 :not([hidden]) 这个选择器不行 ——
+ * 同一个元素第二次显示时，animation 已经处于结束态，浏览器不会重播，
+ * 表现就是「第一次打开有动画，后面几次都是硬弹出来」。 */
 .dsh-bloom-menu { transform-origin: top right; }
+/* 面板入场动画：12px 弹性位移与微缩放回弹 */
 @keyframes bloom-menu-in {
-  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+  from { opacity: 0; transform: translateY(-12px) scale(0.96); }
   to { opacity: 1; transform: none; }
 }
-.dsh-bloom-menu:not([hidden]) {
-  animation: bloom-menu-in var(--bloom-dur-slow, 280ms) var(--bloom-ease, cubic-bezier(0.2,0.8,0.2,1));
+.dsh-bloom-menu.is-entering {
+  animation: bloom-menu-in 320ms var(--bloom-ease-back, cubic-bezier(0.34,1.56,0.64,1));
 }
 
-.dsh-bloom-option {
+/* 逐行错峰滑入 —— whale-widget / wallpaper-engine 那种「有产品感」的关键手法：
+   不是整块一起淡入，而是条列依次落位，观感上是一次有节奏的展开而不是一次闪烁。
+   纯 CSS 实现（nth-child 给延迟），不需要 rAF、不需要 JS 量高度。
+
+   animation-fill-mode: backwards 是必须的：延迟期间元素要先停在起始态（透明），
+   否则会出现「先整块亮一下、再逐行重播」的鬼影。 */
+@keyframes bloom-row-in {
+  from { opacity: 0; transform: translateY(-7px); }
+  to { opacity: 1; transform: none; }
+}
+.dsh-bloom-menu.is-entering .dsh-bloom-option,
+.dsh-bloom-menu.is-entering .dsh-bloom-section,
+.dsh-bloom-menu.is-entering .dsh-bloom-appearance {
+  animation: bloom-row-in 240ms var(--bloom-ease-out, cubic-bezier(0.22,1,0.36,1)) backwards;
+}
+.dsh-bloom-menu.is-entering .dsh-bloom-option:nth-child(1) { animation-delay: 30ms; }
+.dsh-bloom-menu.is-entering .dsh-bloom-option:nth-child(2) { animation-delay: 42ms; }
+.dsh-bloom-menu.is-entering .dsh-bloom-option:nth-child(3) { animation-delay: 54ms; }
+.dsh-bloom-menu.is-entering .dsh-bloom-option:nth-child(4) { animation-delay: 66ms; }
+.dsh-bloom-menu.is-entering .dsh-bloom-option:nth-child(5) { animation-delay: 78ms; }
+.dsh-bloom-menu.is-entering .dsh-bloom-option:nth-child(6) { animation-delay: 90ms; }
+.dsh-bloom-menu.is-entering .dsh-bloom-option:nth-child(7) { animation-delay: 102ms; }
+.dsh-bloom-menu.is-entering .dsh-bloom-option:nth-child(8) { animation-delay: 114ms; }
+.dsh-bloom-menu.is-entering .dsh-bloom-option:nth-child(9) { animation-delay: 126ms; }
+.dsh-bloom-menu.is-entering .dsh-bloom-option:nth-child(10) { animation-delay: 138ms; }
+.dsh-bloom-menu.is-entering .dsh-bloom-option:nth-child(11) { animation-delay: 150ms; }
+.dsh-bloom-menu.is-entering .dsh-bloom-option:nth-child(12) { animation-delay: 162ms; }
+/* 色块之后的区段跟着最后一档走，形成「一行一行落下来、再整体收尾」的节奏 */
+.dsh-bloom-menu.is-entering .dsh-bloom-section,
+.dsh-bloom-menu.is-entering .dsh-bloom-appearance { animation-delay: 174ms; }
+
+/* 「版本与更新」展开：同框上下滑动（对齐 whale-widget 的做法）。
+ * 不用 display:none 硬切 —— 高度用 grid-template-rows 0fr→1fr 过渡，
+ * 容器高度自然撑开，内部内容整块 translateY 滑入，末段带一点回弹。 */
+.dsh-bloom-more-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition:
+    grid-template-rows var(--bloom-dur-slow, 280ms) var(--bloom-ease-back, cubic-bezier(0.34,1.56,0.64,1)),
+    opacity var(--bloom-dur, 200ms) var(--bloom-ease-out, cubic-bezier(0.22,1,0.36,1)),
+    transform var(--bloom-dur-slow, 280ms) var(--bloom-ease-back, cubic-bezier(0.34,1.56,0.64,1));
+}
+.dsh-bloom-more-body > * { min-height: 0; overflow: hidden; }
+.dsh-bloom-more-body[data-open="true"] {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  transform: none;
+}
+/* 首帧之前不能有过渡：否则初始渲染会从 0fr 播一次莫名其妙的展开 */
+.dsh-bloom-more-body[data-instant="true"] { transition: none; }
+
+.dsh-bloom-rotation {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 14px;
+  color: var(--dsw-alias-label-secondary, #555);
+}
+.dsh-bloom-rotation__select {
+  font: inherit;
+  color: var(--dsw-alias-label-primary, #222);
+  background: var(--dsw-alias-bg-layer-2, #fff);
+  border: 1px solid var(--bloom-hairline, rgba(0,0,0,.15));
+  border-radius: 6px;
+  padding: 4px 6px;
+}
+.dsh-bloom-rotation__select:focus-visible {
+  outline: 2px solid var(--bloom-accent, #34698c);
+  outline-offset: 2px;
+}
+
+.dsh-bloom-options {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.dsh-bloom-option {
+  /* 稳妥的单行 Grid：button 不依赖 Chromium 的 subgrid，
+     各列尺寸严格固定，诗句自适应占满中间，右侧勾选绝不折行。 */
+  display: grid;
+  grid-template-columns: 14px 44px minmax(0, 1fr) 14px;
+  align-items: center;
+  gap: 10px;
   width: 100%;
-  padding: 8px 14px;
+  height: 34px;
+  padding: 0 12px;
+  box-sizing: border-box;
+}
+.dsh-bloom-menu[lang="en"] .dsh-bloom-option {
+  grid-template-columns: 14px 5.75em minmax(0, 1fr) 14px;
+}
+.dsh-bloom-option {
   border: 0;
   border-radius: 8px;
   background: transparent;
@@ -611,41 +1071,78 @@ body[data-bloom-variant="cinnabar"]::after {
   transition: background 0.15s;
 }
 .dsh-bloom-option:hover { background: rgba(var(--bloom-morandi), 0.14); }
-.dsh-bloom-option:focus,
+/* [LES-30] */
 .dsh-bloom-option:focus-visible {
-  outline: 2px solid var(--dsw-alias-brand-primary, #4a90e2);
+  --dsw-focus-ring-color: color-mix(in oklch, var(--bloom-accent, #34698c) 62%, transparent);
+  outline: 2px solid var(--dsw-focus-ring-color);
   outline-offset: -2px;
   background: rgba(var(--bloom-morandi), 0.14);
 }
-.dsh-bloom-option[data-active="true"] { background: rgba(var(--bloom-morandi), 0.2); }
-.dsh-bloom-option__name { font-weight: 500; }
-/* 右列从英文名改成出处诗句（v0.12.1）：中文在 11px 下太小、字距也不该按西文排，
-   所以放大一档、加字距、上衬线。衬线体是这套主题唯一的书卷气来源 —— 正文保持
-   无衬线保可读性，只在这一列用宋体，克制但立得住。 */
+/* 选中态：淡底 + 一道柔的内描边。之前只有 background，在玻璃面板上整行像被涂了
+ * 一块颜色，和相邻行之间没有「这一行被选中」的边界感。 */
+.dsh-bloom-option[data-active="true"] {
+  background: rgba(var(--bloom-morandi), 0.2);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklch, var(--bloom-accent, #34698c) 26%, transparent),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+}
+.dsh-bloom-option[data-active="true"]:focus-visible {
+  --dsw-focus-ring-color: color-mix(in oklch, var(--bloom-accent, #34698c) 78%, transparent);
+  box-shadow: none;
+}
+/* 「新」小标签（本版新上的配色）：只占一个字宽，贴在名字后面。
+   用 accent 色不抢行焦点；悬停整行时不变化，它是个状态不是按钮。 */
+.dsh-bloom-option__new {
+  display: inline-block;
+  vertical-align: 2px;
+  margin-left: 5px;
+  font-size: 9px;
+  font-weight: 500;
+  line-height: 1.5;
+  padding: 0 3px;
+  border-radius: 3px;
+  background: color-mix(in oklch, var(--bloom-accent, #6b8f71) 16%, transparent);
+  color: color-mix(in oklch, var(--bloom-accent, #6b8f71) 78%, var(--dsw-alias-label-primary, #222));
+}
+.dsh-bloom-option__name {
+  font-weight: 500;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* 保留每一行诗句对应配色的渐变；起笔使用可读的次级正文色。
+   不再整行叠透明度，避免原本达标的 accent 与背景再次混合后变淡。 */
 .dsh-bloom-option__en {
-  margin-left: auto;
-  flex: 0 0 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 12.5px;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   font-family: 'Songti SC', 'STSong', 'Source Han Serif SC', 'Noto Serif SC', serif;
-  /* 诗句走渐变文字（owner 2026-09-15：「和深度求索中…一样有颜色渐变」）。
-     两端取本变体的气质轨→可读轨，跟左边色点同一对颜色，所以整行是一句话：
-     色点是这个颜色，诗句也是这个颜色。纯灰的 opacity 做不到这件事。 */
-  /* 起点用正文次级色而不是该变体的气质轨：气质轨是低饱和的莫兰迪，深色底上
-     竹青/琥珀这几支直接糊掉（实测诗句看不清）。起点保证可读、终点交代身份。 */
-  background-image: linear-gradient(100deg, var(--dsw-alias-label-tertiary, #9a9a9a) 0%, var(--bloom-poem-b) 66%);
+  background-image: linear-gradient(100deg, var(--dsw-alias-label-secondary, #666) 0%, color-mix(in oklab, var(--bloom-poem-b) 45%, var(--dsw-alias-label-secondary, #666)) 70%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  opacity: 0.8;
+  opacity: 1;
+  transition: opacity var(--bloom-dur-fast, 130ms) var(--bloom-ease, cubic-bezier(0.2,0.8,0.2,1));
+}
+/* 西文诗句：收一档字号、去字距、斜体，完整句在行 title 里。 */
+.dsh-bloom-option__en:not(:lang(zh)) {
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+  font-family: 'Iowan Old Style', 'Palatino', Georgia, serif;
+  font-style: italic;
 }
 body[data-ds-dark-theme] .dsh-bloom-option__en {
-  background-image: linear-gradient(100deg, var(--dsw-alias-label-tertiary, #8d8d8d) 0%, var(--bloom-poem-bd) 66%);
-  opacity: 0.88;
+  background-image: linear-gradient(100deg, var(--dsw-alias-label-secondary, #bbb) 0%, color-mix(in oklab, var(--bloom-poem-bd) 45%, var(--dsw-alias-label-primary, #eee)) 70%);
+  opacity: 1;
 }
 .dsh-bloom-option:hover .dsh-bloom-option__en,
-.dsh-bloom-option[data-active="true"] .dsh-bloom-option__en { opacity: 1; }
+.dsh-bloom-option[data-active="true"] .dsh-bloom-option__en {
+  opacity: 1;
+}
 /* 选中那一行让渐变缓缓流过，跟「深度求索中…」同一种语言 —— 只给一行，
    十行一起流会变成灯箱。 */
 .dsh-bloom-option[data-active="true"] .dsh-bloom-option__en {
@@ -680,6 +1177,18 @@ body[data-ds-dark-theme] .dsh-bloom-option__en {
   color: var(--dsw-alias-label-secondary, #777);
 }
 .dsh-bloom-appearance[hidden] { display: none; }
+
+/* 紧凑质感分段与模式控件保持一致。 */
+.dsh-bloom-glass { padding: 0 14px 2px; font-size: 12px; color: var(--dsw-alias-label-secondary, #777); }
+.dsh-bloom-glass__hint { margin: 7px 2px 2px; font-size: 11px; line-height: 1.55; color: var(--dsw-alias-label-tertiary, #999); }
+.dsh-bloom-glass__hint[hidden] { display: none; }
+.dsh-bloom-glass__choices { display: flex; width: 100%; box-sizing: border-box; padding: 3px; border-radius: 9px; background: color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent 94%); }
+.dsh-bloom-glass__choice { appearance: none; flex: 1; min-width: 0; min-height: 34px; border: 0; border-radius: 7px; padding: 7px 4px; background: transparent; color: inherit; font: inherit; line-height: 1.7; white-space: nowrap; cursor: pointer; transition: background-color .14s ease, color .14s ease; }
+.dsh-bloom-glass__choice:hover { background: color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent 92%); }
+.dsh-bloom-glass__choice[data-active="true"] { background: var(--dsw-alias-bg-layer-1, #fff); color: var(--bloom-accent, #6b8f71); font-weight: 600; box-shadow: 0 1px 3px -1px color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent 70%); }
+.dsh-bloom-glass__choice:focus-visible { outline: 2px solid var(--bloom-accent, #6b8f71); outline-offset: -2px; }
+@media (prefers-reduced-motion: reduce) { .dsh-bloom-glass__choice { transition: none; } }
+@media (forced-colors: active) { .dsh-bloom-glass__choice[data-active="true"] { outline: 2px solid Highlight; outline-offset: -2px; } }
 .dsh-bloom-appearance__seg {
   display: flex;
   width: 100%;                 /* 撑满面板宽度，里面三个按钮才能真正三等分
@@ -722,6 +1231,61 @@ body[data-ds-dark-theme] .dsh-bloom-option__en {
   outline-offset: -2px;
 }
 
+/* 氛围分段：深浅各一行，只显示与宿主当前深浅一致的那行 */
+body[data-ds-dark-theme] .dsh-bloom-ambience[data-scheme="light"],
+body:not([data-ds-dark-theme]) .dsh-bloom-ambience[data-scheme="dark"] { display: none; }
+.dsh-bloom-ambience {
+  display: flex;
+  width: 100%;
+  padding: 3px;
+  border-radius: 9px;
+  background: color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent 94%);
+  gap: 2px;
+  margin-top: 6px;
+  box-sizing: border-box;
+}
+.dsh-bloom-ambience__btn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  flex: 1;
+  padding: 5px 2px;
+  cursor: pointer;
+  line-height: 1.5;
+  white-space: nowrap;
+  text-align: center;
+  font-size: 11.5px;
+  border-radius: 7px;
+  transition: background-color var(--bloom-dur-fast) var(--bloom-ease), color var(--bloom-dur-fast) var(--bloom-ease);
+}
+.dsh-bloom-ambience__btn:focus-visible {
+  outline: 2px solid var(--bloom-accent, #6b8f71);
+  outline-offset: -2px;
+}
+.dsh-bloom-ambience__btn:hover {
+  background: color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent 90%);
+}
+.dsh-bloom-ambience__btn[data-active="true"] {
+  background: var(--dsw-alias-bg-layer-2, #ffffff);
+  color: var(--bloom-accent, inherit);
+  font-weight: 500;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+body[data-ds-dark-theme] .dsh-bloom-ambience__btn[data-active="true"] {
+  background: color-mix(in oklch, var(--bloom-accent, #6b8f71) 22%, #1a1a1c);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* The color choice belongs to the meteor background only. */
+.dsh-bloom-meteor-color { display: none; align-items: center; gap: 6px; box-sizing: border-box; width: 100%; padding: 5px 14px; font-size: 12px; }
+body[data-ds-dark-theme][data-bloom-ambience-dark="galaxy"] .dsh-bloom-meteor-color { display: flex; }
+.dsh-bloom-meteor-color > span { margin-right: auto; color: var(--dsw-alias-label-secondary, inherit); }
+.dsh-bloom-meteor-color button { border: 0; border-radius: 7px; padding: 5px 10px; color: inherit; background: transparent; font: inherit; cursor: pointer; }
+.dsh-bloom-meteor-color button[data-active="true"] { color: var(--bloom-accent, inherit); background: color-mix(in oklch, var(--bloom-accent, #6b8f71) 22%, #1a1a1c); }
+.dsh-bloom-meteor-color button:focus-visible { outline: 2px solid var(--bloom-accent, #6b8f71); outline-offset: -2px; }
+
 .dsh-bloom-version {
   display: flex;
   align-items: center;
@@ -750,7 +1314,92 @@ body[data-ds-dark-theme] .dsh-bloom-option__en {
   font-weight: 600;
   text-decoration: none;
 }
+/* display:inline-flex 会压掉 [hidden] 的 display:none —— 没有新版时这里
+   原本留着一颗空胶囊（截图里版本行右侧那条灰短线）。 */
+.dsh-bloom-version__update[hidden] { display: none; }
+/* 版本行现在只剩「↑ 可更新」徽标（名字和版本号已在底栏），没新版时整行不占位 */
+.dsh-bloom-version:not(:has(.dsh-bloom-version__update:not([hidden]))) { display: none; }
 .dsh-bloom-version__update:hover { color: color-mix(in oklch, var(--dsw-alias-brand-primary, #4a90e2), black 15%); }
+
+
+/* ── 本版更新（CHANGELOG 注入）─────────────────────────────────
+   展开体里的第一块。条目按 --i 错峰入场（每条 18ms），读起来像一行行落下，
+   而不是一次全亮。 */
+.dsh-bloom-log {
+  /* 和 .dsh-bloom-version / DSH 行同一套 14px 左右内边距，不然贴边 */
+  padding: 6px 14px 8px;
+  border-bottom: 1px solid var(--bloom-hairline, rgba(0,0,0,.08));
+  margin-bottom: 6px;
+}
+.dsh-bloom-log__head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 8px; margin-bottom: 6px;
+}
+.dsh-bloom-log__title {
+  font-size: 11px; font-weight: 600; letter-spacing: .02em;
+  color: var(--dsw-alias-label-secondary, #777);
+}
+.dsh-bloom-log__all {
+  font-size: 10.5px; color: var(--dsw-alias-label-tertiary, #999);
+  text-decoration: none; white-space: nowrap;
+  transition: color .15s ease;
+}
+.dsh-bloom-log__all:hover { color: var(--bloom-accent, #6b8f71); text-decoration: underline; }
+.dsh-bloom-log__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.dsh-bloom-log__item {
+  display: flex; gap: 6px; align-items: flex-start;
+  font-size: 11px; line-height: 1.45;
+  color: var(--dsw-alias-label-secondary, #777);
+  animation: dsh-bloom-log-in .26s var(--bloom-ease, ease) both;
+  animation-delay: calc(var(--i, 0) * 18ms);
+}
+@keyframes dsh-bloom-log-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: none; }
+}
+.dsh-bloom-log__tag {
+  flex: 0 0 auto; margin-top: 1px;
+  font-size: 9.5px; line-height: 1.5; padding: 0 4px; border-radius: 3px;
+  background: color-mix(in oklch, var(--bloom-accent, #6b8f71) 16%, transparent);
+  color: color-mix(in oklch, var(--bloom-accent, #6b8f71) 78%, var(--dsw-alias-label-primary, #222));
+}
+.dsh-bloom-log__tag[data-kind="fix"] {
+  background: color-mix(in oklch, var(--dsw-alias-label-primary, #222) 9%, transparent);
+  color: var(--dsw-alias-label-secondary, #777);
+}
+@media (prefers-reduced-motion: reduce) {
+  .dsh-bloom-log__item { animation: none; }
+}
+
+/* ── 遥测开关 ──────────────────────────────────────────────── */
+.dsh-bloom-telemetry {
+  display: flex; align-items: center; gap: 6px;
+  margin-top: 8px; cursor: pointer; width: fit-content;
+  font-size: 11px; color: var(--dsw-alias-label-tertiary, #999);
+}
+.dsh-bloom-telemetry__box {
+  position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none;
+}
+.dsh-bloom-telemetry__box-ui {
+  width: 22px; height: 12px; border-radius: 6px; flex: 0 0 auto;
+  background: var(--dsw-alias-label-primary, #222);
+  opacity: .16; position: relative;
+  transition: opacity .18s ease, background .18s ease;
+}
+.dsh-bloom-telemetry__box-ui::after {
+  content: ''; position: absolute; top: 2px; left: 2px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #fff;
+  transition: transform .18s var(--bloom-ease, ease);
+}
+.dsh-bloom-telemetry__box:checked + .dsh-bloom-telemetry__box-ui {
+  background: var(--bloom-accent, #6b8f71); opacity: .85;
+}
+.dsh-bloom-telemetry__box:checked + .dsh-bloom-telemetry__box-ui::after { transform: translateX(10px); }
+.dsh-bloom-telemetry__box:focus-visible + .dsh-bloom-telemetry__box-ui {
+  outline: 2px solid var(--bloom-accent, #6b8f71); outline-offset: 2px;
+}
+.dsh-bloom-telemetry:hover .dsh-bloom-telemetry__text { color: var(--dsw-alias-label-secondary, #777); }
 
 /* ── DSH 升级检查区块（紧贴 Bloom 版本行下方）── */
 /* 版本区：两行封顶（当前+按钮 / 最新），按钮收进第一行右侧。
@@ -787,7 +1436,13 @@ body[data-ds-dark-theme] .dsh-bloom-option__en {
    「版本未知」变成竖排字。推右交给 .dsh-bloom-dsh-spacer（flex:1），
    不再用 margin-left:auto，两份「吃光自由空间」会互相抵消语义。 */
 .dsh-bloom-dsh-state {
-  flex: none;
+  /* 原来 flex:none —— 报错原文一长就不肯缩，把同一行的「检查 / 填入」挤出面板
+     （2026-11-04 截图：中文下「填入」被裁掉一半）。改成可缩 + 省略号，全文在 title。 */
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 132px;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 10px;
   padding: 1px 6px;
@@ -795,6 +1450,8 @@ body[data-ds-dark-theme] .dsh-bloom-option__en {
   background: color-mix(in oklch, var(--dsw-alias-label-tertiary, #999), transparent 88%);
   color: var(--dsw-alias-label-secondary, #666);
 }
+/* 没有状态时（检查中）chip 只剩背景，截图里是「DSH —」后面一条灰短线 */
+.dsh-bloom-dsh-state:empty { display: none; }
 .dsh-bloom-dsh-state[data-state="update"] {
   background: color-mix(in oklch, var(--bloom-accent, #c47b4a), transparent 78%);
   color: var(--bloom-accent, #c47b4a);
@@ -915,6 +1572,14 @@ body[data-ds-dark-theme] .dsh-bloom-dsh-btn.is-fail {
 /* 按压反馈 —— 之前点下去毫无变化,连「点到了」都要靠猜 */
 .dsh-bloom-dsh-btn:active { transform: scale(0.97); }
 .dsh-bloom-dsh-btn:disabled { opacity: 0.6; cursor: default; }
+/* 主按钮按内容宽度，不再吃满剩余空间：查到版本前它是禁用的，
+   原来却是一大块实心 accent，比真正有用的信息还抢眼。禁用时退回描边样式。 */
+.dsh-bloom-dsh-btn--primary { flex: 0 0 auto; }
+.dsh-bloom-dsh-btn--primary:disabled {
+  background: transparent;
+  border-color: var(--bloom-hairline, rgba(0,0,0,.08));
+  color: var(--dsw-alias-label-tertiary, #999);
+}
 
 /* hint 的绿必须明暗分档:oklch(60%) 是「中间亮度」,实测在暗色菜单底上只有
    3.3:1(而且是 10px 字)。这与 state chip 那次是同一个硬编码色值,当时漏了这处。 */
@@ -932,13 +1597,13 @@ body[data-ds-dark-theme] .dsh-bloom-dsh-hint {
   color: oklch(78% 0.14 150);
 }
 
-/* ── 底部快链：配色投票 / 反馈（v0.12.x，owner 要求）──
-   放常驻底部而不是「版本与更新」折叠区里 —— 折叠区本来就是低频信息，
-   反馈入口再藏一层等于没有。分隔沿用全站的「向下扩散阴影」语言。 */
+/* 底栏作为分享面板的定位边界，使面板始终贴齐菜单右侧。 */
 .dsh-bloom-foot {
+  position: relative;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 10px;
   margin-top: 2px;
   padding: 7px 14px 9px;
@@ -976,10 +1641,85 @@ body[data-ds-dark-theme] .dsh-bloom-dsh-hint {
   outline-offset: 2px;
   border-radius: 4px;
 }
-.dsh-bloom-foot__sep { color: var(--dsw-alias-label-tertiary, #999); opacity: .6; }
+/* 底栏一行装「版本入口 + 三个快链」，任何语言都不许折行（英文原文案曾把投票挤成两行） */
+.dsh-bloom-foot__links { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 4px 12px; min-width: 0; }
+.dsh-bloom-more { white-space: nowrap; }
+.dsh-bloom-foot__link { min-height: 28px; white-space: nowrap; }
+.dsh-bloom-share-panel[hidden] { display: none; }
+.dsh-bloom-share-panel {
+  position: absolute;
+  right: 14px;
+  bottom: calc(100% + 4px);
+  z-index: 2;
+  box-sizing: border-box;
+  width: min(280px, calc(100% - 28px));
+  max-height: min(300px, calc(var(--bloom-menu-max-h, 100vh) - 56px));
+  overflow-y: auto;
+  padding: 5px;
+  border: 1px solid var(--bloom-hairline, rgba(0,0,0,.16));
+  border-radius: 10px;
+  background: color-mix(in oklch, var(--dsw-alias-bg-layer-1, #fff) 94%, transparent);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  color: var(--dsw-alias-label-primary, #222);
+  box-shadow: var(--bloom-shadow, 0 8px 24px rgba(0,0,0,.18));
+  white-space: normal;
+}
+body[data-ds-dark-theme] .dsh-bloom-share-panel {
+  background: color-mix(in oklch, var(--dsw-alias-bg-layer-1, #252528) 94%, transparent);
+  color: var(--dsw-alias-label-primary, #f2f2f2);
+}
+.dsh-bloom-share-action {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.dsh-bloom-share-intro { display: block; padding: 7px 8px 5px; color: var(--dsw-alias-label-secondary, #666); font-size: 11px; line-height: 1.4; }
+.dsh-bloom-share-action:hover:not(:disabled) { background: color-mix(in oklch, var(--bloom-accent, #6b8f71), transparent 88%); }
+.dsh-bloom-share-action:disabled { opacity: .55; cursor: default; }
+.dsh-bloom-share-action:focus-visible, .dsh-bloom-share-result button:focus-visible, .dsh-bloom-share-result a:focus-visible, .dsh-bloom-share-cancel:focus-visible, .dsh-bloom-share-manual:focus-visible {
+  outline: 2px solid var(--bloom-accent, #6b8f71);
+  outline-offset: -2px;
+}
+.dsh-bloom-share-action__title { font-size: 12px; font-weight: 600; }
+.dsh-bloom-share-action__hint { font-size: 11px; line-height: 1.35; color: var(--dsw-alias-label-secondary, #555); overflow-wrap: anywhere; }
+body[data-ds-dark-theme] .dsh-bloom-share-action__hint { color: var(--dsw-alias-label-secondary, #c3c3c3); }
+.dsh-bloom-share-status { display: block; padding: 5px 8px; color: var(--dsw-alias-label-secondary, #666); font-size: 11px; line-height: 1.4; }
+.dsh-bloom-share-status:empty { display: none; }
+.dsh-bloom-share-cancel { display: inline-flex; align-items: center; min-height: 28px; margin: 0 8px 6px; padding: 0; border: 0; background: none; color: var(--bloom-accent, #6b8f71); font: inherit; cursor: pointer; }
+.dsh-bloom-share-cancel[hidden] { display: none; }
+.dsh-bloom-share-manual { box-sizing: border-box; width: 100%; min-height: 92px; padding: 7px; resize: vertical; color: var(--dsw-alias-label-primary, #222); background: var(--dsw-alias-bg-layer-1, #fff); border: 1px solid var(--bloom-hairline); border-radius: 6px; font: inherit; }
+.dsh-bloom-share-manual[hidden] { display: none; }
+.dsh-bloom-share-result { display: flex; align-items: center; gap: 8px; padding: 4px 8px 8px; font-size: 11px; line-height: 1.4; }
+.dsh-bloom-share-result button, .dsh-bloom-share-result a { min-height: 28px; display: inline-flex; align-items: center; border: 0; padding: 0; background: none; color: var(--bloom-accent, #6b8f71); font: inherit; text-decoration: none; cursor: pointer; }
+.dsh-bloom-share-result [hidden] { display: none; }
+.dsh-bloom-share-result[hidden] { display: none; }
+@media (prefers-contrast: more), (forced-colors: active) {
+  html body .dsh-bloom-share-panel { background: Canvas; color: CanvasText; border-color: CanvasText; -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  html body:not([data-bloom-glass]) .dsh-bloom-share-panel { background: var(--dsw-alias-bg-layer-1, #fff); -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .dsh-bloom-trigger, .dsh-bloom-chevron, .dsh-bloom-option { transition: none !important; }
+  /* 设计约束④：减弱动效时一律瞬间到位，不留任何位移/回弹 */
+  .dsh-bloom-menu.is-entering { animation: none; }
+  .dsh-bloom-menu.is-entering .dsh-bloom-option,
+  .dsh-bloom-menu.is-entering .dsh-bloom-section,
+  .dsh-bloom-menu.is-entering .dsh-bloom-appearance { animation: none; }
+  .dsh-bloom-more-body { transition: none; transform: none; }
 }
 
 /* 窄屏降级：DSH 顶栏在 < 900px 时空间紧张，隐藏中文名只留色点+chevron，

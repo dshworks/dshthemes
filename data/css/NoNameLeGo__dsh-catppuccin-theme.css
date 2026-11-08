@@ -1,5 +1,5 @@
 /* NoNameLeGo/dsh-catppuccin-theme — src/client/glass/glass.module.css
-   fetched 2026-10-31 from https://raw.githubusercontent.com/NoNameLeGo/dsh-catppuccin-theme/main/src/client/glass/glass.module.css
+   fetched 2026-11-08 from https://raw.githubusercontent.com/NoNameLeGo/dsh-catppuccin-theme/main/src/client/glass/glass.module.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* ============================================================================
  * Catppuccin glass layer — a toggleable glassmorphism skin for the DeepSeek
@@ -29,7 +29,8 @@
  * ========================================================================== */
 
 /* ---------- Knobs: the settings row writes --dsh-glass-blur (px),
-   --dsh-glass-frost (0-1.4 alpha multiplier; 50 on the slider = 1x) and
+   --dsh-glass-frost (0-1.4 alpha multiplier; 50 on the slider = 1x),
+   --dsh-glass-gap (px, the floating-card inset — issue #31) and
    the scheme-aware brightness fractions onto <html>. The glass surfaces
    consume them, so the sliders move the whole skin live.
    NOTE: the recipes are defined on BODY — they reference the --dsw-alias-*
@@ -150,6 +151,13 @@
        gradient), so it keeps the "top lighter / bottom deeper" depth without
        localising anything; the glows come back through the 光斑 switch
        (`--dsh-glass-glow`, written by `glass-layer.ts`, default 0).
+   (c) issue #32 (2026-11-01) added `--dsh-glass-glow-strength`: a 0-2
+       multiplier on BOTH radial alphas, 1 = exactly the 0.6.3 look, written by
+       `glass-layer.ts` from the 光斑强度 knob (range 0-200%). It scales the
+       glows only — the wash deliberately ignores it (the wash is the #26
+       default, and a user turning the glows up must not also change the depth
+       cue every pane transmits). The multiplier is applied INLINE, for the
+       same #25 reason as the ambience weight.
    Every colour still comes from the active flavour's mapped tokens, so the four
    flavours (and any future palette) follow with zero hardcoding, and text keeps
    the theme's native contrast. The brightness knob rides inside
@@ -177,13 +185,20 @@
        the knob both stay INLINE here — the #25 trap: a weight that travels
        through an intermediate custom property does not recompute when the
        brightness/glow variables change. */
-    radial-gradient(58% 46% at 18% 6%,
+    /* The ellipse RADII carry `--dsh-glass-glow-size` (issue #32 follow-up,
+       100% = these two numbers): geometry only, so enlarging spreads the same
+       peak over more of the page instead of making it brighter. Positions
+       (`at 18% 6%`) stay literals — "where the light is" is deliberately not a
+       knob (it is exactly the axis issue #26 got burned on). */
+    radial-gradient(calc(58% * var(--dsh-glass-glow-size, 1)) calc(46% * var(--dsh-glass-glow-size, 1)) at 18% 6%,
       color-mix(in srgb, var(--dsw-alias-brand-primary-new-colorprimary-new-color)
-        calc(12% * var(--dsh-glass-ambience) * var(--dsh-glass-glow, 0)), transparent), transparent 68%),
-    /* Glow 2 — the success hue, top-right; gated the same way. */
-    radial-gradient(48% 42% at 86% 14%,
+        calc(12% * var(--dsh-glass-ambience) * var(--dsh-glass-glow, 0)
+          * var(--dsh-glass-glow-strength, 1)), transparent), transparent 68%),
+    /* Glow 2 — the success hue, top-right; gated and scaled the same way. */
+    radial-gradient(calc(48% * var(--dsh-glass-glow-size, 1)) calc(42% * var(--dsh-glass-glow-size, 1)) at 86% 14%,
       color-mix(in srgb, var(--dsw-alias-state-success-tertiary)
-        calc(10% * var(--dsh-glass-ambience) * var(--dsh-glass-glow, 0)), transparent), transparent 62%),
+        calc(10% * var(--dsh-glass-ambience) * var(--dsh-glass-glow, 0)
+          * var(--dsh-glass-glow-strength, 1)), transparent), transparent 62%),
     /* Wash — UNCONDITIONAL (the issue #26 answer): the same-family depth
        gradient the translucent fills transmit. The ambience weighting must live
        HERE, not in a custom property (see the wash-tint note in the light
@@ -197,6 +212,46 @@
 
 [data-dsh-glass] [data-dsh-glass-frame] {
   background: transparent;
+}
+
+/* ---------- Compat keeps the host's own frame fill (issue #37).
+   The release above is NOT mode-gated, which is correct for the web / macOS
+   shells and for mica (the frame is the last thing that would cover the
+   ground), but in compat it also erased a surface the host had painted for a
+   reason: `[data-windows-titlebar] .frame` carries
+   `background: var(--dsw-specific-sidebar-fill)` upstream, and `centerCol`
+   cuts a `--dsh-windows-content-radius` (16px) corner INTO its own
+   `--dsw-alias-bg-base` plate. With the frame transparent, the sliver behind
+   that rounded corner stopped showing the sidebar colour (Latte
+   `neutral-bluish-50` #e6e9ef) and started showing the page ground — i.e. the
+   #25 wash plus glow 1 (12% share at 18%/6%, scaled by the strength knob), a
+   pale-blue wedge at the top-left of the content column. Mica never shows it:
+   there the sidebar is a 12px-inset card and that corner sits inside it.
+   So this is not a new material, it is the missing half of the "compat keeps
+   the official opaque sidebar" decision documented on the centerCol release
+   below — an opaque sidebar beside a transparent frame was a mismatch the
+   skin itself created.
+   How it is written:
+   - It restates the HOST's token, not a colour of ours (rule 4): in compat we
+     never re-point `--dsw-specific-sidebar-fill` (that override is float-only,
+     see the native-caption block), so the frame, the sidebar column and the
+     Windows caption all resolve to the same value — the corner disappears by
+     matching its neighbours, exactly as in the stock shell.
+   - `html[...][...]` is load-bearing: upstream declares the fill on
+     `[data-windows-titlebar] .frame` (0,2,0), and the release above reaches
+     (0,2,0) as well, so this rule must out-specify BOTH rather than rely on
+     the plugin's `<style>` tag landing last.
+   - `-compat` + `[data-windows-titlebar]` are both hard gates: matching in
+     mica would paint an opaque slab over the whole page ground, and matching
+     on the web / macOS shells would hide the ground for no reason.
+   - No geometry is touched (the 16px radius stays exactly as upstream
+     declares it): the corner is supposed to exist, it just has to read as the
+     sidebar again. Zeroing the radius was the reporter's alternative (A) and
+     was rejected — it would make compat deviate from the stock layout, which
+     is the one thing the mode promises.
+   Evidence: docs/issue-37-compat-content-corner.md. */
+html[data-dsh-glass-compat][data-windows-titlebar] [data-dsh-glass-frame] {
+  background: var(--dsw-specific-sidebar-fill);
 }
 
 [data-dsh-glass] [data-phase],
@@ -409,8 +464,13 @@
   border-radius: 14px;
 }
 
+/* Small seats share one 8px corner. `[role='tooltip']` is NOT in this list
+   (issue #39 follow-up, 2026-11-07): the native tooltip keeps its own
+   `--dsw-radius-sm`, because the skin has no business restyling a bubble the
+   host paints and sizes itself — the same reason its fill was never ours
+   (issue #17). Menu items and pills stay: they sit inside surfaces the glass
+   already owns, so the corner is part of that surface's language. */
 [data-dsh-glass-float] [role='menuitem'],
-[data-dsh-glass-float] [role='tooltip'],
 [data-dsh-glass-float] [class*='pill'] {
   border-radius: 8px;
 }
@@ -484,8 +544,32 @@
    a body-level SVG speech bubble) and frosted them with an unwanted
    translucent box + rim + radius. The transcript holds only DSH's own
    user / command-input bubbles, so narrowing here keeps the glass off
-   foreign bubble-shaped widgets without a per-plugin blacklist. */
-[data-dsh-glass-float] [data-conversation-scroll] [class*='bubble'] {
+   foreign bubble-shaped widgets without a per-plugin blacklist.
+
+   ISSUE #39 (2026-11-07) — scoping to the transcript was NOT enough: the
+   substring also matched the host's TOOLTIP, whose class is
+   `_bubble_44yfq_1` and which renders INLINE (not portaled) when it is
+   attached to a transcript button — e.g. the message action row's 「复制」
+   (measured on 0.2.2-rc.1: hovering it produced
+   `span._bubble_44yfq_1[role='tooltip']` inside [data-conversation-scroll]).
+   The tooltip paints `--dsw-alias-tooltip-bg` itself and hardcodes its text
+   to `--dsw-static-neutral-bluish-00`, so replacing that fill with a light
+   glass tint made the label unreadable on Latte: measured bg
+   `color(srgb .937 .945 .961 / .184)` vs text `rgb(239,241,245)` ≈ 1.0:1
+   (glass off: `rgb(76,79,105)` vs the same text = 7.06:1). The same
+   fire-and-forget substring also painted `BfLV8a_bubbleWidth`, a pure size
+   WRAPPER with no fill of its own (double rim on the question-reply bubble).
+   So the seat is now named instead of guessed:
+     1. `[data-message-bubble]` — the host's own stable hook on the user
+        message bubble (only one component sets it: the UserMessageBubble
+        wrapper in conversation view, 0.2.2-rc.1);
+     2. the question-reply bubble, which has NO data hook, addressed as the
+        bubble CHILD of its width wrapper (never the wrapper itself).
+   Guard = `tests/glass-css.spec.ts` › `native seats are never glass-filled
+   (issue #39)`, which matches this rule against synthetic seats instead of
+   grepping for a literal `[role='tooltip']`. */
+[data-dsh-glass-float] [data-conversation-scroll] [data-message-bubble],
+[data-dsh-glass-float] [data-conversation-scroll] [class*='bubbleWidth'] > [class*='bubble']:not([role='tooltip']) {
   border-radius: 14px;
   border: 1px solid var(--dsh-glass-rim-soft);
   background: color-mix(in srgb, var(--dsw-alias-bg-layer-1) calc(46% * var(--dsh-glass-frost, 1)), transparent);
@@ -858,7 +942,11 @@ html[data-dsh-glass-float] [data-turn-trigger]:hover {
    The collapsed-rail rule further down MUST reset this to `auto`: its margins
    are fixed (28 / 16), so `100%` there would overflow the column by 44px. */
   width: 100%;
-  margin: 12px auto 0;
+  /* Issue #31: the card's inset from the window's top edge rides the gap knob.
+     The HORIZONTAL gutter below (`calc(100% - 32px)`) deliberately stays a
+     literal: it is the reading column's padding, i.e. content width, which the
+     knob must not move. */
+  margin: var(--dsh-glass-gap, 12px) auto 0;
   max-width: min(
     calc(
       var(
@@ -894,7 +982,11 @@ html[data-dsh-glass-float] [data-turn-trigger]:hover {
      margins are fixed (28 / 16), not `auto`, so the box already stretches and
      `width: 100%` would add those 44px on top of the column width. */
   width: auto;
-  margin-left: 28px;
+  /* Issue #31: the rail's right edge sits `gap` px past the sidebar column, so
+     the header must start gap + 16px in to keep its 16px clearance from the
+     rail (was a hardcoded 28 = 12 + 16). The right margin stays a literal 16:
+     it aligns with the transcript card's own gutter, not with the card inset. */
+  margin-left: calc(var(--dsh-glass-gap, 12px) + 16px);
   margin-right: 16px;
   max-width: none;
 }
@@ -925,7 +1017,12 @@ html[data-dsh-glass-float] [data-turn-trigger]:hover {
      the header or the panel's top edge sits under the top bar (ported
      from the original project). */
   z-index: 9;
-  margin: 12px;
+  /* Issue #31: all four sides ride the gap knob (the reporter's "在一个屏上略挤"
+     is the whole chrome reading tight). Because the margin is taken out of the
+     upstream-sized sidebar COLUMN, a larger gap narrows the sheet itself — the
+     chat column and the reading column do not move, which is the documented
+     trade (`docs/issue-gh-31-card-gap.md`). */
+  margin: var(--dsh-glass-gap, 12px);
   padding: 10px 12px 14px;
   /* Border uniform on all four sides (issue #22). The right edge used to be
      overridden with the accent at 40% ("luminous right edge"): in Latte that
@@ -1019,12 +1116,27 @@ html[data-dsh-glass-float] [data-turn-trigger]:hover {
 }
 
 /* Collapsed rail: floats too (mica mode) — same geometry as the original
-   project: a 12px left margin plus a matching negative right margin (outer
-   size unchanged, the main column does not move; the rail just reaches
-   12px into the chat gutter), 16px corners, and a margin transition that
-   runs on the same clock as the app's own collapse crossfade. */
+   project: a gap-sized left margin plus a matching negative right margin
+   (outer size unchanged, the main column does not move; the rail just reaches
+   `gap` px into the chat gutter), 16px corners, and a margin transition that
+   runs on the same clock as the app's own collapse crossfade.
+
+   ISSUE #31 — the intrusion is CAPPED at 16px. The transcript card's own left
+   gutter is 16px, and the rail's right edge lands exactly `gap` px past the
+   sidebar column, so any gap above 16 makes the rail lie ON TOP of the
+   transcript (measured geometry: clearance = 16 − gap, i.e. 4px at the shipped
+   12, −4px at 20, −8px at 24). Capping the negative margin keeps the rail off
+   the text; the cost is that above 16px the rail's outer box grows by
+   `gap − 16`, so the chat column shifts right by that much while the sidebar is
+   collapsed (it does not while it is expanded). The alternative — letting the
+   rail intrude the full gap — was rejected: an 8px overlap with scrolling text
+   at the max setting is a visible defect, not a spacing preference. */
 [data-dsh-glass-float] [data-dsh-glass-frame][data-sidebar-collapsed] [class*='sidebarCol'] {
-  margin: 12px -12px 12px 12px;
+  margin:
+    var(--dsh-glass-gap, 12px)
+    calc(-1 * min(var(--dsh-glass-gap, 12px), 16px))
+    var(--dsh-glass-gap, 12px)
+    var(--dsh-glass-gap, 12px);
   padding: 0;
   border-radius: 16px;
   transition: margin 150ms var(--ds-ease-in-out), border-radius 150ms var(--ds-ease-in-out);
@@ -1050,7 +1162,11 @@ html[data-dsh-glass-float] [data-turn-trigger]:hover {
      too — otherwise narrowing only the header would trade one misalignment for
      another the moment the 轨迹 tab is opened. Same inline expression as the
      header rule; see the note there for why it is not a custom property. */
-  margin: 8px auto 12px;
+  /* Issue #31: the BOTTOM margin (window edge below the card) rides the gap
+     knob; the 8px top stays a literal — it is the card's clearance from the
+     header card above it, not an edge inset. `height` therefore subtracts
+     both, or the card would overflow its scroll body by the delta. */
+  margin: 8px auto var(--dsh-glass-gap, 12px);
   width: calc(100% - 32px);
   max-width: min(
     calc(
@@ -1061,7 +1177,7 @@ html[data-dsh-glass-float] [data-turn-trigger]:hover {
     ),
     calc(100% - 32px)
   );
-  height: calc(100% - 20px);
+  height: calc(100% - 8px - var(--dsh-glass-gap, 12px));
   border: 1px solid var(--dsh-glass-rim);
   border-radius: 20px;
   background: var(--dsh-glass-card);
@@ -1142,10 +1258,12 @@ html[data-dsh-glass-float] [data-turn-trigger]:hover {
 }
 
 /* ---------- Composer bar spacing (the "fused slab" is gone — see the note
-   below). Keeps a 12px bottom pad on the session view's inputbar when no stats
-   row sits inside it; the hero view has its own spacing. ---------- */
+   below). Keeps the card's bottom inset on the session view's inputbar when no
+   stats row sits inside it; the hero view has its own spacing. Issue #31: the
+   inset is the gap knob (was a literal 12px) — it is the distance from the
+   composer card to the window's bottom edge. ---------- */
 [data-dsh-glass-float] [data-dsh-glass-inputbar]:not([class*='hero']):not(:has([data-dsh-glass-stats])) {
-  padding-bottom: 12px;
+  padding-bottom: var(--dsh-glass-gap, 12px);
 }
 
 /* ⚠️ 2026-10-13（维护者决定）：fused slab 废除 —— 「性能与用量」统计行不再
@@ -1314,13 +1432,47 @@ html[data-dsh-glass-float] [data-turn-trigger]:hover {
 
 /* ---------- Settings / modal dialogs: the raised panel becomes the same
    live glass as the other surfaces. Scoped to `aria-modal=true` so small
-   role=dialog popups (the context meter, etc.) keep their own surfaces —
-   and this panel carries no fixed-position descendants, so backdrop-filter
-   cannot re-anchor anything. The panel rides the same --dsh-glass-* knobs,
-   so dragging blur / frost / brightness in the glass row is a live
-   preview on the panel itself. ---------- */
-[data-dsh-glass-float] [role='dialog'][aria-modal='true'] {
-  background: var(--dsh-glass-card-raised);
+   role=dialog popups (the context meter, etc.) keep their own surfaces.
+   The panel rides the same --dsh-glass-* knobs, so dragging blur / frost /
+   brightness in the glass row is a live preview on the panel itself.
+
+   issue #33 (2026-11-01): the material rides a `::before` plane and the
+   panel itself stays filter-free. The old note here claimed the panel "carries
+   no fixed-position descendants" — third-party SLOT content falsifies it. The
+   settings shell portals this exact `[role=dialog][aria-modal=true]`
+   (800px, centred, `overflow:hidden`, `.options` `overflow-y:auto`) and every
+   `settings.section` plugin renders inside it; dsh-plugin-tool-management's
+   `SourceSelect` / `RowMenu` place their menus with `position:fixed` + VIEWPORT
+   coordinates (they assume "no ancestor carries transform/filter"). A
+   `backdrop-filter` here makes the panel their containing block, so measured in
+   the live shell (mica, blur 5, 1280x822 viewport, panel origin 239.3/59.3) a
+   `position:fixed;left:0;top:0` probe landed at (240, 60) instead of (0, 0) —
+   and flipping the panel's `backdrop-filter` to `none` put it back at (0, 0).
+   Every popover therefore shifts by the panel origin (320px at 1440 wide) and
+   is clipped by the panel's `overflow:hidden`: right-aligned menus (the row
+   "⋯") vanish entirely — the reporter's「三个点更多打不开」— while the others
+   appear far from their trigger —「悬浮菜单会乱跑」. Same plane recipe as
+   issue #19 (fill AND blur move together; `isolation` is not a backdrop root).
+
+   issue #34 (2026-11-02): the seat guard `[role='presentation'] >` is load-bearing.
+   A bare `[role='dialog'][aria-modal='true']` also matches DSH's IMAGE LIGHTBOX,
+   which portals ONE such element straight into `document.body` and relies on its own
+   `position: fixed; inset: 0` to BE the full-screen layer (`dsh-client-ui-attachment`'s
+   composer thumbnail -> primitives' `ImageLightbox`). `position: relative` here then
+   demoted that layer to an in-flow block at the end of `body`: every child inside it is
+   absolutely positioned, so it collapsed to 0 height, image and mask vanished with it,
+   and its `top: 20px; right: 20px` close button floated outside the app frame (reported
+   in both themes on 0.6.6, gone again on 0.6.5). Host markup, both surfaces: the
+   settings shell (`dsh-client-ui-settings-general`: `.overlay[role=presentation] >
+   .panel`) and the primitives `Modal` (`.root[role=presentation] > .dialog`) both seat
+   the panel this way — the lightbox does not. Scoping to the seat keeps issue #33's fix
+   where it belongs and leaves body-level full-screen overlays to the host. */
+[data-dsh-glass-float] [role='presentation'] > [role='dialog'][aria-modal='true'] {
+  /* Zero paint on the panel: it is the excluded containing block. */
+  position: relative;
+  isolation: isolate;
+  background: none;
+  backdrop-filter: none;
   border: 1px solid var(--dsh-glass-rim);
   /* Two fixes from the 2026-10-19 frame-language audit (docs/frame-language-
      audit-2026-10-19.md ① and ③):
@@ -1335,7 +1487,20 @@ html[data-dsh-glass-float] [data-turn-trigger]:hover {
      Both are paint-only: no box-model change, no descendant moves. */
   border-radius: 20px;
   box-shadow: var(--dsh-glass-edge), var(--dsh-glass-drop);
+}
+
+/* The panel's material plane (issue #33). `inset: 0` = padding box, i.e. 1px
+   less coverage than the element background it replaces; the rim is the
+   translucent `--dsh-glass-rim`, so that 1px is not observable. */
+[data-dsh-glass-float] [role='presentation'] > [role='dialog'][aria-modal='true']::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--dsh-glass-card-raised);
   backdrop-filter: blur(var(--dsh-glass-blur, 14px));
+  pointer-events: none;
 }
 
 /* ---------- Readability on the glass: a 1px halo blurs the backdrop right
@@ -1445,11 +1610,46 @@ html[data-dsh-glass-float] [data-turn-trigger]:hover {
 }
 
 @keyframes dsh-glass-dialog-in {
-  from { opacity: 0; transform: translateY(8px) scale(0.985); }
+  /* Opacity only — the same rule the page transitions already follow (issue
+     #24's note above): a running `transform` makes the element the containing
+     block of its `position: fixed` descendants mid-flight. Here it is not
+     theoretical: the settings panel hosts every `settings.section` plugin, and
+     dsh-plugin-tool-management's menus are fixed in VIEWPORT coordinates. A
+     dropdown opened inside the 240ms entry window was measured 237px off
+     (`dx=237 / dy=68` against an expected 0/+4); with the transform gone the
+     same click lands at 0/+4. Visually the 8px rise + 1.5% scale over 240ms is
+     imperceptible (issue #33, 2026-11-01). */
+  from { opacity: 0; }
 }
 
 /* ---------- Keyboard focus and text selection. ---------- */
-[data-dsh-glass] :focus-visible {
+/* The ring normally rides the focused element itself. TEXT FIELDS are the
+   exception (issue #22 follow-up family, 2026-11-08): the host renders its
+   search / filter fields as a rounded, bordered WRAPPER whose <input> is a
+   bare transparent box (measured 0.2.2-rc.1: model pane
+   `SPAN._wrap_14sgc_1` 249x26 r=8px with a .5px border; sidebar
+   `DIV.GAkraW_search` 207x32 r=12px with a .67px border; the inputs themselves
+   are 235x16 / 151x20 with radius 0 and no border). Drawing the ring on the
+   input put a SQUARE blue box inside the rounded field, hugging the text, and
+   it appeared on mouse clicks too (text inputs always match :focus-visible).
+   Host gives those inputs no focus indication of its own, so the ring must
+   survive — it just has to land on the visible field: the input's DIRECT
+   parent, which is that wrapper in both known shapes. Contenteditable (the
+   composer) is deliberately left on the old path: its parent is the bare
+   846x52 editor shell with radius 0, and its ring is clipped by the scroll
+   container anyway. */
+[data-dsh-glass] :focus-visible:not(input):not(textarea) {
+  outline: 2px solid color-mix(in srgb, var(--dsw-alias-brand-primary-new-colorprimary-new-color) 85%, transparent);
+  outline-offset: 1px;
+}
+
+[data-dsh-glass] :is(input, textarea):focus-visible {
+  outline: none;
+}
+
+/* One level up only (`>`), so a wrapper that merely CONTAINS a field deep
+   inside cannot inherit the ring. */
+[data-dsh-glass] *:has(> :is(input, textarea):focus-visible) {
   outline: 2px solid color-mix(in srgb, var(--dsw-alias-brand-primary-new-colorprimary-new-color) 85%, transparent);
   outline-offset: 1px;
 }
@@ -1633,12 +1833,110 @@ html[data-dsh-glass-float] [data-turn-trigger]:hover {
    mode (the generic blur above alone would sit behind an opaque panel), and
    since the 2026-10-19 frame-language audit the same edge + drop as well —
    the material is mode-independent, only the LAYOUT is stock here, so the
-   radius stays whatever the host declares (no 20px step in compat). */
-[data-dsh-glass-compat] [role='dialog'][aria-modal='true'] {
-  background: var(--dsh-glass-card-raised);
+   radius stays whatever the host declares (no 20px step in compat).
+   issue #33: same plane split as float — the panel hosts third-party
+   `settings.section` content whose menus are `position:fixed` in viewport
+   coordinates, so it must not be a containing block.
+   issue #34: same seat guard as float — only the `[role='presentation'] >` modal panel
+   is ours; body-level full-screen dialogs (the image lightbox) keep the host's own
+   `position`. */
+[data-dsh-glass-compat] [role='presentation'] > [role='dialog'][aria-modal='true'] {
+  position: relative;
+  isolation: isolate;
+  background: none;
+  backdrop-filter: none;
   border: 1px solid var(--dsh-glass-rim);
   box-shadow: var(--dsh-glass-edge), var(--dsh-glass-drop);
+}
+
+[data-dsh-glass-compat] [role='presentation'] > [role='dialog'][aria-modal='true']::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--dsh-glass-card-raised);
   backdrop-filter: blur(var(--dsh-glass-blur, 12px));
+  pointer-events: none;
+}
+
+/* ---------- Popup readability floor inside the settings seam (issue #33
+   follow-up, 2026-11-01).
+
+   The settings remap above turns `--dsw-alias-bg-layer-3` into
+   `30% + 30% * frost` of `bluish-800` (42% at the default frost 20), which is
+   right for a settings CARD — the panel under it is the same family — but a
+   popup reads that token too, and a popup covers DENSE, unrelated rows. Live
+   measurement of dsh-plugin-tool-management's `SourceSelect` menu inside the
+   settings dialog: `rgba(49, 50, 68, 0.42)` with **no** blur, over the skills
+   list — the list's own text ran straight through the menu (reporter's
+   screenshot, issue #33 thread).
+
+   So popups get an explicit floor, anchored on the page ground instead of the
+   diluted alias: ~92% is the same "the surface must be more solid than what it
+   covers" rule the model-parade menu already uses (70% there, over the
+   transcript). The blur IS paid for here: the popup sits over a moving list,
+   not over the flat ground (issue #13's budget note does not apply).
+
+   Scope note — why the plugin class and not a generic role hook:
+   `[role='listbox']` is NOT popup-only upstream (`dsh-client-ui-schedule`'s
+   ClockPicker puts it on the dial's COLUMNS inside a dialog), so a generic
+   rule would paint a slab across a picker. `.dsm-select-menu` is
+   dsh-plugin-tool-management's own stable namespace (`dsm-`), used by both its
+   `SourceSelect` and its row "⋯" `RowMenu`, and this block is scoped to the
+   settings seam, so nothing outside that dialog can be hit. */
+[data-dsh-glass-settings] [role='menu']:not([data-menu-material]):not([data-menu-material] *),
+[data-dsh-glass-settings] .dsm-select-menu {
+  background: color-mix(in srgb, var(--dsh-glass-ground) 92%, transparent);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--dsh-glass-drop);
+}
+
+/* ---------- Settings toolbar strip (issue #33 follow-up, 2026-11-01).
+
+   dsh-plugin-tool-management draws `.dsm-panel-head` as a sticky bar
+   (`position: sticky; top: 0; z-index: 6`, holding the scope dropdown and the
+   section tabs) filled with `--dsw-alias-bg-layer-2`. In STOCK that fill is
+   the same opaque layer-2 the panel itself uses, so the bar is INVISIBLE by
+   design — which is exactly why it ships with square corners. Our remap
+   leaves the panel at ~25% (card-raised) while the bar kept 53% layer-2, so it
+   read as a foreign slab with 90° corners inside a 20px panel (reporter's
+   screenshot).
+
+   Fix: treat it like the other floating strips — denser ground-anchored fill
+   (78%, the #29 dock-veil band), frost, a 14px radius and the soft rim. Denser
+   than the panel on purpose: the bar has a REAL job, rows scroll under it.
+
+   Fill AND blur ride a `::before` plane: the bar hosts the plugin's scope
+   dropdown, whose menu is `position: fixed`, so a filter on the bar itself
+   would re-anchor it — the very defect this issue is about. `position:
+   sticky` + `z-index` already make the bar a stacking context, so the plane's
+   `z-index: -1` cannot escape behind the panel. */
+[data-dsh-glass-settings] .dsm-panel-head {
+  /* NO `position` override here: the host's `sticky` is the point of the bar,
+     and `relative` would kill it. Sticky is already a positioned ancestor for
+     the plane. */
+  isolation: isolate;
+  border-radius: 14px;
+  outline: 1px solid var(--dsh-glass-rim-soft);
+  outline-offset: -1px;
+  background: none;
+  /* The host lays the bar out flush to its own edges (it was invisible in
+     stock, so there was nothing to pad). As a rounded card it needs a gutter:
+     12px inline so "单会话独立设置" / the tabs stop hugging the rim, and a
+     few px at the bottom so the tab rule stops sitting ON the corner radius. */
+  padding: 6px 12px 4px;
+}
+
+[data-dsh-glass-settings] .dsm-panel-head::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: color-mix(in srgb, var(--dsh-glass-ground) 78%, transparent);
+  backdrop-filter: blur(12px);
+  pointer-events: none;
 }
 
 /* ---------- Reduced motion: keep the static look, drop every effect. ---------- */
