@@ -1,5 +1,5 @@
 /* phoenixlucky/dsh-theme — src/client/styles.css
-   fetched 2026-11-02 from https://raw.githubusercontent.com/phoenixlucky/dsh-theme/main/src/client/styles.css
+   fetched 2026-11-10 from https://raw.githubusercontent.com/phoenixlucky/dsh-theme/main/src/client/styles.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 @font-face {
   font-family:DshVipDream;
@@ -8,7 +8,8 @@
   font-weight:400;
   font-display:swap
 }
-.dsh-theme-gallery {
+/* The wallpaper gallery is its own Settings page. */
+.dsh-theme-page {
   --dsh-theme-effect-motion-duration:180ms;
   --dsh-theme-effect-motion-easing:ease;
   --dsh-theme-effect-hover-lift:-2px;
@@ -17,15 +18,40 @@
   --dsh-theme-effect-backdrop-blur:5px;
   --dsh-theme-effect-focus-ring-width:2px;
   --dsh-theme-effect-focus-ring-offset:2px;
-  border-bottom:.5px solid var(--dsw-alias-border-l2);
   display:flex;
   flex-direction:column;
-  gap:12px;
-  padding:16px 0
+  gap:24px;
+  max-width:980px;
+  padding:4px 0 28px
 }
-.dsh-theme-gallery-title {
+.dsh-theme-page-header {
+  display:flex;
+  flex-direction:column;
+  gap:6px
+}
+.dsh-theme-page-title {
+  margin:0;
+  color:var(--dsw-alias-label-primary);
+  font-size:18px;
+  font-weight:600;
+  line-height:26px
+}
+.dsh-theme-page-subtitle {
+  margin:0;
+  color:var(--dsw-alias-label-tertiary);
+  font-size:13px;
+  line-height:20px
+}
+.dsh-theme-page-block {
+  display:flex;
+  flex-direction:column;
+  gap:12px
+}
+.dsh-theme-block-title {
+  margin:0;
   color:var(--dsw-alias-label-primary);
   font-size:14px;
+  font-weight:500;
   line-height:22px
 }
 .dsh-theme-gallery-grid {
@@ -52,7 +78,9 @@
   transform:translateY(var(--dsh-theme-effect-hover-lift))
 }
 .dsh-theme-gallery-card:focus-visible,
-.dsh-theme-gallery-dialog button:focus-visible {
+.dsh-theme-gallery-dialog button:focus-visible,
+.dsh-theme-gallery-dialog input:focus-visible,
+.dsh-theme-gallery-dialog select:focus-visible {
   outline:var(--dsh-theme-effect-focus-ring-width) solid var(--dsw-alias-brand-primary);
   outline-offset:var(--dsh-theme-effect-focus-ring-offset)
 }
@@ -76,7 +104,28 @@
   padding:8px 10px;
   font-size:13px
 }
+.dsh-theme-gallery-card-name {
+  display:flex;
+  min-width:0;
+  align-items:center;
+  gap:6px
+}
+.dsh-theme-gallery-card-name > span:first-child {
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap
+}
+.dsh-theme-gallery-badge {
+  flex:none;
+  padding:0 6px;
+  border:1px solid var(--dsw-alias-border-l4);
+  border-radius:999px;
+  color:var(--dsw-alias-label-tertiary);
+  font-size:10px;
+  line-height:16px
+}
 .dsh-theme-gallery-current {
+  flex:none;
   color:var(--dsw-alias-brand-primary);
   font-size:11px;
   white-space:nowrap
@@ -110,6 +159,25 @@
 .dsh-theme-opacity-control input:focus-visible {
   outline:var(--dsh-theme-effect-focus-ring-width) solid var(--dsw-alias-brand-primary);
   outline-offset:var(--dsh-theme-effect-focus-ring-offset)
+}
+.dsh-theme-custom {
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  padding:4px 0 8px
+}
+.dsh-theme-custom-heading {
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px
+}
+.dsh-theme-custom-hint {
+  margin:0;
+  color:var(--dsw-alias-label-tertiary);
+  font-size:12px;
+  line-height:18px
 }
 .dsh-theme-gallery-dialog {
   width:min(760px,calc(100vw - 32px));
@@ -148,6 +216,7 @@
 }
 .dsh-theme-gallery-dialog-actions {
   display:flex;
+  flex-wrap:wrap;
   justify-content:flex-end;
   gap:8px
 }
@@ -159,30 +228,88 @@
   color:var(--dsw-alias-label-primary);
   background:transparent;
   font:inherit;
-  cursor:pointer
+  cursor:pointer;
+  transition:border-color var(--dsh-theme-effect-motion-duration) var(--dsh-theme-effect-motion-easing), background-color var(--dsh-theme-effect-motion-duration) var(--dsh-theme-effect-motion-easing)
+}
+.dsh-theme-gallery-action:hover {
+  border-color:var(--dsw-alias-brand-primary);
+  background:color-mix(in srgb, var(--dsw-alias-brand-primary) 10%, transparent)
 }
 .dsh-theme-gallery-action-primary {
   border-color:var(--dsw-alias-brand-primary);
   color:#fff;
   background:var(--dsw-alias-brand-primary)
 }
+.dsh-theme-gallery-action-primary:hover {
+  border-color:var(--dsw-alias-brand-primary);
+  background:color-mix(in srgb, var(--dsw-alias-brand-primary) 86%, #000)
+}
+.dsh-theme-gallery-action-quiet {
+  border-color:transparent;
+  color:var(--dsw-alias-state-error-primary, #c2353f)
+}
+.dsh-theme-gallery-action-quiet:hover {
+  border-color:var(--dsw-alias-state-error-primary, #c2353f);
+  background:color-mix(in srgb, var(--dsw-alias-state-error-primary, #c2353f) 10%, transparent)
+}
+.dsh-theme-editor-fields {
+  display:flex;
+  flex-direction:column;
+  gap:12px
+}
+.dsh-theme-field-row {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:12px
+}
+.dsh-theme-field {
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  color:var(--dsw-alias-label-secondary);
+  font-size:12px
+}
+.dsh-theme-field input,
+.dsh-theme-field select {
+  min-height:34px;
+  padding:0 10px;
+  border:1px solid var(--dsw-alias-border-l2);
+  border-radius:8px;
+  color:var(--dsw-alias-label-primary);
+  background:var(--dsw-alias-bg-module-platform);
+  font:inherit;
+  font-size:13px
+}
+.dsh-theme-field-color input {
+  min-height:34px;
+  padding:2px 4px;
+  cursor:pointer
+}
+.dsh-theme-editor-error {
+  margin:0;
+  color:var(--dsw-alias-state-error-primary, #c2353f);
+  font-size:12px;
+  line-height:18px
+}
 @media (max-width:520px) {
   .dsh-theme-gallery-grid {grid-template-columns:repeat(2,minmax(0,1fr))}
   .dsh-theme-gallery-dialog-content {padding:16px}
+  .dsh-theme-field-row {grid-template-columns:minmax(0,1fr)}
 }
 @media (prefers-reduced-motion:reduce) {
   .dsh-theme-gallery-card {transition:none}
   .dsh-theme-gallery-card:hover {transform:none}
 }
-body[data-dsh-theme=dsh-theme],
-body[data-dsh-theme=official-sea-salt],
-body[data-dsh-theme=official-bamboo-green],
-body[data-dsh-theme=official-coral-pink],
-body[data-dsh-theme=official-lavender],
-body[data-dsh-theme=official-midnight-indigo] {
+/* Wallpaper for every registered theme, including user-defined ones. */
+body[data-dsh-theme] {
+  --dsh-theme-effect-motion-duration:200ms;
+  --dsh-theme-effect-motion-easing:cubic-bezier(.22,.61,.36,1);
+  --dsh-theme-effect-focus-ring-width:2px;
+  --dsh-theme-effect-focus-ring-offset:2px;
   background-image:var(--dsh-theme-wallpaper);
   background-position:center;
   background-size:cover;
+  background-repeat:no-repeat;
   background-attachment:fixed
 }
 body[data-dsh-theme]:not([data-ds-dark-theme]) {
@@ -192,6 +319,64 @@ body[data-dsh-theme]:not([data-ds-dark-theme]) {
 body[data-dsh-theme][data-ds-dark-theme] {
   --dsh-theme-sidebar-surface:var(--dsw-static-neutral-bluish-900);
   --dsh-theme-conversation-surface:var(--dsw-static-neutral-bluish-950)
+}
+/*
+ * Generic effect layer for the wallpaper themes.
+ *
+ * A theme only declares two inputs through `ctx.theme.register` tokens:
+ *   --dsh-theme-accent   its signature color
+ *   --dsh-theme-surface  the light or dark base it sits on
+ * plus an optional `--dsh-theme-accent-ink` for text on that accent.
+ * Everything below is derived from them, so a new built-in theme — or a theme
+ * a user types into the gallery — needs no CSS at all.
+ *
+ * The values keep four concerns separate so states stay consistent:
+ * motion tokens, glass surfaces (which respect both transparency sliders),
+ * interaction feedback, and decoration (the wallpaper atmosphere).
+ */
+body[data-dsh-theme]:not([data-dsh-theme=dsh-theme]) {
+  --dsh-theme-accent-resolved:var(--dsh-theme-accent,var(--dsw-alias-brand-primary,#5b7c99));
+  --dsh-theme-surface-resolved:var(--dsh-theme-surface,#ffffff);
+  --dsh-theme-ink-resolved:var(--dsh-theme-accent-ink,color-mix(in srgb,var(--dsh-theme-accent-resolved) 66%,#0b1220));
+  --dsh-theme-glass-border:color-mix(in srgb,var(--dsh-theme-accent-resolved) 22%,var(--dsh-theme-surface-resolved));
+  /* Atmosphere: accent light above the artwork, a soft shade at the bottom,
+     all painted as background layers so no element ever covers the UI. */
+  background-image:
+    radial-gradient(115% 80% at 8% 0%,color-mix(in srgb,var(--dsh-theme-accent-resolved) 18%,transparent),transparent 58%),
+    radial-gradient(90% 70% at 100% 100%,color-mix(in srgb,var(--dsh-theme-accent-resolved) 12%,transparent),transparent 62%),
+    linear-gradient(180deg,#ffffff12,transparent 26%,#060a141a),
+    var(--dsh-theme-wallpaper);
+  background-position:center;
+  background-size:cover;
+  /* Glass surfaces. The two fill tokens keep the transparency sliders working. */
+  --dsh-theme-sidebar-surface:color-mix(in srgb,var(--dsh-theme-surface-resolved) 86%,var(--dsh-theme-accent-resolved) 14%);
+  --dsh-theme-conversation-surface:color-mix(in srgb,var(--dsh-theme-surface-resolved) 76%,var(--dsh-theme-accent-resolved) 24%);
+  /* Interaction feedback. */
+  --dsw-alias-interactive-bg-hover:color-mix(in srgb,var(--dsh-theme-accent-resolved) 9%,transparent);
+  --dsw-alias-interactive-bg-hover-accent:color-mix(in srgb,var(--dsh-theme-accent-resolved) 16%,transparent);
+  --dsw-specific-sidebar-nav-item-active:color-mix(in srgb,var(--dsh-theme-accent-resolved) 17%,transparent);
+  --dsw-specific-sidebar-nav-item-active-accent:color-mix(in srgb,var(--dsh-theme-accent-resolved) 28%,transparent);
+  /* Surfaces and cards. */
+  --dsw-alias-settings-card-fill:color-mix(in srgb,var(--dsh-theme-surface-resolved) 94%,var(--dsh-theme-accent-resolved) 6%);
+  --dsw-alias-settings-card-stroke:color-mix(in srgb,var(--dsh-theme-accent-resolved) 24%,transparent);
+  --dsw-alias-bg-elevated:color-mix(in srgb,var(--dsh-theme-surface-resolved) 95%,var(--dsh-theme-accent-resolved) 5%);
+  --dsw-specific-bubble:color-mix(in srgb,var(--dsh-theme-surface-resolved) 88%,var(--dsh-theme-accent-resolved) 12%);
+  --dsw-specific-input-major:color-mix(in srgb,var(--dsh-theme-surface-resolved) 90%,var(--dsh-theme-accent-resolved) 10%);
+  --dsw-specific-menu:color-mix(in srgb,var(--dsh-theme-surface-resolved) 95%,var(--dsh-theme-accent-resolved) 5%);
+  --dsw-specific-selector:color-mix(in srgb,var(--dsh-theme-accent-resolved) 14%,transparent);
+  /* Lines and ink. */
+  --dsw-alias-border-l2:color-mix(in srgb,var(--dsh-theme-accent-resolved) 24%,transparent);
+  --dsw-alias-border-l4:color-mix(in srgb,var(--dsh-theme-accent-resolved) 16%,transparent);
+  --dsw-alias-link:var(--dsh-theme-ink-resolved);
+  --dsw-alias-menu-icon:var(--dsh-theme-ink-resolved);
+  --dsw-alias-scrollbar-hover-l1:color-mix(in srgb,var(--dsh-theme-accent-resolved) 34%,transparent)
+}
+body[data-dsh-theme][data-ds-dark-theme]:not([data-dsh-theme=dsh-theme]) {
+  background-image:
+    radial-gradient(115% 80% at 10% 0%,color-mix(in srgb,var(--dsh-theme-accent-resolved) 26%,transparent),transparent 60%),
+    radial-gradient(95% 75% at 100% 100%,color-mix(in srgb,var(--dsh-theme-accent-resolved) 20%,transparent),transparent 64%),
+    linear-gradient(180deg,#ffffff0a,transparent 30%,#03060e42),
+    var(--dsh-theme-wallpaper)
 }
 body[data-dsh-theme=dsh-theme] {
   color-scheme:light;
@@ -291,6 +476,9 @@ body[data-dsh-theme=dsh-theme][data-dsh-theme-glass] {
   }
 }
 @media (prefers-reduced-motion: reduce) {
+  body[data-dsh-theme] {
+    --dsh-theme-effect-motion-duration:0ms
+  }
   body[data-dsh-theme=dsh-theme] {
     --dsh-theme-hero-title-animation: none;
     --dsh-theme-hero-icon-animation: none;
