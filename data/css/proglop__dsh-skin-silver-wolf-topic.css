@@ -1,5 +1,5 @@
 /* proglop/dsh-skin-silver-wolf-topic — skin.css
-   fetched 2026-11-03 from https://raw.githubusercontent.com/proglop/dsh-skin-silver-wolf-topic/main/skin.css
+   fetched 2026-11-11 from https://raw.githubusercontent.com/proglop/dsh-skin-silver-wolf-topic/main/skin.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* ==========================================================================
    Silver Wolf // Pixel Intrusion — dark-only DSH skin
@@ -55,8 +55,10 @@ body[data-dsh-silver-wolf] {
   background-color: var(--sw-theme-canvas);
 }
 
-body[data-dsh-silver-wolf] .BynINW_frame {
-  /* DSH semantic tokens. Colors only; no font, width, or spacing tokens. */
+body[data-dsh-silver-wolf] {
+  /* DSH semantic tokens. Colors only; no font, width, or spacing tokens.
+     Applied at the document level so DSH 0.2.2's separate Settings window
+     (which portals its panel to document.body) inherits the skin palette. */
   --dsw-radius-xs: 0px;
   --dsw-radius-sm: 0px;
   --dsw-radius-md: 0px;
@@ -246,25 +248,25 @@ body[data-dsh-silver-wolf] #root {
   background: transparent !important;
 }
 
-body[data-dsh-silver-wolf] .BynINW_frame {
+body[data-dsh-silver-wolf] :is(.BynINW_frame, .mP3x-q_frame) {
   background: transparent !important;
 }
 
-body[data-dsh-silver-wolf] .BynINW_centerCol {
+body[data-dsh-silver-wolf] :is(.BynINW_centerCol, .mP3x-q_centerCol) {
   background: transparent !important;
 }
 
-body[data-dsh-silver-wolf] .BynINW_sidebarCol {
+body[data-dsh-silver-wolf] :is(.BynINW_sidebarCol, .mP3x-q_sidebarCol) {
   background-color: var(--sw-base-950) !important;
   border-right: 1px solid var(--sw-line-700) !important;
 }
 
-body[data-dsh-silver-wolf] .Dc7zOa_root,
-body[data-dsh-silver-wolf] .Dc7zOa_header {
+body[data-dsh-silver-wolf] :is(.Dc7zOa_root, .an3WzG_root),
+body[data-dsh-silver-wolf] :is(.Dc7zOa_header, .an3WzG_header) {
   background: transparent !important;
 }
 
-body[data-dsh-silver-wolf] .Dc7zOa_header {
+body[data-dsh-silver-wolf] :is(.Dc7zOa_header, .an3WzG_header) {
   border-bottom: 1px solid var(--sw-line-700) !important;
 }
 
@@ -272,7 +274,7 @@ body[data-dsh-silver-wolf] [data-conversation-content] {
   isolation: isolate;
 }
 
-body[data-dsh-silver-wolf] .Dc7zOa_composerSeat {
+body[data-dsh-silver-wolf] :is(.Dc7zOa_composerSeat, .an3WzG_composerSeat) {
   background: linear-gradient(
     180deg,
     transparent 0,
@@ -286,7 +288,7 @@ body[data-dsh-silver-wolf] ::selection {
 }
 
 /* Fine pixel grid on solid raised surfaces, not a large retro mosaic. */
-body[data-dsh-silver-wolf] ._2H3hWW_root {
+body[data-dsh-silver-wolf] :is(._2H3hWW_root, .wtg9ga_root) {
   background-color: var(--sw-base-950) !important;
   background-image:
     radial-gradient(circle at 1px 1px, rgb(98 230 255 / 8%) 1px, transparent 1.2px),
@@ -298,7 +300,7 @@ body[data-dsh-silver-wolf] ._2H3hWW_root {
 /* --------------------------------------------------------------------------
    3. Solid panels, menus, dialogs. No backdrop blur; edges are cut instead.
    -------------------------------------------------------------------------- */
-body[data-dsh-silver-wolf] .BynINW_frame :is(
+body[data-dsh-silver-wolf] :is(.BynINW_frame, .mP3x-q_frame) :is(
   [role="dialog"],
   [role="alertdialog"],
   [role="menu"],
@@ -548,11 +550,11 @@ body[data-dsh-silver-wolf] :is(input, textarea, select):focus {
    data-animating; applying it here also covers synthetic toggles and avoids
    the rail snapping in one frame. Dragging still opts out. */
 @media (prefers-reduced-motion: no-preference) {
-  body[data-dsh-silver-wolf] .BynINW_frame {
+  body[data-dsh-silver-wolf] :is(.BynINW_frame, .mP3x-q_frame) {
     transition: grid-template-columns 280ms cubic-bezier(0.22, 1, 0.36, 1) !important;
   }
 
-  body[data-dsh-silver-wolf] .BynINW_frame[data-dragging] {
+  body[data-dsh-silver-wolf] :is(.BynINW_frame, .mP3x-q_frame)[data-dragging] {
     transition: none !important;
   }
 }
@@ -995,7 +997,7 @@ body[data-dsh-silver-wolf] *::-webkit-scrollbar-thumb:hover {
    12. Narrow windows: the brand-row badge would crowd the compact sidebar;
    keep it hidden below the wide layout. The wallpaper stays inside.
    -------------------------------------------------------------------------- */
-@media (width <= 1500px) {
+@media (width <= 1080px) {
   body[data-dsh-silver-wolf] [class*="_brandName"]::after {
     display: none;
   }
@@ -1007,4 +1009,54 @@ body[data-dsh-silver-wolf] *::-webkit-scrollbar-thumb:hover {
     opacity: calc(var(--sw-wallpaper-opacity, 0.24) * 0.8);
   }
 }
+
+/* --------------------------------------------------------------------------
+   13. DSH 0.2.2 separate Settings window. Its panel is a body portal, so it
+   cannot inherit tokens scoped to the main frame; the document-level token
+   block above owns the palette. These rules square and ink the panel itself.
+   -------------------------------------------------------------------------- */
+body[data-dsh-silver-wolf] [data-shortcut-modal="settings"] {
+  color: var(--sw-text-100);
+  background: var(--sw-panel-850) !important;
+  border: 1px solid var(--sw-line-700) !important;
+  border-radius: 0 !important;
+  box-shadow: 7px 7px 0 rgb(0 0 0 / 48%) !important;
+}
+
+body[data-dsh-silver-wolf] :is(.AnXs9G_overlay, .AnXs9G_mask) {
+  background-color: rgb(2 4 10 / 78%) !important;
+  backdrop-filter: none !important;
+}
+
+body[data-dsh-silver-wolf] :is(
+  .AnXs9G_navTitle,
+  .AnXs9G_navCell,
+  .AnXs9G_navLabel,
+  .AnXs9G_header,
+  .AnXs9G_close,
+  .AnXs9G_options
+) {
+  color: var(--sw-text-100) !important;
+}
+
+body[data-dsh-silver-wolf] :is(.AnXs9G_nav, .AnXs9G_header) {
+  background: var(--sw-panel-900);
+  border-color: var(--sw-line-700);
+  border-radius: 0 !important;
+}
+
+body[data-dsh-silver-wolf] :is(.AnXs9G_navCell, .AnXs9G_close):hover {
+  background: var(--sw-panel-800) !important;
+}
+
+body[data-dsh-silver-wolf] .AnXs9G_navCell.AnXs9G_active {
+  background: var(--sw-panel-800) !important;
+  box-shadow: inset 2px 0 0 var(--sw-pink-500);
+}
+
+body[data-dsh-silver-wolf] .AnXs9G_options :is(input, textarea, select, button, [class*="_card"], [class*="_row"]) {
+  border-radius: 0 !important;
+  border-color: var(--sw-line-700);
+}
+
 

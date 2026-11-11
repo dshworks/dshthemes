@@ -1,5 +1,5 @@
 /* sujiu0616-art/DSH-CustomWallpapers-Glassmorphism-Theme — plugins/client.js
-   fetched 2026-11-03 from https://raw.githubusercontent.com/sujiu0616-art/DSH-CustomWallpapers-Glassmorphism-Theme/master/plugins/client.js
+   fetched 2026-11-11 from https://raw.githubusercontent.com/sujiu0616-art/DSH-CustomWallpapers-Glassmorphism-Theme/master/plugins/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 /* ===== A. 极光背景 ===== */
 html {
@@ -86,7 +86,7 @@ body {
   --dshx-glass-panel: rgba(250, 250, 252, 0.76);
   --dshx-glass-edge: rgba(170, 185, 215, 0.50);
   --dshx-glass-highlight: rgba(255, 255, 255, 0.50);
-  --dshx-glass-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 46%);
+  --dshx-glass-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0px, rgba(255, 255, 255, 0.04) 12px, rgba(255, 255, 255, 0) 26px);
   --dshx-bubble-shadow: rgba(30, 40, 70, 0.10);
   --dshx-float-shadow: 0 16px 40px -12px rgba(30, 40, 70, 0.18);
   --dshx-dialog-ring: rgba(228, 228, 231, 0.55);
@@ -98,7 +98,7 @@ body[data-ds-dark-theme] {
   --dshx-glass-panel: rgba(16, 18, 28, 0.80);
   --dshx-glass-edge: rgba(255, 255, 255, 0.12);
   --dshx-glass-highlight: rgba(255, 255, 255, 0.10);
-  --dshx-glass-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0) 46%);
+  --dshx-glass-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.10) 0px, rgba(255, 255, 255, 0.03) 12px, rgba(255, 255, 255, 0) 26px);
   --dshx-bubble-shadow: rgba(0, 0, 0, 0.42);
   --dshx-float-shadow: 0 18px 48px -12px rgba(0, 0, 0, 0.66);
   --dshx-dialog-ring: rgba(39, 39, 42, 0.55);
@@ -191,31 +191,31 @@ body[data-ds-dark-theme] {
 /* ===== F. 主框架磨砂 =====
  *   ⚠ 头部刻意不模糊：「后台任务」下拉面板渲染在 headerActions 内，
  *   backdrop-filter 的包含块会把面板困在头部、被会话区盖住。 */
-.pI_x6G_detailsCol {
+.pI_x6G_rightbarCol {
   -webkit-backdrop-filter: blur(14px) saturate(1.4);
   backdrop-filter: blur(14px) saturate(1.4);
   background: var(--dshx-glass-pane);
 }
-.wSkVaW_header {
+.Dc7zOa_header {
   background: var(--dshx-glass-pane);
 }
 
 /* ===== G. 浮层玻璃：菜单 / 列表 / 工具提示 ===== */
-._list_19372_8, ._submenu_19372_9, .h8S2Va_menu, .JObwrW_panel, .QsffPG_menu,
+._list_1nxmc_8, ._submenu_1nxmc_9, .JObwrW_panel, .QsffPG_menu,
 [role="listbox"], [role="menu"], [role="tooltip"],
-._bubble_owhem_8, ._toast_fvpz7_7, ._card_1b2ny_13 {
+._bubble_1nw3t_1, ._toast_e5v0f_6, ._card_1b2ny_13 {
   -webkit-backdrop-filter: var(--dshx-blur-card);
   backdrop-filter: var(--dshx-blur-card);
   box-shadow: var(--dshx-inset-hl), var(--dshx-float-shadow);
 }
 /* 通用 dialog（设置大面板除外，它有专用规则）：模糊 + 玻璃阴影 */
-[role="dialog"]:not(.VOzbGW_panel) {
+[role="dialog"]:not(.wCInkW_panel) {
   -webkit-backdrop-filter: var(--dshx-blur-surface);
   backdrop-filter: var(--dshx-blur-surface);
   box-shadow: var(--dshx-inset-hl), var(--dshx-float-shadow);
 }
 /* 小弹窗原语：shadcn dialog-ring 外圈（大面板不适用，避免怪异描边） */
-._dialog_15u5s_22 {
+._dialog_w1urq_22 {
   -webkit-backdrop-filter: var(--dshx-blur-surface);
   backdrop-filter: var(--dshx-blur-surface);
   box-shadow: var(--dshx-inset-hl),
@@ -228,33 +228,33 @@ body[data-ds-dark-theme] {
 }
 
 /* ===== H. 表面磨砂：输入卡 / 气泡 / 卡片 / 代码块 ===== */
-.uV2eYG_card, .bqrRRG_card, .LVzXQa_card, .gdEzaW_bubble, .lXshSW_root,
-._wrap_1ao1y_1, .fV0t5q_search, ._pill_e3ygd_1,
-.md-code-block, ._block_178r4_4, ._block_10eou_7, ._block_biesw_7,
-._block_srovd_7, ._block_s66q0_7, ._block_d4nqi_7,
-.pC0e7a_body, .ydkMvW_code, ._Xvjua_body, .cvtE3a_output, .gNWCoW_output,
-.o3BgMG_ioCard, .xDAfVq_code, .Y0dWHa_payload,
-.VOzbGW_panel, .YyYd_a_card, .YyYd_a_cardOpen, .zGbnIq_rowCard,
+.uV2eYG_card, .mna1RW_card, .LVzXQa_card, .cJsG2q_bubble, .lXshSW_root,
+._wrap_1g6ru_1, .fV0t5q_search, ._pill_e3ygd_1,
+.md-code-block, ._block_rsn9u_4, ._block_1gdtu_1, ._block_onbk6_1,
+._block_12o37_1, ._block_1h7p4_1, ._block_19q7d_1,
+.XrJvXW_body, .cvtE3a_output, .gNWCoW_output,
+.ws8cKG_ioCard, .pFy1Ka_codeBody, .haSm5q_payload,
+.wCInkW_panel, .YyYd_a_card, .YyYd_a_cardOpen, .zGbnIq_rowCard,
 .At1oFq_input, .zGbnIq_input, ._7yHdaG_editor, ._7yHdaG_panel,
-.Y0dWHa_split, .Y0dWHa_details, .Y0dWHa_assistantOutput, .Y0dWHa_schema,
-._root_4qrvp_1, .Md3f7G_toBottom,
-.nLMEza_bar, .nLMEza_objectiveInput, .fNh4Da_image, .Y0dWHa_turnLabel {
+.haSm5q_split, .haSm5q_details, .haSm5q_assistantOutput, .haSm5q_schema,
+._root_4qrvp_1, .xz4KEq_toBottom,
+.nJdiTq_bar, .nJdiTq_objectiveInput, .fNh4Da_image, .haSm5q_turnLabel {
   -webkit-backdrop-filter: var(--dshx-blur-surface);
   backdrop-filter: var(--dshx-blur-surface);
 }
 
 /* ===== I. 粘性表面：近实底、无模糊（性能 + 可读性） ===== */
-._bannerWrap_178r4_21,
+._bannerWrap_rsn9u_24,
 .fV0t5q_root,
-.Y0dWHa_historyLoadingBar,
-.Y0dWHa_table th {
+.haSm5q_historyLoadingBar,
+.haSm5q_table th {
   background: var(--dshx-glass-solid);
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
 }
 
 /* ===== I2. 设置大面板：高不透明度 + 强模糊，兼顾可读性与玻璃感 ===== */
-.VOzbGW_panel {
+.wCInkW_panel {
   background: var(--dshx-glass-panel);
   box-shadow: var(--dshx-inset-hl), var(--dshx-float-shadow);
   -webkit-backdrop-filter: var(--dshx-blur-panel);
@@ -262,28 +262,55 @@ body[data-ds-dark-theme] {
 }
 
 /* ===== J. 气泡 / 输入卡细节 + 滚动条 ===== */
-.uV2eYG_card, .bqrRRG_card, .LVzXQa_card {
+.uV2eYG_card, .mna1RW_card, .LVzXQa_card {
   border-color: var(--dshx-glass-edge);
   box-shadow: 0 12px 32px -14px var(--dshx-bubble-shadow),
     var(--dshx-inset-hl);
 }
-.gdEzaW_bubble {
+.cJsG2q_bubble {
   border: 1px solid var(--dshx-glass-edge);
   box-shadow: 0 6px 20px -8px var(--dshx-bubble-shadow),
     var(--dshx-inset-hl);
 }
-body:not([data-ds-dark-theme]) .gdEzaW_bubble {
+body:not([data-ds-dark-theme]) .cJsG2q_bubble {
   border-color: rgba(37, 99, 235, 0.26);
 }
-body[data-ds-dark-theme] .gdEzaW_bubble {
+body[data-ds-dark-theme] .cJsG2q_bubble {
   border-color: rgba(96, 165, 250, 0.20);
 }
 .lXshSW_root {
   border-color: var(--dshx-glass-edge);
 }
+/* 0.1.5 的消息操作图标（复制 / 点赞 / 点踩 / 分享）是三级灰 + 15px 细描边
+ * （.xzv4MW_action 与 message-feedback 的 ._8_XoUG_action），压在玻璃上实读偏弱；
+ * 两者都提到二级灰，双写类名压过产品规则（含 [data-active]，已投票仍靠实心图标区分）。
+ * 不可用态的 0.4 透明与悬停底色仍归产品语义。 */
+.xzv4MW_action.xzv4MW_action,
+._8_XoUG_action._8_XoUG_action {
+  color: var(--dsw-alias-label-secondary);
+}
 ::-webkit-scrollbar-thumb {
   border: 2px solid transparent;
   background-clip: padding-box;
+}
+/* 宽表格：取消产品的「突破内容列」行为，改为列内横向滚动。
+ * 产品 .md-table-wide 用 100cqw 反算 breakout（负 margin + 加宽），会把表格
+ * 画到玻璃表面之外，露出裸壁纸并留下一条贯穿内容区的硬竖边（实测 x=570 CSS
+ * 处亮度骤降 47 灰阶）；把 lead/spare 归零即等于取消突破。
+ * 选择器只用稳定 token（data-chat-flow + 语义类），不依赖构建 hash；
+ * 双写类名提高特异性，以压过产品的 .hWmORq_body .md-table-wide。 */
+[data-chat-flow] .md-table-wide.md-table-wide,
+.md-table-wide.md-table-wide {
+  --dsh-table-spare: 0px;
+  --dsh-table-lead: 0px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin-left: 0;
+  padding-left: 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
 }
 
 /* ===== K. 壁纸图层 =====
@@ -318,65 +345,108 @@ body[data-ds-dark-theme] .dshx-wallpaper-tint {
  *   ⚠ 侧栏卡片禁用 backdrop-filter：footArea 内渲染 position:fixed
  *     设置弹窗，模糊的包含块会把弹窗困在侧栏里。
  *   ⚠ box-sizing 不继承：各模块显式 border-box，否则加边框后宽度不齐。 */
-.hHd-Xa_root {
-  gap: 8px;
+._2H3hWW_root {
+  gap: 12px;
 }
-.hHd-Xa_logoRow,
-.hHd-Xa_regionArea,
-.hHd-Xa_footArea,
-.hHd-Xa_newSession {
+._2H3hWW_logoRow,
+._2H3hWW_regionArea,
+._2H3hWW_footArea,
+._2H3hWW_newSession {
   box-sizing: border-box;
 }
-.hHd-Xa_logoRow {
+._2H3hWW_logoRow {
   margin-bottom: 0;
 }
-.hHd-Xa_logoRow,
-.hHd-Xa_regionArea {
+/* logo 行内容居中：产品 ._2H3hWW_brand 是 flex:1 的 inline-flex（内容默认靠左），
+ * 只改它的主轴对齐即可让鱼形 + 字标整体居中，不动产品结构。 */
+._2H3hWW_logoRow ._2H3hWW_brand {
+  justify-content: center;
+}
+._2H3hWW_logoRow,
+._2H3hWW_regionArea {
   border-radius: 14px;
 }
 /* footArea 不套卡片：内部四项各自成胶囊，外层再罩一层就是双玻璃；
  * 且它内含设置弹窗，本就不能模糊。仅保留布局。 */
-/* 磨砂：仅 logoRow / regionArea（footArea 因设置弹窗不能模糊）。 */
-.hHd-Xa_logoRow,
-.hHd-Xa_regionArea {
+/* 磨砂：regionArea、以及 logoRow 的 ::before 承载（footArea 因设置弹窗不能模糊）。
+ * ⚠ logoRow 自身绝不能挂 backdrop-filter：Windows 的折叠按钮 _2H3hWW_toggle 是
+ *   position:fixed（left:12px、top 按 --dsh-windows-titlebar-height 算，意在窗口左上角
+ *   标题栏内）。带 backdrop-filter 的祖先会成为 fixed 的包含块，把它从标题栏拖进
+ *   logo 行、压在鱼形图标上（实测 y 由 6 变 53 = logoRow.top + 6）。
+ *   改用 ::before 伪元素承载模糊：伪元素不是该按钮的祖先，包含块不受影响。 */
+/* 玻璃必须挂在 regionArea 本身：插槽 occupant 外面还套着 display:contents 的包装层，
+ * 挂在 > * 上等于挂在不可绘制的元素上（框会整个消失）。
+ * 高度用 flex:0 1 auto 贴合内容，底部不靠它撑 —— footArea 用 margin-top:auto 钉住。 */
+._2H3hWW_regionArea {
+  flex: 1;
+  min-height: 0;
   -webkit-backdrop-filter: var(--dshx-blur-card);
   backdrop-filter: var(--dshx-blur-card);
 }
-.hHd-Xa_newSession {
+._2H3hWW_logoRow {
+  position: relative;
+  isolation: isolate;
+}
+._2H3hWW_logoRow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  -webkit-backdrop-filter: var(--dshx-blur-card);
+  backdrop-filter: var(--dshx-blur-card);
+}
+._2H3hWW_newSession {
   margin: 0;
   border-radius: 14px;
   /* button 在 flex 中不自动拉伸，显式撑满与其它模块等宽 */
   align-self: stretch;
   width: 100%;
 }
-/* 工作区列表的节头负右边距会顶出卡片边界，归零保持内容在卡内 */
-.qDHVXG_sectionHeader {
+/* 工作区列表的节头负右边距会顶出卡片边界，归零保持内容在卡内。
+ * 选择器与产品同强度（._9lTDKa_root:not(._9lTDKa_rail) …），否则压不住它的 -4px。 */
+._9lTDKa_root:not(._9lTDKa_rail) ._9lTDKa_sectionHeader {
   margin-right: 0;
+  max-width: 100%;
 }
 /* 产品展开态给 regionArea 设负边距（让滚动条贴栏缘），套卡后归零对齐；
  * min-width:0 + overflow:hidden 防内容撑宽、滚动条留在卡内 */
-.hHd-Xa_regionArea {
+._2H3hWW_regionArea {
   margin-left: 0;
   margin-right: 0;
   padding-left: 0;
   min-width: 0;
   overflow: hidden;
 }
-.qDHVXG_root,
-.qDHVXG_list {
+._9lTDKa_root,
+._9lTDKa_list {
   min-width: 0;
   max-width: 100%;
 }
-.qDHVXG_sectionHeader {
-  max-width: 100%;
+/* 0.1.5 的工作区列表用负外边距把滚动条贴到栏缘（listArea/list 的 margin 为
+ * -4px / -12px）；左侧那 -4px 在玻璃卡里会被圆角裁掉，行内容看起来顶到卡边
+ * （实测 listArea 盒子 x=9，卡片 x=12）。只归零左侧，滚轮槽仍贴栏缘。 */
+._2H3hWW_regionArea ._9lTDKa_listArea,
+._2H3hWW_regionArea ._9lTDKa_list {
+  margin-left: 0;
 }
-/* 产品列表底部渐隐条（.qDHVXG_fade）终点引用侧栏底色，在玻璃卡上
+/* 0.1.5 的设置行故意比容器宽 4px（.wCInkW_triggerRow 是 width:calc(100% + 4px)
+ * 且 margin:4px -2px），画成玻璃气泡会左右各戳出 2px（实测盒子 x=10 宽 244），
+ * 收回到卡片内。 */
+._2H3hWW_settingsArea .wCInkW_triggerRow {
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+}
+/* 产品列表底部渐隐条（._9lTDKa_fade）终点引用侧栏底色，在玻璃卡上
  * 显形为一条不随圆角的直角亮带，隐藏 */
-.qDHVXG_fade {
+._9lTDKa_fade {
   display: none;
 }
-/* 折叠栏：36px 搜索圆钮超出卡内容宽，缩至 28px 居中 */
-.hHd-Xa_collapsed .qDHVXG_search {
+/* 折叠栏：产品在 rail 下把搜索控件设成 36px，超出卡内容宽 -> 缩至 28px 居中。
+ * 0.1.5 把控件拆成外层 .search 与圆钮 .searchButton，两者都要收。 */
+._9lTDKa_rail ._9lTDKa_search,
+._9lTDKa_rail ._9lTDKa_searchButton {
   width: 28px;
   height: 28px;
   margin: 0 auto 12px;
@@ -413,38 +483,38 @@ body[data-ds-dark-theme] .dshx-wallpaper-tint {
   line-height: 16px;
 }
 /* 折叠窄栏放不下第四个圆钮，隐藏切换、恢复产品 rail 布局 */
-.hHd-Xa_collapsed .dshx-theme-toggle {
+._2H3hWW_collapsed .dshx-theme-toggle {
   display: none;
 }
 /* 设置入口：宽模式整行圆角钮居中，窄栏玻璃圆钮 */
-.hHd-Xa_root:not(.hHd-Xa_collapsed) .VOzbGW_trigger {
+._2H3hWW_root:not(._2H3hWW_collapsed) .wCInkW_trigger {
   width: 100%;
   margin: 0;
   justify-content: center;
   border-radius: 14px;
 }
-.hHd-Xa_root:not(.hHd-Xa_collapsed) .VOzbGW_trigger:hover {
+._2H3hWW_root:not(._2H3hWW_collapsed) .wCInkW_trigger:hover {
   background-color: var(--dsw-alias-interactive-bg-hover);
   background-image: none;
   color: var(--dsw-alias-label-primary);
 }
-.hHd-Xa_collapsed .VOzbGW_trigger {
+._2H3hWW_collapsed .wCInkW_trigger {
   background-color: var(--dshx-glass-pane);
   background-image: var(--dshx-glass-sheen);
   border: 1px solid var(--dshx-glass-edge);
 }
 /* 底部动作区纵向堆叠；slot 框架把条目包进无类名内联包装层，
  * 余额卡按「包装层内第 2 层内联卡」定位 */
-.hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_footerActions {
+._2H3hWW_root:not(._2H3hWW_collapsed) ._2H3hWW_footerActions {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 /* 底部动作区与设置入口之间也要 8px 间隙（footArea 产品默认无 gap） */
-.hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_footArea {
+._2H3hWW_root:not(._2H3hWW_collapsed) ._2H3hWW_footArea {
   gap: 8px;
 }
-.hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_footerActions > div[style] {
+._2H3hWW_root:not(._2H3hWW_collapsed) ._2H3hWW_footerActions > div[style] {
   /* 条目包装层：透明、纵向堆叠，不套胶囊 */
   display: flex;
   flex-direction: column;
@@ -453,34 +523,34 @@ body[data-ds-dark-theme] .dshx-wallpaper-tint {
   min-width: 0;
   box-sizing: border-box;
 }
-.hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_footerActions .Nqubda_layer {
+._2H3hWW_root:not(._2H3hWW_collapsed) ._2H3hWW_footerActions .zf92ZW_layer {
   /* cordis 面板层：显式统一圆角（若是 div 而非 button，兜底选择器抓不到） */
   flex: none;
   width: 100%;
   border-radius: 14px;
 }
-.hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_footerActions > div[style] > div[style] {
+._2H3hWW_root:not(._2H3hWW_collapsed) ._2H3hWW_footerActions > div[style] > div[style] {
   /* 余额卡：内联圆角压过样式表，!important 是唯一反制手段 */
   flex: none;
   width: 100%;
   box-sizing: border-box;
   border-radius: 14px !important;
 }
-.hHd-Xa_root:not(.hHd-Xa_collapsed) .dshx-theme-toggle {
+._2H3hWW_root:not(._2H3hWW_collapsed) .dshx-theme-toggle {
   flex: none;
   width: 100%;
   border-radius: 14px;
 }
 /* 侧栏按钮统一 14px 与模块卡同语言；折叠栏小尺寸圆形图标钮除外 */
-.hHd-Xa_root:not(.hHd-Xa_collapsed) button,
-.hHd-Xa_root:not(.hHd-Xa_collapsed) [role="button"] {
+._2H3hWW_root:not(._2H3hWW_collapsed) button,
+._2H3hWW_root:not(._2H3hWW_collapsed) [role="button"] {
   border-radius: 14px;
 }
 /* 会话头部 tabs：拆成独立玻璃胶囊 */
-.wSkVaW_tabs {
+.Dc7zOa_tabs {
   gap: 8px;
 }
-.wSkVaW_tab {
+.Dc7zOa_tab {
   background: var(--dshx-glass-pane);
   /* 本地声明 sheen：hover/激活用 background 简写即可整体复位 */
   background-image: var(--dshx-glass-sheen);
@@ -488,10 +558,10 @@ body[data-ds-dark-theme] .dshx-wallpaper-tint {
   border-radius: 10px;
   padding: 6px 14px 8px;
 }
-.wSkVaW_tab:hover {
+.Dc7zOa_tab:hover {
   background: var(--dsw-alias-interactive-bg-hover);
 }
-.wSkVaW_tabActive {
+.Dc7zOa_tabActive {
   /* 激活态：实填充+描边代替产品的蓝字/蓝下划线 */
   color: var(--dsw-alias-label-primary);
   font-weight: 600;
@@ -499,15 +569,15 @@ body[data-ds-dark-theme] .dshx-wallpaper-tint {
   border-color: var(--dshx-glass-edge);
   box-shadow: var(--dshx-inset-hl);
 }
-.wSkVaW_tabActive:after {
+.Dc7zOa_tabActive:after {
   background: transparent;
 }
 /* 移除会话头部底部的 1px 发丝分隔线（玻璃头部下这条线非常刺眼） */
-.wSkVaW_header:after {
+.Dc7zOa_header:after {
   background: transparent;
 }
 /* 状态栏（会话统计行）：居中玻璃胶囊 */
-.FJxK0a_root {
+.bOPqQW_root {
   width: max-content;
   max-width: min(var(--dsh-chat-content-width), calc(100% - 32px));
   margin: 0 auto;
@@ -517,7 +587,7 @@ body[data-ds-dark-theme] .dshx-wallpaper-tint {
 
 /* ===== M. 模块化玻璃补充：hero 芯片 / 工具控件 / 对话流气泡 ===== */
 /* 新会话 hero：工作区选择与 Agent 预设芯片 */
-.pXSMma_workspace,
+.Hqq-bq_workspace,
 .cubgiG_seat {
   border-radius: 999px;
 }
@@ -537,16 +607,22 @@ body[data-ds-dark-theme] .dshx-wallpaper-tint {
   border: 1px solid var(--dshx-glass-edge);
 }
 /* 对话流节点独立玻璃卡；嵌套子节点透明防套娃。
- * 用 data-chat-flow-kind 选择，语义稳定、不依赖构建 hash */
-[data-chat-flow] [data-chat-flow-kind="assistant-step"],
-[data-chat-flow] [data-chat-flow-kind="tool-call"],
-[data-chat-flow] [data-chat-flow-kind="command"],
-[data-chat-flow] [data-chat-flow-kind="command-input"],
-[data-chat-flow] [data-chat-flow-kind="context"],
-[data-chat-flow] [data-chat-flow-kind="compaction"],
-[data-chat-flow] [data-chat-flow-kind="manual-compaction"],
-[data-chat-flow] [data-chat-flow-kind="model-retry"],
-[data-chat-flow] [data-chat-flow-kind="workflow-run"] {
+ * 用 data-chat-flow-kind 选择，语义稳定、不依赖构建 hash。
+ * ⚠ 0.1.5 把这个属性放在外层布局包装（xz4KEq_flowItem）上，且被折叠的轮次成员带
+ * hidden="until-found"（Chromium 下等价 content-visibility:hidden：内容 0 高，
+ * 但元素自身的 padding 照常渲染）→ 无条件加 6px/10px 内边距会把每个折叠成员撑成
+ * **正好 12px** 的玻璃条，实测 157 条叠成一条横带。故排除产品标记为隐藏的成员。 */
+[data-chat-flow] [data-chat-flow-kind]:is(
+  [data-chat-flow-kind="assistant-step"],
+  [data-chat-flow-kind="tool-call"],
+  [data-chat-flow-kind="command"],
+  [data-chat-flow-kind="command-input"],
+  [data-chat-flow-kind="context"],
+  [data-chat-flow-kind="compaction"],
+  [data-chat-flow-kind="manual-compaction"],
+  [data-chat-flow-kind="model-retry"],
+  [data-chat-flow-kind="workflow-run"]
+):not([hidden]):not([data-turn-process-hidden="true"]) {
   background: var(--dshx-glass-pane);
   background-image: var(--dshx-glass-sheen);
   border-radius: 14px;
@@ -566,11 +642,12 @@ body[data-ds-dark-theme] .dshx-wallpaper-tint {
 }
 
 /* ===== N. 会话头部：标题胶囊 / 模式标签 / session log ===== */
-.wSkVaW_crumbs {
+.Dc7zOa_crumbs {
   border-radius: 12px;
   padding: 2px 8px;
 }
-.SVAs4q_label {
+.SVAs4q_label,
+.rtYPxa_label {
   border-radius: 999px;
   height: 24px;
   padding: 0 10px 0 6px;
@@ -580,14 +657,14 @@ body[data-ds-dark-theme] .dshx-wallpaper-tint {
   --dsw-hovercard-bg: var(--dshx-glass-float);
   border: 1px solid var(--dshx-glass-edge);
 }
-._card_1b2ny_13 .YDXeBa_hoverTitle {
+._card_1b2ny_13 .hIlkoa_hoverTitle {
   color: var(--dsw-alias-label-primary);
 }
-._card_1b2ny_13 .YDXeBa_hoverPath,
-._card_1b2ny_13 .YDXeBa_hoverTime {
+._card_1b2ny_13 .hIlkoa_hoverPath,
+._card_1b2ny_13 .hIlkoa_hoverTime {
   color: var(--dsw-alias-label-secondary);
 }
-._card_1b2ny_13 .YDXeBa_hoverStatus {
+._card_1b2ny_13 .hIlkoa_hoverStatus {
   color: var(--dsw-alias-label-tertiary);
 }
 ._card_1b2ny_13 ._copied_1b2ny_40 {
@@ -598,55 +675,177 @@ body[data-ds-dark-theme] .dshx-wallpaper-tint {
  *   ⚠ 透明容器（如 footArea）不入组：挂 sheen 会留方角残影。
  *   ⚠ .uV2eYG_select 不入组：须保留下拉箭头的 background-image。
  *   ⚠ 折叠态设置圆钮不入组：rail 内无高光。 */
-.hHd-Xa_logoRow,
-.hHd-Xa_regionArea,
-.wSkVaW_crumbs,
+._2H3hWW_logoRow,
+._2H3hWW_regionArea,
+.Dc7zOa_crumbs,
 .SVAs4q_label,
-.FJxK0a_root,
-.pXSMma_workspace,
+.bOPqQW_root,
+.Hqq-bq_workspace,
 .cubgiG_seat,
-.hHd-Xa_root:not(.hHd-Xa_collapsed) .VOzbGW_trigger,
-.hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_footerActions > div[style] > div[style],
-.hHd-Xa_root:not(.hHd-Xa_collapsed) .dshx-theme-toggle {
+._2H3hWW_root:not(._2H3hWW_collapsed) .wCInkW_trigger,
+._2H3hWW_root:not(._2H3hWW_collapsed) ._2H3hWW_footerActions > div[style] > div[style],
+._2H3hWW_root:not(._2H3hWW_collapsed) .dshx-theme-toggle {
   background-color: var(--dshx-glass-pane);
   border: 1px solid var(--dshx-glass-edge);
   box-shadow: var(--dshx-inset-hl);
 }
 /* 产品自带边框的成员只覆写颜色 */
-.hHd-Xa_newSession,
-.nL4_yW_sessionLogButton {
+/* 底部两块各自成卡，不合并：footerActions（主题切换等）与 settingsArea（账号/头像）
+ * 是两件事，合在一张卡里会让人以为是同一个模块。
+ * footArea 只做布局：flex:none + margin-top:auto 把它钉在侧栏底部（regionArea 是
+ * 内容高度，撑不到底，靠 auto margin 吃掉剩余空间）。
+ * ⚠ 模糊挂在各自的 ::before 上：footerActions 内会渲染 position:fixed 的设置弹窗，
+ *   元素自身带 backdrop-filter 会把弹窗困在侧栏里（与 logoRow 同一条纪律）。 */
+._2H3hWW_root ._2H3hWW_footArea {
+  flex: none;
+  margin-top: auto;
+  margin-bottom: 0;
+  gap: 12px;
+}
+/* 模块间距统一：产品自带 margin（logoRow margin-bottom:12px、newSession
+ * margin-top:8px、panelList margin-bottom:8px）和 root 的 gap 叠加后，实测间距是
+ * 25/20/20/20/15 混杂。全部清零，间距只由 root 与 footArea 的 gap 决定。 */
+/* 间距统一：产品自带 margin（logoRow margin-bottom:12px、newSession margin-top:8px、
+ * panelList margin-bottom:8px）与 root 的 gap 叠加。实测间距曾是 20/12/20/12/8。
+ * 单类选择器会被产品同级规则按文档顺序反超，所以统一加 ._2H3hWW_root 前缀提特异性。 */
+/* 间距统一：产品自带 margin（logoRow bottom:12px、newSession top:8px、panelList
+ * bottom:8px）与容器 gap 叠加，实测 20/12/20/12/8。产品的样式表在皮肤之后注入，
+ * 同特异性按文档顺序由产品胜出 —— 所以这里加 html 前缀把特异性抬到 (0,2,1)。 */
+html body ._2H3hWW_root ._2H3hWW_logoRow,
+html body ._2H3hWW_root ._2H3hWW_newSession,
+html body ._2H3hWW_root ._2H3hWW_panelList,
+html body ._2H3hWW_root ._2H3hWW_regionArea,
+html body ._2H3hWW_root ._2H3hWW_footerActions,
+html body ._2H3hWW_root ._2H3hWW_settingsArea,
+html body ._2H3hWW_root ._2H3hWW_footArea {
+  margin: 0;
+}
+html body ._2H3hWW_root ._2H3hWW_footArea {
+  margin-top: auto;
+  margin-bottom: 0;
+  gap: 12px;
+}
+/* 产品的样式表在皮肤之后注入，同特异性按文档顺序由产品胜出 —— 这里再加一层 body
+ * 把特异性抬到 (0,2,2)，压住 logoRow 的 margin-bottom:12px、newSession 的
+ * margin-top:8px、panelList 的 margin-bottom:8px。 */
+html body ._2H3hWW_root ._2H3hWW_logoRow,
+html body ._2H3hWW_root ._2H3hWW_newSession {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+/* 主题切换按钮（.dshx-theme-toggle）自己就是一颗玻璃胶囊，footerActions 再套一张卡
+ * 就是框套框 —— 所以 footerActions 只做布局不套卡。
+ * 设置区（账号/头像）独立成卡：宽度与其它模块一致（撑满），高度只占 34px 一档，
+ * 比 40px 的按钮行矮，视觉上更轻。 */
+._2H3hWW_settingsArea {
+  position: relative;
+  isolation: isolate;
+  box-sizing: border-box;
+  border-radius: 14px;
+  background-color: var(--dshx-glass-pane);
+  border: 1px solid var(--dshx-glass-edge);
+  box-shadow: var(--dshx-inset-hl);
+  background-image: var(--dshx-glass-sheen);
+  padding: 0 10px;
+  height: 42px;
+  min-height: 42px;
+  width: 100%;
+  align-self: stretch;
+  /* 产品只在折叠态给 settingsArea 加 flex，展开态是普通块 —— 内容默认靠左，
+   * 头像那行和上面的「深色」按钮不对齐。显式居中。 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* 账户行自己的容器撑满宽度，光居中 settingsArea 不够，要把子元素也拉齐。 */
+._2H3hWW_settingsArea > *,
+._2H3hWW_settingsArea button,
+._2H3hWW_settingsArea [role="button"] {
+  width: 100%;
+  justify-content: center;
+  text-align: center;
+}
+._2H3hWW_settingsArea::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  -webkit-backdrop-filter: var(--dshx-blur-card);
+  backdrop-filter: var(--dshx-blur-card);
+}
+/* 侧栏模块卡的节奏统一：产品自身高矮宽窄就是混的 —— logoRow 36px、newSession 38px、
+ * panelRow 36px 且 margin:0 2px（比卡片窄 4px）。各自套上玻璃后整齐感全无，这里统一
+ * 成 40px 高、同样的左右边距，圆角一律 14px，间距一律 8px。 */
+._2H3hWW_logoRow,
+._2H3hWW_newSession,
+._2H3hWW_panelRow {
+  height: 40px;
+  min-height: 40px;
+  margin-left: 0;
+  margin-right: 0;
+  box-sizing: border-box;
+}
+/* logo 行与设置行比通用按钮行更高一档（用户要求）。 */
+._2H3hWW_logoRow {
+  height: 48px;
+  min-height: 48px;
+}
+._2H3hWW_panelList {
+  gap: 8px;
+  margin-bottom: 8px;
+}
+._2H3hWW_root {
+  gap: 12px;
+}
+/* 侧栏面板项（插件 / 工作区 / 会话…）：产品默认 background:0 0，套上玻璃才有框；
+ * 产品是左对齐 + padding 7px 8px，内容居中后与 logo 行、新会话按钮同一语言。 */
+._2H3hWW_panelRow {
+  background-color: var(--dshx-glass-pane);
+  border: 1px solid var(--dshx-glass-edge);
+  box-shadow: var(--dshx-inset-hl);
+  background-image: var(--dshx-glass-sheen);
+  border-radius: 14px;
+  justify-content: center;
+}
+._2H3hWW_newSession {
   background-color: var(--dshx-glass-pane);
   border-color: var(--dshx-glass-edge);
   box-shadow: var(--dshx-inset-hl);
 }
 /* 镜面 sheen（tab 例外：其 hover/激活用 background 简写整体复位，故本地声明） */
-.hHd-Xa_logoRow, .hHd-Xa_regionArea, .hHd-Xa_newSession,
-.wSkVaW_crumbs, .SVAs4q_label, .nL4_yW_sessionLogButton,
-.FJxK0a_root, .pXSMma_workspace, .cubgiG_seat,
-.uV2eYG_card, .bqrRRG_card, .LVzXQa_card, .gdEzaW_bubble, .VOzbGW_panel,
-.hHd-Xa_root:not(.hHd-Xa_collapsed) .VOzbGW_trigger,
-.hHd-Xa_root:not(.hHd-Xa_collapsed) .hHd-Xa_footerActions > div[style] > div[style],
-.hHd-Xa_root:not(.hHd-Xa_collapsed) .dshx-theme-toggle {
+._2H3hWW_logoRow, ._2H3hWW_regionArea, ._2H3hWW_newSession,
+.Dc7zOa_crumbs, .SVAs4q_label,
+.bOPqQW_root, .Hqq-bq_workspace, .cubgiG_seat,
+.uV2eYG_card, .mna1RW_card, .LVzXQa_card, .cJsG2q_bubble, .wCInkW_panel,
+._2H3hWW_root:not(._2H3hWW_collapsed) .wCInkW_trigger,
+._2H3hWW_root:not(._2H3hWW_collapsed) ._2H3hWW_footerActions > div[style] > div[style],
+._2H3hWW_root:not(._2H3hWW_collapsed) .dshx-theme-toggle {
   background-image: var(--dshx-glass-sheen);
 }
 
 /* ===== P. 渐变鎏金 logo =====
  *   仅图标做金色渐变+闪烁；文字字标保持主题色（金在浅玻璃上对比不足）。 */
-.hHd-Xa_brandMark,
-.hHd-Xa_railMark,
-.pXSMma_fish {
+._2H3hWW_brandMark,
+._2H3hWW_railMark,
+.Hqq-bq_fish {
   color: #d4af37;
 }
-.hHd-Xa_brandMark path,
-.hHd-Xa_railMark path,
-.pXSMma_fish path {
+._2H3hWW_brandMark path,
+._2H3hWW_railMark path,
+.Hqq-bq_fish path {
   fill: url(#dshx-gold);
+  /* 0.2.0 的 FishLogo 是「鱼 + 方框」四个子路径：方框只有描边、没有填充，
+   * 只染 fill 会让方框保持主题色压在金鱼上，所以描边一并上鎏金。 */
+  stroke: url(#dshx-gold);
 }
 /* 新会话 hero 的「预览版」徽标：按需求隐藏 */
-.pXSMma_previewBadge {
+.Hqq-bq_previewBadge {
   display: none;
 }
-.pXSMma_headlineText {
+/* 0.1.5 的 hero 标题文字是 .Hqq-bq_titleGroup 内的第一个裸 span（旧 .headlineText 已移除）：
+ * 只染文字，不碰同级的「预览版」徽标。 */
+.Hqq-bq_titleGroup > span:first-child {
   background: linear-gradient(135deg, #f7e08a 0%, #d4af37 45%, #9a6b0f 100%);
   -webkit-background-clip: text;
   background-clip: text;
@@ -662,18 +861,55 @@ body[data-ds-dark-theme] .dshx-wallpaper-tint {
     filter: brightness(1.12) drop-shadow(0 0 2px rgba(255, 220, 120, 0.28));
   }
 }
-.hHd-Xa_brandMark svg,
-.hHd-Xa_railMark svg,
-.pXSMma_fish,
-.pXSMma_headlineText {
+._2H3hWW_brandMark svg,
+._2H3hWW_railMark svg,
+.Hqq-bq_fish,
+.Hqq-bq_titleGroup > span:first-child {
   animation: dshx-gold-shimmer 2.6s ease-in-out infinite;
 }
 @media (prefers-reduced-motion: reduce) {
-  .hHd-Xa_brandMark svg,
-  .hHd-Xa_railMark svg,
-  .pXSMma_fish,
-  .pXSMma_headlineText {
+  ._2H3hWW_brandMark svg,
+  ._2H3hWW_railMark svg,
+  .Hqq-bq_fish,
+  .Hqq-bq_titleGroup > span:first-child {
     animation: none;
     filter: drop-shadow(0 0 1px rgba(212, 175, 55, 0.30));
   }
+}
+
+/* ===== Q. 清单过期标记 =====
+ * 任务面板的内容 = 最近一次 todo_write 的整表；工具是整表替换且没有节奏看护，
+ * 实测同一会话里重写间隔中位数 ~10 分钟、最长 403 分钟，其间面板仍显示旧状态。
+ * 本标记只做诚实性提示，不参与布局竞争、不改产品数据。 */
+.dshx-plan-stale {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 18px;
+  padding: 0 7px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+  color: #8a5a06;
+  background: rgba(217, 119, 6, 0.12);
+  border: 1px solid rgba(217, 119, 6, 0.32);
+  /* 标记只是提示：点击仍落到底下的折叠按钮上 */
+  pointer-events: none;
+}
+.dshx-plan-stale::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.85;
+}
+body[data-ds-dark-theme] .dshx-plan-stale {
+  color: #f2cf7a;
+  background: rgba(251, 191, 36, 0.14);
+  border-color: rgba(251, 191, 36, 0.34);
 }
