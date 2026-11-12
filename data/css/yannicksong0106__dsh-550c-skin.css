@@ -1,5 +1,5 @@
 /* yannicksong0106/dsh-550c-skin — src/skin.css
-   fetched 2026-11-04 from https://raw.githubusercontent.com/yannicksong0106/dsh-550c-skin/master/src/skin.css
+   fetched 2026-11-12 from https://raw.githubusercontent.com/yannicksong0106/dsh-550c-skin/master/src/skin.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* ═══════════════════════════════════════════════════════════════════════════
    550C · DSH skin — the style layer
@@ -340,6 +340,19 @@ html[data-550c] .c-crt {
   overflow: hidden;
 }
 
+/* The same darwin exemption as .c-crt above, for the layers added later.
+   Issue #3: on macOS the window could not be dragged while the skin was on —
+   `html[data-platform=darwin] body > :not(#root)` turns every direct body child
+   into a no-drag rectangle, and these three cover the whole viewport, so they
+   subtract the entire window from the draggable area. `initial` computes to
+   `none`, which takes the layer out of that computation instead of punching a
+   no-drag hole through the whole window. */
+html[data-550c] .c-grid,
+html[data-550c] .c-eye,
+html[data-550c] .c-lift {
+  -webkit-app-region: initial !important;
+}
+
 /* Scanlines: a 3px period at very low alpha. The alpha is load-bearing —
    anything above ~0.2 turns 12px CJK into mush. */
 html[data-550c] .c-crt .c-scan {
@@ -354,7 +367,11 @@ html[data-550c] .c-crt .c-roll {
   position: absolute;
   left: 0;
   right: 0;
+  top: 0;
   height: 28vh;
+  /* 【性能】原来动画 top（每帧布局 + 重绘整条 28vh 的渐变）。
+     改成 transform，交给合成层；will-change 让它只提升一次。 */
+  will-change: transform;
   background: linear-gradient(
     180deg,
     rgba(var(--c-glow-rgb), 0) 0%,
@@ -366,10 +383,10 @@ html[data-550c] .c-crt .c-roll {
 
 @keyframes c-roll {
   from {
-    top: -30vh;
+    transform: translateY(-30vh);
   }
   to {
-    top: 100vh;
+    transform: translateY(100vh);
   }
 }
 
@@ -510,8 +527,9 @@ html[data-550c] .c-mark {
   grid-template-columns: repeat(var(--cols), var(--cell));
   gap: 1px;
   flex: none;
-  /* A slow breathing glow on the whole mark, on top of the per-cell shimmer. */
-  animation: c-mark-breathe 5.2s ease-in-out infinite;
+  /* 【性能】这里原来挂着 c-mark-breathe（对容器做 filter 动画）。
+     filter 每帧都要重绘整块 95 格的点阵，实测占皮肤总 CPU 的三分之二。
+     呼吸感由每个格子的 c-mark-shimmer 提供，容器不再单独动画。 */
 }
 
 html[data-550c] .c-cell {
@@ -535,12 +553,10 @@ html[data-550c] .c-cell[data-lit='1'] {
 @keyframes c-mark-shimmer {
   0%,
   100% {
-    opacity: 0.62;
-    box-shadow: 0 0 3px rgba(var(--c-glow-rgb), 0.45);
+    opacity: 0.45;
   }
-  45% {
+  50% {
     opacity: 1;
-    box-shadow: 0 0 9px rgba(var(--c-glow-rgb), 0.95);
   }
 }
 
@@ -590,16 +606,6 @@ html[data-550c] .c-console-head[data-550c-working] .c-console-state {
    two rhythms at once would muddy the sweep. */
 html[data-550c] .c-console-head[data-550c-working] .c-mark {
   animation: none;
-}
-
-@keyframes c-mark-breathe {
-  0%,
-  100% {
-    filter: brightness(0.94);
-  }
-  50% {
-    filter: brightness(1.12);
-  }
 }
 
 /* ── the rate meter, in the header right after the mark ──────────────────── */
@@ -808,10 +814,10 @@ html[data-550c] .c-load-cell[data-lit='1'] {
 @keyframes c-load-flow {
   0%,
   100% {
-    filter: brightness(0.78);
+    opacity: 0.55;
   }
   45% {
-    filter: brightness(1.3);
+    opacity: 1;
   }
 }
 
@@ -1342,5 +1348,348 @@ html[data-550c] .c-grid::before {
   html[data-550c] .c-crt .c-flicker {
     display: none;
   }
+}
+
+/* ── 后台暂停 ───────────────────────────────────────────────────────────────
+   窗口被最小化 / 切到后台时，CSS 动画不会自己停：Chrome 仍按 vsync 推进这些
+   无限动画，实测后台也能吃掉 30% CPU。这里由客户端半边在 visibilitychange
+   时挂上 data-550c-idle，把整棵树的动画暂停在当前位置。 */
+html[data-550c][data-550c-idle] *,
+html[data-550c][data-550c-idle] *::before,
+html[data-550c][data-550c-idle] *::after {
+  animation-play-state: paused !important;
+}
+
+/* ── 亮色主题（纸白）───────────────────────────────────────────────────────
+   磷光在亮底上不成立：辉光在 token 层已经是 none，这里再把扫描线、闪烁、
+   光斑压到"几乎只是纹理"的程度，并把点阵/读数的发光阴影去掉 —— 否则纸白底
+   上会糊成一片脏。 */
+html[data-550c][data-550c-tone='light'] .c-crt .c-scan {
+  opacity: 0.16;
+}
+html[data-550c][data-550c-tone='light'] .c-crt .c-flicker {
+  display: none;
+}
+html[data-550c][data-550c-tone='light'] .c-crt .c-roll {
+  opacity: 0.3;
+}
+html[data-550c][data-550c-tone='light'] .c-crt .c-vig {
+  opacity: 0.24;
+}
+html[data-550c][data-550c-tone='light'] .c-cell[data-lit='1'],
+html[data-550c][data-550c-tone='light'] .c-load-cell[data-lit='1'] {
+  box-shadow: none;
+}
+
+/* ── 护眼模式 ──────────────────────────────────────────────────────────────
+   整屏一层很淡的暖色，用 multiply 而不是普通叠加：它压的是亮度，不是刷一层膜，
+   所以深色配色不会变灰、纸白也不会变成黄纸。 */
+.c-eye {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2147483000;
+  background: rgba(255, 176, 96, 0.13);
+  mix-blend-mode: multiply;
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+html[data-550c][data-550c-eye='on'] .c-eye {
+  opacity: 1;
+}
+
+/* ── 亮度曝光层 ────────────────────────────────────────────────────────────
+   滑块调的不是某几个 token，而是**整个界面**的曝光：screen 提亮（黑也能抬起来，
+   brightness() 对近黑无效）、multiply 压暗。图片、代码高亮、边框、CRT 层全覆盖。 */
+.c-lift {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2147483001;
+  background: #fff;
+  opacity: 0;
+  mix-blend-mode: screen;
+  transition: opacity 120ms linear;
+  will-change: opacity;
+}
+
+/* ── 15. THE RIGHT SIDEBAR DASHBOARD ────────────────────────────────────── */
+
+/* 右栏顶部的一块读数：地球 / 链路 / 逐核占用。
+   右栏平时是「指南」页 —— 一个标题加四张门卡。那块位置是整屏视觉最先落下的
+   地方，却只用来放四个入口，所以读数挪上去、入口下移。
+
+   全部是皮肤自己的节点（.c-*），不碰 DSH 的盒子；右栏关闭时这些节点也不存在。 */
+
+html[data-550c] .c-dash {
+  margin: 0 0 12px;
+  padding: 0 10px;
+  font-family: var(--c-mono);
+}
+
+/* 右栏可以很宽（默认是画幅的 45%），宽的时候仪表排成两栏：地球在左，
+   读数在右，不然一行 48 个点阵字符会拉成一条细线。 */
+html[data-550c] .c-dash[data-wide='on'] {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  column-gap: 18px;
+  align-items: start;
+}
+
+html[data-550c] .c-dash[data-wide='on'] .c-dash-head {
+  grid-column: 1 / -1;
+}
+
+html[data-550c] .c-dash[data-wide='on'] .c-dash-globe {
+  grid-row: span 2;
+  height: 168px;
+}
+
+html[data-550c] .c-dash[data-wide='on'] .c-dash-canvas {
+  width: 150px;
+  height: 150px;
+}
+
+html[data-550c] .c-dash-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 2px 7px;
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  color: var(--c-amber);
+  border-bottom: 1px solid var(--c-rule-color);
+}
+
+html[data-550c] .c-dash-clock {
+  color: var(--c-text);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+}
+
+html[data-550c] .c-dash-globe {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 150px;
+  margin-top: 4px;
+}
+
+html[data-550c] .c-dash-canvas {
+  width: 134px;
+  height: 134px;
+  display: block;
+}
+
+html[data-550c] .c-dash-globe-label,
+html[data-550c] .c-dash-globe-speed {
+  position: absolute;
+  bottom: 2px;
+  font-size: 8px;
+  letter-spacing: 0.22em;
+  color: var(--c-text-faint);
+}
+
+html[data-550c] .c-dash-globe-label { left: 2px; }
+html[data-550c] .c-dash-globe-speed { right: 2px; letter-spacing: 0.1em; }
+
+html[data-550c] .c-dash-card {
+  position: relative;
+  margin-top: 10px;
+  padding: 10px 11px 11px;
+  border-radius: 9px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--c-amber) 5%, transparent), color-mix(in srgb, var(--c-amber) 2%, transparent));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c-amber) 10%, transparent);
+}
+
+html[data-550c] .c-dash-card-label {
+  margin-bottom: 6px;
+  font-size: 8.5px;
+  letter-spacing: 0.22em;
+  color: var(--c-text-dim);
+}
+
+html[data-550c] .c-dash-line {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 18px;
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  color: var(--c-text-dim);
+}
+
+html[data-550c] .c-dash-name {
+  font-weight: 400;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: var(--c-text);
+}
+
+html[data-550c] .c-dash-num {
+  margin-left: auto;
+  font-size: 10.5px;
+  color: var(--c-text);
+  font-variant-numeric: tabular-nums;
+}
+
+html[data-550c] .c-dash-state {
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: var(--c-amber-b);
+}
+
+html[data-550c] .c-dash-state[data-tone='bad'] { color: var(--c-red); }
+
+html[data-550c] .c-dash-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--c-amber);
+  box-shadow: 0 0 7px var(--c-amber);
+  flex: none;
+}
+
+html[data-550c] .c-dash-arrow { font-size: 8px; color: var(--c-amber); }
+
+html[data-550c] .c-dash-sub {
+  padding-left: 19px;
+  margin-top: 1px;
+  font-size: 8.5px;
+  letter-spacing: 0.06em;
+  color: var(--c-text-dim);
+  opacity: 1;
+}
+
+html[data-550c] .c-dash-track {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--c-amber) 10%, transparent);
+  overflow: hidden;
+  position: relative;
+}
+
+html[data-550c] .c-dash-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 2px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--c-amber) 55%, transparent), var(--c-amber));
+  transition: width 220ms linear;
+}
+
+/* 逐核：盲文点阵。ghost 是满点底（极暗），live 叠在上面显示实际值。 */
+html[data-550c] .c-dash-matrix {
+  position: relative;
+  margin-top: 7px;
+  font-size: 9px;
+  line-height: 12px;
+  letter-spacing: 0;
+  white-space: pre;
+  overflow: hidden;
+}
+
+html[data-550c] .c-dash-ghost { display: block; color: color-mix(in srgb, var(--c-amber) 22%, transparent); }
+
+html[data-550c] .c-dash-live {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+}
+
+html[data-550c] .c-dash-live span { color: var(--c-amber); }
+html[data-550c] .c-dash-live span[data-hot='on'] { color: var(--c-amber-b); }
+
+html[data-550c] .c-dash-ruler,
+html[data-550c] .c-dash-stat {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 3px;
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  color: var(--c-text-dim);
+  opacity: 1;
+}
+
+html[data-550c] .c-dash-stat { justify-content: flex-start; margin-top: 1px; }
+
+/* 侧边栏收起动画期间：内容会缩到 0 宽，块会溢到对话区右上角。 */
+html[data-550c] .c-dash[data-collapsed='1'] {
+  visibility: hidden;
+}
+
+/* layout-exempt: 只改纵向对齐，不改任何盒尺寸。仪表在侧边栏顶部，入口必须
+   紧贴它往下排；应用默认把指南页在剩余空间里垂直居中，仪表一插进来就会
+   留出一大片空白、四张卡被推到屏幕底部。 */
+html[data-550c] [data-rightbar-col] [class*='_guide'] {
+  justify-content: flex-start !important;
+}
+
+/* layout-exempt: 指南页顶部那块"指南针"插图，仪表接管后它只是重复装饰，
+   且把入口往下推了 56px。display:none 只作用于这一个装饰块。 */
+html[data-550c] [data-rightbar-col] [class*='_hero'] {
+  display: none !important;
+}
+
+/* 550C 字标（与对话框左上角同一个字形表，4×5 单元）。 */
+html[data-550c] .c-dash-mark {
+  --cell: 5px;
+  --gap: 3px;
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 22), var(--cell));
+  gap: var(--gap);
+  margin: 6px 0 10px;
+  width: max-content;
+}
+
+html[data-550c] .c-dash-mark .c-cell {
+  width: var(--cell);
+  height: var(--cell);
+  background: var(--c-amber);
+  opacity: 0.9;
+}
+
+html[data-550c] .c-dash-mark .c-cell[data-on='0'] {
+  background: transparent;
+}
+
+html[data-550c] .c-dash-source {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-style: normal;
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  color: var(--c-text-faint);
+  opacity: 0.8;
+}
+
+/* 右栏仪表的分件开关（设置里的三个「显示/隐藏」） */
+html[data-550c] .c-dash[data-hide-globe='1'] .c-dash-globe,
+html[data-550c] .c-dash[data-hide-globe='1'] .c-dash-globe-label {
+  display: none;
+}
+
+html[data-550c] .c-dash[data-hide-link='1'] .c-dash-link {
+  display: none;
+}
+
+html[data-550c] .c-dash[data-hide-system='1'] .c-dash-sys {
+  display: none;
+}
+
+/* 侧边栏切到功能页时：整块仪表退出这一栏 —— 读数、卡片、**连 550C 字标一起**。
+   功能页的空间归页面主人（比如 DrawAI 把 文件/编辑/图层/视图/导出 铺在 tabBody
+   顶上），装饰在那儿没有任何"让得开"的空档：侧栏拖到最小宽度时它的工具条会换行，
+   字标就算只占一行也会被压在里面。
+   早先想"只留字标"，无论是按类名判断还是按几何做命中测试都救不回来 ——
+   撞的不是盒子而是换行后的排版。所以判据只剩一条：不是指南页，就整块不在。 */
+html[data-550c] .c-dash[data-compact='1'] {
+  display: none !important;
 }
 
