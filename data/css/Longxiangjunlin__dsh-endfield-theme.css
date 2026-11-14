@@ -1,5 +1,5 @@
 /* Longxiangjunlin/dsh-endfield-theme — client/theme.css
-   fetched 2026-11-06 from https://raw.githubusercontent.com/Longxiangjunlin/dsh-endfield-theme/main/client/theme.css
+   fetched 2026-11-14 from https://raw.githubusercontent.com/Longxiangjunlin/dsh-endfield-theme/main/client/theme.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* ==========================================================================
    dsh-endfield-theme — 终末地 / ENDFIELD
@@ -200,6 +200,10 @@ html[data-ef-crt='off'] #ef-crt {
   --ef-power-low: #ff9b21;
   --ef-power-empty: #ff3b30;
   --ef-power-accent: var(--ef-power-nominal);
+  /* Two roles the panel needs beyond the state colour: muted labels, and the values they label.
+     Tokens rather than literals, because the light scheme has to invert both. */
+  --ef-power-muted: #adb2b8;
+  --ef-power-strong: #edf0ea;
 }
 
 /* The panel is fixed at the bottom-left, over the sidebar's scrollable list. While docked, its
@@ -207,6 +211,75 @@ html[data-ef-crt='off'] #ef-crt {
    workspace list scrolls above it instead of disappearing beneath it. */
 /* Folded. The title strip is the control; everything that is not the one-line readout goes
    away, and the panel's own height (and therefore the list's reserved margin) follows. */
+/* Price period. Three tight lines: which side of the peak we are on, both prices, and how long
+   until it flips. It sits under the gauge and inherits the panel's typography. */
+#ef-power .ef-power__peak {
+  margin-top: 7px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(242, 240, 19, 0.16);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+#ef-power .ef-power__peak[hidden] {
+  display: none;
+}
+
+#ef-power .ef-power__peakLine {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 6px;
+  font-size: 11px;
+  line-height: 15px;
+}
+
+/* The unit belongs to the number in front of it, so it sits right after it instead of being
+   pushed to the far edge by the line's own spacing. */
+#ef-power .ef-power__peakUnit {
+  margin-left: -3px;
+}
+
+#ef-power .ef-power__peakLabel,
+#ef-power .ef-power__peakUnit {
+  color: var(--ef-power-muted);
+  letter-spacing: 0.04em;
+}
+
+#ef-power .ef-power__peakState {
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--ef-power-accent);
+}
+
+#ef-power .ef-power__peakState[data-state='peak'] {
+  color: var(--ef-power-low);
+}
+
+#ef-power .ef-power__peakRight {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  margin-left: auto;
+}
+
+#ef-power .ef-power__peakPrices {
+  color: var(--ef-power-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+#ef-power .ef-power__peakTimer {
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--ef-power-strong);
+}
+
+html[data-ef-power-fold='off'] #ef-power .ef-power__peak {
+  display: none;
+}
+
 #ef-power .ef-power__head {
   cursor: pointer;
   user-select: none;
@@ -406,9 +479,11 @@ html[data-ef-balance='off'] #ef-power {
    dark ticks used above would vanish into it. */
 body:not([data-ds-dark-theme]) #ef-power {
   color: #14170f;
-  --ef-power-nominal: #6b6a00;
-  --ef-power-low: #a35c00;
-  --ef-power-empty: #c0271d;
+  --ef-power-nominal: #5f5e00;
+  --ef-power-low: #8f5200;
+  --ef-power-empty: #b0231a;
+  --ef-power-muted: #5a6058;
+  --ef-power-strong: #14170f;
   border-color: rgba(20, 24, 20, 0.22);
   background: linear-gradient(180deg, rgba(107, 106, 0, 0.08), rgba(107, 106, 0, 0.02));
 }
@@ -1435,12 +1510,24 @@ body:not([data-ds-dark-theme]) {
   --dsw-shadow-lv3: 0 0 0 1px rgba(20, 24, 20, 0.12), 0 14px 34px rgba(20, 24, 20, 0.16);
   --dsw-menu-backdrop-filter: blur(14px) saturate(120%);
 
+  /* Plugin-market descriptions resolve through tertiary. At #6e756c on the #f5f7f1 card that
+     is 4.39:1 for 12px text, just under the 4.5 small text needs; #5c635a measures ~5.9. */
+  --dsw-alias-label-tertiary: #5c635a;
+
   --dsh-scrollbar-thumb: rgba(20, 24, 20, 0.2);
   --dsh-scrollbar-thumb-hover: rgba(20, 24, 20, 0.42);
 
   --ef-art: url("https://raw.githubusercontent.com/Longxiangjunlin/dsh-endfield-theme/main/client/assets/endfield-field-day.jpg");
 
   background-color: transparent;
+}
+
+/* The backdrop container keeps its charcoal in every scheme by default, which is right for the
+   artwork (it is baked dark) but wrong for the two choices that have no artwork of their own: the
+   contour pattern and the plain fill. In the light scheme the container becomes the snow tone, so
+   those two sit on paper instead of on a black rectangle. */
+body:not([data-ds-dark-theme]) #ef-backdrop {
+  background-color: #eef0e9;
 }
 
 /* The light backdrop carries less contrast, so its scrim is lighter too. */
@@ -1473,7 +1560,6 @@ html[data-ef-conversation='on'] #ef-backdrop .ef-scrim {
     linear-gradient(180deg, rgba(5, 6, 6, 0.6) 0%, rgba(5, 6, 6, 0.3) 26%, rgba(5, 6, 6, 0.38) 72%, rgba(5, 6, 6, 0.74) 100%);
 }
 
-body:not([data-ds-dark-theme]) html[data-ef-conversation='on'] #ef-backdrop .ef-art,
 html[data-ef-conversation='on'] body:not([data-ds-dark-theme]) #ef-backdrop .ef-art {
   filter: brightness(1.02) saturate(0.34) contrast(0.94);
 }
@@ -1482,6 +1568,14 @@ html[data-ef-conversation='on'] body:not([data-ds-dark-theme]) #ef-backdrop .ef-
   background:
     radial-gradient(130% 96% at 50% 42%, rgba(238, 240, 233, 0.42) 0%, rgba(238, 240, 233, 0.62) 58%, rgba(228, 231, 222, 0.86) 100%),
     linear-gradient(180deg, rgba(240, 242, 236, 0.6) 0%, rgba(240, 242, 236, 0.44) 30%, rgba(238, 240, 233, 0.52) 74%, rgba(228, 231, 222, 0.74) 100%);
+}
+
+/* The contour strokes are a mid grey, picked to read on charcoal. On the light base that is nearly
+   invisible, so the layer is darkened rather than redrawn - the SVG stays one file. The second
+   selector carries the conversation attribute so it outranks the conversation filter above. */
+html[data-ef-backdrop='contour'] body:not([data-ds-dark-theme]) #ef-backdrop .ef-art,
+html[data-ef-conversation='on'][data-ef-backdrop='contour'] body:not([data-ds-dark-theme]) #ef-backdrop .ef-art {
+  filter: brightness(0.42) saturate(0.5);
 }
 
 /* The conversation text column sits on its own glass, so the art never has to
@@ -1496,9 +1590,22 @@ html[data-ef-conversation='on'] body:not([data-ds-dark-theme]) #ef-backdrop .ef-
   );
 }
 
-/* A soft halo under the transcript buys contrast without another veil. */
+/* A soft halo under the transcript buys contrast without another veil.
+
+   In the light scheme the same halo becomes a smudge: dark ink on a light glass does not need
+   lifting, and a 14px dark shadow around every glyph reads as a soft edge rather than as
+   contrast. So the light scheme gets a much weaker one, and the 字体柔化 switch removes it
+   entirely for anyone who wants the glyph edges left alone. */
 html[data-ef-conversation='on'] [data-conversation-scroll] {
   text-shadow: 0 0 14px rgba(5, 6, 6, 0.55);
+}
+
+html[data-ef-conversation='on'] body:not([data-ds-dark-theme]) [data-conversation-scroll] {
+  text-shadow: 0 0 8px rgba(20, 24, 20, 0.14);
+}
+
+html[data-ef-halo='off'] [data-conversation-scroll] {
+  text-shadow: none;
 }
 
 body:not([data-ds-dark-theme]) [data-phase='active'] [data-conversation-scroll] {
