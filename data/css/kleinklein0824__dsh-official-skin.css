@@ -1,5 +1,5 @@
 /* kleinklein0824/dsh-official-skin — lib/client.js
-   fetched 2026-11-07 from https://raw.githubusercontent.com/kleinklein0824/dsh-official-skin/main/lib/client.js
+   fetched 2026-11-15 from https://raw.githubusercontent.com/kleinklein0824/dsh-official-skin/main/lib/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 /*!
  * dsh-deepseek-bg.css
@@ -53,8 +53,10 @@
   position: absolute;
   inset: 0;
   transition: opacity .3s cubic-bezier(.22, .61, .36, 1);
-  will-change: opacity;
 }
+/* 只在主题切换的那 420ms 里提层：常驻 will-change 会让两张全屏渐变各占一张
+   合成层，静止时白白多两次全屏合成。 */
+body.dsh-ds-theme-anim .dsh-ds-bg-layer { will-change: opacity; }
 
 #dsh-ds-bg.dsh-ds-dark #dsh-ds-bg-light { opacity: 0; }
 #dsh-ds-bg.dsh-ds-dark #dsh-ds-bg-dark { opacity: 1; }
@@ -444,6 +446,28 @@ body[data-ds-dark-theme] .dsh-ds-theme-toggle {
 }
 .dsh-ds-theme-toggle svg { display: block; pointer-events: none; }
 .dsh-ds-theme-toggle { -webkit-app-region: no-drag; }
+
+/* ============ Windows 标题栏（caption）配色 ============
+   DSH 桌面端用 titleBarOverlay 画最小化/最大化/关闭，颜色来自两个令牌：
+   底色 = --dsw-specific-sidebar-fill（正是本插件覆盖成半透明的那一个，所以
+   标题栏条与侧边栏同色系），符号色 = --dsw-alias-label-primary。
+   preload 里挂了一个隐藏 span 探测这两个令牌的 computed 值：
+     probe.style.cssText = "position:fixed;visibility:hidden;pointer-events:none;
+       background-color:var(--dsw-specific-sidebar-fill);
+       color:var(--dsw-alias-label-primary)";
+   然后把 background-color / color 规范成 rgba 经
+   dsh-desktop:windows-appearance 交给主进程 setTitleBarOverlay。
+   问题：Windows 系统为浅色、应用为深色主题时，符号色跟着「应用令牌」
+   走会落到近黑的 #0f1115，压在深蓝条上几乎看不见（实测符号亮度 ~60/255，
+   与条带 ~50 的亮度几乎重合）。这里直接把探测元素的计算色钉死成
+   与条带对比明显的一档；下一次哨兵重算（主题/样式变更）就会把正确颜色
+   发出去，主进程收到 rgba 后立即重设 caption。 */
+body > span[style*="--dsw-specific-sidebar-fill"] {
+  color: #10151c !important;
+}
+body[data-ds-dark-theme] > span[style*="--dsw-specific-sidebar-fill"] {
+  color: #e8eef9 !important;
+}
 
 /* 无活跃会话时的兜底座位（shell.overlay，root 级）：会话 header 整块不存在，
    utilities 插槽不渲染，按钮改为固定定位贴在右上角 */

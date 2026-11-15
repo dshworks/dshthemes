@@ -1,5 +1,5 @@
 /* tcgbp/dsh-flash-skin — src/client/skin.css
-   fetched 2026-11-07 from https://raw.githubusercontent.com/tcgbp/dsh-flash-skin/master/src/client/skin.css
+   fetched 2026-11-15 from https://raw.githubusercontent.com/tcgbp/dsh-flash-skin/master/src/client/skin.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 .flash-skin-backdrop {
   position: fixed;
@@ -182,14 +182,43 @@ body[data-flash-skin="on"] [class*="_column"] [data-changed-files] [class*="_hea
  *   选择器只用宿主的稳定 CSS 类后缀（_userRow/_userStack/_bubble），哈希前缀
  *   随构建变化可免，与上方 _column 约定一致；不依赖 dsh-flash。
  * - 助手工具卡片宿主为 tool 插件的 [data-tool] 行（present 卡片同为 data-tool），
- *   其表面自带实心底（ToolRow 的 _root/_header），一并换为同款半透明灰底，
- *   使工具卡片跟随浓度控制。仅居中内容列命中，右侧栏保持的不透明（.rightbarCol）。
+ *   工具行 root 同时挂着稳定的 data-tool/data-variant/data-state 属性。其内层
+ *   表面（命令 I/O 卡 _ioCard、详情面板 ToolDetails._root、_card）用
+ *   --dsw-alias-markdown-code-block / --dsw-alias-bg-base 实心上色，不跟随浓度。
+ *   注：不能写 [data-tool] [class*="_root"]——data-tool 与 _root 同在工具行根元素
+ *   上，这是同级而非后代关系，会永远落空；改用稳定 data-variant 属性锚定各工具
+ *   （bash=运行命令、search=搜索文件内容、其余 generic 卡含读取任务输出）并命中
+ *   其内层带实心面的表面层。仅居中内容列命中，右侧栏保持不透明（.rightbarCol）。
  * - 已在各容器内的正文/代码块规则不与之双叠：气泡/卡片只吃这一层半透明底。 */
 body[data-flash-skin="on"] [class*="_column"] [class*="_userRow"] [class*="_userStack"] [class*="_bubble"] {
   background: color-mix(in srgb, var(--flash-surface, #f5f6f8) var(--flash-text-bg-strength, 80%), transparent) !important;
 }
-body[data-flash-skin="on"] [class*="_column"] [data-tool] [class*="_root"],
-body[data-flash-skin="on"] [class*="_column"] [data-tool] [class*="_header"] {
+
+/* 运行命令（bash / pwsh 工具，data-variant="bash"）：命令 I/O 卡与终端表面
+ * 原用 --dsw-alias-markdown-code-block 实心底，换成同款半透明灰底随浓度变化。 */
+body[data-flash-skin="on"] [class*="_column"] [data-variant="bash"] [class*="_ioCard"],
+body[data-flash-skin="on"] [class*="_column"] [data-variant="bash"] [class*="_terminal"] {
+  background: color-mix(in srgb, var(--flash-surface, #f5f6f8) var(--flash-text-bg-strength, 80%), transparent) !important;
+}
+
+/* 搜索文件内容（grep/glob/web_search，data-variant="search"）与读取任务输出
+ * （readJob 不在宿主 TOOL_VARIANTS 表，落入 generic "others"）：详情面板
+ * ToolDetails._root 与 _card 原是 markdown-code-block / bg-base 实心底，
+ * 换成同款半透明灰底使它们跟随“文字背景浓度”。others 为 generic 兜底变体，
+ * 统一让内容输出面板随浓度，保持一致。 */
+body[data-flash-skin="on"] [class*="_column"] [data-variant="search"] [class*="_root"],
+body[data-flash-skin="on"] [class*="_column"] [data-variant="search"] [class*="_card"],
+body[data-flash-skin="on"] [class*="_column"] [data-variant="others"] [class*="_root"],
+body[data-flash-skin="on"] [class*="_column"] [data-variant="others"] [class*="_card"] {
+  background: color-mix(in srgb, var(--flash-surface, #f5f6f8) var(--flash-text-bg-strength, 80%), transparent) !important;
+}
+
+/* 任务消息 / 各类触发通知（收到任务消息、执行请求、子任务状态更新等）：宿主
+ * chat 的 TurnTriggerNodeView 可展开通知卡，data-turn-trigger 与卡片表面同节点，
+ * 背景默认 var(--dsw-alias-turn-trigger-bg, var(--dsw-alias-markdown-code-block))
+ * 实心不随浓度，同样换成同款半透明灰底跟随“文字背景浓度”。data-turn-trigger
+ * 为宿主专用于该通知元素的稳定属性，不会误伤其它卡片。 */
+body[data-flash-skin="on"] [class*="_column"] [data-turn-trigger] {
   background: color-mix(in srgb, var(--flash-surface, #f5f6f8) var(--flash-text-bg-strength, 80%), transparent) !important;
 }
 
@@ -210,6 +239,75 @@ html[data-windows-titlebar] body[data-flash-skin="on"] #root [class*="_frame"]:h
    sidebar keeps its own native surface. */
 body[data-flash-skin="on"] #root [class*="_rightbarCol"] {
   background: var(--flash-surface, #f5f6f8) !important;
+}
+
+/* 右侧栏面板“全屏/最大化”时不透明且置顶（强健锚点）：
+ * 需求：点右侧栏右上角“展开/全屏”最大化后，不得再让底层的中间列会话标题
+ * header 与输入卡/composer 透出。此前规则只锚定猜测属性
+ * data-sidebar-right-panel="fullscreen" + data-sidebar-right-open="true"，
+ * 但未命中真实 DOM，导致最大化后面板透出底层内容。
+ * 打包前端不可读、当前又无浏览器控制，无法取到真实全屏属性；改为结构强健锚点：
+ *  —— 右侧栏列(_rightbarCol，已知稳定)内的面板表面(_panelBody /
+ *     data-dockkit-surface="true")一律强制为不透明皮肤面(随 flashStage 白/暗），
+ *     让任何占满整屏的右侧栏内容都以实底盖住中间列的会话头与输入卡；
+ *     正常三栏布局下列间不重叠，这些选择器只命中右侧栏内部表面，不误伤普通卡片。
+ *  —— 顺带把右侧栏列层级提到中心列之上(position:relative 使 z-index 生效)，
+ *     处理“中心内容叠在展开面板之上”的堆叠情形；正常布局下列互不重叠，无副作用。
+ *  —— 保留原猜测属性分支，避免个别构建确实设置该属性时漏网（无害）。
+ * 锚点只依赖宿主稳定属性与后缀类名约定，不依赖 dsh-flash。 */
+body[data-flash-skin="on"]
+  [data-sidebar-right-panel="fullscreen"][data-sidebar-right-open="true"],
+body[data-flash-skin="on"]
+  [data-sidebar-right-panel="fullscreen"][data-sidebar-right-open="true"] [class*="_panelBody"],
+body[data-flash-skin="on"]
+  [data-sidebar-right-panel="fullscreen"][data-sidebar-right-open="true"] [data-dockkit-surface="true"],
+body[data-flash-skin="on"] #root [class*="_rightbarCol"] [class*="_panelBody"],
+body[data-flash-skin="on"] #root [class*="_rightbarCol"] [data-dockkit-surface="true"] {
+  background: var(--flash-surface, #f5f6f8) !important;
+}
+body[data-flash-skin="on"] #root [class*="_rightbarCol"] {
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+/* Plugin manager / market / detail renders as the root main slot global panel
+ * inside the center column, whose --dsw-alias-bg-base is transparent so the
+ * chat surface shows the portrait. Give the plugin panel an opaque,
+ * skin-toned surface so portraits do not bleed through the plugin market,
+ * list, and detail views. Anchored only on the stable [data-plugin-panel] page
+ * root (present nowhere in the chat surface), so the chat backdrop is
+ * untouched. Does not depend on dsh-flash. */
+body[data-flash-skin="on"] #root [data-plugin-panel] {
+  background: var(--flash-surface, #f5f6f8) !important;
+}
+
+/* 会话标题栏可读性（深色人像盲区修复）：中间内容列
+ * ([class*="_centerCol"]) 的常驻导航 header（conversation.header，
+ * ConversationRoot.module.css 的 .header，是个 <header data-window-drag>）
+ * 自身没有任何不透明表面，而宿主的 --dsw-alias-bg-base 又已被本皮肤设为
+ * transparent，于是深色的背景人像会直接透到标题文字与图标之后，造成标题不可读。
+ * 这里给该 header 一块与正文可读性面板同款的“浓度”配方背景
+ * (--flash-surface + --flash-text-bg-strength)，让标题始终立在皮肤面上，
+ * 人像仍只从它下方的聊天内容区透出。选择器仅命中“中间内容列内、且为
+ * <header data-window-drag>”的常驻标题栏：不触碰左侧栏（自带
+ * --dsw-specific-sidebar-fill）、右侧栏（_rightbarCol，另设不透明）、
+ * 插件市场（[data-plugin-panel]，另设不透明）。不依赖 dsh-flash。 */
+body[data-flash-skin="on"] #root [class*="_centerCol"] header[data-window-drag] {
+  background: color-mix(in srgb, var(--flash-surface, #f5f6f8) var(--flash-text-bg-strength, 80%), transparent) !important;
+}
+
+/* 聊天时间线可读性（深色人像盲区修复）：消息列（dsh-client-ui-chat 的
+ * .column，居左布局里就是整条消息时间线，宽度 = --dsh-chat-content-width）
+ * 自身是透明的，宿主又把 --dsw-alias-bg-base 设为 transparent，于是深色人像会
+ * 直接透到分隔符、时间戳、折叠摘要、运行状态等所有“直接落在列上”的文字之后，
+ * 造成时间线不可读。这里给整条消息列一块与正文可读性面板同款的“浓度”配方半
+ * 透明底 (--flash-surface + --flash-text-bg-strength)，让时间线上所有内容都立在
+ * 皮肤面上，人像仍从左侧/滚动区的空隙（timeline 槽与侧边距）以及消息之间的间
+ * 隙透出。选择器控制在中间内容列([class*="_centerCol"])内的 [class*="_column"]：
+ * 不触碰左侧栏、右侧栏(_rightbarCol)、插件面板([data-plugin-panel]，另设不透明)、
+ * 输入卡(_body/_card 结构，不共用 _column)。不依赖 dsh-flash。 */
+body[data-flash-skin="on"] #root [class*="_centerCol"] [class*="_column"] {
+  background: color-mix(in srgb, var(--flash-surface, #f5f6f8) var(--flash-text-bg-strength, 80%), transparent) !important;
 }
 
 /* In desktop modes the host owns a top frame (caption/controls); offset the
@@ -908,27 +1006,70 @@ body[data-flash-skin="on"] textarea {
   text-align: center;
   color: #fff;
   background: rgb(0 0 0 / 55%);
+  /* Non-interactive corner badge — don't block the thumbnail's zoom click. */
+  pointer-events: none;
 }
 
 .flash-portrait-group__image-actions {
   position: absolute;
-  right: 6px;
-  bottom: 6px;
-  left: 6px;
+  inset: 0;
   display: none;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 4px;
+  /* Let clicks pass through the overlay to the thumbnail below, so clicking
+     the picture still opens the zoom preview. Only the round icon buttons
+     capture events. */
+  pointer-events: none;
 }
 
 .flash-portrait-group__image:hover .flash-portrait-group__image-actions {
-  display: flex;
+  display: block;
 }
 
-.flash-portrait-group__image-actions button {
-  padding: 2px 7px;
-  font-size: 11px;
+/* Round hover icons pinned to the four edges of the thumbnail: left/right
+   move arrows (mirroring the divider glyphs), replace on top, delete
+   (danger) on the bottom. */
+.flash-portrait-group__image-actions button.flash-portrait-group__action-icon {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 50%;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--dsw-alias-label-primary);
   background: var(--dsw-alias-bg-module-platform);
+  pointer-events: auto;
+}
+
+.flash-portrait-group__action--left {
+  left: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.flash-portrait-group__action--top {
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.flash-portrait-group__action--right {
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.flash-portrait-group__action--bottom {
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* The delete icon in its "click again to confirm" state: solid red disc with
+   a white check, overriding the outline-only danger style. */
+.flash-portrait-group__image-actions button.flash-portrait-group__action--confirming {
+  border-color: var(--dsw-static-severity-error-default, #d54343) !important;
+  color: #fff !important;
+  background: var(--dsw-static-severity-error-default, #d54343) !important;
 }
 
 .flash-portrait-group__url {
@@ -971,6 +1112,42 @@ body[data-flash-skin="on"] textarea {
   border-style: solid;
 }
 
+/* The in-place add editor spreads the URL field and its action buttons onto a
+   single full-width horizontal row, so clicking "add image" never expands the
+   slot into a tall vertical stack — everything stays in one line within the
+   add box. */
+.flash-portrait-group__add--editing {
+  grid-column: 1 / -1;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  min-height: 0;
+  padding: 8px 10px;
+}
+
+.flash-portrait-group__add--editing .flash-portrait-group__url {
+  flex: 1 1 180px;
+  min-width: 0;
+  width: auto;
+}
+
+.flash-portrait-group__add--editing button {
+  align-self: center;
+  min-height: 0;
+  border-style: solid;
+}
+
+.flash-portrait-group__add--editing button.flash-portrait-group__add-pick {
+  align-self: center;
+  min-height: 0;
+  border-style: solid;
+}
+
+.flash-portrait-group__add--editing button:hover:not(:disabled) {
+  border-style: solid;
+}
+
 .flash-portrait-groups__notice--error {
   color: var(--dsw-static-severity-error-default, #d54343);
 }
@@ -1003,9 +1180,9 @@ body[data-flash-skin="on"] textarea {
   padding: 5px 12px;
 }
 
-/* Network import: bundled example-archive quick picks (left) and a paste-any-URL
- * field (right). Both funnel into the same archive-import engine as the local
- * picker, so presentation stays light: flex rows + the shared input style. */
+/* Network import: a paste-any-URL field feeding the same archive-import engine
+ * as the local picker, so presentation stays light: a flex row + the shared
+ * input style. */
 .flash-import-net {
   display: flex;
   flex-wrap: wrap;
@@ -1018,23 +1195,6 @@ body[data-flash-skin="on"] textarea {
   font-size: 12px;
   color: var(--dsw-alias-label-secondary, #7a818b);
   margin-right: 2px;
-}
-
-.flash-import-net__row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-}
-
-.flash-import-net__example {
-  padding: 3px 10px;
-}
-
-.flash-import-net__example em {
-  font-style: normal;
-  opacity: 0.72;
-  margin-left: 2px;
 }
 
 .flash-import-net__url {
@@ -1170,12 +1330,31 @@ body[data-flash-skin="on"][data-flash-layout="left"] [class*="_dock"][data-compo
  *     左移的输入卡左缘错位。此处用与 todo/排队条完全相同的 margin-left 基准，
  *     并去掉那 20px 原生内边距，让芯片左缘与输入卡左缘落在同一根垂直线上。
  */
+/* 4b) 新会话空态里的“选择工作区”行([class*="_heroWorkspaceRow"])与输入卡左缘对齐。
+ *     它是 [class*="_composerStack"] 的直接子节点（与输入卡、todo、排队条同原点，
+ *     并不在 HeroShell 内部），原生靠内边距 padding-left:20px 落在偏左位置，与已
+ *     左移的输入卡左缘错位。此处用与 todo/排队条完全相同的 margin-left 基准，
+ *     并去掉那 20px 原生内边距，让芯片左缘与输入卡左缘落在同一根垂直线上。
+ *     原生 hero 态下该 stack 还带 _composerHero{...;align-self:center}，会把整根
+ *     hero 合成器（连同输入卡与这行芯片）水平居中、整体偏右；这里把它强制
+ *     flex-start，让这行与输入卡都贴座位的左缘，再叠加 4b 的 margin 即对齐基准轴。
+ *     同时清零工作区子行 [_workspaceRow] 的 8px 原生左内边距与各项 auto 边距，
+ *     让“选择工作区”芯片与模式/预设芯片都从基线起排，不再各自向右拱出。 */
+body[data-flash-skin="on"][data-flash-layout="left"] [class*="_composerStack"][class*="_composerHero"] {
+  align-self: flex-start !important;
+}
 body[data-flash-skin="on"][data-flash-layout="left"] [class*="_heroWorkspaceRow"] {
   margin-left: calc(
     var(--dsh-composer-side-clearance, 16px) + 16px
     + var(--dsh-flash-timeline-gutter, 50px)
   ) !important;
   margin-right: auto !important;
+  padding-left: 0 !important;
+}
+body[data-flash-skin="on"][data-flash-layout="left"] [class*="_heroWorkspaceRow"] > * {
+  margin-inline-start: 0 !important;
+}
+body[data-flash-skin="on"][data-flash-layout="left"] [class*="_heroWorkspaceRow"] [class*="_workspaceRow"] {
   padding-left: 0 !important;
 }
 
@@ -1303,6 +1482,79 @@ body[data-flash-skin="on"][data-flash-layout="left"] [class*="_toBottomSlot"] {
   white-space: nowrap;
 }
 
+/* 通用设置里的浓度/大小滑杆行（文字背景、幕布强度、人物显示大小）。
+ * 与上面的 flex 布局不同，本行纵向堆叠：上一行左侧标题 + 右侧当前值，下一行
+ * 为原生 <input type="range">。滑杆沿用 flash-level-control 的配色令牌，明暗
+ * 两套主题都可辨；皮肤未启用时整行由组件 return null 隐藏。
+ */
+.flash-appearance-binding--slider {
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 6px;
+}
+
+.flash-appearance-binding__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.flash-appearance-binding__value {
+  color: var(--dsw-alias-label-primary);
+  font-size: 13px;
+  line-height: 18px;
+  font-variant-numeric: tabular-nums;
+  min-width: 40px;
+  text-align: right;
+}
+
+.flash-appearance-binding__range {
+  width: 100%;
+  height: 20px;
+  cursor: ew-resize;
+  appearance: none;
+  background: transparent;
+  touch-action: pan-y;
+}
+
+.flash-appearance-binding__range::-webkit-slider-runnable-track {
+  height: 5px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--flash-accent, #4176e6), var(--flash-ink, #191b1e));
+}
+
+.flash-appearance-binding__range::-webkit-slider-thumb {
+  width: 13px;
+  height: 13px;
+  margin-top: -4px;
+  border: 2px solid var(--flash-accent, #4176e6);
+  border-radius: 50%;
+  appearance: none;
+  background: #fff;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 20%);
+}
+
+.flash-appearance-binding__range::-moz-range-track {
+  height: 5px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--flash-accent, #4176e6), var(--flash-ink, #191b1e));
+}
+
+.flash-appearance-binding__range::-moz-range-thumb {
+  width: 9px;
+  height: 9px;
+  border: 2px solid var(--flash-accent, #4176e6);
+  border-radius: 50%;
+  background: #fff;
+}
+
+.flash-appearance-binding__range:focus-visible {
+  outline: none;
+}
+
+
 /* 通用设置里的「左右双人物」开关。以宿主原生语义 button[role=switch] 渲染，
  * 外观沿用 --flash-accent / --flash-surface，明暗两套主题都可辨。 */
 .flash-appearance-binding--dual {
@@ -1404,6 +1656,17 @@ body[data-flash-skin="on"][data-flash-layout="left"] [class*="_toBottomSlot"] {
   font-weight: 600;
 }
 
+/* 简要(compact)模式的开头标签「加权得分」:无每路明细,直接以该标签起头。
+ * 弱化但仍可读的次级色,与紧随其后的加权得分数字(ink)形成前缀-值层次。 */
+.flash-level-control__eq-label {
+  margin: 0 6px 0 2px;
+  color: var(--flash-secondary, #5b6470);
+  font-style: normal;
+  font-weight: 700;
+  font-size: 0.86em;
+  white-space: nowrap;
+}
+
 .flash-level-control__part {
   color: var(--flash-accent, #4176e6);
   font-weight: 800;
@@ -1454,6 +1717,21 @@ body[data-flash-skin="on"][data-flash-layout="left"] [class*="_toBottomSlot"] {
   outline: 1px solid rgba(98, 126, 233, 0.4);
   outline: 1px solid color-mix(in srgb, var(--flash-accent, #4176e6) 40%, transparent);
   animation: flash-pulse-pop 0.45s ease-out;
+}
+
+/* 技能脉冲加分块:与压缩块共用胶囊高亮与弹入动效,但用不同的色相,让技能与
+ * 压缩两路加分同时激活时能用底色一眼区分(技能偏紫,压缩偏蓝)。 */
+.flash-level-control__pulse--skill {
+  background: rgba(185, 98, 233, 0.16);
+  background: color-mix(in srgb, #b962e9 16%, transparent);
+  outline: 1px solid rgba(185, 98, 233, 0.4);
+  outline: 1px solid color-mix(in srgb, #b962e9 40%, transparent);
+}
+
+.flash-level-control__pulse--skill .flash-level-control__term--bonus b,
+.flash-level-control__pulse--skill .flash-level-control__bonus,
+.flash-level-control__pulse--skill .flash-level-control__pop .flash-level-control__bonus {
+  color: #b962e9;
 }
 
 .flash-level-control__pop {
@@ -1746,6 +2024,7 @@ body[data-flash-skin="on"][data-flash-layout="left"] [class*="_toBottomSlot"] {
 }
 
 .flash-community__refresh,
+.flash-community__share,
 .flash-community__toggle {
   padding: 3px 10px;
   border: 1px solid var(--dsw-alias-border-l2);
@@ -1758,7 +2037,15 @@ body[data-flash-skin="on"][data-flash-layout="left"] [class*="_toBottomSlot"] {
   cursor: pointer;
 }
 
+/* The publish-to-community button in the directory header deserves a subtle
+   accent so it reads as the primary "contribute" action next to 刷新. */
+.flash-community__share {
+  color: var(--dsw-alias-interactive-fg-default, var(--dsw-alias-label-primary));
+  border-color: color-mix(in srgb, var(--dsw-alias-interactive-fg-default, #4d8df5) 45%, transparent);
+}
+
 .flash-community__refresh:hover:not(:disabled),
+.flash-community__share:hover,
 .flash-community__toggle:hover:not(:disabled) {
   background: var(--dsw-alias-interactive-bg-hover);
 }
@@ -1912,6 +2199,38 @@ body[data-flash-skin="on"][data-flash-layout="left"] [class*="_toBottomSlot"] {
   opacity: 0.6;
 }
 
+/* Community-entry dislike (点踩): mirrors the like button but records the
+   feedback-table "unlike" action and flags the local disliked state in the
+   danger hue. It carries no aggregated count (likes only are tallied). */
+.flash-community__dislike {
+  flex: none;
+  padding: 3px 10px;
+  border: 1px solid color-mix(in srgb, var(--dsw-alias-label-tertiary) 35%, transparent);
+  border-radius: 8px;
+  font: inherit;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--dsw-alias-label-tertiary);
+  background: transparent;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.flash-community__dislike--on {
+  color: var(--dsw-static-severity-danger-default, #d92d20) !important;
+  border-color: color-mix(in srgb, var(--dsw-static-severity-danger-default, #d92d20) 55%, transparent) !important;
+  background: color-mix(in srgb, var(--dsw-static-severity-danger-default, #d92d20) 10%, transparent);
+}
+
+.flash-community__dislike:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--dsw-alias-interactive-fg-default, #4073e0) 12%, transparent);
+}
+
+.flash-community__dislike:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 .flash-community__import {
   flex: none;
   padding: 3px 10px;
@@ -1976,5 +2295,175 @@ body[data-flash-skin="on"][data-flash-layout="left"] [class*="_toBottomSlot"] {
 .flash-community__submit:disabled {
   cursor: not-allowed;
   opacity: 0.45;
+}
+
+/* ── C2d: community-entry read-only preview overlay ───────────────────────── */
+
+/* The「预览」row action: neutral/hinting accent, mirroring the action pill set. */
+.flash-community__preview {
+  flex: none;
+  padding: 3px 10px;
+  border: 1px solid color-mix(in srgb, var(--dsw-alias-label-tertiary) 40%, transparent);
+  border-radius: 8px;
+  font: inherit;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--dsw-alias-label-secondary);
+  background: transparent;
+  cursor: pointer;
+}
+
+.flash-community__preview:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--dsw-alias-interactive-fg-default, #4073e0) 12%, transparent);
+}
+
+.flash-community__preview:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+/* Modal overlay, intentionally styled like the share modal (`.flash-share`) so
+   all plugin overlays share the same scrim + centered panel language. */
+.flash-preview {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483003;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.flash-preview__scrim {
+  position: absolute;
+  inset: 0;
+  background: rgb(0 0 0 / 60%);
+}
+
+.flash-preview__panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-sizing: border-box;
+  width: min(760px, 94vw);
+  max-height: min(88vh, 940px);
+  overflow: hidden;
+  padding: 16px 18px 18px;
+  border-radius: 14px;
+  background: var(--dsw-alias-bg-module-platform, #fff);
+  color: var(--dsw-alias-label-primary);
+  box-shadow: 0 24px 80px rgb(0 0 0 / 55%);
+}
+
+.flash-preview__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.flash-preview__titles {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.flash-preview__title {
+  margin: 0;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.flash-preview__sub {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--dsw-alias-label-tertiary);
+  overflow-wrap: anywhere;
+}
+
+.flash-preview__close {
+  flex: none;
+  padding: 2px 8px;
+  border: 1px solid color-mix(in srgb, var(--dsw-alias-label-tertiary) 35%, transparent);
+  border-radius: 8px;
+  font: inherit;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--dsw-alias-label-secondary);
+  background: transparent;
+  cursor: pointer;
+}
+
+.flash-preview__close:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--dsw-alias-label-tertiary) 14%, transparent);
+}
+
+.flash-preview__body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+/* Thumbnail grid: fixed-size cells with cover-cropped frames and name captions. */
+.flash-preview__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 2px;
+  list-style: none;
+}
+
+.flash-preview__cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.flash-preview__img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  background: color-mix(in srgb, var(--dsw-alias-bg-base, #fff) 40%, transparent);
+  display: block;
+}
+
+.flash-preview__cellname {
+  font-size: 11px;
+  line-height: 14px;
+  color: var(--dsw-alias-label-tertiary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.flash-preview__foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.flash-preview__done {
+  padding: 4px 12px;
+  border: 1px solid color-mix(in srgb, var(--dsw-alias-label-tertiary) 40%, transparent);
+  border-radius: 8px;
+  font: inherit;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--dsw-alias-label-secondary);
+  background: transparent;
+  cursor: pointer;
+}
+
+.flash-preview__done:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--dsw-alias-interactive-fg-default, #4073e0) 12%, transparent);
 }
 

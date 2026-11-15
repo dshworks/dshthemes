@@ -1,5 +1,5 @@
 /* ffyfox/dsh-theme-mist — src/client/material.module.css
-   fetched 2026-11-07 from https://raw.githubusercontent.com/ffyfox/dsh-theme-mist/main/src/client/material.module.css
+   fetched 2026-11-15 from https://raw.githubusercontent.com/ffyfox/dsh-theme-mist/main/src/client/material.module.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /*
  * Material layer, part 1 — the page surface (T2.2) and the translucency that
@@ -80,6 +80,27 @@ body[data-dsh-theme-mist] [role='dialog'][aria-modal='true'] {
 html[data-windows-titlebar] body[data-dsh-theme-mist] [data-slot='root'] > :has([data-slot='sidebar']),
 html[data-windows-titlebar] body[data-dsh-theme-mist] [data-slot='root'] > :has([data-slot='sidebar'])::before {
   background: transparent;
+}
+
+/* The Windows caption controls sit above the now-transparent titlebar strip,
+ * not above the sidebar.
+ *
+ * Preload (syncWindowsAppearance) appends a hidden <span> directly under <body>
+ * whose inline style binds background-color to --dsw-specific-sidebar-fill and
+ * color to --dsw-alias-label-primary, forwarding both to
+ * BrowserWindow.setTitleBarOverlay. Because our sidebar fill is the sheet tier
+ * (mistLow @ 0.82 in light, painted twice by Electron's WinCaptionButtonContainer
+ * + WinCaptionButton to ~0.97 opaque near-white), leaving this probe on the
+ * sidebar token puts a bright white box over the top-right accent glow.
+ *
+ * Re-pointing --dsw-specific-sidebar-fill to transparent on that probe alone
+ * sends rgba(0, 0, 0, 0) to setTitleBarOverlay, letting the native controls
+ * sit directly over the live page gradient and glow while symbolColor stays on
+ * --dsw-alias-label-primary and the sidebar keeps its own fill. When the theme
+ * unloads, revert() mutates body.style and drops data-dsh-theme-mist, so
+ * preload's MutationObserver automatically restores the host colour. */
+html[data-windows-titlebar] body[data-dsh-theme-mist] > span[style*='--dsw-specific-sidebar-fill'][style*='--dsw-alias-label-primary'] {
+  --dsw-specific-sidebar-fill: transparent;
 }
 
 /* --- The sidebar is a pane of glass, not a plate (T5.7-A) ----------------
@@ -407,17 +428,29 @@ body[data-dsh-theme-mist] .md-code-block {
     inset 0 1px 0 var(--dsh-theme-mist-highlight);
 }
 
-/* Pill tier: the model capsule in the composer footer — the one pill on this
-   layout with a stable semantic hook. The shape belongs to the button inside
-   the slot (8px radius); the slot's own child wrapper is a square box, so
-   painting it would show corners behind the pill. Fill is derived from the
-   chrome glass, so the pill reads as part of the same material family. */
-body[data-dsh-theme-mist] [data-slot='conversation.input.model'] button {
-  background-color: var(--dsh-theme-mist-pill-token);
-  box-shadow:
-    inset 0 0 0 0.5px var(--dsw-alias-border-l1),
-    inset 0 1px 0 var(--dsh-theme-mist-highlight);
-}
+/* --- The pill tier is withdrawn from the model trigger (2026-11-15) ------
+ *
+ * T2.4 painted the composer's model capsule as DSH Go's pill: a white 0.55
+ * fill, a 0.5px hairline, the top highlight, and (T2.1) a stadium radius.
+ * Measured on the built app, that fill lands 4/255 from the composer card it
+ * sits on (252,253,255 over 248,250,255 in the mist palette) while its
+ * hairline lands 18/255 below it (234,236,240). The fill is white on white —
+ * so the only part of the recipe that actually drew was the ring.
+ *
+ * The ring then had to answer a question the rest of the row did not ask: the
+ * host draws this trigger as one of four chromeless chips. ModelSelect.module
+ * .css says "border: none; background: transparent; border-radius: 8px" and
+ * fills it with the brand tint on hover; PermissionSelect.module.css says the
+ * same in as many words ("Rounded chip chrome, matching the sibling model
+ * trigger"), as do the plan and agent-preset triggers. Painting exactly one of
+ * the four turned its hairline into a defect report — the honest fix is to
+ * leave the trigger the host's own chrome, hover feedback included.
+ *
+ * The tier's own tokens stay defined (pill-fill / pill-solid / pill-token, and
+ * the radius ladder's pill step): they are DSH Go's table, and nothing on this
+ * layout consumes them today. A future surface that wants a pill needs a fill
+ * dark enough to read on its own backdrop — a hairline alone is not a
+ * material. */
 
 /* --- Shape: the DSH Go radius ladder (T2.1) ------------------------------
  *
@@ -458,13 +491,11 @@ body[data-dsh-theme-mist] [role='menu'] {
 }
 
 
-/* Chip / model capsule: 8 -> stadium. corner-shape: round is required — the
-   official sheet applies superellipse(1.5) to every element, which would bend
-   the caps of a 999px radius away from a true semicircle. */
-body[data-dsh-theme-mist] [data-slot='conversation.input.model'] button {
-  border-radius: var(--dsh-theme-mist-radius-pill);
-  corner-shape: round;
-}
+/* The composer chips keep the host's radius (8px, the official sm step): the
+   model trigger no longer takes the pill step — see the withdrawal note above.
+   A 999px radius needs `corner-shape: round` to keep its caps semicircular
+   under the official superellipse(1.5), so the ladder keeps the value for
+   whoever applies it next; nothing in this sheet does today. */
 
 
 /* --- Elevation: one recipe for every surface we did not paint (T2.5) -----
@@ -495,13 +526,53 @@ body[data-dsh-theme-mist] * {
     0 4px 16px var(--dsh-theme-mist-shadow);
 }
 
+/* --- The plugin page's sticky bar repaints the page it covers (2026-11-15)
+ *
+ * Upstream keeps the scrolled list out of the plugin page's title by painting
+ * the page's own fill on the bar's ::before (PluginManagerPage.module.css:
+ * `.pageBar[data-natural]::before { background: var(--dsw-alias-bg-base) }`)
+ * and letting the head and toolbar sit on top of it. bg-base is transparent
+ * here — it *is* the page, and the page is the backdrop — so that paint became
+ * a no-op and the list scrolled straight through the title. Measured on the
+ * built app at 1440x757: 14 of the 473 sampled points inside the 1160x80 bar
+ * were content pixels, worst channel delta 204/255.
+ *
+ * A flat colour cannot stand in for the page here. The page is a fixed-
+ * attachment stack (accent glow, haze, palette ramp), so a solid fill would
+ * band against it — the same lesson as the composer veil (T5.12/T5.13). The
+ * bar repaints those three layers with the same attachment instead, anchored
+ * to the viewport, so the strip *is* the page behind it: after the change the
+ * same 473 points differ by at most 2/255 at any scroll offset, and the seam
+ * under the bar measures 1-2/255 — invisible.
+ *
+ * The hook is upstream's own `data-plugin-bar` marker (the same element whose
+ * header-scroll controller toggles `data-natural`), not a hashed class name.
+ * Chromium measures fixed backgrounds against the viewport inside a scroll
+ * container, so the layers line up with body's at every scroll position —
+ * verified by the pixel test above, and not taken for granted: the composer
+ * seat needed an anchored fallback once the host made it a fixed-background
+ * containing block (T5.12), and this element is `position: sticky`, which
+ * does not. */
+body[data-dsh-theme-mist] [data-plugin-bar][data-natural]::before {
+  background-color: var(--dsh-theme-mist-page-base);
+  background-image:
+    radial-gradient(circle 62vmax at 92% 0%, var(--dsh-theme-mist-glow) 0%, transparent 100%),
+    radial-gradient(circle 55vmax at 0% 100%, var(--dsh-theme-mist-haze) 0%, transparent 100%),
+    linear-gradient(to bottom, var(--dsh-theme-mist-page-top), var(--dsh-theme-mist-page-bottom));
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
 /* --- Motion (T2.6) -------------------------------------------------------
  *
- * Only two things on this layout are ours to animate: the hover feedback on
- * the model capsule (our fill replaced the official base colour, so the switch
- * between them now needs a transition of its own) and the composer's material,
- * whose fill the OS "reduce transparency" setting can swap live. Both are short
- * and sit in the same register as the official motion.
+ * One thing on this layout is ours to animate: the composer's material, whose
+ * fill the OS "reduce transparency" setting can swap live. It is short and sits
+ * in the same register as the official motion.
+ *
+ * The model capsule dropped out of this section with its pill material (see
+ * the withdrawal note above): the host's own hover fills the trigger with the
+ * brand tint and the transition between the two no longer exists, because
+ * there is no second fill to switch from.
  *
  * The durations are the DSH Go scale (motion.dart:13-37), shortened by ~20%
  * for a pointer device (visual-spec §9): press 90 / quick 160 / standard 240.
@@ -527,10 +598,6 @@ body[data-dsh-theme-mist] {
   --dsh-theme-mist-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-body[data-dsh-theme-mist] [data-slot='conversation.input.model'] button {
-  transition: background-color var(--dsh-theme-mist-duration-quick) var(--dsh-theme-mist-ease-standard);
-}
-
 body[data-dsh-theme-mist] [data-composer-card] {
   transition:
     background-color var(--dsh-theme-mist-duration-standard) var(--dsh-theme-mist-ease-standard),
@@ -541,7 +608,6 @@ body[data-dsh-theme-mist] [data-composer-card] {
  * Nothing in this stylesheet animates, and this guard is what keeps that true
  * if something is added later. */
 @media (prefers-reduced-motion: reduce) {
-  body[data-dsh-theme-mist] [data-slot='conversation.input.model'] button,
   body[data-dsh-theme-mist] [data-composer-card],
   body[data-dsh-theme-mist] [data-composer-seat] {
     transition: none;
