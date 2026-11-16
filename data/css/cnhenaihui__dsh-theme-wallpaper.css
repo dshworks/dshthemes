@@ -1,0 +1,240 @@
+/* cnhenaihui/dsh-theme-wallpaper — client.js
+   fetched 2026-11-16 from https://raw.githubusercontent.com/cnhenaihui/dsh-theme-wallpaper/main/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/* ===== 1. 设置页 UI ===== */
+/* 卡片走宿主为设置页专门准备的语义令牌（settings-card-fill / -stroke），
+   而不是手写 bg-layer-1 + border-l1 —— 前者会跟着 NEXT 的卡片规范走。 */
+.ios-thm-page { display: flex; flex-direction: column; gap: 14px; padding: 2px 0 8px; }
+.ios-thm-card { border: 1px solid var(--dsw-alias-settings-card-stroke, var(--dsw-alias-border-l1)); border-radius: var(--dsw-radius-lg, 16px); background: var(--dsw-alias-settings-card-fill, var(--dsw-alias-bg-layer-1)); padding: 16px; }
+
+/* 页头状态行：刻意不用卡片样式，与设置行同级（13px / 20px 行高）。
+   只读说明，不放任何开关 —— 明暗与字体归官方 General 页管（D5 去重）。 */
+.ios-thm-status { display: flex; flex-direction: column; gap: 3px; padding: 0 2px 2px; }
+.ios-thm-status-main { font-size: 13px; font-weight: 500; line-height: 20px; color: var(--dsw-alias-label-primary); }
+.ios-thm-status-hint { font-size: 12px; line-height: 18px; color: var(--dsw-alias-label-secondary); }
+
+.ios-thm-card-title { margin: 0; font-size: 13px; font-weight: 600; line-height: 20px; color: var(--dsw-alias-label-primary); }
+.ios-thm-card-sub { margin: 4px 0 12px; font-size: 12px; line-height: 18px; color: var(--dsw-alias-label-secondary); }
+
+/* —— 主题选择：按色系分组 —— */
+/* 62 套平铺会让人无从下手。分组标题用色系代表色的小圆点 + 数量，
+   组内芯片两列自适应。组间距 14px，组内行距 8px —— 层次靠间距拉开，不靠加边框。 */
+.ios-thm-group { margin-top: 14px; }
+.ios-thm-group:first-of-type { margin-top: 0; }
+.ios-thm-group-head { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+.ios-thm-group-dot { flex: 0 0 auto; width: 8px; height: 8px; border-radius: 50%; }
+.ios-thm-group-name { font-size: 12px; font-weight: 600; line-height: 18px; color: var(--dsw-alias-label-primary); }
+.ios-thm-group-count { font-size: 11px; line-height: 16px; color: var(--dsw-alias-label-secondary); font-variant-numeric: tabular-nums; }
+
+.ios-thm-tgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 8px; }
+.ios-thm-tchip { display: flex; align-items: center; gap: 7px; min-width: 0; padding: 7px 10px; border: 1px solid var(--dsw-alias-border-l2); border-radius: var(--dsw-radius-md, 12px); background: var(--dsw-alias-bg-base); color: var(--dsw-alias-label-primary); font-size: 12px; line-height: 18px; text-align: left; cursor: pointer; transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease; }
+.ios-thm-tchip:hover { border-color: var(--dsw-alias-border-l3); background: var(--dsw-alias-bg-layer-2); }
+.ios-thm-tchip:focus-visible { outline: none; box-shadow: 0 0 0 2px color-mix(in srgb, var(--dsw-alias-brand-primary) 30%, transparent); }
+/* 选中态：描边 + 底色 + 字重 + 勾号四重信号。
+   之前只有一圈品牌色描边，和 hover 描边在弱对比主题下几乎分不出，
+   色觉障碍用户也认不出。勾号是形状信号，不依赖颜色辨识。 */
+.ios-thm-tchip-active {
+  border-color: var(--dsw-alias-brand-primary);
+  box-shadow: 0 0 0 1px var(--dsw-alias-brand-primary);
+  background: color-mix(in srgb, var(--dsw-alias-brand-primary) 10%, var(--dsw-alias-bg-base));
+  font-weight: 600;
+}
+/* 勾号缩到 12px 是为了不挤名称：芯片最小宽 112px，减去 padding、色点、两处 gap
+   只剩约 50px 给文字，勾号再大就放不下 4 个汉字了。 */
+.ios-thm-tcheck {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 12px;
+  height: 12px;
+  margin-left: auto;
+  border-radius: 50%;
+  background: var(--dsw-alias-brand-primary);
+  color: var(--dsw-alias-label-primary-foreground, #fff);
+  font-size: 8px;
+  line-height: 1;
+  font-weight: 700;
+}
+/* 色点：左半是主题背景色，右半 inset 描出品牌色 —— 一眼看出这套主题的性格。
+   透光主题没有实色背景，只画一个描边空心圈，不假装有颜色。 */
+.ios-thm-tdot { flex: 0 0 auto; width: 14px; height: 14px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgb(0 0 0 / 14%); }
+.ios-thm-tdot-empty { border: 1px solid var(--dsw-alias-border-l3); background: transparent; box-shadow: none; }
+/* 名称占满剩余宽度并在超长时省略，勾号才能稳定贴到右侧 ——
+   否则名称短的主题会把勾号顶到中间，一行芯片里勾号位置忽左忽右。 */
+.ios-thm-tname { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* 滑块说明行：讲清「往哪边调、代价是什么」，不是复述数值。 */
+.ios-thm-slider-hint { margin-top: 4px; font-size: 11px; line-height: 16px; color: var(--dsw-alias-label-secondary); }
+
+/* —— 通用控件 —— */
+.ios-thm-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.ios-thm-chip { padding: 5px 12px; border: 1px solid var(--dsw-alias-border-l1); border-radius: 999px; background: transparent; color: var(--dsw-alias-label-secondary); font-size: 12px; line-height: 18px; cursor: pointer; transition: background-color .15s ease, color .15s ease, border-color .15s ease; }
+.ios-thm-chip:hover { color: var(--dsw-alias-label-primary); border-color: var(--dsw-alias-border-l2); }
+/* 选中胶囊 = 品牌色底 + 前景色。前景走 label-primary-foreground 而不是写死 #fff：
+   深色主题的品牌色偏亮，白字会读不出来。 */
+.ios-thm-chip-active { background: var(--dsw-alias-brand-primary); border-color: var(--dsw-alias-brand-primary); color: var(--dsw-alias-label-primary-foreground, #fff); font-weight: 600; }
+.ios-thm-field { margin-top: 12px; }
+.ios-thm-preset { display: inline-flex; align-items: center; gap: 6px; flex: 0 0 auto; white-space: nowrap; margin: 2px 0 4px; padding: 7px 14px; border: 1px solid var(--dsw-alias-brand-primary); border-radius: var(--dsw-radius-sm, 8px); background: color-mix(in srgb, var(--dsw-alias-brand-primary) 10%, transparent); color: var(--dsw-alias-brand-primary); font-size: 12px; font-weight: 600; line-height: 18px; cursor: pointer; transition: background-color .15s ease; }
+.ios-thm-preset:hover { background: color-mix(in srgb, var(--dsw-alias-brand-primary) 18%, transparent); }
+.ios-thm-field-label { margin-bottom: 6px; font-size: 12px; line-height: 18px; color: var(--dsw-alias-label-primary); }
+
+.ios-thm-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.ios-thm-row-text { min-width: 0; }
+.ios-thm-row-label { font-size: 13px; font-weight: 500; line-height: 20px; color: var(--dsw-alias-label-primary); }
+.ios-thm-row-sub { margin-top: 2px; font-size: 11px; line-height: 16px; color: var(--dsw-alias-label-secondary); }
+
+/* 诊断读数用 label-secondary 而不是 label-tertiary：
+   浅色下 tertiary(#81858c) 11px 对白底只有 3.71:1，达不到 4.5；
+   secondary(#61666b) 是 5.80:1。诊断信息可以弱化，但不能弱到看不清。 */
+.ios-thm-diag { margin-top: 6px; font-size: 11px; line-height: 16px; font-family: var(--ds-font-family-code, ui-monospace, monospace); color: var(--dsw-alias-label-secondary); }
+
+/* 开关：尺寸/圆角/滑块位移全部对齐 NEXT 的 primitives/Switch（36×20，padding 2px，
+   轨道 999px 胶囊，滑块 16×16，选中右移 16px）。与宿主控件并排时大小一致。 */
+/* 轨道关闭态不能用 --dsw-alias-border-l3：多数主题（尤其透光橙）会把
+   border-l1..l4 映射成品牌色，于是「关」和「开」看起来一样。轨道是控件填充，
+   语义上属于中性面 —— 用 label-secondary 混出中灰，与品牌色形成明确对照。
+   开启/关闭的视觉由 aria-checked 驱动（与宿主 primitives/Switch 一致），
+   避免出现「类名说开着、辅助技术读到关着」的分裂状态。 */
+.ios-thm-switch { box-sizing: border-box; position: relative; flex: 0 0 auto; width: 36px; height: 20px; padding: 2px; border: 0; border-radius: 999px; background: color-mix(in srgb, var(--dsw-alias-label-secondary) 42%, transparent); cursor: pointer; }
+.ios-thm-switch[aria-checked="true"] { background: var(--dsw-alias-brand-primary); }
+.ios-thm-switch-knob { display: block; width: 16px; height: 16px; border-radius: 50%; background: var(--dsw-alias-label-primary-foreground, #fff); transition: transform 120ms ease; }
+.ios-thm-switch[aria-checked="false"] .ios-thm-switch-knob { background: var(--dsw-alias-switch-thumb); }
+.ios-thm-switch[aria-checked="true"] .ios-thm-switch-knob { transform: translateX(16px); }
+.ios-thm-switch:focus-visible { outline: 2px solid var(--dsw-alias-brand-primary); outline-offset: 2px; }
+.ios-thm-switch-disabled { opacity: .45; cursor: not-allowed; }
+
+/* ===== 2. 换肤平滑过渡 ===== */
+/* 250ms 让配色切换不刺眼。只列颜色相关属性 —— 写 all 会拖累滚动与布局。 */
+@media (prefers-reduced-motion: no-preference) {
+  :root, :root * { transition-property: background-color, color, border-color, fill, stroke; transition-duration: 250ms; transition-timing-function: ease; }
+}
+
+/* ===== 3. 背景图（壁纸）=====
+   ::before 是当前图，::after 是过渡图；z-index:-1 让它落在 #root 之下。
+   应用底色由下面这条 !important 规则降成半透明 —— 关键点：DSH 的主题令牌是
+   body 上的 inline 自定义属性（ui-layout 的 presenter 用 body.style.setProperty 写），
+   inline 没带 !important，所以带 !important 的样式表规则能压过它。
+   走 CSS 就绕开了 overrideTokens 的层序与投影时机，稳得多。 */
+html[data-ios-bg="on"],
+html[data-ios-bg="on"] body { background-color: transparent; }
+
+html[data-ios-bg="on"][data-ios-bg-surface="on"] body {
+  --dsw-alias-bg-base: color-mix(in srgb, var(--ios-bg-base-raw) var(--ios-bg-base-alpha, 80%), transparent) !important;
+  --dsw-specific-sidebar-fill: color-mix(in srgb, var(--ios-bg-side-raw) var(--ios-bg-side-alpha, 80%), transparent) !important;
+}
+
+/* —— 只碰 bg-base 与 sidebar-fill 两个令牌，别的一概不动 ——
+   曾经在这里加过一条 [data-ios-bg-depth] 规则，把 --dsw-alias-bg-layer-1
+   也降成半透明，想让「卡片也透光」。实测结果是整页叠印：layer-1 不是卡片专用底，
+   而是所有控件级表面的共用底（插件市场卡片、聊天预览、侧栏按钮、分段控件…），
+   一改全透，下层正文立刻从这些面浮上来。截图里设置页与插件市场满屏字体重叠
+   就是这个原因。
+
+   结论（也是这条注释的用处，防止以后有人再想「更透一点」）：
+   壁纸只从窗口底与侧栏透出，压在它们之上的任何面都必须保持实底。
+   「透多少」由界面底透明度一个参数控制，不再给分档。 */
+
+/* 层叠容器实底 ——「保留壁纸」与「不叠影」的分界线。
+   壁纸只该在「下层没有文字」的平面上透出：窗口底、侧栏、内容区空白。
+   一旦某个容器可能压在别的内容之上（右侧分栏、dockkit 面板、输入框），
+   它就必须回到不透明原色，否则下层文字会从半透明上层透出来 ——
+   工作区文件全屏时侧栏条目与正文叠印，就是这个原因。
+
+   做法是在这些容器的子树上把令牌重新指回原值，而不是硬写 background：
+   DSH 内部的 tabHost / composer 各自用 --dsw-alias-bg-base 铺底，
+   只要它们拿到的原值不透明，整块面板（含标签栏）就自然实底，
+   不必去猜哈希类名，也不会盖掉浮层原本的 bg-layer-2。
+
+   NEXT 的钩子补齐：
+   · data-dockkit-empty —— 空 tab host，_emptyTabHost 自己也铺 bg-base，
+     原先没收口，空分栏会透出壁纸；
+   · data-dockkit-surface / data-dockkit-column —— dockkit 根与外层 cell，
+     兜住「多 pane 同时可见」的布局；
+   · data-composer-overlay —— 覆盖层原来漏在外面，输入框后面的正文会透上来。
+   注意 data-dockkit-pane 只在「非浮窗且 active」时才有值，非 active pane 靠
+   [data-dockkit-host] 那一档兜底 —— 两档都要留。 */
+html[data-ios-bg="on"][data-ios-bg-surface="on"] :is(
+  [data-dockkit-surface],
+  [data-dockkit-host],
+  [data-dockkit-column],
+  [data-dockkit-pane],
+  [data-dockkit-float],
+  [data-dockkit-empty],
+  [data-sidebar-right-panel],
+  [data-composer-card],
+  [data-composer-dock],
+  [data-composer-seat],
+  [data-composer-overlay],
+  [data-queue-dock]
+) {
+  --dsw-alias-bg-base: var(--ios-bg-base-raw);
+  --dsw-specific-sidebar-fill: var(--ios-bg-side-raw);
+}
+
+/* dockkit 的 pane 自身在部分布局下不画底（靠祖先 tabHost 兜底），这里再补一层，
+   避免结构微调后又漏出透明底。浮窗（_float）自带 bg-layer-2，不在此列。 */
+html[data-ios-bg="on"][data-ios-bg-surface="on"] :is([data-dockkit-pane], [data-dockkit-empty]) {
+  background-color: var(--ios-bg-base-raw);
+}
+
+/* composer 侧只做「令牌指回原值」，不硬写 background：
+   [data-composer-card] 自己在 NEXT 里用 --dsw-specific-input-major 铺底（实色），
+   给它盖一层 background-color: var(--ios-bg-base-raw) 会把输入框那层略亮/略暗的
+   层次抹平，反而变难看。真正需要收的是它内部消费 --dsw-alias-bg-base 的子元素
+   （附件 chip、命令面板、覆盖层），那些靠上面那条 :is() 令牌重定向就够了。
+   [data-composer-seat] 是几何占位容器，也不能硬铺 —— 会在壁纸上切出一条横带。 */
+
+html[data-ios-bg="on"] body::before,
+html[data-ios-bg="on"] body::after {
+  content: "";
+  position: fixed;
+  /* 图片层向外扩出 2 倍模糊半径，吃掉 blur 造成的透明边 */
+  inset: calc(var(--ios-bg-blur, 18px) * -2);
+  z-index: -1;
+  pointer-events: none;
+  background-position: center center;
+  background-repeat: var(--ios-bg-repeat, no-repeat);
+  background-size: var(--ios-bg-size, cover);
+  background-image: linear-gradient(var(--ios-bg-scrim, transparent), var(--ios-bg-scrim, transparent)), var(--ios-bg-a, none);
+  filter: blur(var(--ios-bg-blur, 18px)) saturate(var(--ios-bg-sat, 1));
+  transform: translateZ(0);
+  opacity: var(--ios-bg-opacity, 1);
+  transition: opacity 800ms ease;
+  will-change: opacity;
+}
+
+html[data-ios-bg="on"] body::after {
+  background-image: linear-gradient(var(--ios-bg-scrim, transparent), var(--ios-bg-scrim, transparent)), var(--ios-bg-b, none);
+  opacity: 0;
+}
+
+html[data-ios-bg-xfade] body::after { opacity: var(--ios-bg-opacity, 1); }
+
+html[data-ios-bg-instant] body::before,
+html[data-ios-bg-instant] body::after { transition: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-ios-bg="on"] body::before,
+  html[data-ios-bg="on"] body::after { transition: none; }
+}
+
+/* ===== 4. 背景图卡片控件 ===== */
+.ios-thm-drop { margin-top: 12px; padding: 14px; border: 1px dashed var(--dsw-alias-border-l2); border-radius: var(--dsw-radius-md, 12px); background: color-mix(in srgb, var(--dsw-alias-bg-base) 60%, transparent); outline: none; }
+.ios-thm-drop:focus-visible { border-color: var(--dsw-alias-brand-primary); box-shadow: 0 0 0 2px color-mix(in srgb, var(--dsw-alias-brand-primary) 25%, transparent); }
+.ios-thm-drop-over { border-color: var(--dsw-alias-brand-primary); background: color-mix(in srgb, var(--dsw-alias-brand-primary) 8%, var(--dsw-alias-bg-base)); }
+.ios-thm-drop-text { font-size: 11px; line-height: 16px; color: var(--dsw-alias-label-secondary); }
+.ios-thm-drop-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.ios-thm-file { display: none; }
+.ios-thm-textbtn { padding: 6px 12px; border: 1px solid var(--dsw-alias-border-l1); border-radius: var(--dsw-radius-sm, 8px); background: transparent; color: var(--dsw-alias-label-secondary); font-size: 12px; line-height: 18px; cursor: pointer; }
+.ios-thm-textbtn:hover { color: var(--dsw-alias-label-primary); border-color: var(--dsw-alias-border-l2); }
+.ios-thm-bg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 8px; margin-top: 12px; }
+.ios-thm-bg-item { position: relative; }
+.ios-thm-bg-thumb { display: block; width: 100%; aspect-ratio: 16 / 10; padding: 0; border: 1px solid var(--dsw-alias-border-l1); border-radius: var(--dsw-radius-sm, 8px); overflow: hidden; background: var(--dsw-alias-bg-layer-2); cursor: pointer; }
+.ios-thm-bg-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.ios-thm-bg-item-active .ios-thm-bg-thumb { border-color: var(--dsw-alias-brand-primary); box-shadow: 0 0 0 2px color-mix(in srgb, var(--dsw-alias-brand-primary) 30%, transparent); }
+.ios-thm-bg-del { position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; padding: 0; border: 0; border-radius: 50%; background: var(--dsw-alias-state-error-primary); color: #fff; font-size: 13px; line-height: 18px; cursor: pointer; opacity: 0; transition: opacity .15s ease; }
+.ios-thm-bg-item:hover .ios-thm-bg-del, .ios-thm-bg-item:focus-within .ios-thm-bg-del { opacity: 1; }
+.ios-thm-slider-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.ios-thm-slider-value { font-size: 11px; line-height: 16px; color: var(--dsw-alias-label-secondary); font-variant-numeric: tabular-nums; }
+.ios-thm-range { width: 100%; margin: 6px 0 0; accent-color: var(--dsw-alias-brand-primary); }
+.ios-thm-inline { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }

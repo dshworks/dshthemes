@@ -1,0 +1,61 @@
+/* qing-yylx/DSH-550W-Theme — custom-css/custom.css
+   fetched 2026-11-16 from https://raw.githubusercontent.com/qing-yylx/DSH-550W-Theme/main/custom-css/custom.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* ============================================================================
+   DSH 自定义样式 —— 由本地插件 @local/custom-css 注入
+   保存即生效：插件每秒检查一次这个文件，改动会在 1 秒内出现在界面上，无需刷新。
+   壁纸图片放在同目录的 assets/ 里。
+   ============================================================================ */
+
+/* ---------------------------------------------------------------------------
+   1. 壁纸：铺在页面最底层（html 画布），窗口缩放时按 cover 裁切、始终居中
+   --------------------------------------------------------------------------- */
+html {
+  background-color: #05060a !important;
+  /* 第一层是压暗蒙版，第二层才是壁纸；改这两个 0.62 / 0.75 可以调明暗 */
+  background-image:
+    linear-gradient(rgba(4, 5, 9, 0.22), rgba(4, 5, 9, 0.35)),
+    url('/custom-css/assets/550w.png') !important;
+  background-position: center center, center center !important;
+  background-size: cover, cover !important;
+  background-repeat: no-repeat, no-repeat !important;
+  background-attachment: fixed, fixed !important;
+}
+
+/* 应用外壳让出背景，露出壁纸 */
+body,
+#root,
+#app {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* ---------------------------------------------------------------------------
+   2. 深色主题：把原本不透明的面板换成半透明玻璃，壁纸透出来但不影响阅读
+   想让壁纸更明显就调小 alpha，想更清楚就调大
+   --------------------------------------------------------------------------- */
+body[data-ds-dark-theme] {
+  --dsw-alias-bg-base: rgba(6, 7, 11, 0.55);
+  --dsw-alias-bg-layer-1: rgba(10, 11, 17, 0.62);
+  --dsw-alias-bg-layer-2: rgba(14, 15, 22, 0.70);
+  --dsw-alias-bg-layer-3: rgba(18, 19, 27, 0.76);
+  --dsw-alias-bg-overlay: rgba(8, 9, 14, 0.76);
+  --dsw-alias-bg-module-platform: rgba(12, 13, 19, 0.60);
+  --dsw-specific-sidebar-fill: rgba(7, 8, 12, 0.58);
+  --dsw-menu-surface-fill: rgba(14, 15, 22, 0.78);
+  --dsw-specific-menu: rgba(14, 15, 22, 0.78);
+}
+
+/* ---------------------------------------------------------------------------
+   3. 浅色主题：白玻璃版本，同样保证文字对比度
+   --------------------------------------------------------------------------- */
+body:not([data-ds-dark-theme]) {
+  --dsw-alias-bg-base: rgba(250, 251, 253, 0.55);
+  --dsw-alias-bg-layer-1: rgba(255, 255, 255, 0.66);
+  --dsw-alias-bg-layer-2: rgba(255, 255, 255, 0.74);
+  --dsw-alias-bg-layer-3: rgba(255, 255, 255, 0.80);
+  --dsw-specific-sidebar-fill: rgba(247, 248, 251, 0.62);
+  --dsw-menu-surface-fill: rgba(255, 255, 255, 0.80);
+  --dsw-specific-menu: rgba(255, 255, 255, 0.80);
+}
+

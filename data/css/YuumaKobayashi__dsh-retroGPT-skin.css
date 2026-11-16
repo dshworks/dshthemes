@@ -1,0 +1,745 @@
+/* YuumaKobayashi/dsh-retroGPT-skin — client.js
+   fetched 2026-11-16 from https://raw.githubusercontent.com/YuumaKobayashi/dsh-retroGPT-skin/main/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+:root[data-rgs-skin] {
+	--rgs-font-size: 15px;
+	--rgs-page-band: #FFFFFF;
+	--rgs-user-band: #FFFFFF;
+	--rgs-ai-band: #ECECEC;
+	--rgs-line: #DCDCDC;
+	--rgs-ink: #202123;
+	--rgs-plane: #8E8E8E;
+	--rgs-ai-avatar: #10A37F;
+	--rgs-user-avatar: var(--rgs-user-avatar-color, #6D5AE6);
+	--rgs-input-bg: #FFFFFF;
+	--dsh-chat-flow-gap: 0px;
+	--dsh-content-font-size: var(--rgs-font-size, 15px);
+	--dsh-content-font-delta: 1.5px;
+}
+
+:root[data-rgs-skin][data-rgs-ai-avatar="whale"] {
+}
+
+:root[data-rgs-skin] body[data-ds-dark-theme] {
+	/* the classic dark pair: page/user #343541, reply sheet #444654 */
+	--rgs-page-band: #343541;
+	--rgs-user-band: #343541;
+	--rgs-ai-band: #444654;
+	--rgs-line: #4A4B57;
+	--rgs-ink: #ECECEC;
+	--rgs-plane: #A1A1AA;
+	--rgs-input-bg: #40414F;
+}
+
+/* ---------- sidebar: always the dark retro column ---------- */
+
+:root[data-rgs-skin] [data-slot="sidebar"] {
+	--dsw-alias-label-primary: #ECECEC;
+	--dsw-alias-label-secondary: #A1A1AA;
+	--dsw-alias-border-l1: #35363C;
+	--dsw-alias-border-l3: #35363C;
+	--dsw-alias-interactive-bg-hover: #2A2B32;
+	--dsw-alias-bg-layer-1: #2A2B32;
+	--dsw-alias-bg-layer-2: #2F3037;
+	--dsw-specific-sidebar-fill: #202123;
+	/* the "HARNESS" badge in the wordmark paints its plate with currentColor
+	   (#ECECEC here) and its letters with the inverted label alias, so inside the
+	   always-dark column those letters have to be dark ink in both themes — the
+	   light theme would otherwise hand them white-on-white. */
+	--dsw-alias-label-primary-inverted: #202123;
+	color-scheme: dark;
+}
+
+/* Light theme only: the new-session row is a white pill here, so its inherited
+   light ink turns the label and the plus icon invisible. Only that row is
+   re-inked — the brand row keeps the column's light ink. */
+:root[data-rgs-skin][data-rgs-theme="light"] [data-slot="sidebar"] [class*="_newSession"],
+:root[data-rgs-skin][data-rgs-theme="light"] [data-slot="sidebar"] [class*="_newSession"] * {
+	color: #202123;
+}
+
+/* ---------- transcript sheet: one continuous AI band ---------- */
+
+/* The chat pane itself is the AI sheet: painting the scrolling element (instead
+   of extruding a shadow from the column) makes the AI colour reach both edges of
+   the transcript, so nothing shows as a pair of side bars and the host's own row
+   gaps, margins and extra row kinds all sit on one continuous block. */
+:root[data-rgs-skin] [data-conversation-content] {
+	--dsh-chat-content-width: 760px;
+}
+
+/* the conversation seat (header + transcript + composer) carries the page colour,
+   so the user turns, the composer row and the header all sit on it — in dark mode
+   that is the classic #343541, not the host's pure black. The bg-base alias is
+   re-mapped inside the subtree too, because the host paints the conversation root
+   with that token and would otherwise cover this colour. */
+:root[data-rgs-skin] [data-slot="main.conversation"] {
+	--dsw-alias-bg-base: var(--rgs-page-band);
+	background-color: var(--rgs-page-band);
+}
+
+:root[data-rgs-skin] [data-conversation-scroll] {
+	background-color: var(--rgs-ai-band);
+}
+
+/* every flow row keeps the avatar gutter and stays transparent, so the sheet
+   colour shows through the host's own gaps and margins */
+:root[data-rgs-skin] [data-chat-flow-kind] {
+	position: relative;
+	padding-left: 72px;
+	padding-right: 24px;
+	background: transparent;
+	font-size: var(--rgs-font-size, 15px);
+}
+
+/* the reply reserves a gutter on the right so the floating actions never sit on
+   top of text or code — same idea as the reference layout, where the thumbs live
+   outside the text column */
+:root[data-rgs-skin] [data-chat-flow-kind="assistant-step"] {
+	padding-right: 96px;
+}
+
+/* A reply whose FIRST block is a card (the edited-files card, tool output) has
+   content against its own top edge, so the lifted action row would sit on the
+   card. client.js marks those rows; the strip below is what the actions land in.
+   The value lives here, not in JS, so tweaking the gap needs no re-apply. */
+:root[data-rgs-skin] [data-chat-flow-kind="assistant-step"][data-rgs-card-first] {
+	padding-top: 52px;
+}
+
+/* Typewriter caret. While a turn streams, client.js marks the newest reply row
+   with [data-rgs-typing] and picks exactly ONE text block inside it — the last one
+   in document order — with [data-rgs-caret]. Matching :last-child alone drew a caret
+   for every block that happened to close its parent (a paragraph AND the list item
+   inside it), so the block is chosen once in JS instead. Nothing inside the host
+   markdown is rewritten — the host still owns every character it renders. */
+:root[data-rgs-skin][data-rgs-typewriter="on"] [data-rgs-caret]::after {
+	content: "";
+	display: inline-block;
+	width: 0.5em;
+	height: 1.05em;
+	margin-left: 2px;
+	background: currentColor;
+	border-radius: 1px;
+	vertical-align: -0.18em;
+	animation: rgs-caret 1.05s steps(1, end) infinite;
+}
+
+@keyframes rgs-caret {
+	0%,
+	55% {
+		opacity: 1;
+	}
+	56%,
+	100% {
+		opacity: 0;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	:root[data-rgs-skin][data-rgs-typewriter="on"] [data-rgs-caret]::after {
+		animation: none;
+	}
+}
+
+/* The host renders the reply's actions (copy / thumbs / regenerate) and its usage
+   line ("本轮费用 …") in the turn tail row that follows the answer. The tail row is
+   the only element that owns them, so it becomes the anchor: it stays in flow, and
+   the actions are lifted to the top of the answer row by a measured offset (the
+   distance between the two rows), which client-side code keeps up to date.
+   Its own vertical padding keeps that footer from sitting on the rule above it and
+   on the band boundary below it. */
+:root[data-rgs-skin] [data-turn-tail] {
+	position: relative;
+	padding-top: 8px;
+	padding-bottom: 20px;
+}
+
+:root[data-rgs-skin] [data-turn-tail] [class*="_actions"] {
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin: 0;
+	z-index: 2;
+	transform: translateY(calc(-1 * var(--rgs-actions-lift, 0px)));
+}
+
+/* user turns break the sheet with a full-bleed band of their own */
+:root[data-rgs-skin] [data-chat-flow-kind="user"] {
+	padding-top: 16px;
+	padding-bottom: 16px;
+	background: var(--rgs-user-band);
+	box-shadow: 0 0 0 100vmax var(--rgs-user-band);
+	clip-path: inset(0 -100vmax);
+}
+
+/* a border would stop at the 760px row box while the band reaches the pane edges,
+   so the hairline is extruded the same way the band is: one 1px pseudo-line at the
+   bottom edge of the user band — exactly where the black band meets the grey sheet */
+:root[data-rgs-skin] [data-chat-flow-kind="user"]::after {
+	content: "";
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 1px;
+	background: var(--rgs-line);
+	box-shadow: 0 0 0 100vmax var(--rgs-line);
+	clip-path: inset(0 -100vmax);
+	pointer-events: none;
+}
+
+:root[data-rgs-skin] [data-chat-flow-kind="user"]::before,
+:root[data-rgs-skin] [data-chat-flow-kind="assistant-step"]::before {
+	content: "";
+	position: absolute;
+	left: 24px;
+	width: 30px;
+	height: 30px;
+	border-radius: 4px;
+	box-sizing: border-box;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 20px 20px;
+}
+
+:root[data-rgs-skin] [data-chat-flow-kind="user"]::before {
+	content: "U";
+	top: calc(16px + (1.6 * var(--rgs-font-size, 15px) - 30px) / 2);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 1;
+	color: #FFFFFF;
+	background-color: var(--rgs-user-avatar);
+	font-family: var(--dsh-font-family-text-default, inherit);
+}
+
+/* a picture chosen in the settings panel replaces the letter tile on every user turn */
+:root[data-rgs-skin][data-rgs-user-avatar="image"] [data-chat-flow-kind="user"]::before {
+	content: "";
+	background-color: transparent;
+	background-image: var(--rgs-user-image);
+	background-size: cover;
+	background-position: center;
+}
+
+/* One mark per turn, on the turn's FIRST answer row — the reference layout never
+   repeats the mark for every step of a thinking turn. client.js marks that row with
+   [data-rgs-turn-start] (a turn boundary is the user row, so grouping is only
+   expressible in JS; plain CSS cannot scope "first sibling since the last user row").
+   The sibling rule below is the CSS-only fallback for the common shape (answer right
+   after the user turn), so the mark still shows if the scan ever fails to run.
+   Rows without either signal simply keep the text gutter.
+   The tile's top centres it on the first text line. The two kinds differ: a user row
+   carries 16px of its own vertical padding, an answer row starts its first line at
+   the row's top edge (measured: text centre ≈ 12.4px below the row top at 15px font,
+   i.e. line-height/2 with no padding). So the offset is derived from the skin's font
+   size instead of a constant. */
+:root[data-rgs-skin] [data-chat-flow-kind="assistant-step"][data-rgs-turn-start]::before,
+:root[data-rgs-skin] [data-chat-flow-kind="user"] + [data-chat-flow-kind="assistant-step"]:not([data-chat-group-part="reasoning"])::before,
+:root[data-rgs-skin] [class*="_column"] > [data-chat-flow-kind="assistant-step"]:first-child::before {
+	top: calc((1.6 * var(--rgs-font-size, 15px) - 30px) / 2);
+	background-color: var(--rgs-ai-avatar);
+	background-image: var(--rgs-ai-image);
+}
+
+/* the user turn loses its bubble: full-bleed band, same text position as the AI.
+   These inner rules are deliberately NOT keyed on [data-chat-flow-kind="user"]:
+   a freshly sent message is painted once before its flow row carries the kind (or
+   inside the pending wrapper), and keying on the kind let that first frame keep the
+   host's right-aligned layout before snapping left. The user node's own module
+   classes are unique to it, so matching them alone is both safe and immediate. */
+:root[data-rgs-skin] [class*="_userRow"] {
+	width: 100%;
+	align-items: stretch;
+	gap: 0;
+}
+
+:root[data-rgs-skin] [class*="_userStack"] {
+	max-width: 100%;
+	align-items: flex-start;
+	gap: 0;
+}
+
+:root[data-rgs-skin] [class*="_userRow"] [class*="_bubble"],
+:root[data-rgs-skin] [class*="_userStack"] [class*="_bubble"] {
+	background: transparent;
+	border-radius: 0;
+	padding: 0;
+	max-width: 100%;
+	font-size: var(--rgs-font-size, 15px);
+	line-height: 1.6;
+}
+
+:root[data-rgs-skin] [data-chat-flow-kind="assistant-step"] [class*="_actions"] {
+	margin-top: 10px;
+}
+
+/* ---------- scroll area: bands reach the chat edges ---------- */
+
+/* In the active phase the host sticks the composer seat over the transcript with a
+   36px vertical gradient (transparent → bg-base) so scrolled text fades out. Over a
+   coloured band that fade reads as a stray colour change between the transcript and
+   the input row, so the seat is one flat AI-band surface instead; the important flag
+   is needed because the host rule is .root[data-phase] .seat (0,3,0) and wins on
+   specificity. */
+:root[data-rgs-skin] [data-composer-seat] {
+	background: var(--rgs-ai-band) !important;
+}
+
+:root[data-rgs-skin] [data-chat-flow-kind] + [data-chat-flow-kind] {
+	margin-top: 0;
+}
+
+:root[data-rgs-skin] [data-conversation-content],
+:root[data-rgs-skin] [data-conversation-scroll],
+:root[data-rgs-skin] [data-slot="conversation.chat.flow"] {
+	overflow-x: hidden;
+}
+
+:root[data-rgs-skin] [data-conversation-scroll] [class*="_scroll"],
+:root[data-rgs-skin] [data-slot="conversation.chat.flow"] {
+	padding-left: 0;
+	padding-right: 0;
+}
+
+/* ---------- composer: white card, paper-plane send ---------- */
+
+:root[data-rgs-skin] [data-composer-card] {
+	background: var(--rgs-input-bg);
+	border: 1px solid var(--rgs-line);
+	border-radius: 12px;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+:root[data-rgs-skin] [data-composer-card] [class*="_input"] {
+	font-size: var(--dsh-content-font-size, 15px);
+}
+
+:root[data-rgs-skin][data-rgs-plane="on"] [data-composer-card] button[class*="_primary"]:has(> svg > path) {
+	background: transparent;
+	color: var(--rgs-plane);
+	width: 32px;
+	height: 32px;
+	border-radius: 8px;
+}
+
+:root[data-rgs-skin][data-rgs-plane="on"] [data-composer-card] button[class*="_primary"]:has(> svg > path):hover,
+:root[data-rgs-skin][data-rgs-plane="on"] [data-composer-card] button[class*="_primary"]:has(> svg > path):active {
+	background: transparent;
+	color: var(--rgs-ink);
+}
+
+:root[data-rgs-skin][data-rgs-plane="on"] [data-composer-card] button[class*="_primary"]:has(> svg > path) > svg {
+	display: none;
+}
+
+:root[data-rgs-skin][data-rgs-plane="on"] [data-composer-card] button[class*="_primary"]:has(> svg > path)::after {
+	content: "";
+	width: 20px;
+	height: 20px;
+	background-color: currentColor;
+}
+
+/* ---------- theme toggle ---------- */
+
+/* the toggle sits in the conversation header's utilities row, immediately to the
+   left of the "open in File Explorer" action (that entry is order -10), so it lines
+   up with the rest of the header actions instead of floating over the transcript */
+.rgs-toggle {
+	display: flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	margin-right: 2px;
+	padding: 0;
+	border: 0;
+	border-radius: 6px;
+	background: transparent;
+	color: var(--dsw-alias-label-secondary);
+	cursor: pointer;
+	transition: color 120ms ease, background-color 120ms ease;
+}
+
+.rgs-toggle:hover {
+	color: var(--dsw-alias-label-primary);
+	background: var(--dsw-alias-interactive-bg-hover);
+}
+
+.rgs-toggle:focus-visible {
+	outline: 2px solid var(--dsw-alias-brand-primary);
+	outline-offset: 1px;
+}
+
+.rgs-toggle svg {
+	display: block;
+}
+
+/* ---------- settings section: "GPT retro UI" ---------- */
+
+.rgs-set {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	width: 100%;
+	max-width: 760px;
+}
+
+.rgs-set-intro {
+	margin: 0;
+	padding: 0 2px;
+	color: var(--dsw-alias-label-secondary);
+	font-size: 13px;
+	line-height: 20px;
+}
+
+.rgs-set-group {
+	display: flex;
+	flex-direction: column;
+}
+
+.rgs-set-heading {
+	padding: 0 2px 6px;
+	color: var(--dsw-alias-label-primary);
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 20px;
+}
+
+.rgs-set-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	padding: 12px 2px;
+	border-bottom: 1px solid var(--dsw-alias-border-l2);
+}
+
+.rgs-set-row:last-child {
+	border-bottom: 0;
+}
+
+.rgs-set-text {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	min-width: 0;
+}
+
+.rgs-set-title {
+	color: var(--dsw-alias-label-primary);
+	font-size: 14px;
+	line-height: 22px;
+}
+
+.rgs-set-desc {
+	color: var(--dsw-alias-label-secondary);
+	font-size: 12px;
+	line-height: 18px;
+}
+
+.rgs-set-control {
+	display: flex;
+	flex: 0 0 auto;
+	align-items: center;
+	gap: 8px;
+}
+
+.rgs-set-choice {
+	display: inline-flex;
+	padding: 2px;
+	border: 1px solid var(--dsw-alias-border-l2);
+	border-radius: 9px;
+	background: var(--dsw-alias-bg-layer-1);
+}
+
+.rgs-set-choice button {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 5px 10px;
+	border: 0;
+	border-radius: 7px;
+	background: transparent;
+	color: var(--dsw-alias-label-secondary);
+	font: inherit;
+	font-size: 13px;
+	line-height: 18px;
+	cursor: pointer;
+}
+
+.rgs-set-choice button[aria-pressed="true"] {
+	background: var(--dsw-alias-bg-module-platform);
+	color: var(--dsw-alias-label-primary);
+}
+
+.rgs-set-choice button:focus-visible {
+	outline: 2px solid var(--dsw-alias-brand-primary);
+	outline-offset: 1px;
+}
+
+.rgs-set-swatch {
+	width: 16px;
+	height: 16px;
+	border-radius: 3px;
+	background-color: var(--rgs-ai-avatar);
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 12px 12px;
+}
+
+.rgs-set-swatch[data-art="gpt"] {
+}
+
+.rgs-set-swatch[data-art="whale"] {
+}
+
+.rgs-set-colors {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.rgs-set-color {
+	box-sizing: border-box;
+	width: 22px;
+	height: 22px;
+	padding: 0;
+	border: 1px solid var(--dsw-alias-border-l2);
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.rgs-set-color[aria-pressed="true"] {
+	box-shadow: 0 0 0 2px var(--dsw-alias-brand-primary);
+}
+
+.rgs-set-color:focus-visible,
+.rgs-set-color-input:focus-visible {
+	outline: 2px solid var(--dsw-alias-brand-primary);
+	outline-offset: 2px;
+}
+
+.rgs-set-color-input {
+	box-sizing: border-box;
+	width: 30px;
+	height: 22px;
+	padding: 0;
+	border: 1px solid var(--dsw-alias-border-l2);
+	border-radius: 5px;
+	background: var(--dsw-alias-bg-layer-1);
+	cursor: pointer;
+}
+
+.rgs-set-upload {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.rgs-set-preview {
+	box-sizing: border-box;
+	width: 26px;
+	height: 26px;
+	border: 1px solid var(--dsw-alias-border-l2);
+	border-radius: 5px;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+.rgs-set-file {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	padding: 5px 10px;
+	border: 1px solid var(--dsw-alias-border-l2);
+	border-radius: 7px;
+	background: var(--dsw-alias-bg-layer-1);
+	color: var(--dsw-alias-label-primary);
+	font-size: 13px;
+	line-height: 18px;
+	cursor: pointer;
+}
+
+.rgs-set-file input {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: 0;
+	opacity: 0;
+}
+
+.rgs-set-file:focus-within {
+	outline: 2px solid var(--dsw-alias-brand-primary);
+	outline-offset: 1px;
+}
+
+.rgs-set-clear {
+	padding: 5px 8px;
+	border: 0;
+	border-radius: 7px;
+	background: transparent;
+	color: var(--dsw-alias-label-secondary);
+	font: inherit;
+	font-size: 13px;
+	line-height: 18px;
+	cursor: pointer;
+}
+
+.rgs-set-clear:hover {
+	background: var(--dsw-alias-interactive-bg-hover);
+	color: var(--dsw-alias-label-primary);
+}
+
+.rgs-set-error {
+	color: var(--dsw-alias-state-error-primary);
+	font-size: 12px;
+	line-height: 18px;
+}
+
+.rgs-set-switch {
+	position: relative;
+	display: inline-flex;
+	flex: 0 0 auto;
+	cursor: pointer;
+}
+
+.rgs-set-switch input {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: 0;
+	opacity: 0;
+}
+
+.rgs-set-switch-track {
+	display: inline-flex;
+	align-items: center;
+	box-sizing: border-box;
+	width: 36px;
+	height: 20px;
+	padding: 2px;
+	border: 1px solid var(--dsw-alias-border-l2);
+	border-radius: 10px;
+	background: var(--dsw-alias-bg-layer-2);
+	transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.rgs-set-switch-thumb {
+	display: block;
+	width: 14px;
+	height: 14px;
+	border-radius: 50%;
+	background: var(--dsw-alias-label-secondary);
+	transition: transform 150ms ease, background-color 150ms ease;
+}
+
+.rgs-set-switch input:checked + .rgs-set-switch-track {
+	border-color: var(--dsw-alias-brand-primary);
+	background: var(--dsw-alias-brand-primary);
+}
+
+.rgs-set-switch input:checked + .rgs-set-switch-track .rgs-set-switch-thumb {
+	background: #FFFFFF;
+	transform: translateX(16px);
+}
+
+.rgs-set-switch input:focus-visible + .rgs-set-switch-track {
+	outline: 2px solid var(--dsw-alias-brand-primary);
+	outline-offset: 2px;
+}
+
+.rgs-set-number {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.rgs-set-number input {
+	box-sizing: border-box;
+	width: 64px;
+	height: 30px;
+	padding: 0 8px;
+	border: 1px solid var(--dsw-alias-border-l2);
+	border-radius: 8px;
+	background: var(--dsw-alias-bg-layer-1);
+	color: var(--dsw-alias-label-primary);
+	font: inherit;
+	font-size: 13px;
+	text-align: center;
+}
+
+.rgs-set-number span {
+	color: var(--dsw-alias-label-secondary);
+	font-size: 12px;
+}
+
+.rgs-set-reset {
+	align-self: flex-start;
+	padding: 6px 12px;
+	border: 1px solid var(--dsw-alias-border-l2);
+	border-radius: 8px;
+	background: transparent;
+	color: var(--dsw-alias-label-primary);
+	font: inherit;
+	font-size: 13px;
+	line-height: 18px;
+	cursor: pointer;
+}
+
+.rgs-set-reset:hover {
+	background: var(--dsw-alias-interactive-bg-hover);
+}
+
+.rgs-set-reset:focus-visible {
+	outline: 2px solid var(--dsw-alias-brand-primary);
+	outline-offset: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.rgs-toggle,
+	.rgs-set-switch-track,
+	.rgs-set-switch-thumb {
+		transition: none;
+	}
+}
+
+@media (max-width: 720px) {
+	:root[data-rgs-skin] [data-chat-flow-kind] {
+		padding-left: 56px;
+		padding-right: 14px;
+	}
+
+	:root[data-rgs-skin] [data-chat-flow-kind="user"] {
+		padding-top: 14px;
+		padding-bottom: 14px;
+	}
+
+	:root[data-rgs-skin] [data-chat-flow-kind="user"]::before,
+	:root[data-rgs-skin] [data-chat-flow-kind="assistant-step"]::before {
+		left: 14px;
+		width: 26px;
+		height: 26px;
+		background-size: 17px 17px;
+	}
+
+	:root[data-rgs-skin] [data-chat-flow-kind="user"]::before {
+		top: calc(14px + (1.6 * var(--rgs-font-size, 15px) - 26px) / 2);
+	}
+
+	:root[data-rgs-skin] [data-chat-flow-kind="assistant-step"]::before {
+		top: calc((1.6 * var(--rgs-font-size, 15px) - 26px) / 2);
+	}
+
+	.rgs-set-row {
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 8px;
+	}
+}

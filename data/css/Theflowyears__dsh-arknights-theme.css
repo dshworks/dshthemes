@@ -1,8 +1,8 @@
 /* Theflowyears/dsh-arknights-theme — assets/skin.css
-   fetched 2026-11-08 from https://raw.githubusercontent.com/Theflowyears/dsh-arknights-theme/main/assets/skin.css
+   fetched 2026-11-16 from https://raw.githubusercontent.com/Theflowyears/dsh-arknights-theme/main/assets/skin.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* ==========================================================================
-   dsh-amiya-wallpaper 鈥?Arknights / Rhodes Island skin
+   dsh-amiya-wallpaper 閳?Arknights / Rhodes Island skin
    --------------------------------------------------------------------------
    Structure and the reasons for it:
 
@@ -15,7 +15,7 @@
 
    2. **The wallpaper is its own fixed layer, with the app stacked over it.** A
       background on the root element sits *under* everything the shell paints, so
-      any opaque surface above it hides the picture 鈥?which is exactly how the
+      any opaque surface above it hides the picture 閳?which is exactly how the
       wallpaper disappeared once. A layer with `#root` explicitly above it does
       not have that failure mode.
 
@@ -65,7 +65,11 @@ html[data-amiya-skin='1'] body::before {
   background-size: cover, cover, cover;
   background-position: center center, center center, center center;
   background-repeat: no-repeat, no-repeat, no-repeat;
-  background-attachment: fixed, fixed, fixed;
+  /* No `background-attachment: fixed` here. It used to be declared, and it was pure cost: this layer
+     is already `position: fixed` and viewport-sized, so its padding box never scrolls — the attachment
+     only made the compositor re-resolve the background against the scroll offset on every frame. On a
+     desktop-sized (or 5K) window over a 2560px picture that is the most expensive thing on the page,
+     and it bought nothing. */
 }
 
 /* The generated assets come in a 16:9 and a 3:4 cut. Below 3:2 the wide cut would
@@ -103,7 +107,7 @@ html[data-amiya-skin='1'] body[data-ds-dark-theme] {
   --dsw-alias-bg-overlay: var(--dsh-amiya-veil-overlay, rgb(13 17 23 / 90%));
   --dsw-alias-bg-mask-1: var(--dsh-amiya-veil-mask, rgb(3 5 8 / 62%));
   --dsw-alias-bg-module-platform: var(--dsh-amiya-veil-platform, rgb(9 12 17 / 78%));
-  --dsw-specific-sidebar-fill: var(--dsh-amiya-veil-sidebar, rgb(10 13 18 / 44%));
+  --dsw-specific-sidebar-fill: var(--dsh-amiya-veil-sidebar, rgb(10 13 18 / 97%));
   --dsw-specific-tip: var(--dsh-amiya-veil-glass, rgb(9 12 17 / 80%));
   --dsw-specific-input-major: var(--dsh-amiya-veil-glass, rgb(9 12 17 / 80%));
   --dsw-specific-bubble: var(--dsh-amiya-veil-glass, rgb(9 12 17 / 80%));
@@ -126,7 +130,7 @@ html[data-amiya-skin='1'] body[data-ds-dark-theme] {
   --dsw-alias-border-l2: rgb(242 181 68 / 34%);
   --dsw-alias-brand-primary: #f2b544;
   /* The adaptive ink. Hue and a touch of saturation come from the picture, so
-     the interface is warm over a warm wallpaper and cool over a cold one 鈥?the
+     the interface is warm over a warm wallpaper and cool over a cold one 閳?the
      text is never one of three greys. Lightness is solved per wallpaper against
      the worst surface the text can sit on, and polarity follows the palette, so
      this cannot repeat the white-on-white flip. */
@@ -150,7 +154,7 @@ html[data-amiya-skin='1'] body:not([data-ds-dark-theme]) {
   --dsw-alias-bg-overlay: var(--dsh-amiya-veil-overlay-l, rgb(250 251 252 / 94%));
   --dsw-alias-bg-mask-1: var(--dsh-amiya-veil-mask-l, rgb(24 26 30 / 34%));
   --dsw-alias-bg-module-platform: var(--dsh-amiya-veil-platform-l, rgb(247 248 250 / 80%));
-  --dsw-specific-sidebar-fill: var(--dsh-amiya-veil-sidebar-l, rgb(247 248 250 / 52%));
+  --dsw-specific-sidebar-fill: var(--dsh-amiya-veil-sidebar-l, rgb(248 249 251 / 97%));
   --dsw-specific-tip: var(--dsh-amiya-veil-glass-l, rgb(247 248 250 / 86%));
   --dsw-specific-input-major: var(--dsh-amiya-veil-glass-l, rgb(247 248 250 / 86%));
   --dsw-specific-bubble: var(--dsh-amiya-veil-glass-l, rgb(247 248 250 / 86%));
@@ -170,7 +174,7 @@ html[data-amiya-skin='1'] body:not([data-ds-dark-theme]) {
   --dsw-alias-border-l2: rgb(146 100 12 / 48%);
   --dsw-alias-brand-primary: #9a6710;
   /* The adaptive ink. Hue and a touch of saturation come from the picture, so
-     the interface is warm over a warm wallpaper and cool over a cold one 鈥?the
+     the interface is warm over a warm wallpaper and cool over a cold one 閳?the
      text is never one of three greys. Lightness is solved per wallpaper against
      the worst surface the text can sit on, and polarity follows the palette, so
      this cannot repeat the white-on-white flip. */
@@ -200,7 +204,7 @@ html[data-amiya-skin='1'] body:not([data-ds-dark-theme]) [class*='_centerCol'] {
    a style choice: `backdrop-filter` makes its element the containing block for
    every `position: fixed` descendant, and the settings panel renders inside the
    sidebar column. Putting the frost on the column trapped that panel inside the
-   column's ~280px box 鈥?it opened as a cramped, unreadable patch in the sidebar
+   column's ~280px box 閳?it opened as a cramped, unreadable patch in the sidebar
    instead of a centred dialog. A pseudo-element is not an ancestor of the real
    children, so the containment does not apply.
    `position: relative` on the column is safe: unlike filter/transform, it does
@@ -213,14 +217,16 @@ html[data-amiya-skin='1'] [class*='_sidebarCol']:not(:has([role='dialog'], [role
     inset -1px 0 0 rgb(255 255 255 / 6%),
     28px 0 60px -20px rgb(0 0 0 / 55%);
 }
+/* The frost is gone with the transparency. At 0.97 the layer behind it is invisible, so the blur was
+   a full-column `backdrop-filter` — the most expensive thing in the skin — drawing an effect nobody
+   could see. Removed rather than left "just in case": a filter on a column also makes it the
+   containing block for fixed descendants, and section 2's comment is about exactly that trap. */
 html[data-amiya-skin='1'] [class*='_sidebarCol']:not(:has([role='dialog'], [role='alertdialog']))::before {
   content: '';
   position: absolute;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  -webkit-backdrop-filter: blur(32px) saturate(190%) brightness(1.04);
-  backdrop-filter: blur(32px) saturate(190%) brightness(1.04);
 }
 html[data-amiya-skin='1'] [class*='_sidebarCol']:not(:has([role='dialog'], [role='alertdialog'])):hover {
   border-right-color: rgb(242 181 68 / 34%) !important;
@@ -366,7 +372,7 @@ html[data-amiya-skin='1'] [class*='_sidebarCol']:not(:has([role='dialog'], [role
 /* These are dossier shapes, not crystals. The originium shard that used to sit
    here failed for a reason brightness could not fix: a faceted crystal is not a
    folder, so even lifted to a pale silhouette there was nothing to recognise.
-   Both DOM shapes are covered 鈥?where the class is on the icon's container the
+   Both DOM shapes are covered 閳?where the class is on the icon's container the
    original SVG is replaced, and where it is on the SVG itself generated content
    simply does not render (it is invalid inside <svg>), so that case degrades to
    the recolour rather than blanking the icon. */
@@ -407,7 +413,7 @@ html[data-amiya-skin='1'] [class*='_sidebarCol']:not(:has([role='dialog'], [role
 html[data-amiya-skin='1'] [class*='_sidebarCol']:not(:has([role='dialog'], [role='alertdialog'])) [class$='_chevron'],
 html[data-amiya-skin='1'] [class*='_sidebarCol']:not(:has([role='dialog'], [role='alertdialog'])) [class$='_arrow'],
 html[data-amiya-skin='1'] [class*='_sidebarCol']:not(:has([role='dialog'], [role='alertdialog'])) [class$='_arrowOpen'] {
-  color: var(--dsh-amiya-ink-2, rgb(200 212 226 / 92%));
+  color: var(--dsw-alias-label-secondary, rgb(200 212 226 / 92%));
 }
 html[data-amiya-skin='1']
   [class*='_sidebarCol']:not(:has([role='dialog'], [role='alertdialog']))
@@ -633,7 +639,7 @@ html[data-amiya-skin='1'] body:not([data-ds-dark-theme]) .amiya-action:hover {
 
    No positioning is declared either. The application already makes the seat sticky at
    the bottom of the column, raises it for an open trigger menu and switches it to
-   absolute when the composer is an overlay 鈥?forcing those from here fought the last
+   absolute when the composer is an overlay 閳?forcing those from here fought the last
    case and bought nothing. */
 html[data-amiya-skin='1'] [class*='_composerSeat'],
 html[data-amiya-skin='1'] [class*='_composerStack'] {
@@ -652,7 +658,7 @@ html[data-amiya-skin='1'] [class*='_composerStack'] [class$='_input'] {
 }
 
 /* --- The top of the column: no surface of its own --------------------- */
-/* The column paints nothing 鈥?it is the wallpaper 鈥?so the top must paint nothing
+/* The column paints nothing 閳?it is the wallpaper 閳?so the top must paint nothing
    either, and then it is continuous with everything below it by construction.
 
    It used to carry a frost. Two things were wrong with that: the selector matched
@@ -682,7 +688,7 @@ html[data-amiya-skin='1'] [class*='_centerCol'] [class$='_header']:has([class*='
 /* --- 10. One frame per control in the foot, not two ----------------------- */
 /* The foot already frames every control it contains. These two carried their own border
    on top of that, so the same edge had two 1px amber lines and the doubled edge read as
-   a pale band 鈥?most visibly along the top of the pair. */
+   a pale band 閳?most visibly along the top of the pair. */
 html[data-amiya-skin='1'] .amiya-footer .amiya-action,
 html[data-amiya-skin='1'] .amiya-footer .amiya-step {
   border: none;
@@ -779,21 +785,35 @@ html[data-amiya-skin='1'] [class*='_sidebarCol'] [class*='_settingsArea']:not(:h
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 6px;
+  /* 8, not 6: with five stacked controls the foot read as one continuous block, and the gap is the
+     only thing separating a row the user can act on from the account name under it. */
+  gap: 8px;
   width: 100%;
 }
-html[data-amiya-skin='1'] [class*='_sidebarCol'] [class*='_footArea']:not(:has([role='dialog'], [role='alertdialog'])) > *,
-html[data-amiya-skin='1'] [class*='_sidebarCol'] [class*='_footerActions']:not(:has([role='dialog'], [role='alertdialog'])) > *,
-html[data-amiya-skin='1'] [class*='_sidebarCol'] [class*='_settingsArea']:not(:has([role='dialog'], [role='alertdialog'])) > * {
+/* A hairline above the foot, so the stack of controls is a region rather than a list that starts
+   wherever the panel above happened to end. */
+html[data-amiya-skin='1'] [class*='_sidebarCol'] [class*='_footArea']:not(:has([role='dialog'], [role='alertdialog'])) {
+  padding-top: 8px;
+  border-top: 1px solid rgb(242 181 68 / 14%);
+}
+html[data-amiya-skin='1'] body:not([data-ds-dark-theme]) [class*='_sidebarCol'] [class*='_footArea']:not(:has([role='dialog'], [role='alertdialog'])) {
+  border-top-color: rgb(146 100 12 / 16%);
+}
+/* `:not(.amiya-star)` is doing real work in the next two blocks: the star is a link of this skin's own,
+   sized to its text, and the generic rules would stretch it to the column's full width at 34px — which
+   is exactly the "a wall of identical pills" the foot looked like. */
+html[data-amiya-skin='1'] [class*='_sidebarCol'] [class*='_footArea']:not(:has([role='dialog'], [role='alertdialog'])) > *:not(.amiya-star),
+html[data-amiya-skin='1'] [class*='_sidebarCol'] [class*='_footerActions']:not(:has([role='dialog'], [role='alertdialog'])) > *:not(.amiya-star),
+html[data-amiya-skin='1'] [class*='_sidebarCol'] [class*='_settingsArea']:not(:has([role='dialog'], [role='alertdialog'])) > *:not(.amiya-star) {
   width: 100%;
   min-height: 34px;
 }
 html[data-amiya-skin='1'] [class*='_sidebarCol'] [class*='_footArea']:not(:has([role='dialog'], [role='alertdialog'])) button,
-html[data-amiya-skin='1'] [class*='_sidebarCol'] [class*='_footArea']:not(:has([role='dialog'], [role='alertdialog'])) a,
+html[data-amiya-skin='1'] [class*='_sidebarCol'] [class*='_footArea']:not(:has([role='dialog'], [role='alertdialog'])) a:not(.amiya-star),
 html[data-amiya-skin='1'] [class*='_sidebarCol'] [class*='_footerActions']:not(:has([role='dialog'], [role='alertdialog'])) button,
-html[data-amiya-skin='1'] [class*='_sidebarCol'] [class*='_footerActions']:not(:has([role='dialog'], [role='alertdialog'])) a,
+html[data-amiya-skin='1'] [class*='_sidebarCol'] [class*='_footerActions']:not(:has([role='dialog'], [role='alertdialog'])) a:not(.amiya-star),
 html[data-amiya-skin='1'] [class*='_sidebarCol'] [class*='_settingsArea']:not(:has([role='dialog'], [role='alertdialog'])) button,
-html[data-amiya-skin='1'] [class*='_sidebarCol'] [class*='_settingsArea']:not(:has([role='dialog'], [role='alertdialog'])) a {
+html[data-amiya-skin='1'] [class*='_sidebarCol'] [class*='_settingsArea']:not(:has([role='dialog'], [role='alertdialog'])) a:not(.amiya-star) {
   box-sizing: border-box;
   width: 100%;
   min-height: 34px;
@@ -814,7 +834,7 @@ html[data-amiya-skin='1'] body:not([data-ds-dark-theme]) [class*='_sidebarCol'] 
   outline-color: rgb(146 100 12 / 32%);
 }
 /* This skin's own entry: the picker and the quick switch on ONE row, as asked, and
-   the row is exactly the width of the foot column 鈥?so it lines up with the context
+   the row is exactly the width of the foot column 閳?so it lines up with the context
    overview above it instead of being a different width. */
 .amiya-footer {
   display: flex;
@@ -1042,8 +1062,112 @@ html[data-amiya-skin='1'] body:not([data-ds-dark-theme]) .amiya-dock {
   color: rgb(198 206 216 / 74%);
 }
 
+/* --- 20b. Importing a local picture ----------------------------------------------- */
+/* The picker's own row, between the grid and the immersion dial: one button, one hidden file input,
+   and a line of status. It sits inside the picker rather than in the host's chrome because the picker
+   is already the "which picture" surface — a second entry point for the same question would be the
+   confusing shape, not the convenient one. */
+.amiya-picker__import {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px 12px;
+  border-bottom: 1px solid rgb(242 181 68 / 12%);
+}
+/* The native control is the only thing on the page that can open a file dialog, so it stays in the
+   DOM — just not in the layout, and out of the tab order (the button beside it takes the focus). */
+.amiya-picker__file {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+.amiya-picker__import-btn {
+  flex: none;
+  padding: 7px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: rgb(255 214 140 / 96%);
+  background: rgb(242 181 68 / 12%);
+  border: 1px solid rgb(242 181 68 / 40%);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 140ms ease, border-color 140ms ease, color 140ms ease;
+}
+.amiya-picker__import-btn:hover:not(:disabled) {
+  color: rgb(255 226 168);
+  background: rgb(242 181 68 / 22%);
+  border-color: rgb(242 181 68 / 70%);
+}
+.amiya-picker__import-btn:disabled {
+  cursor: progress;
+  color: rgb(242 181 68 / 60%);
+  border-color: rgb(242 181 68 / 26%);
+}
+.amiya-picker__import-hint {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  line-height: 1.6;
+  color: rgb(198 206 216 / 76%);
+  text-overflow: ellipsis;
+}
+.amiya-picker__import-hint.is-error {
+  color: rgb(242 140 128 / 92%);
+}
+
+/* An imported cell is marked, and carries its own remove control: the shipped twelve can be chosen
+   but not deleted, and the two must not look alike. */
+.amiya-picker__cell.is-imported {
+  border-color: rgb(143 208 255 / 40%);
+}
+.amiya-picker__cell.is-imported:hover {
+  border-color: rgb(143 208 255 / 72%);
+}
+.amiya-picker__cell.is-imported.is-active {
+  border-color: rgb(143 208 255 / 86%);
+  box-shadow:
+    0 0 0 1px rgb(143 208 255 / 34%),
+    0 10px 26px -14px rgb(143 208 255 / 50%);
+}
+.amiya-picker__remove {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  font-size: 11px;
+  line-height: 1;
+  color: rgb(255 255 255 / 92%);
+  background: rgb(4 6 9 / 78%);
+  border: 1px solid rgb(242 140 128 / 52%);
+  border-radius: 7px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 140ms ease, background 140ms ease, border-color 140ms ease;
+}
+/* Revealed on hover *and* on keyboard focus, so it is not a mouse-only affordance. */
+.amiya-picker__cell:hover .amiya-picker__remove,
+.amiya-picker__cell:focus-within .amiya-picker__remove,
+.amiya-picker__remove:focus-visible {
+  opacity: 1;
+}
+.amiya-picker__remove:hover {
+  background: rgb(122 32 24 / 92%);
+  border-color: rgb(242 140 128 / 88%);
+}
+
 /* --- 21. The illustrator credit, collapsed ---------------------------------------- */
-/* A native <details>, so "折叠" costs no state and no keyboard handling of its own: the
+/* A native <details>, so "鎶樺彔" costs no state and no keyboard handling of its own: the
    summary is the disclosure, the list is its content, and the whole thing stays out of
    the way of the pictures until it is asked for. */
 .amiya-picker__artists {
@@ -1068,13 +1192,13 @@ html[data-amiya-skin='1'] body:not([data-ds-dark-theme]) .amiya-dock {
 /* The disclosure arrow is drawn rather than inherited, so the open and closed states
    differ by more than the list appearing. */
 .amiya-picker__artists > summary::before {
-  content: '▸';
+  content: '鈻?;
   display: inline-block;
   width: 14px;
   color: rgb(242 181 68 / 70%);
 }
 .amiya-picker__artists[open] > summary::before {
-  content: '▾';
+  content: '鈻?;
 }
 .amiya-picker__artist-list {
   display: flex;
@@ -1204,7 +1328,7 @@ html[data-amiya-skin='1'] body:not([data-ds-dark-theme])::after {
 /* --- 8. One glow for the whole top row ------------------------------------ */
 /* The title had a shadow and the controls beside it had none, so the strip read as a
    single lit word followed by flat icons. Everything in the row now takes the same
-   light, from one place: the title and its crumbs, the 瀵硅瘽 / 杞ㄨ抗 tabs, the context
+   light, from one place: the title and its crumbs, the 鐎电鐦?/ 鏉炪劏鎶?tabs, the context
    menu, and the mode control's glyph.
 
    Scoped to `titleRow` and `tabs` rather than to `_header`: a message header is also
@@ -1212,7 +1336,7 @@ html[data-amiya-skin='1'] body:not([data-ds-dark-theme])::after {
 
    Icons cannot take a `text-shadow`, so they get the same light as drop-shadows. The
    warm outer halo is what makes either of them read as a glow rather than a smudge, and
-   it is deliberately stronger than the first version 鈥?"鏄庢樉涓€鐐?. */
+   it is deliberately stronger than the first version 閳?"閺勫孩妯夋稉鈧悙?. */
 html[data-amiya-skin='1'] {
   --dsh-amiya-glow-text: 0 1px 2px rgb(0 0 0 / 82%), 0 0 10px rgb(0 0 0 / 60%),
     0 0 22px rgb(242 181 68 / 38%);
@@ -1267,7 +1391,7 @@ html[data-amiya-skin='1'] body:not([data-ds-dark-theme]) [class*='_sidebarCol']:
 /* --- 14. Readable dialogs over a visible picture --------------------------- */
 /* Colours only. While a dialog is open the skin's surfaces stay in force for the shell, so
    the wallpaper keeps showing; the dialog's own surfaces are pinned near-opaque so its text
-   is readable over that picture. Nothing here touches layout 鈥?the dialog's arrangement is
+   is readable over that picture. Nothing here touches layout 閳?the dialog's arrangement is
    DSH's own, and every sidebar-scoped rule stands down while it is open. */
 html[data-amiya-skin='1'] body[data-ds-dark-theme]:has([role='dialog']),
 html[data-amiya-skin='1'] body[data-ds-dark-theme]:has([role='alertdialog']) {
@@ -1514,7 +1638,7 @@ html[data-amiya-skin='1'] [class*='_composerStack'] [class$='_scroll'] {
 
 /* --- 19. A signature in the control row, between the wallpaper and model switches -- */
 /* The card's control row is a flex line with five groups, in this order:
-     tools  |  modes  |  input.left (the 壁纸 and 切换 buttons, ours)  |  trailing  |
+     tools  |  modes  |  input.left (the 壁纸 and 切换 buttons, ours)  |  trailing
      primary (send)
    and `trailing` is `margin-left: auto`, so it holds the right-hand group: the
    `conversation.input.right` slot and then the model switcher. A `::before` on it is
@@ -1602,14 +1726,14 @@ html[data-amiya-skin='1'] body:not([data-ds-dark-theme]) [data-composer-card] [c
 }
 
 /* --- 20. The instrument strip's two glyphs ---------------------------------------- */
-/* 仪表栏 is the strip of session figures, and each of its two pills leads with a glyph:
+/* 浠〃鏍?is the strip of session figures, and each of its two pills leads with a glyph:
    `IconGaugeOutline16` (a meter) on the activity pill — "48 轮 1133 步 · 269 tok/s" — and
    `IconDatabaseOutline16` on the consumption pill — "430M tok · 缓存命中 99.8%". Both are
    replaced with the game's national emblems, which is the idiom the rest of the skin
    already speaks (Rhodes Island marks, operator portraits, class crests):
 
-     activity pill  -> 谢拉格 (`Logo 谢拉格.png`)
-     consumption    -> 乌萨斯 (`Logo 乌萨斯.png`)
+     activity pill  -> 璋㈡媺鏍?(`Logo 璋㈡媺鏍?png`)
+     consumption    -> 涔岃惃鏂?(`Logo 涔岃惃鏂?png`)
 
    Both are 510x510 white line art on transparency, so — as with the two signatures — the
    colour is painted through `mask-image` rather than trusted to the artwork: white ink
@@ -1667,7 +1791,7 @@ html[data-amiya-skin='1'] :is([data-composer-stats], [data-composer-stat]) [clas
   mask-size: contain;
   filter: drop-shadow(0 0 4px rgb(242 181 68 / 34%));
 }
-/* The activity seat: "48 轮 1133 步 · 269 tok/s". Labelled by the host from 0.2.1, positional before. */
+/* The activity seat: "48 杞?1133 姝?路 269 tok/s". Labelled by the host from 0.2.1, positional before. */
 html[data-amiya-skin='1'] [data-composer-stat='activity'] [class$='_pill']::before,
 html[data-amiya-skin='1']
   [data-composer-stats]
@@ -1679,7 +1803,7 @@ html[data-amiya-skin='1']
   -webkit-mask-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAADAFBMVEVMaXH////+/v7////////////////////////////////////09PT////////9/f39/f3////////+/v78/Pz9/f39/f39/f3////9/f3+/v75+fn6+vr+/v7+/v78/Pz+/v77+/v29vb+/v78/Pz////29vb+/v79/f39/f3////////9/f329vb7+/v+/v79/f39/f38/Pz9/f3////9/f39/f39/f38/Pz+/v7+/v7+/v79/f3////9/f38/Pz9/f38/Pz9/f39/f38/Pz+/v78/Pz+/v7+/v78/Pz+/v7+/v7////9/f3+/v7+/v7+/v75+fn////9/f39/f3+/v79/f39/f3+/v77+/v+/v79/f3+/v78/Pz4+Pj////+/v77+/v6+vr9/f3+/v79/f3+/v76+vr+/v78/Pz////+/v77+/v////+/v7+/v78/Pzj4+P8/Pz9/f3+/v79/f38/Pz////9/f3+/v78/Pz9/f39/f38/Pz9/f3+/v79/f3+/v7+/v79/f39/f3////+/v79/f3////////7+/v+/v7////5+flzc3O/v7/7+/v+/v7////9/f39/f39/f3////+/v79/f39/f39/f39/f39/f39/f3////9/f37+/v9/f39/f3////9/f3+/v77+/v////8/Pz8/Pz////8/Pz8/Pz////9/f3////9/f39/f3////9/f3////9/f3////8/Pz////////9/f3+/v79/f39/f36+vr9/f39/f39/f3////9/f39/f39/f39/f39/f3////9/f3////Q0ND+/v7u7u78/Pz9/f3+/v79/f39/f34+Pj////9/f39/f3////////////////9/f39/f3+/v77+/v////7+/v+/v78/Pz////////////9/f3y8vL9/f3////9/f3////+/v7////+/v7////9/f39/f3////////9/f39/f38/Pz////7+/uqqqra2tr////////9/f3////+/v4WSFG4AAAA/nRSTlMA+/z6/v0EAQIDBfgY+QYLuvUI7zg2t7LseJQKHUFDbuMbB0kxFBbuJcf352YPTLtORy9QEJbBRSYeDrlvKCM/rCKxO3+tKlEgV8WvDbxU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');
   mask-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAADAFBMVEVMaXH////+/v7////////////////////////////////////09PT////////9/f39/f3////////+/v78/Pz9/f39/f39/f3////9/f3+/v75+fn6+vr+/v7+/v78/Pz+/v77+/v29vb+/v78/Pz////29vb+/v79/f39/f3////////9/f329vb7+/v+/v79/f39/f38/Pz9/f3////9/f39/f39/f38/Pz+/v7+/v7+/v79/f3////9/f38/Pz9/f38/Pz9/f39/f38/Pz+/v78/Pz+/v7+/v78/Pz+/v7+/v7////9/f3+/v7+/v7+/v75+fn////9/f39/f3+/v79/f39/f3+/v77+/v+/v79/f3+/v78/Pz4+Pj////+/v77+/v6+vr9/f3+/v79/f3+/v76+vr+/v78/Pz////+/v77+/v////+/v7+/v78/Pzj4+P8/Pz9/f3+/v79/f38/Pz////9/f3+/v78/Pz9/f39/f38/Pz9/f3+/v79/f3+/v7+/v79/f39/f3////+/v79/f3////////7+/v+/v7////5+flzc3O/v7/7+/v+/v7////9/f39/f39/f3////+/v79/f39/f39/f39/f39/f39/f3////9/f37+/v9/f39/f3////9/f3+/v77+/v////8/Pz8/Pz////8/Pz8/Pz////9/f3////9/f39/f3////9/f3////9/f3////8/Pz////////9/f3+/v79/f39/f36+vr9/f39/f39/f3////9/f39/f39/f39/f39/f3////9/f3////Q0ND+/v7u7u78/Pz9/f3+/v79/f39/f34+Pj////9/f39/f3////////////////9/f39/f3+/v77+/v////7+/v+/v78/Pz////////////9/f3y8vL9/f3////9/f3////+/v7////+/v7////9/f39/f3////////9/f39/f38/Pz////7+/uqqqra2tr////////9/f3////+/v4WSFG4AAAA/nRSTlMA+/z6/v0EAQIDBfgY+QYLuvUI7zg2t7LseJQKHUFDbuMbB0kxFBbuJcf352YPTLtORy9QEJbBRSYeDrlvKCM/rCKxO3+tKlEgV8WvDbxU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');
 }
-/* The usage seat: "430M tok · 缓存命中 99.8%". */
+/* The usage seat: "430M tok 路 缂撳瓨鍛戒腑 99.8%". */
 html[data-amiya-skin='1'] [data-composer-stat='usage'] [class$='_pill']::before,
 html[data-amiya-skin='1'] [data-composer-stats] > [class$='_anchor']:last-child [class$='_pill']::before,
 html[data-amiya-skin='1'] [data-composer-stats] > [class$='_pill']:last-child::before {
@@ -1698,7 +1822,7 @@ html[data-amiya-skin='1']
 /* When a tool needs a person to decide, the host raises its approval panel: a warn-bordered
    card in the composer's place with a headline, the command, and a row of exactly two
    buttons — 拒绝 (`variant="outline"`, and the only one the package gives a class of its
-   own, `mna1RW_reject`) and 允许 (`variant="primary"`, no class). The skin already paints
+   own, `mna1RW_reject`) and 鍏佽 (`variant="primary"`, no class). The skin already paints
    that card amber (it overrides `--dsw-alias-state-warn-*`), so the panel already reads as
    a form; this puts the two operators' signatures on it, the way a sign-off is signed:
    Amiya signs the approval, Kal'tsit signs the refusal.
@@ -1751,7 +1875,7 @@ html[data-amiya-skin='1'] body:not([data-ds-dark-theme]) [data-approval-key] [cl
   filter: drop-shadow(0 0 0.5px rgb(74 44 0)) drop-shadow(0 0 0.5px rgb(74 44 0));
 }
 
-/* --- 23. The question card is signed too ------------------------------------------ */
+/* --- 22b. The question card is signed too ------------------------------------------ */
 /* The card that offers the user a choice ends in two buttons — 跳过本题 and 提交 — inside
    `footerActions`, and it is anchored by its own `data-question-key` (the question flow's
    root). Same treatment as the approval panel: each signature rides *inside* its button
@@ -1797,6 +1921,275 @@ html[data-amiya-skin='1'] [data-question-key] [class$='_footerActions'] > button
   -webkit-mask-image: url('data:image/png;base64,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');
   mask-image: url('data:image/png;base64,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');
   filter: drop-shadow(0 0 0.5px currentColor) drop-shadow(0 0 4px rgb(242 181 68 / 30%));
+}
+
+/* --- 23. The task ledger is legible --------------------------------------- */
+/* The host's todo panel — the row that reads "任务 · 3 已完成，1 进行中，2 待处理" and expands into the
+   list below the composer — was the one surface the skin left alone, and on a wallpaper it became
+   unreadable. Its own stylesheet declares `background: var(--dsw-specific-menu)` with no fallback,
+   and `--dsw-specific-menu` is the strong glass: solved to sit between 0.58 and 0.84 opacity at the
+   immersive end of the dial (the user's default is 20, which lands near the thin end). So over the
+   picture the panel was roughly 60% translucent while its three text tokens were all the *tertiary*
+   label colour — and the complaint is exactly what those two facts produce: it melts into the
+   background, and the collapse affordance is a bare chevron in tertiary grey at the far edge.
+
+    It is not a dialog (`section[data-testid='todo-panel']`, mounted in `conversation.input.dock`),
+   so the near-opaque pinning section 14 does for `[role='dialog']` never applied to it. Fixing it by
+   raising the global menu glass would have made every menu and selector heavy at full immersion,
+   where the point of the dial is to show the picture — so this pins the panel itself instead.
+
+   Anchored on `data-testid`, not on the module hash: the class prefix (`DXuOLW_`) is regenerated per
+   host build, while the test id is part of what the host ships and names. */
+html[data-amiya-skin='1'] [data-testid='todo-panel'] {
+  /* Solid enough that nothing behind it competes with the text, still the skin's own veil colour so
+     it reads as one material with the composer card above it. */
+  --dsh-amiya-ledger-alpha: 96%;
+  background: rgb(9 12 17 / var(--dsh-amiya-ledger-alpha));
+  border: 1px solid rgb(242 181 68 / 22%);
+  box-shadow: var(--dsh-elevation-panel), inset 0 1px 0 rgb(255 255 255 / 5%);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+html[data-amiya-skin='1'] body:not([data-ds-dark-theme]) [data-testid='todo-panel'] {
+  /* Off-white rather than near-white: a 252/253/254 plate over a bright wallpaper reads as glare,
+     and the panel is the one surface here with no picture behind it to justify the brightness. */
+  background: rgb(248 249 251 / var(--dsh-amiya-ledger-alpha));
+  border-color: rgb(146 100 12 / 30%);
+  box-shadow: var(--dsh-elevation-panel), inset 0 1px 0 rgb(255 255 255 / 60%);
+}
+/* Text on this panel goes through the `--dsw-alias-label-*` tokens, never through a raw
+   `--dsh-amiya-ink*` name. The ink lives in two sets — `--dsh-amiya-ink…` for the dark palette and
+   `--dsh-amiya-ink…-l` for the light one — and a rule that names the dark set directly resolves, in
+   the light palette, to the *dark palette's* near-white; on this near-white plate that is invisible
+   text. That is exactly what shipped in 1.1.1: the counts (an explicit dark amber) were readable and
+   every row label was not, which is the "3 已完成, rest blank" screenshot. The tokens below are
+   remapped per palette in the two palette blocks, so one declaration is correct in both.
+   `check-ink-pairs.mjs` now fails the build on a raw ink reference outside those blocks. */
+html[data-amiya-skin='1'] [data-testid='todo-panel'] [class$='_header'] {
+  color: var(--dsw-alias-label-primary, rgb(249 250 251));
+}
+html[data-amiya-skin='1'] [data-testid='todo-panel'] [class$='_title'] {
+  letter-spacing: 0.06em;
+  color: var(--dsw-alias-label-primary, rgb(249 250 251));
+}
+/* The count line carries the actual state ("… 2 待处理"), so it gets the amber accent rather than the
+   host's tertiary grey. */
+html[data-amiya-skin='1'] [data-testid='todo-panel'] [class$='_progress'] {
+  color: rgb(242 181 68 / 92%);
+  font-variant-numeric: tabular-nums;
+}
+html[data-amiya-skin='1'] body:not([data-ds-dark-theme]) [data-testid='todo-panel'] [class$='_progress'] {
+  color: rgb(122 82 8 / 92%);
+}
+/* The collapse affordance: the host's chevron is 14px tertiary grey at the panel's far edge, which
+   is why "where do I close this" was not obvious. Same glyph, but it now reads as a button — a
+   bordered hit area, brighter ink, and a visible rotation when open. */
+html[data-amiya-skin='1'] [data-testid='todo-panel'] [class$='_chevron'] {
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-left: auto;
+  color: rgb(242 181 68 / 88%);
+  border: 1px solid rgb(242 181 68 / 34%);
+  border-radius: 7px;
+  background: rgb(242 181 68 / 8%);
+  transition: background 120ms ease, color 120ms ease, transform 160ms ease;
+}
+html[data-amiya-skin='1'] body:not([data-ds-dark-theme]) [data-testid='todo-panel'] [class$='_chevron'] {
+  color: rgb(122 82 8 / 90%);
+  border-color: rgb(146 100 12 / 36%);
+  background: rgb(146 100 12 / 10%);
+}
+html[data-amiya-skin='1'] [data-testid='todo-panel'] [class$='_header']:hover [class$='_chevron'] {
+  color: rgb(255 206 98);
+  background: rgb(242 181 68 / 18%);
+}
+/* Expanded, the chevron points down; collapsed, up. The host swaps the icon rather than rotating
+   it, so this only states the direction the glyph already has. */
+html[data-amiya-skin='1'] [data-testid='todo-panel'] [class$='_header'][aria-expanded='true'] [class$='_chevron'] {
+  transform: rotate(180deg);
+}
+/* The rows themselves: the host paints every one in secondary/tertiary grey. Status is the thing a
+   reader scans for here, so each row's dot keeps the host's state colour while the text rises to the
+   skin's own ink tiers, and a finished item dims rather than being struck through invisibly. */
+html[data-amiya-skin='1'] [data-testid='todo-panel'] [class$='_item'] {
+  color: var(--dsw-alias-label-secondary, rgb(195 201 210));
+}
+html[data-amiya-skin='1'] [data-testid='todo-panel'] [class$='_item'][data-status='completed'] {
+  color: var(--dsw-alias-label-dimmed, rgb(148 156 166));
+}
+html[data-amiya-skin='1'] [data-testid='todo-panel'] [class$='_item'][data-status='in_progress'] {
+  color: var(--dsw-alias-label-primary, rgb(249 250 251));
+}
+/* The lead checklist glyph sat in the same tertiary grey as the counts; make it the panel's mark. */
+html[data-amiya-skin='1'] [data-testid='todo-panel'] [class$='_lead'] {
+  color: rgb(242 181 68 / 86%);
+}
+html[data-amiya-skin='1'] body:not([data-ds-dark-theme]) [data-testid='todo-panel'] [class$='_lead'] {
+  color: rgb(122 82 8 / 86%);
+}
+
+/* --- 24. The desktop window ------------------------------------------------ */
+/* DSH Desktop marks its own shell on <html> — `data-windows-titlebar` on Windows, `data-platform`
+   everywhere — and the layout package reacts to both. Three of its reactions collide with a skin that
+   paints a picture behind the interface, and none of them can be fixed from the web profile side:
+
+   1. On Windows the frame itself is given `background: var(--dsw-specific-sidebar-fill)`. That token
+      is the *strong glass* this skin solves per wallpaper (0.52–0.92 alpha), so the desktop build
+      paints a full-window glass plate over the picture: the wallpaper reads washed out on Windows
+      while the same build on macOS (`.frame { background: 0 0 }`) and the browser do not. The strip
+      at the top gets that fill from its own pseudo-element anyway, so the plate is pure duplication.
+   2. The top `--dsh-windows-titlebar-height` band is a drag region, and anything fixed covers it.
+      The picker is a full-window overlay, which made the window impossible to move while it was open
+      and dimmed the window controls with the same backdrop the panel uses.
+   3. `.centerCol` is given a 16px rounded top-left corner on Windows; the skin's own corners are
+      solved per surface, so nothing needs doing there — noted so the next reader does not "fix" it.
+
+   Nothing below changes layout: the frame keeps its padding, the columns keep their geometry, and on
+   a host without these attributes every rule here is inert. */
+html[data-amiya-skin='1'][data-windows-titlebar] [class*='_frame'] {
+  /* Transparent rather than the glass plate: the wallpaper layer (body::before) is the picture, and
+     the titlebar strip repaints itself from its own pseudo-element. */
+  background: transparent !important;
+}
+/* The strip keeps the same material as the sidebar, and takes the hairline the rest of the chrome
+   uses so it reads as this skin's titlebar rather than as a foreign band above it. */
+html[data-amiya-skin='1'][data-windows-titlebar] [class*='_frame']::before {
+  border-bottom: 1px solid rgb(242 181 68 / 22%);
+  box-shadow: 0 1px 0 rgb(0 0 0 / 30%);
+}
+html[data-amiya-skin='1'][data-windows-titlebar] body:not([data-ds-dark-theme]) [class*='_frame']::before {
+  border-bottom-color: rgb(146 100 12 / 26%);
+  box-shadow: 0 1px 0 rgb(255 255 255 / 40%);
+}
+/* The picker stands down from the titlebar band, using the host's own clearance variable — declared
+   only under `data-windows-titlebar`, so the fallback is what runs everywhere else. The panel's height
+   budget shrinks by the same amount, or the bottom row would be clipped on short windows. */
+html[data-amiya-skin='1'] .amiya-picker {
+  top: var(--dsh-frame-top-clearance, 0px);
+}
+html[data-amiya-skin='1'] .amiya-picker__panel {
+  max-height: calc(100vh - 96px - var(--dsh-frame-top-clearance, 0px));
+}
+/* A window drag region only ever belongs to the titlebar. If a future host wraps one of these
+   surfaces in a drag strip, the control inside it must still take the click. */
+html[data-amiya-skin='1'] .amiya-picker,
+html[data-amiya-skin='1'] .amiya-picker *,
+html[data-amiya-skin='1'] [data-slot='conversation.composer.dock'] * {
+  -webkit-app-region: no-drag;
+}
+/* The sidebar's own controls, written with the dialog stand-down every other sidebar-scoped rule here
+   uses: a dialog that renders inside the column must not inherit this either. */
+html[data-amiya-skin='1'] [class*='_sidebarCol']:not(:has([role='dialog'], [role='alertdialog'])) button,
+html[data-amiya-skin='1'] [class*='_sidebarCol']:not(:has([role='dialog'], [role='alertdialog'])) input,
+html[data-amiya-skin='1'] [class*='_sidebarCol']:not(:has([role='dialog'], [role='alertdialog'])) a {
+  -webkit-app-region: no-drag;
+}
+/* The skin's own transitions, stood down for readers who ask the system for less motion. Scoped to
+   the elements that declare them rather than to `*`: a universal rule here would also flatten the
+   host's transitions, which is not this skin's business. */
+@media (prefers-reduced-motion: reduce) {
+  html[data-amiya-skin='1'] .amiya-picker__cell,
+  html[data-amiya-skin='1'] .amiya-picker__import-btn,
+  html[data-amiya-skin='1'] .amiya-picker__remove,
+  html[data-amiya-skin='1'] [data-testid='todo-panel'] [class$='_chevron'],
+  html[data-amiya-skin='1'] .amiya-step,
+  html[data-amiya-skin='1'] .amiya-star {
+    transition-duration: 0.01ms;
+  }
+}
+
+/* --- 25. The star ask ------------------------------------------------------ */
+/* The corner of the foot, not a row of it: the ask floats into the top-right of the footer-action
+   list — the right half of the row the Remote pill sits on, which was empty — so the stack keeps its
+   working rows instead of growing a fifth one. `top: 5px` centres the 24px pill on the 34px row;
+   `z-index` puts it above the sibling wrappers it now overlaps in box terms, though not in pixels.
+
+   **A descendant selector, not a child one — and that is the whole lesson of this section.** The
+   renderer wraps every slot outlet in a `[data-slot]` anchor with `display: contents`. Layout-wise the
+   occupants are flex items of `_footerActions` (contents children are promoted to the parent), but
+   DOM-wise their parent is that anchor — so `> .amiya-star` matched nothing, the float silently
+   no-op'd, and the star stayed a fifth row while everything else about the foot proved the stylesheet
+   had loaded. On this renderer, DOM parent ≠ layout parent: anything reaching a slot occupant from
+   the outside must use a descendant selector, or survive the anchor in the chain.
+
+   Two known properties of this placement, both accepted deliberately: the corner belongs to whatever
+   row is first, so with the Remote plugin disabled it lands on the 待处理改动 row's right side (where
+   its count sits) instead — the ask is still at the top-right of the block, which is what it is for;
+   and in the 56px rail the Remote icon owns the whole row, so the component marks itself `is-rail`
+   there and stays a centred in-flow row.
+
+   A pill rather than a bare star, because an unlabelled glyph in a row of icons reads as another
+   control — the words 「点个星」 are what make it a request instead of a feature. Sized to its own
+   text, never stretched: the foot's other rows are 34px full-width buttons, and a fifth identical
+   slab is what made the column look cramped. The `min-height`/`width` below are explicit overrides
+   rather than an accident of specificity — see the `:not(.amiya-star)` exclusions in section 20b. */
+html[data-amiya-skin='1'] [class*='_sidebarCol']:not(:has([role='dialog'], [role='alertdialog'])) [class*='_footerActions'] {
+  position: relative;
+}
+html[data-amiya-skin='1'] [class*='_sidebarCol']:not(:has([role='dialog'], [role='alertdialog'])) [class*='_footerActions'] .amiya-star:not(.is-rail) {
+  position: absolute;
+  top: 5px;
+  right: 0;
+  margin: 0;
+  z-index: 2;
+}
+html[data-amiya-skin='1'] [class*='_sidebarCol']:not(:has([role='dialog'], [role='alertdialog'])) .amiya-star {
+  display: inline-flex;
+  align-self: center;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: auto;
+  min-width: 0;
+  height: 24px;
+  min-height: 0;
+  margin: 0 auto;
+  padding: 0 12px;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  color: rgb(255 214 140 / 86%);
+  text-decoration: none;
+  background: transparent;
+  border: 1px solid rgb(242 181 68 / 30%);
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    background 140ms ease,
+    border-color 140ms ease,
+    box-shadow 140ms ease,
+    color 140ms ease;
+}
+html[data-amiya-skin='1'] [class*='_sidebarCol']:not(:has([role='dialog'], [role='alertdialog'])) .amiya-star:hover {
+  color: rgb(255 232 178);
+  background: rgb(242 181 68 / 14%);
+  border-color: rgb(242 181 68 / 70%);
+  box-shadow: 0 0 12px rgb(242 181 68 / 34%);
+}
+html[data-amiya-skin='1'] body:not([data-ds-dark-theme]) [class*='_sidebarCol']:not(:has([role='dialog'], [role='alertdialog'])) .amiya-star {
+  color: rgb(122 82 8 / 92%);
+  border-color: rgb(146 100 12 / 34%);
+}
+html[data-amiya-skin='1'] body:not([data-ds-dark-theme]) [class*='_sidebarCol']:not(:has([role='dialog'], [role='alertdialog'])) .amiya-star:hover {
+  color: rgb(78 52 4);
+  background: rgb(146 100 12 / 12%);
+  border-color: rgb(146 100 12 / 62%);
+  box-shadow: 0 0 10px rgb(146 100 12 / 26%);
+}
+html[data-amiya-skin='1'] .amiya-star__glyph {
+  font-size: 11px;
+  line-height: 1;
+  filter: drop-shadow(0 0 4px rgb(242 181 68 / 70%));
+}
+html[data-amiya-skin='1'] .amiya-star__text {
+  white-space: nowrap;
+}
+/* A keyboard reader gets the same target a mouse does, and it is a real focusable link. */
+html[data-amiya-skin='1'] .amiya-star:focus-visible {
+  outline: 2px solid rgb(255 206 98);
+  outline-offset: 2px;
 }
 
 

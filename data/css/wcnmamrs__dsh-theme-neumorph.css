@@ -1,0 +1,116 @@
+/* wcnmamrs/dsh-theme-neumorph — client.js
+   fetched 2026-11-16 from https://raw.githubusercontent.com/wcnmamrs/dsh-theme-neumorph/main/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+body {
+  --qn-hi: #ffffff;
+  --qn-lo: rgba(163, 177, 198, 0.6);
+  --qn-out-sm: -2px -2px 5px var(--qn-hi), 3px 3px 6px var(--qn-lo);
+  --qn-out: -4px -4px 10px var(--qn-hi), 5px 5px 12px var(--qn-lo);
+  --qn-out-lg: -5px -5px 14px var(--qn-hi), 7px 7px 17px var(--qn-lo);
+  --qn-in-sm: inset 2px 2px 5px var(--qn-lo), inset -2px -2px 5px var(--qn-hi);
+  --qn-in: inset 3px 3px 7px var(--qn-lo), inset -3px -3px 7px var(--qn-hi);
+  /* Repeated controls and list rows cast downward only: a rim light on every
+     item in a stack reads as alternating high/low, which is exactly what
+     neumorphism must avoid. One light source, one direction. */
+  --qn-drop-1: rgba(163, 177, 198, 0.6);
+  --qn-drop-2: rgba(90, 110, 135, 0.1);
+  --qn-drop: 0 2px 6px var(--qn-drop-1), 0 1px 2px var(--qn-drop-2);
+  --qn-drop-lift: 0 3px 9px var(--qn-drop-1), 0 1px 3px var(--qn-drop-2);
+}
+
+body[data-ds-dark-theme] {
+  --qn-hi: rgba(255, 255, 255, 0.055);
+  --qn-lo: rgba(0, 0, 0, 0.62);
+  --qn-drop-1: rgba(0, 0, 0, 0.55);
+  --qn-drop-2: rgba(0, 0, 0, 0.35);
+}
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+  border-color: transparent !important;
+  box-shadow: var(--qn-out-sm) !important;
+}
+  border-radius: 12px !important;
+}
+  box-shadow: var(--qn-out) !important;
+}
+  box-shadow: var(--qn-in-sm) !important;
+}
+  border-radius: 999px !important;
+  border-color: transparent !important;
+  box-shadow: 0 3px 8px rgba(74, 107, 138, 0.28) !important;
+}
+  box-shadow: 0 4px 10px rgba(74, 107, 138, 0.34) !important;
+}
+  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.26) !important;
+}
+
+/* ---- text fields: pressed into the surface ------------------------------ */
+body :where(
+  textarea,
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+  [contenteditable="true"]
+) {
+  box-shadow: var(--qn-in) !important;
+  border-radius: 14px !important;
+  border-color: transparent !important;
+}
+  box-shadow: var(--qn-drop) !important;
+  border-color: transparent !important;
+}
+  box-shadow: var(--qn-out) !important;
+  border-radius: 22px !important;
+  border-color: transparent !important;
+}
+  border-radius: 20px !important;
+  box-shadow: var(--qn-out-lg) !important;
+}
+
+/* The menu panel carries the fill; its material layer has to inherit the
+   rounding, otherwise the list paints over the corners. */
+body [data-menu-material] > [aria-hidden="true"] {
+  border-radius: inherit !important;
+}
+  border-radius: 12px !important;
+  box-shadow: var(--qn-drop) !important;
+}
+  box-shadow: var(--qn-drop-lift) !important;
+}
+
+/* ---- code blocks: recessed ---------------------------------------------- */
+body :where(pre) {
+  box-shadow: var(--qn-in-sm) !important;
+  border-radius: 14px !important;
+  border-color: transparent !important;
+}
+  box-shadow: inset -8px 0 14px -14px var(--qn-lo) !important;
+}
+
+/* ---- focus: a ring, drawn inside the field -----------------------------
+   The host draws its ring outside the box, which on a soft surface reads as a
+   stray edge floating beside the field. So the ring is moved inward instead of
+   removed: an outline with a negative offset follows the border radius, composes
+   with the recessed shadow instead of replacing it, and still exists for every
+   control type - including the checkable ones this sheet never restyles, which
+   keep the host ring untouched. A theme that sets outline: none on a focus
+   state leaves a keyboard user with no idea where they are; this one does not. */
+body :where(
+  textarea,
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+  select,
+  [contenteditable="true"]
+):focus-visible {
+  outline: 1.5px solid var(--dsw-alias-brand-primary) !important;
+  outline-offset: -2px !important;
+}
+
+/* Buttons and links keep a ring outside the shape, where it cannot be confused
+   with the relief, but it is declared important so that every control in the
+   product shows the same theme accent: the host draws its own ring inside
+   component-scoped rules (a business-blue ring with a positive offset), and
+   without the flag half the interface would stay blue while the fields are
+   steel. */
+body :where(button, [role="button"], a):focus-visible {
+  outline: 2px solid var(--dsw-alias-brand-primary) !important;
+  outline-offset: 2px !important;
+}

@@ -1,0 +1,176 @@
+/* gioguarin/dsh-nebula-theme — client.js
+   fetched 2026-11-16 from https://raw.githubusercontent.com/gioguarin/dsh-nebula-theme/main/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+html[data-ds-nebula-theme] {
+  background-color: #05030c;
+}
+
+body[data-ds-nebula-theme] {
+  background-color: transparent !important;
+}
+
+/* The Conversation column is the window onto the sky: drop its own base paint
+   so the chat sits directly over the nebula and fire. The three phase values
+   belong to the Conversation root; other data-phase users are untouched. */
+body[data-ds-nebula-theme] [data-phase="hero"],
+body[data-ds-nebula-theme] [data-phase="active"],
+body[data-ds-nebula-theme] [data-phase="settling"] {
+  background-color: transparent;
+}
+
+/* The nebula itself: fixed, filamented indigo-plum sky. It never brightens or
+   changes speed when an agent starts thinking; only the fire reacts. */
+body[data-ds-nebula-theme]::before {
+  content: '';
+  position: fixed;
+  inset: -6%;
+  z-index: -5;
+  pointer-events: none;
+  background: var(--ds-nebula-texture, none) 50% 50% / cover no-repeat;
+  opacity: 1;
+  transform: translate3d(-4%, -2%, 0) scale(1.04);
+  animation: ds-nebula-drift 60s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes ds-nebula-drift {
+  0% { transform: translate3d(-4%, -2%, 0) scale(1.04); }
+  50% { transform: translate3d(1.5%, 2.4%, 0) scale(1.09); }
+  100% { transform: translate3d(4%, -1%, 0) scale(1.06); }
+}
+
+/* A second, slightly larger copy of the sky drifting the other way. It lies
+   between the base nebula and the fire glow, so the cloud structure visibly
+   shifts against itself without the sky getting brighter. */
+body[data-ds-nebula-theme] .dsnb-nebula-parallax {
+  position: fixed;
+  inset: -10%;
+  z-index: -4;
+  pointer-events: none;
+  background: var(--ds-nebula-texture, none) 50% 50% / cover no-repeat;
+  mix-blend-mode: screen;
+  filter: blur(2px) saturate(1.15);
+  opacity: 0.4;
+  transform: translate3d(3%, 1.5%, 0) scale(1.16);
+  animation:
+    ds-nebula-parallax 95s ease-in-out infinite alternate,
+    ds-nebula-breathe 27s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes ds-nebula-parallax {
+  0% { transform: translate3d(3%, 1.5%, 0) scale(1.16); }
+  50% { transform: translate3d(-1.5%, -1.5%, 0) scale(1.21); }
+  100% { transform: translate3d(-3.5%, 2%, 0) scale(1.17); }
+}
+
+@keyframes ds-nebula-breathe {
+  0%, 100% { opacity: 0.34; }
+  50% { opacity: 0.46; }
+}
+
+/* Out-of-focus firelight spilling into the sky. Drawn from a downsampled copy
+   of the flame field, so it follows the real flame shape. */
+body[data-ds-nebula-theme] .dsnb-glow {
+  position: fixed;
+  left: -10%;
+  width: 120%;
+  bottom: -6%;
+  height: 78vh;
+  z-index: -3;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  filter: blur(22px) saturate(1.1);
+  transform-origin: 50% 100%;
+  opacity: 0.28;
+  -webkit-mask-image: linear-gradient(to top, #000 0, #000 30%, transparent 100%);
+          mask-image: linear-gradient(to top, #000 0, #000 30%, transparent 100%);
+}
+
+/* The flames: a mid-focus layer with only 5px of blur, height-masked so the
+   upper part of the transcript never sits on bright orange. */
+body[data-ds-nebula-theme] .dsnb-fire {
+  position: fixed;
+  left: -4%;
+  width: 108%;
+  bottom: -1%;
+  height: 64vh;
+  z-index: -2;
+  pointer-events: none;
+  filter: blur(5px) saturate(1.08);
+  opacity: 0.56;
+  -webkit-mask-image: linear-gradient(to top, #000 0, #000 30%, rgba(0, 0, 0, 0.75) 50%, rgba(0, 0, 0, 0.2) 78%, transparent 100%);
+          mask-image: linear-gradient(to top, #000 0, #000 30%, rgba(0, 0, 0, 0.75) 50%, rgba(0, 0, 0, 0.2) 78%, transparent 100%);
+}
+
+/* Reading veil: dark through the middle of the viewport and clear in the
+   bottom band where the fire lives. Sits above the fire, below the UI. */
+body[data-ds-nebula-theme]::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    linear-gradient(to top, rgba(5, 3, 14, 0.50) 0, rgba(5, 3, 14, 0.20) 5vh, rgba(5, 3, 14, 0) 10vh),
+    linear-gradient(to bottom,
+      rgba(5, 3, 14, 0.46) 0%,
+      rgba(5, 3, 14, 0.14) 22%,
+      rgba(5, 3, 14, 0.22) 52%,
+      rgba(5, 3, 14, 0) 82%),
+    radial-gradient(120% 90% at 50% 42%, rgba(5, 3, 14, 0) 55%, rgba(3, 2, 9, 0.55) 100%);
+}
+
+/* Make the composer a glass slab so the flame base glows through it instead
+   of being hidden behind an opaque footer. */
+body[data-ds-nebula-theme] [data-composer-card] {
+  background-color: rgba(18, 14, 40, 0.42);
+  backdrop-filter: blur(14px) saturate(1.15);
+  -webkit-backdrop-filter: blur(14px) saturate(1.15);
+}
+
+/* The floating chats pick up the same space glass, and their frame glows with
+   the ember fire while an agent is thinking. These class names belong to the
+   optional active-chats plugin; when it is absent the rules are inert. */
+body[data-ds-nebula-theme] .dsac-window,
+body[data-ds-nebula-theme] .dsac-pill {
+  background-color: rgba(18, 14, 44, 0.72);
+  border-color: rgba(142, 124, 255, 0.28);
+  box-shadow:
+    0 18px 48px rgba(2, 1, 10, 0.55),
+    0 0 0 1px rgba(142, 124, 255, 0.06),
+    0 0 36px rgba(120, 86, 255, 0.12);
+  backdrop-filter: blur(20px) saturate(1.3);
+  -webkit-backdrop-filter: blur(20px) saturate(1.3);
+  transition: box-shadow 0.8s ease, border-color 0.8s ease;
+}
+
+body[data-ds-nebula-theme][data-ds-nebula-think='on'] .dsac-window,
+body[data-ds-nebula-theme][data-ds-nebula-think='on'] .dsac-pill {
+  border-color: rgba(255, 178, 110, 0.48);
+  box-shadow:
+    0 18px 48px rgba(2, 1, 10, 0.6),
+    0 0 0 1px rgba(255, 178, 110, 0.16),
+    0 0 44px rgba(255, 150, 60, 0.22),
+    0 0 90px rgba(180, 80, 255, 0.16);
+}
+
+body[data-ds-nebula-theme] .dsac-pin {
+  color: rgb(255, 190, 120);
+}
+
+body[data-ds-nebula-theme][data-ds-nebula-think='on'] .dsac-title {
+  color: rgb(255, 236, 218);
+  text-shadow: 0 0 14px rgba(255, 160, 80, 0.5);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-ds-nebula-theme]::before,
+  body[data-ds-nebula-theme] .dsnb-nebula-parallax {
+    animation: none;
+  }
+  body[data-ds-nebula-theme] .dsnb-fire,
+  body[data-ds-nebula-theme] .dsnb-glow {
+    transition: opacity 0.6s linear;
+  }
+}

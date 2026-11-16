@@ -1,0 +1,1025 @@
+/* cfour-hi/dsh-plugin-skinx — src/ui/styles.js
+   fetched 2026-11-16 from https://raw.githubusercontent.com/cfour-hi/dsh-plugin-skinx/main/src/ui/styles.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/* -------------------------------------------------------------------------- */
+/* Dock button                                                                */
+/* -------------------------------------------------------------------------- */
+.sx-dock {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--dsw-alias-label-secondary, #5b5f66);
+  cursor: pointer;
+  transition: background .2s ease, color .2s ease, border-color .2s ease;
+}
+.sx-dock:hover, .sx-dock.is-open {
+  background: var(--dsw-alias-interactive-bg-hover, rgba(0, 0, 0, .05));
+  color: var(--dsw-alias-label-primary, #1f1f1f);
+}
+.sx-dock:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--dsw-alias-brand-primary, #1677ff) 22%, transparent);
+}
+.sx-dock.is-active { color: var(--dsw-alias-brand-primary, #1677ff); }
+.sx-dock-dot {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--dsw-alias-brand-primary, #1677ff);
+  box-shadow: 0 0 0 2px var(--dsw-specific-sidebar-fill, #fff);
+}
+.sx-dock-thumb {
+  display: block;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Overlay and dialog shell                                                   */
+/* -------------------------------------------------------------------------- */
+.sx-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, .45);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  pointer-events: auto;
+  animation: sx-fade-in .2s ease both;
+}
+
+.sx-dialog {
+  --sx-radius-lg: 12px;
+  --sx-radius: 10px;
+  --sx-radius-sm: 8px;
+  --sx-surface: var(--dsw-alias-bg-overlay, #fff);
+  --sx-surface-1: var(--dsw-alias-bg-layer-1, #fff);
+  --sx-surface-2: var(--dsw-alias-bg-layer-2, rgba(0, 0, 0, .04));
+  --sx-border: var(--dsw-alias-border-l1, rgba(0, 0, 0, .08));
+  --sx-border-strong: var(--dsw-alias-border-l2, rgba(0, 0, 0, .16));
+  --sx-text: var(--dsw-alias-label-primary, rgba(0, 0, 0, .88));
+  --sx-text-2: var(--dsw-alias-label-secondary, rgba(0, 0, 0, .65));
+  --sx-text-3: var(--dsw-alias-label-tertiary, rgba(0, 0, 0, .45));
+  --sx-brand: var(--dsw-alias-brand-primary, #1677ff);
+  --sx-on-brand: var(--dsw-alias-label-primary-inverted, #fff);
+  --sx-danger: var(--dsw-alias-state-error-primary, #ff4d4f);
+  --sx-hover: var(--dsw-alias-interactive-bg-hover, rgba(0, 0, 0, .05));
+  --sx-motion: .2s cubic-bezier(.645, .045, .355, 1);
+  display: flex;
+  flex-direction: column;
+  width: min(880px, 100%);
+  max-height: min(90vh, 860px);
+  border: 1px solid var(--sx-border);
+  border-radius: var(--sx-radius-lg);
+  background: var(--sx-surface);
+  color: var(--sx-text);
+  box-shadow:
+    0 6px 16px 0 rgba(0, 0, 0, .08),
+    0 3px 6px -4px rgba(0, 0, 0, .12),
+    0 9px 28px 8px rgba(0, 0, 0, .05);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  backdrop-filter: blur(18px) saturate(1.2);
+  font-size: 14px;
+  line-height: 1.5715;
+  overflow: hidden;
+  animation: sx-dialog-in .24s cubic-bezier(.2, .8, .2, 1) both;
+}
+.sx-dialog *, .sx-dialog *::before, .sx-dialog *::after { box-sizing: border-box; }
+.sx-dialog :where(button, input) { font: inherit; color: inherit; }
+
+/* -------------------------------------------------------------------------- */
+/* Header                                                                     */
+/* -------------------------------------------------------------------------- */
+.sx-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex: none;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--sx-border);
+}
+.sx-header-brand { display: flex; align-items: flex-start; gap: 12px; min-width: 0; }
+.sx-header-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--sx-brand) 12%, transparent);
+  color: var(--sx-brand);
+}
+.sx-header-main { min-width: 0; }
+.sx-title {
+  margin: 0;
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+}
+.sx-subtitle {
+  margin: 2px 0 0;
+  color: var(--sx-text-2);
+  font-size: 13px;
+  line-height: 20px;
+}
+.sx-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--sx-radius-sm);
+  background: transparent;
+  color: var(--sx-text-2);
+  cursor: pointer;
+  transition: background var(--sx-motion), color var(--sx-motion);
+}
+.sx-close:hover { background: var(--sx-hover); color: var(--sx-text); }
+.sx-close:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sx-brand) 20%, transparent);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Body and footer                                                            */
+/* -------------------------------------------------------------------------- */
+.sx-body {
+  flex: 1;
+  min-height: 0;
+  padding: 20px 24px 24px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--sx-text) 18%, transparent) transparent;
+}
+.sx-body::-webkit-scrollbar { width: 8px; }
+.sx-body::-webkit-scrollbar-track { background: transparent; }
+.sx-body::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--sx-text) 18%, transparent);
+  background-clip: padding-box;
+}
+.sx-body::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--sx-text) 30%, transparent);
+  background-clip: padding-box;
+}
+
+.sx-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex: none;
+  padding: 12px 24px;
+  border-top: 1px solid var(--sx-border);
+  background: var(--sx-surface);
+}
+.sx-footer-left, .sx-footer-right { display: flex; align-items: center; gap: 8px; }
+
+/* -------------------------------------------------------------------------- */
+/* Alert                                                                      */
+/* -------------------------------------------------------------------------- */
+.sx-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--sx-danger) 30%, transparent);
+  border-radius: var(--sx-radius-sm);
+  background: color-mix(in srgb, var(--sx-danger) 8%, transparent);
+}
+.sx-alert-icon { display: inline-flex; flex: none; margin-top: 1px; color: var(--sx-danger); }
+.sx-alert-body { flex: 1; min-width: 0; font-size: 13px; overflow-wrap: anywhere; }
+.sx-alert-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--sx-text-2);
+  cursor: pointer;
+}
+.sx-alert-close:hover { background: color-mix(in srgb, var(--sx-danger) 10%, transparent); color: var(--sx-danger); }
+
+/* -------------------------------------------------------------------------- */
+/* Drop zone                                                                  */
+/* -------------------------------------------------------------------------- */
+.sx-drop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  width: 100%;
+  min-height: 140px;
+  padding: 18px 20px;
+  border: 1.5px dashed var(--sx-border-strong);
+  border-radius: var(--sx-radius-lg);
+  background: var(--sx-surface-1);
+  color: var(--sx-text);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color var(--sx-motion), background var(--sx-motion), box-shadow var(--sx-motion);
+}
+.sx-drop:hover, .sx-drop.is-dragging {
+  border-color: var(--sx-brand);
+  background: color-mix(in srgb, var(--sx-brand) 5%, var(--sx-surface-1));
+}
+.sx-drop.is-dragging { box-shadow: inset 0 0 0 1px var(--sx-brand); }
+.sx-drop:focus-visible {
+  outline: none;
+  border-color: var(--sx-brand);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sx-brand) 18%, transparent);
+}
+.sx-drop-icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  margin-bottom: 4px;
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--sx-brand) 10%, transparent);
+  color: var(--sx-brand);
+}
+.sx-drop-title { font-size: 15px; font-weight: 600; line-height: 22px; }
+.sx-drop-hint { color: var(--sx-text-2); font-size: 12.5px; line-height: 20px; }
+.sx-file { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+
+/* -------------------------------------------------------------------------- */
+/* Section card                                                               */
+/* -------------------------------------------------------------------------- */
+.sx-section {
+  margin-top: 20px;
+  border: 1px solid var(--sx-border);
+  border-radius: var(--sx-radius);
+  background: var(--sx-surface-1);
+  overflow: hidden;
+}
+.sx-section:first-child { margin-top: 0; }
+.sx-section-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--sx-border);
+}
+.sx-section-heading { flex: 1; min-width: 0; }
+.sx-section-title { margin: 0; font-size: 14px; line-height: 20px; font-weight: 600; }
+.sx-section-desc { margin: 2px 0 0; color: var(--sx-text-2); font-size: 12px; line-height: 18px; }
+.sx-section-body { padding: 16px; }
+.sx-section-body > * + * { margin-top: 14px; }
+.sx-section-body-list { padding: 14px; }
+.sx-section-note { margin: 0; color: var(--sx-text-2); font-size: 12.5px; line-height: 19px; }
+
+/* -------------------------------------------------------------------------- */
+/* Fields                                                                     */
+/* -------------------------------------------------------------------------- */
+.sx-field { display: flex; flex-direction: column; gap: 6px; }
+.sx-label { color: var(--sx-text); font-size: 13px; font-weight: 500; line-height: 18px; }
+.sx-label-row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.sx-value { color: var(--sx-text-3); font-size: 12px; font-variant-numeric: tabular-nums; }
+.sx-hint { color: var(--sx-text-3); font-size: 12px; }
+.sx-divider { height: 1px; background: var(--sx-border); }
+.sx-muted { margin: 0; color: var(--sx-text-3); font-size: 12px; line-height: 18px; }
+
+.sx-input {
+  width: 100%;
+  height: 34px;
+  padding: 0 11px;
+  border: 1px solid var(--sx-border-strong);
+  border-radius: var(--sx-radius-sm);
+  background: var(--sx-surface);
+  color: var(--sx-text);
+  font-size: 13px;
+  transition: border-color var(--sx-motion), box-shadow var(--sx-motion);
+}
+.sx-input:hover { border-color: color-mix(in srgb, var(--sx-brand) 45%, var(--sx-border-strong)); }
+.sx-input:focus {
+  outline: none;
+  border-color: var(--sx-brand);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sx-brand) 18%, transparent);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Switch                                                                     */
+/* -------------------------------------------------------------------------- */
+.sx-switch-row { display: flex; align-items: center; gap: 12px; }
+.sx-switch-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.sx-switch-label { font-size: 13px; font-weight: 500; line-height: 20px; }
+.sx-switch-desc { color: var(--sx-text-2); font-size: 12px; line-height: 18px; }
+.sx-switch-preview { display: inline-flex; flex: none; }
+.sx-switch {
+  position: relative;
+  flex: none;
+  width: 44px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--sx-text) 22%, transparent);
+  cursor: pointer;
+  transition: background var(--sx-motion);
+}
+.sx-switch:hover:not(.is-on) { background: color-mix(in srgb, var(--sx-text) 32%, transparent); }
+.sx-switch.is-on { background: var(--sx-brand); }
+.sx-switch:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sx-brand) 20%, transparent);
+}
+.sx-switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--dsw-alias-switch-thumb, #fff);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .2);
+  transition: transform var(--sx-motion);
+}
+.sx-switch.is-on .sx-switch-thumb { transform: translateX(22px); }
+
+/* -------------------------------------------------------------------------- */
+/* Slider                                                                     */
+/* -------------------------------------------------------------------------- */
+.sx-slider { display: flex; flex-direction: column; gap: 4px; }
+.sx-slider-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.sx-slider-value {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 7px;
+  border: 1px solid var(--sx-border);
+  border-radius: 6px;
+  background: var(--sx-surface);
+  color: var(--sx-text-2);
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+}
+.sx-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 20px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.sx-range::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(
+    to right,
+    var(--sx-brand) 0,
+    var(--sx-brand) var(--sx-range-fill, 50%),
+    color-mix(in srgb, var(--sx-text) 14%, transparent) var(--sx-range-fill, 50%),
+    color-mix(in srgb, var(--sx-text) 14%, transparent) 100%
+  );
+}
+.sx-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  margin-top: -6px;
+  border: 2px solid var(--sx-brand);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .18);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.sx-range:hover::-webkit-slider-thumb { transform: scale(1.1); }
+.sx-range:focus-visible { outline: none; }
+.sx-range:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sx-brand) 22%, transparent);
+}
+.sx-range::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--sx-text) 14%, transparent);
+}
+.sx-range::-moz-range-progress { height: 4px; border-radius: 2px; background: var(--sx-brand); }
+.sx-range::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--sx-brand);
+  border-radius: 50%;
+  background: #fff;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Segmented control                                                          */
+/* -------------------------------------------------------------------------- */
+.sx-segmented {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  border-radius: var(--sx-radius-sm);
+  background: color-mix(in srgb, var(--sx-text) 8%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--sx-text) 9%, transparent);
+}
+.sx-segmented.is-block { display: flex; width: 100%; }
+.sx-segmented.is-block .sx-segment { flex: 1; min-width: 0; padding: 0 8px; }
+.sx-segment {
+  height: 28px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--sx-text-2);
+  font-size: 12.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease, box-shadow .15s ease;
+}
+.sx-segment:hover:not(.is-active) {
+  background: color-mix(in srgb, var(--sx-text) 7%, transparent);
+  color: var(--sx-text);
+}
+/* The selected segment is a filled brand chip: an unfilled surface on a lightly
+   tinted track reads as "nothing selected" at a glance. */
+.sx-segment.is-active {
+  background: var(--sx-brand);
+  color: var(--sx-on-brand);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .18);
+}
+.sx-segment:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--sx-brand) 60%, transparent);
+  outline-offset: 1px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Swatches                                                                   */
+/* -------------------------------------------------------------------------- */
+.sx-swatches { display: flex; flex-wrap: wrap; gap: 6px; }
+.sx-swatch {
+  display: block;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .12);
+}
+/* -------------------------------------------------------------------------- */
+/* Saved skins                                                                */
+/* -------------------------------------------------------------------------- */
+.sx-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--sx-surface-2);
+  color: var(--sx-text-2);
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.sx-skins {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sx-skin-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid var(--sx-border);
+  border-radius: var(--sx-radius);
+  background: var(--sx-surface);
+  overflow: hidden;
+  transition: border-color var(--sx-motion), box-shadow var(--sx-motion);
+}
+.sx-skin-card:hover {
+  border-color: color-mix(in srgb, var(--sx-brand) 40%, var(--sx-border));
+  box-shadow: 0 6px 16px rgba(0, 0, 0, .09);
+}
+.sx-skin-card.is-active {
+  border-color: color-mix(in srgb, var(--sx-brand) 55%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--sx-brand) 32%, transparent);
+}
+.sx-skin-cover {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  background: var(--sx-surface-2);
+  overflow: hidden;
+}
+/* The picture itself is the apply affordance; the pill only teaches it. */
+.sx-skin-apply {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+.sx-skin-apply:disabled { cursor: default; }
+.sx-skin-apply:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--sx-brand);
+}
+.sx-skin-apply-hint {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 11px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, .52);
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(.94);
+  pointer-events: none;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  transition: opacity var(--sx-motion), transform var(--sx-motion);
+}
+.sx-skin-card:hover .sx-skin-apply-hint,
+.sx-skin-apply:focus-visible .sx-skin-apply-hint {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.sx-skin-cover-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .3s ease;
+}
+.sx-skin-card:hover .sx-skin-cover-img { transform: scale(1.04); }
+.sx-skin-cover-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, .85);
+}
+.sx-skin-cover-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: var(--sx-brand);
+  color: var(--sx-on-brand);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .25);
+}
+/* Destructive action lives on the picture, revealed on hover/focus only. */
+.sx-skin-delete {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, .24);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, .42);
+  color: #fff;
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(.88);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  transition:
+    opacity var(--sx-motion),
+    transform var(--sx-motion),
+    background var(--sx-motion),
+    border-color var(--sx-motion);
+}
+.sx-skin-card:hover .sx-skin-delete,
+.sx-skin-card:focus-within .sx-skin-delete {
+  opacity: 1;
+  transform: none;
+}
+.sx-skin-delete:hover {
+  background: var(--sx-danger);
+  border-color: transparent;
+}
+.sx-skin-delete:focus-visible {
+  outline: none;
+  opacity: 1;
+  transform: none;
+  box-shadow:
+    0 0 0 2px var(--sx-surface),
+    0 0 0 4px color-mix(in srgb, var(--sx-danger) 55%, transparent);
+}
+@media (hover: none) {
+  .sx-skin-delete,
+  .sx-skin-apply-hint {
+    opacity: 1;
+    transform: none;
+  }
+}
+.sx-skin-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding: 10px 12px;
+}
+.sx-skin-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--sx-text);
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 20px;
+  text-align: left;
+  cursor: text;
+}
+.sx-skin-name-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sx-skin-name-pencil {
+  display: inline-flex;
+  flex: none;
+  color: var(--sx-text-3);
+  opacity: .5;
+  transition: opacity var(--sx-motion), color var(--sx-motion);
+}
+.sx-skin-name:hover .sx-skin-name-text { color: var(--sx-brand); }
+.sx-skin-name:hover .sx-skin-name-pencil,
+.sx-skin-name:focus-visible .sx-skin-name-pencil {
+  opacity: 1;
+  color: var(--sx-brand);
+}
+.sx-skin-name:focus-visible {
+  outline: none;
+  border-radius: 4px;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--sx-brand) 22%, transparent);
+}
+.sx-skin-name-input {
+  width: 100%;
+  height: 24px;
+  padding: 0 7px;
+  border-radius: 6px;
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 24px;
+}
+.sx-skin-meta { color: var(--sx-text-3); font-size: 11.5px; line-height: 16px; }
+.sx-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--sx-brand) 12%, transparent);
+  color: var(--sx-brand);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Empty and skeleton                                                         */
+/* -------------------------------------------------------------------------- */
+.sx-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 28px 16px 24px;
+  text-align: center;
+}
+.sx-empty-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 5px;
+  border-radius: 50%;
+  background: var(--sx-surface-2);
+  color: var(--sx-text-3);
+}
+.sx-empty-title { margin: 0; font-size: 13.5px; font-weight: 500; }
+.sx-empty-hint { margin: 0; color: var(--sx-text-2); font-size: 12.5px; }
+.sx-skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+  gap: 12px;
+}
+.sx-skeleton-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--sx-border);
+  border-radius: var(--sx-radius);
+  background: var(--sx-surface);
+  overflow: hidden;
+}
+.sx-skeleton-cover {
+  display: block;
+  aspect-ratio: 16 / 10;
+  background: var(--sx-surface-2);
+}
+.sx-skeleton-lines { display: flex; flex-direction: column; gap: 6px; padding: 12px; }
+.sx-skeleton-line {
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    var(--sx-surface-2) 25%,
+    color-mix(in srgb, var(--sx-surface-2) 40%, var(--sx-surface-1)) 37%,
+    var(--sx-surface-2) 63%
+  );
+  background-size: 400% 100%;
+  animation: sx-shimmer 1.4s ease infinite;
+}
+.sx-skeleton-line-short { width: 42%; }
+
+/* -------------------------------------------------------------------------- */
+/* Active skin                                                                */
+/* -------------------------------------------------------------------------- */
+.sx-wallpaper-fields { display: flex; flex-direction: column; gap: 14px; }
+.sx-brand-row { display: flex; align-items: center; gap: 14px; }
+.sx-brand-preview {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--sx-border);
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .08);
+}
+.sx-brand-preview-sm { width: 36px; height: 36px; border-radius: 10px; }
+.sx-brand-placeholder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--sx-surface-2);
+  color: var(--sx-text-3);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Preview                                                                    */
+/* -------------------------------------------------------------------------- */
+.sx-preview {
+  display: grid;
+  grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr);
+  gap: 20px;
+  align-items: start;
+}
+.sx-preview-media-col {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+.sx-preview-media {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 220px;
+  max-height: 420px;
+  border: 1px solid var(--sx-border);
+  border-radius: var(--sx-radius-lg);
+  background: var(--sx-surface-2);
+  overflow: hidden;
+}
+.sx-preview-img { display: block; width: 100%; max-height: 380px; object-fit: contain; }
+.sx-media-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, .72);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.sx-media-palette { display: flex; align-items: center; gap: 10px; }
+.sx-media-palette .sx-label { flex: none; }
+.sx-preview-side { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.sx-preview-side > .sx-section { margin-top: 0; }
+
+/* -------------------------------------------------------------------------- */
+/* Buttons and spinner                                                        */
+/* -------------------------------------------------------------------------- */
+.sx-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 15px;
+  border: 1px solid var(--sx-border-strong);
+  border-radius: var(--sx-radius-sm);
+  background: var(--sx-surface-1);
+  color: var(--sx-text);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--sx-motion), border-color var(--sx-motion), background var(--sx-motion), box-shadow var(--sx-motion), filter var(--sx-motion);
+}
+.sx-btn:hover:not(:disabled) { color: var(--sx-brand); border-color: var(--sx-brand); }
+.sx-btn:active:not(:disabled) { transform: translateY(.5px); }
+.sx-btn:focus-visible {
+  outline: none;
+  border-color: var(--sx-brand);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sx-brand) 18%, transparent);
+}
+.sx-btn:disabled { opacity: .45; cursor: not-allowed; }
+.sx-btn-primary {
+  border-color: var(--sx-brand);
+  background: var(--sx-brand);
+  color: var(--sx-on-brand);
+}
+.sx-btn-primary:hover:not(:disabled) {
+  border-color: var(--sx-brand);
+  background: var(--sx-brand);
+  color: var(--sx-on-brand);
+  text-decoration: underline;
+}
+.sx-btn-text {
+  border-color: transparent;
+  background: transparent;
+  color: var(--sx-text-2);
+}
+.sx-btn-text:hover:not(:disabled) {
+  border-color: transparent;
+  background: var(--sx-hover);
+  color: var(--sx-text);
+}
+.sx-btn-sm { height: 26px; padding: 0 10px; font-size: 12px; }
+
+.sx-spinner {
+  display: inline-block;
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border: 2px solid color-mix(in srgb, currentColor 25%, transparent);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: sx-spin .8s linear infinite;
+}
+.sx-spinner-lg { width: 22px; height: 22px; }
+
+/* -------------------------------------------------------------------------- */
+/* Host brand marks                                                           */
+/* -------------------------------------------------------------------------- */
+.sx-brand-mark { display: block; flex: none; border-radius: 8px; object-fit: cover; }
+.sx-brand-mark-hero { border-radius: 14px; }
+
+/* -------------------------------------------------------------------------- */
+/* Motion                                                                     */
+/* -------------------------------------------------------------------------- */
+@keyframes sx-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes sx-dialog-in {
+  from { opacity: 0; transform: translateY(12px) scale(.985); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes sx-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes sx-shimmer {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Responsive                                                                 */
+/* -------------------------------------------------------------------------- */
+@media (max-width: 720px) {
+  .sx-overlay { padding: 12px; }
+  .sx-dialog { max-height: calc(100vh - 24px); border-radius: 10px; }
+  .sx-header { padding: 16px; }
+  .sx-body { padding: 16px; }
+  .sx-footer { padding: 10px 16px; }
+  .sx-title { font-size: 16px; }
+  .sx-preview { grid-template-columns: 1fr; }
+  .sx-preview-media-col { position: static; }
+}
+@media (max-width: 520px) {
+  .sx-header-icon { display: none; }
+  .sx-skins, .sx-skeleton-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+  .sx-footer { flex-wrap: wrap; }
+  .sx-footer-left { order: 2; }
+  .sx-footer-right { flex: 1; justify-content: flex-end; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sx-overlay, .sx-dialog { animation: none; }
+  .sx-dialog *, .sx-dialog *::before, .sx-dialog *::after {
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Host overlay surfaces stay opaque while a wallpaper is active              */
+/* -------------------------------------------------------------------------- */
+/* Wallpaper mode makes the shared surface tokens translucent so the picture
+   can show through. The settings panel, its cards, modal dialogs and the
+   file-change / code-review previews are painted with those same tokens, so
+   they would otherwise turn transparent and both the wallpaper and the
+   conversation underneath would bleed through their text.
+
+   Re-anchor every surface alias on those overlays to the one token wallpaper
+   mode deliberately keeps opaque (--dsw-alias-bg-overlay), and pin an opaque
+   fill on the settings panel and code-review previews as a fallback. These
+   rules live in the persistent stylesheet, not the wallpaper style element,
+   so they cannot disappear when a host dialog takes over the overlay slot.
+   The body[data-skinx-wallpaper] guard is toggled by a client store
+   subscription, so an idle install leaves the shipped UI untouched. */
+body[data-skinx-wallpaper] [data-shortcut-modal="settings"],
+body[data-skinx-wallpaper] [role="dialog"][aria-modal="true"],
+body[data-skinx-wallpaper] [data-changes-hover-preview],
+body[data-skinx-wallpaper] [data-review-view] {
+  --dsw-alias-bg-base: var(--dsw-alias-bg-overlay) !important;
+  --dsw-alias-bg-layer-1: var(--dsw-alias-bg-overlay) !important;
+  --dsw-alias-bg-layer-2: var(--dsw-alias-bg-overlay) !important;
+  --dsw-specific-sidebar-fill: var(--dsw-alias-bg-overlay) !important;
+  --dsw-alias-settings-card-fill: var(--dsw-alias-bg-overlay) !important;
+}
+body[data-skinx-wallpaper] [data-shortcut-modal="settings"],
+body[data-skinx-wallpaper] [data-changes-hover-preview],
+body[data-skinx-wallpaper] [data-review-view] {
+  background-color: var(--dsw-alias-bg-overlay);
+}

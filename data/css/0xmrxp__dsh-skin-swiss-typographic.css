@@ -1,0 +1,247 @@
+/* 0xmrxp/dsh-skin-swiss-typographic — skins/swiss-typographic/skin.css
+   fetched 2026-11-16 from https://raw.githubusercontent.com/0xmrxp/dsh-skin-swiss-typographic/main/skins/swiss-typographic/skin.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/**
+ * Swiss Typographic — dsh skin
+ *
+ * International Typographic Style (Swiss Style), rebuilt for the DSH Web GUI:
+ *   - one red (#E30613). Everything else is ink on paper.
+ *   - strict gray ladder, hairline borders, zero-to-2px radii.
+ *   - Helvetica first, Inter as the modern stand-in, system sans fallback.
+ *
+ * L1 only: remap the official --dsw-alias-* semantic tokens.
+ * Light values on :root, dark values under body[data-ds-dark-theme]
+ * (the official dark-theme attribute lives on document.body).
+ * The loader force-scopes every selector under html[data-dsh-skin="swiss-typographic"];
+ * write :root / body heads exactly as you would for the official shell.
+ */
+
+/* ---- Type ------------------------------------------------------------------
+ * Helvetica Neue is the canonical Swiss face; it ships on macOS. Inter is the
+ * self-contained modern stand-in with near-identical neutrality. No serif,
+ * no decorative face anywhere: typography does the hierarchy, never ornament.
+ * -------------------------------------------------------------------------- */
+:root {
+  --st-sans: 'Helvetica Neue', 'Inter', 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', -apple-system, 'Segoe UI', Arial, sans-serif;
+  --st-mono: 'SF Mono', 'JetBrains Mono', 'Noto Sans Mono CJK SC', ui-monospace, Menlo, Consolas, monospace;
+  --st-red: #E30613;
+  --st-red-press: #B80510;
+  --st-ink: #111111;
+}
+
+/* ============================================================================
+ * LIGHT — paper
+ * ========================================================================== */
+:root {
+  /* surfaces: pure canvas, then a strict gray ladder */
+  --dsw-alias-bg-base: #ffffff;
+  --dsw-alias-bg-layer-1: #fafafa;
+  --dsw-alias-bg-layer-2: #f2f2f2;
+  --dsw-alias-bg-layer-3: #e8e8e8;
+  --dsw-alias-bg-layer-4: #dcdcdc;
+  --dsw-alias-bg-module-platform: #fafafa;
+  --dsw-alias-bg-skeleton: #1111110a;
+
+  /* masks: ink, scaled */
+  --dsw-alias-bg-mask-1: #1111111f;
+  --dsw-alias-bg-mask-2: #11111133;
+  --dsw-alias-bg-mask-3: #11111166;
+
+  /* borders: the grid. hairlines, never shadows-that-look-like-borders */
+  --dsw-alias-border-l1: #e6e6e6;
+  --dsw-alias-border-l2: #d9d9d9;
+  --dsw-alias-border-l2-darkmode-thin: #d9d9d9;
+  --dsw-alias-border-l3: #bfbfbf;
+  --dsw-alias-border-l4: #999999;
+
+  /* labels: near-black ink, quiet grays */
+  --dsw-alias-label-primary: #111111;
+  --dsw-alias-label-primary-bluish: #111111;
+  --dsw-alias-label-primary-dimmed: #3d3d3d;
+  --dsw-alias-label-primary-foreground: #111111;
+  --dsw-alias-label-primary-inverted: #ffffff;
+  --dsw-alias-label-secondary: #555555;
+  --dsw-alias-label-tertiary: #808080;
+  --dsw-alias-label-caption: #8c8c8c;
+  --dsw-alias-label-dimmed: #a6a6a6;
+
+  /* brand: the one red */
+  --dsw-alias-brand-primary: #E30613;
+  --dsw-alias-brand-text: #111111;
+
+  /* buttons: flat rectangles, red or ink */
+  --dsw-alias-button-primary-fill: #E30613;
+  --dsw-alias-button-primary-hover: #B80510;
+  --dsw-alias-button-contrast-fill: #111111;
+  --dsw-alias-button-ghost-active-fill: #e8e8e8;
+  --dsw-alias-button-ghost-active-hover: #dcdcdc;
+  --dsw-alias-button-ghost-active-border: #1111114d;
+
+  /* interactive */
+  --dsw-alias-interactive-bg-hover: #1111110a;
+  --dsw-alias-interactive-bg-active: #11111114;
+  --dsw-alias-interactive-bg-hover-accent: #E3061314;
+  --dsw-alias-interactive-bg-hover-danger: #E306131f;
+
+  /* markdown: quiet grays, no tinted code blocks */
+  --dsw-alias-markdown-code-block: #f7f7f7;
+  --dsw-alias-markdown-code-block-banner: #f2f2f2;
+  --dsw-alias-markdown-inline-code: #f2f2f2;
+  --dsw-alias-markdown-tag: #f2f2f2;
+
+  /* state colors: functional, desaturated where possible; red belongs to brand */
+  --dsw-alias-state-error-primary: #C41E25;
+  --dsw-alias-state-warn-primary: #B8860B;
+  --dsw-alias-state-success-primary: #2E7D32;
+  --dsw-alias-state-business-primary: #E30613;
+
+  /* shell anchors */
+  --dsw-specific-sidebar-fill: #fafafa;
+  --dsw-specific-sidebar-nav-item-hover: #1111110a;
+  --dsw-specific-sidebar-nav-item-active: #e8e8e8;
+  --dsw-specific-sidebar-nav-item-active-accent: #E30613;
+  --dsw-specific-input-major: #ffffff;
+  --dsw-specific-menu: #ffffff;
+  --dsw-specific-bubble: #ffffff;
+  --dsw-specific-selector: #f2f2f2;
+  --dsw-specific-tip: #e8e8e8;
+
+  /* overlays */
+  --dsw-alias-tooltip-bg: #111111;
+  --dsw-alias-tooltip-key-bg: #11111133;
+  --dsw-alias-toast-bg: #111111;
+  --dsw-hovercard-bg: #ffffff;
+  --dsw-menu-surface-fill: #ffffff;
+
+  /* focus: the red ring is the accessibility voice of the accent */
+  --dsw-focus-ring-color: #E30613;
+  --dsw-focus-ring-width: 2px;
+
+  /* elevation: hairline + barely-there shadow; flatness is the style */
+  --dsw-elevation-stroke-color: #e6e6e6;
+  --dsw-shadow-lv1: 0 0 0 0.5px #e6e6e6;
+  --dsw-shadow-lv2: 0 1px 2px #1111110d;
+  --dsw-shadow-lv3: 0 4px 16px #1111111a;
+  --dsw-mask-blur: blur(0px);
+
+  /* radius ladder: pressed flat. 0 for chips/tags, 2px max anywhere */
+  --dsw-radius-xs: 0px;
+  --dsw-radius-sm: 0px;
+  --dsw-radius-md: 2px;
+  --dsw-radius-lg: 2px;
+  --dsw-radius-xl: 2px;
+  --dsw-radius-panel: 0px;
+
+  /* typography */
+  --dsw-font-family: var(--st-sans);
+  --dsw-font-markdown-base: var(--st-sans);
+  --dsw-font-markdown-base-strong: var(--st-sans);
+  --dsw-font-markdown-code: var(--st-mono);
+  --dsw-font-markdown-code-block: var(--st-mono);
+  --dsw-font-markdown-code-font-family: var(--st-mono);
+  --dsw-font-markdown-h1: var(--st-sans);
+  --dsw-font-markdown-h2: var(--st-sans);
+  --dsw-font-markdown-h3: var(--st-sans);
+  --dsw-alias-link: #111111;
+
+  /* scrollbars: hairline ink */
+  --dsw-alias-scrollbar-bg-l2: #1111111f;
+  --dsw-alias-scrollbar-hover-l2: #1111113d;
+}
+
+/* ============================================================================
+ * DARK — print-shop black. Same red, same grid, ink inverted.
+ * ========================================================================== */
+body[data-ds-dark-theme] {
+  /* surfaces */
+  --dsw-alias-bg-base: #111111;
+  --dsw-alias-bg-layer-1: #171717;
+  --dsw-alias-bg-layer-2: #1f1f1f;
+  --dsw-alias-bg-layer-3: #292929;
+  --dsw-alias-bg-layer-4: #333333;
+  --dsw-alias-bg-module-platform: #171717;
+  --dsw-alias-bg-skeleton: #ffffff0a;
+
+  --dsw-alias-bg-mask-1: #00000040;
+  --dsw-alias-bg-mask-2: #00000066;
+  --dsw-alias-bg-mask-3: #000000a6;
+
+  /* borders: the grid in reverse, gray on black */
+  --dsw-alias-border-l1: #262626;
+  --dsw-alias-border-l2: #333333;
+  --dsw-alias-border-l2-darkmode-thin: #333333;
+  --dsw-alias-border-l3: #4d4d4d;
+  --dsw-alias-border-l4: #737373;
+
+  /* labels */
+  --dsw-alias-label-primary: #f5f5f5;
+  --dsw-alias-label-primary-bluish: #f5f5f5;
+  --dsw-alias-label-primary-dimmed: #d4d4d4;
+  --dsw-alias-label-primary-foreground: #111111;
+  --dsw-alias-label-primary-inverted: #111111;
+  --dsw-alias-label-secondary: #a3a3a3;
+  --dsw-alias-label-tertiary: #737373;
+  --dsw-alias-label-caption: #666666;
+  --dsw-alias-label-dimmed: #4d4d4d;
+
+  /* brand: same red, lifted one step for contrast on black */
+  --dsw-alias-brand-primary: #FF2A1F;
+  --dsw-alias-brand-text: #f5f5f5;
+
+  /* buttons */
+  --dsw-alias-button-primary-fill: #FF2A1F;
+  --dsw-alias-button-primary-hover: #E30613;
+  --dsw-alias-button-contrast-fill: #f5f5f5;
+  --dsw-alias-button-ghost-active-fill: #292929;
+  --dsw-alias-button-ghost-active-hover: #333333;
+  --dsw-alias-button-ghost-active-border: #ffffff4d;
+
+  /* interactive */
+  --dsw-alias-interactive-bg-hover: #ffffff0d;
+  --dsw-alias-interactive-bg-active: #ffffff17;
+  --dsw-alias-interactive-bg-hover-accent: #FF2A1F1f;
+  --dsw-alias-interactive-bg-hover-danger: #FF2A1F2e;
+
+  /* markdown */
+  --dsw-alias-markdown-code-block: #1a1a1a;
+  --dsw-alias-markdown-code-block-banner: #1f1f1f;
+  --dsw-alias-markdown-inline-code: #1f1f1f;
+  --dsw-alias-markdown-tag: #1f1f1f;
+
+  /* state */
+  --dsw-alias-state-error-primary: #FF4A42;
+  --dsw-alias-state-warn-primary: #E0A63F;
+  --dsw-alias-state-success-primary: #4CAF6D;
+  --dsw-alias-state-business-primary: #FF2A1F;
+
+  /* shell anchors */
+  --dsw-specific-sidebar-fill: #171717;
+  --dsw-specific-sidebar-nav-item-hover: #ffffff0d;
+  --dsw-specific-sidebar-nav-item-active: #292929;
+  --dsw-specific-sidebar-nav-item-active-accent: #FF2A1F;
+  --dsw-specific-input-major: #1a1a1a;
+  --dsw-specific-menu: #1a1a1a;
+  --dsw-specific-bubble: #171717;
+  --dsw-specific-selector: #1f1f1f;
+  --dsw-specific-tip: #292929;
+
+  /* overlays */
+  --dsw-alias-tooltip-bg: #f5f5f5;
+  --dsw-alias-tooltip-fg: #111111;
+  --dsw-alias-tooltip-key-bg: #ffffff33;
+  --dsw-alias-toast-bg: #f5f5f5;
+  --dsw-alias-toast-label: #111111;
+  --dsw-hovercard-bg: #1a1a1a;
+  --dsw-menu-surface-fill: #1a1a1a;
+
+  --dsw-focus-ring-color: #FF2A1F;
+
+  --dsw-elevation-stroke-color: #262626;
+  --dsw-shadow-lv1: 0 0 0 0.5px #262626;
+  --dsw-shadow-lv2: 0 1px 2px #00000059;
+  --dsw-shadow-lv3: 0 4px 16px #00000080;
+
+  --dsw-alias-scrollbar-bg-l2: #ffffff1f;
+  --dsw-alias-scrollbar-hover-l2: #ffffff3d;
+}
+

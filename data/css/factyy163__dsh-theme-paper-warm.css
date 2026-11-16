@@ -1,0 +1,124 @@
+/* factyy163/dsh-theme-paper-warm — lib/client.js
+   fetched 2026-11-16 from https://raw.githubusercontent.com/factyy163/dsh-theme-paper-warm/main/lib/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/* --- third-party sidebar palette: cool teal default -> warm paper --- */
+:root,
+:root body[data-ds-dark-theme] {
+	--dcu-sidebar-background: #F2F0E5 !important;
+	--dcu-sidebar-primary: #100F0F !important;
+	--dcu-sidebar-secondary: #55524A !important;
+	--dcu-sidebar-tertiary: #7A756A !important;
+	--dcu-sidebar-navigation: #3A3833 !important;
+	--dcu-sidebar-icon: #3A3833 !important;
+	--dcu-sidebar-hover: #E7E4D6 !important;
+	--dcu-sidebar-border: #100f0f1f !important;
+	--dcu-tip-bg: #FAF8F0 !important;
+	--dcu-tip-shadow: 0 10px 32px #100f0f29 !important;
+}
+
+/* --- its settings page reads a separate --sp-* palette --- */
+:root .dcu-settings-page,
+:root body[data-ds-dark-theme] .dcu-settings-page {
+	--sp-bg: #F2F0E5 !important;
+	--sp-nav: #F2F0E5 !important;
+	--sp-card: #FAF8F0 !important;
+	--sp-border: #100f0f1f !important;
+	--sp-text: #100F0F !important;
+	--sp-muted: #55524A !important;
+	--sp-hover: #E7E4D6 !important;
+	--sp-active: #DFDBCB !important;
+}
+
+/* --- the theme's own dark palette (resolved through data-ds-dark-theme) --- */
+:root body[data-ds-dark-theme] {
+	--dcu-sidebar-background: #100F0F !important;
+	--dcu-sidebar-primary: #F2F0E5 !important;
+	--dcu-sidebar-secondary: #C4BFB1 !important;
+	--dcu-sidebar-tertiary: #9C978A !important;
+	--dcu-sidebar-navigation: #D8D3C4 !important;
+	--dcu-sidebar-icon: #D8D3C4 !important;
+	--dcu-sidebar-hover: #2B2A28 !important;
+	--dcu-sidebar-border: #f2f0e524 !important;
+	--dcu-tip-bg: #222120 !important;
+	--dcu-tip-shadow: 0 10px 32px #00000073 !important;
+}
+
+/*
+ * The sidebar also ships a "glass" variant that hard-codes its own fill
+ * (body[data-we-sidebar-glass] .dcu-root { background: #eef7f5 }), which no
+ * variable override can reach. Paint the sidebar root from the theme token
+ * directly; when that attribute is absent this re-asserts the same colour.
+ */
+body .dcu-root,
+body[data-we-sidebar-glass] .dcu-root {
+	background: var(--dsw-specific-sidebar-fill, #F2F0E5) !important;
+}
+
+body[data-ds-dark-theme] .dcu-root,
+body[data-ds-dark-theme][data-we-sidebar-glass] .dcu-root {
+	background: #100F0F !important;
+}
+
+/*
+ * A third-party "glass sidebar" effect lifts the sidebar toward white with
+ * color-mix + a white sheen gradient on the .dcu-root::before overlay, which washes
+ * the warm canvas out. Neutralise it *for the warm palette only*: clearing the mix
+ * colour and dropping the sheen keeps the effect configured (blur/saturation still
+ * apply) while letting #F2F0E5 show through. Dark mode keeps the effect untouched.
+ */
+body[data-we-sidebar-glass]:not([data-ds-dark-theme]) .dcu-root {
+	--we-sidebar-color: transparent !important;
+	--we-sidebar-sheen: 0 !important;
+}
+
+:root body[data-ds-dark-theme] .dcu-settings-page {
+	--sp-bg: #100F0F !important;
+	--sp-nav: #100F0F !important;
+	--sp-card: #1A1918 !important;
+	--sp-border: #f2f0e524 !important;
+	--sp-text: #F2F0E5 !important;
+	--sp-muted: #C4BFB1 !important;
+	--sp-hover: #2B2A28 !important;
+	--sp-active: #343230 !important;
+}
+
+/* --- reopen affordance, visible only while the sidebar is collapsed --- */
+[data-paper-warm-expand] {
+	display: none;
+	position: fixed;
+	top: max(6px, env(safe-area-inset-top));
+	left: 12px;
+	z-index: 60;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	padding: 0;
+	border: 1px solid var(--dsw-alias-border-l2, #100f0f1f);
+	border-radius: 50%;
+	background: var(--dsw-alias-bg-layer-1, #faf8f0);
+	color: var(--dsw-alias-label-primary, #100f0f);
+	cursor: pointer;
+	box-shadow: 0 1px 3px #100f0f1f;
+}
+body[data-dsh-sidebar-collapsed] [data-paper-warm-expand] { display: inline-flex; }
+[data-paper-warm-expand]:hover { background: var(--dsw-alias-interactive-bg-hover-solid, #e7e4d6); }
+[data-paper-warm-expand]:focus-visible {
+	outline: var(--dsw-focus-ring-width, 2px) solid var(--dsw-alias-state-business-primary, #4176e6);
+	outline-offset: -2px;
+}
+html[data-windows-titlebar] body[data-dsh-sidebar-collapsed] button[aria-label="打开侧边栏"],
+html[data-windows-titlebar] body[data-dsh-sidebar-collapsed] button[aria-label="Open sidebar"] {
+	position: fixed;
+	top: max(6px, calc((var(--dsh-windows-titlebar-height, 32px) - 28px) / 2));
+	left: 48px;
+	z-index: 60;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+}
+body[data-dsh-sidebar-collapsed] [data-dsh-toggle-cluster] { z-index: 60; pointer-events: auto; }
+body[data-dsh-sidebar-collapsed] [data-dsh-toggle-cluster] button { pointer-events: auto; cursor: pointer; }

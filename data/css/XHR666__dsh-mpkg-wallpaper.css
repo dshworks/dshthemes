@@ -1,5 +1,5 @@
 /* XHR666/dsh-mpkg-wallpaper — lib/client.js
-   fetched 2026-11-08 from https://raw.githubusercontent.com/XHR666/dsh-mpkg-wallpaper/main/lib/client.js
+   fetched 2026-11-16 from https://raw.githubusercontent.com/XHR666/dsh-mpkg-wallpaper/main/lib/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 body[data-mpw-theme] .pI_x6G_sidebarCol {
 	background-color: color-mix(in srgb, var(--mpw-theme-color) 30%, transparent) !important;
@@ -338,6 +338,24 @@ body[data-ds-dark-theme] [data-mpw-now-playing] {
 
 
 html[data-mpw-composer="blur"] [class*="composerSeat"][class*="composerSeat"] [class*="_card"]::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;border-radius:inherit;backdrop-filter:blur(16px) saturate(1.25);-webkit-backdrop-filter:blur(16px) saturate(1.25)}
+
+
+
+/* ── B12 用户消息框模糊开关（关档；后代组合器，宿主槽位包装层见上方注释）── */
+html body [data-chat-flow-kind="user"] [class*="userRow"] [class*="userStack"] {
+	background-color: var(--mpw-surface-panel, #ffffff) !important;
+	border-radius: var(--mpw-r-lg, 16px) !important;
+	padding: 8px 12px !important;
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+}
+html body[data-ds-dark-theme] [data-chat-flow-kind="user"] [class*="userRow"] [class*="userStack"] {
+	background-color: var(--mpw-surface-panel-dark, #1b1e24) !important;
+}
+html body [data-chat-flow-kind="user"] * {
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+}
 
 
 
@@ -797,102 +815,6 @@ html body[data-ds-dark-theme] [class*="sidebarCol"]:not([class*="_tab"]) {
 
 
 
-/* ①(2026-10-09 第三批真机) 带 data-mpw-holds-layer 的 role=dialog 面板（Token 用量 / 会话统计
-   bRhRbq_panel、智能体团队 VoX2oq_panel）**不是**要挡内容的设置窗，而是右栏/标题栏那一族的
-   浮层面板：给它们不透明兜底等于把宿主自带的 blur(40px) 废掉（真机读数：bg=rgb(255,255,255)
-   + bf=blur(40px) saturate(1.5) ⇒ "有模糊但一点看不出来"）。改走霜化档（80% + 我们的弹层 blur）。
-   判据用**我们自己的** data-mpw-holds-layer 标记（这两个面板上都有，真机读数确认）。
-   ②(2026-10-10 第四批真机) **内层容器一律不准再画底**：宿主自己的
-   .bRhRbq_details{...}（grid 容器）与 ._7KE1Ra_cell/_option 全都是 background:0 0
-   —— 也就是说所见"内层纯白"**是我们叠出来的**：在已经 80% 霜化的面板里再给内层
-   刷一层 80% ⇒ 合成 1-(1-0.8)² = 96% ≈ 纯白。所以这里只保留**面板本身**两条选择器，
-   [data-session-stats-usage] / [data-session-stats-details] 从名单里摘除（内层交给宿主
-   的透明 + 外层面板的霜化）。 */
-html body [class*="JObwrW_panel"] {
-	/* ①(2026-10-24 视图一致性轮) 表面与主界面菜单面板族**统一**：
-	   底 = --mpw-surface-panel-menu（= 宿主 --dsw-specific-menu，亮/暗/darwin 全自动跟随），
-	   磨砂 = --mpw-panel-menu-blur（= 宿主 --dsw-menu-backdrop-filter，blur(40px) saturate(150%)）。
-	   规则本体仍只读 --mpw-* 命名空间（token-namespace 纪律）；这两个 token 是宿主常量
-	   ⇒ 615 组设置下取值恒定。历史（2026-10-09 第三批）霜化档（80% 白 + blur(11px)）解决的是
-	   "元素级接管看不见效果"的**机制**问题——那套结构（接管元素底 + 伪元素透明化）保留，
-	   只把**取值**从"插件自造的更白更糊"统一回主界面的菜单表面（任务书差异表第一行）。 */
-	background-color: var(--mpw-surface-panel-menu) !important;
-	-webkit-backdrop-filter: var(--mpw-panel-menu-blur) !important;
-	backdrop-filter: var(--mpw-panel-menu-blur) !important;
-}
-/* ②(2026-11-03) 统一表面暗色：panel-menu 现在别名到 pop-surface（亮色公式），暗色需覆盖 */
-html body[data-ds-dark-theme] [class*="JObwrW_panel"] {
-	background-color: var(--mpw-pop-surface-dark) !important;
-}
-/* ①(2026-10-10 第四批真机) 智能体团队面板的**真正底**在伪元素上：宿主
-   .VoX2oq_panel:before{content:"";z-index:-1;background:var(--dsw-specific-menu);
-   backdrop-filter:var(--dsw-menu-backdrop-filter);border-radius:12px;position:absolute;inset:0}
-   —— 它画在（我们的）元素背景**之上**，所以只改元素 background-color 永远看不到效果
-   （用户："智能体团队的背景模糊还是没有修好"）。把这一层交还给我们：伪元素透明 + 不模糊，
-   霜化由上面的元素级规则提供（一层，不叠加）。 */
-html body [data-team-panel]::before,
-html body [data-team-panel]::after,
-html body [class*="JObwrW_panel"]::before,
-html body [class*="JObwrW_panel"]::after {
-	background: transparent !important;
-	-webkit-backdrop-filter: none !important;
-	backdrop-filter: none !important;
-}
-/* ②(2026-11-04 本轮用量白底不跟随调整) bRhRbq_panel 也改成“元素透明 + ::before 单层表面”：
-   底/模糊同层，和团队/子智能体一致；surfaceWhite/surfaceBlur 任一变化都直接改这一层。 */
-html body [class*="bRhRbq_panel"] {
-	background-color: transparent !important;
-	-webkit-backdrop-filter: none !important;
-	backdrop-filter: none !important;
-}
-html body [class*="bRhRbq_panel"]::before {
-	content: "" !important;
-	position: absolute !important;
-	inset: 0 !important;
-	z-index: -1 !important;
-	pointer-events: none !important;
-	border-radius: inherit !important;
-	background-color: var(--mpw-surface-panel-menu) !important;
-	-webkit-backdrop-filter: var(--mpw-panel-menu-blur) !important;
-	backdrop-filter: var(--mpw-panel-menu-blur) !important;
-}
-html body[data-ds-dark-theme] [class*="bRhRbq_panel"]::before {
-	background-color: var(--mpw-pop-surface-dark) !important;
-}
-/* ②(2026-11-04 Team 工具提示定位修复) 智能体团队面板原本把 backdrop-filter 挂在元素本体上，
-   它会让面板成为内部 position:fixed tooltip 的包含块，成员 tooltip 被叠上面板原点。
-   改成：元素只透明、不持有模糊；底 + 模糊都放 ::before，固定 tooltip 的包含块回到视口。 */
-html body [data-team-panel] {
-	background-color: transparent !important;
-	-webkit-backdrop-filter: none !important;
-	backdrop-filter: none !important;
-}
-html body [data-team-panel]::before {
-	content: "" !important;
-	position: absolute !important;
-	inset: 0 !important;
-	z-index: -1 !important;
-	pointer-events: none !important;
-	border-radius: inherit !important;
-	background-color: var(--mpw-surface-panel-menu) !important;
-	-webkit-backdrop-filter: var(--mpw-panel-menu-blur) !important;
-	backdrop-filter: var(--mpw-panel-menu-blur) !important;
-}
-html body[data-ds-dark-theme] [data-team-panel]::before {
-	background-color: var(--mpw-pop-surface-dark) !important;
-}
-/* 通用居中窗口不透明兜底（防透出；overlay 内的对话框由 B 块磨砂覆盖） */
-[role="dialog"],
-[role="alertdialog"] {
-	background-color: var(--mpw-surface-panel) !important;
-}
-body[data-ds-dark-theme] [role="dialog"],
-body[data-ds-dark-theme] [role="alertdialog"] {
-	background-color: var(--mpw-surface-panel-dark) !important;
-}
-
-
-
 /* ── 对话框虚化（overlay 内的居中窗口 + 聊天输入框；设置面板由 settingsBlur 单独覆盖） ──
    ①(修正) 只作用于 overlay（遮罩层）内的对话框——真正的居中弹窗；
    非 overlay 的小弹窗（上下文占用面板等）保持 A 块实体背景（真机实测小弹窗被磨砂成透明） */
@@ -1022,14 +944,19 @@ html body[data-mpw-sblur][data-mpw-sblur-off] [class*="sidebarCol"]::before {
    磨砂由 ::before 承担（同一半径公式不变）。菜单本体是浮层（宿主 inline/类规则给
    position:absolute|fixed）＋ z-index:900 ⇒ 它自己是层叠上下文 ⇒ z-index:-1 的伪元素
    画在菜单底之上、条目之下；伪元素不是 fixed 后代的祖先，更不困任何弹层。
-   ②(2026-09-11 收窄) 只对"真下拉菜单"提层+磨砂；不再匹配 _panel_/dockkit-pane。 */
-[role="menu"], [class*="_menu_"]:not([class*="_pane_"]), [class*="_popover_"], [class*="_floatHeader_"] {
+   ②(2026-09-11 收窄) 只对"真下拉菜单"提层+磨砂；不再匹配 _panel_/dockkit-pane。
+   ③(2026-11-08 Z14a 同族审计 R37) 该子串族收窄为 header 标签限定（下面两条选择器同改）：
+   子串会命中同前缀的非标题栏元素（Z8 的同族教训：宿主曾让命令输出头复用真标题栏的类名，
+   裸子串把滚动容器也框成了圆角卡片）；浮动标题栏本体是 header 元素，tag 限定不丢功能。
+   当前真机 DOM 该族计数 0（Lead 只读探针），改动为防御性收窄，判据见 command-output-header 判据 F 组。
+   （本注释刻意不写字面类名/选择器，避免产物级扫描把注释文本当选择器段成分。） */
+[role="menu"], [class*="_menu_"]:not([class*="_pane_"]), [class*="_popover_"], header[class*="_floatHeader_"] {
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
   z-index: 900 !important;
 }
 [role="menu"]::before, [class*="_menu_"]:not([class*="_pane_"])::before,
-[class*="_popover_"]::before, [class*="_floatHeader_"]::before {
+[class*="_popover_"]::before, header[class*="_floatHeader_"]::before {
   content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
   border-radius: inherit;
 }
@@ -2406,66 +2333,6 @@ html body [data-mpw-bs-tab] .mpw_preset, html body [data-mpw-bs-tab] .mpw_sectio
     border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.10) !important;
   }
-  /* ②(2026-11-01 T19 需求) 左栏会话 hover 预览（宿主 _card_ + _copyable_，fixed z:100，
-     原为纯深灰 rgb(44,44,46)、无模糊）：改成与其他浮层一致的"白底 + 磨砂"观感，
-     并用**独立 token** --mpw-sess-preview-*（见 token 层），不受弹层/面板 token 调整影响。
-     注意：它是可交互 tooltip（可悬停、点击复制标题）⇒ 不动 pointer-events / z / 尺寸。 */
-  html body [class*="_copyable_"],
-  html body [class*="_card_38jqx_"] {
-    background: var(--mpw-sess-preview-surface) !important;
-    -webkit-backdrop-filter: var(--mpw-sess-preview-blur) !important;
-    backdrop-filter: var(--mpw-sess-preview-blur) !important;
-    border: 1px solid var(--mpw-sess-preview-border) !important;
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18) !important;
-    color: var(--mpw-sess-preview-ink) !important;
-  }
-  html body[data-ds-dark-theme] [class*="_copyable_"],
-  html body[data-ds-dark-theme] [class*="_card_38jqx_"] {
-    background: var(--mpw-sess-preview-surface-dark) !important;
-    color: var(--dsw-alias-label-primary, rgb(232, 236, 244)) !important;
-  }
-  html body [class*="_copyable_"] *,
-  html body [class*="_card_38jqx_"] * { color: inherit !important; }
-  /* ②(2026-11-01 T16 三修，走护栏白名单路线) 右侧轮次导航条的悬停预览（.eGxaPq_preview / .Y0dWHa_preview）：
-     宿主首帧只给 0.63 半透明底、没有模糊 ⇒ 先白一下才显出玻璃感（所见闪白）。
-     上一次"JS 内联注入"被用户否掉（更糟），改为**登记到 style-scope-guard 的 rail 白名单**后写 CSS：
-       · 选择器必须带 body[data-mpw-rail-ink] 门控（guard 的 forbid:rail-scope 白名单要求）
-       · rail 补偿规则不得含 !important（同文档要求）⇒ 这里全部用普通优先级，靠"晚于宿主样式"取胜
-     仅为"预览浮层"补表面，不动导航条本体/尺寸/层级。 */
-  /* 2(2026-11-01 现象 4) 轮次导航悬停预览原来写死 rgba(255,255,255,.94) ⇒ 观感"纯白块"。
-     改为跟随插件统一的浮层表面 token（半透明 + 已有 blur(10px)），亮/暗主题分别取色；
-     仍是 rail 白名单内的"预览浮层对比补偿"，不动导航条本体/尺寸/层级。 */
-  html body[data-mpw-rail-ink] .eGxaPq_preview,
-  html body[data-mpw-rail-ink] .Y0dWHa_preview {
-    background: var(--mpw-pop-surface);
-    border: 1px solid rgba(0, 0, 0, 0.10);
-    border-radius: 10px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
-    color: rgb(24, 26, 32);
-  }
-  html body[data-mpw-rail-ink][data-ds-dark-theme] .eGxaPq_preview,
-  html body[data-mpw-rail-ink][data-ds-dark-theme] .Y0dWHa_preview {
-    background: var(--mpw-pop-surface-dark);
-    color: rgb(232, 236, 244);
-  }
-  /* ②(2026-11-01 T16 隔离补偿，**经明确口径批准**：仅此一处、只允许 backdrop-filter 用 !important）
-     宿主对轮次预览的 backdrop 规则优先级更高，而 rail 补偿"默认不得 !important" ⇒ 单开一个**独立**规则块，
-     只覆盖 backdrop-filter（不动背景/边框/尺寸/层级），影响面严格限定在这条预览浮层上。 */
-  html body[data-mpw-rail-ink] .eGxaPq_preview,
-  html body[data-mpw-rail-ink] .Y0dWHa_preview {
-    -webkit-backdrop-filter: var(--mpw-pop-blur) !important;
-    backdrop-filter: var(--mpw-pop-blur) !important;
-  }
-  html body[data-mpw-rail-ink] .eGxaPq_preview,
-  html body[data-mpw-rail-ink] .Y0dWHa_preview {
-    animation: none;
-    transition: none;
-  }
-  /* ②(2026-11-01 T15) Firefox 下部分 flex 滚动容器会露出灰底轨道/滑块（scrollbar-color 与玻璃层叠加）。
-     Chromium 用 ::-webkit-scrollbar 覆盖，Firefox 只认 scrollbar-color/width ⇒ 这里只在 Firefox
-     （@supports (-moz-appearance)）给宿主滚动容器补一套"透明轨道 + 半透明滑块 + 细条"。
-     影响面：仅滚动条观感，不动布局/尺寸/层级。 */
-  @supports (-moz-appearance: none) {
     html body [class*="wSkVaW_scrollBody"],
     html body [class*="scrollArea"] {
       scrollbar-width: thin;
@@ -2479,64 +2346,15 @@ html body [data-mpw-bs-tab] .mpw_preset, html body [data-mpw-bs-tab] .mpw_sectio
      与会话预览等浮层同一套单层玻璃。只作用于宿主菜单容器内部的 material 层。 */
   /* 2(2026-11-01 UI 表面审计·同类排查 R37) 宿主弹层家族不只有 _menu：权限下拉是
      _surface_ri079_1 _list_4ub78_，同样"外壳模糊 11px + 内层 material blur(40px)"双层叠加。
-     把范围从 [class*="_menu"] 扩到整个宿主弹层家族 _surface_ri079_1 内部的 material 层。 */
-  html body [class*="_surface_ri079_1"] [class*="_material_ri079_"],
-  html body [class*="_menu"] [class*="_material_ri079_"] {
+     把范围从 [class*="_menu"] 扩到整个宿主弹层家族 _surface_ri079_1 内部的 material 层。
+     ①(2026-11-15 DSH022) 同步 1w4el 换代：外壳/内层类名都放宽到 _surface_* 与 _material_
+     两代通配（ri079 已 0 命中，保留是旧版本兼容；新 1w4el 是当前 live）。 */
+  html body [class*="_surface_ri079_1"] [class*="_material_"],
+  html body [class*="_surface_1w4el_"] [class*="_material_"],
+  html body [class*="_menu"] [class*="_material_"] {
     -webkit-backdrop-filter: none !important;
     backdrop-filter: none !important;
   }
-  /* 2(2026-11-01 现象 1) 左侧边栏「新会话」等宿主 tooltip（._bubble_ 家族，原纯深灰 rgb(44,44,46)）
-     与其它弹层观感不一致 => 统一为弹层表面 token（58% 白 + 模糊 + 描边 + 阴影 + 主题文字色）。
-     只作用于 this tooltip 家族，不动定位/尺寸/层级。 */
-  /* 2(2026-11-01 T12 对照实验) 宿主 tooltip 去掉 backdrop-filter：
-     悬停/弹层首帧出现时，tooltip 若自带模糊会迫使合成器重算采样区域（实测弹层开合 max 帧 80ms）。
-     这里改用更实心的截断表面 token（88%）保证可读性，不再让 tooltip 参与 backdrop 采样。 */
-  html body [class*="_bubble_"] {
-    background: var(--mpw-pop-surface) !important;
-    -webkit-backdrop-filter: var(--mpw-pop-blur) !important;
-    backdrop-filter: var(--mpw-pop-blur) !important;
-    animation: none !important;
-    border: 1px solid var(--dsw-alias-border-l2, rgba(0, 0, 0, 0.1)) !important;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16) !important;
-    color: var(--dsw-alias-label-primary, rgb(24, 26, 32)) !important;
-  }
-  html body [class*="_bubble_"] * { color: inherit !important; }
-  /* ②(2026-11-03) 统一 tooltip 首帧：宿主 _tooltip-in 的 opacity 动画会让 backdrop-filter 在首帧不合成（先白后糊）；
-     这里禁用淡入 + 把宿主伪元素的 blur/底收掉，统一由本体一层完成。 */
-  html body [role="tooltip"],
-  html body [role="alert"],
-  html body [class*="_bubble_"],
-  html body [class*="_copyable_"],
-  html body [class*="_card_38jqx_"] {
-    animation: none !important;
-    -webkit-transition: none !important;
-    transition: none !important;
-  }
-  html body [role="tooltip"]:not([class*="_bubble_"]) {
-    background-color: var(--mpw-pop-surface) !important;
-    -webkit-backdrop-filter: var(--mpw-pop-blur) !important;
-    backdrop-filter: var(--mpw-pop-blur) !important;
-  }
-  html body[data-ds-dark-theme] [role="tooltip"]:not([class*="_bubble_"]) {
-    background-color: var(--mpw-pop-surface-dark) !important;
-  }
-  html body [role="tooltip"]::before,
-  html body [role="alert"]::before,
-  html body [class*="_bubble_"]::before {
-    background: transparent !important;
-    -webkit-backdrop-filter: none !important;
-    backdrop-filter: none !important;
-  }
-  /* 2(2026-11-01 N2) 子智能体下拉弹层（宿主 _surface_ri079_1 + ZKlsPq_menu）边缘与内部颜色不一致：
-     真机像素采样：顶/内角 rgb(239,239,239)、底部 rgb(254,234,234)、中心 rgb(251,232,239)、
-     左缘 rgb(230,223,243)、右缘 rgb(216,188,191) => 58% 半透 + 只有 11px 模糊时，壁纸的局部色差
-     会透出来，看起来像"边缘一圈和内部不同"。这里只针对该弹层把宿主玻璃层(::before)提高到 66% 白（86% 时现象："直接纯白"，回调到与其他弹层 58% 接近但更均匀）
-     并加强模糊(18px)，让表面颜色均匀（只影响这个弹层）。 */
-  /* 2(2026-11-01 现象 5) 子智能体弹层比选择权限弹层更白：
-     原因是 [class*="ZKlsPq_menu"] 同时命中 ZKlsPq_menu 与 ZKlsPq_menuBody（子串匹配），
-     两层 ::before 各刷 66% 白 ⇒ 叠加后约 88% 白。改为只给外壳刷、内层保持宿主透明；
-     底色从 66% 回调到 58%（与其它弹层同一档），保留 18px 强化模糊。 */
-  html body [class*="ZKlsPq_menu"]:not([class*="ZKlsPq_menuBody"])::before {
     background-color: rgba(248, 249, 250, 0.58) !important;
     -webkit-backdrop-filter: blur(18px) saturate(1.15) !important;
     backdrop-filter: blur(18px) saturate(1.15) !important;
@@ -2547,7 +2365,8 @@ html body [data-mpw-bs-tab] .mpw_preset, html body [data-mpw-bs-tab] .mpw_sectio
   html body [class*="QsffPG_menu"] {
     background-color: var(--mpw-pop-surface) !important;
   }
-  html body [class*="QsffPG_menu"] [class*="_material_ri079_"] {
+  /* ①(2026-11-15 DSH022) material 类名换代通配（同上）。 */
+  html body [class*="QsffPG_menu"] [class*="_material_"] {
     background-color: transparent !important;
   }
   /* ②(2026-11-04 UI 层叠审计) 每个弹层只允许「1 层表面底 + 1 层模糊」。
@@ -2561,7 +2380,19 @@ html body [data-mpw-bs-tab] .mpw_preset, html body [data-mpw-bs-tab] .mpw_sectio
   html body[data-ds-dark-theme] [data-trigger-menu] {
     background-color: var(--mpw-pop-surface-dark) !important;
   }
-  html body :is([data-menu-material], [data-trigger-menu]) [class*="_material_ri079_"] {
+  /* ①(2026-11-15 DSH022) 内层 material 透明化跟上 DSH 0.2.2 的 1w4el 换代：
+     旧规则只匹配 [class*="_material_ri079_"]（0.2.1 及更早），0.2.2-rc.2 里 0 命中 ⇒
+     内层 _material_1w4el_21 保留宿主 70% 白底，叠在外壳 58% 上合成 ≈87% 白（真机 A/B：
+     B 组 shell bg=pop-surface 0.58 + material bg=rgba(252,253,254,.7)；C 组（禁插件）
+     shell 透明 + material 0.7 = 单层 70%）⇒ 报障"菜单实白/双层"。这里按 _material_
+     前缀同收两代（R45：全仓只有 material 装饰层一家用该前缀；ri079 与 1w4el 都是
+     aria-hidden 的 inset:0 填充层）。第二条用 [aria-hidden] 抬一档特异性（与上方暗色
+     pop-surface-dark 内层规则 0,3,2 平手、按源码顺序靠后取胜），保证暗色主题同样单层。
+     ⚠ 版本绑定（§7.2 口径，需随 DSH 升级复核）：暗色单层依赖 material 元素带
+     aria-hidden="true"（0.2.2-rc.2 壳层 bundle 实证）——宿主未来若去掉该属性，暗色回到
+     双层白，须把第二条换成新的稳定锚点。 */
+  html body :is([data-menu-material], [data-trigger-menu]) [class*="_material_"],
+  html body :is([data-menu-material], [data-trigger-menu]) [class*="_material_"][aria-hidden="true"] {
     background-color: transparent !important;
   }
   /* ②(2026-11-04 UI 层叠审计 + 现象“没有白色底”) 子智能体外壳：
@@ -2595,6 +2426,7 @@ html body [data-mpw-bs-tab] .mpw_preset, html body [data-mpw-bs-tab] .mpw_sectio
      role=menu / role=listbox 的 ::before 加 blur(11px) saturate(150%)；弹层外壳已经有 blur ⇒
      这里统一把**内层滚动容器 / listbox 表面的伪元素**模糊关掉（白底与外壳模糊保留）。 */
   html body [class*="_surface_ri079_1"]::before,
+  html body [class*="_surface_1w4el_"]::before,
   html body [class*="_list_4ub78_7"]::before,
   html body [class*="_denseList"]::before,
   html body [class*="QsffPG_menuBody"]::before,
@@ -2978,6 +2810,7 @@ body[data-ds-dark-theme] .mpw_errBlock { background: rgba(255,255,255,0.05); }
 .mpw_errBlockTitle { font-size: 13px; color: var(--dsw-alias-label-primary); }
 .mpw_errBlockMeta { font-size: 11px; color: var(--dsw-alias-label-secondary); margin-top: 2px; }
 .mpw_errBlock button { flex: none; }
+.mpw_errBlockActions { display: flex; align-items: center; gap: 6px; flex: none; flex-wrap: wrap; justify-content: flex-end; }
 .mpw_dialog {
 	width: min(420px, calc(100vw - 48px)); box-sizing: border-box;
 	border: 1px solid var(--dsw-alias-border-l2);

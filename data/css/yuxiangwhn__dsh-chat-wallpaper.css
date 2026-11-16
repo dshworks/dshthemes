@@ -1,0 +1,151 @@
+/* yuxiangwhn/dsh-chat-wallpaper — client.src.js
+   fetched 2026-11-16 from https://raw.githubusercontent.com/yuxiangwhn/dsh-chat-wallpaper/main/client.src.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+html, body { background: transparent !important; }
+  position: fixed; inset: -40px; z-index: 0; pointer-events: none;
+  background-color: #0a1424;
+  overflow: hidden;
+  opacity: var(--wall-opacity, 1);
+  filter: brightness(var(--wall-brightness, 1.60)) blur(calc(var(--wall-blur, 0px) + var(--wall-blur-extra, 0px)));
+  transform: scale(var(--wall-scale, 1));
+  transition: filter .45s cubic-bezier(.22,.61,.36,1), opacity .25s ease, transform .45s cubic-bezier(.22,.61,.36,1);
+}
+  content: ""; position: absolute; inset: 0;
+  background: radial-gradient(135% 100% at 50% 0%,
+    rgba(4,9,18,.00) 0%, rgba(4,9,18,.10) 60%, rgba(3,7,14,.24) 100%);
+}
+  background: radial-gradient(135% 100% at 50% 0%,
+    rgba(2,6,13,.02) 0%, rgba(2,6,13,.14) 60%, rgba(1,4,9,.30) 100%);
+}
+
+/* one translucent shell; nested fills must not compound */
+body {
+  --dsw-alias-bg-base: rgba(255,255,255,calc(var(--wall-panel, .72) * 1.12)) !important;
+  --dsw-alias-bg-layer-1: rgba(255,255,255,calc(var(--wall-panel, .72) * 1.12)) !important;
+  --dsw-alias-bg-layer-2: rgba(255,255,255,calc(var(--wall-panel, .72) * 1.12)) !important;
+  --dsw-alias-bg-layer-3: rgba(255,255,255,calc(var(--wall-panel, .72) * 1.12)) !important;
+  --dsw-alias-bg-module-platform: rgba(245,246,247,calc(var(--wall-panel, .72) * 1.16)) !important;
+  --dsw-alias-bg-multi-select: rgba(245,246,247,calc(var(--wall-panel, .72) * 1.16)) !important;
+  --dsw-alias-bg-overlay: rgba(233,236,242,.97) !important;
+  --dsw-specific-sidebar-fill: rgba(249,250,251,calc(var(--wall-panel, .72) * 1.04)) !important;
+  --dsw-specific-selector: rgba(245,246,247,calc(var(--wall-panel, .72) * 1.16)) !important;
+}
+body[data-ds-dark-theme] {
+  --dsw-alias-bg-base: rgba(9,12,16,var(--wall-panel, .72)) !important;
+  --dsw-alias-bg-layer-1: rgba(12,16,22,var(--wall-panel, .72)) !important;
+  --dsw-alias-bg-layer-2: rgba(16,20,27,var(--wall-panel, .72)) !important;
+  --dsw-alias-bg-layer-3: rgba(20,25,33,var(--wall-panel, .72)) !important;
+  --dsw-alias-bg-module-platform: rgba(13,17,23,calc(var(--wall-panel, .72) * 1.03)) !important;
+  --dsw-alias-bg-multi-select: rgba(13,17,23,calc(var(--wall-panel, .72) * 1.03)) !important;
+  --dsw-alias-bg-overlay: rgba(18,22,30,.96) !important;
+  --dsw-specific-sidebar-fill: rgba(11,15,21,calc(var(--wall-panel, .72) * .94)) !important;
+  --dsw-specific-selector: rgba(13,17,23,calc(var(--wall-panel, .72) * 1.03)) !important;
+}
+
+/* DSH Desktop owns two independently painted conversation layers */
+body:is([data-dsh-desktop-mode="advanced"],[data-dsh-desktop-mode="extended"]) .dshDesktopFrame {
+  background: var(--dsw-alias-bg-base) !important;
+}
+body:is([data-dsh-desktop-mode="advanced"],[data-dsh-desktop-mode="extended"]) .dshDesktopSidebarSurface {
+  --dsw-specific-sidebar-fill: transparent !important;
+}
+body:is([data-dsh-desktop-mode="advanced"],[data-dsh-desktop-mode="extended"]) :is(
+  .dshDesktopSidebarSurface, .dshDesktopConversationSurface, .dshDesktopDetailsSurface,
+  .dshDesktopMacCaptionRow, .dshDesktopWindowsCaptionRow,
+  .dshDesktopConversationSurface > *, .dshDesktopConversationSurface [data-phase="hero"],
+  .dshDesktopConversationSurface [data-phase="active"],
+  .dshDesktopConversationSurface [data-phase="settling"],
+  .dshDesktopDetailsSurface > *
+) { background: transparent !important; }
+/* Exactly one surface paints the window chrome. The frame covers the caption
+   strip, the sidebar and the 16px notch beside the conversation surface, so the
+   notch is the same translucent layer as the chrome around it instead of a
+   square block in a third colour. The columns and the caption strip stay
+   transparent so their fill cannot stack up on the frame's. */
+html:is([data-platform="darwin"],[data-windows-titlebar]) body #root div:has(> [data-shell-overlay]) {
+  background: var(--dsw-specific-sidebar-fill) !important;
+}
+html:is([data-platform="darwin"],[data-windows-titlebar]) body .mP3x-q_frame:before,
+html:is([data-platform="darwin"],[data-windows-titlebar]) body .mP3x-q_sidebarCol,
+html:is([data-platform="darwin"],[data-windows-titlebar]) body .mP3x-q_centerCol {
+  background: transparent !important;
+}
+html:is([data-platform="darwin"],[data-windows-titlebar]) body #root div:has(> [data-shell-overlay]) > :first-child [data-slot="sidebar"] {
+  --dsw-specific-sidebar-fill: transparent !important;
+}
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 24px; height: 24px; margin: 0 2px; flex: 0 0 auto;
+  border-radius: 6px; border: 0; padding: 0; cursor: pointer;
+  background: transparent; color: var(--dsw-alias-label-secondary, #8a90a0);
+  transition: background .15s ease, color .15s ease;
+} background: rgba(127,127,127,.16); color: var(--dsw-alias-label-primary, #e8eaf0); } width: 15px; height: 15px; display: block; }
+  position: fixed; right: 46px; bottom: 92px; z-index: 40;
+  width: 28px; height: 28px; border-radius: 8px;
+  background: var(--dsw-alias-bg-layer-2, rgba(20,24,32,.9));
+  box-shadow: 0 2px 10px rgba(0,0,0,.35);
+}
+  position: fixed; z-index: 60; width: 236px; box-sizing: border-box;
+  padding: 12px 12px 10px; border-radius: 12px;
+  background: var(--dsw-alias-bg-overlay, rgba(20,24,32,.97));
+  color: var(--dsw-alias-label-primary, #e8eaf0);
+  border: 1px solid rgba(127,127,127,.22);
+  box-shadow: 0 12px 32px rgba(0,0,0,.42);
+  font: 12px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
+  backdrop-filter: blur(14px) saturate(1.1);
+} display: grid; grid-template-columns: 46px 1fr 38px; gap: 8px; align-items: center; margin: 7px 0; } opacity: .78; white-space: nowrap; } text-align: right; opacity: .62; font-variant-numeric: tabular-nums; } -webkit-appearance: none; appearance: none; width: 100%; height: 3px; border-radius: 3px; background: rgba(127,127,127,.34); outline: none; } -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%; background: #4d8dff; border: 0; cursor: pointer; } display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px; } font-weight: 600; opacity: .92; } border: 0; background: transparent; color: inherit; opacity: .5; cursor: pointer; font-size: 14px; line-height: 1; padding: 2px 4px; } opacity: .9; } display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; justify-content: space-between; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(127,127,127,.16); } margin-left: auto; } display: inline-flex; align-items: center; gap: 6px; cursor: pointer; opacity: .82; }
+  border: 1px solid rgba(127,127,127,.28); background: rgba(127,127,127,.10);
+  color: inherit; border-radius: 7px; padding: 4px 9px; font-size: 12px; cursor: pointer;
+} background: rgba(127,127,127,.22); } border: 0; background: transparent; color: #6ea2ff; cursor: pointer; padding: 0; font-size: 12px; } font-size: 11px; opacity: .55; }
+  position: fixed;
+  inset: 0;
+  z-index: 990;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 60ms linear;
+  background: rgba(11, 15, 21, 0.18);
+} opacity: 1; }
+  filter: blur(16px) saturate(1.08) brightness(1.06);
+  transform: scale(1.05);
+}
+body.wall-modal [data-wall-blur] {
+  filter: blur(8px) saturate(1.03);
+}
+
+/* The composer card, the new-chat button and the user's own bubbles sit on the
+   wallpaper: their colour comes through, softened by their own blur. The rules
+   match the app's own selectors as well as the tag, so a surface that was just
+   created — a message you sent a frame ago — is already glass on its first
+   paint; the tag stays for the pages that only the JS can recognise. */
+:is([data-wall-glass],
+    .GRgSLq_card,
+    [class*="userRow"] [class*="bubble"],
+    [class*="userStack"] [class*="bubble"]) {
+  background: rgba(18, 22, 30, 0.42) !important;
+  border-color: rgba(255, 255, 255, 0.10) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(1.35);
+  backdrop-filter: blur(18px) saturate(1.35);
+}
+body:not([data-ds-dark-theme]) :is([data-wall-glass],
+    .GRgSLq_card,
+    [class*="userRow"] [class*="bubble"],
+    [class*="userStack"] [class*="bubble"]) {
+  background: rgba(255, 255, 255, 0.42) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* the user's own message bubbles need a visible edge, otherwise the glass
+   dissolves into a dark wallpaper */
+:is([data-wall-glass="user"],
+    [class*="userRow"] [class*="bubble"],
+    [class*="userStack"] [class*="bubble"]) {
+  background: rgba(24, 29, 39, 0.55) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.10), 0 2px 10px rgba(0, 0, 0, 0.22) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  backdrop-filter: blur(18px) saturate(1.4);
+}
+body:not([data-ds-dark-theme]) :is([data-wall-glass="user"],
+    [class*="userRow"] [class*="bubble"],
+    [class*="userStack"] [class*="bubble"]) {
+  background: rgba(255, 255, 255, 0.55) !important;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.10), 0 2px 10px rgba(0, 0, 0, 0.10) !important;
+}

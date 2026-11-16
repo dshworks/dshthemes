@@ -1,5 +1,5 @@
 /* webkubor/dsh-bloom-theme — lib/client.js
-   fetched 2026-11-08 from https://raw.githubusercontent.com/webkubor/dsh-bloom-theme/main/lib/client.js
+   fetched 2026-11-16 from https://raw.githubusercontent.com/webkubor/dsh-bloom-theme/main/lib/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 /* ═══ 顶栏 tab 条：不做玻璃,只留一条发丝底边 ═══════════════════
    这里曾和侧栏/排队条共用「面级玻璃」档位(半透底 + backdrop blur +
@@ -365,6 +365,41 @@ body[data-ds-dark-theme] :is([class*="_tableScroll"], [class*="_tablePane"]) tbo
   background: rgba(var(--bloom-morandi), 0.04);
 }
 
+/* ═══ 插件页吸顶头部：实底涂层 → 氛围淡化（#113）═════════════════
+   DSH 的插件页头（dsh-client-ui-plugin-manager）在吸顶时用
+   .pageBar[data-natural]:before 铺一条不透明的 --dsw-alias-bg-base 涂层，
+   作用是滚动时盖住从底下穿过去的列表内容。DSH 原生页面底色均匀，
+   这条涂层与页面同色、不可见；Bloom 把页面底透明化换成 body 氛围渐变后，
+   涂层仍是不透明纯色 —— 未滚动时页面顶部就横着一条与星空/水彩割裂的
+   纯色带（用户截图「插件页面上方是黑色的，主题没有全部覆盖」，
+   实测 flat 区 rgb(30,28,32) == silverrose bgD，即 bg-base token）。
+
+   处理：把涂层从不透明纯色改成「bg-base 向下渐隐」——
+   顶部保留较高不透明度（滚动遮字的功能仍在），向下 72px 内衰减为透明，
+   让氛围层透出来。列表内容从涂层下穿过时仍被顶部较实的部分盖住；
+   72px 的选择对应 compact 吸顶态的高度（--plugin-header-compact-height），
+   自然态整条涂层更高，但透明段只盖住自身空白区，不影响可读性。
+   用宿主语义属性 [data-plugin-bar] 定位（实测 0.2.2-rc.2 仅插件页头使用），
+   不依赖 hash 类名；高度沿宿主自己的 --plugin-header-paint-height 变量，
+   不硬编码。 */
+body[data-bloom-variant] [data-plugin-bar]::before {
+  background: linear-gradient(
+    180deg,
+    var(--dsw-alias-bg-base) 0%,
+    color-mix(in oklch, var(--dsw-alias-bg-base), transparent 55%) 56%,
+    transparent 100%
+  );
+}
+/* 滚动进入 compact 态时涂层变矮（compact-height），渐隐同样按比例收敛：
+   顶部一段保持较实，保证标题行在列表滚过时依旧可读。 */
+body[data-bloom-variant] [data-plugin-bar][data-compact]::before {
+  background: linear-gradient(
+    180deg,
+    var(--dsw-alias-bg-base) 0%,
+    color-mix(in oklch, var(--dsw-alias-bg-base), transparent 30%) 70%,
+    transparent 100%
+  );
+}
 
 
 
@@ -519,7 +554,12 @@ body[data-bloom-variant="cinnabar"]::after { display: none; }
   right: 0;
   width: 360px;
   height: 220px;
-  z-index: 0;
+  /* #116: 全屏(sidebar 收起+galaxy/diagonal)时 z-index:0 会盖住宿主 fixed 的
+     z-index:auto tooltip(span._bubble) —— 同为 positioned 且 sparkles 挂载在
+     body 末尾(shell.overlay)更晚，0 层画在 auto 提示之上，星系粒子遮住提示。
+     改回 -1，与 body::before / composerSeat::before 同级，装饰只垫底，
+     玻璃半透明表面仍能透出粒子。 */
+  z-index: -1;
   opacity: 0.7;
   overflow: hidden;
   pointer-events: none;
@@ -632,8 +672,8 @@ body[data-ds-dark-theme][data-bloom-ambience-dark="galaxy"] .dsh-bloom-sparkles 
 
 
 
-/* [LES-35] */
-body[data-bloom-variant]:not([data-ds-dark-theme]) div[class*="_composer"] button[class*="_primary"] {
+/* [LES-35] 仅输入框 trailing 内的发送/停止键是圆珠；审批卡也在 composer 内，不能命中它的文字主按钮。 */
+body[data-bloom-variant]:not([data-ds-dark-theme]) div[class*="_composer"] div[class*="_trailing"] button[class*="_primary"] {
   width: 36px;
   height: 36px;
   border: 0;
@@ -649,13 +689,13 @@ body[data-bloom-variant]:not([data-ds-dark-theme]) div[class*="_composer"] butto
   backdrop-filter: blur(2px) url("#dsh-bloom-liquid-lens") saturate(1.15);
   box-shadow: inset 0 1px 2px rgba(255,255,255,.98), inset 0 -2px 3px color-mix(in oklch, var(--bloom-motion-2, var(--bloom-accent)) 18%, transparent), 0 7px 14px -6px color-mix(in oklch, var(--bloom-motion-1, var(--bloom-accent)) 26%, transparent), 0 2px 4px rgba(50,50,50,.10);
 }
-body[data-bloom-variant]:not([data-ds-dark-theme]) div[class*="_composer"] button[class*="_primary"]:not(:disabled):hover {
+body[data-bloom-variant]:not([data-ds-dark-theme]) div[class*="_composer"] div[class*="_trailing"] button[class*="_primary"]:not(:disabled):hover {
   background-image:
     radial-gradient(ellipse at 28% 13%, rgba(255,255,255,1), rgba(255,255,255,.56) 28%, transparent 54%),
     radial-gradient(ellipse at 79% 82%, color-mix(in oklch, var(--bloom-motion-3, var(--bloom-accent)) 25%, transparent), transparent 64%),
     linear-gradient(145deg, color-mix(in oklch, var(--bloom-motion-1, var(--bloom-accent)) 8%, rgba(255,255,255,.95)), color-mix(in oklch, var(--bloom-motion-2, var(--bloom-accent)) 16%, rgba(255,255,255,.84)));
 }
-body[data-bloom-variant][data-ds-dark-theme] div[class*="_composer"] button[class*="_primary"] {
+body[data-bloom-variant][data-ds-dark-theme] div[class*="_composer"] div[class*="_trailing"] button[class*="_primary"] {
   width: 36px;
   height: 36px;
   border: 0;
@@ -671,15 +711,15 @@ body[data-bloom-variant][data-ds-dark-theme] div[class*="_composer"] button[clas
   backdrop-filter: blur(2px) url("#dsh-bloom-liquid-lens") saturate(1.15);
   box-shadow: inset 0 1px 1px rgba(255,255,255,.34), inset 0 -2px 3px rgba(0,0,0,.28), 0 6px 12px -6px rgba(0,0,0,.35);
 }
-body[data-bloom-variant][data-ds-dark-theme] div[class*="_composer"] button[class*="_primary"]:not(:disabled):hover {
+body[data-bloom-variant][data-ds-dark-theme] div[class*="_composer"] div[class*="_trailing"] button[class*="_primary"]:not(:disabled):hover {
   background-image:
     radial-gradient(ellipse at 28% 17%, rgba(255,255,255,.34), transparent 62%),
     radial-gradient(ellipse at 79% 82%, color-mix(in oklch, var(--bloom-motion-3, var(--bloom-accent)) 22%, transparent), transparent 64%),
     linear-gradient(145deg, color-mix(in oklch, var(--dsw-alias-bg-layer-2, #343943) 84%, var(--bloom-motion-1)), color-mix(in oklch, var(--dsw-alias-bg-layer-1, #1b2028) 86%, var(--bloom-motion-2)));
 }
 @supports ((mask-composite: exclude) or (-webkit-mask-composite: xor)) {
-  body[data-bloom-variant] div[class*="_composer"] button[class*="_primary"] { position: relative; }
-  body[data-bloom-variant] div[class*="_composer"] button[class*="_primary"]::before {
+  body[data-bloom-variant] div[class*="_composer"] div[class*="_trailing"] button[class*="_primary"] { position: relative; }
+  body[data-bloom-variant] div[class*="_composer"] div[class*="_trailing"] button[class*="_primary"]::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -694,10 +734,10 @@ body[data-bloom-variant][data-ds-dark-theme] div[class*="_composer"] button[clas
     mask-composite: exclude;
   }
 }
-body[data-bloom-variant] div[class*="_composer"] button[class*="_primary"]:disabled:not([data-sending]) { opacity: .68; }
+body[data-bloom-variant] div[class*="_composer"] div[class*="_trailing"] button[class*="_primary"]:disabled:not([data-sending]) { opacity: .68; }
 @media (prefers-reduced-transparency: reduce) {
-  html body[data-bloom-variant]:not([data-bloom-glass]) div[class*="_composer"] button[class*="_primary"]::before { display: none; }
-  html body[data-bloom-variant]:not([data-bloom-glass]) div[class*="_composer"] button[class*="_primary"] {
+  html body[data-bloom-variant]:not([data-bloom-glass]) div[class*="_composer"] div[class*="_trailing"] button[class*="_primary"]::before { display: none; }
+  html body[data-bloom-variant]:not([data-bloom-glass]) div[class*="_composer"] div[class*="_trailing"] button[class*="_primary"] {
     background: var(--dsw-alias-bg-layer-1, #fff);
     color: var(--dsw-alias-label-primary, #222);
     border: 1px solid currentColor;
@@ -707,8 +747,8 @@ body[data-bloom-variant] div[class*="_composer"] button[class*="_primary"]:disab
   }
 }
 @media (prefers-contrast: more), (forced-colors: active) {
-  html body[data-bloom-variant]:is([data-ds-dark-theme],:not([data-ds-dark-theme])) div[class*="_composer"] button[class*="_primary"]::before { display: none; }
-  html body[data-bloom-variant]:is([data-ds-dark-theme],:not([data-ds-dark-theme])) div[class*="_composer"] button[class*="_primary"] {
+  html body[data-bloom-variant]:is([data-ds-dark-theme],:not([data-ds-dark-theme])) div[class*="_composer"] div[class*="_trailing"] button[class*="_primary"]::before { display: none; }
+  html body[data-bloom-variant]:is([data-ds-dark-theme],:not([data-ds-dark-theme])) div[class*="_composer"] div[class*="_trailing"] button[class*="_primary"] {
     background: var(--dsw-alias-bg-layer-1, Canvas);
     color: var(--dsw-alias-label-primary, CanvasText);
     border: 1px solid currentColor;
@@ -769,6 +809,10 @@ body[data-bloom-variant] {
 .dsh-bloom-overlay { pointer-events: none; }
 .dsh-bloom-overlay #dsh-bloom-update-banner { pointer-events: auto; }
 .dsh-bloom-switcher[data-slotted="true"] { --bloom-menu-max-h: calc(100vh - 80px); position: fixed; pointer-events: auto; z-index: 80; }
+/* The trigger sits in the host header's leading seat, so the menu expands to the
+   right from the trigger's left edge (v0.27.0 behaviour). placeMenu() in
+   src/switcher.ts measures the real viewport and takes over whenever that
+   default would cross an edge, so the panel always stays fully on screen. */
 .dsh-bloom-switcher[data-slotted="true"] .dsh-bloom-menu { left: 0; right: auto; max-width: calc(100vw - 96px); max-height: var(--bloom-menu-max-h, calc(100vh - 80px)); overflow-y: auto; overscroll-behavior: contain; }
 .dsh-bloom-switcher {
   position: relative;
@@ -1040,10 +1084,32 @@ body[data-bloom-variant] {
   outline-offset: 2px;
 }
 
+.dsh-bloom-motion-seg {
+  display: inline-flex;
+  width: 110px;
+}
 .dsh-bloom-options {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  /* 15 行放不下 → 列表自身滚动，而不是把整个面板撑出视口。
+     不加 padding-right：选项宽度要与 v0.27.0 一致（312px），
+     否则每行都窄 6px。macOS 的滚动条是 overlay 浮层，不占布局宽度。 */
+  max-height: 252px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklch, var(--bloom-accent, #6b8f71) 30%, transparent) transparent;
+}
+.dsh-bloom-options::-webkit-scrollbar {
+  width: 4px;
+}
+.dsh-bloom-options::-webkit-scrollbar-track {
+  background: transparent;
+}
+.dsh-bloom-options::-webkit-scrollbar-thumb {
+  background: color-mix(in oklch, var(--bloom-accent, #6b8f71) 28%, transparent);
+  border-radius: 999px;
 }
 .dsh-bloom-option {
   /* 稳妥的单行 Grid：button 不依赖 Chromium 的 subgrid，
@@ -1054,6 +1120,9 @@ body[data-bloom-variant] {
   gap: 10px;
   width: 100%;
   height: 34px;
+  /* flex 容器里子项默认 flex-shrink: 1 —— 15 行放进 max-height 252px 的可滚动
+     列表时，固定 height 也会被压扁（实测 34px → 14.94px）。锁死不缩。 */
+  flex: none;
   padding: 0 12px;
   box-sizing: border-box;
 }
@@ -1535,7 +1604,7 @@ body[data-ds-dark-theme] .dsh-bloom-dsh-state[data-state="err"] {
 }
 /* 主操作按钮改实心 —— 原本是 accent 22% 底 + accent 文字,同色系互叠只有
    4.09:1(10.5px 字)。实心 accent 底 + 反色文字实测 ≈7:1,而且 PALETTE 的
-   accent×bg 组合本来就由 contrast-guard 守着 ≥4.5,这条路天然达标。
+   accent×bg 组合本来就由 ui-craft 守着 ≥4.5,这条路天然达标。
    它也确实是主操作,视觉上该比「↻ 检查」重。 */
 .dsh-bloom-dsh-btn--primary {
   flex: 1 1 auto;

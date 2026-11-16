@@ -1,5 +1,5 @@
 /* lengduan/dsh-815-skin — src/client/vj815.module.css
-   fetched 2026-11-08 from https://raw.githubusercontent.com/lengduan/dsh-815-skin/main/src/client/vj815.module.css
+   fetched 2026-11-16 from https://raw.githubusercontent.com/lengduan/dsh-815-skin/main/src/client/vj815.module.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* 1945-08-15 终战皮肤：史料照片底 + 可读玻璃层。 */
 
@@ -1420,10 +1420,14 @@ body[data-dsh-815]
   mask: var(--vj-folder-icon) center / contain no-repeat;
 }
 
-/* 右下角展签：右缘铜金竖线，主行画名奶油字，副行时间地点铜金小字。
-   层级压到 #root（z-index: 1）之下、背景遮罩（body::before, z-index: 0）之上：
-   fixed 元素与其同为 body 子层，DOM 顺序靠后故仍浮在遮罩上；应用外壳的不透明
-   UI（如输入座宣纸卡）可盖住它，不再遮挡输入框。 */
+/* 右下角展签：右缘铜金细线，主行画名奶油字，副行时间地点铜金小字。
+   层级：fixed + z-index: 0，DOM 在背景遮罩之后，故浮于遮罩、名义上位于 #root
+   内容层（z-index: 1）之下。2026-11-11 实测：宿主把右侧抽屉 / 底栏画在自身合成
+   层上时，本展签仍会透在内容之上，调 #root 的 z-index（1 / 2 / 100）均不能让内容
+   盖住它；负 z-index 又会被油画底盖掉。由此定为「背景级暗纹」：去掉底色板、
+   整体不透明度 0.6、字号降一档（体宽约 240px），只保留右缘细线与两行低对比字，
+   即使与面板内容重叠也不形成实心遮挡块。立体感交给油画底，不加投影底。
+   选择器用 B 级 data-skin-chrome + A 级 body[data-dsh-815]，不依赖宿主 hash。 */
 body[data-dsh-815] [data-skin-chrome='caption'] {
   position: fixed;
   right: 16px;
@@ -1431,29 +1435,40 @@ body[data-dsh-815] [data-skin-chrome='caption'] {
   z-index: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
   max-width: min(52vw, 460px);
-  padding: 7px 12px;
-  border-right: 2px solid var(--vj-brass);
+  padding: 6px 10px;
+  border-right: 1px solid rgba(196, 163, 90, 0.45);
   border-radius: 8px 0 0 8px;
-  background: linear-gradient(270deg, rgba(8, 10, 6, 0.78), rgba(8, 10, 6, 0.32));
+  background: none;
   font-family: Georgia, 'Times New Roman', serif;
   text-align: right;
+  opacity: 0.6;
   pointer-events: none;
 }
 
 body[data-dsh-815] [data-skin-chrome='caption-title'] {
   color: #f4ead6;
-  font-size: 12.5px;
+  font-size: 11.5px;
   letter-spacing: 0.06em;
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.7);
 }
 
 body[data-dsh-815] [data-skin-chrome='caption-sub'] {
   color: #d4bc7a;
-  font-size: 10.5px;
+  font-size: 9.5px;
   letter-spacing: 0.14em;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+/* 宿主页面底部出现操作栏（footer）或打开模态对话框时，右下角已被界面占用，
+   展签整块退场。2026-11-11 实测：任务详情抽屉的「放弃 / 保存修改」底栏与展签
+   重叠，且改 #root 的 z-index 不能把内容提到展签之上，故改为按「该区域是否被
+   占用」退场。锚点：E 级 footer 标签 + D 级 [role='dialog']，外层都挂 A 级
+   body[data-dsh-815]；聊天与欢迎页无 footer，展签照常显示。 */
+body[data-dsh-815]:has(footer) [data-skin-chrome='caption'],
+body[data-dsh-815]:has([role='dialog']) [data-skin-chrome='caption'] {
+  opacity: 0;
 }
 
 @media (hover: hover) {
@@ -1814,6 +1829,179 @@ body[data-dsh-815]
   [class*='dangerButton'] {
   background: #b91c1c;
   color: #ffffff;
+}
+
+/* ——— 自动化任务页（宿主 ui-schedule 的 TaskManagerPage，2026-11-09） ———
+
+   用户报「重复间隔」右侧步进器里的数字与底过于接近（箭头所指的白胶囊）。
+   该控件是宿主 ScheduleDetailView 的 .ruleIntervalStepper，底取
+   --dsw-alias-bg-module-platform，皮肤没接管这个 token，浅色宿主主题下是近白
+   #f5f6f7；框内数字走皮肤全局的奶油 label-primary #f4ead6 —— 实测 1.10:1，
+   数字与步进箭头都糊在白底上，白斑本身也与深橄榄面板断裂（2026-11-05 提问卡
+   那条同因，修法同：容器内重绑 token）。
+
+   容器锚点用宿主手写的 data-testid='task-manager-page'（TaskManagerPage 根节点，
+   A 级）；控件用 D 级 localName 后缀 _ruleIntervalStepper（olCj9W 是构建期 hash
+   前缀，禁用）。详情页与手动创建表单都在该根节点子树内，故主规则挂在根上即可；
+   胶囊再补一道铜金细边——该页面板为半透明，油画透出来，深橄榄胶囊在画面上边界
+   不清。作用域限 :not([data-ds-dark-theme])：暗色主题下该 token 本身是深色。
+
+   同一页顺带发现同类问题：填充按钮（「新建」「选择创建方式」「保存修改」）的字取
+   宿主 --dsw-alias-label-primary-foreground（浅色主题为白），压在皮肤的铜金底
+   #c4a35a 上实测 2.40:1；在本页根节点把它重绑成墨色 #1a1c14（与任务看板那条
+   同一取值），三处都是 7.16:1。实测本页只有 primary 按钮用到该 token，ghost 按钮
+   走 label-primary，不受影响。
+
+   [修后实测] 1875x918、本机客户端 GUI 的详情页（规则页签）：
+     数字 #f4ead6 on #24261c = 12.85:1（修前 1.10:1）
+     步进箭头图标同底 = 12.85:1（修前同 1.10:1）
+     填充按钮墨 #1a1c14 on 铜金 #c4a35a = 7.16:1（修前白字 2.40:1）
+     该页 <4.5:1 的元素：修前 4 项（1 处数字 + 3 个填充按钮），修后 0 项
+*/
+body[data-dsh-815]:not([data-ds-dark-theme]) [data-testid='task-manager-page'] {
+  --dsw-alias-bg-module-platform: #24261c;
+  --dsw-alias-label-primary-foreground: #1a1c14;
+}
+
+body[data-dsh-815]:not([data-ds-dark-theme])
+  [data-testid='task-manager-page']
+  [class*='_ruleIntervalStepper'] {
+  box-shadow: inset 0 0 0 1px rgba(196, 163, 90, 0.42);
+}
+
+/* ——— 会话「轨迹」视图（宿主 @deepseek-ai/dsh-client-ui-trajectory，2026-11-11） ———
+
+   用户报「轨迹里面有些文字颜色和背景色过于接近」。指向的是表格最左侧那列形态
+   标签（工具 / 子工具 / 上下文 / 助手）与时间线坐标轴。插件按**浅色宿主主题**
+   拼色，落到皮肤的深底上有三类失效：
+
+     · 形态标签的底取宿主 state-*-tertiary —— 浅色主题里是近白的 #fef5e7（warn）
+       / #e6faed（success），字取同色系 500/400 阶或与其混合：实测
+         工具   #dd8629 on #fef5e7                           = 2.58:1
+         子工具 mix(#dd8629 62%, #9e9780) on mix(...)         = 1.04:1
+         上下文 mix(#22c55e 68%, #c8c0a4) on #e6faed         = 2.03:1
+         助手   （brand #4176e6 与 error-secondary #f25a5a 混合，底取 15% 叠
+                bg-layer-1）                                   = 3.23:1
+       10px、字重 650 的小字全部低于 4.5:1，屏幕上是「浅色小方块上糊着同色字」；
+     · 时间线坐标轴与表格箭头取 label-caption #7e7866：轴标签 3.48:1（底
+       bg-layer-2 #24261c）、箭头 3.82:1（底 #1c1e16）；工具结果里的错误文字取
+       state-error-primary #ec1313，#1c1e16 上 3.75:1；
+     · 事件详情「参数」页签是宿主共用的 JSON 树，语法色是浅色主题的深色值：
+       property #881391 2.04:1、string #c41a16 2.81:1、punctuation #202124
+       1.05:1（底均为 #1c1e16），括号与键名基本看不见。
+
+   修法沿用规格的 token 优先原则：在轨迹的时间线、表格与事件详情三块容器上重绑
+   语义色与最低一档文字色，插件用的是 var()，换 token 即全列换色，不必逐个别名
+   类名改色。语义色取本文件任务看板那段已在用的深底档（amber #fbbf24 / green
+   #4ade80），标签底改成同色相的深橄榄实色，避免半透明底在「选中行」（铜金
+   28% 底）上被抬亮、把字重新压回去；事件详情面板里的标签与表格共用同一套值。
+   caption 提一档到 tertiary #c8c0a4（奶油五级内部提档，不新增色值），坐标轴与
+   箭头一并达标。JSON 树的语法色不在 token 上继承（插件把 --json-tree-* 设在树根
+   节点自身），故另起一条只改这七个变量、色值沿用皮肤代码块的 shiki token 档。
+
+   助手标签是例外：它的紫由 brand-primary（#4176e6，DeepSeek 蓝）与
+   error-secondary 混出，重绑 brand 会顺带改掉时间线里 message 段落的颜色，
+   故只对这一个标签用 data-role-kind='message' 直接给色（深紫底 + 浅紫字）。
+
+   容器锚点全部取 A 级：宿主手写的 aria-label「轨迹时间线」「事件详情」、
+   data-trajectory-scroll、data-role-kind；插件 CSS Module 的 hash 前缀
+   （xeixwq_）只作观测线索，不进选择器。
+
+   [修后实测] 1400x900、本机客户端 GUI 的轨迹页（表格 + 展开的事件详情，含悬停
+   行、选中行与「参数」页签），逐元素扫描文字对比度 (<4.5:1)：
+     修前 8 类（四个形态标签、时间线坐标轴、表格箭头、工具结果错误文字、参数
+     JSON 树的语法色），修后 0 项。逐项（含选中行与展开态）：
+     工具   #fbbf24 on #3a2f14 = 7.88:1（修前 2.58:1；选中行 7.88:1）
+     子工具 #d8b047 on #2d2815 = 7.15:1（修前 1.04:1）
+     上下文 #72d48c on #24301f = 7.61:1（修前 2.03:1）
+     助手   #d6c9f5 on #2f2a3d = 8.91:1（修前 3.23:1）
+     箭头   #c8c0a4 on #1c1e16 = 9.27:1（修前 3.82:1）
+     坐标轴 #c8c0a4 on #24261c = 8.42:1（修前 3.48:1）
+     错误文字 #ff9c9c on #1c1e16 = 7.60:1（修前 3.75:1）
+     JSON 树 property #4dabf7 = 6.81:1（修前 2.04:1）
+             string   #69db7c = 9.65:1（修前 2.81:1）
+             punctuation #ced4da = 11.27:1（修前 1.05:1）
+*/
+body[data-dsh-815]
+  :is(
+    [aria-label='轨迹时间线'],
+    [data-trajectory-scroll],
+    aside[aria-label='事件详情']
+  ) {
+  --dsw-alias-state-warn-label: #fbbf24;
+  --dsw-alias-state-warn-tertiary: #3a2f14;
+  --dsw-alias-state-success-primary: #4ade80;
+  --dsw-alias-state-success-tertiary: #24301f;
+  --dsw-alias-state-error-primary: #ff9c9c;
+  --dsw-alias-label-caption: #c8c0a4;
+}
+
+body[data-dsh-815]
+  :is([data-trajectory-scroll], aside[aria-label='事件详情'])
+  [data-role-kind='message'] {
+  color: #d6c9f5;
+  background: #2f2a3d;
+}
+
+/* 事件详情「参数」页签是宿主共用的 JSON 树（类名后缀 _root_ / _label_ /
+   _punctuation_ 等，前缀是构建期 hash）。它的语法色定义在 JSON 树根节点上，
+   默认那套是浅色主题的深色值：property #881391、string #c41a16、number
+   #1c00cf、punctuation #202124 —— 落在轨迹详情的深底 #1c1e16 上实测
+   2.04:1 / 2.81:1 / 1.05:1，括号与键名基本看不见（展开详情、切到「参数」即
+   可见）。宿主只在 body[data-ds-dark-theme] 下换亮色，而皮肤跑在浅色宿主
+   主题上。
+   这里在事件详情面板内把 JSON 树的七个变量换成皮肤代码块（shiki token）那套
+   深底配色，与对话区代码块同一色板：键名蓝、字符串绿、数字橙、关键字粉、
+   标点浅灰、展开箭头三级灰、hover 用皮肤的铜金交互底。挂 [class*='_root_']
+   是因为变量由插件设在树根节点自身，必须落在同一元素上才盖得住；前缀 hash
+   不进选择器，外层再用 aside[aria-label='事件详情'] 收窄。 */
+body[data-dsh-815] aside[aria-label='事件详情'] [class*='_root_'] {
+  --json-tree-property: #4dabf7;
+  --json-tree-string: #69db7c;
+  --json-tree-number: #ffa94d;
+  --json-tree-keyword: #faa2c1;
+  --json-tree-punctuation: #ced4da;
+  --json-tree-icon: #9e9780;
+  --json-tree-hover: rgba(196, 163, 90, 0.14);
+}
+
+/* dsh-deep-ptc-mode 的「当前上下文中的 Skill」卡片（.dpt-card.dpt-skills）：插件按
+   **浅色宿主主题**拼色，卡底取 var(--dpt-card-fill) → --dsw-static-neutral-50（#fafafa），
+   字却走皮肤全局的奶油档 --dsw-alias-label-primary #f4ead6 —— 本机 1600x900 客户端 GUI
+   实测标题与 Skill 名 rgb(244,234,214) 落 rgb(250,250,250) = **1.14:1**，整张卡只剩
+   描边与开关可见，正是用户报的「文字颜色和背景颜色过于接近」（箭头指向标题行与 Skill 行）。
+   同一处还有第二个来源：插件开着「界面特效」时另有一段 body[data-dpt-ui] 的 token
+   覆盖带 !important，把 --dsw-alias-label-primary 压回 #101828、--dsw-alias-bg-base
+   压成 #fff，而按钮底 --dsw-alias-button-floating-fill 仍是皮肤的深橄榄 #3a3c2c，
+   实测「全部保留 / 全部关闭」墨字落 rgb(70,71,56) = **1.88:1**，按钮上同样读不出字。
+   修法走 token 重绑（卡片底换皮肤玻璃、文字与按钮底一并回到深底档），锚点是插件
+   手写的 dpt-* 类名（C 级固定名，不参与构建 hash），外层叠 body[data-dsh-815] 收窄；
+   特异度 (0,2,1) 高于插件那条 (0,1,0)，不依赖样式表加载顺序，也不改插件源码。
+   修后实测：标题 / Skill 名 10.07:1、副行与描述 6.60:1、卡片页脚 6.60:1、
+   「全部保留 / 全部关闭」9.63:1、卡片图标 5.39:1。 */
+body[data-dsh-815] [class*='dpt-skills'] {
+  --dpt-card-fill: rgba(36, 38, 28, 0.92);
+  --dpt-accent: var(--vj-brass);
+  --dsw-alias-label-primary: #f4ead6;
+  --dsw-alias-label-secondary: #d4ccb0;
+  --dsw-alias-label-tertiary: #c8c0a4;
+  --dsw-alias-label-caption: #b5ad94;
+  --dsw-alias-border-l1: rgba(196, 163, 90, 0.28);
+  --dsw-alias-border-l2: rgba(196, 163, 90, 0.42);
+  --dsw-alias-button-floating-fill: rgba(58, 60, 44, 0.94);
+  --dsw-alias-button-floating-hover: #4a4e38;
+  --dsw-alias-interactive-bg-hover: rgba(196, 163, 90, 0.14);
+  color: #f4ead6;
+  background: rgba(36, 38, 28, 0.92);
+  border-color: rgba(196, 163, 90, 0.42);
+}
+
+/* 卡内按钮：插件在「界面特效」分支里给 .dpt-btn 写死过
+   background:var(--dsw-alias-bg-base)；上面重绑的 token 已把卡底换回深橄榄，
+   这里再补一条同档底与奶油字，避免特效开关两态下按钮被抬成浅底。 */
+body[data-dsh-815] [class*='dpt-skills'] [class*='dpt-btn'] {
+  background: rgba(58, 60, 44, 0.94);
+  color: #f4ead6;
 }
 
 

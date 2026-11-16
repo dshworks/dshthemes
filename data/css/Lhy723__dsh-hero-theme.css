@@ -1,0 +1,2193 @@
+/* Lhy723/dsh-hero-theme — src/hero.css
+   fetched 2026-11-16 from https://raw.githubusercontent.com/Lhy723/dsh-hero-theme/main/src/hero.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/*
+ * dsh-hero-theme — HeroUI component layer.
+ *
+ * Color, radius, shadow and timing tokens come from themes/*.json and are
+ * applied by the theme runtime. This sheet adds the HeroUI v3 shape and motion
+ * language that a token swap cannot express:
+ *   - pill action buttons with the 0.97 press scale
+ *   - field-style focus rings
+ *   - overlay enter motion (popover 0.95, dialog 1.05, tooltip 0.9)
+ *   - flat surface sidebar and opaque overlay surfaces
+ *   - skeleton shimmer
+ *
+ * Every rule is scoped under body[data-dsh-hero]; selecting Default removes
+ * the attribute and leaves the shipped UI untouched. Hooks are product-owned
+ * data attributes / roles:
+ *   [data-conversation-content], [data-composer-card], [data-composer-seat],
+ *   [role='dialog'], [role='tooltip'], [role='tab'], [role='treeitem'],
+ *   [class*='sidebarCol'], [class*='sessionRow'], [class*='projectRow'].
+ */
+
+body[data-dsh-hero] {
+	--hero-ease: ease;
+	--hero-ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+	--hero-ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
+	--hero-focus: var(--dsw-alias-brand-primary);
+	--hero-violet: var(--dsh-hero-accent-2, #7577f0);
+}
+
+/*
+ * DSH globally rounds every corner as a superellipse(1.5) squircle
+ * (*, ::before, ::after { corner-shape: var(--dsw-corner-shape) }). HeroUI v3
+ * uses circular corner arcs, and capsule radii (9999px) render as plain
+ * rounded rectangles under a squircle shape — so the brand layer restores
+ * corner-shape: round on everything it paints.
+ */
+body[data-dsh-hero] *,
+body[data-dsh-hero] *::before,
+body[data-dsh-hero] *::after {
+	corner-shape: round;
+}
+
+/* HeroUI brand wash: one accent glow from the top, one violet glow from the
+   upper right. Painted over the opaque canvas, never through the content. */
+body[data-dsh-hero] [data-conversation-content] {
+	background-color: var(--dsw-alias-bg-base);
+	background-image:
+		radial-gradient(72rem 24rem at 50% -8rem, color-mix(in oklab, var(--dsw-alias-brand-primary) 12%, transparent), transparent 72%),
+		radial-gradient(42rem 20rem at 92% 2rem, color-mix(in oklab, var(--hero-violet) 9%, transparent), transparent 70%);
+	background-repeat: no-repeat;
+}
+
+body[data-dsh-hero][data-ds-dark-theme] [data-conversation-content] {
+	background-image:
+		radial-gradient(72rem 24rem at 50% -8rem, color-mix(in oklab, var(--dsw-alias-brand-primary) 22%, transparent), transparent 72%),
+		radial-gradient(42rem 20rem at 92% 2rem, color-mix(in oklab, var(--hero-violet) 16%, transparent), transparent 70%);
+}
+
+/* HeroUI flat surface replaces the macOS-only native gradient. data-platform
+   lives on <html>, and the native rule is (0,5,0) in dark mode, so this
+   selector must carry html/body and both attributes to outrank it. */
+body[data-dsh-hero] [class*='sidebarCol'],
+html[data-platform='darwin'] body[data-dsh-hero] [class*='frame']:not([data-sidebar-drawer]) [class*='sidebarCol'] {
+	background-color: var(--dsw-specific-sidebar-fill);
+	background-image: linear-gradient(
+		180deg,
+		color-mix(in oklab, var(--dsw-alias-brand-primary) 8%, transparent),
+		transparent 30%
+	);
+	border-right: 1px solid var(--dsw-alias-border-l1);
+	box-shadow: none;
+}
+
+body[data-dsh-hero][data-ds-dark-theme] [class*='sidebarCol'],
+html[data-platform='darwin'] body[data-dsh-hero][data-ds-dark-theme] [class*='frame']:not([data-sidebar-drawer]) [class*='sidebarCol'] {
+	background-image: linear-gradient(
+		180deg,
+		color-mix(in oklab, var(--dsw-alias-brand-primary) 12%, transparent),
+		transparent 34%
+	);
+}
+
+body[data-dsh-hero] [role='treeitem'][class*='sessionRow'],
+body[data-dsh-hero] [role='treeitem'][class*='projectRow'],
+body[data-dsh-hero] button[class*='panelRow'] {
+	transition:
+		background-color 150ms var(--hero-ease),
+		box-shadow 150ms var(--hero-ease-out);
+}
+
+body[data-dsh-hero] [role='treeitem'][class*='sessionRow'][aria-selected='true'] {
+	background-color: var(--dsw-specific-sidebar-nav-item-active-accent);
+	box-shadow: none;
+}
+
+/* HeroUI secondary button for the sidebar's primary create action. */
+body[data-dsh-hero] button[class*='newSession'] {
+	background-color: var(--dsw-alias-interactive-bg-hover);
+	border-color: transparent;
+	color: var(--dsw-alias-label-primary);
+}
+
+@media (hover: hover) {
+	body[data-dsh-hero] button[class*='newSession']:hover {
+		background-color: var(--dsw-alias-interactive-bg-active);
+	}
+}
+
+/* HeroUI button motion. Kept at :where() specificity so component-owned
+   radii and segmented groups (avatar + chevron, menu rows, tabs) keep their
+   own geometry instead of every button becoming a pill. */
+:where(body[data-dsh-hero]) button {
+	transform-origin: center;
+	transition:
+		transform 250ms var(--hero-ease),
+		background-color 100ms var(--hero-ease-out),
+		box-shadow 100ms var(--hero-ease-out),
+		border-color 100ms var(--hero-ease-out),
+		color 100ms var(--hero-ease-out);
+}
+
+body[data-dsh-hero] button[class*='primary'],
+body[data-dsh-hero] button[class*='newSession'],
+body[data-dsh-hero] .hero-button {
+	border-radius: 9999px;
+}
+
+body[data-dsh-hero] button[class*='primary']:not(:disabled):active,
+body[data-dsh-hero] button[class*='newSession']:not(:disabled):active,
+body[data-dsh-hero] .hero-button:active {
+	transform: scale(0.97);
+}
+
+/* HeroUI brand accent: primary actions carry the blue-to-violet gradient
+   used by the HeroUI brand, while secondary actions stay neutral. */
+body[data-dsh-hero] button[class*='primary']:not(:disabled),
+body[data-dsh-hero] [data-composer-card] button[class*='send']:not(:disabled) {
+	background-image: linear-gradient(135deg, var(--dsw-alias-brand-primary), var(--hero-violet));
+	color: var(--dsw-alias-label-primary-foreground);
+	box-shadow: 0 8px 20px -12px color-mix(in oklab, var(--dsw-alias-brand-primary) 72%, transparent);
+}
+
+@media (hover: hover) {
+	body[data-dsh-hero] button[class*='primary']:not(:disabled):hover,
+	body[data-dsh-hero] [data-composer-card] button[class*='send']:not(:disabled):hover {
+		background-image: linear-gradient(135deg, #2b9bff, #8b8cf5);
+		box-shadow: 0 10px 26px -12px color-mix(in oklab, var(--dsw-alias-brand-primary) 82%, transparent);
+	}
+}
+
+body[data-dsh-hero] [role='tab'] {
+	border-radius: 9999px;
+	transition:
+		color 150ms var(--hero-ease),
+		background-color 150ms var(--hero-ease),
+		box-shadow 150ms var(--hero-ease-out);
+}
+
+body[data-dsh-hero] [role='menuitem'],
+body[data-dsh-hero] [role='option'] {
+	transition:
+		background-color 150ms var(--hero-ease),
+		box-shadow 150ms var(--hero-ease-out),
+		transform 250ms var(--hero-ease-out-quart);
+}
+
+/* ListBox-shaped menus (mode / project pickers with descriptions): HeroUI
+   list-box-item = 36px min height, 16px radius, 8px x 6px padding, hover on
+   the default fill, press scale 0.98, and an indicator at the column end. */
+body[data-dsh-hero] [role='menu'] [role='menuitem'] {
+	position: relative;
+	min-height: 36px;
+	border-radius: 16px;
+	padding-inline-end: 28px;
+}
+
+body[data-dsh-hero] [role='menu'] [role='menuitem']:not(:disabled):active {
+	transform: scale(0.98);
+}
+
+body[data-dsh-hero] [role='menu'] [role='menuitem'] [class*='itemName'] {
+	font-size: 14px;
+	font-weight: 500;
+	line-height: 20px;
+	color: var(--dsw-alias-label-primary);
+}
+
+body[data-dsh-hero] [role='menu'] [role='menuitem'] [class*='itemDesc'] {
+	font-size: 12px;
+	line-height: 16px;
+	color: var(--dsw-alias-label-tertiary);
+}
+
+body[data-dsh-hero] [role='menu'] [role='menuitem'] svg[class*='_check_'] {
+	position: absolute;
+	inset-inline-end: 8px;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 16px;
+	height: 16px;
+	color: var(--dsw-alias-label-primary);
+}
+
+/* HeroUI spaces list rows 4px apart (mt-1 between direct children). */
+body[data-dsh-hero] [role='menu'] [class*='_itemWrap_'] + [class*='_itemWrap_'] {
+	margin-top: 4px;
+}
+
+/* HeroUI secondary button (Reset). */
+body[data-dsh-hero] .hero-button {
+	height: 36px;
+	padding: 0 16px;
+	border: 0;
+	border-radius: 24px;
+	background: var(--dsw-alias-interactive-bg-hover);
+	color: var(--dsh-hero-button-secondary-fg);
+	font-size: 14px;
+	font-weight: 500;
+}
+
+body[data-dsh-hero] .hero-button:hover {
+	background: var(--dsw-alias-interactive-bg-active);
+}
+
+body[data-dsh-hero] .hero-button:active {
+	background: var(--dsw-alias-interactive-bg-active);
+}
+
+/* HeroUI Tabs: 32px tabs inside a 20px-radius default container, with a
+   sliding surface indicator (250ms fluid ease). */
+body[data-dsh-hero] .hero-tabs {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-self: start;
+	padding: 4px;
+	border-radius: var(--dsh-hero-radius-tabs);
+	background: var(--dsw-alias-interactive-bg-hover);
+}
+
+body[data-dsh-hero] .hero-tabs__indicator {
+	position: absolute;
+	top: 4px;
+	bottom: 4px;
+	left: 0;
+	border-radius: 9999px;
+	background: var(--dsh-hero-segment);
+	box-shadow: var(--dsw-shadow-lv1);
+	pointer-events: none;
+	transition:
+		transform 250ms cubic-bezier(0.32, 0.72, 0, 1),
+		width 250ms cubic-bezier(0.32, 0.72, 0, 1),
+		opacity 150ms var(--hero-ease);
+}
+
+body[data-dsh-hero] .hero-tabs__tab {
+	position: relative;
+	z-index: 1;
+	height: 32px;
+	padding: 0 16px;
+	border: 0;
+	border-radius: 9999px;
+	background: transparent;
+	color: var(--dsw-alias-label-secondary);
+	font: inherit;
+	font-size: 14px;
+	font-weight: 500;
+	white-space: nowrap;
+	cursor: pointer;
+	transition:
+		color 150ms var(--hero-ease),
+		opacity 150ms var(--hero-ease);
+}
+
+body[data-dsh-hero] .hero-tabs__tab[aria-selected='true'] {
+	color: var(--dsw-alias-label-primary);
+}
+
+@media (hover: hover) {
+	body[data-dsh-hero] .hero-tabs__tab[aria-selected='false']:hover {
+		opacity: 0.7;
+	}
+}
+
+/* HeroUI Select: 36px field trigger, 16px chevron rotation, and a fixed
+   overlay listbox that scales/fades in from the trigger. */
+body[data-dsh-hero] .hero-select {
+	position: relative;
+	width: 100%;
+	min-width: 0;
+}
+
+body[data-dsh-hero] .hero-select__trigger {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	width: 100%;
+	height: 36px;
+	padding: 0 12px;
+	border: 0;
+	border-radius: var(--dsh-hero-radius-field);
+	background: var(--dsw-specific-input-major);
+	box-shadow: var(--dsw-shadow-lv1);
+	color: var(--dsw-alias-label-primary);
+	font: inherit;
+	font-size: 14px;
+	text-align: left;
+	cursor: pointer;
+	outline: none;
+	transition:
+		background-color 150ms var(--hero-ease),
+		box-shadow 150ms var(--hero-ease-out);
+}
+
+body[data-dsh-hero] .hero-select__trigger:hover {
+	background: color-mix(in oklab, var(--dsw-specific-input-major) 90%, var(--dsw-alias-label-primary) 2%);
+}
+
+body[data-dsh-hero] .hero-select__trigger:focus-visible {
+	background: var(--dsw-specific-input-major);
+}
+
+body[data-dsh-hero] .hero-select__value {
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+body[data-dsh-hero] .hero-select__chevron {
+	flex: none;
+	width: 16px;
+	height: 16px;
+	color: var(--dsw-alias-label-secondary);
+	transition: transform 150ms var(--hero-ease);
+}
+
+body[data-dsh-hero] .hero-select__trigger[aria-expanded='true'] .hero-select__chevron {
+	transform: rotate(180deg);
+}
+
+body[data-dsh-hero] .hero-select__popover {
+	position: fixed;
+	z-index: 1200;
+	box-sizing: border-box;
+	padding: 8px;
+	border-radius: var(--dsh-hero-radius-popover);
+	background: var(--dsw-alias-bg-overlay);
+	box-shadow: var(--dsw-shadow-lv3);
+	overflow-y: auto;
+	overscroll-behavior: contain;
+}
+
+body[data-dsh-hero] .hero-select__popover[data-placement='bottom'] {
+	transform-origin: top center;
+}
+
+body[data-dsh-hero] .hero-select__popover[data-placement='top'] {
+	transform-origin: bottom center;
+}
+
+body[data-dsh-hero] .hero-select__option {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	width: 100%;
+	min-height: 36px;
+	padding: 6px 8px;
+	border: 0;
+	border-radius: 16px;
+	background: transparent;
+	color: var(--dsw-alias-label-primary);
+	font: inherit;
+	font-size: 14px;
+	text-align: left;
+	cursor: pointer;
+	transition:
+		transform 250ms var(--hero-ease-out-quart),
+		box-shadow 150ms var(--hero-ease-out);
+}
+
+body[data-dsh-hero] .hero-select__option:active {
+	transform: scale(0.98);
+}
+
+body[data-dsh-hero] .hero-select__option:hover,
+body[data-dsh-hero] .hero-select__option[data-active='true'] {
+	background: var(--dsw-alias-interactive-bg-hover);
+}
+
+body[data-dsh-hero] .hero-select__option-label {
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+body[data-dsh-hero] .hero-select__check {
+	flex: none;
+	width: 16px;
+	height: 16px;
+	color: var(--dsw-alias-label-primary);
+}
+
+body[data-dsh-hero] .hero-select__check path {
+	stroke-dasharray: 24;
+	stroke-dashoffset: 24;
+	transition: stroke-dashoffset 250ms linear;
+}
+
+body[data-dsh-hero] .hero-select__option[aria-selected='true'] .hero-select__check path {
+	stroke-dashoffset: 0;
+}
+
+body[data-dsh-hero] .hero-select__popover[data-phase='enter'][data-placement='bottom'] {
+	animation: hero-select-in-bottom 150ms var(--hero-ease) both;
+}
+
+body[data-dsh-hero] .hero-select__popover[data-phase='enter'][data-placement='top'] {
+	animation: hero-select-in-top 150ms var(--hero-ease) both;
+}
+
+body[data-dsh-hero] .hero-select__popover[data-phase='exit'][data-placement='bottom'] {
+	animation: hero-select-out-bottom 100ms var(--hero-ease) both;
+	pointer-events: none;
+}
+
+body[data-dsh-hero] .hero-select__popover[data-phase='exit'][data-placement='top'] {
+	animation: hero-select-out-top 100ms var(--hero-ease) both;
+	pointer-events: none;
+}
+
+@keyframes hero-select-in-bottom {
+	from {
+		opacity: 0;
+		transform: translateY(-4px) scale(0.95);
+	}
+}
+
+@keyframes hero-select-in-top {
+	from {
+		opacity: 0;
+		transform: translateY(4px) scale(0.95);
+	}
+}
+
+@keyframes hero-select-out-bottom {
+	to {
+		opacity: 0;
+		transform: translateY(-4px) scale(0.95);
+	}
+}
+
+@keyframes hero-select-out-top {
+	to {
+		opacity: 0;
+		transform: translateY(4px) scale(0.95);
+	}
+}
+
+/* Composer: HeroUI field fill, 24px card radius, surface shadow, then a
+   2px accent ring on focus (field ring sits directly against the edge). */
+body[data-dsh-hero] [data-composer-seat] {
+	background: var(--dsw-alias-bg-base);
+}
+
+body[data-dsh-hero] [data-composer-card] {
+	background-color: var(--dsw-specific-input-major);
+	border: 1px solid var(--dsw-alias-border-l1);
+	border-radius: var(--dsh-hero-radius-card);
+	box-shadow: var(--dsw-shadow-lv1);
+	transition:
+		background-color 150ms var(--hero-ease),
+		border-color 150ms var(--hero-ease),
+		box-shadow 150ms var(--hero-ease-out);
+}
+
+body[data-dsh-hero] [data-composer-card]:focus-within {
+	border-color: var(--dsw-alias-brand-primary);
+	box-shadow:
+		0 0 0 2px var(--dsw-alias-brand-primary),
+		0 0 0 5px color-mix(in oklab, var(--hero-violet) 18%, transparent),
+		var(--dsw-shadow-lv1);
+}
+
+body[data-dsh-hero] [data-composer-card] [data-lexical-editor],
+body[data-dsh-hero] [data-composer-card] textarea {
+	background: transparent;
+	box-shadow: none;
+}
+
+/* Overlays: opaque HeroUI surfaces with overlay shadows and enter motion. */
+body[data-dsh-hero] [role='dialog'] {
+	background-color: var(--dsw-alias-bg-overlay);
+	border-radius: var(--dsh-hero-radius-card);
+	box-shadow: var(--dsw-shadow-lv3);
+	animation: hero-overlay-in 150ms var(--hero-ease) both;
+}
+
+body[data-dsh-hero] [role='dialog'][aria-modal='true'] {
+	animation-name: hero-dialog-in;
+	animation-duration: 250ms;
+	animation-timing-function: var(--hero-ease-out);
+}
+
+body[data-dsh-hero] [role='tooltip'] {
+	background-color: var(--dsw-alias-bg-overlay);
+	color: var(--dsw-alias-label-primary);
+	border-radius: var(--dsh-hero-radius-tooltip);
+	box-shadow: var(--dsw-shadow-lv3);
+	animation: hero-tooltip-in 150ms var(--hero-ease) both;
+}
+
+/* DSH tooltips hardcode --dsw-static-neutral-bluish-00 (white) for the label;
+   on our light overlay that becomes white-on-white. Shortcut keycaps inherit
+   the tooltip color, so force both onto the themed foreground. */
+body[data-dsh-hero] [role='tooltip'] kbd {
+	color: var(--dsw-alias-label-primary);
+}
+
+/* MenuSurface primitive: Dropdown/Select popovers use radius-2xl + 6px,
+   which is 22px at the default base; generic Popovers stay at 24px. */
+body[data-dsh-hero] [data-menu-material] {
+	border-radius: var(--dsh-hero-radius-popover);
+}
+
+body[data-dsh-hero] [data-menu-material] > [aria-hidden='true'] {
+	border-radius: inherit;
+}
+
+/* HeroUI v3 Slider (builder): 160px gradient track, 16px circular thumb with
+   a 1.5px white ring. The gradient sits on the track; a native range input
+   overlays it for pointer, keyboard and aria semantics. */
+body[data-dsh-hero] .hero-color-slider {
+	position: relative;
+	width: 160px;
+	height: 24px;
+	flex: none;
+}
+
+body[data-dsh-hero] .hero-color-slider__track {
+	position: absolute;
+	inset: 0;
+	border-radius: 9999px;
+	corner-shape: round;
+	pointer-events: none;
+	overflow: hidden;
+}
+
+body[data-dsh-hero] .hero-color-slider__thumb {
+	position: absolute;
+	top: 50%;
+	width: 16px;
+	height: 16px;
+	transform: translate(-50%, -50%);
+	border-radius: 9999px;
+	corner-shape: round;
+	border: 1.5px solid #fff;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.28);
+	pointer-events: none;
+}
+
+body[data-dsh-hero] .hero-color-slider__input {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	opacity: 0;
+	cursor: pointer;
+	-webkit-appearance: none;
+	appearance: none;
+	background: transparent;
+}
+
+body[data-dsh-hero] .hero-color-slider__input::-webkit-slider-runnable-track {
+	height: 24px;
+	background: transparent;
+}
+
+body[data-dsh-hero] .hero-color-slider__input::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	width: 16px;
+	height: 24px;
+	background: transparent;
+	border: 0;
+}
+
+body[data-dsh-hero] .hero-color-slider__input::-moz-range-track {
+	height: 24px;
+	background: transparent;
+}
+
+body[data-dsh-hero] .hero-color-slider__input::-moz-range-thumb {
+	width: 16px;
+	height: 24px;
+	background: transparent;
+	border: 0;
+}
+
+/* 24px conic disc that opens the color panel. */
+body[data-dsh-hero] .hero-disc {
+	position: relative;
+	width: 24px;
+	height: 24px;
+	flex: none;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	cursor: pointer;
+	display: inline-flex;
+	border-radius: 9999px;
+	corner-shape: round;
+}
+
+body[data-dsh-hero] .hero-disc__ring {
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	background: conic-gradient(from 0deg, #f8aecf, #fbc7a3, #f7e8a4, #d7f5b0, #b5f3d2, #a3eaf7, #a8c9ff, #c9b8ff, #f8aecf) !important;
+}
+
+body[data-dsh-hero] .hero-disc__rim {
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+body[data-dsh-hero] .hero-disc:hover .hero-disc__rim {
+	border-color: rgba(255, 255, 255, 0.72);
+}
+
+body[data-dsh-hero] .hero-disc:active {
+	transform: scale(0.96);
+}
+
+/* Select-like trigger (InputGroup) for Radius / Radius Form / Theme. */
+body[data-dsh-hero] .hero-field-trigger {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	width: 160px;
+	height: 36px;
+	padding: 0;
+	border: 0;
+	border-radius: var(--dsh-hero-radius-field);
+	background: var(--dsw-specific-input-major);
+	box-shadow: var(--dsw-shadow-lv1);
+	color: var(--dsw-alias-label-primary);
+	font: inherit;
+	font-size: 14px;
+	cursor: pointer;
+	outline: none;
+	transition:
+		background-color 150ms var(--hero-ease),
+		box-shadow 150ms var(--hero-ease-out);
+}
+
+body[data-dsh-hero] .hero-field-trigger:hover {
+	background: color-mix(in oklab, var(--dsw-specific-input-major) 90%, var(--dsw-alias-label-primary) 2%);
+}
+
+body[data-dsh-hero] .hero-field-trigger:focus-visible {
+	box-shadow:
+		0 0 0 2px var(--dsw-alias-bg-base),
+		0 0 0 4px var(--hero-focus);
+}
+
+body[data-dsh-hero] .hero-field-trigger__prefix {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	flex: none;
+	font-size: 15px;
+	font-weight: 600;
+	color: var(--dsw-alias-label-secondary);
+}
+
+body[data-dsh-hero] .hero-field-trigger__paint svg {
+	width: 16px;
+	height: 16px;
+}
+
+body[data-dsh-hero] .hero-field-trigger__value {
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	text-align: left;
+	text-transform: capitalize;
+}
+
+body[data-dsh-hero] .hero-field-trigger__suffix {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	flex: none;
+	color: var(--dsw-alias-label-tertiary);
+}
+
+body[data-dsh-hero] .hero-field-trigger__suffix svg {
+	width: 12px;
+	height: 16px;
+}
+
+/* Builder popovers: 150ms scale-90 enter, 100ms scale-95 exit. */
+body[data-dsh-hero] .hero-popover {
+	position: fixed;
+	z-index: 1200;
+	box-sizing: border-box;
+	background: var(--dsw-alias-bg-overlay);
+	box-shadow: var(--dsw-shadow-lv3);
+	color: var(--dsw-alias-label-primary);
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	transform-origin: 50% 100%;
+}
+
+body[data-dsh-hero] .hero-popover[data-placement='bottom'] {
+	transform-origin: 50% 0%;
+}
+
+body[data-dsh-hero] .hero-popover[data-phase='enter'] {
+	animation: hero-popover-enter 150ms var(--hero-ease) both;
+}
+
+body[data-dsh-hero] .hero-popover[data-phase='exit'] {
+	animation: hero-popover-exit 100ms var(--hero-ease) both;
+	pointer-events: none;
+}
+
+@keyframes hero-popover-enter {
+	from {
+		opacity: 0;
+		transform: scale(0.9);
+	}
+}
+
+@keyframes hero-popover-exit {
+	to {
+		opacity: 0;
+		transform: scale(0.95);
+	}
+}
+
+/* Color panel: 248px wide, 20px radius, HeroUI paddings. */
+body[data-dsh-hero] .hero-color-panel {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	padding: 16px 8px 8px;
+	border-radius: 20px;
+	corner-shape: round;
+}
+
+body[data-dsh-hero] .hero-color-panel__carousel {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+body[data-dsh-hero] .hero-color-panel__arrow {
+	width: 20px;
+	height: 20px;
+	flex: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	border: 0;
+	border-radius: 9999px;
+	background: transparent;
+	color: var(--dsw-alias-label-secondary);
+	font-size: 16px;
+	line-height: 1;
+	cursor: pointer;
+	transition: background-color 150ms var(--hero-ease);
+}
+
+body[data-dsh-hero] .hero-color-panel__arrow:hover:not(:disabled) {
+	background: var(--dsw-alias-interactive-bg-hover);
+}
+
+body[data-dsh-hero] .hero-color-panel__arrow:disabled {
+	opacity: 0.35;
+	cursor: default;
+}
+
+body[data-dsh-hero] .hero-color-panel__window {
+	position: relative;
+	flex: 1;
+	overflow: hidden;
+}
+
+body[data-dsh-hero] .hero-color-panel__strip {
+	display: flex;
+	transition: transform 300ms ease-out;
+}
+
+body[data-dsh-hero] .hero-color-panel__page {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 6px;
+	height: 22px;
+	width: 100%;
+	flex: none;
+}
+
+body[data-dsh-hero] .hero-color-panel__swatch {
+	width: 16px;
+	height: 16px;
+	flex: none;
+	padding: 0;
+	border: 0;
+	border-radius: 9999px;
+	corner-shape: round;
+	cursor: pointer;
+	transition: transform 120ms var(--hero-ease-out);
+}
+
+body[data-dsh-hero] .hero-color-panel__swatch:hover {
+	transform: scale(1.18);
+}
+
+body[data-dsh-hero] .hero-color-panel__area {
+	position: relative;
+	width: 232px;
+	height: 232px;
+	border-radius: 16px;
+	corner-shape: round;
+	border: 1px solid var(--dsw-alias-border-l2);
+	box-sizing: border-box;
+	cursor: crosshair;
+	touch-action: none;
+}
+
+body[data-dsh-hero] .hero-color-panel__area-thumb {
+	position: absolute;
+	width: 24px;
+	height: 24px;
+	transform: translate(-50%, -50%);
+	border-radius: 9999px;
+	corner-shape: round;
+	border: 2px solid #fff;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+	pointer-events: none;
+}
+
+body[data-dsh-hero] .hero-color-panel__hue-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+}
+
+body[data-dsh-hero] .hero-color-panel__hue {
+	flex: 1;
+	max-width: 184px;
+	height: 20px;
+}
+
+body[data-dsh-hero] .hero-color-panel__hue .hero-color-slider {
+	width: 100%;
+	height: 20px;
+}
+
+body[data-dsh-hero] .hero-color-panel__hue .hero-color-slider__track {
+	border-radius: 9999px;
+}
+
+body[data-dsh-hero] .hero-color-panel__shuffle {
+	width: 32px;
+	height: 32px;
+	flex: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	border: 0;
+	border-radius: 9999px;
+	background: var(--dsw-alias-interactive-bg-hover);
+	color: var(--dsw-alias-label-secondary);
+	cursor: pointer;
+	transition:
+		background-color 150ms var(--hero-ease),
+		transform 100ms var(--hero-ease-out);
+}
+
+body[data-dsh-hero] .hero-color-panel__shuffle svg {
+	width: 16px;
+	height: 16px;
+}
+
+body[data-dsh-hero] .hero-color-panel__shuffle:hover {
+	background: var(--dsw-alias-interactive-bg-active);
+}
+
+body[data-dsh-hero] .hero-color-panel__shuffle:active {
+	transform: scale(0.94);
+}
+
+body[data-dsh-hero] .hero-color-panel__field {
+	display: flex;
+	align-items: center;
+	height: 36px;
+	border-radius: 12px;
+	corner-shape: round;
+	background: var(--dsw-alias-interactive-bg-hover);
+	overflow: hidden;
+}
+
+body[data-dsh-hero] .hero-color-panel__hex {
+	flex: 1;
+	min-width: 0;
+	height: 100%;
+	padding: 0 16px;
+	border: 0;
+	background: transparent;
+	color: var(--dsw-alias-label-primary);
+	font: inherit;
+	font-size: 14px;
+	font-variant-numeric: tabular-nums;
+	text-transform: lowercase;
+	outline: none;
+}
+
+/* Radius panel: 304px, 3x3 card grid of 88x83 cards. */
+body[data-dsh-hero] .hero-radius-panel {
+	padding: 12px;
+	border-radius: var(--dsh-hero-radius-card);
+	corner-shape: round;
+}
+
+body[data-dsh-hero] .hero-radius-panel__head {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	margin: 0 0 8px;
+	padding-inline-start: 8px;
+}
+
+body[data-dsh-hero] .hero-radius-panel__title {
+	font-size: 12px;
+	font-weight: 500;
+	color: var(--dsw-alias-label-primary);
+}
+
+body[data-dsh-hero] .hero-radius-panel__desc {
+	font-size: 12px;
+	color: var(--dsw-alias-label-tertiary);
+}
+
+body[data-dsh-hero] .hero-radius-panel__grid {
+	display: grid;
+	grid-template-columns: repeat(3, 88px);
+	gap: 8px;
+}
+
+body[data-dsh-hero] .hero-radius-card {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 5px;
+	width: 88px;
+	height: 83px;
+	padding: 0;
+	border: 1px solid var(--dsw-alias-border-l2);
+	border-radius: 16px;
+	corner-shape: round;
+	background: transparent;
+	color: var(--dsw-alias-label-primary);
+	cursor: pointer;
+	transition:
+		border-color 100ms var(--hero-ease-out),
+		background-color 150ms var(--hero-ease),
+		transform 250ms var(--hero-ease-out-quart);
+}
+
+body[data-dsh-hero] .hero-radius-card:hover {
+	background: var(--dsw-alias-interactive-bg-hover);
+}
+
+body[data-dsh-hero] .hero-radius-card:active {
+	transform: scale(0.98);
+}
+
+body[data-dsh-hero] .hero-radius-card[data-selected='true'] {
+	border-color: var(--dsw-alias-label-primary);
+}
+
+body[data-dsh-hero] .hero-radius-card__letter {
+	font-size: 20px;
+	line-height: 28px;
+	font-weight: 600;
+}
+
+body[data-dsh-hero] .hero-radius-card__name {
+	font-size: 12px;
+	line-height: 16px;
+	color: var(--dsw-alias-label-tertiary);
+	text-transform: capitalize;
+}
+
+body[data-dsh-hero] .hero-radius-card[data-selected='true'] .hero-radius-card__name {
+	color: var(--dsw-alias-label-primary);
+}
+
+/* Theme panel: 228px, 4-column preset grid of 36px circles. */
+body[data-dsh-hero] .hero-theme-panel {
+	padding: 16px;
+	border-radius: var(--dsh-hero-radius-card);
+	corner-shape: round;
+}
+
+body[data-dsh-hero] .hero-theme-panel__grid {
+	display: grid;
+	grid-template-columns: repeat(4, 40px);
+	gap: 12px;
+	justify-content: center;
+}
+
+body[data-dsh-hero] .hero-theme-item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	width: 40px;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	cursor: pointer;
+}
+
+body[data-dsh-hero] .hero-theme-item__dot {
+	width: 36px;
+	height: 36px;
+	border-radius: 9999px;
+	corner-shape: round;
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+	transition: transform 150ms var(--hero-ease-out);
+}
+
+body[data-dsh-hero] .hero-theme-item:hover .hero-theme-item__dot {
+	transform: scale(1.06);
+}
+
+body[data-dsh-hero] .hero-theme-item[data-selected='true'] .hero-theme-item__dot {
+	box-shadow:
+		0 0 0 2px var(--dsw-alias-bg-overlay),
+		0 0 0 4px var(--dsw-alias-brand-primary);
+}
+
+body[data-dsh-hero] .hero-theme-item__label {
+	font-size: 10px;
+	line-height: 14px;
+	font-weight: 500;
+	color: var(--dsw-alias-label-tertiary);
+	white-space: nowrap;
+}
+
+body[data-dsh-hero] .hero-theme-item[data-selected='true'] .hero-theme-item__label {
+	color: var(--dsw-alias-label-primary);
+}
+
+body[data-dsh-hero] .hero-theme-panel__footer {
+	margin-top: 16px;
+	padding-top: 16px;
+	border-top: 1px solid var(--dsw-alias-border-l1);
+}
+
+body[data-dsh-hero] .hero-theme-panel__switch-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+body[data-dsh-hero] .hero-theme-panel__switch-copy {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+body[data-dsh-hero] .hero-theme-panel__switch-title {
+	font-size: 12px;
+	font-weight: 500;
+}
+
+body[data-dsh-hero] .hero-theme-panel__switch-desc {
+	font-size: 10px;
+	line-height: 14px;
+	color: var(--dsw-alias-label-tertiary);
+}
+
+body[data-dsh-hero] .hero-switch {
+	position: relative;
+	width: 40px;
+	height: 20px;
+	flex: none;
+	padding: 0;
+	border: 0;
+	border-radius: 12px;
+	corner-shape: round;
+	background: var(--dsw-alias-interactive-bg-hover);
+	cursor: pointer;
+	transition: background-color 250ms var(--hero-ease);
+}
+
+body[data-dsh-hero] .hero-switch[aria-checked='true'] {
+	background: var(--dsw-alias-brand-primary);
+}
+
+body[data-dsh-hero] .hero-switch__thumb {
+	position: absolute;
+	top: 2px;
+	left: 2px;
+	width: 22px;
+	height: 16px;
+	border-radius: 8px;
+	corner-shape: round;
+	background: var(--dsw-alias-label-primary-foreground);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+	transition:
+		left 300ms cubic-bezier(0.32, 0.72, 0, 1),
+		background-color 250ms var(--hero-ease);
+}
+
+body[data-dsh-hero] .hero-switch[aria-checked='true'] .hero-switch__thumb {
+	left: 16px;
+	background: var(--dsw-alias-brand-primary-foreground);
+}
+
+body[data-dsh-hero] .hero-theme-panel__hint {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	margin: 16px 0 0;
+	font-size: 12px;
+	line-height: 16px;
+	color: var(--dsw-alias-label-tertiary);
+}
+
+body[data-dsh-hero] .hero-kbd {
+	display: inline-flex;
+	align-items: center;
+	height: 24px;
+	padding: 0 8px;
+	border-radius: 8px;
+	corner-shape: round;
+	background: var(--dsw-alias-interactive-bg-hover);
+	font-size: 14px;
+	font-weight: 500;
+	color: var(--dsw-alias-label-secondary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	body[data-dsh-hero] .hero-popover[data-phase='enter'],
+	body[data-dsh-hero] .hero-popover[data-phase='exit'],
+	body[data-dsh-hero] .hero-color-panel__strip,
+	body[data-dsh-hero] .hero-color-panel__swatch,
+	body[data-dsh-hero] .hero-theme-item__dot,
+	body[data-dsh-hero] .hero-switch,
+	body[data-dsh-hero] .hero-switch__thumb {
+		animation: none;
+		transition: none;
+	}
+}
+
+/* HeroUI focus ring: 2px accent, 2px offset on controls, no offset on fields. */
+body[data-dsh-hero] button:focus-visible,
+body[data-dsh-hero] a:focus-visible,
+body[data-dsh-hero] [role='button']:focus-visible,
+body[data-dsh-hero] [role='tab']:focus-visible {
+	outline: 2px solid var(--hero-focus);
+	outline-offset: 2px;
+}
+
+body[data-dsh-hero] input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='color']),
+body[data-dsh-hero] textarea,
+body[data-dsh-hero] select {
+	border-radius: var(--dsh-hero-radius-field);
+	transition:
+		border-color 150ms var(--hero-ease),
+		box-shadow 150ms var(--hero-ease-out);
+}
+
+body[data-dsh-hero] input:focus-visible,
+body[data-dsh-hero] textarea:focus-visible {
+	border-color: var(--hero-focus);
+	box-shadow: 0 0 0 2px var(--hero-focus);
+	outline: none;
+}
+
+/* Search fields nest an 18px input inside a 32–36px pill, so the input-level
+   ring drew a small blue box inside the field. Ring the field shell instead
+   and suppress the inner one (HeroUI search-field focus semantics). */
+body[data-dsh-hero] :is([class*='searchField'], [class*='searchExpanded']):focus-within {
+	box-shadow: 0 0 0 2px var(--hero-focus);
+}
+
+body[data-dsh-hero] :is([class*='searchField'], [class*='searchExpanded']) :is(input, textarea):focus-visible {
+	border-color: transparent;
+	box-shadow: none;
+	outline: none;
+}
+
+body[data-dsh-hero] ::selection {
+	background: color-mix(in oklab, var(--dsw-alias-brand-primary) 26%, transparent);
+	color: var(--dsw-alias-label-primary);
+}
+
+/* Skeleton shimmer (HeroUI 2s linear, one pass per cycle). */
+body[data-dsh-hero] [class*='skeleton'] {
+	position: relative;
+	overflow: hidden;
+	background-color: var(--dsw-alias-bg-skeleton);
+}
+
+body[data-dsh-hero] [class*='skeleton']::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	translate: -100% 0;
+	background: linear-gradient(
+		90deg,
+		transparent 0%,
+		color-mix(in oklab, var(--dsw-alias-bg-layer-3) 80%, transparent) 50%,
+		transparent 100%
+	);
+	animation: hero-shimmer 2s linear infinite;
+	pointer-events: none;
+}
+
+@keyframes hero-overlay-in {
+	from {
+		opacity: 0;
+		scale: 0.95;
+	}
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	body[data-dsh-hero] [data-chat-flow-kind='user'] {
+		animation: hero-message-in 220ms var(--hero-ease-out) both;
+	}
+}
+
+@keyframes hero-message-in {
+	from {
+		opacity: 0;
+		translate: 0 6px;
+	}
+}
+
+@keyframes hero-dialog-in {
+	from {
+		opacity: 0;
+		scale: 1.05;
+	}
+}
+
+@keyframes hero-tooltip-in {
+	from {
+		opacity: 0;
+		scale: 0.9;
+	}
+}
+
+@keyframes hero-shimmer {
+	to {
+		translate: 200% 0;
+	}
+}
+
+@media (hover: hover) {
+	body[data-dsh-hero] [role='treeitem'][class*='sessionRow']:not([aria-selected='true']):hover,
+	body[data-dsh-hero] [role='treeitem'][class*='projectRow']:hover,
+	body[data-dsh-hero] button[class*='panelRow']:hover {
+		background-color: var(--dsw-alias-interactive-bg-hover);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	body[data-dsh-hero] button,
+	body[data-dsh-hero] [role='tab'],
+	body[data-dsh-hero] [role='menuitem'],
+	body[data-dsh-hero] [role='option'],
+	body[data-dsh-hero] [role='treeitem'],
+	body[data-dsh-hero] [data-composer-card] {
+		transition: none;
+	}
+
+	body[data-dsh-hero] button:active {
+		transform: none;
+	}
+
+	body[data-dsh-hero] .hero-tabs__indicator,
+	body[data-dsh-hero] .hero-tabs__tab,
+	body[data-dsh-hero] .hero-select__trigger,
+	body[data-dsh-hero] .hero-select__chevron,
+	body[data-dsh-hero] .hero-select__option,
+	body[data-dsh-hero] .hero-select__check path {
+		transition: none;
+	}
+
+	body[data-dsh-hero] .hero-select__option:active {
+		transform: none;
+	}
+
+	body[data-dsh-hero] [role='dialog'],
+	body[data-dsh-hero] [role='tooltip'],
+	body[data-dsh-hero] .hero-select__popover,
+	body[data-dsh-hero] [class*='skeleton']::after {
+		animation: none;
+	}
+}
+
+/* ==========================================================================
+ * DSH surfaces: the shipped UI components that the token layer cannot reach.
+ * HeroUI v3 geometry and motion mapped onto product-owned roles, data
+ * attributes and stable class fragments. Every rule stays scoped under
+ * body[data-dsh-hero].
+ * ========================================================================== */
+
+/* ---------------------------------------------------------------------------
+ * Switch — 40x20 HeroUI track, 22x16 capsule thumb, fluid 300ms slide.
+ * DSH ships a 36x20 track with a 16x16 round thumb; the thumb uses a relative
+ * offset (not transform) so the existing translate(16px) rule is neutralised.
+ * :not(.hero-switch) keeps the theme's own builder switch on its own geometry.
+ * ------------------------------------------------------------------------- */
+body[data-dsh-hero] [role='switch']:not(.hero-switch) {
+	display: flex;
+	align-items: center;
+	box-sizing: border-box;
+	width: 40px;
+	height: 20px;
+	padding: 0;
+	border: 0;
+	border-radius: 12px;
+	background-color: var(--dsw-alias-interactive-bg-hover);
+	cursor: pointer;
+	transition: background-color 250ms var(--hero-ease);
+}
+
+body[data-dsh-hero] [role='switch']:not(.hero-switch)[aria-checked='true'] {
+	background-color: var(--dsw-alias-brand-primary);
+}
+
+body[data-dsh-hero] [role='switch']:not(.hero-switch) > span {
+	position: relative;
+	inset-inline-start: 0;
+	display: block;
+	flex: none;
+	box-sizing: border-box;
+	width: 22px;
+	height: 16px;
+	margin-inline-start: 2px;
+	border-radius: 8px;
+	background-color: var(--dsw-alias-label-primary-foreground);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+	transform: none;
+	transition:
+		inset-inline-start 300ms cubic-bezier(0.32, 0.72, 0, 1),
+		background-color 250ms var(--hero-ease),
+		transform 0s;
+}
+
+body[data-dsh-hero] [role='switch']:not(.hero-switch)[aria-checked='true'] > span {
+	inset-inline-start: calc(100% - 1.375rem - 0.25rem);
+	background-color: var(--dsw-alias-label-primary-foreground);
+	transform: none;
+}
+
+body[data-dsh-hero] [role='switch']:not(.hero-switch)[aria-checked='false'] > span {
+	background-color: var(--dsw-alias-label-primary-foreground);
+	transform: none;
+}
+
+@media (hover: hover) {
+	body[data-dsh-hero] [role='switch']:not(.hero-switch):not([aria-checked='true']):hover {
+		background-color: color-mix(in oklab, var(--dsw-alias-interactive-bg-hover) 80%, transparent);
+	}
+
+	body[data-dsh-hero] [role='switch']:not(.hero-switch)[aria-checked='true']:hover {
+		background-color: color-mix(in oklab, var(--dsw-alias-brand-primary) 90%, var(--dsw-alias-label-primary) 10%);
+	}
+}
+
+/* ---------------------------------------------------------------------------
+ * Kbd — 24px HeroUI key badge with 8px radius and muted default fill.
+ * Tooltip and joined-key groups keep their own compact 16px treatment.
+ * ------------------------------------------------------------------------- */
+body[data-dsh-hero] kbd:not(.hero-kbd):not([class*='_tooltip_'] *):not([class*='_joined_'] *) {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	height: 24px;
+	padding: 0 8px;
+	border: 0;
+	border-radius: 8px;
+	background-color: var(--dsw-alias-interactive-bg-hover);
+	color: var(--dsw-alias-label-tertiary);
+	font-family: inherit;
+	font-size: 14px;
+	font-weight: 500;
+	line-height: 1;
+	white-space: nowrap;
+}
+
+/* Shortcut-dialog groups paint their own 26px pill around the keys; keeping
+   it under per-key badges would stack two surfaces. Flatten the group so the
+   HeroUI Kbd badges are the only background (KbdGroup semantics). */
+body[data-dsh-hero] [class*='keyBadge'] {
+	height: auto;
+	padding: 0;
+	gap: 4px;
+	border-radius: 0;
+	background: transparent;
+}
+
+/* ---------------------------------------------------------------------------
+ * Markdown table — HeroUI primary table: a 2.5x-radius gray shell, the header
+ * row sitting on that shell with short column separators, and an inset white
+ * body card whose first/last rows round 16px. Cells are styled individually
+ * because a <table> has no paintable body surface.
+ * ------------------------------------------------------------------------- */
+body[data-dsh-hero] [class*='_markdown'] [class*='_tableScroll'] {
+	box-sizing: border-box;
+	padding: 0 4px 4px;
+	border: 0;
+	border-radius: min(32px, var(--dsh-hero-radius-tabs));
+	background-color: var(--dsw-alias-bg-layer-2);
+	box-shadow: none;
+}
+
+body[data-dsh-hero] [class*='_markdown'] [class*='_tableScroll'] table {
+	width: 100%;
+	min-width: 100%;
+	border-collapse: separate;
+	border-spacing: 0;
+	font-size: 14px;
+}
+
+body[data-dsh-hero] [class*='_markdown'] [class*='_tableScroll'] thead th {
+	position: relative;
+	padding: 10px 16px;
+	border: 0;
+	border-bottom: 1px solid color-mix(in oklab, var(--dsw-alias-border-l1) 50%, transparent);
+	background: transparent;
+	color: var(--dsw-alias-label-tertiary);
+	font-size: 12px;
+	font-weight: 500;
+	line-height: 16px;
+	text-align: start;
+}
+
+/* Short vertical separator between header columns; never after the last one. */
+body[data-dsh-hero] [class*='_markdown'] [class*='_tableScroll'] thead th::after {
+	content: '';
+	position: absolute;
+	inset-inline-end: 0;
+	top: 50%;
+	width: 1px;
+	height: 16px;
+	transform: translateY(-50%);
+	border-radius: 4px;
+	background: var(--dsw-alias-border-l1);
+	pointer-events: none;
+}
+
+body[data-dsh-hero] [class*='_markdown'] [class*='_tableScroll'] thead th:last-child::after {
+	content: none;
+}
+
+body[data-dsh-hero] [class*='_markdown'] [class*='_tableScroll'] tbody td {
+	padding: 12px 16px;
+	border: 0;
+	border-bottom: 1px solid color-mix(in oklab, var(--dsw-alias-border-l1) 50%, transparent);
+	background-color: var(--dsw-alias-bg-layer-1);
+	color: var(--dsw-alias-label-primary);
+	vertical-align: middle;
+}
+
+body[data-dsh-hero] [class*='_markdown'] [class*='_tableScroll'] tbody tr:last-child td {
+	border-bottom: 0;
+}
+
+/* The body card's corners come from the outer cells of the first/last row. */
+body[data-dsh-hero] [class*='_markdown'] [class*='_tableScroll'] tbody tr:first-child td:first-child {
+	border-start-start-radius: 16px;
+}
+
+body[data-dsh-hero] [class*='_markdown'] [class*='_tableScroll'] tbody tr:first-child td:last-child {
+	border-start-end-radius: 16px;
+}
+
+body[data-dsh-hero] [class*='_markdown'] [class*='_tableScroll'] tbody tr:last-child td:first-child {
+	border-end-start-radius: 16px;
+}
+
+body[data-dsh-hero] [class*='_markdown'] [class*='_tableScroll'] tbody tr:last-child td:last-child {
+	border-end-end-radius: 16px;
+}
+
+@media (hover: hover) {
+	body[data-dsh-hero] [class*='_markdown'] [class*='_tableScroll'] tbody tr:hover td {
+		background-color: color-mix(in oklab, var(--dsw-alias-bg-layer-1) 60%, var(--dsw-alias-bg-layer-2));
+	}
+}
+
+/* ---------------------------------------------------------------------------
+ * Tag — 24px pill status chip; semantic data-tone palettes are preserved.
+ * Only geometry is normalised so the plugin cards keep their inline rhythm.
+ * ------------------------------------------------------------------------- */
+body[data-dsh-hero] [class*='_tag_'] {
+	display: inline-flex;
+	align-items: center;
+	box-sizing: border-box;
+	height: 24px;
+	min-height: 24px;
+	padding: 0 8px;
+	border-radius: 999px;
+	gap: 4px;
+	font-size: 11px;
+	font-weight: 500;
+	line-height: 1;
+	white-space: nowrap;
+	transition:
+		background-color 100ms var(--hero-ease),
+		color 100ms var(--hero-ease);
+}
+
+body[data-dsh-hero] [class*='_tag_']:not([data-tone]) {
+	background-color: var(--dsw-alias-interactive-bg-hover);
+	color: var(--dsw-alias-label-tertiary);
+}
+
+/* ---------------------------------------------------------------------------
+ * Plugin market card — HeroUI Card (default variant): surface fill, 3x radius
+ * and the surface shadow. HeroUI cards carry no border and no hover lift, so
+ * the host's own hover fill stays the only interaction cue.
+ * ------------------------------------------------------------------------- */
+body[data-dsh-hero] [class*='_card'][class*='_cardLink'] {
+	box-sizing: border-box;
+	border: 0;
+	border-radius: var(--dsh-hero-radius-card);
+	background-color: var(--dsw-alias-bg-layer-1);
+	box-shadow: var(--dsw-shadow-lv1);
+}
+
+/* ---------------------------------------------------------------------------
+ * Disclosure — per-turn process row + tool-call group headers.
+ * HeroUI header = 32px, 14px text, 0 8px padding, 12px radius, default hover.
+ * ------------------------------------------------------------------------- */
+body[data-dsh-hero] [data-turn-process] {
+	box-sizing: border-box;
+	height: calc(32px + var(--dsh-content-font-delta, 0px));
+	padding: 0 8px;
+	border: 0;
+	border-radius: 12px;
+	background: transparent;
+	color: var(--dsw-alias-label-tertiary);
+	font-size: 14px;
+	transition:
+		background-color 150ms var(--hero-ease),
+		color 150ms var(--hero-ease);
+}
+
+/* A finished turn is disabled by DSH; keep it readable instead of dimming. */
+body[data-dsh-hero] [data-turn-process]:disabled {
+	opacity: 1;
+	color: var(--dsw-alias-label-secondary);
+	cursor: default;
+}
+
+@media (hover: hover) {
+	body[data-dsh-hero] [data-turn-process]:not(:disabled):hover {
+		background-color: var(--dsw-alias-interactive-bg-hover);
+		color: var(--dsw-alias-label-secondary);
+	}
+}
+
+body[data-dsh-hero] [data-turn-process][data-open],
+body[data-dsh-hero] [data-turn-process][aria-expanded='true'] {
+	background-color: var(--dsw-alias-interactive-bg-hover);
+	color: var(--dsw-alias-label-secondary);
+}
+
+body[data-dsh-hero] [data-turn-process] > span {
+	min-width: 0;
+	font-size: 14px;
+	line-height: 20px;
+}
+
+body[data-dsh-hero] [data-turn-process] [class*='durationNumber'] {
+	font-variant-numeric: tabular-nums;
+}
+
+body[data-dsh-hero] [data-turn-process] svg {
+	width: 14px;
+	height: 14px;
+	flex: none;
+	margin-inline-start: 4px;
+	transition: transform 250ms var(--hero-ease);
+}
+
+/* Tool-call group header: a compact 8px-radius pill around the label. */
+body[data-dsh-hero] [data-process-activity] {
+	padding-inline: 6px;
+	margin-inline: -6px;
+	border-radius: 8px;
+	color: var(--dsw-alias-label-tertiary);
+	transition:
+		background-color 150ms var(--hero-ease),
+		color 100ms var(--hero-ease-out);
+}
+
+@media (hover: hover) {
+	body[data-dsh-hero] [data-process-activity]:hover {
+		background-color: var(--dsw-alias-interactive-bg-hover);
+		color: var(--dsw-alias-label-secondary);
+	}
+}
+
+/* ---------------------------------------------------------------------------
+ * Typography — markdown prose.
+ * HeroUI prose = 14/20 body, 600/500 headings, accent links, 2px quote rule,
+ * default-surface inline code, 8px list rhythm.
+ * ------------------------------------------------------------------------- */
+body[data-dsh-hero] [class*='_markdown_'] {
+	font-size: var(--dsh-content-font-size, 14px);
+	line-height: calc(20px + var(--dsh-content-font-delta, 0px));
+	color: var(--dsw-alias-label-primary);
+}
+
+body[data-dsh-hero] [class*='_markdown_'] :is(h1, h2, h3, h4) {
+	font-weight: 600;
+}
+
+body[data-dsh-hero] [class*='_markdown_'] :is(h5, h6) {
+	font-weight: 500;
+}
+
+body[data-dsh-hero] [class*='_markdown_'] strong {
+	font-weight: 600;
+}
+
+body[data-dsh-hero] [class*='_markdown_'] blockquote {
+	border-inline-start: 2px solid var(--dsw-alias-border-l2);
+	padding-inline-start: 16px;
+	color: var(--dsw-alias-label-tertiary);
+	font-style: normal;
+}
+
+body[data-dsh-hero] [class*='_markdown_'] :not(pre) > code {
+	padding: 0 4px;
+	border-color: transparent;
+	border-radius: 6px;
+	background-color: var(--dsw-alias-interactive-bg-hover);
+}
+
+body[data-dsh-hero] [class*='_markdown_'] :is(ul, ol) {
+	margin: 8px 0;
+	padding-inline-start: 20px;
+}
+
+body[data-dsh-hero] [class*='_markdown_'] li {
+	line-height: calc(20px + var(--dsh-content-font-delta, 0px));
+}
+
+body[data-dsh-hero] [class*='_markdown_'] li::marker {
+	line-height: calc(20px + var(--dsh-content-font-delta, 0px));
+	color: var(--dsw-alias-label-tertiary);
+}
+
+/* ---------------------------------------------------------------------------
+ * Empty state — plugin-market "no results" and sidebar list empties.
+ * HeroUI empty state = centered column, 12px gap, 48px muted icon, 16/600
+ * title, 14px muted description.
+ * ------------------------------------------------------------------------- */
+body[data-dsh-hero] [class~='nUhMVa_empty'] {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	min-height: 220px;
+	max-width: 520px;
+	margin: 0 auto;
+	padding: 48px 24px;
+	color: var(--dsw-alias-label-tertiary);
+	font-size: 14px;
+	line-height: 20px;
+	text-align: center;
+}
+
+body[data-dsh-hero] [class~='nUhMVa_empty'] > div:first-child {
+	color: var(--dsw-alias-label-primary);
+	font-size: 16px;
+	font-weight: 600;
+	line-height: 24px;
+}
+
+body[data-dsh-hero] [class~='nUhMVa_empty'] > button {
+	margin-top: 4px;
+}
+
+body[data-dsh-hero] [class*='emptyState'] {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	margin-top: 64px;
+	padding: 0 16px;
+	color: var(--dsw-alias-label-tertiary);
+	font-size: 14px;
+	line-height: 20px;
+	text-align: center;
+}
+
+body[data-dsh-hero] [class*='emptyState'] > svg {
+	width: 48px;
+	height: 48px;
+	flex: none;
+	margin-bottom: 4px;
+	color: var(--dsw-alias-label-tertiary);
+}
+
+body[data-dsh-hero] [class*='emptyState'] > :is(strong, h3, [class*='title']) {
+	color: var(--dsw-alias-label-primary);
+	font-size: 16px;
+	font-weight: 600;
+	line-height: 24px;
+}
+
+/* Compact "no matching session" line in the sidebar. */
+body[data-dsh-hero] [class~='bhn1Oq_empty'] {
+	padding: 32px 12px;
+	color: var(--dsw-alias-label-tertiary);
+	font-size: 14px;
+	line-height: 20px;
+	text-align: center;
+}
+
+/* ---------------------------------------------------------------------------
+ * Scroll shadow — HeroUI fade-at-scroll-edge, driven by a scroll timeline.
+ * An inactive timeline (no overflow) leaves both fades at 0, so non-scrolling
+ * containers paint no mask at all. The conversation gets a top fade only
+ * because its sticky composer occupies the bottom edge.
+ * ------------------------------------------------------------------------- */
+@property --hero-scroll-top-fade {
+	syntax: '<length>';
+	inherits: false;
+	initial-value: 0px;
+}
+
+@property --hero-scroll-bottom-fade {
+	syntax: '<length>';
+	inherits: false;
+	initial-value: 0px;
+}
+
+@keyframes hero-scroll-top-fade {
+	from {
+		--hero-scroll-top-fade: 0px;
+	}
+	to {
+		--hero-scroll-top-fade: 16px;
+	}
+}
+
+@keyframes hero-scroll-bottom-fade {
+	from {
+		--hero-scroll-bottom-fade: 16px;
+	}
+	to {
+		--hero-scroll-bottom-fade: 0px;
+	}
+}
+
+body[data-dsh-hero] [class~='bhn1Oq_list'] {
+	mask-image: linear-gradient(
+		to bottom,
+		transparent 0,
+		#000 var(--hero-scroll-top-fade, 0px),
+		#000 calc(100% - var(--hero-scroll-bottom-fade, 0px)),
+		transparent 100%
+	);
+	-webkit-mask-image: linear-gradient(
+		to bottom,
+		transparent 0,
+		#000 var(--hero-scroll-top-fade, 0px),
+		#000 calc(100% - var(--hero-scroll-bottom-fade, 0px)),
+		transparent 100%
+	);
+	mask-repeat: no-repeat;
+	-webkit-mask-repeat: no-repeat;
+	mask-size: 100% 100%;
+	-webkit-mask-size: 100% 100%;
+}
+
+body[data-dsh-hero] [class~='wSkVaW_scrollBody'] {
+	mask-image: linear-gradient(
+		to bottom,
+		transparent 0,
+		#000 var(--hero-scroll-top-fade, 0px),
+		#000 100%
+	);
+	-webkit-mask-image: linear-gradient(
+		to bottom,
+		transparent 0,
+		#000 var(--hero-scroll-top-fade, 0px),
+		#000 100%
+	);
+	mask-repeat: no-repeat;
+	-webkit-mask-repeat: no-repeat;
+	mask-size: 100% 100%;
+	-webkit-mask-size: 100% 100%;
+}
+
+@supports (animation-timeline: scroll(self)) {
+	body[data-dsh-hero] [class~='bhn1Oq_list'] {
+		animation:
+			hero-scroll-top-fade linear both,
+			hero-scroll-bottom-fade linear both;
+		animation-timeline:
+			scroll(self block),
+			scroll(self block);
+		animation-range:
+			0 16px,
+			calc(100% - 16px) 100%;
+	}
+
+	body[data-dsh-hero] [class~='wSkVaW_scrollBody'] {
+		animation: hero-scroll-top-fade linear both;
+		animation-timeline: scroll(self block);
+		animation-range: 0 16px;
+	}
+}
+
+/* ---------------------------------------------------------------------------
+ * Spinner — 20px, 2px, three-quarter currentcolor ring, 750ms linear.
+ * Narrowed to the boot spinner element and div hooks so the separate SVG
+ * state spinner (_spinner_1i3xo, a <svg>) is not turned into a ring.
+ * ------------------------------------------------------------------------- */
+body[data-dsh-hero] [data-dsh-boot-spinner],
+body[data-dsh-hero] div[class*='_spinner_'] {
+	box-sizing: border-box;
+	width: 20px;
+	height: 20px;
+	flex: none;
+	border: 2px solid currentColor;
+	border-top-color: transparent;
+	border-radius: 50%;
+	background: transparent;
+	animation: hero-spinner-spin 750ms linear infinite;
+}
+
+body[data-dsh-hero] [data-dsh-boot-spinner]::after,
+body[data-dsh-hero] div[class*='_spinner_']::after {
+	content: none;
+	display: none;
+}
+
+@keyframes hero-spinner-spin {
+	to {
+		transform: rotate(1turn);
+	}
+}
+
+/* ---------------------------------------------------------------------------
+ * Select trigger — settings dropdowns (permission / language / step detail /
+ * queue mode). These open menus, so they use the HeroUI select__trigger shape:
+ * one 36px field surface with the field shadow and a 12px radius. The composer
+ * row keeps the host geometry — DSH already ships 28px ghost buttons there and
+ * HeroUI has no Toolbar/ToggleButtonGroup equivalent to map onto.
+ * ------------------------------------------------------------------------- */
+
+/* Settings dropdowns (permission / language / step detail / queue mode) are
+   Select triggers, not segmented controls: one 36px field surface with the
+   field shadow and a 12px radius, matching HeroUI's select__trigger. The
+   surface token is DSH's own field-on-dialog fill (bg-module-platform), since
+   input-major collapses into the dark overlay background. */
+body[data-dsh-hero] :is(
+	button[class*='oY77xG_selector'],
+	button[class*='hVGvvW_selector'],
+	button[class*='_2XZxNq_selector'],
+	button[class*='T1PP_q_selector']
+) {
+	box-sizing: border-box;
+	height: 36px;
+	padding: 0 14px;
+	border: 0;
+	border-radius: 12px;
+	background: var(--dsw-alias-bg-module-platform);
+	box-shadow: var(--dsw-shadow-lv1);
+	color: var(--dsw-alias-label-primary);
+	font-size: 14px;
+	font-weight: 500;
+	gap: 12px;
+	transition:
+		background-color 150ms var(--hero-ease),
+		box-shadow 150ms var(--hero-ease-out);
+}
+
+@media (hover: hover) {
+	body[data-dsh-hero] :is(
+		button[class*='oY77xG_selector'],
+		button[class*='hVGvvW_selector'],
+		button[class*='_2XZxNq_selector'],
+		button[class*='T1PP_q_selector']
+	):hover:not(:disabled) {
+		background: color-mix(in oklab, var(--dsw-alias-bg-module-platform) 92%, var(--dsw-alias-label-primary) 3%);
+	}
+}
+
+body[data-dsh-hero] :is(
+	button[class*='oY77xG_selector'],
+	button[class*='hVGvvW_selector'],
+	button[class*='_2XZxNq_selector'],
+	button[class*='T1PP_q_selector']
+):focus-visible {
+	outline: 2px solid var(--hero-focus);
+	outline-offset: 2px;
+}
+
+body[data-dsh-hero] :is(
+	button[class*='oY77xG_selector'],
+	button[class*='hVGvvW_selector'],
+	button[class*='_2XZxNq_selector'],
+	button[class*='T1PP_q_selector']
+) svg {
+	transition: transform 150ms var(--hero-ease);
+}
+
+body[data-dsh-hero] :is(
+	button[class*='oY77xG_selector'],
+	button[class*='hVGvvW_selector'],
+	button[class*='_2XZxNq_selector'],
+	button[class*='T1PP_q_selector']
+)[aria-expanded='true'] svg {
+	transform: rotate(180deg);
+}
+
+/* ---------------------------------------------------------------------------
+ * Close button — 28px ghost circle in the settings dialog header.
+ * ------------------------------------------------------------------------- */
+body[data-dsh-hero] [role='dialog'] button[class*='close'],
+body[data-dsh-hero] [data-shortcut-modal] button[class*='close'],
+body[data-dsh-hero] [role='dialog'] button[aria-label='关闭'] {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	flex: none;
+	padding: 0;
+	border: 0;
+	border-radius: 9999px;
+	background: transparent;
+	color: var(--dsw-alias-label-secondary);
+	cursor: pointer;
+	user-select: none;
+	transition:
+		transform 250ms var(--hero-ease-out-quart),
+		background-color 100ms var(--hero-ease-out),
+		color 150ms var(--hero-ease-out);
+}
+
+body[data-dsh-hero] [role='dialog'] button[class*='close'] svg,
+body[data-dsh-hero] [data-shortcut-modal] button[class*='close'] svg,
+body[data-dsh-hero] [role='dialog'] button[aria-label='关闭'] svg {
+	width: 16px;
+	height: 16px;
+	flex: none;
+	pointer-events: none;
+}
+
+@media (hover: hover) {
+	body[data-dsh-hero] [role='dialog'] button[class*='close']:hover,
+	body[data-dsh-hero] [data-shortcut-modal] button[class*='close']:hover,
+	body[data-dsh-hero] [role='dialog'] button[aria-label='关闭']:hover {
+		background-color: var(--dsw-alias-interactive-bg-hover);
+		color: var(--dsw-alias-label-primary);
+	}
+}
+
+body[data-dsh-hero] [role='dialog'] button[class*='close']:active,
+body[data-dsh-hero] [data-shortcut-modal] button[class*='close']:active,
+body[data-dsh-hero] [role='dialog'] button[aria-label='关闭']:active {
+	background-color: var(--dsw-alias-interactive-bg-active);
+	transform: scale(0.96);
+}
+
+/* ---------------------------------------------------------------------------
+ * Separator — 1px full-width rule inside markdown. Settings rows already paint
+ * their own border-bottom, so those dividers are intentionally left alone.
+ * ------------------------------------------------------------------------- */
+body[data-dsh-hero] [class*='markdown'] hr {
+	display: block;
+	width: 100%;
+	height: 1px;
+	flex: none;
+	margin: 16px 0;
+	padding: 0;
+	border: 0;
+	border-radius: 2px;
+	background: var(--dsw-alias-border-l1);
+}
+
+/* ---------------------------------------------------------------------------
+ * Link — accent text with a 1px underline and 2px offset. Hover brightens the
+ * accent with 10% white, matching HeroUI's accent-hover mix.
+ * ------------------------------------------------------------------------- */
+body[data-dsh-hero] [class*='markdown'] a[href] {
+	color: var(--dsw-alias-brand-primary);
+	font-weight: 500;
+	text-decoration: underline;
+	text-decoration-color: color-mix(in oklab, var(--dsw-alias-brand-primary) 60%, transparent);
+	text-decoration-style: solid;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 2px;
+	border-radius: 6px;
+	cursor: pointer;
+	transition:
+		color 100ms var(--hero-ease),
+		text-decoration-color 150ms var(--hero-ease);
+}
+
+@media (hover: hover) {
+	body[data-dsh-hero] [class*='markdown'] a[href]:hover {
+		color: color-mix(in oklab, var(--dsw-alias-brand-primary) 90%, #fff 10%);
+		text-decoration-color: currentColor;
+	}
+}
+
+body[data-dsh-hero] [class*='markdown'] a[href]:active {
+	color: color-mix(in oklab, var(--dsw-alias-brand-primary) 90%, #fff 10%);
+	text-decoration-color: currentColor;
+}
+
+body[data-dsh-hero] [class*='markdown'] a[href]:focus-visible {
+	outline: 2px solid var(--hero-focus);
+	outline-offset: 2px;
+	text-decoration-color: currentColor;
+	text-decoration-style: solid;
+}
+
+/* ---------------------------------------------------------------------------
+ * Alert — DSH renders the session-open failure as inline red text
+ * ([class*='openError'], no role=alert). Style it as a HeroUI danger alert and
+ * keep a generic role=alert fallback for future banners.
+ * ------------------------------------------------------------------------- */
+body[data-dsh-hero] [role='alert'] {
+	box-sizing: border-box;
+	padding: 12px 16px;
+	border: 1px solid color-mix(in oklab, var(--dsw-alias-brand-primary) 35%, var(--dsw-alias-border-l1));
+	border-radius: 16px;
+	background: color-mix(in oklab, var(--dsw-alias-brand-primary) 8%, var(--dsw-alias-bg-overlay));
+	color: var(--dsw-alias-label-primary);
+	font-size: 13px;
+	line-height: 20px;
+}
+
+body[data-dsh-hero] [class*='openError'] {
+	box-sizing: border-box;
+	padding: 12px 16px;
+	border: 1px solid color-mix(in oklab, var(--dsw-alias-state-error-primary) 40%, var(--dsw-alias-border-l1));
+	border-radius: 16px;
+	background: color-mix(in oklab, var(--dsw-alias-state-error-primary) 10%, var(--dsw-alias-bg-overlay));
+	color: var(--dsw-alias-label-primary);
+	font-size: 13px;
+	line-height: 20px;
+	overflow-wrap: anywhere;
+}
+
+body[data-dsh-hero] [role='alert'] [data-slot='title'],
+body[data-dsh-hero] [role='alert'] [class*='title'] {
+	font-size: 14px;
+	line-height: 20px;
+	font-weight: 600;
+	color: var(--dsw-alias-label-primary);
+}
+
+body[data-dsh-hero] [role='alert'] [data-slot='description'],
+body[data-dsh-hero] [role='alert'] [class*='description'] {
+	font-size: 13px;
+	line-height: 20px;
+	color: var(--dsw-alias-label-tertiary);
+}
+
+/* ---------------------------------------------------------------------------
+ * Sheet — the right sidebar is a dockkit pane inside [data-sidebar-right-panel];
+ * the host owns the push/width transition, so only the surface, inner-edge
+ * radius and open motion are styled here.
+ * ------------------------------------------------------------------------- */
+body[data-dsh-hero] [data-sidebar-right-panel][data-sidebar-right-open='true'] {
+	overflow: clip;
+	background-color: var(--dsw-alias-bg-overlay);
+	border-start-start-radius: 12px;
+	border-end-start-radius: 12px;
+	box-shadow: var(--dsw-shadow-lv3);
+}
+
+body[data-dsh-hero] [data-sidebar-right-panel] [data-dockkit-pane] {
+	background-color: transparent;
+}
+
+/* The host paints a 0.5px left hairline on the column-0 tab host with a
+   (0,4,0) selector; the extra body element here wins with (0,4,1). */
+body[data-dsh-hero] [data-sidebar-right-panel] [data-dockkit-surface] [data-dockkit-host][data-dockkit-column='0'] > [data-dockkit-pane] {
+	border-inline-start: 1px solid var(--dsw-alias-border-l1);
+}
+
+body[data-dsh-hero] [data-sidebar-right-panel] [data-dockkit-empty] {
+	background-color: transparent;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	body[data-dsh-hero] [data-sidebar-right-panel][data-sidebar-right-open='true'] {
+		animation: hero-sheet-in 200ms var(--hero-ease-out) both;
+	}
+}
+
+@keyframes hero-sheet-in {
+	from {
+		opacity: 0;
+		translate: 8px 0;
+	}
+}
+
+/* Reduced-motion guards for the DSH-surface layer. */
+@media (prefers-reduced-motion: reduce) {
+	body[data-dsh-hero] [role='switch']:not(.hero-switch),
+	body[data-dsh-hero] [role='switch']:not(.hero-switch) > span,
+	body[data-dsh-hero] [class*='_tag_'],
+	body[data-dsh-hero] [data-turn-process],
+	body[data-dsh-hero] [data-turn-process] svg,
+	body[data-dsh-hero] [data-process-activity],
+	body[data-dsh-hero] :is(
+		button[class*='oY77xG_selector'],
+		button[class*='hVGvvW_selector'],
+		button[class*='_2XZxNq_selector'],
+		button[class*='T1PP_q_selector']
+	),
+	body[data-dsh-hero] :is(
+		button[class*='oY77xG_selector'],
+		button[class*='hVGvvW_selector'],
+		button[class*='_2XZxNq_selector'],
+		button[class*='T1PP_q_selector']
+	) svg,
+	body[data-dsh-hero] [role='dialog'] button[class*='close'],
+	body[data-dsh-hero] [data-shortcut-modal] button[class*='close'],
+	body[data-dsh-hero] [class*='markdown'] a[href] {
+		transition: none;
+	}
+
+	body[data-dsh-hero] [role='dialog'] button[class*='close']:active,
+	body[data-dsh-hero] [data-shortcut-modal] button[class*='close']:active {
+		transform: none;
+	}
+
+	body[data-dsh-hero] [data-dsh-boot-spinner],
+	body[data-dsh-hero] div[class*='_spinner_'] {
+		animation: none;
+	}
+
+	body[data-dsh-hero] [class~='bhn1Oq_list'],
+	body[data-dsh-hero] [class~='wSkVaW_scrollBody'] {
+		animation: none;
+		mask-image: none;
+		-webkit-mask-image: none;
+	}
+
+	body[data-dsh-hero] [data-sidebar-right-panel][data-sidebar-right-open='true'] {
+		animation: none;
+	}
+}
+

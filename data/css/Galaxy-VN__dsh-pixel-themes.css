@@ -1,0 +1,93 @@
+/* Galaxy-VN/dsh-pixel-themes — client.js
+   fetched 2026-11-16 from https://raw.githubusercontent.com/Galaxy-VN/dsh-pixel-themes/main/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+:root {
+  color-scheme: dark;
+  --dsh-font-family-text-default: "Cascadia Mono", "Cascadia Code", Consolas, "Courier New", ui-monospace, monospace;
+  --dsh-font-family-code-default: "Cascadia Mono", "Cascadia Code", Consolas, "Courier New", ui-monospace, monospace;
+  --dsh-font-family-terminal-default: "Cascadia Mono", Consolas, "Courier New", ui-monospace, monospace;
+  --dsh-scrollbar-width: 10px;
+  --dsw-focus-ring-color: var(--dsw-alias-brand-primary);
+  --dsw-alias-state-business-primary: var(--dsw-alias-brand-primary);
+  --dsw-shadow-lv1: 1px 1px 0 0 var(--dsw-alias-border-l2);
+  --dsw-shadow-lv2: 2px 2px 0 0 var(--dsw-alias-border-l2);
+  --dsw-shadow-lv3: 3px 3px 0 0 var(--dsw-alias-border-l3);
+  --dsw-shadow-lv4: 4px 4px 0 0 var(--dsw-alias-border-l3);
+  --dsw-elevation-soft: var(--dsw-shadow-lv1);
+  --dsw-elevation-panel: var(--dsw-shadow-lv2);
+  --dsw-elevation-prominent: var(--dsw-shadow-lv3);
+}
+
+html {
+  background-color: #0B0A08;
+}
+
+/* CRT looks glow; the daylight looks stay matte. */
+html[data-tm-look="phosphor"] body {
+  text-shadow: 0 0 6px rgba(77, 255, 154, 0.3);
+}
+html[data-tm-look="amber"] body {
+  text-shadow: 0 0 6px rgba(255, 176, 0, 0.26);
+}
+html[data-tm-look="paper"] body,
+html[data-tm-look="gameboy"] body {
+  text-shadow: none;
+}
+
+body {
+  --dsh-scrollbar-width: 10px;
+  --dsw-elevation-stroke-color: var(--dsw-alias-border-l2);
+  --dsw-focus-ring-color: var(--dsw-alias-brand-primary);
+  --dsw-alias-state-business-primary: var(--dsw-alias-brand-primary);
+  --dsw-shadow-lv1: 1px 1px 0 0 var(--dsw-alias-border-l2);
+  --dsw-shadow-lv2: 2px 2px 0 0 var(--dsw-alias-border-l2);
+  --dsw-shadow-lv3: 3px 3px 0 0 var(--dsw-alias-border-l3);
+  --dsw-shadow-lv4: 4px 4px 0 0 var(--dsw-alias-border-l3);
+  --dsw-elevation-soft: var(--dsw-shadow-lv1);
+  --dsw-elevation-panel: var(--dsw-shadow-lv2);
+  --dsw-elevation-prominent: var(--dsw-shadow-lv3);
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0;
+  background: transparent !important;
+  background-image: none !important;
+  image-rendering: auto;
+}
+
+#tm-ascii-wall {
+  image-rendering: auto;
+}
+
+/* Every tile is a tile: no rounded corners anywhere. */
+*,
+*::before,
+*::after {
+  border-radius: 0 !important;
+}
+
+h1, h2, h3, h4, h5, h6,
+[role="heading"] {
+  letter-spacing: 0.04em;
+}
+
+/* Square pixel scrollbars. */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--dsw-alias-border-l2);
+  border: 2px solid var(--dsw-alias-bg-base);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--dsw-alias-brand-primary);
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--dsw-alias-brand-primary) 45%, transparent);
+}

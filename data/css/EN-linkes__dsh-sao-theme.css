@@ -1,0 +1,2141 @@
+/* EN-linkes/dsh-sao-theme — lib/sao.css
+   fetched 2026-11-16 from https://raw.githubusercontent.com/EN-linkes/dsh-sao-theme/main/lib/sao.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* ══════════════════════════════════════════════════════════════════════
+   dsh-sao-theme — AINCRAD SYSTEM CONSOLE  v2
+   针对 DSH web UI 真实 DOM（mP3x-q / wtg9ga / an3WzG / V4vHZW /
+   GRgSLq / hKdVjq / BE0jCW / acoR2W / GAkraW / SNx2jG / wnFoaW）皮肤。
+
+   约定：
+   · 全部规则以 html.sao 开头 → 卸载整块移除，特异性压过宿主。
+   · 只改绘制属性（颜色/边框/阴影/背景/字体/裁剪/圆角），不动 box model。
+   · 青 = 系统色（主）；琥珀 = 警示/运行中；紫 = 业务态（少用）。
+   ══════════════════════════════════════════════════════════════════════ */
+
+html.sao {
+  --sao-cyan: 110, 224, 255;
+  --sao-cyan-solid: #6ee0ff;
+  --sao-amber: 255, 194, 71;
+  --sao-violet: 155, 140, 255;
+  --sao-void: #04080e;
+}
+
+/* ── 0. 令牌层 ───────────────────────────────────────────────────── */
+html.sao body,
+html.sao body[data-ds-dark-theme] {
+  --dsw-alias-bg-base: #04080e !important;
+  --dsw-alias-bg-document-preview: #04080e !important;
+  --dsw-alias-bg-document-selection: rgba(110, 224, 255, 0.24) !important;
+  --dsw-alias-bg-layer-1: #070d15 !important;
+  --dsw-alias-bg-layer-2: #0a121d !important;
+  --dsw-alias-bg-layer-3: #0e1a27 !important;
+  --dsw-alias-bg-module-platform: #050b13 !important;
+  --dsw-alias-bg-multi-select: rgba(110, 224, 255, 0.10) !important;
+  --dsw-alias-bg-overlay: rgba(4, 9, 16, 0.94) !important;
+  --dsw-alias-bg-skeleton: rgba(110, 224, 255, 0.07) !important;
+  --dsw-alias-bg-mask-1: rgba(2, 5, 9, 0.62) !important;
+  --dsw-alias-bg-mask-2: rgba(2, 5, 9, 0.45) !important;
+  --dsw-alias-bg-mask-3: rgba(2, 5, 9, 0.78) !important;
+  --dsw-alias-bg-mask-photo: rgba(2, 5, 9, 0.90) !important;
+  --dsw-alias-bg-mask-drop: rgba(8, 18, 30, 0.72) !important;
+
+  --dsw-alias-border-l1: rgba(110, 224, 255, 0.12) !important;
+  --dsw-alias-border-l2: rgba(110, 224, 255, 0.20) !important;
+  --dsw-alias-border-l2-darkmode-thin: rgba(110, 224, 255, 0.15) !important;
+  --dsw-alias-border-l3: rgba(110, 224, 255, 0.32) !important;
+  --dsw-alias-border-l4: rgba(110, 224, 255, 0.48) !important;
+  --dsw-alias-border-inverted: rgba(222, 245, 255, 0.10) !important;
+  --dsw-alias-border-inverted2: rgba(222, 245, 255, 0.16) !important;
+
+  --dsw-alias-brand-primary: #6ee0ff !important;
+  --dsw-alias-brand-primary-invert: #04101a !important;
+  --dsw-alias-brand-primary-new-colorprimary-new-color: #3fb4dd !important;
+  --dsw-alias-brand-text: #8ee9ff !important;
+
+  --dsw-alias-label-primary: #dcf2ff !important;
+  --dsw-alias-label-primary-bluish: #cdf4ff !important;
+  --dsw-alias-label-primary-dimmed: #9dc0d4 !important;
+  --dsw-alias-label-primary-foreground: #04080e !important;
+  --dsw-alias-label-primary-inverted: #04080e !important;
+  --dsw-alias-label-secondary: #9dc0d4 !important;
+  --dsw-alias-label-tertiary: #7392a6 !important;
+  --dsw-alias-label-caption: #7392a6 !important;
+  --dsw-alias-label-dimmed: #40606f !important;
+  --dsw-alias-label-document-preview: #9dc0d4 !important;
+  --dsw-alias-label-shimmer: rgba(255, 255, 255, 0.28) !important;
+  --dsw-alias-label-deep-diving: #6ee0ff !important;
+  --dsw-alias-label-deep-diving-shimmer: #bff3ff !important;
+  --dsw-alias-menu-icon: #8fb6cc !important;
+
+  --dsw-alias-button-primary-fill: #6ee0ff !important;
+  --dsw-alias-button-primary-hover: #a8efff !important;
+  --dsw-alias-button-primary-dimmed: rgba(110, 224, 255, 0.35) !important;
+  --dsw-alias-button-contrast-fill: #e4f5ff !important;
+  --dsw-alias-button-elevated-fill: #0e1a27 !important;
+  --dsw-alias-button-floating-fill: #0a121d !important;
+  --dsw-alias-button-floating-hover: #122232 !important;
+  --dsw-alias-button-ghost-active-fill: rgba(110, 224, 255, 0.16) !important;
+  --dsw-alias-button-ghost-active-hover: rgba(110, 224, 255, 0.24) !important;
+  --dsw-alias-button-ghost-active-border: rgba(110, 224, 255, 0.48) !important;
+  --dsw-alias-button-info-fill: #3fb4dd !important;
+  --dsw-alias-button-info-hover: #6ee0ff !important;
+  --dsw-alias-button-tool-bar-fill: rgba(110, 224, 255, 0.08) !important;
+  --dsw-alias-button-tool-bar-fill-invisible: rgba(110, 224, 255, 0.03) !important;
+  --dsw-alias-button-tool-bar-hover: rgba(110, 224, 255, 0.18) !important;
+
+  --dsw-alias-interactive-bg-hover: rgba(110, 224, 255, 0.10) !important;
+  --dsw-alias-interactive-bg-hover-solid: #122232 !important;
+  --dsw-alias-interactive-bg-hover-accent: rgba(110, 224, 255, 0.18) !important;
+  --dsw-alias-interactive-bg-hover-danger: rgba(255, 84, 112, 0.16) !important;
+  --dsw-alias-interactive-bg-active: rgba(110, 224, 255, 0.20) !important;
+
+  --dsw-alias-state-success-primary: #4de0a8 !important;
+  --dsw-alias-state-success-secondary: rgba(77, 224, 168, 0.60) !important;
+  --dsw-alias-state-success-tertiary: rgba(77, 224, 168, 0.16) !important;
+  --dsw-alias-state-error-primary: #ff5470 !important;
+  --dsw-alias-state-error-secondary: rgba(255, 84, 112, 0.60) !important;
+  --dsw-alias-state-idle-primary: #3e5a6b !important;
+  --dsw-alias-state-warn-primary: #ffc247 !important;
+  --dsw-alias-state-warn-secondary: rgba(255, 194, 71, 0.60) !important;
+  --dsw-alias-state-warn-tertiary: rgba(255, 194, 71, 0.16) !important;
+  --dsw-alias-state-warn-label: #ffc247 !important;
+  /* 业务态收进青色区间：tab 选中、链路高亮都用它，紫会打散统一感 */
+  --dsw-alias-state-business-primary: #6ee0ff !important;
+  --dsw-alias-state-business-tertiary: rgba(110, 224, 255, 0.18) !important;
+
+  --dsw-alias-markdown-code-block: rgba(5, 12, 20, 0.92) !important;
+  --dsw-alias-markdown-code-block-banner: rgba(110, 224, 255, 0.07) !important;
+  --dsw-alias-markdown-code-segment-selected: rgba(110, 224, 255, 0.18) !important;
+  --dsw-alias-markdown-code-segment-unselected: transparent !important;
+  --dsw-alias-markdown-inline-code: rgba(110, 224, 255, 0.13) !important;
+  --dsw-alias-markdown-placeholder: rgba(110, 224, 255, 0.30) !important;
+  --dsw-alias-markdown-tag: rgba(110, 224, 255, 0.16) !important;
+  --dsw-alias-markdown-citation: #0d1d2e !important;
+  --dsw-alias-link: #6ee0ff !important;
+
+  --dsw-alias-code-diff-added: rgba(77, 224, 168, 0.12) !important;
+  --dsw-alias-code-diff-deleted: rgba(255, 84, 112, 0.12) !important;
+  --dsw-alias-file-diff-added-bg: #12281f !important;
+  --dsw-alias-file-diff-added-gutter: #0c1a15 !important;
+  --dsw-alias-file-diff-added-marker: #4de0a8 !important;
+  --dsw-alias-file-diff-deleted-bg: #2a1420 !important;
+  --dsw-alias-file-diff-deleted-gutter: #1b0d15 !important;
+  --dsw-alias-file-diff-deleted-marker: #ff5470 !important;
+
+  --dsw-alias-scrollbar-bg-l1: rgba(110, 224, 255, 0.16) !important;
+  --dsw-alias-scrollbar-bg-l2: rgba(110, 224, 255, 0.24) !important;
+  --dsw-alias-scrollbar-hover-l1: rgba(110, 224, 255, 0.36) !important;
+  --dsw-alias-scrollbar-hover-l2: rgba(110, 224, 255, 0.52) !important;
+  --dsw-alias-toast-bg: rgba(8, 18, 30, 0.97) !important;
+  --dsw-alias-toast-label: #dcf2ff !important;
+  --dsw-alias-tooltip-bg: rgba(10, 22, 35, 0.98) !important;
+  --dsw-alias-tooltip-key-bg: rgba(110, 224, 255, 0.12) !important;
+  --dsw-alias-turn-trigger-bg: rgba(110, 224, 255, 0.08) !important;
+  --dsw-alias-turn-trigger-bg-hover: rgba(110, 224, 255, 0.16) !important;
+  --dsw-alias-menu-group-header-fill: rgba(10, 22, 35, 0.96) !important;
+  --dsw-menu-surface-fill: rgba(9, 20, 32, 0.90) !important;
+  --dsw-alias-switch-thumb: #7392a6 !important;
+
+  --dsw-specific-sidebar-fill: rgba(5, 12, 20, 0.92) !important;
+  --dsw-specific-sidebar-nav-item-active: rgba(110, 224, 255, 0.16) !important;
+  --dsw-specific-sidebar-nav-item-active-accent: #6ee0ff !important;
+  --dsw-specific-sidebar-nav-item-hover: rgba(110, 224, 255, 0.08) !important;
+  --dsw-specific-bubble: rgba(12, 26, 41, 0.78) !important;
+  --dsw-specific-bubble-highlight: rgba(110, 224, 255, 0.20) !important;
+  --dsw-specific-input-major: rgba(7, 16, 26, 0.92) !important;
+  --dsw-specific-login-input: rgba(7, 16, 26, 0.92) !important;
+  --dsw-specific-menu: rgba(9, 20, 32, 0.95) !important;
+  --dsw-specific-selector: rgba(110, 224, 255, 0.14) !important;
+  --dsw-specific-tip: rgba(10, 22, 35, 0.96) !important;
+
+  --dsw-alias-onboarding-accent: #6ee0ff !important;
+  --dsw-alias-onboarding-card-fill: rgba(8, 18, 28, 0.86) !important;
+  --dsw-alias-onboarding-secondary-fill: #0a121d !important;
+  --dsw-alias-onboarding-checkbox-border: rgba(110, 224, 255, 0.30) !important;
+}
+
+/* ── 1. 系统层 ───────────────────────────────────────────────────── */
+html.sao body {
+  background-color: var(--sao-void) !important;
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 26 26' fill='none' stroke='%236ee0ff' stroke-width='1.2'><circle cx='13' cy='13' r='2.4'/><circle cx='13' cy='13' r='7.5' stroke-opacity='0.35'/><path d='M13 1.5v4M13 20.5v4M1.5 13h4M20.5 13h4'/></svg>") 13 13, default;
+}
+
+html.sao body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(to right, rgba(var(--sao-cyan), 0.065) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(var(--sao-cyan), 0.065) 1px, transparent 1px);
+  background-size: 48px 48px;
+  -webkit-mask-image: radial-gradient(140% 105% at 50% 0%, #000 0%, rgba(0, 0, 0, 0.55) 58%, transparent 92%);
+  mask-image: radial-gradient(140% 105% at 50% 0%, #000 0%, rgba(0, 0, 0, 0.55) 58%, transparent 92%);
+}
+
+html.sao body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(74% 42% at 50% -8%, rgba(var(--sao-cyan), 0.17), transparent 70%),
+    radial-gradient(56% 40% at 92% 110%, rgba(var(--sao-violet), 0.08), transparent 74%),
+    radial-gradient(120% 100% at 50% 50%, transparent 58%, rgba(2, 5, 9, 0.52) 100%);
+}
+
+html.sao body > #root {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── 2. HUD 层 ───────────────────────────────────────────────────── */
+#dsh-sao-hud {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 60;
+}
+
+#dsh-sao-hud .sao-corner {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  border: 0 solid rgba(var(--sao-cyan), 0.85);
+  filter: drop-shadow(0 0 8px rgba(var(--sao-cyan), 0.6));
+}
+
+#dsh-sao-hud .sao-corner.tl { top: 5px; left: 5px; border-top-width: 2px; border-left-width: 2px; }
+#dsh-sao-hud .sao-corner.tr { top: 5px; right: 5px; border-top-width: 2px; border-right-width: 2px; }
+#dsh-sao-hud .sao-corner.bl { bottom: 5px; left: 5px; border-bottom-width: 2px; border-left-width: 2px; }
+#dsh-sao-hud .sao-corner.br { bottom: 5px; right: 5px; border-bottom-width: 2px; border-right-width: 2px; }
+
+#dsh-sao-hud .sao-topline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(var(--sao-cyan), 0.9) 10%,
+    rgba(var(--sao-cyan), 0.18) 46%,
+    rgba(var(--sao-amber), 0.45) 86%,
+    transparent 100%
+  );
+}
+
+#dsh-sao-hud .sao-scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -220px;
+  height: 220px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(var(--sao-cyan), 0.05),
+    rgba(var(--sao-cyan), 0.085),
+    transparent
+  );
+  animation: sao-sweep 9s linear infinite;
+  will-change: transform;
+}
+
+@keyframes sao-sweep {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(0, calc(100vh + 440px), 0); }
+}
+
+/* ── 3. 光标 / 选区 ─────────────────────────────────────────────── */
+html.sao a,
+html.sao button,
+html.sao [role='button'],
+html.sao [role='tab'],
+html.sao summary,
+html.sao label[for] {
+  cursor: pointer;
+}
+
+html.sao textarea,
+html.sao input,
+html.sao [contenteditable='true'] {
+  cursor: text;
+}
+
+html.sao ::selection {
+  background: rgba(var(--sao-cyan), 0.28);
+  color: #f2fbff;
+}
+
+/* ── 4. 主框架 ───────────────────────────────────────────────────── */
+html.sao .mP3x-q_frame {
+  box-shadow:
+    inset 0 0 0 1px rgba(var(--sao-cyan), 0.09),
+    inset 0 0 80px rgba(var(--sao-cyan), 0.04);
+}
+
+html.sao .mP3x-q_handle {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(var(--sao-cyan), 0.35) 18%,
+    rgba(var(--sao-cyan), 0.35) 82%,
+    transparent
+  ) !important;
+  opacity: 0.5;
+  transition: opacity 0.18s ease;
+}
+
+html.sao .mP3x-q_handle:hover {
+  opacity: 1;
+}
+
+/* ── 5. 侧栏：菜单窗口 ───────────────────────────────────────────── */
+html.sao .wtg9ga_root {
+  background: linear-gradient(180deg, rgba(8, 18, 29, 0.96) 0%, rgba(4, 9, 16, 0.98) 100%);
+  border-right: 1px solid rgba(var(--sao-cyan), 0.16);
+  box-shadow:
+    inset -1px 0 0 rgba(var(--sao-cyan), 0.06),
+    12px 0 44px rgba(0, 0, 0, 0.5);
+}
+
+html.sao .wtg9ga_logoRow {
+  border-bottom: 1px solid rgba(var(--sao-cyan), 0.14);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.45);
+}
+
+html.sao .wtg9ga_brandIdentity {
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 11px;
+  color: #9ceeff;
+  text-shadow: 0 0 16px rgba(var(--sao-cyan), 0.55);
+}
+
+/* 新会话 = 主菜单键：斜切 + 青边 + 内发光 */
+html.sao .wtg9ga_newSession {
+  background: linear-gradient(118deg, rgba(var(--sao-cyan), 0.30) 0%, rgba(var(--sao-cyan), 0.08) 52%, rgba(var(--sao-cyan), 0.20) 100%) !important;
+  border: 1px solid rgba(var(--sao-cyan), 0.65) !important;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.5),
+    0 0 22px rgba(var(--sao-cyan), 0.28),
+    inset 0 0 26px rgba(var(--sao-cyan), 0.16) !important;
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  transition: box-shadow 0.18s ease, background 0.18s ease;
+}
+
+html.sao .wtg9ga_newSession:hover {
+  background: linear-gradient(118deg, rgba(var(--sao-cyan), 0.44) 0%, rgba(var(--sao-cyan), 0.16) 52%, rgba(var(--sao-cyan), 0.32) 100%) !important;
+  box-shadow:
+    0 0 0 1px rgba(var(--sao-cyan), 0.55),
+    0 0 34px rgba(var(--sao-cyan), 0.42),
+    inset 0 0 30px rgba(var(--sao-cyan), 0.22) !important;
+}
+
+html.sao .wtg9ga_newSessionContent {
+  letter-spacing: 0.08em;
+  color: #f2fcff;
+  text-shadow: 0 0 12px rgba(var(--sao-cyan), 0.6);
+}
+
+html.sao .wtg9ga_newSessionShortcut {
+  opacity: 0.75;
+}
+
+/* 分区隔断 */
+html.sao .wtg9ga_panelList,
+html.sao .wtg9ga_regionArea,
+html.sao .wtg9ga_footArea {
+  border-top: 1px solid rgba(var(--sao-cyan), 0.10);
+}
+
+/* 菜单项：常驻一道细刻度，hover 时点亮并向右铺光 */
+html.sao .wtg9ga_panelRow {
+  border-radius: 0 !important;
+  box-shadow: inset 2px 0 0 rgba(var(--sao-cyan), 0.22);
+  transition: box-shadow 0.15s ease, background 0.15s ease;
+  letter-spacing: 0.04em;
+}
+
+html.sao .wtg9ga_panelRow:hover {
+  box-shadow: inset 2px 0 0 rgba(var(--sao-cyan), 0.95);
+  background: linear-gradient(90deg, rgba(var(--sao-cyan), 0.16), transparent 78%) !important;
+}
+
+html.sao .wtg9ga_panelRow:hover .wtg9ga_panelGlyph {
+  filter: drop-shadow(0 0 7px rgba(var(--sao-cyan), 0.9));
+  color: #d4f7ff;
+}
+
+html.sao .wtg9ga_panelGlyph {
+  color: rgba(var(--sao-cyan), 0.85);
+  transition: filter 0.15s ease, color 0.15s ease;
+}
+
+html.sao .wtg9ga_panelTitle {
+  letter-spacing: 0.05em;
+  color: #cfe9f7;
+}
+
+/* 工作区面板 */
+html.sao .GAkraW_root {
+  border: 1px solid rgba(var(--sao-cyan), 0.14);
+  border-radius: 0 !important;
+  background: rgba(6, 14, 22, 0.62);
+  box-shadow: inset 0 0 34px rgba(var(--sao-cyan), 0.04);
+}
+
+html.sao .GAkraW_groupSection {
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 10px !important;
+  color: rgba(var(--sao-cyan), 0.66) !important;
+}
+
+/* 会话行：直角 + 左刻度；选中时整行泛青 */
+html.sao .wnFoaW_sessionRow,
+html.sao .wnFoaW_projectRow {
+  border-radius: 0 !important;
+  box-shadow: inset 2px 0 0 transparent;
+  transition: box-shadow 0.15s ease, background 0.15s ease;
+}
+
+html.sao .wnFoaW_sessionRow:hover,
+html.sao .wnFoaW_projectRow:hover {
+  box-shadow: inset 2px 0 0 rgba(var(--sao-cyan), 0.65);
+  background: linear-gradient(90deg, rgba(var(--sao-cyan), 0.12), transparent 80%) !important;
+}
+
+html.sao .wnFoaW_sessionRow[class*='selected'],
+html.sao .wnFoaW_projectRow[class*='selected'] {
+  background: linear-gradient(90deg, rgba(var(--sao-cyan), 0.26), rgba(var(--sao-cyan), 0.04) 78%) !important;
+  box-shadow:
+    inset 3px 0 0 rgb(var(--sao-cyan)),
+    0 0 22px rgba(var(--sao-cyan), 0.14);
+  color: #eafcff !important;
+}
+
+html.sao .wnFoaW_time,
+html.sao .wnFoaW_chevron {
+  color: rgba(var(--sao-cyan), 0.55) !important;
+}
+
+/* ── 6. 顶栏：窗口标题条 ─────────────────────────────────────────── */
+html.sao .an3WzG_header {
+  background: linear-gradient(180deg, rgba(9, 20, 32, 0.97), rgba(5, 11, 19, 0.9)) !important;
+  border-bottom: 1px solid rgba(var(--sao-cyan), 0.22) !important;
+  box-shadow:
+    0 1px 0 rgba(var(--sao-cyan), 0.10),
+    0 14px 38px rgba(0, 0, 0, 0.46);
+}
+
+html.sao .an3WzG_tabs {
+  gap: 2px;
+}
+
+html.sao .an3WzG_tab {
+  border-radius: 0 !important;
+  letter-spacing: 0.07em;
+  color: #86a7ba !important;
+  transition: color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+html.sao .an3WzG_tab:hover {
+  color: #cdf4ff !important;
+  background: rgba(var(--sao-cyan), 0.07) !important;
+}
+
+/* 选中 tab：底部一道青刃 + 上方微光 */
+html.sao .an3WzG_tab[class*='Active'],
+html.sao .an3WzG_tab[aria-selected='true'] {
+  color: #bff3ff !important;
+  background: linear-gradient(180deg, rgba(var(--sao-cyan), 0.20), rgba(var(--sao-cyan), 0.02)) !important;
+  box-shadow:
+    inset 0 -2px 0 rgb(var(--sao-cyan)),
+    inset 0 1px 0 rgba(var(--sao-cyan), 0.35),
+    0 0 20px rgba(var(--sao-cyan), 0.14);
+  text-shadow: 0 0 14px rgba(var(--sao-cyan), 0.55);
+}
+
+html.sao .an3WzG_tabLabel {
+  letter-spacing: 0.07em;
+}
+
+html.sao .an3WzG_headerLeading {
+  color: rgba(var(--sao-cyan), 0.85);
+}
+
+/* ── 7. 会话正文 ─────────────────────────────────────────────────── */
+html.sao .an3WzG_viewArea {
+  background-image:
+    linear-gradient(to right, rgba(var(--sao-cyan), 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(var(--sao-cyan), 0.035) 1px, transparent 1px);
+  background-size: 96px 96px;
+}
+
+/* 工具调用行：终端记录条 */
+html.sao .hKdVjq_row,
+html.sao .pDft-q_callRow {
+  border-radius: 0 !important;
+  box-shadow: inset 2px 0 0 rgba(var(--sao-cyan), 0.30);
+  background: linear-gradient(90deg, rgba(var(--sao-cyan), 0.06), transparent 55%);
+  transition: box-shadow 0.15s ease, background 0.15s ease;
+}
+
+html.sao .hKdVjq_row:hover,
+html.sao .pDft-q_callRow:hover {
+  box-shadow: inset 2px 0 0 rgba(var(--sao-cyan), 0.8);
+  background: linear-gradient(90deg, rgba(var(--sao-cyan), 0.12), transparent 62%);
+}
+
+html.sao .hKdVjq_title {
+  color: #cfe9f7;
+  letter-spacing: 0.015em;
+}
+
+html.sao .hKdVjq_summary,
+html.sao .hKdVjq_summarySuffix {
+  color: rgba(var(--sao-cyan), 0.62) !important;
+}
+
+html.sao .hKdVjq_sep {
+  color: rgba(var(--sao-cyan), 0.30) !important;
+}
+
+html.sao .hKdVjq_fileLink,
+html.sao .wnFoaW_title {
+  color: #8ee9ff !important;
+}
+
+/* 折叠块：子系统窗口 */
+html.sao .BE0jCW_body,
+html.sao .BE0jCW_expandedBody {
+  border-left: 1px solid rgba(var(--sao-cyan), 0.20);
+  background: linear-gradient(90deg, rgba(var(--sao-cyan), 0.05), transparent 50%);
+}
+
+html.sao .BE0jCW_title {
+  color: #9dc0d4;
+  letter-spacing: 0.02em;
+}
+
+html.sao .BE0jCW_title:hover {
+  color: #bff3ff !important;
+}
+
+html.sao .BE0jCW_activityIcon {
+  filter: drop-shadow(0 0 7px rgba(var(--sao-cyan), 0.75));
+  color: rgba(var(--sao-cyan), 0.95) !important;
+}
+
+/* 正文样式统一在 13.10（markdown 哈希会漂移，改用属性选择器） */
+
+/* 错误块：琥珀警示 */
+html.sao .LOmM4q_turnErrorRow {
+  border: 1px solid rgba(var(--sao-amber), 0.42);
+  border-radius: 0 !important;
+  background: linear-gradient(90deg, rgba(var(--sao-amber), 0.13), transparent 72%);
+  box-shadow: 0 0 24px rgba(var(--sao-amber), 0.12);
+}
+
+html.sao .LOmM4q_turnErrorDot {
+  box-shadow: 0 0 12px rgba(var(--sao-amber), 1);
+}
+
+html.sao .LOmM4q_turnErrorTitle {
+  color: #ffd27a;
+}
+
+/* 右侧导航轨道 */
+html.sao .SNx2jG_frame {
+  border-left: 1px solid rgba(var(--sao-cyan), 0.16);
+}
+
+html.sao .SNx2jG_mark {
+  background: rgba(var(--sao-cyan), 0.45) !important;
+  box-shadow: 0 0 9px rgba(var(--sao-cyan), 0.5);
+}
+
+html.sao .SNx2jG_markUnloaded {
+  background: rgba(var(--sao-cyan), 0.14) !important;
+}
+
+/* ── 8. 输入区：命令行窗口 ───────────────────────────────────────── */
+html.sao .GRgSLq_card {
+  border: 1px solid rgba(var(--sao-cyan), 0.45) !important;
+  border-radius: 0 !important;
+  background-image:
+    linear-gradient(rgba(var(--sao-cyan), 0.95), rgba(var(--sao-cyan), 0.95)),
+    linear-gradient(rgba(var(--sao-cyan), 0.95), rgba(var(--sao-cyan), 0.95)),
+    linear-gradient(rgba(var(--sao-cyan), 0.95), rgba(var(--sao-cyan), 0.95)),
+    linear-gradient(rgba(var(--sao-cyan), 0.95), rgba(var(--sao-cyan), 0.95)),
+    linear-gradient(rgba(var(--sao-cyan), 0.95), rgba(var(--sao-cyan), 0.95)),
+    linear-gradient(rgba(var(--sao-cyan), 0.95), rgba(var(--sao-cyan), 0.95)),
+    linear-gradient(rgba(var(--sao-cyan), 0.95), rgba(var(--sao-cyan), 0.95)),
+    linear-gradient(rgba(var(--sao-cyan), 0.95), rgba(var(--sao-cyan), 0.95)),
+    linear-gradient(180deg, rgba(12, 25, 39, 0.96) 0%, rgba(6, 13, 21, 0.98) 100%) !important;
+  background-size:
+    18px 2px, 2px 18px,
+    18px 2px, 2px 18px,
+    18px 2px, 2px 18px,
+    18px 2px, 2px 18px,
+    100% 100% !important;
+  background-position:
+    left top, left top,
+    right top, right top,
+    left bottom, left bottom,
+    right bottom, right bottom,
+    center !important;
+  background-repeat: no-repeat !important;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.55),
+    0 0 34px rgba(var(--sao-cyan), 0.16),
+    inset 0 0 50px rgba(var(--sao-cyan), 0.05) !important;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+html.sao .GRgSLq_card:focus-within {
+  border-color: rgba(var(--sao-cyan), 0.85) !important;
+  box-shadow:
+    0 0 0 1px rgba(var(--sao-cyan), 0.30),
+    0 0 50px rgba(var(--sao-cyan), 0.30),
+    inset 0 0 60px rgba(var(--sao-cyan), 0.08) !important;
+}
+
+html.sao .GRgSLq_input {
+  letter-spacing: 0.012em;
+  caret-color: rgb(var(--sao-cyan));
+  color: #eafcff;
+}
+
+html.sao .GRgSLq_placeholder {
+  letter-spacing: 0.04em;
+  color: rgba(var(--sao-cyan), 0.5) !important;
+}
+
+html.sao .GRgSLq_primary {
+  background: linear-gradient(145deg, #9ceeff, #2f9ec4) !important;
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  filter: drop-shadow(0 0 14px rgba(var(--sao-cyan), 0.7));
+  transition: filter 0.18s ease;
+}
+
+html.sao .GRgSLq_primary:hover {
+  filter: drop-shadow(0 0 22px rgba(var(--sao-cyan), 1));
+}
+
+html.sao .GRgSLq_add,
+html.sao .GRgSLq_activity {
+  color: rgba(var(--sao-cyan), 0.8) !important;
+}
+
+/* 底部状态条：HUD */
+html.sao .GRgSLq_dock {
+  letter-spacing: 0.04em;
+  color: rgba(var(--sao-cyan), 0.7);
+}
+
+html.sao .hNGZaa_pill,
+html.sao .cm-btn,
+html.sao .cm-session-cost,
+html.sao .A6Bq1a_trigger {
+  border-radius: 0 !important;
+  box-shadow: inset 0 0 0 1px rgba(var(--sao-cyan), 0.16);
+}
+
+html.sao .hNGZaa_pill:hover,
+html.sao .A6Bq1a_trigger:hover {
+  box-shadow: inset 0 0 0 1px rgba(var(--sao-cyan), 0.5), 0 0 16px rgba(var(--sao-cyan), 0.22);
+}
+
+html.sao .cm-num,
+html.sao .cm-bal-amt,
+html.sao .cm-session-amount {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  color: #a8dff2;
+}
+
+html.sao .cm-session-detail {
+  color: rgba(var(--sao-cyan), 0.55) !important;
+}
+
+/* ── 9. 浮层 ─────────────────────────────────────────────────────── */
+html.sao :is([role='dialog'], [role='menu'], [role='listbox'], [role='tooltip']) {
+  border: 1px solid rgba(var(--sao-cyan), 0.30) !important;
+  border-radius: 0 !important;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.6),
+    0 18px 60px rgba(0, 0, 0, 0.68),
+    0 0 34px rgba(var(--sao-cyan), 0.14) !important;
+  backdrop-filter: blur(14px) saturate(1.12);
+}
+
+html.sao :is(button, [role='button']):hover:not(:disabled) {
+  box-shadow: 0 0 0 1px rgba(var(--sao-cyan), 0.32), 0 0 16px rgba(var(--sao-cyan), 0.18);
+}
+
+html.sao :focus-visible {
+  outline: 1px solid rgba(var(--sao-cyan), 0.85) !important;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(var(--sao-cyan), 0.14);
+}
+
+/* ── 10. 滚动条 / 代码块 / 细节 ─────────────────────────────────── */
+html.sao ::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+html.sao ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html.sao ::-webkit-scrollbar-thumb {
+  background: rgba(var(--sao-cyan), 0.20);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+html.sao ::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--sao-cyan), 0.5);
+  background-clip: padding-box;
+}
+
+html.sao ::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+html.sao pre {
+  border: 1px solid rgba(var(--sao-cyan), 0.20) !important;
+  border-radius: 0 !important;
+  box-shadow: inset 0 0 28px rgba(var(--sao-cyan), 0.06);
+}
+
+html.sao code {
+  font-variant-ligatures: none;
+}
+
+html.sao :not(pre) > code {
+  color: #9ceeff;
+  background: rgba(var(--sao-cyan), 0.13) !important;
+}
+
+html.sao hr {
+  border: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(var(--sao-cyan), 0.34), transparent);
+}
+
+html.sao kbd {
+  border: 1px solid rgba(var(--sao-cyan), 0.28);
+  border-bottom-width: 2px;
+  border-radius: 0;
+  box-shadow: 0 0 8px rgba(var(--sao-cyan), 0.12);
+  color: #9ceeff;
+}
+
+html.sao a:not([role='button']) {
+  color: #6ee0ff;
+  text-decoration-color: rgba(var(--sao-cyan), 0.45);
+  text-underline-offset: 2px;
+}
+
+html.sao [data-state='running'],
+html.sao [class*='running'],
+html.sao [class*='Running'] {
+  animation: sao-pulse 1.9s ease-in-out infinite;
+}
+
+@keyframes sao-pulse {
+  0%, 100% { filter: drop-shadow(0 0 2px rgba(var(--sao-amber), 0.5)); }
+  50% { filter: drop-shadow(0 0 10px rgba(var(--sao-amber), 0.95)); }
+}
+
+/* ── 11. 无障碍 ─────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  #dsh-sao-hud .sao-scan { display: none; }
+  html.sao * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ── 12. HUD 系统标识（避免压住窗口菜单栏） ─────────────────────── */
+#dsh-sao-hud .sao-sig {
+  position: absolute;
+  top: 6px;
+  left: 132px;
+  font-size: 9px;
+  line-height: 1;
+  letter-spacing: 0.30em;
+  text-transform: uppercase;
+  color: rgba(var(--sao-cyan), 0.55);
+  text-shadow: 0 0 12px rgba(var(--sao-cyan), 0.45);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   13. 细节统一层 v3
+   · 13.1 字体系统（HUD 字面 / 正文 / 等宽三分）
+   · 13.2 圆角全量归零 + 保留的刻意造型
+   · 13.3 侧栏底部状态区
+   · 13.4 工作区面板细节
+   · 13.5 顶栏 crumb / 工具按钮
+   · 13.6 右侧滚动轨道
+   · 13.7 工具调用记录条（真实 hash l4nv8 / 1rdzk）
+   · 13.8 用户气泡 / 悬停动作
+   · 13.9 助手区块
+   · 13.10 markdown（改为属性选择器，修哈希漂移）
+   · 13.11 折叠块 / 子代理行 / 展开条
+   · 13.12 输入区控件
+   · 13.13 零散组件补齐
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── 13.1 字体系统 ──────────────────────────────────────────────── */
+html.sao {
+  --sao-ui: "Segoe UI Variable Text", "Segoe UI", "Noto Sans SC", "Microsoft YaHei UI", system-ui, sans-serif;
+  --sao-hud: "Bahnschrift", "Segoe UI Variable Display", "Segoe UI", "Noto Sans SC", "Microsoft YaHei UI", sans-serif;
+  --sao-mono: "Cascadia Mono", "Consolas", "SF Mono", ui-monospace, "Noto Sans SC", monospace;
+}
+
+/* 正文：替掉 -apple-system，保住中文可读性 */
+html.sao body *:not(pre):not(code):not(kbd):not(samp):not(svg):not(i) {
+  font-family: var(--sao-ui) !important;
+}
+
+html.sao :is(pre, code, kbd, samp, .cm-num, .cm-bal-amt, .cm-session-amount) {
+  font-family: var(--sao-mono) !important;
+}
+
+/* 结构标签 / 元信息：DIN 感的 HUD 字面 */
+html.sao :is(
+  .an3WzG_tabLabel, .an3WzG_crumb, .an3WzG_headerLeading, .dscfja_label,
+  .wtg9ga_panelTitle, .wtg9ga_brandName, .wtg9ga_brandIdentity,
+  .wtg9ga_newSessionContent, .wtg9ga_newSessionShortcut,
+  .GAkraW_groupSection, [class*='_root_bgejw_'],
+  .hKdVjq_title, [class*='_title_l4nv8_'], [class*='_title_1rdzk_'],
+  .BE0jCW_title, .LOmM4q_turnErrorTitle,
+  .bt-return, .bt-return-name, .cm-foot, .cm-balance-name, .cm-peak-chip,
+  .cm-stat-entry, .cm-note, .hNGZaa_label, .GRgSLq_dock,
+  .V4vHZW_older button, .hKdVjq_summary, .hKdVjq_summarySuffix
+) {
+  font-family: var(--sao-hud) !important;
+}
+
+/* ── 13.2 圆角：全量归零 ────────────────────────────────────────── */
+/* 系统窗口没有圆角；开关/勾选/进度这类功能性圆角保留。
+   :not() 必须连**子元素**一起豁免 —— 开关的滑块是 [role='switch'] 的子元素，
+   只写 :not([role='switch']) 的话滑块照样被清零，16px 的圆点被削成方块。 */
+html.sao body *:not([role='switch']):not([role='switch'] *):not([role='checkbox']):not([role='checkbox'] *):not([role='radio']):not([role='radio'] *):not([type='checkbox']):not([type='radio']):not(progress):not(meter) {
+  border-radius: 0 !important;
+}
+
+/* 保险：万一某个引擎不支持 :not() 里的复合选择器，这条会把开关内部补回圆点 */
+html.sao body [role='switch'] *,
+html.sao body [role='switch']::before,
+html.sao body [role='switch']::after {
+  border-radius: 999px !important;
+}
+
+/* 刻意保留的两个造型 */
+html.sao .GRgSLq_primary {
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+
+html.sao ._5Qcc8a_avatar {
+  clip-path: polygon(50% 0%, 94% 26%, 94% 74%, 50% 100%, 6% 74%, 6% 26%);
+  box-shadow: inset 0 0 0 1px rgba(var(--sao-cyan), 0.45) !important;
+}
+
+/* 中央列：左右各一道边界刻线 */
+html.sao .mP3x-q_centerCol {
+  box-shadow:
+    inset 1px 0 0 rgba(var(--sao-cyan), 0.10),
+    inset -1px 0 0 rgba(var(--sao-cyan), 0.10);
+}
+
+/* ── 13.3 侧栏底部状态区 ────────────────────────────────────────── */
+/* DS Bot 返回键 */
+html.sao .bt-return {
+  background: linear-gradient(100deg, rgba(var(--sao-cyan), 0.16), rgba(var(--sao-cyan), 0.03)) !important;
+  box-shadow: inset 0 0 0 1px rgba(var(--sao-cyan), 0.34) !important;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #bff3ff !important;
+  transition: box-shadow 0.16s ease, background 0.16s ease;
+}
+
+html.sao .bt-return:hover {
+  background: linear-gradient(100deg, rgba(var(--sao-cyan), 0.30), rgba(var(--sao-cyan), 0.06)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(var(--sao-cyan), 0.78),
+    0 0 20px rgba(var(--sao-cyan), 0.22) !important;
+}
+
+html.sao .bt-mark {
+  color: rgb(var(--sao-cyan)) !important;
+  filter: drop-shadow(0 0 6px rgba(var(--sao-cyan), 0.8));
+}
+
+html.sao .bt-return-name {
+  letter-spacing: 0.11em;
+}
+
+/* 余额 / 今日 / 峰谷条 */
+html.sao .cm-footer-stack {
+  border-top: 1px solid rgba(var(--sao-cyan), 0.10);
+}
+
+html.sao .cm-foot {
+  background: rgba(6, 14, 22, 0.55) !important;
+  box-shadow: inset 0 0 0 1px rgba(var(--sao-cyan), 0.10);
+  letter-spacing: 0.06em;
+  transition: box-shadow 0.16s ease, background 0.16s ease;
+}
+
+html.sao .cm-foot.clickable:hover,
+html.sao .cm-foot.clickable:focus-visible {
+  background: rgba(var(--sao-cyan), 0.10) !important;
+  box-shadow:
+    inset 2px 0 0 rgba(var(--sao-cyan), 0.9),
+    inset 0 0 0 1px rgba(var(--sao-cyan), 0.28);
+}
+
+html.sao .cm-balance-name {
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 9px !important;
+  color: rgba(var(--sao-cyan), 0.62) !important;
+}
+
+html.sao .cm-bal-link {
+  color: rgba(var(--sao-cyan), 0.72) !important;
+}
+
+html.sao .cm-bal-link:hover {
+  color: #bff3ff !important;
+}
+
+html.sao .cm-bal-amt {
+  font-size: 12px !important;
+  color: #8ee9ff !important;
+  text-shadow: 0 0 12px rgba(var(--sao-cyan), 0.40);
+}
+
+html.sao .cm-peak-strip {
+  background: rgba(var(--sao-cyan), 0.05) !important;
+  box-shadow: inset 0 0 0 1px rgba(var(--sao-cyan), 0.14);
+}
+
+html.sao .cm-peak-strip.weekend {
+  background: rgba(var(--sao-amber), 0.07) !important;
+  box-shadow: inset 0 0 0 1px rgba(var(--sao-amber), 0.30);
+}
+
+html.sao .cm-peak-track {
+  background: rgba(255, 255, 255, 0.10) !important;
+}
+
+html.sao .cm-peak-segment {
+  background: rgba(var(--sao-cyan), 0.55) !important;
+}
+
+html.sao .cm-peak-strip.weekend .cm-peak-segment {
+  background: rgba(var(--sao-amber), 0.70) !important;
+}
+
+html.sao .cm-peak-chip {
+  font-size: 9px !important;
+  letter-spacing: 0.04em;
+  color: rgba(220, 242, 255, 0.66) !important;
+}
+
+html.sao .cm-note {
+  color: rgba(var(--sao-cyan), 0.55) !important;
+  letter-spacing: 0.04em;
+}
+
+html.sao .cm-stat-entry {
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  font-size: 10px !important;
+  color: rgba(var(--sao-cyan), 0.78) !important;
+}
+
+/* ── 13.4 工作区面板细节 ────────────────────────────────────────── */
+html.sao .GAkraW_sectionHeader {
+  border-bottom: 1px solid rgba(var(--sao-cyan), 0.14);
+  background: linear-gradient(180deg, rgba(var(--sao-cyan), 0.05), transparent) !important;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+html.sao .GAkraW_search {
+  background: rgba(4, 10, 17, 0.70) !important;
+  box-shadow: inset 0 0 0 1px rgba(var(--sao-cyan), 0.16);
+}
+
+html.sao .GAkraW_search:focus-within {
+  box-shadow:
+    inset 0 0 0 1px rgba(var(--sao-cyan), 0.65),
+    0 0 16px rgba(var(--sao-cyan), 0.18);
+}
+
+html.sao :is(.GAkraW_searchButton, .GAkraW_iconButton, .wtg9ga_iconButton) {
+  color: rgba(var(--sao-cyan), 0.70) !important;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+html.sao :is(.GAkraW_searchButton, .GAkraW_iconButton, .wtg9ga_iconButton):hover {
+  color: #d4f7ff !important;
+  background: rgba(var(--sao-cyan), 0.12) !important;
+}
+
+/* 分区标题：// 前缀 = 系统分区标记 */
+html.sao .GAkraW_groupSection [class*='_root_bgejw_']::before {
+  content: '// ';
+  color: rgba(var(--sao-cyan), 0.42);
+  letter-spacing: 0;
+}
+
+html.sao .wnFoaW_timestamp,
+html.sao .wnFoaW_projectText {
+  letter-spacing: 0.03em;
+}
+
+html.sao .wnFoaW_folder {
+  color: rgba(var(--sao-cyan), 0.55) !important;
+}
+
+html.sao .wnFoaW_rowActions,
+html.sao .wnFoaW_rowQuickActions {
+  color: rgba(var(--sao-cyan), 0.5) !important;
+}
+
+/* ── 13.5 顶栏 crumb / 工具按钮 ─────────────────────────────────── */
+html.sao .an3WzG_tabs {
+  box-shadow: inset 0 -1px 0 rgba(var(--sao-cyan), 0.10);
+}
+
+html.sao .an3WzG_crumb {
+  background: rgba(var(--sao-cyan), 0.06) !important;
+  box-shadow: inset 0 0 0 1px rgba(var(--sao-cyan), 0.18);
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  font-size: 10px !important;
+  color: rgba(220, 242, 255, 0.70) !important;
+}
+
+html.sao .an3WzG_crumbCurrent {
+  background: rgba(var(--sao-cyan), 0.18) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(var(--sao-cyan), 0.55),
+    inset 0 -2px 0 rgba(var(--sao-cyan), 0.9);
+  color: #eafcff !important;
+}
+
+html.sao .an3WzG_crumbSeg {
+  color: rgba(var(--sao-cyan), 0.26) !important;
+}
+
+html.sao .dscfja_label {
+  background: rgba(var(--sao-cyan), 0.06) !important;
+  box-shadow: inset 0 0 0 1px rgba(var(--sao-cyan), 0.16);
+  letter-spacing: 0.09em;
+  font-size: 10px !important;
+  color: rgba(var(--sao-cyan), 0.80) !important;
+}
+
+html.sao .mOxcpG_split {
+  background: transparent !important;
+  box-shadow: inset 1px 0 0 rgba(var(--sao-cyan), 0.22);
+}
+
+html.sao .VBK9GG_trigger {
+  background: transparent !important;
+  box-shadow: inset 0 0 0 1px rgba(var(--sao-cyan), 0.16);
+  letter-spacing: 0.05em;
+  color: rgba(var(--sao-cyan), 0.85) !important;
+  transition: box-shadow 0.16s ease, background 0.16s ease;
+}
+
+html.sao .VBK9GG_trigger:hover {
+  background: rgba(var(--sao-cyan), 0.10) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(var(--sao-cyan), 0.55),
+    0 0 14px rgba(var(--sao-cyan), 0.18);
+}
+
+/* ── 13.6 右侧滚动轨道：细线刻度 ────────────────────────────────── */
+html.sao .SNx2jG_mark,
+html.sao .SNx2jG_markUnloaded {
+  background: linear-gradient(
+    to bottom,
+    transparent 38%,
+    rgba(var(--sao-cyan), 0.45) 38%,
+    rgba(var(--sao-cyan), 0.45) 62%,
+    transparent 62%
+  ) !important;
+  box-shadow: none !important;
+  opacity: 0.55;
+  transition: opacity 0.15s ease, background 0.15s ease;
+}
+
+html.sao .SNx2jG_markUnloaded {
+  opacity: 0.22;
+}
+
+html.sao .SNx2jG_mark:hover,
+html.sao .SNx2jG_markActive {
+  background: linear-gradient(
+    to bottom,
+    transparent 22%,
+    rgb(var(--sao-cyan)) 22%,
+    rgb(var(--sao-cyan)) 78%,
+    transparent 78%
+  ) !important;
+  box-shadow: 0 0 10px rgba(var(--sao-cyan), 0.7) !important;
+  opacity: 1;
+}
+
+/* ── 13.7 工具调用记录条 ────────────────────────────────────────── */
+html.sao [class*='_root_l4nv8_'] {
+  letter-spacing: 0.012em;
+}
+
+html.sao [class*='_leading_l4nv8_'] {
+  color: rgba(var(--sao-cyan), 0.52) !important;
+}
+
+html.sao [class*='_iconIdle_l4nv8_'] {
+  color: rgba(var(--sao-cyan), 0.60) !important;
+  transition: color 0.15s ease, filter 0.15s ease;
+}
+
+html.sao .hKdVjq_root:hover [class*='_iconIdle_l4nv8_'] {
+  color: rgb(var(--sao-cyan)) !important;
+  filter: drop-shadow(0 0 6px rgba(var(--sao-cyan), 0.85));
+}
+
+html.sao [class*='_title_l4nv8_'] {
+  color: #cfe9f7 !important;
+  letter-spacing: 0.03em;
+}
+
+html.sao [class*='_text_1rdzk_'] {
+  letter-spacing: 0.012em;
+}
+
+html.sao .hKdVjq_diffStat {
+  font-size: 10px !important;
+  letter-spacing: 0.04em;
+  color: rgba(var(--sao-cyan), 0.5) !important;
+}
+
+html.sao .hKdVjq_diffAdded {
+  color: #4de0a8 !important;
+}
+
+html.sao .hKdVjq_diffRemoved {
+  color: #ff5470 !important;
+}
+
+/* 状态徽标：直角切角标签 */
+html.sao :is([class*='jy423G_badge'], [class*='_tag_brmue_']) {
+  background: rgba(var(--sao-cyan), 0.12) !important;
+  box-shadow: inset 0 0 0 1px rgba(var(--sao-cyan), 0.35);
+  color: rgba(var(--sao-cyan), 0.90) !important;
+  font-size: 9px !important;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  clip-path: polygon(4px 0, 100% 0, 100% 100%, 0 100%, 0 4px);
+}
+
+/* ── 13.8 用户气泡 / 悬停动作 ───────────────────────────────────── */
+html.sao [class*='_bubble_1sgyj_'] {
+  background: linear-gradient(135deg, rgba(var(--sao-cyan), 0.22), rgba(var(--sao-cyan), 0.05)) !important;
+  box-shadow: inset 0 0 0 1px rgba(var(--sao-cyan), 0.42) !important;
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+  color: #eafcff !important;
+  letter-spacing: 0.02em;
+}
+
+html.sao :is([class*='_1KfHza_action'], [class*='Hyy-Wa_action']) {
+  color: rgba(var(--sao-cyan), 0.55) !important;
+  box-shadow: inset 0 0 0 1px rgba(var(--sao-cyan), 0.14);
+  transition: color 0.15s ease, box-shadow 0.15s ease;
+}
+
+html.sao :is([class*='_1KfHza_action'], [class*='Hyy-Wa_action']):hover {
+  color: rgb(var(--sao-cyan)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(var(--sao-cyan), 0.6),
+    0 0 14px rgba(var(--sao-cyan), 0.20);
+}
+
+html.sao [class*='_1KfHza_timeEnd'],
+html.sao [class*='_1KfHza_endInfo'] {
+  color: rgba(var(--sao-cyan), 0.42) !important;
+  font-size: 10px !important;
+}
+
+/* ── 13.9 助手区块：左侧记录轨 ──────────────────────────────────── */
+html.sao .xMeOpW_root {
+  box-shadow: inset 2px 0 0 rgba(var(--sao-cyan), 0.10);
+  transition: box-shadow 0.18s ease;
+}
+
+html.sao .xMeOpW_root:hover {
+  box-shadow: inset 2px 0 0 rgba(var(--sao-cyan), 0.30);
+}
+
+html.sao .xMeOpW_body {
+  letter-spacing: 0.006em;
+}
+
+/* ── 13.10 markdown（属性选择器，抵抗 hash 漂移）────────────────── */
+html.sao [class*='_markdown_'] {
+  letter-spacing: 0.008em;
+  color: #dcf2ff;
+}
+
+html.sao [class*='_markdown_'] :is(h1, h2, h3) {
+  letter-spacing: 0.022em;
+  text-shadow: 0 0 24px rgba(var(--sao-cyan), 0.14);
+}
+
+html.sao [class*='_markdown_'] strong {
+  color: #eafcff;
+}
+
+html.sao [class*='_markdown_'] li::marker {
+  color: rgba(var(--sao-cyan), 0.62);
+}
+
+html.sao [class*='_markdown_'] blockquote {
+  border-left: 2px solid rgba(var(--sao-cyan), 0.45) !important;
+  background: linear-gradient(90deg, rgba(var(--sao-cyan), 0.06), transparent 70%);
+  box-shadow: none;
+}
+
+html.sao [class*='_markdown_'] table {
+  box-shadow: inset 0 0 0 1px rgba(var(--sao-cyan), 0.18);
+}
+
+html.sao [class*='_markdown_'] th {
+  background: rgba(var(--sao-cyan), 0.08) !important;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.92em;
+}
+
+html.sao :not(pre) > code {
+  box-shadow: inset 0 0 0 1px rgba(var(--sao-cyan), 0.16);
+  letter-spacing: 0.01em;
+}
+
+/* ── 13.11 折叠块 / 子代理行 / 展开条 ───────────────────────────── */
+html.sao .BE0jCW_root {
+  background: rgba(6, 14, 22, 0.35);
+  box-shadow: inset 0 0 0 1px rgba(var(--sao-cyan), 0.08);
+}
+
+html.sao .BE0jCW_label {
+  letter-spacing: 0.05em;
+  color: #9dc0d4 !important;
+}
+
+html.sao .BE0jCW_chevron {
+  color: rgba(var(--sao-cyan), 0.60) !important;
+}
+
+html.sao :is(.iFrn8G_summary, .iFrn8G_summaryText) {
+  color: rgba(var(--sao-cyan), 0.62) !important;
+}
+
+html.sao .iFrn8G_sep {
+  color: rgba(var(--sao-cyan), 0.26) !important;
+}
+
+html.sao .VJlF5q_root {
+  background: linear-gradient(90deg, rgba(var(--sao-cyan), 0.04), transparent 60%);
+  box-shadow: inset 2px 0 0 rgba(var(--sao-cyan), 0.18);
+}
+
+html.sao .VJlF5q_leading {
+  color: rgba(var(--sao-cyan), 0.58) !important;
+}
+
+html.sao .VJlF5q_title {
+  color: #cfe9f7 !important;
+  letter-spacing: 0.02em;
+}
+
+html.sao .VJlF5q_separator {
+  color: rgba(var(--sao-cyan), 0.26) !important;
+}
+
+html.sao .VJlF5q_summaryText {
+  color: rgba(var(--sao-cyan), 0.58) !important;
+}
+
+html.sao .hE4tRW_root {
+  background: rgba(var(--sao-cyan), 0.03) !important;
+  box-shadow: inset 0 0 0 1px rgba(var(--sao-cyan), 0.10);
+  letter-spacing: 0.05em;
+  transition: box-shadow 0.16s ease, background 0.16s ease;
+}
+
+html.sao .hE4tRW_root:hover {
+  background: rgba(var(--sao-cyan), 0.09) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(var(--sao-cyan), 0.35),
+    0 0 18px rgba(var(--sao-cyan), 0.10);
+}
+
+html.sao .hE4tRW_label {
+  color: rgba(var(--sao-cyan), 0.72) !important;
+  text-transform: uppercase;
+  font-size: 10px !important;
+}
+
+html.sao .hSzSIW_root {
+  background: linear-gradient(90deg, rgba(var(--sao-cyan), 0.12), rgba(var(--sao-cyan), 0.02)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(var(--sao-cyan), 0.24),
+    inset 3px 0 0 rgba(var(--sao-cyan), 0.80);
+}
+
+/* 加载更早 / 更早记录 */
+html.sao .V4vHZW_older button {
+  background: rgba(6, 14, 22, 0.80) !important;
+  box-shadow: inset 0 0 0 1px rgba(var(--sao-cyan), 0.20);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  font-size: 10px !important;
+  color: rgba(var(--sao-cyan), 0.80) !important;
+}
+
+html.sao .V4vHZW_older button:hover {
+  box-shadow: inset 0 0 0 1px rgba(var(--sao-cyan), 0.65), 0 0 18px rgba(var(--sao-cyan), 0.20);
+}
+
+/* ── 13.12 输入区控件 ───────────────────────────────────────────── */
+html.sao :is(
+  .GRgSLq_add,
+  .GRgSLq_activity button,
+  [class*='_86kJGG_trigger'],
+  [class*='_9r0rkG_trigger'],
+  [class*='fD5ZVa_'],
+  .pua-trigger,
+  ._5Qcc8a_trigger
+) {
+  box-shadow: inset 0 0 0 1px rgba(var(--sao-cyan), 0.16);
+  color: rgba(var(--sao-cyan), 0.82) !important;
+  letter-spacing: 0.04em;
+  transition: box-shadow 0.16s ease, background 0.16s ease, color 0.16s ease;
+}
+
+/* 共享 Button 组件（._button_1ulci_*）只做字距，不碰颜色。
+   实测教训：用 [class*='_button_1ulci_'] 统一上青色会把「亮青底 + 深色字」的
+   primary 变体一起染青（插件页右上角按钮文字整块隐形），所以这里按变体分治：
+   primary 走令牌给定的深色前景，其余（ghost/outline/toolbar/icon）才可用青色。 */
+html.sao [class*='_button_1ulci_'] {
+  letter-spacing: 0.04em;
+}
+
+html.sao [class*='_primary_1ulci_'] {
+  color: var(--dsw-alias-label-primary-foreground) !important;
+}
+
+html.sao [class*='_button_1ulci_']:not([class*='_primary_1ulci_']) {
+  color: rgba(var(--sao-cyan), 0.82) !important;
+}
+
+html.sao :is(
+  .GRgSLq_add,
+  .GRgSLq_activity button,
+  [class*='_86kJGG_trigger'],
+  [class*='_9r0rkG_trigger'],
+  [class*='fD5ZVa_'],
+  .pua-trigger,
+  ._5Qcc8a_trigger
+):hover {
+  background: rgba(var(--sao-cyan), 0.10) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(var(--sao-cyan), 0.62),
+    0 0 16px rgba(var(--sao-cyan), 0.18);
+  color: #d4f7ff !important;
+}
+
+html.sao [class*='_button_1ulci_']:hover:not([class*='_primary_1ulci_']) {
+  background: rgba(var(--sao-cyan), 0.10) !important;
+  color: #d4f7ff !important;
+}
+
+/* ── 13.12b 填充型组件的对比度校正 ─────────────────────────────────
+   原厂有几处把前景色写死（如 color:#fff），背景却走令牌。主题把令牌调成
+   亮青后，写死的前景就和底色撞了。这里逐个改「底色」或「前景」，不动令牌，
+   避免波及同样引用这些令牌的图标色。 */
+html.sao .GRgSLq_primary {
+  /* 发送按钮：原厂 color:#fff 硬编码在 --dsw-alias-button-info-fill 上（#3fb4dd → 2.39:1）。
+     令牌同时被 _3zXc5G_rowIconSelected 当图标色用，不能调暗，所以只压这块的底色。 */
+  background: #0c6c88 !important;
+  box-shadow: 0 0 0 1px rgba(var(--sao-cyan), 0.30), 0 0 12px rgba(var(--sao-cyan), 0.16);
+}
+
+html.sao .GRgSLq_primary:hover:not(:disabled) {
+  background: #0e7d9e !important;
+  box-shadow: 0 0 0 1px rgba(var(--sao-cyan), 0.55), 0 0 18px rgba(var(--sao-cyan), 0.30);
+}
+
+html.sao .wnLwla_badge {
+  /* 侧栏徽标：底是亮青 accent，字是 info-fill —— 两个令牌都被调成青，1.57:1。
+     反过来用深色字，12.25:1。 */
+  color: #04141e !important;
+}
+
+html.sao [class*='_primary_1ulci_']:hover {
+  color: var(--dsw-alias-label-primary-foreground) !important;
+}
+
+html.sao .GRgSLq_standardControls {
+  box-shadow: inset 1px 0 0 rgba(var(--sao-cyan), 0.12);
+}
+
+html.sao .GRgSLq_tools {
+  box-shadow: inset 0 -1px 0 rgba(var(--sao-cyan), 0.08);
+}
+
+html.sao .GRgSLq_modes {
+  box-shadow: inset 1px 0 0 rgba(var(--sao-cyan), 0.10);
+}
+
+html.sao .GRgSLq_dock {
+  font-size: 10px !important;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ── 13.13 零散组件补齐 ─────────────────────────────────────────── */
+html.sao .wtg9ga_brandMark {
+  color: rgb(var(--sao-cyan)) !important;
+  filter: drop-shadow(0 0 10px rgba(var(--sao-cyan), 0.55));
+}
+
+html.sao .wtg9ga_brandName {
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 12px !important;
+}
+
+html.sao [class*='_dot_1i3xo_'] {
+  box-shadow: 0 0 8px rgba(var(--sao-cyan), 0.80);
+}
+
+html.sao ._tabStrip_3oazc_239 button {
+  box-shadow: inset 0 0 0 1px rgba(var(--sao-cyan), 0.14);
+}
+
+html.sao .acoR2W_iconButton {
+  color: rgba(var(--sao-cyan), 0.70) !important;
+}
+
+html.sao .acoR2W_iconButton:hover {
+  color: #d4f7ff !important;
+  background: rgba(var(--sao-cyan), 0.12) !important;
+}
+
+html.sao .hNGZaa_anchor,
+html.sao .an3WzG_widthHandle {
+  color: rgba(var(--sao-cyan), 0.45) !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   14. 细节补完 v4
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── 14.1 彩色位图图标 → 系统青色单色 ───────────────────────────── */
+/* 顶栏「用资源管理器打开」是 Windows 彩色文件夹位图，DS Bot 是彩色头像，
+   在单色 HUD 里非常跳；统一压成青色单色。 */
+html.sao :is(
+  .mOxcpG_appIcon,
+  .bt-return img,
+  .wtg9ga_brandMark img,
+  .wtg9ga_brandIdentity img,
+  [class*='_row_l4nv8_'] img,
+  .hKdVjq_row img
+) {
+  filter: grayscale(1) brightness(1.85) sepia(1) hue-rotate(158deg) saturate(3.4)
+    drop-shadow(0 0 4px rgba(var(--sao-cyan), 0.5));
+  opacity: 0.94;
+}
+
+/* ── 14.2 峰谷条：把文字从进度条上抬出来 ────────────────────────── */
+html.sao .cm-peak-strip {
+  background: rgba(4, 8, 14, 0.72) !important;
+}
+
+html.sao .cm-peak-track {
+  opacity: 0.5;
+}
+
+html.sao .cm-peak-chip {
+  background: rgba(4, 8, 14, 0.92) !important;
+  padding: 0 6px;
+  box-shadow: inset 0 0 0 1px rgba(var(--sao-cyan), 0.14);
+}
+
+/* ── 14.3 工具调用行：分隔线 + 更亮的标题 ───────────────────────── */
+html.sao [class*='_root_l4nv8_'] {
+  box-shadow: inset 0 1px 0 rgba(var(--sao-cyan), 0.05);
+}
+
+html.sao [class*='_title_l4nv8_'] {
+  color: #d7eefb !important;
+}
+
+html.sao [class*='_root_l4nv8_']:hover [class*='_leading_l4nv8_'] {
+  color: rgb(var(--sao-cyan)) !important;
+}
+
+/* ── 14.4 余额 / 今日：边界更清楚 ───────────────────────────────── */
+html.sao .cm-foot {
+  box-shadow: inset 0 0 0 1px rgba(var(--sao-cyan), 0.16);
+}
+
+/* ── 14.5 流条目 hover：目标框 ──────────────────────────────────── */
+html.sao .V4vHZW_flowItem {
+  transition: box-shadow 0.16s ease;
+}
+
+html.sao .V4vHZW_flowItem:hover {
+  box-shadow: inset 0 0 0 1px rgba(var(--sao-cyan), 0.09);
+}
+
+/* ── 14.6 品牌区 / 会话行 ───────────────────────────────────────── */
+html.sao .wtg9ga_brand {
+  letter-spacing: 0.10em;
+}
+
+html.sao .wnFoaW_sessionRow {
+  letter-spacing: 0.02em;
+}
+
+html.sao .wnFoaW_sessionRow[class*='selected'] .wnFoaW_time {
+  color: rgba(var(--sao-cyan), 0.85) !important;
+}
+
+/* ── 15. 可读性校正 v5 ──────────────────────────────────────────────
+   皮肤压暗后，工具行/元信息的对比度偏低，这里把"次要但需读"的层级提亮。
+   注意只调 label 层，不动正文。                                          */
+
+html.sao [class*='_text_1rdzk_'] {
+  color: #9cc4d8 !important;
+}
+
+html.sao [class*='_iconIdle_l4nv8_'] {
+  color: rgba(var(--sao-cyan), 0.85) !important;
+}
+
+html.sao [class*='_leading_l4nv8_'] {
+  color: rgba(var(--sao-cyan), 0.65) !important;
+}
+
+html.sao .hKdVjq_row,
+html.sao .pDft-q_callRow {
+  box-shadow: inset 2px 0 0 rgba(var(--sao-cyan), 0.45);
+}
+
+html.sao .hKdVjq_row:hover,
+html.sao .pDft-q_callRow:hover {
+  box-shadow: inset 2px 0 0 rgb(var(--sao-cyan));
+}
+
+html.sao .BE0jCW_title {
+  color: #b6d6e6 !important;
+}
+
+html.sao .hKdVjq_summary,
+html.sao .hKdVjq_summarySuffix {
+  color: rgba(var(--sao-cyan), 0.74) !important;
+}
+
+html.sao .wnFoaW_title {
+  color: #a8e6ff !important;
+}
+
+html.sao .GAkraW_groupSection {
+  color: rgba(var(--sao-cyan), 0.80) !important;
+}
+
+/* ── 16. 外框收尾 v6 ────────────────────────────────────────────────
+   SAO 的 UI 永远被一圈细亮边框框住，四角有加粗角标。                  */
+
+#dsh-sao-hud::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(var(--sao-cyan), 0.13);
+  box-shadow: inset 0 0 70px rgba(var(--sao-cyan), 0.035);
+  pointer-events: none;
+}
+
+#dsh-sao-hud .sao-corner {
+  width: 46px;
+  height: 46px;
+  border-color: rgba(var(--sao-cyan), 0.95);
+  filter: drop-shadow(0 0 10px rgba(var(--sao-cyan), 0.75));
+}
+
+#dsh-sao-hud .sao-corner.tl { top: 4px; left: 4px; }
+#dsh-sao-hud .sao-corner.tr { top: 4px; right: 4px; }
+#dsh-sao-hud .sao-corner.bl { bottom: 4px; left: 4px; }
+#dsh-sao-hud .sao-corner.br { bottom: 4px; right: 4px; }
+
+/* ══════════════════════════════════════════════════════════════════════
+   17. DS Bot 模式（bt-* 组件）
+   DS Bot 视图是另一套组件，不使用 --dsw-* 令牌，硬编码中性灰：
+     左栏 #1b1b1b / 气泡 #262626 / 胶囊与圆钮 #141414 / 蓝紫 rgb(91,123,255)
+   这一节把整套 bt-* 拉回 Aincrad 体系。
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── 17.1 左栏 ──────────────────────────────────────────────────── */
+html.sao .bt-leftcol {
+  background: linear-gradient(180deg, rgba(8, 18, 29, 0.97) 0%, rgba(4, 9, 16, 0.99) 100%) !important;
+  border-right: 1px solid rgba(var(--sao-cyan), 0.16);
+  box-shadow:
+    inset -1px 0 0 rgba(var(--sao-cyan), 0.06),
+    12px 0 44px rgba(0, 0, 0, 0.5);
+}
+
+html.sao .bt-side-top {
+  border-bottom: 1px solid rgba(var(--sao-cyan), 0.14);
+}
+
+html.sao .bt-brand {
+  letter-spacing: 0.12em;
+  font-family: var(--sao-hud) !important;
+  color: #cfe9f7 !important;
+}
+
+html.sao .bt-brand-whale {
+  color: rgb(var(--sao-cyan)) !important;
+  filter: drop-shadow(0 0 8px rgba(var(--sao-cyan), 0.7));
+}
+
+/* 圆钮：新会话 / 更新 / 折叠 */
+html.sao :is(.bt-round, .bt-update, .bt-side-collapse) {
+  background: rgba(var(--sao-cyan), 0.06) !important;
+  box-shadow: inset 0 0 0 1px rgba(var(--sao-cyan), 0.22);
+  color: rgba(var(--sao-cyan), 0.85) !important;
+  transition: box-shadow 0.16s ease, background 0.16s ease, color 0.16s ease;
+}
+
+html.sao :is(.bt-round, .bt-update, .bt-side-collapse):hover {
+  background: rgba(var(--sao-cyan), 0.14) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(var(--sao-cyan), 0.68),
+    0 0 16px rgba(var(--sao-cyan), 0.22);
+  color: #d4f7ff !important;
+}
+
+/* 总管卡片 */
+html.sao .bt-tile {
+  background: linear-gradient(160deg, rgba(var(--sao-cyan), 0.10), rgba(6, 14, 22, 0.9)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(var(--sao-cyan), 0.20),
+    inset 0 0 40px rgba(var(--sao-cyan), 0.05);
+  transition: box-shadow 0.16s ease, background 0.16s ease;
+}
+
+html.sao .bt-tile:hover {
+  background: linear-gradient(160deg, rgba(var(--sao-cyan), 0.20), rgba(6, 14, 22, 0.92)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(var(--sao-cyan), 0.70),
+    0 0 24px rgba(var(--sao-cyan), 0.20);
+}
+
+html.sao .bt-chip {
+  background: rgba(var(--sao-cyan), 0.14) !important;
+  box-shadow: inset 0 0 0 1px rgba(var(--sao-cyan), 0.34);
+  color: rgba(var(--sao-cyan), 0.92) !important;
+  font-family: var(--sao-hud) !important;
+  font-size: 10px !important;
+  letter-spacing: 0.08em;
+}
+
+/* 折叠态余额条 */
+html.sao .cm-foot-rail {
+  background: rgba(6, 14, 22, 0.55) !important;
+  box-shadow: inset 0 0 0 1px rgba(var(--sao-cyan), 0.14);
+}
+
+html.sao .cm-peak-rail-segment {
+  background: rgba(var(--sao-amber), 0.65) !important;
+}
+
+/* ── 17.2 顶栏胶囊 ──────────────────────────────────────────────── */
+html.sao .bt-pill {
+  background: rgba(var(--sao-cyan), 0.06) !important;
+  box-shadow: inset 0 0 0 1px rgba(var(--sao-cyan), 0.22);
+  transition: box-shadow 0.16s ease, background 0.16s ease;
+}
+
+html.sao .bt-pill:hover {
+  background: rgba(var(--sao-cyan), 0.12) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(var(--sao-cyan), 0.62),
+    0 0 16px rgba(var(--sao-cyan), 0.18);
+}
+
+html.sao .bt-pill-name {
+  font-family: var(--sao-hud) !important;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: #eafcff !important;
+}
+
+html.sao .bt-pill-mem-in {
+  color: rgba(var(--sao-cyan), 0.66) !important;
+}
+
+html.sao .bt-pill-mem-ico {
+  color: rgb(var(--sao-cyan)) !important;
+  filter: drop-shadow(0 0 6px rgba(var(--sao-cyan), 0.8));
+}
+
+html.sao .bt-pill-go {
+  color: rgba(var(--sao-cyan), 0.45) !important;
+}
+
+/* ── 17.3 消息流 ────────────────────────────────────────────────── */
+/* 每条助手消息原本是一整块 #262626 灰板，压成一栏细刻度 */
+html.sao .bt-bubble {
+  background: linear-gradient(90deg, rgba(var(--sao-cyan), 0.05), transparent 70%) !important;
+  box-shadow: inset 2px 0 0 rgba(var(--sao-cyan), 0.26);
+  color: #dcf2ff !important;
+  transition: box-shadow 0.16s ease, background 0.16s ease;
+}
+
+html.sao .bt-msg:hover .bt-bubble {
+  background: linear-gradient(90deg, rgba(var(--sao-cyan), 0.10), transparent 74%) !important;
+  box-shadow: inset 2px 0 0 rgba(var(--sao-cyan), 0.85);
+}
+
+/* 思考过程 */
+html.sao .bt-think {
+  border-left: 1px solid rgba(var(--sao-cyan), 0.22);
+  box-shadow: inset 6px 0 0 rgba(var(--sao-cyan), 0.04);
+  background: rgba(var(--sao-cyan), 0.02) !important;
+}
+
+html.sao .bt-think summary,
+html.sao .bt-think-time {
+  color: rgba(var(--sao-cyan), 0.62) !important;
+  font-family: var(--sao-hud) !important;
+  letter-spacing: 0.08em;
+}
+
+html.sao .bt-think-text {
+  color: #93b8ca !important;
+  letter-spacing: 0.006em;
+}
+
+/* 系统事件行（重启后接着做之前的工作） */
+html.sao .bt-event {
+  color: rgba(var(--sao-cyan), 0.62) !important;
+  font-family: var(--sao-hud) !important;
+  font-size: 10px !important;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* 工具图标条 */
+html.sao .bt-tools {
+  border-top: 1px solid rgba(var(--sao-cyan), 0.10);
+}
+
+html.sao .bt-tool {
+  color: rgba(var(--sao-cyan), 0.55) !important;
+  transition: color 0.15s ease, filter 0.15s ease;
+}
+
+html.sao .bt-tool:hover {
+  color: rgb(var(--sao-cyan)) !important;
+  filter: drop-shadow(0 0 7px rgba(var(--sao-cyan), 0.85));
+}
+
+/* 账号 */
+html.sao .bt-account,
+html.sao .bt-you {
+  background: rgba(var(--sao-cyan), 0.05) !important;
+  box-shadow: inset 0 0 0 1px rgba(var(--sao-cyan), 0.16);
+}
+
+html.sao .bt-account:hover {
+  box-shadow:
+    inset 0 0 0 1px rgba(var(--sao-cyan), 0.55),
+    0 0 14px rgba(var(--sao-cyan), 0.18);
+}
+
+/* ── 17.4 输入区 ────────────────────────────────────────────────── */
+html.sao .GRgSLq_card {
+  background-color: #070d15 !important;
+}
+
+html.sao .bt-plus {
+  background: rgba(var(--sao-cyan), 0.08) !important;
+  box-shadow: inset 0 0 0 1px rgba(var(--sao-cyan), 0.22);
+  color: rgba(var(--sao-cyan), 0.85) !important;
+  transition: box-shadow 0.16s ease, background 0.16s ease;
+}
+
+html.sao .bt-plus:hover {
+  background: rgba(var(--sao-cyan), 0.16) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(var(--sao-cyan), 0.70),
+    0 0 16px rgba(var(--sao-cyan), 0.22);
+}
+
+/* 语音键原本是 rgb(91,123,255) 蓝紫实心 */
+html.sao .bt-voice {
+  background: linear-gradient(145deg, #9ceeff, #2f9ec4) !important;
+  color: #04141f !important;
+  box-shadow: 0 0 16px rgba(var(--sao-cyan), 0.45);
+  transition: box-shadow 0.16s ease;
+}
+
+html.sao .bt-voice:hover {
+  box-shadow: 0 0 26px rgba(var(--sao-cyan), 0.85);
+}
+
+html.sao .bt-voice svg {
+  color: #04141f !important;
+}
+
+html.sao .bt-title-toggle {
+  color: rgba(var(--sao-cyan), 0.70) !important;
+}
+
+html.sao .bt-title-toggle:hover {
+  color: #d4f7ff !important;
+}
+
+html.sao .bt-head {
+  letter-spacing: 0.02em;
+}
+
+/* ── 17.5 Bot 形象与列表行 ──────────────────────────────────────── */
+/* 鲸鱼/花生吉祥物是内联 SVG，配色由 --bt-accent 驱动（默认 #5b7bff 蓝紫，
+   金策 EA 是 #ff9800 橙）。统一压成系统青。 */
+html.sao .bt-mark,
+html.sao [data-shape] {
+  --bt-accent: #6ee0ff !important;
+}
+
+html.sao .bt-badge-main svg,
+html.sao .bt-badge-main path,
+html.sao .bt-badge svg,
+html.sao .bt-badge path {
+  fill: rgb(var(--sao-cyan)) !important;
+}
+
+html.sao .bt-badge-main {
+  filter: drop-shadow(0 0 7px rgba(var(--sao-cyan), 0.85));
+}
+
+/* Bot 列表行 */
+html.sao [class*='bt-row'] {
+  transition: background 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
+}
+
+html.sao [class*='bt-row-name'] {
+  box-shadow: inset 2px 0 0 transparent;
+  border-radius: 0;
+}
+
+html.sao [class*='bt-row-name']:hover {
+  background: linear-gradient(90deg, rgba(var(--sao-cyan), 0.12), transparent 80%) !important;
+  box-shadow: inset 2px 0 0 rgba(var(--sao-cyan), 0.75);
+}
+
+html.sao .bt-row-title {
+  color: #d7eefb !important;
+  letter-spacing: 0.035em;
+}
+
+/* 预览文本 —— 只认真实类名。原先用 [class*='sub'] / [class*='desc'] 泛匹配，
+   会把 bt-q-submit（提交按钮）、bt-app-sub、bt-import-sub 一并压成暗青，
+   和 _button_1ulci_ 那次是同一类误伤，这里按实际类名收窄。 */
+html.sao [class*='bt-row'] :is(
+  small,
+  em,
+  .bt-row-preview,
+  .bt-q-desc,
+  .bt-agent-sub,
+  .bt-bs-sub
+) {
+  color: rgba(var(--sao-cyan), 0.52) !important;
+}
+
+html.sao .bt-tile-wrap {
+  border-bottom: 1px solid rgba(var(--sao-cyan), 0.08);
+}
+
+/* 左栏底部账号块 */
+html.sao .bt-side {
+  scrollbar-color: rgba(var(--sao-cyan), 0.3) transparent;
+}
+
+/* ── 17.6 吉祥物重新上色 ────────────────────────────────────────────
+   SVG 里 fill="var(--bt-ink-deepseek)" 是 DeepSeek 品牌蓝 rgb(106,132,255)，
+   "--bt-ink-yellow" 是 rgb(255,152,0)。统一换成系统青（第二个 Bot 略深以保留区分）。 */
+html.sao .bt-mark,
+html.sao [data-shape] {
+  --bt-ink-deepseek: #6ee0ff !important;
+  --bt-ink-yellow: #3fb4dd !important;
+  --bt-main: #04101a !important;
+}
+
+html.sao .bt-tile .bt-mark {
+  filter: drop-shadow(0 0 16px rgba(var(--sao-cyan), 0.45));
+}
+
+html.sao .bt-account .bt-mark,
+html.sao .bt-side .bt-mark {
+  filter: drop-shadow(0 0 8px rgba(var(--sao-cyan), 0.55));
+}
+
+/* ── 18. HUD 标识让位给原生菜单条 ───────────────────────────────── */
+/* 原来 left:132px 会压在「应用 / 编辑」菜单上，挪到右上空白区。 */
+#dsh-sao-hud .sao-sig {
+  left: auto;
+  right: 142px;
+  top: 5px;
+  letter-spacing: 0.28em;
+}
+
+/* ── 19. 特异性修正 ─────────────────────────────────────────────────
+   宿主的顶栏规则特异性高于 html.sao .an3WzG_header，导致背景被压成透明，
+   DS Bot 模式里消息正文会从顶栏底下透出来。这里用属性选择器抬到更高权重。 */
+html.sao body header.an3WzG_header[data-window-drag] {
+  background: linear-gradient(180deg, rgba(9, 20, 32, 0.97) 0%, rgba(5, 11, 19, 0.94) 100%) !important;
+  border-bottom: 1px solid rgba(var(--sao-cyan), 0.22) !important;
+  box-shadow:
+    0 1px 0 rgba(var(--sao-cyan), 0.10),
+    0 14px 38px rgba(0, 0, 0, 0.46) !important;
+  backdrop-filter: blur(12px) saturate(1.06);
+}
+
+/* 浮层文字不要纯白 */
+html.sao [role='tooltip'] {
+  color: #dcf2ff !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   20. 节点模式画布（wf-* / react-flow__*）
+   又一套独立配色：底 rgb(8,16,30)、边框 rgb(41,64,95)、
+   主色青绿 rgb(45,212,191)、节点绿 rgb(52,211,153)、
+   端口蓝紫 rgb(111,143,255)、退出粉 rgb(255,177,189)。
+   ══════════════════════════════════════════════════════════════════════ */
+
+html.sao :is(.wf-overlay, .wf-shell) {
+  background: var(--sao-void) !important;
+}
+
+/* 画布底纹换成冷青点阵 */
+html.sao .wf-canvas,
+html.sao .react-flow {
+  --xy-background-pattern-color: rgba(110, 224, 255, 0.16);
+  --xy-background-color: transparent;
+}
+
+/* ── 20.1 工具条 ────────────────────────────────────────────────── */
+html.sao .wf-toolbar {
+  background: linear-gradient(180deg, rgba(9, 20, 32, 0.97) 0%, rgba(5, 11, 19, 0.94) 100%) !important;
+  border-bottom: 1px solid rgba(var(--sao-cyan), 0.22) !important;
+  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.46);
+}
+
+html.sao .wf-toolbar__mode {
+  background: rgba(var(--sao-cyan), 0.08) !important;
+  border-color: rgba(var(--sao-cyan), 0.34) !important;
+  color: #8ee9ff !important;
+  font-family: var(--sao-hud) !important;
+  letter-spacing: 0.08em;
+}
+
+html.sao .wf-toolbar__divider {
+  background: rgba(var(--sao-cyan), 0.18) !important;
+}
+
+html.sao .wf-name {
+  color: #eafcff !important;
+  letter-spacing: 0.03em;
+}
+
+html.sao :is(.wf-name__edit, .wf-help-btn) {
+  color: rgba(var(--sao-cyan), 0.55) !important;
+  transition: color 0.15s ease;
+}
+
+html.sao :is(.wf-name__edit, .wf-help-btn):hover {
+  color: #d4f7ff !important;
+}
+
+/* 普通按钮 */
+html.sao .wf-btn {
+  background: rgba(var(--sao-cyan), 0.04) !important;
+  border-color: rgba(var(--sao-cyan), 0.22) !important;
+  color: #bcd9e6 !important;
+  letter-spacing: 0.04em;
+  transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+}
+
+html.sao .wf-btn:hover {
+  background: rgba(var(--sao-cyan), 0.12) !important;
+  border-color: rgba(var(--sao-cyan), 0.60) !important;
+  color: #eafcff !important;
+}
+
+/* 运行 = 主行动 */
+html.sao .wf-btn--primary {
+  background: linear-gradient(145deg, #9ceeff, #2f9ec4) !important;
+  border-color: transparent !important;
+  color: #04141f !important;
+  box-shadow: 0 0 18px rgba(var(--sao-cyan), 0.35);
+}
+
+html.sao .wf-btn--primary:hover {
+  background: linear-gradient(145deg, #bff3ff, #3fb4dd) !important;
+  box-shadow: 0 0 26px rgba(var(--sao-cyan), 0.6);
+}
+
+/* 退出 = 警示，收进琥珀 */
+html.sao .wf-btn--exit {
+  background: rgba(var(--sao-amber), 0.06) !important;
+  border-color: rgba(var(--sao-amber), 0.42) !important;
+  color: #ffd27a !important;
+}
+
+html.sao .wf-btn--exit:hover {
+  background: rgba(var(--sao-amber), 0.16) !important;
+  border-color: rgba(var(--sao-amber), 0.85) !important;
+  color: #ffe4a8 !important;
+}
+
+/* 明暗切换 */
+html.sao .wf-theme-toggle {
+  background: rgba(6, 14, 22, 0.86) !important;
+  border-color: rgba(var(--sao-cyan), 0.20) !important;
+}
+
+/* ── 20.2 节点 ──────────────────────────────────────────────────── */
+html.sao .wf-node {
+  background: linear-gradient(160deg, rgba(12, 26, 41, 0.96), rgba(5, 12, 20, 0.98)) !important;
+  border-color: rgba(var(--sao-cyan), 0.24) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(var(--sao-cyan), 0.05),
+    0 0 26px rgba(var(--sao-cyan), 0.10) !important;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+html.sao .wf-node:hover {
+  border-color: rgba(var(--sao-cyan), 0.7) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(var(--sao-cyan), 0.16),
+    0 0 34px rgba(var(--sao-cyan), 0.24) !important;
+}
+
+html.sao .wf-node__icon {
+  background: linear-gradient(145deg, #8ee9ff, #2f9ec4) !important;
+  color: #04141f !important;
+  box-shadow: 0 0 20px rgba(var(--sao-cyan), 0.45);
+}
+
+html.sao .wf-node__label {
+  color: #eafcff !important;
+  letter-spacing: 0.03em;
+}
+
+/* 端口：蓝紫方点 → 青色 */
+html.sao .react-flow__handle {
+  background: rgb(var(--sao-cyan)) !important;
+  border-color: var(--sao-void) !important;
+  box-shadow: 0 0 10px rgba(var(--sao-cyan), 0.6);
+}
+
+html.sao .react-flow__handle:hover {
+  background: #d4f7ff !important;
+  box-shadow: 0 0 16px rgba(var(--sao-cyan), 0.95);
+}
+
+/* 连线 */
+html.sao .react-flow__edge-path {
+  stroke: rgba(var(--sao-cyan), 0.65) !important;
+}
+
+/* 缩略图 */
+html.sao .react-flow__minimap {
+  background: rgba(6, 14, 22, 0.92) !important;
+  border: 1px solid rgba(var(--sao-cyan), 0.22);
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.55);
+}
+
+html.sao .react-flow__minimap-mask {
+  fill: rgba(4, 8, 14, 0.72) !important;
+  stroke: rgba(var(--sao-cyan), 0.55) !important;
+}
+
+/* 画布控制条 */
+html.sao .react-flow__controls {
+  background: rgba(6, 14, 22, 0.9) !important;
+  border: 1px solid rgba(var(--sao-cyan), 0.20);
+  box-shadow: none !important;
+}
+
+html.sao .react-flow__controls-button {
+  background: transparent !important;
+  border-bottom: 1px solid rgba(var(--sao-cyan), 0.14) !important;
+  color: rgba(var(--sao-cyan), 0.8) !important;
+  fill: rgba(var(--sao-cyan), 0.8) !important;
+}
+
+html.sao .react-flow__controls-button:hover {
+  background: rgba(var(--sao-cyan), 0.14) !important;
+}
+
+html.sao .react-flow__controls-button svg {
+  fill: rgba(var(--sao-cyan), 0.85) !important;
+}
+
+/* ── 20.3 补齐：缩略图节点 / 画布添加键 ─────────────────────────── */
+html.sao .react-flow__minimap-node {
+  fill: rgba(var(--sao-cyan), 0.78) !important;
+  stroke: rgba(var(--sao-cyan), 0.35) !important;
+}
+
+html.sao .wf-canvas__add {
+  background: rgba(var(--sao-cyan), 0.06) !important;
+  border-color: rgba(var(--sao-cyan), 0.26) !important;
+  color: #c8e6f2 !important;
+  letter-spacing: 0.05em;
+  transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+}
+
+html.sao .wf-canvas__add:hover {
+  background: rgba(var(--sao-cyan), 0.14) !important;
+  border-color: rgba(var(--sao-cyan), 0.65) !important;
+  color: #eafcff !important;
+}
+

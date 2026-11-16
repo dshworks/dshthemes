@@ -1,0 +1,268 @@
+/* zhule33-cmyk/muse-plush-skin — client.js
+   fetched 2026-11-16 from https://raw.githubusercontent.com/zhule33-cmyk/muse-plush-skin/master/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+--muse-ink: #3a2c28;
+  --muse-tex-size: 200px;
+
+  /* 派生色：亮色模式 */
+  --m-fur: var(--muse-fur);
+  --m-belly: var(--muse-belly);
+  --m-fur-hi: color-mix(in oklab, var(--m-fur) 52%, #ffffff);
+  --m-fur-lo: color-mix(in oklab, var(--m-fur) 70%, #2c3d57);
+  --m-paper: color-mix(in oklab, var(--m-fur) 16%, #ffffff);
+  --m-paper-2: color-mix(in oklab, var(--m-fur) 26%, #ffffff);
+  --m-paper-3: color-mix(in oklab, var(--m-fur) 36%, #ffffff);
+  --m-belly-hi: color-mix(in oklab, var(--m-belly) 48%, #fffaf4);
+  --m-belly-lo: color-mix(in oklab, var(--m-belly) 78%, #5b4637);
+  --m-button: #7c5d50;
+  --m-button-hi: #8f6d5f;
+  --m-ink-1: color-mix(in oklab, var(--m-fur) 10%, #1d222b);
+  --m-ink-2: color-mix(in oklab, var(--m-fur) 22%, #353d4b);
+  --m-ink-3: color-mix(in oklab, var(--m-fur) 40%, #566071);
+  --m-ink-4: color-mix(in oklab, var(--m-fur) 52%, #6b7586);
+  --m-line: color-mix(in srgb, var(--m-fur-lo) 26%, transparent);
+  --m-shadow: rgba(44, 58, 84, 0.16);
+
+  /* 表面 */
+  --dsw-alias-bg-base: color-mix(in srgb, var(--m-fur-hi) 74%, transparent) !important;
+  --dsw-alias-bg-layer-1: color-mix(in srgb, var(--m-paper) 90%, transparent) !important;
+  --dsw-alias-bg-layer-2: color-mix(in srgb, var(--m-paper-2) 88%, transparent) !important;
+  --dsw-alias-bg-layer-3: color-mix(in srgb, var(--m-paper-3) 90%, transparent) !important;
+  --dsw-alias-bg-layer-4: var(--m-paper) !important;
+  --dsw-alias-bg-module-platform: color-mix(in srgb, var(--m-paper-2) 90%, transparent) !important;
+  --dsw-alias-bg-multi-select: var(--m-paper-2) !important;
+  --dsw-alias-bg-overlay: var(--m-paper) !important;
+  --dsw-alias-bg-skeleton: color-mix(in srgb, var(--m-fur-lo) 10%, transparent) !important;
+
+  --dsw-alias-border-l1: color-mix(in srgb, var(--m-fur-lo) 16%, transparent) !important;
+  --dsw-alias-border-l2: color-mix(in srgb, var(--m-fur-lo) 26%, transparent) !important;
+  --dsw-alias-border-l3: color-mix(in srgb, var(--m-fur-lo) 40%, transparent) !important;
+  --dsw-alias-border-l4: color-mix(in srgb, var(--m-fur-lo) 55%, transparent) !important;
+  --dsw-alias-border-l2-darkmode-thin: color-mix(in srgb, var(--m-fur-lo) 26%, transparent) !important;
+  --dsw-alias-separator-primary: color-mix(in srgb, var(--m-fur-lo) 14%, transparent) !important;
+
+  /* 品牌色 = 胸前那几颗棕纽扣 */
+  --dsw-alias-brand-primary: var(--m-button) !important;
+  --dsw-alias-brand-primary-invert: var(--m-button) !important;
+  --dsw-alias-brand-primary-new-colorprimary-new-color: var(--m-button) !important;
+  --dsw-alias-brand-text: var(--m-ink-1) !important;
+  --dsw-alias-button-primary-fill: var(--m-button) !important;
+  --dsw-alias-button-primary-hover: var(--m-button-hi) !important;
+  --dsw-alias-button-primary-dimmed: var(--m-belly-hi) !important;
+  --dsw-alias-button-info-fill: var(--m-button) !important;
+  --dsw-alias-button-info-hover: var(--m-button-hi) !important;
+  --dsw-alias-button-contrast-fill: var(--m-ink-1) !important;
+  --dsw-alias-button-elevated-fill: var(--m-paper) !important;
+  --dsw-alias-button-floating-fill: color-mix(in srgb, var(--m-paper) 92%, transparent) !important;
+  --dsw-alias-button-floating-hover: var(--m-paper-3) !important;
+  --dsw-alias-button-ghost-active-fill: var(--m-paper-3) !important;
+  --dsw-alias-button-ghost-active-hover: var(--m-paper-3) !important;
+  --dsw-alias-button-ghost-active-border: color-mix(in srgb, var(--m-fur-lo) 50%, transparent) !important;
+  --dsw-alias-state-business-primary: var(--m-button) !important;
+  --dsw-alias-state-business-tertiary: var(--m-belly-hi) !important;
+  --dsw-alias-link: color-mix(in oklab, var(--m-fur-lo) 70%, #1d3557) !important;
+  --dsw-alias-menu-icon: var(--m-ink-2) !important;
+
+  --dsw-alias-interactive-bg-hover: color-mix(in srgb, var(--m-fur-lo) 10%, transparent) !important;
+  --dsw-alias-interactive-bg-active: color-mix(in srgb, var(--m-fur-lo) 18%, transparent) !important;
+  --dsw-alias-interactive-bg-hover-accent: color-mix(in srgb, var(--m-fur-lo) 24%, transparent) !important;
+  --dsw-alias-interactive-bg-hover-solid: var(--m-paper-3) !important;
+
+  /* 文字：带一点蓝灰，不用纯黑 */
+  --dsw-alias-label-primary: var(--m-ink-1) !important;
+  --dsw-alias-label-primary-dimmed: var(--m-ink-1) !important;
+  --dsw-alias-label-secondary: var(--m-ink-2) !important;
+  --dsw-alias-label-tertiary: var(--m-ink-3) !important;
+  --dsw-alias-label-caption: var(--m-ink-4) !important;
+  --dsw-alias-label-primary-bluish: var(--m-fur-lo) !important;
+
+  --dsw-alias-markdown-code-block: color-mix(in srgb, var(--m-paper) 94%, transparent) !important;
+  --dsw-alias-markdown-code-block-banner: var(--m-paper-2) !important;
+  --dsw-alias-markdown-inline-code: color-mix(in srgb, var(--m-belly) 42%, transparent) !important;
+  --dsw-alias-markdown-tag: var(--m-paper-2) !important;
+  --dsw-alias-markdown-citation: var(--m-paper-2) !important;
+
+  --dsw-alias-scrollbar-bg-l1: color-mix(in srgb, var(--m-belly-lo) 45%, transparent) !important;
+  --dsw-alias-scrollbar-bg-l2: color-mix(in srgb, var(--m-belly-lo) 45%, transparent) !important;
+  --dsw-alias-scrollbar-hover-l1: color-mix(in srgb, var(--m-belly-lo) 70%, transparent) !important;
+  --dsw-alias-scrollbar-hover-l2: color-mix(in srgb, var(--m-belly-lo) 70%, transparent) !important;
+
+  --dsw-alias-menu-group-header-fill: var(--m-paper) !important;
+  --dsw-alias-toast-bg: color-mix(in oklab, var(--m-fur-lo) 70%, #1d222b) !important;
+  --dsw-alias-tooltip-bg: color-mix(in oklab, var(--m-fur-lo) 70%, #1d222b) !important;
+  --dsw-alias-turn-trigger-bg: var(--m-paper-2) !important;
+  --dsw-alias-turn-trigger-bg-hover: var(--m-paper-3) !important;
+
+  /* 肚皮色：气泡与输入框 */
+  --dsw-specific-bubble: var(--m-belly) !important;
+  --dsw-specific-bubble-highlight: var(--m-belly-lo) !important;
+  --dsw-specific-input-major: var(--m-belly-hi) !important;
+  --dsw-specific-login-input: var(--m-paper) !important;
+  --dsw-specific-menu: var(--m-paper) !important;
+  --dsw-specific-selector: var(--m-paper-2) !important;
+  --dsw-specific-tip: var(--m-paper-2) !important;
+  --dsw-input-solid: var(--m-paper) !important;
+
+  /* 侧栏直接露出蓝色绒毛 */
+  --dsw-specific-sidebar-fill: color-mix(in srgb, var(--m-fur) 18%, transparent) !important;
+  --dsw-specific-sidebar-nav-item-hover: color-mix(in srgb, #ffffff 26%, transparent) !important;
+  --dsw-specific-sidebar-nav-item-active: color-mix(in srgb, var(--m-belly-hi) 82%, transparent) !important;
+  --dsw-specific-sidebar-nav-item-active-accent: var(--m-button) !important;
+
+  /* 品牌色阶：全部换成纽扣棕，避免露出原生蓝 */
+  --dsw-static-blue-400: #a07f70 !important;
+  --dsw-static-blue-450: #8f6d5f !important;
+  --dsw-static-blue-500: #7c5d50 !important;
+  --dsw-static-deepseek-200: #e3d3c8 !important;
+  --dsw-static-deepseek-450: #8f6d5f !important;
+  --dsw-static-deepseek-500: #7c5d50 !important;
+
+  /* 毛绒玩具没有直角 */
+  --dsw-radius-xs: 8px !important;
+  --dsw-radius-sm: 12px !important;
+  --dsw-radius-md: 16px !important;
+  --dsw-radius-lg: 20px !important;
+  --dsw-radius-xl: 24px !important;
+  --dsw-radius-panel: 30px !important;
+
+  /* 整个窗口 = Muse 的身体：绒毛贴图 + 顶光 + 底部阴影 */
+  background-color: var(--m-fur) !important;
+  background-image:
+    radial-gradient(120% 80% at 28% -8%, rgba(255, 255, 255, 0.42), transparent 58%),
+    radial-gradient(90% 70% at 92% 112%, rgba(40, 58, 88, 0.20), transparent 62%),
+    var(--muse-tex, none) !important;
+  background-size: auto, auto, var(--muse-tex-size) !important;
+  background-repeat: no-repeat, no-repeat, repeat !important;
+  background-attachment: fixed !important;
+}
+  --m-fur: color-mix(in oklab, var(--muse-fur) 30%, #12161f);
+  --m-belly: color-mix(in oklab, var(--muse-belly) 30%, #17130f);
+  --m-fur-hi: color-mix(in oklab, var(--m-fur) 80%, #ffffff);
+  --m-fur-lo: color-mix(in oklab, var(--muse-fur) 22%, #0b0f16);
+  --m-paper: color-mix(in oklab, var(--muse-fur) 12%, #14181f);
+  --m-paper-2: color-mix(in oklab, var(--muse-fur) 15%, #1b2029);
+  --m-paper-3: color-mix(in oklab, var(--muse-fur) 18%, #242a35);
+  --m-belly-hi: color-mix(in oklab, var(--muse-belly) 24%, #1f1a16);
+  --m-belly-lo: color-mix(in oklab, var(--muse-belly) 34%, #2a231d);
+  --m-button: #c7a595;
+  --m-button-hi: #d6b6a7;
+  --m-ink-1: color-mix(in oklab, var(--muse-fur) 12%, #fbfaf7);
+  --m-ink-2: color-mix(in oklab, var(--muse-fur) 16%, #f0eeea);
+  --m-ink-3: color-mix(in oklab, var(--muse-fur) 24%, #d3d0cc);
+  --m-ink-4: color-mix(in oklab, var(--muse-fur) 30%, #b3b0ac);
+  --m-shadow: rgba(0, 0, 0, 0.35);
+
+  --dsw-alias-bg-base: color-mix(in srgb, var(--m-paper) 70%, transparent) !important;
+  --dsw-alias-border-l1: color-mix(in srgb, var(--m-ink-1) 9%, transparent) !important;
+  --dsw-alias-border-l2: color-mix(in srgb, var(--m-ink-1) 14%, transparent) !important;
+  --dsw-alias-border-l3: color-mix(in srgb, var(--m-ink-1) 22%, transparent) !important;
+  --dsw-alias-border-l4: color-mix(in srgb, var(--m-ink-1) 32%, transparent) !important;
+  --dsw-alias-separator-primary: color-mix(in srgb, var(--m-ink-1) 8%, transparent) !important;
+  --dsw-alias-interactive-bg-hover: color-mix(in srgb, var(--m-ink-1) 8%, transparent) !important;
+  --dsw-alias-interactive-bg-active: color-mix(in srgb, var(--m-ink-1) 14%, transparent) !important;
+  --dsw-alias-interactive-bg-hover-accent: color-mix(in srgb, var(--m-ink-1) 20%, transparent) !important;
+  --dsw-alias-link: color-mix(in oklab, var(--muse-fur) 70%, #ffffff) !important;
+  --dsw-alias-label-primary-bluish: color-mix(in oklab, var(--muse-fur) 70%, #ffffff) !important;
+  --dsw-alias-button-contrast-fill: var(--m-ink-1) !important;
+  --dsw-alias-toast-bg: var(--m-paper-3) !important;
+  --dsw-alias-tooltip-bg: var(--m-paper-3) !important;
+  --dsw-alias-label-primary-foreground: #241b17 !important;
+  --dsw-alias-label-primary-inverted: #241b17 !important;
+  --dsw-specific-bubble: var(--m-belly-lo) !important;
+  --dsw-specific-bubble-highlight: var(--m-belly-hi) !important;
+  --dsw-specific-input-major: var(--m-belly-hi) !important;
+  --dsw-specific-sidebar-fill: color-mix(in srgb, #0b0e13 28%, transparent) !important;
+  --dsw-specific-sidebar-nav-item-hover: color-mix(in srgb, #ffffff 7%, transparent) !important;
+  --dsw-specific-sidebar-nav-item-active: color-mix(in srgb, var(--m-belly-lo) 80%, transparent) !important;
+  --dsw-static-blue-500: #c7a595 !important;
+  --dsw-static-deepseek-500: #c7a595 !important;
+
+  background-image:
+    radial-gradient(120% 80% at 28% -8%, rgba(190, 210, 240, 0.12), transparent 58%),
+    radial-gradient(90% 70% at 92% 112%, rgba(0, 0, 0, 0.35), transparent 62%),
+    var(--muse-tex, none) !important;
+  /* 夜间：单层绒（之前叠两层太花，压成淡纹理又没了毛感） */
+} background: color-mix(in srgb, var(--m-belly) 70%, transparent); } background-color: var(--m-paper) !important; }
+  background-image: var(--muse-tex-faint, none) !important;
+  background-size: var(--muse-tex-size) !important;
+}
+  background: transparent !important;
+  isolation: isolate;
+  box-shadow:
+    0 2px 4px var(--m-shadow),
+    0 14px 34px color-mix(in srgb, var(--m-shadow) 80%, transparent) !important;
+}
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background-color: var(--dsw-specific-input-major);
+  background-image:
+    radial-gradient(100% 140% at 30% 0%, rgba(255, 255, 255, 0.38), transparent 60%),
+    var(--muse-tex-belly, none);
+  background-size: auto, var(--muse-tex-size);
+  box-shadow:
+    inset 0 2px 6px rgba(255, 255, 255, 0.45),
+    inset 0 -6px 14px color-mix(in srgb, var(--m-belly-lo) 35%, transparent);
+}
+  background-image:
+    radial-gradient(100% 140% at 30% 0%, rgba(255, 255, 255, 0.08), transparent 60%),
+    var(--muse-tex-faint, none);
+  box-shadow: inset 0 -6px 14px rgba(0, 0, 0, 0.25);
+}
+  background:
+    radial-gradient(circle at 38% 32%, rgba(255, 255, 255, 0.35), transparent 42%),
+    var(--m-button) !important;
+  color: #fff8f2 !important;
+  border-radius: 50% !important;
+  box-shadow:
+    inset 0 -2px 3px rgba(0, 0, 0, 0.25),
+    0 2px 4px rgba(60, 40, 30, 0.25) !important;
+}
+  position: relative;
+  isolation: isolate;
+  background: transparent !important;
+}
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background-color: var(--dsw-specific-bubble);
+  background-image:
+    radial-gradient(120% 120% at 30% 0%, rgba(255, 255, 255, 0.30), transparent 60%),
+    var(--muse-tex-belly, none);
+  background-size: auto, var(--muse-tex-size);
+  box-shadow: inset 0 -4px 10px color-mix(in srgb, var(--m-belly-lo) 40%, transparent);
+}
+  background-image: var(--muse-tex-faint, none);
+  background-size: var(--muse-tex-size);
+}
+}
+}
+
+/* ── Muse 小团子：趴在输入框上沿 ── */
+.dsh-muse-mascot {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 92px;
+  height: 56px;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  will-change: transform;
+}
+.dsh-muse-mascot[data-visible] { opacity: 1; }
+.dsh-muse-mascot svg { width: 100%; height: 100%; overflow: visible; display: block; }
+.dsh-muse-mascot .muse-bob { animation: dsh-muse-bob 5.5s ease-in-out infinite; transform-origin: 50% 100%; }
+.dsh-muse-mascot .muse-eye { animation: dsh-muse-blink 4.8s infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes dsh-muse-bob { 0%, 100% { transform: translateY(2px); } 50% { transform: translateY(-1px); } }
+@keyframes dsh-muse-blink { 0%, 93%, 100% { transform: scaleY(1); } 95.5% { transform: scaleY(0.12); } }
+@media (prefers-reduced-motion: reduce) {
+  .dsh-muse-mascot .muse-bob, .dsh-muse-mascot .muse-eye { animation: none; }
+}

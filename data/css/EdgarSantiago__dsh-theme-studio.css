@@ -1,0 +1,92 @@
+/* EdgarSantiago/dsh-theme-studio — src/theme/style.css
+   fetched 2026-11-16 from https://raw.githubusercontent.com/EdgarSantiago/dsh-theme-studio/main/src/theme/style.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+.dsh-theme-settings { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; padding: 8px 0 20px; color: var(--dsw-alias-label-primary); border-bottom: 1px solid var(--dsw-alias-border-l3); }
+.dsh-theme-settings .hex-settings-copy strong { font-size: 14px; font-weight: 500; }
+.dsh-theme-settings .hex-settings-copy p { margin: 6px 0 0; font-size: 12px; color: var(--dsw-alias-label-secondary); }
+.dsh-theme-settings .hex-settings-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.dsh-theme-settings select, .dsh-theme-editor select { min-width: 0; font: inherit; font-size: 13px; padding: 10px 12px; min-height: 40px; border: 1px solid var(--dsw-alias-border-l2); border-radius: 10px; background: var(--dsw-specific-input-major); color: var(--dsw-alias-label-primary); }
+.dsh-theme-settings select { max-width: 210px; }
+.dsh-theme-settings select:focus-visible, .dsh-theme-editor select:focus-visible, .dsh-theme-editor input:focus-visible { outline: 2px solid var(--dsw-alias-state-business-primary); outline-offset: 3px; }
+.dsh-theme-editor { width: min(620px, 100%); max-height: 100%; }
+.dsh-theme-editor .hex-editor-actions { display: flex; flex: 1; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.dsh-theme-editor .hex-editor-content { overflow-y: auto; }
+.dsh-theme-editor .hex-tabs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; margin-bottom: 20px; padding: 4px; border: 1px solid var(--dsw-alias-border-l2); border-radius: 12px; }
+.dsh-theme-editor .hex-tabs button { min-width: 0; min-height: 40px; padding: 8px 4px; border: 0; border-radius: 8px; background: transparent; color: var(--dsw-alias-label-secondary); font: inherit; font-size: 13px; cursor: pointer; }
+.dsh-theme-editor .hex-tabs button[aria-selected=true] { background: var(--dsw-alias-button-primary-fill); color: var(--dsw-alias-label-primary-foreground); }
+.dsh-theme-editor .hex-tabs button:focus-visible { outline: 2px solid var(--dsw-alias-state-business-primary); outline-offset: 2px; }
+.dsh-theme-editor .hex-tab-panel { min-width: 0; }
+.dsh-theme-editor .hex-tab-panel[hidden] { display: none; }
+.dsh-theme-editor .hex-tab-panel .hex-effects, .dsh-theme-editor .hex-tab-panel .hex-preview { margin-top: 0; }
+.dsh-theme-editor .hex-tab-panel .hex-form-top { margin-bottom: 0; }
+.dsh-theme-editor .hex-label { display: flex; flex-direction: column; gap: 8px; font-size: 12px; font-weight: 500; }
+.dsh-theme-editor .hex-active-row { display: flex; align-items: flex-end; gap: 10px; margin-bottom: 20px; }
+.dsh-theme-editor .hex-active-row .hex-label { flex: 1; min-width: 0; }
+.dsh-theme-editor .hex-active-row > button { white-space: nowrap; }
+.dsh-theme-editor .hex-form-top { display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 20px; }
+.dsh-theme-editor .hex-colors { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.dsh-theme-editor .hex-color-field { padding: 0; margin: 0; min-width: 0; border: 0; }
+.dsh-theme-editor .hex-color-field legend { margin-bottom: 8px; font-size: 12px; }
+.dsh-theme-editor .hex-color-row { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.dsh-theme-editor .hex-color-row > span { flex: 1; min-width: 0; }
+.dsh-theme-editor .hex-color-row input[type=text] { font-family: var(--ds-font-family-code, ui-monospace, monospace); width: 100%; }
+.dsh-theme-editor input[type=color] { flex: 0 0 40px; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 9px; background: none; cursor: pointer; }
+.dsh-theme-editor .hex-preview { margin-top: 24px; padding: 20px; border: 1px solid var(--hex-border); background: var(--hex-background); color: var(--hex-text); border-radius: 14px; }
+.dsh-theme-editor .hex-preview p { background: var(--hex-surface); padding: 12px; border-radius: 8px; margin: 14px 0; line-height: 1.5; }
+.dsh-theme-editor .hex-preview-action { display: inline-block; background: var(--hex-accent); color: var(--hex-onAccent); padding: 8px 12px; border-radius: 8px; }
+.dsh-theme-editor .hex-contrast, .dsh-theme-editor .hex-note { font-size: 11px; color: var(--dsw-alias-label-secondary); line-height: 1.5; }
+.dsh-theme-editor .hex-status { min-height: 20px; font-size: 12px; }
+.dsh-theme-settings .hex-storage, .dsh-theme-editor .hex-storage { flex-basis: 100%; font-size: 12px; padding: 8px; border: 1px solid var(--dsw-alias-border-l2); border-radius: 8px; }
+@media (max-width: 480px) { .dsh-theme-editor .hex-colors { grid-template-columns: 1fr; } .dsh-theme-settings select { max-width: 100%; } }
+@media (forced-colors: active) { .dsh-theme-editor .hex-preview, .dsh-theme-editor .hex-preview-action { border: 1px solid CanvasText; } }
+
+.dsh-theme-editor .hex-effects { display: grid; gap: 16px; margin: 24px 0 0; padding: 16px; border: 1px solid var(--dsw-alias-border-l2); border-radius: 12px; }
+.dsh-theme-editor .hex-sidebar-opacity { margin: 20px 0; }
+.dsh-theme-editor .hex-sidebar-preview { border-radius: 12px; overflow: hidden; background: repeating-conic-gradient(#c0c0c0 0% 25%, #666666 0% 50%) 0 / 20px 20px; }
+.dsh-theme-editor .hex-sidebar-preview > div { display: flex; flex-direction: column; gap: 12px; padding: 20px; color: var(--hex-text); }
+.dsh-theme-editor .hex-sidebar-preview span { font-size: 12px; }
+.dsh-theme-editor .hex-sidebar-opacity input[type=range], .dsh-theme-editor .hex-effects input[type=range] { width: 100%; min-height: 32px; accent-color: var(--dsw-alias-state-business-primary); }
+.dsh-theme-editor .hex-preview { background: radial-gradient(ellipse at top right, var(--hex-accent), transparent 65%), var(--hex-background); }
+.dsh-theme-editor .hex-preview p { background: var(--dsw-alias-bg-layer-2); }
+/* Layout uses CSS modules: semantic suffixes avoid depending on generated hashes.
+   No opacity/filter on ancestors: text, focus and fixed overlays remain intact. */
+[class*="_sidebarCol"], [class*="_rightbarCol"], [role="dialog"],
+[data-composer-card],
+.dsh-theme-editor .hex-preview p {
+  -webkit-backdrop-filter: var(--theme-studio-filter, none);
+  backdrop-filter: var(--theme-studio-filter, none);
+  background-image: var(--theme-studio-sheen, none);
+  box-shadow: var(--theme-studio-shadow, none);
+}
+/* Native conversation hooks, including embedded chats. Keep blur on a non-interactive
+   background plane, never on the scroll container or its text/menus. The tinted
+   scene supplies something to refract even when the app behind it is a solid color. */
+[data-conversation-content] {
+  position: relative;
+  isolation: isolate;
+  background-image: var(--theme-studio-scene, none);
+}
+[data-conversation-content]::before {
+  content: var(--theme-studio-chat-content, none);
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-color: var(--theme-studio-chat-fill, transparent);
+  background-image: var(--theme-studio-sheen, none);
+  -webkit-backdrop-filter: var(--theme-studio-filter, none);
+  backdrop-filter: var(--theme-studio-filter, none);
+  box-shadow: var(--theme-studio-shadow, none);
+}
+[data-composer-card] {
+  background-color: var(--dsw-specific-input-major);
+}
+@media (prefers-reduced-transparency: reduce), (forced-colors: active) {
+  [data-conversation-content] { background-image: none; }
+  [data-conversation-content]::before { content: none; }
+  [class*="_sidebarCol"], [class*="_rightbarCol"], [role="dialog"], [data-composer-card], .dsh-theme-editor .hex-preview p {
+    -webkit-backdrop-filter: none; backdrop-filter: none;
+    background-image: none; box-shadow: none; background-color: var(--dsw-alias-bg-base);
+  }
+}
+

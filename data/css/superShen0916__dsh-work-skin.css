@@ -1,0 +1,125 @@
+/* superShen0916/dsh-work-skin — src/gallery.css
+   fetched 2026-11-16 from https://raw.githubusercontent.com/superShen0916/dsh-work-skin/main/src/gallery.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+body[data-dsh-work-skin] [data-conversation-content] {
+  background-color: var(--dsh-work-skin-wash);
+  background-image: linear-gradient(90deg,
+    color-mix(in srgb, var(--dsh-work-skin-wash) 89%, transparent),
+    color-mix(in srgb, var(--dsh-work-skin-wash) 65%, transparent) min(90%, calc(50% + 320px)),
+    color-mix(in srgb, var(--dsh-work-skin-wash) 22%, transparent)),
+    var(--dsh-work-skin-image);
+  background-position: center, var(--dsh-work-skin-focus);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+@media (max-width: 1100px) {
+  body[data-dsh-work-skin] [data-conversation-content] {
+    background-position: center, var(--dsh-work-skin-compact-focus);
+  }
+}
+
+@media (max-width: 900px) {
+  body[data-dsh-work-skin] [data-conversation-content] {
+    background-image: linear-gradient(color-mix(in srgb, var(--dsh-work-skin-wash) 73%, transparent) 0 100%),
+      var(--dsh-work-skin-image);
+  }
+}
+
+.dsh-work-skin-gallery {
+  display: grid;
+  min-width: 0;
+  width: 100%;
+  gap: 12px;
+  color: var(--dsw-alias-label-primary);
+}
+
+.dsh-work-skin-gallery-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.dsh-work-skin-gallery button,
+.dsh-work-skin-gallery details {
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 10px;
+  color: inherit;
+  background: var(--dsw-alias-bg-layer-1);
+}
+
+.dsh-work-skin-gallery button,
+.dsh-work-skin-gallery summary {
+  cursor: pointer;
+  font: inherit;
+}
+
+.dsh-work-skin-gallery-heading button {
+  padding: 5px 12px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.dsh-work-skin-gallery-heading button:disabled {
+  opacity: .55;
+  cursor: default;
+}
+
+.dsh-work-skin-gallery summary {
+  padding: 9px 12px;
+}
+
+.dsh-work-skin-gallery p {
+  padding: 0 12px;
+}
+
+.dsh-work-skin-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(124px, 100%), 1fr));
+  gap: 8px;
+  padding: 0 10px 10px;
+}
+
+.dsh-work-skin-gallery .dsh-work-skin-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+  text-align: start;
+}
+
+.dsh-work-skin-gallery button:not(:disabled):hover,
+.dsh-work-skin-gallery .dsh-work-skin-card[aria-pressed='true'] {
+  border-color: var(--dsw-alias-state-business-primary);
+}
+
+.dsh-work-skin-gallery .dsh-work-skin-card[aria-pressed='true'] {
+  box-shadow: 0 0 0 1px var(--dsw-alias-state-business-primary);
+}
+
+.dsh-work-skin-gallery :is(button, summary):focus-visible {
+  outline: 2px solid var(--dsw-alias-state-business-primary);
+  outline-offset: 2px;
+}
+
+.dsh-work-skin-thumb {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+.dsh-work-skin-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dsh-work-skin-name {
+  padding: 6px 9px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+

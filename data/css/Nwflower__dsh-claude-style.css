@@ -1,10 +1,13 @@
 /* Nwflower/dsh-claude-style — packages/client/src/theme/sidebar.css
-   fetched 2026-11-08 from https://raw.githubusercontent.com/Nwflower/dsh-claude-style/master/packages/client/src/theme/sidebar.css
+   fetched 2026-11-16 from https://raw.githubusercontent.com/Nwflower/dsh-claude-style/master/packages/client/src/theme/sidebar.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* ---------- Claude Code layout: sidebar brand ---------- */
 /* The shipped whale and wordmark give way to the selected brand, each painted as
-   an alpha mask over currentColor so it follows the label colour. The choice is a
-   document attribute, so the settings page flips one attribute and the UI follows.
+   an alpha mask in --dsh-claude-logo-ink: that value is the brand palette's, or
+   the reader's mark-colour choice written onto <body> (features/brand/brand.ts),
+   and the settings page's preview and the account row's picture read the same
+   token. The choice is a document attribute, so the settings page flips one
+   attribute and the UI follows.
    Sizing: an 18px cap height to match the shipped brandName box, the wordmark's
    width read from that height through the artwork's aspect ratio (its viewBox,
    512.22 × 121.54, packages/assets/src/brand/claude-word.svg). */
@@ -16,7 +19,7 @@ body[data-dsh-claude-style][data-dsh-claude-brand="claude"] :is([data-dsh-claude
   content: "";
   display: block;
   flex: none;
-  background-color: currentColor;
+  background-color: var(--dsh-claude-logo-ink);
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
@@ -39,7 +42,7 @@ body[data-dsh-claude-style][data-dsh-claude-brand="claude"] [data-dsh-claude-par
   content: "";
   display: block;
   flex: none;
-  background-color: currentColor;
+  background-color: var(--dsh-claude-logo-ink);
 }
 
 body[data-dsh-claude-style][data-dsh-claude-brand="claude"] [data-dsh-claude-part~="brand-identity"] > [data-dsh-claude-part~="brand-name"]::before {
@@ -108,6 +111,15 @@ body[data-dsh-claude-style] button[data-dsh-claude-part~="panel-row"] {
   cursor: pointer;
   box-shadow: none;
   transition: background-color var(--dsh-claude-timing-feedback);
+}
+/* The host seats this row in the column with the inset its own bordered bar keeps
+   — `margin: 0 calc(var(--dsh-sidebar-paint-inset) + 1px)` around a plate padded
+   12px. The skin's plate is a plain row standing on the panel rows' line, so the
+   row keeps the column's content edge: the chip then opens where each panel glyph
+   seat opens, and the row's plate spans the box the panel entries paint. The
+   collapsed rail gives the row no inline margin either. */
+body[data-dsh-claude-style] [data-dsh-claude-part~="new-session-row"] {
+  margin-inline: 0;
 }
 body[data-dsh-claude-style] [data-dsh-claude-part~="layout-frame"]:not([data-sidebar-collapsed]) > [data-dsh-claude-part~="sidebar-column"] button[data-dsh-claude-part~="new-session"]:hover {
   background: var(--dsh-claude-hover-bg, rgba(0, 0, 0, 0.08));
@@ -182,6 +194,55 @@ body[data-dsh-claude-style] [data-dsh-claude-part~="layout-frame"]:not([data-sid
 body[data-dsh-claude-style] [data-dsh-claude-part~="layout-frame"]:not([data-sidebar-collapsed]) > [data-dsh-claude-part~="sidebar-column"] button[data-dsh-claude-part~="new-session"] {
   margin-bottom: 6px;
 }
+/* Current hosts wrap the New session button and sidebar.session.action in
+   .newSessionRow and place horizontal inset and bottom margin on the row. */
+body[data-dsh-claude-style] [data-dsh-claude-part~="layout-frame"]:not([data-sidebar-collapsed]) > [data-dsh-claude-part~="sidebar-column"] [data-dsh-claude-part~="new-session-row"] {
+  margin-block: 0 6px;
+  gap: 4px;
+  align-items: center;
+}
+body[data-dsh-claude-style] [data-dsh-claude-part~="layout-frame"]:not([data-sidebar-collapsed]) > [data-dsh-claude-part~="sidebar-column"] [data-dsh-claude-part~="new-session-row"] button[data-dsh-claude-part~="new-session"] {
+  width: auto;
+  flex: 1 1 auto;
+  min-width: 0;
+  margin-bottom: 0;
+}
+body[data-dsh-claude-style] [data-dsh-claude-part~="layout-frame"]:not([data-sidebar-collapsed]) > [data-dsh-claude-part~="sidebar-column"] [data-dsh-claude-part~="new-session-row"] button:not([data-dsh-claude-part~="new-session"]) {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  min-height: 28px;
+  padding: 0;
+  margin: 0;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  box-shadow: none;
+  color: var(--dsw-alias-label-secondary, #70686a);
+  cursor: pointer;
+  transition: background-color var(--dsh-claude-timing-feedback), color var(--dsh-claude-timing-feedback);
+}
+body[data-dsh-claude-style][data-ds-dark-theme] [data-dsh-claude-part~="layout-frame"]:not([data-sidebar-collapsed]) > [data-dsh-claude-part~="sidebar-column"] [data-dsh-claude-part~="new-session-row"] button:not([data-dsh-claude-part~="new-session"]) {
+  color: var(--dsw-alias-label-secondary);
+}
+body[data-dsh-claude-style] [data-dsh-claude-part~="layout-frame"]:not([data-sidebar-collapsed]) > [data-dsh-claude-part~="sidebar-column"] [data-dsh-claude-part~="new-session-row"] button:not([data-dsh-claude-part~="new-session"]):hover {
+  background: var(--dsh-claude-hover-bg, rgba(0, 0, 0, 0.08));
+  color: var(--dsw-alias-label-primary, #161616);
+}
+body[data-dsh-claude-style][data-ds-dark-theme] [data-dsh-claude-part~="layout-frame"]:not([data-sidebar-collapsed]) > [data-dsh-claude-part~="sidebar-column"] [data-dsh-claude-part~="new-session-row"] button:not([data-dsh-claude-part~="new-session"]):hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--dsw-alias-label-primary);
+}
+body[data-dsh-claude-style] [data-dsh-claude-part~="layout-frame"]:not([data-sidebar-collapsed]) > [data-dsh-claude-part~="sidebar-column"] [data-dsh-claude-part~="new-session-row"] button:not([data-dsh-claude-part~="new-session"]) svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
 body[data-dsh-claude-style] button[data-dsh-claude-part~="panel-row"] {
   /* The host floors this row at 36px with a min-height, which the `height` in
      the shared row rule above cannot beat. */
@@ -202,7 +263,24 @@ body[data-dsh-claude-style][data-ds-dark-theme] button[data-dsh-claude-part~="pa
   color: var(--dsw-alias-label-primary);
 }
 body[data-dsh-claude-style][data-ds-dark-theme] button[data-dsh-claude-part~="panel-row"]:hover {
-  background: rgba(255, 255, 255, 0.08) !important;
+  background: rgba(255, 255, 255, 0.08);
+}
+/* The expanded host paints the entry wrapper, whose foot must stay outside
+   that plate. The collapsed rail keeps its own spacing and rounded icon plate.
+   The radius gives the paint inset back so the plate keeps the row's corners. */
+body[data-dsh-claude-style] [data-dsh-claude-part~="layout-frame"]:not([data-sidebar-collapsed]) [data-dsh-claude-part~="panel-entry"] {
+  margin-bottom: 6px;
+  border-radius: calc(6px + var(--dsh-sidebar-paint-inset, 3px));
+}
+body[data-dsh-claude-style] [data-dsh-claude-part~="layout-frame"]:not([data-sidebar-collapsed]) [data-dsh-claude-part~="panel-entry"] button[data-dsh-claude-part~="panel-row"] {
+  margin: 0;
+  background: transparent;
+}
+body[data-dsh-claude-style] [data-dsh-claude-part~="layout-frame"]:not([data-sidebar-collapsed]) [data-dsh-claude-part~="panel-entry"]:hover {
+  background-color: var(--dsh-claude-hover-bg, rgba(0, 0, 0, 0.08));
+}
+body[data-dsh-claude-style][data-ds-dark-theme] [data-dsh-claude-part~="layout-frame"]:not([data-sidebar-collapsed]) [data-dsh-claude-part~="panel-entry"]:hover {
+  background-color: rgba(255, 255, 255, 0.08);
 }
 /* A 16px glyph in a 20px box: the box the new-session plus occupies. */
 body[data-dsh-claude-style] button[data-dsh-claude-part~="panel-row"] svg {
@@ -369,7 +447,14 @@ body[data-dsh-claude-style] :is([data-dsh-claude-part~="project-row"], [data-dsh
 body[data-dsh-claude-style][data-dsh-claude-sidebar-layout="compact"] [data-dsh-claude-part~="layout-frame"]:not([data-sidebar-collapsed]) > [data-dsh-claude-part~="sidebar-column"] button[data-dsh-claude-part~="new-session"] {
   margin-bottom: 4px;
 }
-body[data-dsh-claude-style][data-dsh-claude-sidebar-layout="compact"] button[data-dsh-claude-part~="panel-row"] {
+body[data-dsh-claude-style][data-dsh-claude-sidebar-layout="compact"] [data-dsh-claude-part~="layout-frame"]:not([data-sidebar-collapsed]) > [data-dsh-claude-part~="sidebar-column"] [data-dsh-claude-part~="new-session-row"] {
+  margin-bottom: 4px;
+}
+body[data-dsh-claude-style][data-dsh-claude-sidebar-layout="compact"] [data-dsh-claude-part~="layout-frame"]:not([data-sidebar-collapsed]) > [data-dsh-claude-part~="sidebar-column"] [data-dsh-claude-part~="new-session-row"] button[data-dsh-claude-part~="new-session"] {
+  margin-bottom: 0;
+}
+body[data-dsh-claude-style][data-dsh-claude-sidebar-layout="compact"] button[data-dsh-claude-part~="panel-row"],
+body[data-dsh-claude-style][data-dsh-claude-sidebar-layout="compact"] [data-dsh-claude-part~="layout-frame"]:not([data-sidebar-collapsed]) [data-dsh-claude-part~="panel-entry"] {
   margin-bottom: 2px;
 }
 body[data-dsh-claude-style][data-dsh-claude-sidebar-layout="compact"] nav[data-dsh-claude-part~="panel-list"] {

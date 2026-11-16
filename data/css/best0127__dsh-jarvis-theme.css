@@ -1,0 +1,278 @@
+/* best0127/dsh-jarvis-theme — src/theme.css
+   fetched 2026-11-16 from https://raw.githubusercontent.com/best0127/dsh-jarvis-theme/main/src/theme.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* J.A.R.V.I.S. HUD skin — client-injected stylesheet.
+   Material and typography rules are scoped to body[data-dsh-jarvis]; the
+   settings row and brand artwork use host tokens and stay available while the
+   skin is switched off. */
+
+/* ---------- typography + material layer ---------- */
+
+body[data-dsh-jarvis] {
+  --jv-display-family: 'Jarvis Orbitron', 'Jarvis Rajdhani', 'Microsoft YaHei', sans-serif;
+  background-color: #0B1118;
+
+  /* Holo Ice geometry: softer than the HUD bezel version, still slightly
+     tighter than the shipped scale so the glass panels read as one system. */
+  --dsw-radius-xs: 4px;
+  --dsw-radius-sm: 7px;
+  --dsw-radius-md: 10px;
+  --dsw-radius-lg: 13px;
+  --dsw-radius-xl: 16px;
+  --dsw-radius-panel: 18px;
+}
+
+/* 1px luminous stroke instead of the 0.25px hairline; values are redeclared per
+   element so surfaces can keep re-binding --dsw-elevation-stroke-color.
+   The hover-card surface is declared locally by the primitive as #2C2C2E; a
+   per-element reset keeps that always-dark card on the HUD navy in both
+   schemes (its literal light-gray labels assume a dark card). */
+body[data-dsh-jarvis],
+body[data-dsh-jarvis] * {
+  --dsw-elevation-stroke: 0 0 0 1px var(--dsw-elevation-stroke-color);
+  --dsw-elevation-panel:
+    var(--dsw-elevation-stroke), 0 0 18px -6px var(--jv-glow-soft, rgba(154, 216, 255, 0.12));
+  --dsw-elevation-prominent:
+    var(--dsw-elevation-stroke), 0 6px 22px -10px rgba(0, 0, 0, 0.55),
+    inset 0 0 18px -10px var(--jv-glow-soft, rgba(154, 216, 255, 0.12)),
+    0 0 26px -8px var(--jv-glow-soft, rgba(154, 216, 255, 0.12));
+  --dsw-elevation-soft:
+    var(--dsw-elevation-stroke), 0 0 22px -10px var(--jv-glow-soft, rgba(154, 216, 255, 0.1));
+  --dsw-hovercard-bg: #101010;
+}
+
+body[data-dsh-jarvis]:not([data-ds-dark-theme]) {
+  --jv-glow-soft: rgba(11, 106, 143, 0.1);
+  background-color: #F3F7FB;
+}
+
+body[data-dsh-jarvis][data-ds-dark-theme] {
+  --jv-glow-soft: rgba(154, 216, 255, 0.12);
+}
+
+/* No screen-space overlay is painted over the content: the palette's contrast
+   comes from surface steps and text colors, not a tint over the reading area. */
+
+body[data-dsh-jarvis] ::selection {
+  background: rgba(154, 216, 255, 0.24);
+  color: var(--dsw-alias-label-primary);
+}
+body[data-dsh-jarvis]:not([data-ds-dark-theme]) ::selection {
+  background: rgba(11, 106, 143, 0.2);
+}
+
+/* HUD-adjacent chrome that reads only literals keeps the skin's line language */
+body[data-dsh-jarvis] [data-menu-material] {
+  border-color: var(--dsw-alias-border-l2);
+}
+
+@media (prefers-contrast: more) {
+  body[data-dsh-jarvis]::after { display: none; }
+  body[data-dsh-jarvis],
+  body[data-dsh-jarvis] * {
+    --dsw-elevation-panel: var(--dsw-elevation-stroke);
+    --dsw-elevation-prominent: var(--dsw-elevation-stroke);
+    --dsw-elevation-soft: var(--dsw-elevation-stroke);
+  }
+}
+
+/* ---------- settings row ---------- */
+
+.jv-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 0;
+  border-bottom: 0.5px solid var(--dsw-alias-border-l2);
+}
+.jv-row-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.jv-title {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--dsw-alias-label-primary);
+}
+.jv-desc {
+  margin-top: 4px;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 12px;
+  line-height: 18px;
+}
+.jv-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.jv-switch {
+  position: relative;
+  flex: none;
+  width: 40px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 11px;
+  background: var(--dsw-alias-bg-layer-2);
+  cursor: pointer;
+  transition: background-color 0.18s ease, border-color 0.18s ease;
+}
+.jv-switch[aria-checked='true'] {
+  border-color: var(--dsw-alias-brand-primary);
+  background: var(--dsw-alias-brand-primary);
+}
+.jv-switch:focus-visible {
+  outline: 2px solid var(--dsw-alias-brand-primary);
+  outline-offset: 2px;
+}
+.jv-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--dsw-alias-label-secondary);
+  transition: transform 0.18s ease, background-color 0.18s ease;
+}
+.jv-switch[aria-checked='true'] .jv-knob {
+  transform: translateX(18px);
+  background: var(--dsw-alias-bg-base);
+}
+
+.jv-pill,
+.jv-btn {
+  font: inherit;
+  font-size: 12px;
+  line-height: 18px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--dsw-alias-border-l1);
+  background: transparent;
+  color: var(--dsw-alias-label-secondary);
+  cursor: pointer;
+  transition: color 0.16s ease, border-color 0.16s ease;
+}
+.jv-pill:hover,
+.jv-btn:hover {
+  color: var(--dsw-alias-label-primary);
+  border-color: var(--dsw-alias-border-l2);
+}
+.jv-pill[data-active='true'] {
+  color: var(--dsw-alias-brand-primary);
+  border-color: var(--dsw-alias-brand-primary);
+}
+.jv-pill:focus-visible,
+.jv-btn:focus-visible {
+  outline: 2px solid var(--dsw-alias-brand-primary);
+  outline-offset: 2px;
+}
+.jv-hint {
+  color: var(--dsw-alias-label-secondary);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+/* ---------- balance item in the composer status row ---------- */
+
+.jv-balance {
+  display: none;
+  align-items: baseline;
+  gap: 6px;
+  order: 10;
+  flex: none;
+  white-space: nowrap;
+  font-family: inherit;
+  font-size: var(--dsh-content-font-size-secondary, 13px);
+  line-height: calc(20px + var(--dsh-content-font-delta-secondary, 0px));
+  font-variant-numeric: tabular-nums;
+  color: var(--dsw-alias-label-tertiary);
+}
+body[data-dsh-jarvis] .jv-balance {
+  display: inline-flex;
+}
+.jv-balance-label {
+  letter-spacing: 0.04em;
+  color: var(--dsw-alias-label-tertiary);
+}
+.jv-balance-amount {
+  font-weight: 600;
+  color: var(--dsw-alias-brand-primary);
+}
+.jv-balance-bonus {
+  font-size: 0.92em;
+  color: var(--dsw-alias-label-tertiary);
+}
+.jv-balance[data-state='warn'] .jv-balance-amount {
+  color: var(--dsw-alias-state-warn-primary);
+}
+.jv-balance[data-state='loading'] .jv-balance-amount,
+.jv-balance[data-state='idle'] .jv-balance-amount {
+  color: var(--dsw-alias-label-secondary);
+  font-weight: 500;
+}
+
+/* ---------- brand artwork ---------- */
+
+.jv-brand-mark,
+.jv-hero-mark {
+  display: inline-flex;
+  color: var(--dsw-alias-brand-primary);
+}
+.jv-hero-mark {
+  filter: drop-shadow(0 0 16px var(--dsw-alias-brand-primary));
+}
+body:not([data-ds-dark-theme]) .jv-hero-mark {
+  filter: drop-shadow(0 0 10px rgba(11, 106, 143, 0.32));
+}
+.jv-brand-spin {
+  transform-origin: center;
+  animation: jv-brand-spin 48s linear infinite;
+}
+.jv-brand-pulse {
+  transform-origin: center;
+  animation: jv-brand-pulse 3.6s ease-in-out infinite;
+}
+@keyframes jv-brand-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes jv-brand-pulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .jv-brand-spin,
+  .jv-brand-pulse { animation: none; }
+}
+
+.jv-brand-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: 'Jarvis Orbitron', 'Microsoft YaHei', sans-serif;
+  font-weight: 600;
+  font-size: 12.5px;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dsw-alias-brand-primary);
+  white-space: nowrap;
+}
+.jv-brand-name small {
+  font-family: 'Jarvis Rajdhani', 'Microsoft YaHei', sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  color: var(--dsw-alias-label-secondary);
+}
+
+
+
+
+
+
+
+

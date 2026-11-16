@@ -1,5 +1,5 @@
 /* ymh0000123/dsh-theme-endfield — src/styles/theme.css
-   fetched 2026-11-08 from https://raw.githubusercontent.com/ymh0000123/dsh-theme-endfield/main/src/styles/theme.css
+   fetched 2026-11-16 from https://raw.githubusercontent.com/ymh0000123/dsh-theme-endfield/main/src/styles/theme.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
       /* endfield-build/2026-10-06-darker-dim — read this to tell which build's sheet is mounted.
          Kept literal (no template interpolation): check.js requires the stylesheet literal to be
@@ -568,12 +568,90 @@
         scrollbar-width: thin;
         scrollbar-color: var(--edge-line) transparent;
       }
+      /* Issue #43: the app draws the conversation-width drag indicator with a
+         gradient whose two solid stops are var(--dsw-alias-scrollbar-bg-l1). The
+         theme sets that token (and l2) to transparent so it can paint its own
+         scrollbars — and the handle is the ONLY consumer of l1 that is not a
+         scrollbar thumb, so the line is still painted on hover / while dragging,
+         at opacity 1, in transparent. That is the whole bug.
+
+         WHY NOT JUST UN-TRANSPARENT THE TOKEN. The app spends --dsw-alias-
+         scrollbar-bg-l2 in 45 rules and l1 in 3; every one but this gradient is a
+         thumb (--dsh-scrollbar-thumb). Handing the token back a colour would
+         repaint every themed scrollbar to the app's stock grey, i.e. trade one
+         visible regression for another. So the token stays transparent and the
+         handle is repainted on its own.
+
+         COLOUR: --dsw-alias-label-primary, the exact pair the app already uses for
+         its own line (#0f1115 on cream, #f9fafb on near-black — 15.35:1 / 18.11:1
+         against their papers). The theme never remaps that token globally, and
+         reading it means both schemes and both palettes come out right without a
+         second rule or a backing plate.
+
+         GEOMETRY: none. Width, radius, offsets and the pointer-y math stay the
+         app's; only the two colour stops change, so the handle cannot grow into
+         the transcript column.
+
+         ANCHORS: [data-width-handle] is the e2e hook the app declares on both
+         handles; the class is matched as a SUBSTRING because a suffix match dies
+         the day upstream appends a second class (the 0.1.2-rc.1 lesson). */
+      :is([data-width-handle], [class*='_widthHandle']):after {
+        background: linear-gradient(
+          to bottom,
+          transparent calc(var(--dsh-width-handle-pointer-y, 50%) - 36px),
+          var(--dsw-alias-label-primary) calc(var(--dsh-width-handle-pointer-y, 50%) - 8px),
+          var(--dsw-alias-label-primary) calc(var(--dsh-width-handle-pointer-y, 50%) + 8px),
+          transparent calc(var(--dsh-width-handle-pointer-y, 50%) + 36px)
+        );
+      }
       /* ---------- Light mode: deepen tertiary/secondary labels for icon visibility ---------- */
       body:not([data-ds-dark-theme]) {
         --dsw-alias-label-tertiary: #6a6d68;
         --dsw-alias-label-caption: #5a5d58;
         --dsw-alias-label-dimmed: #9a9d98;
         --edge-btn-muted: #dcddd6;
+      }
+      /* ---------- light mode: keep the accent as a SIGNAL, not as text ----------
+         Issue #44. The composer's quoted selection takes its colour from
+         --dsw-alias-state-business-primary, i.e. the app's brand blue. The light
+         palette remaps that token to ink (#101110) so buttons, status dots and the
+         rest of the blue chrome read as a darkroom instrument — and the quote goes
+         with it, landing 0.7 L* away from body text at 16.84:1. Nothing is
+         unreadable; the QUOTING ACTION stops being visible, which is the point of
+         the colour.
+
+         WHY NOT FIX THE TOKEN. Button fills, status dots and the focus ring's
+         ancestry all read it; a per-consumer repaint is the only change that does
+         not drag one of them back to blue. So the token stays ink and the quote
+         gets its own two-tone: ink on a 55% accent wash (16.4:1 on 谷地黄, 9.9:1
+         on 武陵青). The signal is carried by HUE — yellow or cyan behind black
+         type — which is exactly the axis the palette owns, and it needs no third
+         colour that would have to be re-measured per palette.
+
+         NO PADDING, deliberately: the excerpt is a single-line ellipsis box inside
+         the composer row, and inline padding here would widen its measured box.
+         This sheet has never reflowed the app, and it does not start for a chip.
+         (radius only rounds the wash's ends.)
+
+         Dark needs no rule: there the token already resolves to the accent
+         (13.97:1), so the quote is signal-yellow text today and stays that way.
+         The anchor is the app's declared attribute on the excerpt itself,
+         data-quote-preview — matching the excerpt rather than a parent also keeps
+         this rule from depending on how deeply the row nests it. */
+      body:not([data-ds-dark-theme]) [data-quote-preview] {
+        color: var(--dsw-alias-label-primary);
+        background: rgba(var(--edge-accent-rgb), 0.55);
+        border-radius: 3px;
+      }
+      /* The same token, the same defect, one row over: the ref chip that carries a
+         file / skill / command name is also business-primary, so on cream it turns
+         into body text and stops reading as a reference. --edge-status-light is the
+         palette's own deep step for accent-as-text on paper (#6b5d00 谷地黄 5.35:1,
+         #006a6a 武陵青 5.22:1) — already measured, already the value the turn-status
+         gradient uses, and it switches with the palette for free. Dark is already
+         the accent (the same 13.97:1 the quote gets), so it is out of scope. */
+      body:not([data-ds-dark-theme]) [data-ref-chip] {
+        color: var(--edge-status-light);
       }
       /* ---------- Neutralize remaining DeepSeek brand blues ---------- */
       body {
@@ -666,11 +744,43 @@
         --dsw-specific-sidebar-nav-item-active: rgba(var(--edge-accent-rgb), 0.20);
         --dsw-specific-sidebar-nav-item-hover: rgba(var(--edge-accent-rgb), 0.16);
       }
-      input, textarea, [contenteditable='true'] {
-        caret-color: var(--edge-accent);
+      /* ---------- the two places the accent may NOT be ink (#42, #43) ----------
+         Both are painted by elements the theme does not own, and both used to read
+         --edge-accent directly. That works on the near-black page and fails on
+         cream: #fff500 is 13.97:1 on #202220 and 1.02:1 on the #f2f2ec input card.
+         Pinning the two ANSWERS here, per scheme, keeps the accent token itself
+         untouched (it is still the fill/icon colour everywhere else).
+           --edge-caret       ink in light, accent in dark
+           --edge-focus-ring  the APP's own deepseek-500/400 pair, as literal hex:
+                              a focus ring is a system-level accessibility signal
+                              and already clears its bar on both papers (5.0:1 on
+                              #e8e8e2, 9.2:1 on #101110). Literal, because the
+                              theme remaps --dsw-static-deepseek-500/600 to ink and
+                              accent, so reading that token would loop straight
+                              back to the accent this rule is escaping. */
+      body {
+        --edge-caret: var(--dsw-alias-label-primary);
+        --edge-focus-ring: #4176e6;
       }
+      body[data-ds-dark-theme] {
+        --edge-caret: var(--edge-accent);
+        --edge-focus-ring: #7aaaff;
+      }
+      /* Issue #42: the caret was the accent in both schemes. A 1px caret paints
+         fine and is simply invisible at 1.02:1 (谷地黄) / 1.70:1 (武陵青) — the
+         report's word was 「光标不可见」, not 「颜色不好看」. Ink on the card is
+         16.4:1; the dark scheme keeps the accent, which is the one scheme where
+         accent-as-ink already measured 13.97:1. */
+      input, textarea, [contenteditable='true'] {
+        caret-color: var(--edge-caret, var(--edge-accent));
+      }
+      /* Issue #43 annex: same defect on the keyboard focus ring — 2px of #fff500
+         hugging a #f2f2ec button is 1.02:1, and the !important also suppressed the
+         app's own blue ring, so Tab navigation had no visible focus at all. The
+         geometry (2px, offset 1px) is the theme's and stays; only the colour goes
+         back to the app's, which is what "no theme installed" looks like. */
       :focus-visible {
-        outline: 2px solid var(--edge-accent) !important;
+        outline: 2px solid var(--edge-focus-ring, var(--edge-accent)) !important;
         outline-offset: 1px;
       }
       a {
@@ -1052,7 +1162,8 @@
         font-weight: 700;
       }
       body [data-approval-key] [class*='_actionRow'] button:last-child::after {
-        content: '◎';
+        /* Drawn, not typed — see the note on the disc's background below. */
+        content: '';
         margin-left: 10px;
       }
       /* ---------- 完全权限确认框：通栏白条（左右到屏幕边缘）+ 上下遮罩 ----------
@@ -1105,6 +1216,71 @@
         box-shadow: none !important;
         filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.35));
         font-family: var(--edge-font);
+      }
+      /* ---------- 入场：白条从右缘擦入，内容再淡入 ----------
+         Traced 1:1 off the reference teardown of this dialog (a ~300ms open in
+         three stages, measured frame by frame at 30fps):
+
+           band   130ms  cubic-bezier(.65,0,.35,1)  the hard leading edge sweeps
+                        right -> left. The curve is SLOW-START / FAST-FINISH:
+                        the reference's 5-frame capture shows 40% of the time
+                        covering 17% of the distance, i.e. easeInOutCubic — the
+                        usual ease-out is visibly wrong here.
+           fade   170ms  cubic-bezier(.3,.7,.4,1)  the band itself comes up with
+                        the wipe (panel opacity 22% -> 53% -> 100% across it),
+                        so the leading edge never reads as a bare sheet of paper
+                        sliding in from nowhere.
+           copy   100ms  ease-out, delayed 195ms = the 130ms wipe plus the
+                        reference's 65ms beat. OPACITY ONLY: in the source the
+                        title's pixel centroid stays at the same x/y through the
+                        whole fade, so no translate, no scale, no blur.
+
+         WHY translate AND NOT clip-path/mask: filter runs BEFORE clipping in the
+         paint order, so clipping the band would also eat the drop-shadow it
+         draws (the shadow is outside the border box). The band is exactly
+         viewport-wide, so translateX(100% -> 0) paints the SAME right-anchored
+         wipe — at every instant the visible span is identical, the leading edge
+         sweeps the identical path — and the shadow survives. Scale is out for
+         the reason the reference gives: a full-bleed strip scaled about its
+         centre flashes the centre anchor.
+
+         The app ships its own _modalEnter fade on this dialog; the rule below
+         REPLACES that animation (same property, higher specificity) rather than
+         stacking a second one on top. No fill mode: nothing may stay pinned
+         after the run, or the dialog would keep a transform (and with it a
+         containing block for any fixed descendant) forever. */
+      [role='dialog'][class*='_confirmation'] {
+        animation:
+          endfield-band-wipe 130ms cubic-bezier(0.65, 0, 0.35, 1),
+          endfield-band-fade 170ms cubic-bezier(0.3, 0.7, 0.4, 1);
+      }
+      @keyframes endfield-band-wipe {
+        from { transform: translateX(100%); }
+        to { transform: translateX(0); }
+      }
+      @keyframes endfield-band-fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      /* backwards, not both: the copy has to be invisible during its 195ms
+         beat (the band must land as blank paper first), but nothing should stay
+         applied once it is done. One selector level only — the dialog's single
+         child is the app's _content wrapper, so this is one fade, not a
+         multiply-nested chain of them. */
+      [role='dialog'][class*='_confirmation'] > * {
+        animation: endfield-band-copy 100ms ease-out 195ms backwards;
+      }
+      @keyframes endfield-band-copy {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      /* The app already parks its own modal fade under reduced motion; ours has
+         to be switched off by the same rule or the dialog would still slide. */
+      @media (prefers-reduced-motion: reduce) {
+        [role='dialog'][class*='_confirmation'],
+        [role='dialog'][class*='_confirmation'] > * {
+          animation: none !important;
+        }
       }
       /* Ink side of the paper: in the dark palette the app's labels are
          #f5f5f0 (paper-on-dark) and would vanish on the white band, so the
@@ -1243,7 +1419,8 @@
         font-weight: 700;
       }
       body [role='dialog'][class*='_confirmation'] [class*='_confirmAction']::after {
-        content: '◎';
+        /* Drawn, not typed — see the note on the disc's background below. */
+        content: '';
       }
       body [data-approval-key] [class*='_actionRow'] button,
       body [role='dialog'][class*='_confirmation'] [class*='_modalAction'],
@@ -1291,9 +1468,31 @@
         background: #211f1d;
         color: #f5f5f0;
       }
+      /* THE TARGET IS DRAWN, NOT TYPED. The reference's trailing mark is a
+         bullseye: an accent ring with a dot in the middle, sitting in an ink
+         disc. It used to be the character U+25CE at font-size 11px — and at that
+         size the ring's counter closes up while rasterising, so what shipped was
+         a solid accent blob off-centre in the disc (reproduced in headless
+         Chrome at 11px _and_ 13px; the ✕ beside it stays crisp because it is two
+         strokes, not a closed ring). A glyph also made the icon depend on which
+         fallback font resolves U+25CE on the host — the theme's stack is Arial,
+         which does not carry it.
+
+         Two radial gradients on the same 20px disc give the exact geometry at
+         any DPI and any font:
+           dot   r 2.2px
+           gap   r 2.6..5.6px (disc ink shows through)
+           ring  r 5.8..7.4px
+         Stops read currentColor rather than a literal so the palette/dark switch
+         still drives the mark — same reason the glyph carried a color before. The
+         disc fill stays a solid #1c1b19 base layer: it is the ink the gap and the
+         outside edge resolve to. */
       body [data-approval-key] [class*='_actionRow'] button:last-child::after,
       body [role='dialog'][class*='_confirmation'] [class*='_confirmAction']::after {
-        background: #1c1b19;
+        background:
+          radial-gradient(circle at 50% 50%, currentColor 0 2.2px, transparent 2.6px),
+          radial-gradient(circle at 50% 50%, transparent 0 5.6px, currentColor 5.8px 7.4px, transparent 7.8px),
+          #1c1b19;
         color: var(--edge-accent);
       }
       /* ---------- Tables: bright signal-yellow hover (reference .data-table) ---------- */
@@ -2549,11 +2748,16 @@
       /* Three concentric squares, measured off the reference at 16x: a 14px
          white rounded square, a 6px dark core punched into it, and a 3px white
          pip at the centre — all pseudo-elements, no glyph and no image. */
+      /* The reference's square mark, sized so its three layers survive 1x:
+         2px ink ring between a 12px paper frame and a 4px paper core. At 10px
+         the core was 3px and the ring 1.5px, which rasterised into a smudge
+         with a single white pixel in it (the same failure mode as the typed ◎
+         on the confirm capsules). */
       [data-endfield-balance] [data-endfield-balance-icon] {
         position: relative;
         flex: none;
-        width: 10px;
-        height: 10px;
+        width: 12px;
+        height: 12px;
         margin-right: 4px;
         border-radius: 3px;
         corner-shape: round !important;
@@ -2570,7 +2774,7 @@
       [data-endfield-balance] [data-endfield-balance-icon]::after {
         content: '';
         position: absolute;
-        inset: 3.5px;
+        inset: 4px;
         border-radius: 1px;
         corner-shape: round !important;
         background: #f1f1ec;
@@ -2705,15 +2909,15 @@
         background: conic-gradient(
           from 0deg,
           var(--edge-accent) 0deg var(--endfield-balance-sweep, 0deg),
-          transparent var(--endfield-balance-sweep, 0deg) 360deg
+          rgba(255, 255, 255, 0.14) var(--endfield-balance-sweep, 0deg) 360deg
         );
         -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
         mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
       }
       [data-endfield-balance] [data-endfield-balance-clock] {
         position: relative;
-        width: 12px;
-        height: 12px;
+        width: 14px;
+        height: 14px;
         border-radius: 999px;
         corner-shape: round !important;
         background: var(--edge-accent);
@@ -2725,9 +2929,9 @@
         position: absolute;
         left: 50%;
         top: 50%;
-        width: 1.5px;
-        height: 3px;
-        margin: -3px 0 0 -0.75px;
+        width: 2px;
+        height: 5px;
+        margin: -5px 0 0 -1px;
         border-radius: 1px;
         background: #262425;
         transform: rotate(25deg);

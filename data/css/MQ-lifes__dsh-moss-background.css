@@ -1,0 +1,1692 @@
+/* MQ-lifes/dsh-moss-background — skin.css
+   fetched 2026-11-16 from https://raw.githubusercontent.com/MQ-lifes/dsh-moss-background/main/skin.css
+   verbatim; rendered on the stock rc.6 shell at dshthemes.com */
+/* ============================================================================
+ * MOSS2 · 流浪地球 550W — DSH 客户端皮肤（lib/skin.css）
+ * ----------------------------------------------------------------------------
+ * 唯一设计权威源：docs/design-spec.md §2 调色板 / §4 皮肤架构 / §6 HUD / §7 红线
+ * 宿主事实来源：docs/host-map.md + app.asar 提取（@deepseek-ai/dsh-client-* 0.2.2-rc.1）
+ * 本文件自包含（除 lib/assets 字体外不引用任何图片/脚本）；全部选择器以
+ * html.dsh-moss-skin 作用域开头 —— off 档 html 上没有该 class，本文件零生效。
+ *
+ * 角色：皮肤 = 视频背景层（唯一 ambient）+ 深空玻璃表面 + MOSS HUD 装饰。
+ *   背景层 DOM 由 lib/index.js / lib/client.js 生成（body 末追加，见 §3）：
+ *     #dsh-moss-ambient[aria-hidden]
+ *       img.ma-still     海报铺底（webp 失败时 client.js 换 .jpg）
+ *       video.ma-video   object-fit:cover，自动播放循环，无音轨
+ *       div.ma-veil      主压暗：径向 + 线性双梯度，吃 --moss-veil（默认 58）
+ *       div.ma-vignette  四角暗角
+ *       div.ma-grain     SVG 噪点（≤3%）
+ *       div.ma-scan      扫描线（仅 immersive）
+ *       div.ma-rim       底部红/青光晕呼吸
+ *   本文件只负责样式，不生成 DOM、不写 JS、不绑事件。
+ *
+ * 契约（design-spec-v2 §7，client.js 注入 / 本文件消费）：
+ *   html.dsh-moss-skin                     皮肤作用域根（off 档不存在 → 本文件零命中）
+ *   html.dsh-moss-skin--glass              玻璃档（默认）
+ *   html.dsh-moss-skin--immersive          沉浸档（附加 HUD）
+ *   html.dsh-moss-skin--static             **仅** saver / 视频真的加载失败 → 海报静帧
+ *   html.dsh-moss-skin--calm               用户显式 reducedMotion → 只停装饰动画，
+ *                                          **视频与镜头漂移照常**（design-spec-v2 §7.1）
+ *   html.dsh-moss-skin--paused             页面隐藏 → 动画与视频暂停
+ *   html.dsh-moss-skin--handoff            交接瞬间（v0.5：11.55s，约 1.5s）→ 镜头漂移锁回
+ *                                          scale(1.12) 基准，与 splash 地球层同帧同裁切
+ *   html.dsh-moss-skin--noblur             @supports 不支持 backdrop-filter → 提高不透明
+ *   html.dsh-moss-enter                    交接显影（UI 分区淡入；不淡入背景视频本身）
+ *
+ * v0.2 运动策略（根因修复，design-spec-v2 §1/§7.1）：
+ *   本机 Windows 关闭系统动画 → Chromium 报 prefers-reduced-motion:reduce。
+ *   v0.1 的 CSS 在 @media (prefers-reduced-motion:reduce) 下把 .ma-video opacity 归零，
+ *   配合 client.js 的 --static 直接把地球背景变成死海报 —— 用户「背景根本不动」。
+ *   v0.2：**系统 reduce 只允许减少装饰动画，绝不允许停视频或隐藏视频层**；
+ *         `.ma-video` 的 moss-bg-drift 漂移动画在系统 reduce 下继续运行；
+ *         `--calm`（用户显式设置）才停装饰动画与漂移，但视频仍播放。
+ *   --moss-veil   (0–100，默认 58)         背景压暗强度
+ *   --moss-blur   (px，默认 16px)          玻璃模糊半径（client.js 带 px 写入）
+ *   --moss-clock  (HH:MM:SS，每秒)         顶栏遥测章 content 取值
+ *   html[data-moss-quality="high|standard|saver"]
+ *   html[data-moss-hud="off|normal|full"]
+ *
+ * 宿主事实（0.2.2-rc.1，已由 app.asar 提取核对，与 host-map 对齐后回写）：
+ *   1) 明暗主题 = 运行时给 <body> 加 data-ds-dark-theme；CSS 无 prefers-color-scheme 分支。
+ *   2) 设计 token 声明点：ui-theme 把 82 个 --dsw-static-* 与 119 个
+ *      alias/specific/menu token 声明在 body / body[data-ds-dark-theme] 上
+ *      （base 字体/圆角/阴影/kbd 在 :root 与 body 层）。本文件把覆盖同时落 html 与
+ *      body：html.dsh-moss-skin body 特异性 (0,1,2) 高于宿主 body[data-ds-dark-theme]
+ *      的 (0,1,1)，且 skin.css 由 tapIndex 追加在 </head> 末尾（晚于宿主样式表），
+ *      同特异性也稳定胜出。
+ *   3) 应用底色链路（ui-layout AppFrame.module.css 实测类名语义后缀）：
+ *        .frame        background: var(--dsw-alias-bg-base)
+ *        .sidebarCol   background: var(--dsw-specific-sidebar-fill);
+ *                      border-right:.5px solid var(--dsw-alias-border-l3); grid-area:1/1
+ *        .centerCol    grid-area:1/2（Windows 自定义标题栏下 background: bg-base）
+ *        Windows 标题条：html[data-windows-titlebar] .frame{padding-top:var(--dsh-windows-titlebar-height);
+ *                      background:var(--dsw-specific-sidebar-fill)}，且 .frame:before 用同一 token
+ *                      画满顶部 40px 拖拽条 —— 故覆盖 sidebar-fill 时标题条随之玻璃化，
+ *                      窗口按钮区（Electron titleBarOverlay 绘制在网页之上）保持深底白字。
+ *   4) body{background:var(--dsw-alias-bg-base)}；#root{height:100%}。client.js 的首屏
+ *      关键 CSS 已注入 #root{position:relative;z-index:1}、#dsh-moss-ambient{position:fixed;
+ *      inset:0;z-index:0}、html/body{background:transparent!important} —— 本文件不再重复
+ *      定位 #root，也不改它的尺寸/布局（design-spec §4.3）。
+ *   5) 稳定钩子（实测 markup）：
+ *        #root header[data-window-drag]      会话页 <header>（空态也渲染 headerBlank）
+ *        [data-conversation-scroll]          会话滚动体（role=region 由宿主加）
+ *        [data-composer-card]                输入卡（宿主已 position:relative + radius-panel）
+ *        [data-composer-seat]                输入区外层（sticky 底栏）
+ *        [class*="sidebarCol" i]             侧栏列（CSS Modules 哈希前缀无关，只匹配语义后缀）
+ *        [role="treeitem"][aria-selected]    会话行；[role="tablist"] [role="tab"] 视图 tab
+ *        [role="menu"] / [role="dialog"] / [class*="_dialog" i] / [class*="_mask" i]
+ *        .md-code-block                      markdown 代码块（宿主全局类）
+ *   6) 窗口控制按钮在顶部标题条右上（Electron 原生 overlay），HUD 遥测章放
+ *      header[data-window-drag]::after 并右移 150px 避让，窄窗（≤1100px）隐藏。
+ *
+ * 硬约束（design-spec §2.4 / §4.4 / §7）：
+ *   - 不改字号/行高/字体栈/字重/间距/宽高/定位：宿主元素只写颜色、背景、边框、阴影、
+ *     滤镜；position:relative 只加在需要绝对定位伪元素的容器上（不改变布局）。
+ *   - 装饰伪元素一律 pointer-events:none，z-index ≤ 900（低于宿主对话框 1000+）。
+ *   - backdrop-filter 只允许 4 类表面：主列 / 侧栏 / 输入卡 / 浮层（合成层峰值 ≤6）。
+ *   - 颜色全部由 §2.1 调色板派生（--m-* 与 RGB 三元组），文件内不出现未登记的裸色值，
+ *     仅允许 rgba()/黑色透明遮罩用于压暗与结构线（由 _work/skin/assert-css.mjs 断言）。
+ *   - 动态背景是背景层不是内容层：默认 veil=58 时最亮区域仍应辨认地球轮廓与星空。
+ * ========================================================================== */
+
+/* ============================================================================
+ * 0. 装饰用字体（§2.2：装饰/HUD 数字、遥测、代号用等宽；正文一个字都不动）
+ *    JetBrains Mono 400/500 由 asset-lab 产出（OFL），由 lib/index.js 的
+ *    /dsh-moss2/asset 路由喂给浏览器（ASSET_TYPES 白名单已登记）。
+ *    local() 优先命中本机安装版本；文件缺失时回落系统等宽栈，不阻塞首屏。
+ * ========================================================================== */
+@font-face {
+  font-family: "MOSS Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local("JetBrains Mono"), url("/dsh-moss-bg/asset/fonts/jetbrains-mono-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "MOSS Mono";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: local("JetBrains Mono Medium"), local("JetBrains Mono"),
+       url("/dsh-moss-bg/asset/fonts/jetbrains-mono-500.woff2") format("woff2");
+}
+
+/* ============================================================================
+ * 1. 皮肤私有调色板
+ *    1.1 §2.1 锁定值（唯一取值来源；本文件其他颜色全部由这些派生或 color-mix）
+ *    1.2 RGB 三元组（rgba() 用；值 = 1.1 中同名 hex 的十进制通道）
+ *    1.3 派生换算（veil / 结构线 / 表面）
+ * ========================================================================== */
+html.dsh-moss-skin,
+html.dsh-moss-skin body {
+  /* ── 1.1 §2.1 调色板（锁定值，只在本皮肤作用域内可见）──────────────────── */
+  --m-void: #04070c;          /* 深空底：视频黑场、兜底底色 */
+  --m-void-2: #070c14;        /* 次级底 */
+  --m-ink: #0b1220;           /* 玻璃基色 */
+  --m-white: #e9f1fa;         /* 主文字 / 品牌白（MOSS 机体白） */
+  --m-steel: #b7c7d8;         /* 次级文字 */
+  --m-steel-2: #93a6ba;       /* 三级文字 */
+  --m-steel-3: #6f8299;       /* 说明/占位 */
+  --m-earth: #4f8bff;         /* 地球蓝：链接、焦点、选中 */
+  --m-plasma: #8fd3ff;        /* 等离子青：数据高光、代码导轨 */
+  --m-moss: #ff3d1f;          /* MOSS 红：仅「在场/告警」装饰（红眼、状态灯、当前项刻线） */
+  --m-moss-dim: #a32410;      /* MOSS 红暗部 */
+  --m-amber: #ffb454;         /* 城市灯光琥珀：暖高光、warn 装饰 */
+  --m-success: #45d6a0;       /* 成功态（沿用宿主语义） */
+  --m-line: rgba(150, 200, 255, .10);   /* 1px 结构线 */
+  --m-line-2: rgba(150, 200, 255, .18); /* 强结构线 */
+  --m-glass: rgba(6, 11, 19, .58);      /* 标准玻璃底 */
+  --m-glass-2: rgba(9, 15, 25, .68);    /* 抬升玻璃底 */
+  --m-glass-3: rgba(12, 20, 32, .76);   /* 浮层玻璃底 */
+
+  /* §2.1 语义纪律补充：brand-primary 用机体白；error 保持宿主红；MOSS 红不替代 error */
+  --m-brand: #e6f0fb;         /* brand-primary（机体白，宿主深色主题主按钮本来就是近白） */
+  --m-error: #ff5a4d;         /* state-error（保持宿主语义红，不挪用 MOSS 红） */
+
+  /* ── 1.2 RGB 三元组（rgba() 结构与遮罩用；与 1.1 同名 hex 等值）────────── */
+  --m-void-rgb: 4, 7, 12;
+  --m-void-2-rgb: 7, 12, 20;
+  --m-ink-rgb: 11, 18, 32;
+  --m-white-rgb: 233, 241, 250;
+  --m-steel-rgb: 183, 199, 216;
+  --m-steel-2-rgb: 147, 166, 186;
+  --m-steel-3-rgb: 111, 130, 153;
+  --m-earth-rgb: 79, 139, 255;
+  --m-plasma-rgb: 143, 211, 255;
+  --m-moss-rgb: 255, 61, 31;
+  --m-moss-dim-rgb: 163, 36, 16;
+  --m-amber-rgb: 255, 180, 84;
+  --m-success-rgb: 69, 214, 160;
+  --m-brand-rgb: 230, 240, 251;
+  --m-error-rgb: 255, 90, 77;
+  --m-line-rgb: 150, 200, 255;      /* §2.1 --m-line 的通道（结构线/冷光） */
+  --m-glass-rgb: 6, 11, 19;         /* §2.1 --m-glass */
+  --m-glass-2-rgb: 9, 15, 25;       /* §2.1 --m-glass-2 */
+  --m-glass-3-rgb: 12, 20, 32;      /* §2.1 --m-glass-3 */
+
+
+}
+
+/* 可调参数（--moss-veil-k / --moss-exposure / --moss-saturation / --moss-main-a /
+ * --moss-main-blur 与派生 --moss-veil-* / --moss-blur-r）只声明在 html 上，
+ * 不在 body 上重复声明 —— 这样 html 的行内覆盖（预览页滑杆 / client.js 注入 /
+ * 主题 API）能穿透到所有后代；若 body 也有一份声明，body 的局部声明会截断继承，
+ * 行内覆盖只对 html 自己生效（标定 mock 实测踩坑）。 */
+html.dsh-moss-skin {
+  /* ── 1.3 派生换算 ──────────────────────────────────────────────────────── */
+  /* veil 强度 → 压暗 alpha：0→0（不压）/ 58(默认)→0.244 / 100→0.42。
+   * 上限只到 .42：素材本身极暗（源视频平均亮度 ≈2.3%），再压就看不见地球轮廓；
+   * 正文可读性由「面板局部再压暗 + backdrop 模糊平均」保证，不靠全局一层黑。 */
+  --moss-veil-k: 0.0042;
+  --moss-veil-a: calc(var(--moss-veil, 58) * var(--moss-veil-k));
+  --moss-veil-soft: calc(var(--moss-veil-a) * 0.62);   /* 画面中心/地球区：轻压，保住轮廓 */
+  --moss-veil-deep: calc(var(--moss-veil-a) * 1.34);   /* 上下/两侧边缘：重压，给 HUD 让位 */
+  --moss-blur-r: var(--moss-blur, 16px);               /* client.js 写入含单位（16px） */
+  /* 视频/海报曝光补偿：素材极暗（源视频平均亮度 ≈2.3%）；
+   * 不提亮则「地球轮廓/星空」在 veil 后不可辨（用户唯一硬要求就是看见影像）。
+   * 1.75 ≈ 地球昼夜线、等离子尾迹能被肉眼读出的最低曝光（mock 标定，见 ambient-check.json）。 */
+  --moss-exposure: 1.75;
+  --moss-saturation: 1.22;
+  /* 主列玻璃底 alpha（§4.4 示例值 .38；标定后 .24，给地球多透一口气；
+   * 正文可读性由「中心轻压 veil + 3px 磨砂平均 + 白字」兜底，实测见 contrast.json） */
+  --moss-main-a: .24;
+  /* 主列磨砂半径：必须明显小于侧栏/输入卡/浮层的 --moss-blur（默认 16px）——
+   * 16px 会把地球糊成一团色斑，违背「背景必须是影像」的硬要求；
+   * 3px 只柔化星点与视频压缩噪点，地球轮廓/等离子尾迹保持可辨（截图标定）。 */
+  --moss-main-blur: 3px;
+  /* 装饰/遥测用等宽栈（§2.2；正文一个字都不动） */
+  --m-font-mono: "MOSS Mono", "JetBrains Mono", ui-monospace, "Cascadia Mono", "Consolas", "Liberation Mono", monospace;
+}
+/* ============================================================================
+ * 2. Token 覆盖（宿主 119 个 alias/specific/menu token 全覆盖）
+ *    覆盖点同时落 html 与 body（html.dsh-moss-skin body 特异性 (0,1,2) >
+ *    宿主 body[data-ds-dark-theme] 的 (0,1,1)）。
+ *    每行注释 = 宿主默认值（light / dark，从 _ref/ui-theme/client.js 原样抄录），
+ *    证明「覆盖了且只覆盖该覆盖的」。
+ *    深色宿主与浅色宿主都写成同一套深色驾驶舱（design-spec §4.4 明示）。
+ * ========================================================================== */
+
+/* ── 2.1 表面 / 容器 ────────────────────────────────────────────────────── */
+html.dsh-moss-skin,
+html.dsh-moss-skin body {
+  /* 宿主 light: #fff (neutral-bluish-00) / dark: #151517 (nb-950)
+   * §4.4：必须透明 —— 视频背景要透出；body/frame/conversation 的底色不再由色块承担 */
+  --dsw-alias-bg-base: transparent;
+  /* light: nb-100 #ebeef2 / dark: nb-950 #151517 */
+  --dsw-alias-bg-document-preview: var(--m-void);
+  /* light/dark: color-mix(blue-500 40%, transparent)；改地球蓝 34% */
+  --dsw-alias-bg-document-selection: rgba(var(--m-earth-rgb), .34);
+  /* light: #fff / dark: nb-875 #232324 —— 标准玻璃 */
+  --dsw-alias-bg-layer-1: var(--m-glass);
+  /* light: #fff / dark: nb-850 #2c2c2e */
+  --dsw-alias-bg-layer-2: var(--m-glass-2);
+  /* light: #fff / dark: nb-800 #353638 */
+  --dsw-alias-bg-layer-3: var(--m-glass-3);
+  /* light: nb-60 #f5f6f7 / dark: nb-800 #353638 —— 平台模块底（选中的主题卡等） */
+  --dsw-alias-bg-module-platform: rgba(var(--m-ink-rgb), .62);
+  /* light: nb-60 / dark: neutral-850 #212123 */
+  --dsw-alias-bg-multi-select: rgba(var(--m-glass-3-rgb), .72);
+  /* light: nb-150 #e9ecf2 / dark: nb-700 #61666b */
+  --dsw-alias-bg-overlay: rgba(var(--m-glass-2-rgb), .72);
+  /* light: #0000000a / dark: #ffffff14 */
+  --dsw-alias-bg-skeleton: rgba(var(--m-line-rgb), .08);
+  /* 遮罩类：黑透明属 spec 允许的「黑透明遮罩」例外 */
+  /* light: #0000003d / dark: #00000080 */
+  --dsw-alias-bg-mask-1: rgba(0, 0, 0, .62);
+  /* light: #0000001f / dark: #0003 */
+  --dsw-alias-bg-mask-2: rgba(0, 0, 0, .34);
+  /* light: #0000007a / dark: #0000007a */
+  --dsw-alias-bg-mask-3: rgba(0, 0, 0, .74);
+  /* light: #ffffffb3 / dark: #272730b3 */
+  --dsw-alias-bg-mask-drop: rgba(var(--m-glass-3-rgb), .90);
+  /* light/dark: #000000e0 */
+  --dsw-alias-bg-mask-photo: rgba(0, 0, 0, .92);
+  /* light: nb-50 #f9fafb / dark: nb-900 #1b1b1c —— 侧栏底（§4.4：rgba(4,8,14,.52) 量级） */
+  --dsw-specific-sidebar-fill: rgba(var(--m-void-rgb), .52);
+  /* light: #fff / dark: nb-850 #2c2c2e —— 输入卡底（§4.4：rgba(9,15,25,.72) 量级，此处抬到 .78） */
+  --dsw-specific-input-major: rgba(var(--m-glass-2-rgb), .78);
+  /* light: nb-50 / dark: nb-900 */
+  --dsw-specific-login-input: rgba(var(--m-void-rgb), .72);
+  /* light: deepseek-50 #edf3fe / dark: nb-850 #2c2c2e —— 消息气泡 */
+  --dsw-specific-bubble: rgba(var(--m-glass-3-rgb), .66);
+  /* light: deepseek-200 #d3e2ff / dark: nb-750 #43454a —— 气泡高亮/引用 */
+  --dsw-specific-bubble-highlight: rgba(var(--m-earth-rgb), .20);
+  /* light: nb-60 / dark: nb-800 —— 选择器/输入 chip */
+  --dsw-specific-selector: rgba(var(--m-glass-3-rgb), .70);
+  /* light: nb-60 / dark: nb-800 —— tip 卡 */
+  --dsw-specific-tip: rgba(var(--m-glass-3-rgb), .72);
+  /* light: nb-100 / dark: nb-750 —— 侧栏导航当前项 */
+  --dsw-specific-sidebar-nav-item-active: rgba(var(--m-glass-3-rgb), .60);
+  /* light: deepseek-100 #e4edfd / dark: nb-800 #353638 */
+  --dsw-specific-sidebar-nav-item-active-accent: rgba(var(--m-earth-rgb), .16);
+  /* 菜单底：light #fcfdfeb3 / dark #303136a3（host 用 backdrop-filter: --dsw-menu-backdrop-filter） */
+  --dsw-menu-surface-fill: rgba(var(--m-glass-2-rgb), .84);
+  --dsw-specific-menu: var(--dsw-menu-surface-fill);
+  /* light: #f8f9faf0 / dark: #303136f0 —— 菜单分组标题（保持近不透明，压住滚动内容） */
+  --dsw-alias-menu-group-header-fill: rgba(var(--m-glass-3-rgb), .94);
+}
+
+/* ── 2.2 文字 / 品牌 / 按钮 / 交互 / 状态 / 代码 / 滚动条 / 浮层 ───────────── */
+html.dsh-moss-skin,
+html.dsh-moss-skin body {
+  /* 文字：light 都是深字、dark 是浅字；驾驶舱统一按 dark 套（浅色宿主也强制深色） */
+  /* light: nb-1000 #0f1115 / dark: nb-50 #e9f1fa */
+  --dsw-alias-label-primary: var(--m-white);
+  /* light: nb-950 #151517 / dark: nb-100 #ebeef2 */
+  --dsw-alias-label-primary-dimmed: color-mix(in srgb, var(--m-white) 82%, var(--m-steel-3));
+  /* light: blue-900 #0e3074 / dark: nb-50 #e9f1fa */
+  --dsw-alias-label-primary-bluish: var(--m-white);
+  /* light: nb-00 #fff / dark: nb-1000 #0f1115 —— 反色文字（用在浅色实底上） */
+  --dsw-alias-label-primary-foreground: var(--m-void);
+  /* light: nb-00 #fff / dark: nb-800 #353638 */
+  --dsw-alias-label-primary-inverted: var(--m-white);
+  /* light: nb-700 #61666b / dark: nb-300 #cfd3d6 */
+  --dsw-alias-label-secondary: var(--m-steel);
+  /* light: nb-600 #81858c / dark: nb-400 #adb2b8 */
+  --dsw-alias-label-tertiary: var(--m-steel-2);
+  /* light: nb-400 #adb2b8 / dark: nb-600 #81858c */
+  --dsw-alias-label-caption: var(--m-steel-3);
+  /* light: nb-200 #e1e5ee / dark: nb-750 #43454a —— 禁用/极弱文字 */
+  --dsw-alias-label-dimmed: color-mix(in srgb, var(--m-steel-3) 62%, var(--m-void));
+  /* light: color-mix(neutral-1000 30%, transparent) / dark: color-mix(neutral-00 45%, transparent) */
+  --dsw-alias-label-shimmer: color-mix(in srgb, var(--m-white) 42%, transparent);
+  /* light: deep-diving 蓝 / dark: color-mix(deepseek-450 55%, nb-400) —— 深度思考标签 */
+  --dsw-alias-label-deep-diving: color-mix(in srgb, var(--m-earth) 62%, var(--m-steel));
+  --dsw-alias-label-deep-diving-shimmer: color-mix(in srgb, var(--m-plasma) 70%, var(--m-white));
+  /* light: nb-700 #61666b / dark: nb-300 #cfd3d6 —— 文档预览状态字 */
+  --dsw-alias-label-document-preview: var(--m-steel-2);
+  /* light: nb-800 #353638 / dark: label-primary-dimmed */
+  --dsw-alias-menu-icon: var(--m-steel);
+
+  /* 品牌：§2.1 语义纪律 —— brand-primary 用机体白（宿主深色主按钮本来就是近白） */
+  /* light: nb-1000 #0f1115 / dark: nb-50 #e9f1fa */
+  --dsw-alias-brand-primary: var(--m-brand);
+  /* light: nb-1000 / dark: nb-50 */
+  --dsw-alias-brand-primary-invert: var(--m-void);
+  /* light: #4176e6 / dark: deepseek-450 #5686fe —— DSH 品牌蓝，落成地球蓝 */
+  --dsw-alias-brand-primary-new-colorprimary-new-color: var(--m-earth);
+  --dsw-alias-brand-text: var(--m-brand);
+  /* light: nb-700 #61666b / dark: nb-50 #e9f1fa */
+  --dsw-alias-button-contrast-fill: var(--m-brand);
+  --dsw-alias-button-primary-fill: var(--m-brand);
+  /* light: nb-750 #43454a / dark: nb-100 #ebeef2 */
+  --dsw-alias-button-primary-hover: color-mix(in srgb, var(--m-brand) 84%, var(--m-steel));
+  /* light: nb-100 / dark: nb-750 */
+  --dsw-alias-button-primary-dimmed: rgba(var(--m-line-rgb), .20);
+  /* light: nb-00 #fff / dark: nb-750 #43454a */
+  --dsw-alias-button-elevated-fill: var(--m-glass-3);
+  /* light: nb-00 / dark: nb-850 */
+  --dsw-alias-button-floating-fill: var(--m-glass-2);
+  /* light: nb-75 / dark: nb-800 */
+  --dsw-alias-button-floating-hover: rgba(var(--m-glass-3-rgb), .82);
+  /* light: nb-100 / dark: nb-750 */
+  --dsw-alias-button-ghost-active-fill: rgba(var(--m-glass-3-rgb), .60);
+  /* light: nb-150 / dark: nb-700 */
+  --dsw-alias-button-ghost-active-hover: rgba(var(--m-glass-3-rgb), .72);
+  /* light: nb-500 #979da6 / dark: nb-600 #81858c */
+  --dsw-alias-button-ghost-active-border: rgba(var(--m-line-rgb), .34);
+  /* light: deepseek-500 / dark: deepseek-400 —— info 按钮落地球蓝 */
+  --dsw-alias-button-info-fill: var(--m-earth);
+  --dsw-alias-button-info-hover: var(--m-plasma);
+  /* light: #54555780 / dark: #54555780 —— 工具栏（顶栏那排小按钮） */
+  --dsw-alias-button-tool-bar-fill: rgba(var(--m-line-rgb), .16);
+  /* light: #1f1f1f5c / dark: #1f1f1f5c */
+  --dsw-alias-button-tool-bar-fill-invisible: rgba(var(--m-void-rgb), .46);
+  --dsw-alias-button-tool-bar-hover: rgba(var(--m-line-rgb), .24);
+
+  /* 交互反馈：hover 走地球蓝淡光，不留宿主灰蓝 */
+  /* light: #2631480f / dark: #ffffff14 */
+  --dsw-alias-interactive-bg-hover: rgba(var(--m-earth-rgb), .10);
+  --dsw-alias-interactive-bg-active: rgba(var(--m-earth-rgb), .16);
+  --dsw-alias-interactive-bg-hover-accent: rgba(var(--m-earth-rgb), .22);
+  /* light: #ec13130d / dark: #f25a5a26 */
+  --dsw-alias-interactive-bg-hover-danger: rgba(var(--m-error-rgb), .14);
+  /* light: nb-75 / dark: nb-800 */
+  --dsw-alias-interactive-bg-hover-solid: rgba(var(--m-glass-3-rgb), .62);
+  /* light: #2631480f / dark: #ffffff14 —— turn trigger 卡 */
+  --dsw-alias-turn-trigger-bg: rgba(var(--m-line-rgb), .08);
+  --dsw-alias-turn-trigger-bg-hover: rgba(var(--m-earth-rgb), .14);
+  /* light: nb-00 / dark: nb-400 */
+  --dsw-alias-switch-thumb: var(--m-steel);
+
+  /* 描边结构线：冷蓝半透，全部来自 --m-line 色相 */
+  /* light: #0000000a / dark: #ffffff0f */
+  --dsw-alias-border-l1: var(--m-line);
+  --dsw-alias-border-l2-darkmode-thin: var(--m-line);
+  /* light: #0000001a / dark: #ffffff1f */
+  --dsw-alias-border-l2: var(--m-line-2);
+  /* light: #0000001f / dark: #ffffff29 */
+  --dsw-alias-border-l3: rgba(var(--m-line-rgb), .26);
+  /* light: #00000029 / dark: #fff3 */
+  --dsw-alias-border-l4: rgba(var(--m-line-rgb), .34);
+  /* light: #0000 / dark: #ffffff0f、#ffffff14 */
+  --dsw-alias-border-inverted: rgba(var(--m-line-rgb), .08);
+  --dsw-alias-border-inverted2: rgba(var(--m-line-rgb), .12);
+
+  /* 语义状态：error 保持红、warn 琥珀、success 青绿；business/link 归地球蓝 */
+  --dsw-alias-state-error-primary: var(--m-error);
+  --dsw-alias-state-error-secondary: color-mix(in srgb, var(--m-error) 72%, var(--m-white));
+  --dsw-alias-state-warn-primary: var(--m-amber);
+  --dsw-alias-state-warn-secondary: color-mix(in srgb, var(--m-amber) 78%, var(--m-white));
+  --dsw-alias-state-warn-label: var(--m-amber);
+  --dsw-alias-state-warn-tertiary: rgba(var(--m-amber-rgb), .16);
+  --dsw-alias-state-success-primary: var(--m-success);
+  --dsw-alias-state-success-secondary: color-mix(in srgb, var(--m-success) 70%, var(--m-white));
+  --dsw-alias-state-success-tertiary: rgba(var(--m-success-rgb), .16);
+  --dsw-alias-state-business-primary: var(--m-earth);
+  --dsw-alias-state-business-tertiary: rgba(var(--m-earth-rgb), .16);
+  /* done（宿主 dark = violet-400 #a78bfa）：§2.1 无紫色，归「数据完成」等离子青 */
+  --dsw-alias-state-done-primary: var(--m-plasma);
+  /* light: neutral-300 #d4d4d4 / dark: neutral-600 #545557 */
+  --dsw-alias-state-idle-primary: var(--m-steel-3);
+  --dsw-alias-link: var(--m-plasma);
+  /* 代码 diff：语义绿/红保义，仅把明度拉进深空 */
+  --dsw-alias-code-diff-added: rgba(var(--m-success-rgb), .16);
+  --dsw-alias-code-diff-deleted: rgba(var(--m-error-rgb), .16);
+  --dsw-alias-file-diff-added-bg: rgba(var(--m-success-rgb), .12);
+  --dsw-alias-file-diff-added-gutter: rgba(var(--m-success-rgb), .07);
+  --dsw-alias-file-diff-added-marker: var(--m-success);
+  --dsw-alias-file-diff-deleted-bg: rgba(var(--m-error-rgb), .12);
+  --dsw-alias-file-diff-deleted-gutter: rgba(var(--m-error-rgb), .07);
+  --dsw-alias-file-diff-deleted-marker: var(--m-error);
+
+  /* Markdown / 代码：宿主 dark 的 code-block 底是 nb-900；这里统一成深空玻璃 */
+  /* light: nb-50 #f9fafb / dark: nb-900 #1b1b1c */
+  --dsw-alias-markdown-code-block: rgba(var(--m-void-rgb), .74);
+  /* light: nb-50 / dark: nb-850 */
+  --dsw-alias-markdown-code-block-banner: rgba(var(--m-glass-rgb), .70);
+  /* light: nb-00 / dark: nb-800 */
+  --dsw-alias-markdown-code-segment-selected: rgba(var(--m-glass-3-rgb), .80);
+  /* light: nb-75 / dark: nb-900 */
+  --dsw-alias-markdown-code-segment-unselected: rgba(var(--m-glass-rgb), .60);
+  /* light: neutral-50 / dark: neutral-800 #292929 —— 行内代码 */
+  --dsw-alias-markdown-inline-code: rgba(var(--m-ink-rgb), .72);
+  /* light: nb-60 / dark: nb-850 */
+  --dsw-alias-markdown-placeholder: rgba(var(--m-glass-rgb), .60);
+  /* light: nb-75 / dark: nb-850 */
+  --dsw-alias-markdown-tag: rgba(var(--m-glass-3-rgb), .70);
+  /* light: nb-100 / dark: nb-800 —— 引用块 */
+  --dsw-alias-markdown-citation: rgba(var(--m-glass-3-rgb), .70);
+
+  /* 滚动条：宿主把 thumb 绑到 scrollbar-bg-l1（scrollbar.css），这里只换色 */
+  /* light: neutral-200 #e5e5e5 / dark: neutral-700 #3c3c3d */
+  --dsw-alias-scrollbar-bg-l1: rgba(var(--m-line-rgb), .16);
+  /* light: neutral-200 / dark: neutral-600 #545557 */
+  --dsw-alias-scrollbar-bg-l2: rgba(var(--m-line-rgb), .24);
+  /* light: neutral-300 / dark: neutral-600 */
+  --dsw-alias-scrollbar-hover-l1: rgba(var(--m-line-rgb), .30);
+  /* light: neutral-300 / dark: neutral-550 #65676b */
+  --dsw-alias-scrollbar-hover-l2: rgba(var(--m-earth-rgb), .60);
+
+  /* 浮层 / 提示：所有「站在视频上」的层都加深，保证字在玻璃上 */
+  /* light: nb-800 / dark: nb-750 */
+  --dsw-alias-toast-bg: rgba(var(--m-glass-3-rgb), .92);
+  /* light: nb-00 / dark: nb-00 */
+  --dsw-alias-toast-label: var(--m-white);
+  /* light: nb-850 / dark: nb-750 */
+  --dsw-alias-tooltip-bg: rgba(var(--m-glass-2-rgb), .94);
+  /* host: color-mix(tooltip-bg, white 18%) */
+  --dsw-alias-tooltip-key-bg: color-mix(in srgb, var(--dsw-alias-tooltip-bg), var(--m-white) 18%);
+
+  /* 插画（宿主用于 agent 头像/空态插图的分层色）：全部压进深空，避免白块 */
+  /* light: nb-55 / dark: nb-850 */
+  --dsw-alias-illustration-background: rgba(var(--m-ink-rgb), .50);
+  /* light: nb-310 / dark: nb-750 */
+  --dsw-alias-illustration-backing: rgba(var(--m-glass-rgb), .62);
+  /* light: nb-310 / dark: nb-600 */
+  --dsw-alias-illustration-detail: rgba(var(--m-line-rgb), .30);
+  /* light: nb-90 / dark: nb-700 */
+  --dsw-alias-illustration-surface: rgba(var(--m-glass-rgb), .58);
+  --dsw-alias-illustration-inset: rgba(var(--m-glass-rgb), .72);
+  --dsw-alias-illustration-shadow: rgba(var(--m-void-rgb), .80);
+}
+
+/* ── 2.3 派生 token（宿主用 var() 组合、由 base/elevation/menu 层声明的那些）── */
+html.dsh-moss-skin,
+html.dsh-moss-skin body {
+  /* 菜单磨砂：宿主默认 blur(40px) saturate(150%)；统一成 --moss-blur 的 1.5 倍 */
+  --dsw-menu-backdrop-filter: blur(calc(var(--moss-blur, 16px) * 1.5)) saturate(1.15);
+  /* 遮罩不额外模糊（遮罩本身已是黑半透，模糊只会白烧合成层） */
+  --dsw-mask-blur: none;
+  /* 焦点环：地球蓝 → 等离子青，键盘态更亮 */
+  --dsw-focus-ring-color: var(--m-plasma);
+  /* 抬升描边/投影：黑色投影属 spec 允许的透明遮罩例外 */
+  --dsw-elevation-stroke-color: rgba(var(--m-line-rgb), .22);
+  --dsw-elevation-stroke: 0 0 0 .5px rgba(var(--m-line-rgb), .22);
+  --dsw-elevation-soft: 0 0 0 .5px rgba(var(--m-line-rgb), .18), 0 6px 22px rgba(0, 0, 0, .38);
+  --dsw-elevation-panel: 0 0 0 .5px rgba(var(--m-line-rgb), .20), 0 10px 34px rgba(0, 0, 0, .46);
+  --dsw-elevation-prominent: 0 0 0 .5px rgba(var(--m-line-rgb), .26), 0 16px 48px rgba(0, 0, 0, .54);
+  --dsw-shadow-lv3: 0 0 1px 0 rgba(var(--m-line-rgb), .20), 0 14px 40px 0 rgba(0, 0, 0, .42);
+}
+
+/* ── 2.4 不覆盖宿主 82 个 --dsw-static-* 色阶（host-map §0.2 明确要求）────────
+ *    理由：static 色阶是 alias 语义层的取值来源；皮肤已在 §2.1/2.2 把 119 个
+ *    alias/specific/menu token 全部落成 MOSS 深空值，直接消费 static 的少数组件
+ *    （主题卡选中描边、图表 meter）保留宿主灰蓝即可接受——重映射等于重定义整套
+ *    配色且没有语义收益，且会让「覆盖清单」无法证伪。此处显式留白并记录。
+ *    （上一版曾尝试 static 重映射，按 host-map 裁决移除；如需再议须先回写 design-spec。）
+ *
+ *    另：--dsw-alias-bg-layer-4 被 shell 引用但主题从未定义（host-map §2.3-1），
+ *    皮肤也不定义它（该处 hover 背景解析为空即透明，属宿主既有行为）。
+ * ========================================================================== */
+
+/* ── 2.5 布局兜底与平台补充覆盖 ──────────────────────────────────────────
+ *    （1）#root 抬升：与 lib/index.js 首屏关键 CSS 同值（design-spec §4.3）。
+ *        只动定位/层级，不改尺寸/布局；关键 CSS 缺失时（预览页 / 注入异常）
+ *        也保证 ambient 永远在内容层之下。
+ *    （2）强制深色驾驶舱：native 滚动条/表单控件/输入法候选跟随深色。
+ *    （3）darwin 菜单材质：宿主在 html[data-platform=darwin] body 上用 97% 不透明
+ *        hex 覆盖 --dsw-specific-menu（THEME:1470，特异性 (0,1,2) 与本文件
+ *        html.dsh-moss-skin body 相同，而宿主 style 运行时后注入 → 同特异性会输）。
+ *        用 (0,2,2) 压住，菜单才能透出视频。 */
+html.dsh-moss-skin #root {
+  position: relative;
+  z-index: 1;
+}
+html.dsh-moss-skin {
+  color-scheme: dark !important;
+}
+html.dsh-moss-skin[data-platform="darwin"],
+html.dsh-moss-skin[data-platform="darwin"] body {
+  --dsw-specific-menu: rgba(var(--m-glass-2-rgb), .88);
+}
+
+/* ============================================================================
+ * 3. 背景层：#dsh-moss-ambient（唯一 ambient 是视频/海报，不是色块）
+ *    DOM 由 lib/index.js 自举脚本生成；本层永远在 #root 之下（z-index:0 vs 1）。
+ *    关键平衡：素材本身极暗（平均亮度 ≈2.3%），
+ *      → 视频只做轻微提亮/饱和（让地球轮廓、等离子尾迹、星点浮出来）；
+ *      → 压暗用「中心轻、边缘重」的双梯度（不给全局一层死黑）；
+ *      → 正文可读性由面板局部玻璃 + backdrop blur 的平均化承担（§4）。
+ * ========================================================================== */
+html.dsh-moss-skin #dsh-moss-ambient {
+  /* 自给自足：即使首屏关键 CSS 未注入，本层也必须铺满视口并在 #root 之下。
+   * （client.js 的关键 CSS 会再声明一遍同样的值，此处是兜底，不依赖注入顺序。） */
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background-color: var(--m-void);
+  /* 只做布局/绘制隔离：绝不能用 contain:strict（含 size containment），
+   * 否则在无显式尺寸的环境里本层高度塌成 0，子层全部不可见（mock 实测踩坑）。 */
+  contain: layout paint;
+  isolation: isolate;
+}
+
+/* ── 3.1 海报铺底（首屏立即出现；视频 canplay 前/视频缺失时可见）────────────── */
+html.dsh-moss-skin #dsh-moss-ambient .ma-still {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+  /* 素材暗：曝光补偿 + 饱和，让地球轮廓与等离子尾迹在 veil 后仍可辨（见 §1.3 标定值） */
+  filter: brightness(var(--moss-exposure, 1.55)) saturate(var(--moss-saturation, 1.22));
+  /* 海报不参与合成层预算（无 transform/will-change） */
+}
+
+/* ── 3.2 视频：全屏 cover；scale(1.12) 隐藏转码边缘并给慢速漂移留余量 ──────── */
+html.dsh-moss-skin #dsh-moss-ambient .ma-video {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+  transform: scale(1.12);         /* 1 个合成层；漂移动画的基准帧 */
+  transform-origin: center center;
+  background-color: transparent;  /* 不遮住 ma-still */
+  filter: brightness(var(--moss-exposure, 1.55)) saturate(var(--moss-saturation, 1.22));
+  /* v0.2：极慢镜头漂移（44s 往返，平移 ≤2%，scale 1.12→1.155）。
+   * 这是「背景肉眼可见在动」的第二层保证：即使某一帧视频本身变化很小，
+   * 镜头也在缓慢推移。**系统 prefers-reduced-motion 不得停它**（见 §7.5），
+   * 只有用户显式 --calm 才停（见 §7.9）。 */
+  animation: moss-bg-drift 44s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes moss-bg-drift {
+  0%   { transform: translate3d(0, 0, 0) scale(1.12); }
+  100% { transform: translate3d(2%, -1.5%, 0) scale(1.155); }
+}
+/* 画质 saver / 静态档：视频不加载/冻结在海报帧，海报层保持可见 */
+html.dsh-moss-skin--static #dsh-moss-ambient .ma-video,
+html.dsh-moss-skin[data-moss-quality="saver"] #dsh-moss-ambient .ma-video {
+  opacity: 0;
+}
+html.dsh-moss-skin--paused #dsh-moss-ambient .ma-video {
+  /* 视频暂停由 client.js 执行；这里只是防御性兜底 */
+  visibility: visible;
+}
+/* 3.2.1 交接瞬间（client armHandoff 加 --handoff，约 1.5s）：
+ * 把漂移锁回 scale(1.12)/位移 0 的基准帧 —— 与 splash 第四幕地球层
+ * （object-fit:cover + object-position:50% 50% + transform:scale(1.12)）**完全同帧同裁切**，
+ * 10.60s 底层 seek 后 splash 地球层 11.00s 淡出时不会出现位置/缩放跳变。
+ * 1.5s 后 client 撤掉该 class，漂移动画从 0% 基准帧无缝续跑。 */
+html.dsh-moss-skin--handoff #dsh-moss-ambient .ma-video {
+  animation: none;
+  transform: scale(1.12);
+}
+
+/* ── 3.3 主压暗 veil：径向（中心轻/边缘重）+ 线性（上下重压）双梯度 ─────────
+ *    吃 --moss-veil（0–100）：--moss-veil-a = veil * 0.0045（58 → .261）。
+ *    双层而不是一层：
+ *      ① 径向：地球区（46% 46%）轻压，让画面主体可辨；四角重压，把 UI 从影像里「压」出来；
+ *      ② 线性：顶部（顶栏/标题条）与底部（输入区）再重压一档，给玻璃上缘兜底可读性。 */
+html.dsh-moss-skin #dsh-moss-ambient .ma-veil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(ellipse 118% 92% at 46% 46%,
+      rgba(var(--m-void-rgb), var(--moss-veil-soft)) 0%,
+      rgba(var(--m-void-rgb), calc(var(--moss-veil-soft) * 0.82)) 44%,
+      rgba(var(--m-void-rgb), var(--moss-veil-deep)) 100%),
+    linear-gradient(180deg,
+      rgba(var(--m-void-rgb), calc(var(--moss-veil-deep) * 0.92)) 0%,
+      rgba(var(--m-void-rgb), calc(var(--moss-veil-soft) * 0.42)) 20%,
+      rgba(var(--m-void-rgb), calc(var(--moss-veil-soft) * 0.30)) 58%,
+      rgba(var(--m-void-rgb), calc(var(--moss-veil-deep) * 0.70)) 100%);
+  background-repeat: no-repeat;
+}
+
+/* ── 3.4 四角暗角：把视线收进中心，同时压住四角 HUD 区的背景亮度 ────────────
+ *    v0.2 微调（design-spec-v2 §7.6）：透明区扩到 56%，四角 alpha 由
+ *    0.20+veil_a*0.42 / 0.42+veil_a*0.55 降到 0.16+veil_a*0.36 / 0.36+veil_a*0.48，
+ *    默认 veil=58 时四角压暗从 ~.55 降到 ~.48 —— 地球轮廓/等离子尾迹更清楚，
+ *    顶部/底部 HUD 仍由 .ma-veil 的线性梯度兜可读性。 */
+html.dsh-moss-skin #dsh-moss-ambient .ma-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(ellipse 132% 108% at 50% 46%,
+      rgba(0, 0, 0, 0) 56%,
+      rgba(0, 0, 0, calc(0.16 + var(--moss-veil-a) * 0.36)) 78%,
+      rgba(0, 0, 0, calc(0.36 + var(--moss-veil-a) * 0.48)) 100%);
+  background-repeat: no-repeat;
+}
+
+/* ── 3.5 颗粒：SVG 噪点 ≤3%，把纯黑背景从「数字黑」拉成「胶片黑」──────────── */
+html.dsh-moss-skin #dsh-moss-ambient .ma-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .026;
+  mix-blend-mode: screen;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.72'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 180px 180px;
+}
+
+/* ── 3.6 扫描线（仅 immersive）：1px 亮线 + 12% 透明扫描带，≥14s 一层 ─────── */
+html.dsh-moss-skin #dsh-moss-ambient .ma-scan {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background-image:
+    linear-gradient(180deg,
+      rgba(var(--m-plasma-rgb), 0) 0%,
+      rgba(var(--m-plasma-rgb), .030) 46%,
+      rgba(var(--m-plasma-rgb), .085) 49.7%,
+      rgba(var(--m-plasma-rgb), .30) 50%,
+      rgba(var(--m-plasma-rgb), .085) 50.3%,
+      rgba(var(--m-plasma-rgb), .030) 54%,
+      rgba(var(--m-plasma-rgb), 0) 100%);
+  background-repeat: no-repeat;
+  background-size: 100% 240px;
+  background-position: 0 -240px;
+}
+html.dsh-moss-skin--immersive #dsh-moss-ambient .ma-scan {
+  opacity: 1;
+  animation: moss-ambient-scan 15s linear infinite;
+}
+@keyframes moss-ambient-scan {
+  0%   { background-position: 0 -240px; }
+  100% { background-position: 0 calc(100% + 240px); }
+}
+
+/* ── 3.7 rim：底部红/青光晕呼吸（MOSS 在场感；12s 单频，只动 opacity）────── */
+html.dsh-moss-skin #dsh-moss-ambient .ma-rim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(ellipse 62% 26% at 50% 104%,
+      rgba(var(--m-earth-rgb), .20) 0%,
+      rgba(var(--m-plasma-rgb), .10) 42%,
+      rgba(var(--m-plasma-rgb), 0) 78%),
+    radial-gradient(ellipse 30% 12% at 50% 102%,
+      rgba(var(--m-moss-rgb), .12) 0%,
+      rgba(var(--m-moss-rgb), 0) 76%);
+  background-repeat: no-repeat;
+  opacity: .55;
+  animation: moss-ambient-rim 12s ease-in-out infinite;
+}
+@keyframes moss-ambient-rim {
+  0%, 100% { opacity: .34; }
+  50%      { opacity: .82; }
+}
+
+/* ============================================================================
+ * 4. 玻璃表面（只允许 4 类背景加 backdrop-filter：主列 / 侧栏 / 输入卡 / 浮层）
+ *    其余表面一律用半透明 token，禁止逐个加模糊（design-spec §4.4，合成层 ≤6）。
+ *    每个表面 = 半透明底（token）+ 结构线（1px）+ 顶部内高光。
+ * ========================================================================== */
+
+/* ── 4.1 应用主列（最透：让视频透出来；α .38 + blur 承担正文可读性）────────── */
+html.dsh-moss-skin--glass #root :where([class*="centerCol" i]) {
+  background-color: rgba(var(--m-glass-rgb), var(--moss-main-a, .34));
+  background-image: linear-gradient(180deg, rgba(var(--m-glass-rgb), .10), rgba(var(--m-glass-rgb), 0) 180px);
+  backdrop-filter: blur(var(--moss-main-blur, 4px)) saturate(1.12);
+  -webkit-backdrop-filter: blur(var(--moss-main-blur, 4px)) saturate(1.12);
+}
+/* AppFrame 整窗底：Windows 下 .frame 用 --dsw-specific-sidebar-fill 画底（LAYOUT:74），
+ * 若不拆掉，主列视频会被再压暗 52%，地球轮廓直接消失。这里只把「整窗底」透明化；
+ * 侧栏列/顶条的 --dsw-specific-sidebar-fill 仍各自生效（它们才是该 token 的语义宿主）。
+ * 颜色/背景属性改动，不动布局；选择器不用 `#root >` 直接子选择器（host-map U11）。 */
+html.dsh-moss-skin--glass #root :where([class*="frame" i]) {
+  background-color: transparent;
+}
+/* 右侧栏（宿主三列布局第三列）：同属主列语义，但只给半透明底，不再加第二个 blur */
+html.dsh-moss-skin--glass #root :where([class*="rightbarCol" i]) {
+  background-color: rgba(var(--m-glass-rgb), .46);
+  border-left: .5px solid var(--m-line);
+}
+
+/* ── 4.2 侧栏列（α .52 + blur；右缘 1px 强结构线）─────────────────────────── */
+html.dsh-moss-skin--glass :where([class*="sidebarCol" i]) {
+  backdrop-filter: blur(var(--moss-blur-r)) saturate(1.12);
+  -webkit-backdrop-filter: blur(var(--moss-blur-r)) saturate(1.12);
+  box-shadow: inset -1px 0 0 var(--m-line-2), inset 1px 0 0 rgba(var(--m-line-rgb), .05);
+}
+
+/* ── 4.3 输入卡（α .78 + blur；§4.4 允许的第三类表面）────────────────────── */
+html.dsh-moss-skin--glass [data-composer-card] {
+  backdrop-filter: blur(var(--moss-blur-r)) saturate(1.18);
+  -webkit-backdrop-filter: blur(var(--moss-blur-r)) saturate(1.18);
+  box-shadow:
+    0 0 0 1px var(--m-line),
+    0 26px 60px rgba(0, 0, 0, .46),
+    inset 0 1px 0 rgba(var(--m-white-rgb), .07);
+}
+
+/* ── 4.4 浮层面板（菜单 / 弹窗；第四类表面）─────────────────────────────────
+ *    宿主两套菜单材质必须一起覆盖（host-map §9.3，ui-theme README 明文要求）：
+ *      ① --dsw-menu-surface-fill      共享菜单底（L #fcfdfeb3 / D #303136a3）→ §2.1
+ *      ② --dsw-specific-menu          anchored 浮层底（默认继承①；darwin 专属 hex）→ §2.1/§2.5
+ *      ③ --dsw-menu-backdrop-filter   菜单磨砂 blur(40px) saturate(150%) → §2.3
+ *      ④ --dsw-alias-menu-group-header-fill 分组标题底（94% 不透明）→ §2.1
+ *      ⑤ --dsw-elevation-stroke-color 菜单 0.5px 描边色 → §2.3
+ *      ⑥ --dsw-alias-bg-layer-2       对话框底 → §2.1
+ *      ⑦ --dsw-mask-blur              遮罩模糊（宿主当前 none，保持 none）→ §2.3
+ *    磨砂由宿主 backdrop-filter: var(--dsw-menu-backdrop-filter) 驱动（token 已换），
+ *    这里只补 1px 描边与顶部内高光，不再叠第二层 blur（合成层预算）。 */
+html.dsh-moss-skin--glass :where([role="menu"], [role="listbox"]) {
+  box-shadow:
+    0 0 0 1px var(--m-line-2),
+    0 20px 54px rgba(0, 0, 0, .52),
+    inset 0 1px 0 rgba(var(--m-white-rgb), .06);
+}
+html.dsh-moss-skin #root :where([role="dialog"], [class*="_dialog" i]) {
+  backdrop-filter: blur(var(--moss-blur-r)) saturate(1.10);
+  -webkit-backdrop-filter: blur(var(--moss-blur-r)) saturate(1.10);
+  box-shadow:
+    0 0 0 1px var(--m-line-2),
+    0 42px 96px rgba(0, 0, 0, .58),
+    inset 0 1px 0 rgba(var(--m-white-rgb), .07);
+}
+html.dsh-moss-skin #root :where([class*="_mask" i]) {
+  /* 遮罩本身不做模糊（宿主 --dsw-mask-blur 已是 none） */
+  background-color: var(--dsw-alias-bg-mask-1);
+}
+
+/* ── 4.5 Windows 40px 原生标题条（拖拽区 + 原生三键）────────────────────────
+ *    host-map §7.4/§8.2：win32 下 html[data-windows-titlebar] 存在，
+ *    [data-windows-titlebar] .frame{padding-top:--dsh-windows-titlebar-height} 且
+ *    .frame:before 用 --dsw-specific-sidebar-fill 画满顶部 40px；原生三键
+ *    （最小化/最大化/关闭，WCO，不在 DOM）与左侧 [data-windows-menu] 应用/编辑菜单
+ *    都在这一条里。侧栏 token 现在是半透明（视频会透上来），深色字叠亮像素会不可读
+ *    → 单独给这一条更深的玻璃渐变，按钮区对比度按最亮帧兜底。
+ *    只加 background-image（宿主 background 简写已给底色）与底部 0.5px 线，
+ *    不改高度/内边距（用 inset box-shadow 画线，不占尺寸）。 */
+html.dsh-moss-skin[data-windows-titlebar] #root :where([class*="frame" i])::before {
+  background-image:
+    linear-gradient(180deg, rgba(var(--m-void-rgb), .88) 0%, rgba(var(--m-void-rgb), .78) 70%, rgba(var(--m-void-rgb), .64) 100%),
+    linear-gradient(90deg, rgba(var(--m-glass-rgb), .55) 0%, rgba(var(--m-glass-rgb), .30) 58%, rgba(var(--m-glass-rgb), .14) 100%);
+  box-shadow: inset 0 -.5px 0 var(--m-line);
+}
+html.dsh-moss-skin--noblur[data-windows-titlebar] #root :where([class*="frame" i])::before,
+html.dsh-moss-skin--static[data-windows-titlebar] #root :where([class*="frame" i])::before {
+  /* 降级档统一完全不透明（标题条不吃视频，原生按钮/菜单永远可读） */
+  background-image: linear-gradient(180deg, rgba(var(--m-void-rgb), .96), rgba(var(--m-void-rgb), .92));
+}
+
+/* ============================================================================
+ * 5. HUD 装饰（MOSS 550W 驾驶舱）
+ *    母题只允许 design-spec §2.3 的 9 种：刻线尺/四角括号/红眼/遥测条/扫描线/
+ *    拨轮刻度/状态灯/等离子轨/颗粒暗角。全部 pointer-events:none，z-index ≤ 900。
+ *    glass 档 = 顶栏状态章 + 四角括号 + 当前项红刻线 + 输入卡括号；
+ *    immersive 档 = 再加侧栏刻线尺 / 角落遥测 / 扫描线 / 颗粒 / 空态红眼水印 /
+ *    等离子导轨 / 状态灯呼吸。
+ * ========================================================================== */
+
+/* ── 5.1 顶栏遥测章：550W · MOSS ｜ HH:MM:SS ｜ 系统在线（glass 起）──────────
+ *    钩子：#root header[data-window-drag]（ui-conversation ConversationHeader，
+ *    CONV:20638，空态也渲染 headerBlank）。用 :has([data-conversation-header-leading])
+ *    收窄到「会话页 header」——插件管理页 header.pageHead/.moreHead、账户页
+ *    PlatformOverlay.header 也带 data-window-drag（host-map §9.1），不能在那里画章。
+ *    header 宿主 position 未声明（static）→ 补 position:relative 作包含块
+ *    （不改尺寸/布局；伪元素才是 absolute）。右移 150px 避让 Windows 原生三键
+ *    （WCO ≥140px 估算），窄窗（≤1100px）直接隐藏，避免压住标题/操作区。 */
+html.dsh-moss-skin:is(.dsh-moss-skin--glass, .dsh-moss-skin--immersive) #root header[data-window-drag]:has([data-conversation-header-leading]) {
+  position: relative;
+}
+html.dsh-moss-skin:is(.dsh-moss-skin--glass, .dsh-moss-skin--immersive) #root header[data-window-drag]:has([data-conversation-header-leading])::after {
+  content: "550W · MOSS ｜ " var(--moss-clock, "--:--:--") " ｜ 系统在线";
+  position: absolute;
+  top: 16px;
+  right: 150px;
+  z-index: 2;
+  height: 18px;
+  padding: 0 10px 0 16px;
+  display: block;
+  border: .5px solid var(--m-line-2);
+  border-radius: 2px;
+  background-color: rgba(var(--m-void-rgb), .52);
+  background-image: radial-gradient(circle 2.5px at 7px 50%, rgba(var(--m-moss-rgb), .95) 0 55%, rgba(var(--m-moss-rgb), 0) 100%);
+  background-repeat: no-repeat;
+  font-family: var(--m-font-mono);
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 18px;
+  letter-spacing: .12em;
+  white-space: nowrap;
+  color: var(--m-steel-2);
+  pointer-events: none;
+  /* 8.4s 呼吸：红点 + 整体亮度（低频，远低于 WCAG 闪烁阈值） */
+  animation: moss-telemetry-breath 8.4s ease-in-out infinite;
+}
+@keyframes moss-telemetry-breath {
+  0%, 100% { opacity: .72; }
+  50%      { opacity: 1; }
+}
+/* HUD 关闭（data-moss-hud="off"）时不渲染顶栏章 */
+html.dsh-moss-skin[data-moss-hud="off"] #root header[data-window-drag]:has([data-conversation-header-leading])::after {
+  content: none;
+}
+/* 窄窗隐藏遥测章（150px 让位之后仍可能压到标题） */
+@media (max-width: 1100px) {
+  html.dsh-moss-skin:is(.dsh-moss-skin--glass, .dsh-moss-skin--immersive) #root header[data-window-drag]:has([data-conversation-header-leading])::after {
+    content: none;
+  }
+}
+
+/* ── 5.2 四角括号 + 顶部边缘光（仅 immersive；fixed 层 z-index 900）────────
+ *    8 条 1px 渐变画 L 形折线（不用字符，避免字体回退移位）+ 顶部 1px 大气光。 */
+html.dsh-moss-skin--immersive::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  pointer-events: none;
+  background-image:
+    /* 左上 ⌜ */
+    linear-gradient(90deg, rgba(var(--m-plasma-rgb), .58) 0 24px, transparent 24px),
+    linear-gradient(180deg, rgba(var(--m-plasma-rgb), .58) 0 24px, transparent 24px),
+    /* 右上 ⌝ */
+    linear-gradient(270deg, rgba(var(--m-plasma-rgb), .58) 0 24px, transparent 24px),
+    linear-gradient(180deg, rgba(var(--m-plasma-rgb), .58) 0 24px, transparent 24px),
+    /* 左下 ⌞ */
+    linear-gradient(90deg, rgba(var(--m-plasma-rgb), .58) 0 24px, transparent 24px),
+    linear-gradient(0deg, rgba(var(--m-plasma-rgb), .58) 0 24px, transparent 24px),
+    /* 右下 ⌟ */
+    linear-gradient(270deg, rgba(var(--m-plasma-rgb), .58) 0 24px, transparent 24px),
+    linear-gradient(0deg, rgba(var(--m-plasma-rgb), .58) 0 24px, transparent 24px),
+    /* 顶部大气边缘光（1px，蓝→青） */
+    linear-gradient(90deg, rgba(var(--m-earth-rgb), 0) 0%, rgba(var(--m-plasma-rgb), .26) 50%, rgba(var(--m-earth-rgb), 0) 100%);
+  background-repeat: no-repeat;
+  background-size:
+    24px 1px, 1px 24px,
+    24px 1px, 1px 24px,
+    24px 1px, 1px 24px,
+    24px 1px, 1px 24px,
+    100% 1px;
+  background-position:
+    left 12px top 12px, left 12px top 12px,
+    right 12px top 12px, right 12px top 12px,
+    left 12px bottom 12px, left 12px bottom 12px,
+    right 12px bottom 12px, right 12px bottom 12px,
+    center top;
+}
+
+/* ── 5.3 帧级颗粒 + 侧缘数据刻度列 + 扫描线（仅 immersive；fixed 层 899）────
+ *    整体 opacity .04 soft-light：只做质感，不进入正文对比度计算。 */
+html.dsh-moss-skin--immersive::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 899;
+  pointer-events: none;
+  opacity: .045;
+  mix-blend-mode: soft-light;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(var(--m-white-rgb), .85) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(180deg, rgba(var(--m-plasma-rgb), .9) 0 1px, transparent 1px 18px),
+    repeating-linear-gradient(180deg, rgba(var(--m-plasma-rgb), .9) 0 1px, transparent 1px 18px);
+  background-repeat: repeat, repeat-y, repeat-y;
+  background-size: auto, 1px 100%, 1px 100%;
+  background-position: left top, left 12px top, right 12px top;
+}
+
+/* ── 5.4 侧栏 HUD：右缘刻线尺（immersive）+ 底部 MOSS // WATCHING（immersive）──
+ *    钩子：[class*="sidebarCol" i]（宿主导航列，CSS Modules 哈希前缀无关）。
+ *    宿主未给该元素 position，补 relative 只作包含块；伪元素 z-index 2、不吃点击。 */
+html.dsh-moss-skin:is(.dsh-moss-skin--glass, .dsh-moss-skin--immersive) :where([class*="sidebarCol" i]) {
+  position: relative;
+}
+/* 右缘刻线尺：1px 短线阵列，只落在侧栏最右 3px */
+html.dsh-moss-skin--immersive :where([class*="sidebarCol" i])::before {
+  content: "";
+  position: absolute;
+  top: 78px;
+  bottom: 34px;
+  right: 0;
+  width: 3px;
+  z-index: 2;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(180deg, rgba(var(--m-plasma-rgb), .38) 0 1px, transparent 1px 10px);
+  opacity: .42;
+  animation: moss-side-ruler 9.6s ease-in-out infinite;
+}
+@keyframes moss-side-ruler {
+  0%, 100% { opacity: .24; }
+  50%      { opacity: .62; }
+}
+/* 底部状态行：MOSS // WATCHING + 状态灯（呼吸）；高度落在侧栏内边距里，不压内容 */
+html.dsh-moss-skin--immersive :where([class*="sidebarCol" i])::after {
+  content: "MOSS // WATCHING";
+  position: absolute;
+  left: var(--dsh-sidebar-inline-padding, 8px);
+  bottom: 2px;
+  z-index: 2;
+  padding-left: 12px;
+  pointer-events: none;
+  font-family: var(--m-font-mono);
+  font-size: 9px;
+  line-height: 12px;
+  letter-spacing: .18em;
+  color: rgba(var(--m-steel-3-rgb), .92);
+  background-image: radial-gradient(circle 2px at 3px 50%, rgba(var(--m-moss-rgb), .92) 0 55%, rgba(var(--m-moss-rgb), 0) 100%);
+  background-repeat: no-repeat;
+  animation: moss-watch-breath 8.4s ease-in-out infinite;
+}
+@keyframes moss-watch-breath {
+  0%, 100% { opacity: .55; }
+  50%      { opacity: 1; }
+}
+
+/* ── 5.5 当前会话行：左缘 2px MOSS 红刻线 + 4% 红晕（glass 起）───────────────
+ *    钩子：会话行 role="treeitem" + aria-selected="true"（ui-workspace 实测）。
+ *    只写 inset shadow 与 background-image，不改 padding/行高。 */
+html.dsh-moss-skin:is(.dsh-moss-skin--glass, .dsh-moss-skin--immersive) :where(
+  [role="treeitem"][aria-selected="true"],
+  [aria-current="page"],
+  [aria-current="true"]
+) {
+  box-shadow: inset 2px 0 0 rgba(var(--m-moss-rgb), .72);
+  background-image: linear-gradient(90deg, rgba(var(--m-moss-rgb), .10), rgba(var(--m-moss-rgb), 0) 72%);
+}
+/* immersive：行尾加状态点（红=凝视中） */
+html.dsh-moss-skin--immersive :where([role="treeitem"][aria-selected="true"]) {
+  position: relative;
+}
+html.dsh-moss-skin--immersive :where([role="treeitem"][aria-selected="true"])::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  width: 3px;
+  height: 3px;
+  margin-top: -1.5px;
+  border-radius: 50%;
+  background-color: var(--m-moss);
+  box-shadow: 0 0 6px 1px rgba(var(--m-moss-rgb), .55);
+  pointer-events: none;
+  animation: moss-eye-breath 8.4s ease-in-out infinite;
+}
+@keyframes moss-eye-breath {
+  0%, 100% { opacity: .48; }
+  50%      { opacity: 1; }
+}
+
+/* ── 5.6 当前视图 tab：2px 等离子底线（glass）+ 底部光晕（immersive）─────── */
+html.dsh-moss-skin:is(.dsh-moss-skin--glass, .dsh-moss-skin--immersive) [role="tablist"] [role="tab"][aria-selected="true"] {
+  box-shadow: inset 0 -2px 0 rgba(var(--m-plasma-rgb), .78);
+}
+html.dsh-moss-skin--immersive [role="tablist"] [role="tab"][aria-selected="true"] {
+  box-shadow:
+    inset 0 -2px 0 rgba(var(--m-plasma-rgb), .92),
+    0 6px 14px -8px rgba(var(--m-plasma-rgb), .55);
+}
+
+/* ── 5.7 输入卡四角括号（glass）+ focus 扫描线 + immersive 声呐环 ───────────
+ *    钩子：[data-composer-card]（宿主已 position:relative + border-radius:panel）。
+ *    ::before 画四角括号（背景渐变，MOSS 红）；::after 只在 focus-within 时扫过一条
+ *    1px 等离子线；两个伪元素都不吃点击、不写任何布局关键属性。
+ *
+ *    v0.3 第 2 项（design-spec-v3 §3.2）：四角括号做「呼吸 + 信号灯双击」。
+ *    **v0.4 §7.2（用户原话「调到你能调的最大的程度」）幅度拉满**：
+ *      · 臂长 14px → **18px**；线宽 1px → **2px**；括号色 alpha --moss-corner-a
+ *        .50 → **.92**（:focus-within 1.0）；
+ *      · 呼吸周期 3.2s，opacity **.10 ↔ 1.0**（v0.3 为 .42↔1，暗谷可达 10× 振幅）
+ *        + 红色光晕 0 → 14px（另加 1.5px 暖白勾边，让括号在亮/蓝底上也有轮廓）；
+ *      · 双击闪烁：每 6.4s 一次，从呼吸中值砸到 **.02**，两连击各 ~70ms、间隔 ~100ms；
+ *      · 单一时序 6.4s = 2 × 3.2s 呼吸 = 1 次双击（避免多 animation 抢同一属性）。
+ *      · **四角缺一修复（v0.4 根因）**：z-index 2 → **6**。真实宿主里右下角括号与
+ *        输入卡内蓝色发送按钮（button.GRgSLq_primary 34×34、8px 内缩）几何重叠；
+ *        v0.3 呼吸谷（opacity .42 × α .86）时红线压在按钮蓝底上 R-max(G,B) 转负，
+ *        肉眼「只看到 3 个角」。抬层级（仍在宿主按钮之上）+ 幅度拉满后，四角在
+ *        谷/峰都可辨。**不改四角几何位置**——角括号必须贴在卡片四角（Lead 决定）。
+ *      · 与 :focus-within 兼容：focus 只把「括号色 alpha」提到 1.0（呼吸继续；
+ *        不写死 opacity/filter —— 动画统一管理这两属性，静态声明会被动画覆盖）；
+ *      · 与 --calm/--static 兼容：沿用 §7.1/§7.9 的 animation:none 兜底；
+ *        系统 prefers-reduced-motion **不停**（v0.3/v0.4 设计决定，见 §7.5 注释）。
+ *    不得新增 DOM（规格明文）；除 z-index（纯绘制层级）外不改任何布局关键属性。 */
+html.dsh-moss-skin:is(.dsh-moss-skin--glass, .dsh-moss-skin--immersive) [data-composer-card]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  border-radius: inherit;
+  pointer-events: none;
+  --moss-corner-a: .92;
+  background-image:
+    /* 左上 */
+    linear-gradient(90deg, rgba(var(--m-moss-rgb), var(--moss-corner-a)) 0 18px, transparent 18px),
+    linear-gradient(180deg, rgba(var(--m-moss-rgb), var(--moss-corner-a)) 0 18px, transparent 18px),
+    /* 右上 */
+    linear-gradient(270deg, rgba(var(--m-moss-rgb), var(--moss-corner-a)) 0 18px, transparent 18px),
+    linear-gradient(180deg, rgba(var(--m-moss-rgb), var(--moss-corner-a)) 0 18px, transparent 18px),
+    /* 左下 */
+    linear-gradient(90deg, rgba(var(--m-moss-rgb), var(--moss-corner-a)) 0 18px, transparent 18px),
+    linear-gradient(0deg, rgba(var(--m-moss-rgb), var(--moss-corner-a)) 0 18px, transparent 18px),
+    /* 右下 */
+    linear-gradient(270deg, rgba(var(--m-moss-rgb), var(--moss-corner-a)) 0 18px, transparent 18px),
+    linear-gradient(0deg, rgba(var(--m-moss-rgb), var(--moss-corner-a)) 0 18px, transparent 18px);
+  background-repeat: no-repeat;
+  background-size:
+    18px 2px, 2px 18px,
+    18px 2px, 2px 18px,
+    18px 2px, 2px 18px,
+    18px 2px, 2px 18px;
+  background-position:
+    left 10px top 10px, left 10px top 10px,
+    right 10px top 10px, right 10px top 10px,
+    left 10px bottom 10px, left 10px bottom 10px,
+    right 10px bottom 10px, right 10px bottom 10px;
+  animation: moss-corner-breath 6.4s ease-in-out infinite;
+}
+/* focus-within：括号色拉满（在呼吸曲线上整体提亮），呼吸/闪烁节奏不变 */
+html.dsh-moss-skin:is(.dsh-moss-skin--glass, .dsh-moss-skin--immersive) [data-composer-card]:focus-within::before {
+  --moss-corner-a: 1;
+}
+/* 单一时序：6.4s = 2 × 3.2s 呼吸周期（谷 0%/50%/100%，峰 25%/75%）；
+ * 双击落在 61.4%–64.4%（约 3.93–4.12s）：两次 ~70ms 的 .02 暗脉冲、间隔 ~100ms。
+ * 呼吸角频率 ≈ 0.31Hz、双击每 6.4s 一组，远低于 WCAG 2.3.1 的 3Hz 红线。 */
+@keyframes moss-corner-breath {
+  0%     { opacity: .10; filter: drop-shadow(0 0 0 rgba(var(--m-moss-rgb), 0)); }
+  25%    {
+    opacity: 1;
+    filter: drop-shadow(0 0 1.5px rgba(255, 238, 228, .85))
+            drop-shadow(0 0 14px rgba(var(--m-moss-rgb), .90));
+  }
+  50%    { opacity: .10; filter: drop-shadow(0 0 0 rgba(var(--m-moss-rgb), 0)); }
+  /* 双击 1：从呼吸中值砸到 .02（~3.94s） */
+  61.4%  { opacity: .62; filter: drop-shadow(0 0 6px rgba(var(--m-moss-rgb), .46)); }
+  62.0%  { opacity: .02; filter: drop-shadow(0 0 0 rgba(var(--m-moss-rgb), 0)); }
+  62.6%  { opacity: .58; filter: drop-shadow(0 0 6px rgba(var(--m-moss-rgb), .44)); }
+  /* 双击 2：间隔 ~100ms（~4.04s） */
+  63.2%  { opacity: .02; filter: drop-shadow(0 0 0 rgba(var(--m-moss-rgb), 0)); }
+  64.4%  { opacity: .66; filter: drop-shadow(0 0 7px rgba(var(--m-moss-rgb), .50)); }
+  75%    {
+    opacity: 1;
+    filter: drop-shadow(0 0 1.5px rgba(255, 238, 228, .85))
+            drop-shadow(0 0 14px rgba(var(--m-moss-rgb), .90));
+  }
+  100%   { opacity: .10; filter: drop-shadow(0 0 0 rgba(var(--m-moss-rgb), 0)); }
+}
+/* focus 扫描线：1px 等离子亮线从卡顶扫到卡底（只动 transform，1 次/焦点） */
+html.dsh-moss-skin:is(.dsh-moss-skin--glass, .dsh-moss-skin--immersive) [data-composer-card]::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: 0;
+  z-index: 3;
+  height: 1px;
+  pointer-events: none;
+  opacity: 0;
+  background-image: linear-gradient(90deg,
+    rgba(var(--m-plasma-rgb), 0) 0%,
+    rgba(var(--m-plasma-rgb), .85) 22%,
+    rgba(var(--m-white-rgb), .95) 50%,
+    rgba(var(--m-plasma-rgb), .85) 78%,
+    rgba(var(--m-plasma-rgb), 0) 100%);
+  transform: translate3d(0, 0, 0);
+}
+html.dsh-moss-skin:is(.dsh-moss-skin--glass, .dsh-moss-skin--immersive) [data-composer-card]:focus-within::after {
+  animation: moss-composer-scan 1.6s cubic-bezier(.22, 1, .36, 1) 1 both;
+}
+@keyframes moss-composer-scan {
+  0%   { opacity: 0; transform: translate3d(0, 2px, 0); }
+  12%  { opacity: .9; }
+  88%  { opacity: .55; }
+  100% { opacity: 0; transform: translate3d(0, var(--moss-composer-h, 92px), 0); }
+}
+/* immersive：卡内常驻声呐环（conic 刻度环 60s/圈，反向细环 18s/圈）——
+ * 用 background-image 叠在卡片自身背景上（不新增元素、不新增 blur、不动布局）。 */
+html.dsh-moss-skin--immersive [data-composer-card] {
+  background-image:
+    conic-gradient(from 0deg,
+      rgba(var(--m-moss-rgb), .0) 0deg, rgba(var(--m-moss-rgb), .0) 316deg,
+      rgba(var(--m-moss-rgb), .30) 330deg, rgba(var(--m-moss-rgb), .0) 344deg, rgba(var(--m-moss-rgb), .0) 360deg),
+    radial-gradient(ellipse 60% 120% at 50% 0%, rgba(var(--m-plasma-rgb), .07), rgba(var(--m-plasma-rgb), 0) 60%);
+  background-repeat: no-repeat;
+  background-size: 100% 100%, 100% 100%;
+  background-position: 0 0, 0 0;
+}
+
+/* ── 5.8 代码块：左缘 2px 等离子轨（glass）+ SYS 角标（immersive）──────────── */
+html.dsh-moss-skin:is(.dsh-moss-skin--glass, .dsh-moss-skin--immersive) .md-code-block {
+  box-shadow: inset 2px 0 0 rgba(var(--m-plasma-rgb), .34);
+}
+html.dsh-moss-skin--immersive .md-code-block {
+  position: relative;
+  box-shadow:
+    inset 2px 0 0 rgba(var(--m-plasma-rgb), .48),
+    inset 0 1px 0 rgba(var(--m-white-rgb), .05);
+}
+html.dsh-moss-skin--immersive .md-code-block::after {
+  content: "SYS";
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  z-index: 2;
+  pointer-events: none;
+  font-family: var(--m-font-mono);
+  font-size: 9px;
+  line-height: 1;
+  letter-spacing: .16em;
+  color: rgba(var(--m-plasma-rgb), .62);
+}
+
+/* ── 5.9 空态红眼水印 + 引文（仅 immersive）────────────────────────────────
+ *    钩子：会话根 data-phase="blank"（空态；宿主 ConversationRoot 有 data-phase）。
+ *    红眼 = 同心圆 + 中心红点 + 呼吸光晕（纯 CSS 径向渐变，无 SVG/无图片）。 */
+html.dsh-moss-skin--immersive #root :where([class*="root" i][data-phase="blank"])::after {
+  content: "";
+  position: absolute;
+  top: 38%;
+  left: 50%;
+  width: 220px;
+  height: 220px;
+  margin: -110px 0 0 -110px;
+  z-index: 1;
+  pointer-events: none;
+  opacity: .08;
+  background-image:
+    radial-gradient(circle at 50% 50%,
+      rgba(var(--m-moss-rgb), .95) 0 8%,
+      rgba(var(--m-moss-rgb), .55) 8% 10%,
+      rgba(var(--m-moss-dim-rgb), .35) 10% 16%,
+      rgba(var(--m-moss-dim-rgb), .18) 16% 30%,
+      rgba(var(--m-moss-dim-rgb), 0) 30% 46%,
+      rgba(var(--m-moss-dim-rgb), .12) 46% 48%,
+      rgba(var(--m-moss-dim-rgb), 0) 48% 100%);
+  animation: moss-eye-watermark 12s ease-in-out infinite;
+}
+@keyframes moss-eye-watermark {
+  0%, 100% { opacity: .05; }
+  50%      { opacity: .11; }
+}
+
+/* ── 5.10 浮层角括号（仅 immersive）：菜单/弹窗四角 L 折线 ───────────────────
+ * v0.3 阻断级修复（design-spec-v3 §2，实测根因）：
+ *   v0.2 这里写过 `position:relative`（本意是给下面的 ::after 提供定位上下文）。
+ *   但宿主下拉菜单是 **body 直接子元素 + position:fixed 的 portal**
+ *   （`._portal_1p5el_46{position:fixed;top:auto;left:auto}` + inline top/left，
+ *   宿主未使用 `!important`）；本文件晚于宿主样式表加载，且选择器带
+ *   `html.dsh-moss-skin--immersive`（特异性更高）→ 把 fixed 改成 relative，
+ *   portal 的 inline top:433px/left:668.5px 变成「相对 body 末尾」的偏移：
+ *     工作区/权限菜单 rect.y 1453（视口高 1020，视口外 433px），docH 1020→1597；
+ *     模式菜单 rect.y 1520，docH→1792；页面内容错位、菜单看不见点不到。
+ * v0.3 修复：**本规则不写任何 position/inset/display/z-index**，四角括号直接画在
+ *   菜单自身的 4 层 background-image 上（与 §5.7 输入卡同思路）：
+ *     只允许动 background-image / background-repeat / background-size /
+ *     background-position / background-origin 这些纯绘制属性；
+ *     菜单表面仍由宿主 token `--dsw-menu-surface-fill` 提供底色与 backdrop-filter。
+ *   括号落在 6px 内缩处（避开 16px 圆角裁切），随菜单尺寸自适应；
+ *   不在滚动容器里随内容滚动（background 属于元素本身）。
+ *   注意：宿主菜单的可见底色 / backdrop-filter 画在 role=menu 的**直接子层**
+ *   `_material`（div._material_1w4el_21{position:absolute;inset:0;border-radius:16px}）上，
+ *   它会把父级 role=menu 的背景完全盖住 —— 所以角括号必须同时画在 `_material` 上，
+ *   否则 computed style 有渐变、肉眼却看不见（v0.3 实测踩坑，见 _work/skin/v03/corner-diag.mjs）。
+ *   两条规则都只写 background-*，不写 position/inset/display/z-index。
+ *   不得用 ::after + position:relative 的旧写法，也不得给任何宿主浮层
+ *   加 position/inset/display/z-index 等布局关键属性（v0.2 教训）。 */
+html.dsh-moss-skin--immersive :where([role="menu"], [role="listbox"]),
+html.dsh-moss-skin--immersive :where([role="menu"], [role="listbox"]) > :where([class*="_material" i]) {
+  background-image:
+    linear-gradient(90deg, rgba(var(--m-plasma-rgb), .45) 0 10px, transparent 10px),
+    linear-gradient(180deg, rgba(var(--m-plasma-rgb), .45) 0 10px, transparent 10px),
+    linear-gradient(270deg, rgba(var(--m-plasma-rgb), .45) 0 10px, transparent 10px),
+    linear-gradient(0deg, rgba(var(--m-plasma-rgb), .45) 0 10px, transparent 10px);
+  background-repeat: no-repeat;
+  background-size: 10px 1px, 1px 10px, 10px 1px, 1px 10px;
+  background-position: left 6px top 6px, left 6px top 6px, right 6px bottom 6px, right 6px bottom 6px;
+  background-origin: padding-box;
+}
+
+/* ── 5.11 帧级 HUD 文本层（client.js 可选注入的 #dsh-moss-hud）──────────────
+ *    本文件只保证它是「最上层、不吃点击」的透明文本层；内容与子元素由 client.js 负责。 */
+html.dsh-moss-skin #dsh-moss-hud {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  pointer-events: none;
+  font-family: var(--m-font-mono);
+  color: rgba(var(--m-steel-2-rgb), .82);
+}
+
+/* ── 5.12 品牌红眼呼吸 + 信号灯双击（v0.3 第 1 项 → v0.4 §7.1 幅度拉满）──────
+ *    目标元素由 lib/client.js MossEyeMark() 加稳定 class（hero 34px / 侧栏 20px 共用）：
+ *      .dsh-moss-eye__halo   r=14.5 外灰环（v0.4 起参与动效：stroke-opacity .10↔.85 + scale 1↔1.12）
+ *      .dsh-moss-eye__ring   r=6.6  红环  → 2.2s 呼吸 + 1.8s 信号灯双击
+ *      .dsh-moss-eye__core   r=3.2  红点  → 1.8s 呼吸 + 双击
+ *      .dsh-moss-eye__glint  r=1.35 白高光（不参与动效，保留）
+ *    **v0.4 §7.1（用户原话「调到你能调的最大的程度」）幅度拉满**：
+ *      · 整枚徽标 svg.dsh-moss-brandmark：2.2s 整体红光呼吸（2px → 26px 双层光晕）
+ *        —— 覆盖 client.js 写在 svg 上的静态 inline filter（CSS 动画优先级高于 inline style）；
+ *      · ring：2.2s 呼吸，opacity .10 ↔ 1、stroke-width 1 ↔ 1.7、
+ *        光晕 1px → 18px + 40px 双层（v0.3 只有 2→8px、.55↔1）；
+ *      · core：1.8s 呼吸，opacity .45 ↔ 1、scale(.62) ↔ scale(1.55)、
+ *        光晕 2px → 16px + 34px 双层；
+ *      · halo：2.2s 呼吸，stroke-opacity .10 ↔ .85、scale(1 ↔ 1.12)；
+ *      · .dsh-moss-brandmark-wrap::before 新增径向红色光晕（opacity .10 ↔ .55、
+ *        scale .75 ↔ 1.35、与 ring 同相 2.2s）→ hero 34px / 侧栏 20px 都形成明显「信号灯呼吸」；
+ *        hero 用 --moss-wrap-glow 放大到 92px 光圈。
+ *      · 双击信号灯：周期 6.0s，ring 的 stroke-opacity / core 的 fill-opacity 上
+ *        写成多 stop 单 timeline（每次循环内两组 ~70ms 谷、谷值 .08、间隔 ~100ms）。
+ *    用 stroke/fill-opacity 而不是 opacity：与呼吸动画的 opacity/filter 各占不同属性，
+ *    多条 animation 才能并存、不互相覆盖（CSS 同属性动画后声明者胜）。
+ *
+ *    动效策略（v0.3 设计决定，v0.4 沿用）：**只在用户显式 --calm（reducedMotion=true）
+ *    / --static（saver/视频不可用）时停止**；系统 prefers-reduced-motion **不停**。
+ *    原因：本机 Windows 关闭系统动画 → Chromium 恒报 prefers-reduced-motion:reduce；
+ *    v0.1 曾据系统偏好砍装饰动效，导致用户「红眼根本不动」。用户点名要红眼呼吸闪烁，
+ *    因此系统 reduce 不参与本动效判定（§7.5 的 reduce 白名单里也**不**包含本节元素）。
+ *    幅度虽拉满，但角频率 ≤0.56Hz（core 1.8s）、双击每 6s 一组，远低于 WCAG 2.3.1 的 3Hz。 */
+html.dsh-moss-skin .dsh-moss-brandmark {
+  animation: moss-eye-brand-glow 2.2s ease-in-out infinite;
+}
+@keyframes moss-eye-brand-glow {
+  0%, 100% { filter: drop-shadow(0 0 2px rgba(var(--m-moss-rgb), .22)); }
+  50% {
+    filter: drop-shadow(0 0 10px rgba(var(--m-moss-rgb), .95))
+            drop-shadow(0 0 26px rgba(var(--m-moss-rgb), .55));
+  }
+}
+html.dsh-moss-skin .dsh-moss-brandmark .dsh-moss-eye__halo {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: moss-eye-halo-breath 2.2s ease-in-out infinite;
+}
+@keyframes moss-eye-halo-breath {
+  0%, 100% { stroke-opacity: .10; transform: scale(1); }
+  50%      { stroke-opacity: .85; transform: scale(1.12); }
+}
+html.dsh-moss-skin .dsh-moss-brandmark .dsh-moss-eye__ring {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation:
+    moss-eye-ring-breath 2.2s ease-in-out infinite,
+    moss-eye-ring-signal 6s linear infinite;
+}
+html.dsh-moss-skin .dsh-moss-brandmark .dsh-moss-eye__core {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation:
+    moss-eye-core-breath 1.8s ease-in-out infinite,
+    moss-eye-core-signal 6s linear infinite;
+}
+@keyframes moss-eye-ring-breath {
+  0%, 100% {
+    opacity: .10;
+    stroke-width: 1;
+    filter: drop-shadow(0 0 1px rgba(var(--m-moss-rgb), .50));
+  }
+  50% {
+    opacity: 1;
+    stroke-width: 1.7;
+    filter: drop-shadow(0 0 18px rgba(var(--m-moss-rgb), 1))
+            drop-shadow(0 0 40px rgba(var(--m-moss-rgb), .55));
+  }
+}
+@keyframes moss-eye-core-breath {
+  0%, 100% {
+    opacity: .45;
+    transform: scale(.62);
+    filter: drop-shadow(0 0 2px rgba(var(--m-moss-rgb), .70));
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.55);
+    filter: drop-shadow(0 0 16px rgba(var(--m-moss-rgb), 1))
+            drop-shadow(0 0 34px rgba(var(--m-moss-rgb), .75));
+  }
+}
+/* 信号灯双击：每次 6s 周期在 ~88%/89.6% 两处出现（每 ~70ms、谷值 .08、间隔 ~100ms） */
+@keyframes moss-eye-ring-signal {
+  0%, 87.4%, 90.4%, 100% { stroke-opacity: 1; }
+  88.0% { stroke-opacity: .08; }
+  88.7% { stroke-opacity: 1; }
+  89.6% { stroke-opacity: .08; }
+  90.3% { stroke-opacity: 1; }
+}
+@keyframes moss-eye-core-signal {
+  0%, 87.4%, 90.4%, 100% { fill-opacity: 1; }
+  88.0% { fill-opacity: .08; }
+  88.7% { fill-opacity: 1; }
+  89.6% { fill-opacity: .08; }
+  90.3% { fill-opacity: 1; }
+}
+/* 徽标外圈光晕（HTML span 伪元素；hero 34px 用 --moss-wrap-glow 放大光圈） */
+html.dsh-moss-skin .dsh-moss-brandmark-wrap {
+  position: relative;
+  --moss-wrap-glow: 46px;
+}
+html.dsh-moss-skin .dsh-moss-brandmark-wrap::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--moss-wrap-glow);
+  height: var(--moss-wrap-glow);
+  margin-left: calc(var(--moss-wrap-glow) / -2);
+  margin-top: calc(var(--moss-wrap-glow) / -2);
+  border-radius: 50%;
+  pointer-events: none;
+  background-image: radial-gradient(circle at 50% 50%,
+    rgba(var(--m-moss-rgb), .62) 0 16%,
+    rgba(var(--m-moss-rgb), .34) 32%,
+    rgba(var(--m-moss-rgb), .12) 52%,
+    rgba(var(--m-moss-rgb), 0) 72%);
+  opacity: .10;
+  transform: scale(.75);
+  animation: moss-eye-wrap-halo 2.2s ease-in-out infinite;
+}
+html.dsh-moss-skin .dsh-moss-brandmark-wrap--hero {
+  --moss-wrap-glow: 96px;
+  display: inline-flex;
+  align-items: center;
+}
+@keyframes moss-eye-wrap-halo {
+  0%, 100% { opacity: .10; transform: scale(.75); }
+  50%      { opacity: .55; transform: scale(1.35); }
+}
+
+/* ============================================================================
+ * 6. 交接显影（html.dsh-moss-enter，v0.5 §3.2：13.05 起跑、放缓的分级显影）
+ *    与 splash 的交接契约（design-spec-v0.5 §3.2/§3.3）：
+ *      v0.5 13.90 收尾：11.80 splash 派发 'dsh-moss2:handoff' → client enterUI(3000, base 1250)，
+ *      12.70–13.30 冰白 bloom（峰值 0.86）、13.05 启动层 810ms warp 溶解（opacity+scale 1.03）、
+ *      13.90 撤根。UI 分级显影 base=1250ms → **13.05 与溶解同帧起跑**（under-splash 透出）。
+ *      **背景视频本身不得再淡入一次**（否则黑闪/跳帧，v0.2 铁律）——
+ *      所以本节只做 UI 分区显影，任何规则都不动 #dsh-moss-ambient。
+ *    分级（相对 --moss-enter-base，由 client.js 按触发源设置）：
+ *      侧栏 0ms / 顶栏 80ms / 主列滚动体 160ms / 输入卡 260ms / 右侧装饰 340ms；
+ *      每段 1000–1050ms，opacity + translate3d(18–22px) + blur(8px→0)，
+ *      cubic-bezier(.22, 1, .36, 1)（v0.4 的 620–760ms/blur 6px 全部作废）；
+ *      最后一段 1250+340+1000 = 14.59s 收尾，class 保持 3000ms 到 14.80 → 无跳变。
+ *    另加一次「玻璃上浮」：主列容器 scale(.994→1) 1200ms（只对 static/relative 容器做，
+ *      不碰 fixed 元素，避免影响宿主 portal/滚轮 —— v0.3 菜单 portal 红线）。
+ *    全部 fill-mode:both：delay 期间停在 0%（不可见），起跑后单调推进；class 移除时动画已结束。
+ *    --calm/--static/reduce 有兜底（§7）。
+ *    base：handoff 主路径 base=1250ms（13.05 起跑 → 14.59 结束，class 到 14.80）；
+ *      done/fallback 兜底路径 base=0（约 1.4s 内完成，class 1.4s 撤）。
+ * ========================================================================== */
+html.dsh-moss-skin.dsh-moss-enter :where([class*="sidebarCol" i]) {
+  animation: moss-enter-sidebar 1000ms cubic-bezier(.22, 1, .36, 1)
+             calc(var(--moss-enter-base, 0ms) + 0ms) both;
+}
+@keyframes moss-enter-sidebar {
+  0%   { opacity: 0; transform: translate3d(-20px, 0px, 0px); filter: blur(8px); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0); filter: blur(0); }
+}
+html.dsh-moss-skin.dsh-moss-enter #root header[data-window-drag] {
+  animation: moss-enter-topbar 1000ms cubic-bezier(.22, 1, .36, 1)
+             calc(var(--moss-enter-base, 0ms) + 80ms) both;
+}
+@keyframes moss-enter-topbar {
+  0%   { opacity: 0; transform: translate3d(0px, -18px, 0px); filter: blur(8px); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0); filter: blur(0); }
+}
+html.dsh-moss-skin.dsh-moss-enter #root :where([class*="scrollBody" i]) {
+  animation: moss-enter-main 1050ms cubic-bezier(.22, 1, .36, 1)
+             calc(var(--moss-enter-base, 0ms) + 160ms) both;
+}
+@keyframes moss-enter-main {
+  0%   { opacity: 0; transform: translate3d(0px, 22px, 0px); filter: blur(8px); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0); filter: blur(0); }
+}
+html.dsh-moss-skin.dsh-moss-enter :where([data-composer-seat], [class*="composerSeat" i]) {
+  animation: moss-enter-composer 1050ms cubic-bezier(.22, 1, .36, 1)
+             calc(var(--moss-enter-base, 0ms) + 260ms) both;
+}
+@keyframes moss-enter-composer {
+  0%   { opacity: 0; transform: translate3d(0px, 20px, 0px) scale(.994); filter: blur(8px); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); filter: blur(0); }
+}
+/* 右侧装饰：顶栏右端 HUD 遥测章 / 侧栏右缘刻线 + 底部铭牌 / 品牌红眼（hero 与侧栏）。
+ * 只动 opacity/translate3d/filter（伪元素原有呼吸动画在 class 存在的 ~3s 内被 enter 动画
+ * 短暂接管，class 移除后自动恢复，不影响 §5.4 稳态）。 */
+html.dsh-moss-skin.dsh-moss-enter #dsh-moss-hud,
+html.dsh-moss-skin.dsh-moss-enter .dsh-moss-brandmark-wrap,
+html.dsh-moss-skin.dsh-moss-enter #root header[data-window-drag]::after,
+html.dsh-moss-skin.dsh-moss-enter :where([class*="sidebarCol" i])::before,
+html.dsh-moss-skin.dsh-moss-enter :where([class*="sidebarCol" i])::after {
+  animation: moss-enter-decor 1000ms cubic-bezier(.22, 1, .36, 1)
+             calc(var(--moss-enter-base, 0ms) + 340ms) both;
+}
+@keyframes moss-enter-decor {
+  0%   { opacity: 0; transform: translate3d(18px, 0px, 0px); filter: blur(8px); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0); filter: blur(0); }
+}
+/* 「玻璃上浮」一次：主列容器 1200ms scale(.994→1)。centerCol 是 static/relative 布局容器，
+ * 不动 fixed 元素；动画结束后无 transform 残留（both 终态 = scale(1)，无跳变）。 */
+html.dsh-moss-skin.dsh-moss-enter #root :where([class*="centerCol" i]) {
+  animation: moss-enter-glass 1200ms cubic-bezier(.22, 1, .36, 1)
+             calc(var(--moss-enter-base, 0ms) + 0ms) both;
+}
+@keyframes moss-enter-glass {
+  0%   { transform: scale(.994); }
+  100% { transform: scale(1); }
+}
+
+/* ============================================================================
+ * 7. 降级矩阵（design-spec-v2 §7 / contract §4.6）
+ *    --static  : **仅** saver / 视频真的不可用 → 视频停在海报帧，
+ *                全部循环动画 none（保留完整静态构图）
+ *    --calm    : 用户显式 reducedMotion → 只停装饰动画与镜头漂移，**视频照播**
+ *    --paused  : 页面隐藏 → 动画/视频暂停，回前台继续
+ *    --handoff : 交接瞬间锁漂移基准帧，与 splash 地球层同帧
+ *    --noblur  : 不支持 backdrop-filter → 玻璃 α 提升到 .82+，字仍然可读
+ *    @supports : 浏览器能力兜底（等同 noblur）
+ *    @media    : prefers-reduced-motion（只减装饰，**不停视频/漂移**）/
+ *                prefers-reduced-transparency 纯 CSS 兜底
+ *    quality   : saver → 只留海报；high/standard 无差异（视频解码不在 CSS 层）
+ *    hud       : off → 不渲染装饰文字；full → 全量
+ * ========================================================================== */
+
+/* ── 7.1 static：全部循环动画停在静帧（保留一帧完整构图）─────────────────── */
+html.dsh-moss-skin--static #dsh-moss-ambient,
+html.dsh-moss-skin--static #dsh-moss-ambient *,
+html.dsh-moss-skin--static #dsh-moss-ambient *::before,
+html.dsh-moss-skin--static #dsh-moss-ambient *::after {
+  animation: none !important;
+  will-change: auto;
+}
+/* static 下 rim 取呼吸中值附近，避免停在最暗帧 */
+html.dsh-moss-skin--static #dsh-moss-ambient .ma-rim {
+  opacity: .55;
+}
+html.dsh-moss-skin--static #root header[data-window-drag]::after,
+html.dsh-moss-skin--static :where([class*="sidebarCol" i])::before,
+html.dsh-moss-skin--static :where([class*="sidebarCol" i])::after,
+html.dsh-moss-skin--static :where([role="treeitem"][aria-selected="true"])::after,
+html.dsh-moss-skin--static #root :where([class*="root" i][data-phase="blank"])::after,
+html.dsh-moss-skin--static [data-composer-card]::before,
+html.dsh-moss-skin--static [data-composer-card]::after,
+html.dsh-moss-skin--static .dsh-moss-brandmark,
+html.dsh-moss-skin--static .dsh-moss-brandmark .dsh-moss-eye__halo,
+html.dsh-moss-skin--static .dsh-moss-brandmark .dsh-moss-eye__ring,
+html.dsh-moss-skin--static .dsh-moss-brandmark .dsh-moss-eye__core,
+html.dsh-moss-skin--static .dsh-moss-brandmark .dsh-moss-eye__glint,
+html.dsh-moss-skin--static .dsh-moss-brandmark-wrap::before {
+  animation: none !important;
+}
+html.dsh-moss-skin--static [data-composer-card]::after {
+  opacity: 0;
+}
+/* static 下交接显影直接给终态（不播动画；含 v0.5 分区与装饰） */
+html.dsh-moss-skin--static.dsh-moss-enter #dsh-moss-ambient,
+html.dsh-moss-skin--static.dsh-moss-enter #root header[data-window-drag],
+html.dsh-moss-skin--static.dsh-moss-enter :where(
+  [class*="sidebarCol" i], [class*="scrollBody" i], [class*="composerSeat" i],
+  [class*="centerCol" i], [data-composer-seat], .dsh-moss-brandmark-wrap, #dsh-moss-hud
+),
+html.dsh-moss-skin--static.dsh-moss-enter #root header[data-window-drag]::after,
+html.dsh-moss-skin--static.dsh-moss-enter :where([class*="sidebarCol" i])::before,
+html.dsh-moss-skin--static.dsh-moss-enter :where([class*="sidebarCol" i])::after {
+  animation: none !important;
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* ── 7.2 paused：页面后台，暂停而非销毁 ────────────────────────────────── */
+html.dsh-moss-skin--paused #dsh-moss-ambient,
+html.dsh-moss-skin--paused #dsh-moss-ambient *,
+html.dsh-moss-skin--paused #dsh-moss-ambient *::before,
+html.dsh-moss-skin--paused #dsh-moss-ambient *::after,
+html.dsh-moss-skin--paused #root header[data-window-drag]::after,
+html.dsh-moss-skin--paused :where([class*="sidebarCol" i])::before,
+html.dsh-moss-skin--paused :where([class*="sidebarCol" i])::after,
+html.dsh-moss-skin--paused :where([role="treeitem"][aria-selected="true"])::after,
+html.dsh-moss-skin--paused #root :where([class*="root" i][data-phase="blank"])::after,
+html.dsh-moss-skin--paused [data-composer-card]::before,
+html.dsh-moss-skin--paused [data-composer-card]::after,
+html.dsh-moss-skin--paused .dsh-moss-brandmark,
+html.dsh-moss-skin--paused .dsh-moss-brandmark .dsh-moss-eye__halo,
+html.dsh-moss-skin--paused .dsh-moss-brandmark .dsh-moss-eye__ring,
+html.dsh-moss-skin--paused .dsh-moss-brandmark .dsh-moss-eye__core,
+html.dsh-moss-skin--paused .dsh-moss-brandmark .dsh-moss-eye__glint,
+html.dsh-moss-skin--paused .dsh-moss-brandmark-wrap::before {
+  animation-play-state: paused !important;
+}
+
+/* ── 7.3 noblur：玻璃改更实的半透（α ≥ .82），背景层保留但不靠模糊兜可读性 ── */
+html.dsh-moss-skin--noblur #root :where([class*="centerCol" i]) {
+  background-color: rgba(var(--m-glass-rgb), .82);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+html.dsh-moss-skin--noblur :where([class*="sidebarCol" i]) {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background-color: rgba(var(--m-void-rgb), .86);
+}
+html.dsh-moss-skin--noblur,
+html.dsh-moss-skin--noblur body {
+  --dsw-specific-input-major: rgba(var(--m-glass-2-rgb), .90);
+  --dsw-menu-surface-fill: rgba(var(--m-glass-2-rgb), .96);
+  --dsw-specific-menu: var(--dsw-menu-surface-fill);
+  --dsw-alias-bg-layer-1: rgba(var(--m-glass-rgb), .88);
+  --dsw-alias-bg-layer-2: rgba(var(--m-glass-2-rgb), .92);
+  --dsw-alias-bg-layer-3: rgba(var(--m-glass-3-rgb), .94);
+  --dsw-specific-sidebar-fill: rgba(var(--m-void-rgb), .86);
+  --dsw-specific-bubble: rgba(var(--m-glass-3-rgb), .88);
+  --dsw-alias-tooltip-bg: rgba(var(--m-glass-2-rgb), .97);
+  --dsw-alias-toast-bg: rgba(var(--m-glass-3-rgb), .96);
+}
+html.dsh-moss-skin--noblur [data-composer-card],
+html.dsh-moss-skin--noblur #root :where([role="dialog"], [class*="_dialog" i]) {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* ── 7.4 浏览器能力兜底：@supports 不支持 backdrop-filter → 等同 noblur ──── */
+@supports not ((backdrop-filter: blur(2px)) or (-webkit-backdrop-filter: blur(2px))) {
+  html.dsh-moss-skin--glass #root :where([class*="centerCol" i]) {
+    background-color: rgba(var(--m-glass-rgb), .84);
+    backdrop-filter: none;
+  }
+  html.dsh-moss-skin--glass :where([class*="sidebarCol" i]) {
+    background-color: rgba(var(--m-void-rgb), .88);
+    backdrop-filter: none;
+  }
+  html.dsh-moss-skin--glass [data-composer-card],
+  html.dsh-moss-skin--glass #root :where([role="dialog"], [class*="_dialog" i]) {
+    backdrop-filter: none;
+  }
+  html.dsh-moss-skin--glass,
+  html.dsh-moss-skin--glass body {
+    --dsw-specific-input-major: rgba(var(--m-glass-2-rgb), .92);
+    --dsw-menu-surface-fill: rgba(var(--m-glass-2-rgb), .96);
+    --dsw-specific-menu: var(--dsw-menu-surface-fill);
+    --dsw-alias-bg-layer-1: rgba(var(--m-glass-rgb), .90);
+    --dsw-alias-bg-layer-2: rgba(var(--m-glass-2-rgb), .92);
+    --dsw-alias-bg-layer-3: rgba(var(--m-glass-3-rgb), .94);
+  }
+}
+
+/* ── 7.5 系统「减弱动态」（prefers-reduced-motion: reduce）─────────────────
+ *    v0.2 根因修复：本机 Windows 关闭系统动画 → Chromium 恒报 reduce。
+ *    **绝不允许**在这里停视频/隐藏视频层/停镜头漂移 —— 那正是 v0.1 的失败点。
+ *    这里只允许减少纯装饰动画（扫描/呼吸/遥测闪烁）；视频继续播放，
+ *    `.ma-video` 的 moss-bg-drift 漂移继续运行（design-spec-v2 §7.3）。
+ *    用户显式 reducedMotion 才由 §7.9 的 --calm 停漂移。
+ *
+ *    v0.3 设计决定（design-spec-v3 §3.1/§3.2）：§5.12 品牌红眼呼吸 + §5.7 输入卡四角
+ *    呼吸/双击闪烁**不列入**本 reduce 白名单 —— 系统 reduce 不停它们。
+ *    理由：本机系统 reduce 是恒真状态（用户关闭了 Windows 系统动画），若据此停动效，
+ *    用户点名要的「红眼呼吸闪烁 / 四角呼吸」就永远看不到（v0.1 真机失败根因）。
+ *    这两组动画都属低频装饰（红眼呼吸 3.2s、四角呼吸 3.6s、双击每 7.5s 共 120ms），
+ *    不做高频 strobe，不构成光敏风险。 */
+@media (prefers-reduced-motion: reduce) {
+  html.dsh-moss-skin #dsh-moss-ambient .ma-scan,
+  html.dsh-moss-skin #dsh-moss-ambient .ma-rim,
+  html.dsh-moss-skin #root header[data-window-drag]::after,
+  html.dsh-moss-skin :where([class*="sidebarCol" i])::before,
+  html.dsh-moss-skin :where([class*="sidebarCol" i])::after,
+  html.dsh-moss-skin :where([role="treeitem"][aria-selected="true"])::after,
+  html.dsh-moss-skin #root :where([class*="root" i][data-phase="blank"])::after,
+  html.dsh-moss-skin [data-composer-card]::after {
+    animation: none !important;
+  }
+  /* 交接显影的位移/模糊在 reduce 下置 none，只保留 opacity 淡入（v0.5 分区全量覆盖） */
+  html.dsh-moss-skin.dsh-moss-enter :where(
+    [class*="sidebarCol" i], [class*="scrollBody" i], [class*="composerSeat" i],
+    [class*="centerCol" i], [data-composer-seat], .dsh-moss-brandmark-wrap, #dsh-moss-hud,
+    #root header[data-window-drag]
+  ),
+  html.dsh-moss-skin.dsh-moss-enter #root header[data-window-drag]::after,
+  html.dsh-moss-skin.dsh-moss-enter :where([class*="sidebarCol" i])::before,
+  html.dsh-moss-skin.dsh-moss-enter :where([class*="sidebarCol" i])::after {
+    transform: none !important;
+    filter: none !important;
+  }
+}
+
+/* ── 7.6 系统「减弱透明」：玻璃变实、背景只压暗不模糊 ────────────────────── */
+@media (prefers-reduced-transparency: reduce) {
+  html.dsh-moss-skin--glass #root :where([class*="centerCol" i]) {
+    background-color: rgba(var(--m-glass-rgb), .88);
+    backdrop-filter: blur(6px) saturate(1.05);
+  }
+  html.dsh-moss-skin--glass :where([class*="sidebarCol" i]) {
+    background-color: rgba(var(--m-void-rgb), .92);
+    backdrop-filter: blur(6px) saturate(1.05);
+  }
+  html.dsh-moss-skin--glass [data-composer-card],
+  html.dsh-moss-skin--glass #root :where([role="dialog"], [class*="_dialog" i]) {
+    background-color: rgba(var(--m-glass-2-rgb), .96);
+    backdrop-filter: blur(6px) saturate(1.05);
+  }
+  html.dsh-moss-skin--glass,
+  html.dsh-moss-skin--glass body {
+    --dsw-specific-input-major: rgba(var(--m-glass-2-rgb), .96);
+    --dsw-alias-bg-layer-1: rgba(var(--m-glass-rgb), .92);
+    --dsw-alias-bg-layer-2: rgba(var(--m-glass-2-rgb), .94);
+    --dsw-alias-bg-layer-3: rgba(var(--m-glass-3-rgb), .96);
+  }
+}
+
+/* ── 7.7 HUD 密度档（data-moss-hud）─────────────────────────────────────── */
+html.dsh-moss-skin[data-moss-hud="off"] #root :where([class*="sidebarCol" i])::before,
+html.dsh-moss-skin[data-moss-hud="off"] #root :where([class*="sidebarCol" i])::after,
+html.dsh-moss-skin[data-moss-hud="off"] .md-code-block::after {
+  content: none;
+}
+html.dsh-moss-skin[data-moss-hud="off"]::after {
+  content: none;
+  opacity: 0;
+}
+
+/* ── 7.8 画质档：saver 不加载视频（client.js 不给 src），只保留海报 ──────── */
+html.dsh-moss-skin[data-moss-quality="saver"] #dsh-moss-ambient .ma-video {
+  display: none;
+}
+html.dsh-moss-skin[data-moss-quality="saver"] #dsh-moss-ambient .ma-still {
+  /* saver 下海报是主角：略微再提亮，弥补没有视频时的静止感 */
+  filter: brightness(1.22) saturate(1.16);
+}
+
+/* ============================================================================
+ * 7.9 用户显式「减弱装饰动效」（html.dsh-moss-skin--calm）
+ *     design-spec-v2 §7.1：reducedMotion=true 只加这个类 —— **停装饰动画与镜头漂移，
+ *     视频照常播放**。它和 --static（saver/视频不可用）是两套语义，不得混用：
+ *       --static  视频层隐藏、海报静帧；
+ *       --calm    视频层照常播放（opacity/display 都不动），只停装饰。
+ *     系统 prefers-reduced-motion 与 --calm 无关（见 §7.5）。
+ * ========================================================================== */
+html.dsh-moss-skin--calm #dsh-moss-ambient .ma-video {
+  /* 停漂移并回到 scale(1.12) 基准帧（避免停在偏移位置），视频本身继续播放 */
+  animation: none;
+  transform: scale(1.12);
+}
+html.dsh-moss-skin--calm #dsh-moss-ambient .ma-scan,
+html.dsh-moss-skin--calm #dsh-moss-ambient .ma-rim,
+html.dsh-moss-skin--calm #root header[data-window-drag]::after,
+html.dsh-moss-skin--calm :where([class*="sidebarCol" i])::before,
+html.dsh-moss-skin--calm :where([class*="sidebarCol" i])::after,
+html.dsh-moss-skin--calm :where([role="treeitem"][aria-selected="true"])::after,
+html.dsh-moss-skin--calm #root :where([class*="root" i][data-phase="blank"])::after,
+html.dsh-moss-skin--calm [data-composer-card]::before,
+html.dsh-moss-skin--calm [data-composer-card]::after,
+html.dsh-moss-skin--calm .dsh-moss-brandmark,
+html.dsh-moss-skin--calm .dsh-moss-brandmark .dsh-moss-eye__halo,
+html.dsh-moss-skin--calm .dsh-moss-brandmark .dsh-moss-eye__ring,
+html.dsh-moss-skin--calm .dsh-moss-brandmark .dsh-moss-eye__core,
+html.dsh-moss-skin--calm .dsh-moss-brandmark .dsh-moss-eye__glint,
+html.dsh-moss-skin--calm .dsh-moss-brandmark-wrap::before {
+  animation: none !important;
+}
+html.dsh-moss-skin--calm [data-composer-card]::after {
+  opacity: 0;
+}
+html.dsh-moss-skin--calm #dsh-moss-ambient .ma-rim {
+  /* 呼吸停在中间亮度，避免停在最暗帧 */
+  opacity: .55;
+}
+/* calm 下交接显影只保留淡入，不做位移/模糊（v0.5 分区全量覆盖） */
+html.dsh-moss-skin--calm.dsh-moss-enter :where(
+  [class*="sidebarCol" i], [class*="scrollBody" i], [class*="composerSeat" i],
+  [class*="centerCol" i], [data-composer-seat], .dsh-moss-brandmark-wrap, #dsh-moss-hud,
+  #root header[data-window-drag]
+),
+html.dsh-moss-skin--calm.dsh-moss-enter #root header[data-window-drag]::after,
+html.dsh-moss-skin--calm.dsh-moss-enter :where([class*="sidebarCol" i])::before,
+html.dsh-moss-skin--calm.dsh-moss-enter :where([class*="sidebarCol" i])::after {
+  transform: none !important;
+  filter: none !important;
+}
+
+
+

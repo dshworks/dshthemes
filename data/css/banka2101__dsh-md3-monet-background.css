@@ -1,0 +1,89 @@
+/* banka2101/dsh-md3-monet-background — client.js
+   fetched 2026-11-16 from https://raw.githubusercontent.com/banka2101/dsh-md3-monet-background/main/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+.tbx-section{box-sizing:border-box;display:flex;flex-direction:column;gap:12px;max-width:720px;color:var(--dsw-alias-label-primary)}
+.tbx-title{margin:0;font-size:16px;font-weight:500;line-height:24px;color:var(--dsw-alias-label-primary)}
+.tbx-intro{margin:0;font-size:14px;line-height:22px;color:var(--dsw-alias-label-secondary)}
+.tbx-card{box-sizing:border-box;display:flex;flex-direction:column;gap:12px;padding:14px;border:.5px solid var(--dsw-alias-settings-card-stroke,var(--dsw-alias-border-l1));border-radius:var(--dsw-radius-xl,16px);background:var(--dsw-alias-settings-card-fill,var(--dsw-alias-bg-layer-1))}
+.tbx-imageCard{container-type:inline-size}
+.tbx-preview{position:relative;box-sizing:border-box;display:flex;align-items:center;justify-content:center;height:200px;overflow:hidden;border:.5px dashed var(--dsw-alias-border-l2);border-radius:var(--dsw-radius-lg,12px);background-color:var(--dsw-alias-bg-layer-1);background-position:center;background-size:cover;background-repeat:no-repeat}
+.tbx-preview[data-filled=true]{border-style:solid;border-color:var(--dsw-alias-border-l1)}
+.tbx-preview[data-drag=true]{border-color:var(--dsw-alias-brand-primary);border-style:solid;box-shadow:0 0 0 2px color-mix(in srgb,var(--dsw-alias-brand-primary) 22%,transparent)}
+.tbx-previewImg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tbx-previewCopy{position:absolute;inset:auto 16px 16px;z-index:1;display:grid;gap:3px}
+.tbx-previewCopy strong{font-size:18px;font-weight:600;line-height:24px}
+.tbx-previewCopy span{font-size:12px;line-height:18px;color:var(--dsw-alias-label-secondary)}
+.tbx-empty{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px;text-align:center;color:var(--dsw-alias-label-tertiary)}
+.tbx-emptyTitle{font-size:14px;line-height:22px;color:var(--dsw-alias-label-primary)}
+.tbx-emptyHint{font-size:12px;line-height:18px;color:var(--dsw-alias-label-secondary)}
+.tbx-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tbx-button{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;height:36px;padding:0 14px;border-radius:var(--dsw-radius-md,8px);border:.5px solid transparent;font:inherit;font-size:14px;font-weight:500;line-height:22px;cursor:pointer}
+.tbx-button:disabled{opacity:.55;cursor:default}
+.tbx-primary{border:.5px solid color-mix(in srgb,var(--dsw-alias-brand-primary) 34%,transparent);background:color-mix(in srgb,var(--dsw-alias-brand-primary) 14%,transparent);color:var(--dsw-alias-brand-primary)}
+.tbx-secondary{border-color:var(--dsw-alias-border-l2);background:transparent;color:var(--dsw-alias-label-primary)}
+.tbx-pick{position:relative;display:inline-flex;border-radius:var(--dsw-radius-md,8px)}
+.tbx-pick[data-disabled=true]{opacity:.55;cursor:default}
+.tbx-fileInput{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:0;border-radius:inherit}
+.tbx-fileInput:disabled{cursor:default}
+@media (hover:hover){.tbx-primary:hover:not(:disabled){filter:brightness(1.05)}.tbx-secondary:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover)}.tbx-pick:hover .tbx-primary{filter:brightness(1.08)}}
+.tbx-pick:focus-within .tbx-primary{outline:2px solid var(--dsw-focus-ring-color,var(--dsw-alias-brand-primary));outline-offset:2px}
+.tbx-meta{display:flex;flex-direction:column;align-items:flex-end;gap:0;min-width:0;margin-left:auto;font-size:11px;line-height:16px;color:var(--dsw-alias-label-secondary)}
+.tbx-metaName{max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tbx-cardHead{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.tbx-cardTitle{font-size:14px;font-weight:500;line-height:22px;color:var(--dsw-alias-label-primary)}
+.tbx-seed{font-family:var(--ds-font-family-code,monospace);font-size:11px;line-height:16px;color:var(--dsw-alias-label-secondary)}
+.tbx-palette{display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap}
+.tbx-swatch{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:56px}
+.tbx-chip{box-sizing:border-box;width:44px;height:44px;border-radius:50%;box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l2)}
+.tbx-chipLabel{font-size:11px;line-height:16px;color:var(--dsw-alias-label-secondary);text-align:center}
+.tbx-chipHex{font-family:var(--ds-font-family-code,monospace);font-size:10px;line-height:14px;color:var(--dsw-alias-label-secondary)}
+.tbx-modeField{min-width:0;margin:2px 0 0;padding:0;border:0}
+.tbx-modeField legend{margin:0 0 7px;padding:0;font-size:13px;font-weight:600}
+.tbx-modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.tbx-mode{position:relative;display:grid;grid-template-columns:14px minmax(0,1fr);align-content:start;align-items:center;gap:4px 8px;padding:10px;border:1px solid var(--dsw-alias-border-l3);border-radius:var(--dsw-radius-md,8px);cursor:pointer}
+.tbx-mode:has(:checked){border-color:color-mix(in srgb,var(--dsw-alias-brand-primary) 64%,transparent);background:color-mix(in srgb,var(--dsw-alias-brand-primary) 12%,transparent)}
+.tbx-mode:has(:focus-visible){outline:2px solid var(--dsw-focus-ring-color,var(--dsw-alias-brand-primary));outline-offset:2px}
+.tbx-mode input{width:14px;height:14px;margin:0;accent-color:var(--dsw-alias-brand-primary);cursor:inherit}
+.tbx-modeName{font-size:13px;font-weight:600;line-height:18px}
+.tbx-modeHint{grid-column:2;font-size:11px;line-height:16px;color:var(--dsw-alias-label-secondary)}
+@media (hover:hover){.tbx-mode:hover:not(:has(:checked)){background:var(--dsw-alias-interactive-bg-hover)}}
+@container (width<392px){.tbx-modes{grid-template-columns:1fr}}
+.tbx-note{margin:0;font-size:12px;line-height:18px;color:var(--dsw-alias-label-secondary)}
+.tbx-error{margin:0;font-size:12px;line-height:18px;color:var(--dsw-alias-state-error-primary)}
+@media (width<=767px){.tbx-preview{height:150px}.tbx-meta{flex-basis:100%;align-items:flex-start;margin-left:0}.tbx-metaName{max-width:100%}}
+
+.tbx-image-surface{--tbx-wash:var(--tbx-wash-light)}
+body[data-ds-dark-theme] .tbx-image-surface{--tbx-wash:var(--tbx-wash-dark)}
+.tbx-image-surface::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background-color:color-mix(in srgb,var(--dsw-alias-bg-base) var(--tbx-wash),transparent)}
+.tbx-backdrop{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;background:var(--dsw-alias-bg-base)}
+.tbx-backdrop img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+
+/* Shell surfaces share the backdrop. Cards, popovers, and the sidebar drawer
+   keep their own fills. Match layout data attributes and CSS module names
+   without depending on the hash generated by this DSH release. */
+body:has(> .tbx-backdrop){isolation:isolate;background:transparent!important}
+body:has(> .tbx-backdrop) #root,
+body:has(> .tbx-backdrop) [class$="_frame"]:has(> [data-shell-overlay]),
+body:has(> .tbx-backdrop) [class$="_frame"]:has(> [data-shell-overlay])::before,
+body:has(> .tbx-backdrop) [class$="_frame"]:has(> [data-shell-overlay]) > :is([class$="_centerCol"],[data-rightbar-col],[data-shell-bottom]),
+body:has(> .tbx-backdrop) [class$="_frame"]:not([data-sidebar-drawer]):has(> [data-shell-overlay]) > [class$="_sidebarCol"],
+body:has(> .tbx-backdrop) [class$="_mainPanel"] [data-phase]:has(> [data-conversation-content]),
+body:has(> .tbx-backdrop) [class$="_mainPanel"] [data-conversation-content] [data-composer-seat],
+body:has(> .tbx-backdrop) [data-global-panel] [data-testid="task-manager-page"]{
+  background:transparent!important
+}
+body:has(> .tbx-backdrop) [class$="_frame"][data-sidebar-drawer]:has(> [data-shell-overlay]) > [class$="_sidebarCol"]{
+  background:var(--dsw-alias-bg-layer-1)
+}
+body:has(> .tbx-backdrop) [data-global-panel]{
+  --dsw-specific-sidebar-fill:var(--dsw-alias-bg-layer-1)
+}
+/* The plugin list's sticky header paints its background in this pseudo-element. */
+body:has(> .tbx-backdrop) [data-global-panel] [data-plugin-bar]::before{
+  content:none
+}
+/* The stock composer hardcodes white for these primary buttons. */
+body:has(> .tbx-backdrop) [data-composer-card] button[class$="_primary"]{
+  color:var(--dsw-alias-label-primary-foreground)
+}
