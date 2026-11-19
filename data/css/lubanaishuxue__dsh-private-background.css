@@ -1,5 +1,5 @@
 /* lubanaishuxue/dsh-private-background — client.js
-   fetched 2026-11-11 from https://raw.githubusercontent.com/lubanaishuxue/dsh-private-background/main/client.js
+   fetched 2026-11-19 from https://raw.githubusercontent.com/lubanaishuxue/dsh-private-background/main/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 html[data-dshbg-on] { background: transparent !important; } background: transparent !important; }
 html[data-dshbg-on] [data-dshbg-stack] {
@@ -41,6 +41,47 @@ html[data-dshbg-on] [data-dshbg-stack] > [data-dshbg-wall] > video {
   to { text-indent: var(--dshbg-mq-loop, 0px); }
 }
   animation: dshbg-marquee var(--dshbg-mq-dur, 6000ms) linear infinite;
+}
+
+
+
+html[data-dshbg-on] [data-dshbg-lid] {
+  background: transparent !important;
+  isolation: isolate !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+html[data-dshbg-on] [data-dshbg-lid]::before {
+html[data-dshbg-on] [data-dshbg-lid]::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: -1 !important;
+  pointer-events: none !important;
+  background: var(--dsw-alias-bg-base, transparent) !important;
+}
+
+
+
+html[data-dshbg-on] [data-dshbg-head] {
+  background: transparent !important;
+  isolation: isolate !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+html[data-dshbg-on] [data-dshbg-head]::before,
+html[data-dshbg-on] [data-dshbg-head] > [data-dshbg-headwall] {
+html[data-dshbg-on] [data-dshbg-head] > [data-dshbg-headwall] > video {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  object-fit: cover !important;
+  object-position: var(--dshbg-head-pos, center) !important;
 }
 
 

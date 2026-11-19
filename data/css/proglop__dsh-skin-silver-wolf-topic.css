@@ -1,5 +1,5 @@
 /* proglop/dsh-skin-silver-wolf-topic — skin.css
-   fetched 2026-11-11 from https://raw.githubusercontent.com/proglop/dsh-skin-silver-wolf-topic/main/skin.css
+   fetched 2026-11-19 from https://raw.githubusercontent.com/proglop/dsh-skin-silver-wolf-topic/main/skin.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* ==========================================================================
    Silver Wolf // Pixel Intrusion — dark-only DSH skin
@@ -39,7 +39,6 @@ body[data-dsh-silver-wolf] {
   --sw-glow-blue: rgb(93 121 255 / 48%);
   --sw-glow-cyan: rgb(98 230 255 / 42%);
   --sw-composer-border: #465a8c;
-  --sw-wallpaper-width: 760px;
   --sw-wallpaper-opacity: 0.24;
 
   /* LV999 light palette can rebind only these aliases. */
@@ -82,6 +81,7 @@ body[data-dsh-silver-wolf] {
 
   --dsw-specific-sidebar-fill: var(--sw-base-950);
   --dsw-specific-input-major: var(--sw-panel-900);
+  --dsw-menu-surface-fill: var(--sw-panel-900);
   --dsw-specific-menu: var(--sw-panel-900);
   --dsw-specific-selector: var(--sw-panel-800);
   --dsw-specific-bubble: var(--sw-panel-850);
@@ -184,39 +184,8 @@ body[data-dsh-silver-wolf] {
 
 }
 
-/* Light-mode chrome palette on the page root. The main frame keeps its dark
-   aliases; full-page surfaces such as the separate Settings window inherit
-   these softened off-whites instead of DSH's pure white presets. */
-body[data-dsh-silver-wolf]:not([data-ds-dark-theme]) {
-  --dsw-static-neutral-00: #f4f6f9;
-  --dsw-static-neutral-50: #eef1f5;
-  --dsw-static-neutral-100: #e8ecf2;
-  --dsw-alias-bg-base: #edf0f5;
-  --dsw-alias-bg-layer-1: #f7f8fa;
-  --dsw-alias-bg-layer-2: #e9edf3;
-  --dsw-alias-bg-layer-3: #e1e6ee;
-  --dsw-alias-bg-overlay: #f3f5f8;
-  --dsw-alias-bg-module-platform: #e9edf3;
-  --dsw-alias-bg-skeleton: #e4e9f0;
-  --dsw-alias-bg-multi-select: #e5eaf2;
-  --dsw-alias-border-l1: #dfe4ec;
-  --dsw-alias-border-l2: #d3dae4;
-  --dsw-alias-border-l3: #c8d0dc;
-  --dsw-alias-border-l4: #bcc5d2;
-  --dsw-alias-label-primary: #2f3544;
-  --dsw-alias-label-secondary: #596273;
-  --dsw-alias-label-tertiary: #7d8695;
-  --dsw-alias-interactive-bg-hover: #e8ecf2;
-  --dsw-alias-interactive-bg-hover-solid: #e3e8f0;
-  --dsw-alias-interactive-bg-active: #dde5ef;
-  --dsw-alias-settings-card-fill: #f4f6f9;
-  --dsw-alias-settings-card-stroke: #d9e0e9;
-  --dsw-specific-menu: #f2f4f7;
-  --dsw-specific-sidebar-fill: #eef1f5;
-  --dsw-specific-input-major: #f8f9fb;
-  --dsw-alias-menu-group-header-fill: #e6ebf2;
-  --dsw-alias-menu-icon: #596273;
-}
+/* Light appearance intentionally uses the same blue-violet dark palette as
+   dark appearance. No light-only token overrides. */
 
 /* --------------------------------------------------------------------------
    2. Global shape language + canvas. The wildcard is the safety net for
@@ -234,6 +203,7 @@ body[data-dsh-silver-wolf] *::after {
    the collapse from repainting a full-window 4px pattern every frame. */
 body[data-dsh-silver-wolf] {
   color: var(--sw-text-100);
+  color-scheme: dark;
   background-color: var(--sw-base-900) !important;
   background-image:
     radial-gradient(ellipse 70% 60% at 12% -8%, rgb(64 77 240 / 20%), transparent 60%),
@@ -274,12 +244,15 @@ body[data-dsh-silver-wolf] [data-conversation-content] {
   isolation: isolate;
 }
 
+/* Local fix (user-applied): the original solid seat gradient
+     background: linear-gradient(180deg, transparent 0, var(--sw-base-900) 40px);
+   painted an opaque base-900 rectangle over the centered wallpaper, which read
+   as a big black box behind/around the composer. The seat now stays
+   transparent so the wallpaper is continuous; the composer card paints its own
+   opaque surface ([data-composer-card]::after), so input text stays readable.
+   Re-apply this rule after updating the skin package. */
 body[data-dsh-silver-wolf] :is(.Dc7zOa_composerSeat, .an3WzG_composerSeat) {
-  background: linear-gradient(
-    180deg,
-    transparent 0,
-    var(--sw-base-900) 40px
-  ) !important;
+  background: none !important;
 }
 
 body[data-dsh-silver-wolf] ::selection {
@@ -300,7 +273,7 @@ body[data-dsh-silver-wolf] :is(._2H3hWW_root, .wtg9ga_root) {
 /* --------------------------------------------------------------------------
    3. Solid panels, menus, dialogs. No backdrop blur; edges are cut instead.
    -------------------------------------------------------------------------- */
-body[data-dsh-silver-wolf] :is(.BynINW_frame, .mP3x-q_frame) :is(
+body[data-dsh-silver-wolf] :is(
   [role="dialog"],
   [role="alertdialog"],
   [role="menu"],
@@ -334,52 +307,8 @@ body[data-dsh-silver-wolf] [data-slot="sidebar.settings"] [role="dialog"] {
   );
 }
 
-/* Light-mode chrome: DSH's pure-white presets glare beside the dark chat.
-   Scope a softer off-white palette to dialogs and popover surfaces only. */
-body[data-dsh-silver-wolf]:not([data-ds-dark-theme]) :is(
-  [role="dialog"],
-  [role="alertdialog"],
-  [role="menu"],
-  [role="listbox"],
-  [data-menu-material],
-  [data-radix-popper-content-wrapper] > *,
-  [data-slot="sidebar.settings"] [role="dialog"],
-  .wCInkW_panel
-) {
-  --dsw-static-neutral-00: #f4f6f9;
-  --dsw-static-neutral-50: #eef1f5;
-  --dsw-static-neutral-100: #e8ecf2;
-  --dsw-alias-bg-base: #edf0f5;
-  --dsw-alias-bg-layer-1: #f7f8fa;
-  --dsw-alias-bg-layer-2: #e9edf3;
-  --dsw-alias-bg-layer-3: #e1e6ee;
-  --dsw-alias-bg-overlay: #f3f5f8;
-  --dsw-alias-bg-module-platform: #e9edf3;
-  --dsw-alias-bg-skeleton: #e4e9f0;
-  --dsw-alias-bg-multi-select: #e5eaf2;
-  --dsw-alias-border-l1: #dfe4ec;
-  --dsw-alias-border-l2: #d3dae4;
-  --dsw-alias-border-l3: #c8d0dc;
-  --dsw-alias-border-l4: #bcc5d2;
-  --dsw-alias-label-primary: #2f3544;
-  --dsw-alias-label-secondary: #596273;
-  --dsw-alias-label-tertiary: #7d8695;
-  --dsw-alias-interactive-bg-hover: #e8ecf2;
-  --dsw-alias-interactive-bg-hover-solid: #e3e8f0;
-  --dsw-alias-interactive-bg-active: #dde5ef;
-  --dsw-alias-settings-card-fill: #f4f6f9;
-  --dsw-alias-settings-card-stroke: #d9e0e9;
-  --dsw-specific-menu: #f2f4f7;
-  --dsw-specific-sidebar-fill: #eef1f5;
-  --dsw-specific-input-major: #f8f9fb;
-  --dsw-alias-menu-group-header-fill: #e6ebf2;
-  --dsw-alias-menu-icon: #596273;
-  background-color: #CDC6F1 !important;
-  background-image: none !important;
-  border-color: #d3dae4 !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
+/* Light appearance uses the same dark chrome; the old off-white dialog
+   overrides were removed. */
 
 body[data-dsh-silver-wolf] :is(
   [role="dialog"],
@@ -516,9 +445,18 @@ body[data-dsh-silver-wolf] [data-composer-card]::after {
   );
 }
 
+/* Local change: the composer's focus accent uses the palette blue instead of
+   the theme's pink, so a selected input box no longer turns red. */
 body[data-dsh-silver-wolf] [data-composer-card]:focus-within::before {
-  background: var(--sw-pink-500);
-  filter: drop-shadow(0 0 4px rgb(255 79 134 / 35%));
+  background: var(--sw-blue-500);
+  filter: drop-shadow(0 0 4px rgb(93 121 255 / 45%));
+}
+
+/* The card border above is the composer's focus indicator, so the editor's own
+   pink focus-visible ring is dropped instead of becoming a second outline. */
+body[data-dsh-silver-wolf] [data-composer-card] :is([contenteditable="true"], textarea):focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 body[data-dsh-silver-wolf] [data-composer-card] [contenteditable="true"],
@@ -803,7 +741,7 @@ body[data-dsh-silver-wolf] [class*="_avatar"] {
   left: 50%;
   top: 47%;
   z-index: -1;
-  width: min(var(--sw-wallpaper-width, 760px), calc(80vh * 1.074), 94%);
+  width: min(96%, 1200px, calc(92vh * 1.074));
   transform: translate(-50%, -50%);
   pointer-events: none;
   user-select: none;
@@ -1005,7 +943,7 @@ body[data-dsh-silver-wolf] *::-webkit-scrollbar-thumb:hover {
 
 @media (width <= 720px) {
   .sw-wallpaper-frame {
-    width: min(var(--sw-wallpaper-width, 760px), 88%);
+    width: min(96%, 900px, calc(92vh * 1.074));
     opacity: calc(var(--sw-wallpaper-opacity, 0.24) * 0.8);
   }
 }
@@ -1057,6 +995,29 @@ body[data-dsh-silver-wolf] .AnXs9G_navCell.AnXs9G_active {
 body[data-dsh-silver-wolf] .AnXs9G_options :is(input, textarea, select, button, [class*="_card"], [class*="_row"]) {
   border-radius: 0 !important;
   border-color: var(--sw-line-700);
+}
+
+/* --------------------------------------------------------------------------
+   14. External right-side panes. dsh-context and similar plugins choose a
+   light palette from `body:not([data-ds-dark-theme])`; the client keeps the
+   dark attribute present, and these rules are a second line of defence for
+   the context pane's own canvas/card classes.
+   -------------------------------------------------------------------------- */
+body[data-dsh-silver-wolf] .lc-root {
+  background: var(--sw-base-950) !important;
+  color: var(--sw-text-100) !important;
+}
+
+body[data-dsh-silver-wolf] .lc-card {
+  background: var(--sw-panel-900) !important;
+  border-color: var(--sw-line-700) !important;
+  border-radius: 0 !important;
+  box-shadow: 4px 4px 0 rgb(0 0 0 / 38%) !important;
+}
+
+body[data-dsh-silver-wolf] .lc-title,
+body[data-dsh-silver-wolf] .lc-title-label {
+  color: var(--sw-text-100) !important;
 }
 
 

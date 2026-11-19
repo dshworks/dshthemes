@@ -1,5 +1,5 @@
 /* seaison/dsh-plugin-eva-theme — lib/client.js
-   fetched 2026-11-11 from https://raw.githubusercontent.com/seaison/dsh-plugin-eva-theme/main/lib/client.js
+   fetched 2026-11-19 from https://raw.githubusercontent.com/seaison/dsh-plugin-eva-theme/main/lib/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 /* ============================================================================
    0. 令牌表达不了的部分：形状、数字、明朝体
@@ -399,6 +399,97 @@ html[data-eva-magi] [role="treeitem"][data-selected="true"]{
 html[data-eva-magi] [data-conversation-header]{
   box-shadow:inset 0 -1px 0 var(--dsw-alias-border-l2);
 }
+/* 会话顶栏的驾驶员开关。机体纹样与头像分层，状态跟随宿主的明暗模式。 */
+html[data-eva-magi] button.eva-theme-switch{
+  --eva-switch-width:72px;
+  position:relative;display:inline-block;flex:none;align-self:center;vertical-align:middle;
+  width:var(--eva-switch-width);height:32px;padding:0;border:0;border-radius:18px;
+  background:none;box-shadow:none;cursor:pointer;outline-offset:3px;
+}
+html[data-eva-magi] button.eva-theme-switch[data-fallback]{float:inline-end;margin-inline:8px 6px}
+html[data-eva-magi] button.eva-theme-switch:hover{box-shadow:none}
+html[data-platform="darwin"] .eva-theme-switch{-webkit-app-region:no-drag}
+body:has(.eva-boot,[role="dialog"][aria-modal="true"]:not([hidden]):not([aria-hidden="true"])) .eva-theme-switch{visibility:hidden}
+.eva-theme-switch-track{
+  position:absolute;inset:1px 0;overflow:hidden;isolation:isolate;pointer-events:none;
+  border:1px solid var(--eva-line);border-radius:inherit;
+  background:linear-gradient(155deg,#edf7fb,#bad9e9);
+  box-shadow:inset 0 1px 3px #204a6b38,0 1px 2px #132c411f;
+}
+.eva-theme-switch-track::before{
+  content:"";position:absolute;inset:0;background:linear-gradient(140deg,#381822,#191418 75%);
+  opacity:0;transition:opacity .38s ease;
+}
+.eva-theme-switch-unit{
+  position:absolute;inset:0;display:flex;align-items:center;padding-inline:9px;
+  font:700 11px/1 ui-monospace,Menlo,monospace;letter-spacing:.06em;
+  transition:transform .43s cubic-bezier(.25,.75,.25,1),opacity .32s ease;
+}
+.eva-theme-switch-unit--rei{
+  justify-content:flex-end;color:#164b69;
+  background:
+    radial-gradient(circle at calc(100% - 16px) 50%,transparent 11px,#28698a50 11.5px 12px,transparent 12.5px 16px,#28698a33 16.5px 17px,transparent 17.5px),
+    linear-gradient(90deg,transparent 45%,#ffffff55);
+}
+.eva-theme-switch-unit--asuka{
+  color:#ffc9c7;opacity:0;transform:translateY(-10px);
+  background:linear-gradient(126deg,transparent 30%,#ff354d3d 30% 35%,transparent 35% 39%,#e5a24f50 39% 43%,transparent 43%);
+}
+.eva-theme-switch-orb{
+  box-sizing:border-box;position:absolute;top:1px;left:3px;width:26px;height:26px;border-radius:50%;
+  border:1px solid #4d8faf;background:#d7edf8;
+  box-shadow:0 1px 3px #15385866,0 0 0 4px #ffffff45,0 0 0 9px #eef7fb2e;
+  transition:transform .48s cubic-bezier(.25,.8,.25,1),box-shadow .38s ease,border-color .38s ease;
+}
+.eva-theme-switch-face{
+  position:absolute;inset:0;border-radius:inherit;overflow:hidden;
+  transition:opacity .34s ease;
+}
+.eva-theme-switch-face::before{
+  content:"";position:absolute;inset:0;background:var(--eva-switch-portrait-ink);
+  mask:var(--eva-switch-portrait) center 13%/132% auto no-repeat;
+}
+.eva-theme-switch-face--rei{--eva-switch-portrait-ink:#155276;
+  background:linear-gradient(145deg,#f3faff,#b6d9ed);
+}
+.eva-theme-switch-face--asuka{--eva-switch-portrait-ink:#ffe3c8;
+  background:linear-gradient(145deg,#b63246,#5c1927);opacity:0;
+}
+.eva-theme-switch-face--asuka::before{mask-position:43% 12%}
+.eva-theme-switch[aria-pressed="true"] .eva-theme-switch-track::before,
+.eva-theme-switch[aria-pressed="true"] .eva-theme-switch-face--asuka{opacity:1}
+.eva-theme-switch[aria-pressed="true"] .eva-theme-switch-face--rei{opacity:0}
+.eva-theme-switch[aria-pressed="true"] .eva-theme-switch-unit--asuka{opacity:1;transform:translateY(0)}
+.eva-theme-switch[aria-pressed="true"] .eva-theme-switch-unit--rei{opacity:0;transform:translateY(12px)}
+.eva-theme-switch[aria-pressed="true"] .eva-theme-switch-orb{
+  transform:translateX(calc(var(--eva-switch-width) - 34px));border-color:#f27078;
+  box-shadow:0 1px 3px #10081988,0 0 0 4px #ff596536,0 0 0 9px #ff59651c;
+}
+.eva-theme-switch:hover .eva-theme-switch-track{border-color:var(--eva-accent)}
+.eva-theme-switch:focus-visible{outline:2px solid var(--eva-accent)}
+@media(max-width:640px){html[data-eva-magi] button.eva-theme-switch{--eva-switch-width:64px}}
+
+/* 从头像滑块的位置揭开新色板，按钮单独合成，保留滑动和角色交替。 */
+html[data-eva-theme-reveal] .eva-theme-switch{view-transition-name:eva-theme-switch}
+html[data-eva-theme-reveal]::view-transition{pointer-events:none}
+html[data-eva-theme-reveal]::view-transition-group(root),
+html[data-eva-theme-reveal]::view-transition-group(eva-theme-switch),
+html[data-eva-theme-reveal]::view-transition-old(root),
+html[data-eva-theme-reveal]::view-transition-new(eva-theme-switch){animation:none}
+html[data-eva-theme-reveal]::view-transition-group(eva-theme-switch){z-index:1}
+html[data-eva-theme-reveal]::view-transition-old(eva-theme-switch){display:none}
+html[data-eva-theme-reveal]::view-transition-image-pair(root){isolation:isolate}
+html[data-eva-theme-reveal]::view-transition-new(root){
+  mix-blend-mode:normal;animation:eva-theme-reveal .56s cubic-bezier(.25,.7,.25,1) both;
+}
+@keyframes eva-theme-reveal{
+  from{clip-path:circle(0px at var(--eva-theme-x) var(--eva-theme-y))}
+  to{clip-path:circle(var(--eva-theme-radius) at var(--eva-theme-x) var(--eva-theme-y))}
+}
+@media(prefers-reduced-motion:reduce){
+  .eva-theme-switch-track::before,.eva-theme-switch-track *{transition:none}
+  html[data-eva-theme-reveal]::view-transition-new(root){animation:none}
+}
 /* 主区域：一层极淡的橙色环境光，把中心区从纯黑里拉出来 */
 html[data-eva-magi] [data-conversation-region]:not([data-conversation-region="composer"]){
   box-shadow:inset 0 0 140px color-mix(in srgb,var(--dsw-alias-brand-primary) 4%,transparent);
@@ -501,6 +592,12 @@ html[data-eva-music="off"] .eva-mp{display:none}
   color:var(--mp-dim);font-size:8px;letter-spacing:.1em}
 .eva-mp-source>small{flex:0 0 auto;font-size:8px;color:var(--mp-accent)}
 .eva-mp-src{margin-left:auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:215px;font-size:10px;letter-spacing:0}
+.eva-mp-source-picker{
+  min-width:0;max-width:66%;margin-left:auto;padding:2px 4px;color:var(--mp-ink);
+  background:var(--eva-surface);border:1px solid var(--mp-line);border-radius:0;font:inherit;
+  font-size:10px;text-overflow:ellipsis;cursor:pointer;
+}
+.eva-mp-source-picker:focus-visible{outline:2px solid var(--mp-accent);outline-offset:1px}
 .eva-mp-name{min-width:0;margin-top:7px}
 .eva-mp-title{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
   font-size:16px;line-height:1.4;font-weight:700;letter-spacing:.015em;color:var(--mp-ink)}

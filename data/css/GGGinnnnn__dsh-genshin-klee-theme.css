@@ -1,15 +1,28 @@
 /* GGGinnnnn/dsh-genshin-klee-theme — dsh-klee-theme/client/client.js
-   fetched 2026-11-11 from https://raw.githubusercontent.com/GGGinnnnn/dsh-genshin-klee-theme/main/dsh-klee-theme/client/client.js
+   fetched 2026-11-19 from https://raw.githubusercontent.com/GGGinnnnn/dsh-genshin-klee-theme/main/dsh-klee-theme/client/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 :root,
 body {
   --dsh-klee-backdrop-strength: 1;
+  --dsh-klee-artwork-blur: none;
+  /* Pane opacity. Lower = more artwork visible, higher = more contrast.
+     Defaults are v1.0's values and are what the assertions are computed against. */
+  --dsh-klee-pane-alpha: 0.34;
+  --dsh-klee-sidebar-alpha: 0.76;
+  --dsh-klee-pane-alpha-dark: 0.52;
+  --dsh-klee-sidebar-alpha-dark: 0.76;
+  /* Window surfaces are opaque by contract (see the rule below). */
+  --dsh-klee-dialog-fill: rgba(250, 238, 226, 0.985);
 }
-html[data-windows-titlebar] .BynINW_frame,
-.BynINW_frame,
-.BynINW_centerCol,
-[data-windows-titlebar] .BynINW_centerCol {
-  background: transparent;
+body[data-ds-dark-theme] {
+  --dsh-klee-dialog-fill: rgba(34, 22, 18, 0.985);
+}
+/* A window is never see-through: its text sits above whatever it covers.
+   aria-modal is not required on purpose — see the note above. */
+[role="dialog"],
+[role="alertdialog"],
+[aria-modal="true"] {
+  background-color: var(--dsh-klee-dialog-fill, rgba(253, 246, 239, 0.985)) !important;
 }
   position: fixed;
   inset: 0;
@@ -19,6 +32,7 @@ html[data-windows-titlebar] .BynINW_frame,
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  filter: var(--dsh-klee-artwork-blur, none);
   transition: opacity 200ms ease;
 }
 /* Narrower than 13:10 switches to the 4:3 artwork, so the character is not
@@ -30,8 +44,8 @@ html[data-windows-titlebar] .BynINW_frame,
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(120% 90% at 50% 0%, rgba(255, 236, 220, 0.30) 0%, rgba(255, 236, 220, 0) 62%),
-    linear-gradient(180deg, rgba(255, 238, 224, 0.16) 0%, rgba(255, 238, 224, 0.34) 100%);
+    radial-gradient(120% 90% at 50% 0%, rgba(255, 246, 238, 0.18) 0%, rgba(255, 246, 238, 0) 62%),
+    linear-gradient(180deg, rgba(255, 246, 238, 0.10) 0%, rgba(255, 246, 238, 0.22) 100%);
 }
 @media (prefers-reduced-motion: reduce) { transition: none; }
 }
