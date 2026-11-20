@@ -1,5 +1,5 @@
 /* MilkySnowWay123/dsh-client-ui-skin-tianlight — lib/client.js
-   fetched 2026-11-12 from https://raw.githubusercontent.com/MilkySnowWay123/dsh-client-ui-skin-tianlight/main/lib/client.js
+   fetched 2026-11-20 from https://raw.githubusercontent.com/MilkySnowWay123/dsh-client-ui-skin-tianlight/main/lib/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 body[data-dsh-tianlight] .tl5-eng {
 		display: flex;
@@ -69,6 +69,1029 @@ body[data-dsh-tianlight] .tl5-eng {
 		padding: 2px 10px;
 		font-size: 11px;
 	}
+
+
+
+body[data-dsh-tianlight] {
+	/* The app frame AND the conversation column both paint --dsw-alias-bg-base, so
+	   their alphas COMPOUND: effective = 1-(1-a)^2. A high single-layer value here
+	   makes the wallpaper vanish behind what looks like a solid panel. These are
+	   tuned for the composited result (~48%), not for one layer. */
+	/* 100% wallpaper: every surface layer is fully transparent. Text sits directly
+	   on the video, so legibility is carried by ink colour and code-block fill only. */
+	--tl-shell: rgba(252, 253, 255, 0);
+	--tl-shell-strong: rgba(255, 255, 255, 0);
+	--tl-shell-soft: rgba(250, 252, 255, 0);
+	/* Menus get their own translucent fill: opaque 0.97 would hide the blur behind
+	   them, so glass on a popover has to start with actual transparency. */
+	/* v2.2.0 anti-white-cast pass: every white fill was re-tinted toward the cool
+	   daylight hue and pulled down in alpha. The old recipe stacked ~0.30 white fill
+	   + up to 0.52 white specular on the same pixel, which read as a grey/white veil
+	   over the wallpaper ("整体泛白") instead of glass. The wallpapers stay the source
+	   of colour; the glass only adds a thin, cool specular edge. */
+	--tl-overlay: rgba(235, 245, 255, 0.14);
+	/* Composer-only glass. Everything else stays fully transparent; this card is
+	   the one surface that earns a frosted backdrop. */
+	/* v2.2.2 "clear glass": the panel is a lens, not a white sheet. The fill is a
+	   near-transparent cool tint; the visible body comes from the backdrop filter and
+	   the 1px light/dark rim, so bright wallpapers stay coloured instead of milky. */
+	--tl-glass-fill: rgba(205, 228, 250, calc(0.05 * var(--tl-glass-m, 1)));
+	--tl-glass-line: rgba(255, 255, 255, 0);
+	--tl-glass-blur: 12px;
+	/* v2.2.9: real-glass recipe. The tint is a low-alpha colour wash on the HOST;
+	   the blur lives on ::before. All values are final alphas, not stacked
+	   color-mix percentages. The --tl-glass-m multiplier is the opacity slider. */
+	--tl-glass-tint: rgba(255, 255, 255, calc(0.08 * var(--tl-glass-m, 1)));
+	--tl-glass-tint-menu: rgba(255, 255, 255, calc(0.14 * var(--tl-glass-m, 1)));
+	--tl-glass-tint-static: rgba(255, 255, 255, 0.30);
+	--tl-glass-tint-lowpower: rgba(255, 255, 255, 0.35);
+	--tl-glass-blur-live: 16px;
+	--tl-glass-sat-live: 1.8;
+	--tl-glass-bright-live: 1.06;
+	--tl-glass-contrast-live: 1.04;
+	--tl-glass-menu-blur-live: 20px;
+	--tl-glass-edge-hi: rgba(255, 255, 255, 0.55);
+	--tl-glass-edge-mid: rgba(255, 255, 255, 0.12);
+	--tl-glass-edge-lo: rgba(255, 255, 255, 0.22);
+	/* Modal-grade surface: a settings panel has to stay readable over the chat, so
+	   it needs its own fill instead of the zeroed bg-layer tokens. The value is high
+	   on purpose: the panel carries NO backdrop blur unless live mode is on (see
+	   below), so its opacity is what does the legibility work there.
+	   The glass slider may lower it, but only down to a legibility floor: at 0.30 the
+	   panel was so transparent that the sidebar text behind it showed through, which
+	   reads as "duplicate stacked UI". Data surfaces keep a hard floor.
+	   v2.2.0: slightly less opaque and less pure-white; live mode lowers it further
+	   because its own real backdrop blur carries the legibility. */
+	--tl-panel-fill: rgba(235, 245, 255, max(0.68, calc(0.62 * var(--tl-glass-m, 1))));
+	--tl-ink: #0f2438;
+	--tl-ink-soft: #3a5a78;
+	--tl-ink-faint: #5d7d99;
+	--tl-line: rgba(112, 156, 202, 0.06);
+	--tl-line-strong: rgba(86, 134, 186, 0.12);
+	--tl-accent: #2b74c9;
+	--tl-accent-soft: rgba(43, 116, 201, 0.14);
+	--tl-code: rgba(236, 244, 252, 0.40);
+	--tl-glow: rgba(150, 210, 255, 0.55);
+
+	--dsw-alias-bg-base: var(--tl-shell) !important;
+	--dsw-alias-bg-layer-1: var(--tl-shell-strong) !important;
+	--dsw-alias-bg-layer-2: var(--tl-shell-soft) !important;
+	--dsw-alias-bg-overlay: var(--tl-overlay) !important;
+	--dsw-specific-sidebar-fill: var(--tl-shell-soft) !important;
+	--dsw-alias-border-l1: var(--tl-line) !important;
+	--dsw-alias-border-l2: var(--tl-line-strong) !important;
+	--dsw-alias-border-l3: var(--tl-line) !important;
+	--dsw-alias-border-l4: var(--tl-line-strong) !important;
+	--dsw-alias-brand-primary: var(--tl-accent) !important;
+	--dsw-alias-label-primary: var(--tl-ink) !important;
+	--dsw-alias-label-secondary: var(--tl-ink-soft) !important;
+	--dsw-alias-label-tertiary: var(--tl-ink-faint) !important;
+	--dsw-alias-state-error-primary: #c0392b !important;
+	--dsw-alias-state-success-primary: #0e8a63 !important;
+	--dsw-alias-state-warn-primary: #b4690e !important;
+	--dsw-alias-interactive-bg-hover: var(--tl-accent-soft) !important;
+	--dsw-alias-markdown-code-block: var(--tl-code) !important;
+	/* Remaining surface tokens: bubbles, nested cards, menus, selectors. Left
+	   opaque they read as the only solid blocks on a transparent interface. */
+	/* Text-bearing surfaces keep a legibility floor: the anti-white pass lowers the
+	   decorative veil, not the contrast the dark-ink transcript needs on a night
+	   wallpaper. Bubbles/tips are the two the legibility guard does not cover. */
+	--dsw-specific-bubble: rgba(236, 245, 255, 0.30) !important;
+	--dsw-specific-tip: rgba(238, 247, 255, 0.32) !important;
+	--dsw-specific-menu: var(--tl-overlay) !important;
+	--dsw-alias-bg-layer-3: rgba(236, 245, 255, 0.20) !important;
+	--dsw-alias-bg-module-platform: rgba(236, 245, 255, 0.18) !important;
+	--dsw-alias-interactive-bg-hover-solid: rgba(104, 156, 210, 0.22) !important;
+	--dsw-alias-turn-trigger-bg: rgba(236, 245, 255, 0.18) !important;
+	--dsw-alias-markdown-code-block-banner: rgba(226, 238, 250, 0.40) !important;
+	/* Remaining large surfaces that 0.2.0 still paints opaque: terminal, settings
+	   cards, document preview, masks, skeletons, selectors, nav items. Translucent
+	   only — deliberately NO new backdrop-filter, so playback cost stays flat. */
+	--dsw-alias-bg-document-preview: var(--tl-glass-fill) !important;
+	--dsw-alias-bg-l1: var(--tl-glass-fill) !important;
+	--dsw-alias-bg-layer-4: var(--tl-glass-fill) !important;
+	/* v2.2.9: masks are focus cues, not curtains. The sidebar drawer may use the
+	   drop mask (<= 0.12 in spirit); a true modal is capped at 0.20. No token and no
+	   product rule may reintroduce a full-viewport blur. */
+	--dsw-alias-bg-mask-1: rgba(236, 243, 251, 0.12) !important;
+	--dsw-mask-blur: none !important;
+	--dsw-alias-bg-mask-drop: rgba(236, 243, 251, 0.20) !important;
+	--dsw-alias-bg-skeleton: var(--tl-line) !important;
+	--dsw-alias-fill-l1: rgba(236, 245, 255, 0.30) !important;
+	--dsw-alias-fill-l2: rgba(236, 245, 255, 0.22) !important;
+	--dsw-alias-fill-tertiary: rgba(236, 245, 255, 0.18) !important;
+	--dsw-alias-fill-tsp-secondary: rgba(236, 245, 255, 0.22) !important;
+	--dsw-alias-interactive-bg-active: var(--tl-accent-soft) !important;
+	--dsw-alias-interactive-bg-hover-danger: rgba(192, 57, 43, 0.16) !important;
+	/* v1.6.1: the sidebar "new chat" button lives on an opaque product fill token
+	   (light: pure white, dark: a neutral-750 block). The skin owns 100% wallpaper, so
+	   these two tokens must be glass as well; the same tokens paint every product
+	   "elevated" button, which fixes their dark blocks too. The per-surface rule for
+	   the stamped button is in the v1.6.1 section at the end of this sheet. */
+	--dsw-alias-button-elevated-fill: var(--tl-glass-fill) !important;
+	--dsw-alias-button-floating-hover: var(--tl-accent-soft) !important;
+	--dsw-alias-onboarding-card-fill: var(--tl-glass-fill) !important;
+	--dsw-alias-onboarding-secondary-fill: rgba(236, 245, 255, 0.18) !important;
+	--dsw-alias-settings-card-fill: var(--tl-glass-fill) !important;
+	--dsw-specific-input-major: var(--tl-glass-fill) !important;
+	--dsw-specific-selector: rgba(236, 245, 255, 0.30) !important;
+	--dsw-specific-sidebar-nav-item-active: var(--tl-accent-soft) !important;
+	--dsw-specific-sidebar-nav-item-active-accent: var(--tl-accent) !important;
+	--dsw-specific-sidebar-nav-item-hover: var(--tl-accent-soft) !important;
+	--dsw-alias-turn-trigger-bg-hover: var(--tl-accent-soft) !important;
+}
+
+body[data-dsh-tianlight][data-ds-dark-theme] {
+	--tl-shell: rgba(10, 18, 32, 0);
+	--tl-shell-strong: rgba(16, 27, 45, 0);
+	--tl-shell-soft: rgba(10, 18, 32, 0);
+	--tl-overlay: rgba(12, 22, 38, 0.30);
+	--tl-glass-fill: rgba(16, 26, 42, calc(0.38 * var(--tl-glass-m, 1)));
+	--tl-glass-line: rgba(150, 195, 250, 0);
+	--tl-glass-blur: 14px;
+	--tl-glass-tint: rgba(12, 18, 28, calc(0.20 * var(--tl-glass-m, 1)));
+	--tl-glass-tint-menu: rgba(12, 18, 28, calc(0.30 * var(--tl-glass-m, 1)));
+	--tl-glass-tint-static: rgba(8, 15, 26, 0.44);
+	--tl-glass-tint-lowpower: rgba(8, 15, 26, 0.50);
+	--tl-glass-blur-live: 18px;
+	--tl-glass-sat-live: 1.6;
+	--tl-glass-bright-live: 0.92;
+	--tl-glass-contrast-live: 1.04;
+	--tl-glass-menu-blur-live: 22px;
+	--tl-glass-edge-hi: rgba(255, 255, 255, 0.28);
+	--tl-glass-edge-mid: rgba(255, 255, 255, 0.10);
+	--tl-glass-edge-lo: rgba(255, 255, 255, 0.16);
+	--tl-panel-fill: rgba(10, 18, 32, max(0.96, calc(0.88 * var(--tl-glass-m, 1))));
+	--tl-ink: #eaf3ff;
+	--tl-ink-soft: #a9c2dc;
+	--tl-ink-faint: #7f9bb8;
+	--tl-line: rgba(126, 178, 232, 0.06);
+	--tl-line-strong: rgba(142, 194, 246, 0.12);
+	--tl-accent: #7fb6ff;
+	--tl-accent-soft: rgba(127, 182, 255, 0.16);
+	--tl-code: rgba(10, 20, 34, 0.44);
+	--tl-glow: rgba(120, 186, 255, 0.45);
+
+	--dsw-alias-state-error-primary: #ff7b6b !important;
+	--dsw-alias-state-success-primary: #4fe0a6 !important;
+	--dsw-alias-state-warn-primary: #ffc46b !important;
+	--dsw-specific-bubble: rgba(18, 30, 48, 0.42) !important;
+	--dsw-specific-tip: rgba(18, 30, 48, 0.46) !important;
+	--dsw-specific-menu: var(--tl-overlay) !important;
+	--dsw-alias-bg-layer-3: rgba(18, 30, 48, 0.36) !important;
+	--dsw-alias-bg-module-platform: rgba(18, 30, 48, 0.34) !important;
+	--dsw-alias-interactive-bg-hover-solid: rgba(70, 118, 170, 0.28) !important;
+	--dsw-alias-turn-trigger-bg: rgba(18, 30, 48, 0.34) !important;
+	--dsw-alias-markdown-code-block-banner: rgba(10, 20, 34, 0.46) !important;
+	--dsw-alias-bg-document-preview: var(--tl-glass-fill) !important;
+	--dsw-alias-bg-l1: var(--tl-glass-fill) !important;
+	--dsw-alias-bg-layer-4: var(--tl-glass-fill) !important;
+	--dsw-alias-bg-mask-1: rgba(3, 8, 16, 0.12) !important;
+	--dsw-mask-blur: none !important;
+	--dsw-alias-bg-mask-drop: rgba(3, 8, 16, 0.20) !important;
+	--dsw-alias-bg-skeleton: var(--tl-line) !important;
+	--dsw-alias-fill-l1: rgba(20, 34, 54, 0.46) !important;
+	--dsw-alias-fill-l2: rgba(20, 34, 54, 0.36) !important;
+	--dsw-alias-fill-tertiary: rgba(20, 34, 54, 0.32) !important;
+	--dsw-alias-fill-tsp-secondary: rgba(20, 34, 54, 0.36) !important;
+	--dsw-alias-interactive-bg-active: var(--tl-accent-soft) !important;
+	--dsw-alias-interactive-bg-hover-danger: rgba(255, 120, 105, 0.18) !important;
+	/* v1.6.1: same glass handover for the elevated button family in the dark theme. */
+	--dsw-alias-button-elevated-fill: var(--tl-glass-fill) !important;
+	--dsw-alias-button-floating-hover: var(--tl-accent-soft) !important;
+	--dsw-alias-onboarding-card-fill: var(--tl-glass-fill) !important;
+	--dsw-alias-onboarding-secondary-fill: rgba(18, 30, 48, 0.30) !important;
+	--dsw-alias-settings-card-fill: var(--tl-glass-fill) !important;
+	--dsw-specific-input-major: var(--tl-glass-fill) !important;
+	--dsw-specific-selector: rgba(18, 30, 48, 0.46) !important;
+	--dsw-specific-sidebar-nav-item-active: var(--tl-accent-soft) !important;
+	--dsw-specific-sidebar-nav-item-active-accent: var(--tl-accent) !important;
+	--dsw-specific-sidebar-nav-item-hover: var(--tl-accent-soft) !important;
+	--dsw-alias-turn-trigger-bg-hover: var(--tl-accent-soft) !important;
+}
+
+body[data-dsh-tianlight] {
+	background: transparent !important;
+	/* Glass multiplier. installGlassOpacity() overwrites it from the saved level; the
+	   declaration lives here so every var the stylesheet reads is also declared. */
+	--tl-glass-m: 1;
+}
+
+/* ---- wallpaper, painted strictly beneath the application ---- */
+body[data-dsh-tianlight] [data-tl-scene] {
+	/* Zone framing defaults. applyZones() overwrites these from the saved model; the
+	   declarations live here so every var the stylesheet reads is also declared. */
+	--tl-fit: cover;
+	--tl-fit-size: cover;
+	--tl-focal-x: 38%;
+	--tl-focal-y: 50%;
+	--tl-zone-dim: 0;
+	--tl-overlay-opacity: 0.55;
+	--tl-overlay-blend: normal;
+	--tl-f-brightness: 1;
+	--tl-f-contrast: 1;
+	--tl-f-saturate: 1;
+	position: fixed;
+	inset: 0;
+	z-index: 0;
+	pointer-events: none;
+	overflow: hidden;
+	/* Own compositor layer + paint isolation: without these the whole page
+	   recomposites whenever the video advances a frame. */
+	contain: paint;
+	transform: translateZ(0);
+	background:
+		radial-gradient(120% 90% at 18% 8%, #cfe9ff 0%, #9fcdf5 32%, #6aa8de 62%, #2f6ea8 100%);
+}
+body[data-dsh-tianlight][data-ds-dark-theme] [data-tl-scene] {
+	/* Night sky, deliberately NOT near-black: this layer is what shows whenever the
+	   video is missing or not yet decoded, and a #040a12 floor reads as a solid
+	   black rectangle instead of a wallpaper. */
+	background:
+		radial-gradient(120% 90% at 22% 10%, #2b4f7d 0%, #1d3a5e 38%, #16294a 72%, #101d33 100%);
+}
+body[data-dsh-tianlight] [data-tl-scene] > video {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;	/* Zone-driven: fit and focal point come from the wallpaper settings, so a source
+	   whose aspect ratio disagrees with the window can be cropped, letterboxed or
+	   stretched, with the surviving region chosen by the user. */
+	object-fit: var(--tl-fit, cover);
+	object-position: var(--tl-focal-x, 38%) var(--tl-focal-y, 50%);
+	/* No filter here on purpose. Even a zero-radius blur keeps the element on a
+	   filter path that re-renders a full-screen surface every frame, which is what
+	   made playback stutter. The tint now comes from the veil overlay instead. */
+	transform: translateZ(0);
+	backface-visibility: hidden;
+	opacity: 0;
+	transition: opacity 900ms ease;
+}
+body[data-dsh-tianlight] [data-tl-scene] > video[data-tl-ready] {
+	opacity: 1;
+}
+/* Opt-in colour grading. The attribute gate matters: even neutral filter values
+   would keep the element on a full-screen filter path, which is what made older
+   builds stutter. Off by default, so the fast path has no filter at all. */
+body[data-dsh-tianlight] [data-tl-scene][data-tl-filter] > video,
+body[data-dsh-tianlight] [data-tl-scene][data-tl-filter] > [data-tl-photo] {
+	filter: brightness(var(--tl-f-brightness, 1)) contrast(var(--tl-f-contrast, 1)) saturate(var(--tl-f-saturate, 1));
+}
+body[data-dsh-tianlight] [data-tl-scene] > [data-tl-veil] {
+	position: absolute;
+	inset: 0;
+	background:
+		linear-gradient(180deg, rgba(240, 248, 255, 0.05) 0%, transparent 40%, rgba(12, 28, 48, 0.12) 100%);
+}
+body[data-dsh-tianlight][data-ds-dark-theme] [data-tl-scene] > [data-tl-veil] {
+	background:
+		linear-gradient(180deg, rgba(120, 180, 240, 0.06) 0%, transparent 42%, rgba(2, 8, 18, 0.30) 100%);
+}
+/* v1.6.2: the fixed top-left "dawn burst" corner artwork was removed on user feedback
+   (it looked like a permanent little sun on every wallpaper). The veil above still
+   supplies the sky-light tint; nothing else is pinned to the top-left corner. */
+
+/* ---- model picker: same glass pill as the composer ----
+   Targets are runtime-stamped attributes (selector bridge), never build hashes. */
+body[data-dsh-tianlight] [data-tl-model] {
+	background: var(--tl-glass-fill) !important;
+	-webkit-backdrop-filter: blur(var(--tl-glass-blur)) saturate(1.2);
+	backdrop-filter: blur(var(--tl-glass-blur)) saturate(1.2);
+	border: 0.5px solid var(--tl-glass-line) !important;
+	border-radius: 999px !important;
+	height: 26px;
+	padding-inline: 11px !important;
+	transition: background 140ms ease, border-color 140ms ease;
+}
+body[data-dsh-tianlight] [data-tl-model]:hover {
+	border-color: var(--tl-accent) !important;
+}
+body[data-dsh-tianlight] [data-tl-model-label] {
+	font-weight: 500;
+	letter-spacing: 0.01em;
+}
+body[data-dsh-tianlight] [data-tl-model-effort] {
+	opacity: 0.85;
+}
+
+/* ---- reasoning rheostat: a chrome-less luminous fader ----
+   No capsule shell on purpose: a hairline of light plus a glowing bead reads as
+   part of the wallpaper instead of one more pill in the tool row. Position comes
+   from a real spring in JS, so the left/width properties must stay
+   transition-free here or the rAF integration and CSS easing would fight. */
+body[data-dsh-tianlight] [data-tl-rheo] {
+	position: relative;
+	box-sizing: border-box;
+	width: 152px;
+	height: 34px;
+	flex: none;
+	background: transparent;
+	border: 0;
+	touch-action: none;
+	cursor: pointer;
+	user-select: none;
+	-webkit-user-select: none;
+	transition: opacity 160ms ease;
+}
+body[data-dsh-tianlight] [data-tl-rheo]:focus-visible {
+	outline: none;
+}
+body[data-dsh-tianlight] [data-tl-rheo][data-tl-busy] {
+	opacity: 0.55;
+}
+body[data-dsh-tianlight] [data-tl-rheo][data-tl-rheo-empty] {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	width: auto;
+	height: 26px;
+	padding: 0 11px;
+	border-radius: 999px;
+	background: var(--tl-glass-fill);
+	border: 0.5px solid var(--tl-glass-line);
+	-webkit-backdrop-filter: blur(var(--tl-glass-blur)) saturate(1.2);
+	backdrop-filter: blur(var(--tl-glass-blur)) saturate(1.2);
+	cursor: default;
+	opacity: 1;
+}
+body[data-dsh-tianlight] [data-tl-rheo-empty-text] {
+	font-size: 11px;
+	line-height: 1;
+	letter-spacing: 0.04em;
+	color: var(--tl-ink-faint);
+	white-space: nowrap;
+	max-width: 300px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+body[data-dsh-tianlight] [data-tl-rheo-track] {
+	position: absolute;
+	left: 12px;
+	right: 40px;
+	top: 50%;
+	height: 2px;
+	margin-top: -1px;
+	border-radius: 999px;
+	background: linear-gradient(90deg, transparent 0%, var(--tl-line-strong) 18%, var(--tl-line-strong) 100%);
+}
+body[data-dsh-tianlight] [data-tl-rheo-fill] {
+	position: absolute;
+	left: 12px;
+	top: 50%;
+	height: 2px;
+	margin-top: -1px;
+	border-radius: 999px;
+	background: linear-gradient(90deg, color-mix(in srgb, var(--tl-accent) 25%, white), var(--tl-accent));
+	box-shadow: 0 0 10px color-mix(in srgb, var(--tl-accent) 70%, transparent);
+	width: calc((100% - 52px) * var(--tl-rheo-pos, 0));
+}
+body[data-dsh-tianlight] [data-tl-rheo-halo] {
+	position: absolute;
+	top: 50%;
+	left: calc(12px + (100% - 52px) * var(--tl-rheo-pos, 0));
+	width: 34px;
+	height: 34px;
+	margin: -17px 0 0 -17px;
+	border-radius: 50%;
+	background: radial-gradient(circle, color-mix(in srgb, var(--tl-accent) 40%, transparent) 0%, transparent 66%);
+	pointer-events: none;
+}
+body[data-dsh-tianlight] [data-tl-rheo-bead] {
+	position: absolute;
+	top: 50%;
+	left: calc(12px + (100% - 52px) * var(--tl-rheo-pos, 0));
+	width: 11px;
+	height: 11px;
+	margin: -5.5px 0 0 -5.5px;
+	border-radius: 50%;
+	background: #ffffff;
+	box-shadow:
+		0 0 0 1.5px color-mix(in srgb, var(--tl-accent) 85%, white),
+		0 0 14px 2px color-mix(in srgb, var(--tl-accent) 60%, transparent),
+		0 1px 3px rgba(10, 30, 60, 0.30);
+	pointer-events: none;
+	transition:
+		transform 240ms cubic-bezier(0.34, 1.7, 0.5, 1),
+		box-shadow 200ms ease;
+}
+body[data-dsh-tianlight] [data-tl-rheo]:hover [data-tl-rheo-bead] {
+	transform: scale(1.25);
+}
+body[data-dsh-tianlight] [data-tl-rheo][data-tl-drag] [data-tl-rheo-bead] {
+	transform: scale(1.45);
+}
+/* one expanding ring per detent change; the element is keyed so it restarts */
+body[data-dsh-tianlight] [data-tl-rheo-pulse] {
+	position: absolute;
+	top: 50%;
+	left: calc(12px + (100% - 52px) * var(--tl-rheo-pos, 0));
+	width: 12px;
+	height: 12px;
+	margin: -6px 0 0 -6px;
+	border-radius: 50%;
+	border: 1.5px solid color-mix(in srgb, var(--tl-accent) 75%, white);
+	pointer-events: none;
+	animation: tl-rheo-ring 620ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+@keyframes tl-rheo-ring {
+	0% {
+		transform: scale(0.6);
+		opacity: 0.85;
+	}
+	70% {
+		opacity: 0.25;
+	}
+	100% {
+		transform: scale(3.1);
+		opacity: 0;
+	}
+}
+body[data-dsh-tianlight] [data-tl-rheo-label] {
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+	font-size: 11px;
+	line-height: 1;
+	letter-spacing: 0.05em;
+	color: var(--tl-ink-soft);
+	pointer-events: none;
+	animation: tl-rheo-pop 420ms cubic-bezier(0.34, 1.6, 0.5, 1);
+}
+@keyframes tl-rheo-pop {
+	0% {
+		transform: translateY(-50%) translateY(3px) scale(0.86);
+		opacity: 0.3;
+	}
+	60% {
+		transform: translateY(-50%) translateY(-1px) scale(1.06);
+		opacity: 1;
+	}
+	100% {
+		transform: translateY(-50%) scale(1);
+		opacity: 1;
+	}
+}
+body[data-dsh-tianlight] [data-tl-rheo][data-tl-drag] [data-tl-rheo-label] {
+	color: var(--tl-accent);
+}
+@media (prefers-reduced-motion: reduce) {
+	body[data-dsh-tianlight] [data-tl-rheo-pulse],
+	body[data-dsh-tianlight] [data-tl-rheo-label] {
+		animation: none;
+	}
+}
+
+
+
+
+
+/* ---- companion: a mint chibi cat that lives on top of the workbench ---- */
+body[data-dsh-tianlight] [data-tl-cat] {
+	position: fixed;
+	z-index: 95;
+	width: 150px;
+	height: 86px;
+	touch-action: none;
+	cursor: grab;
+	user-select: none;
+	-webkit-user-select: none;
+	will-change: transform;
+	filter: drop-shadow(0 10px 18px rgba(8, 26, 44, 0.28));
+}
+body[data-dsh-tianlight] [data-tl-cat][data-tl-dragging] {
+	cursor: grabbing;
+	filter: drop-shadow(0 16px 26px rgba(8, 26, 44, 0.38));
+}
+body[data-dsh-tianlight] [data-tl-cat] > [data-tl-cat-body] {
+	position: absolute;
+	inset: 0;
+	display: grid;
+	place-items: center;
+	transform-origin: 50% 92%;
+	transition: transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1);
+	animation: tl-breathe 4.2s ease-in-out infinite;
+}
+body[data-dsh-tianlight] [data-tl-cat] > [data-tl-cat-body] > img {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	pointer-events: none;
+	-webkit-user-drag: none;
+}
+body[data-dsh-tianlight] [data-tl-cat][data-tl-near] > [data-tl-cat-body] {
+	transform: rotate(calc(var(--tl-look, 0) * 7deg)) translateY(-2px) scale(1.04);
+}
+body[data-dsh-tianlight] [data-tl-cat][data-tl-dragging] > [data-tl-cat-body] {
+	transform: scale(1.09) rotate(calc(var(--tl-look, 0) * 3deg));
+	animation-play-state: paused;
+}
+body[data-dsh-tianlight] [data-tl-cat][data-tl-sleeping] > [data-tl-cat-body] {
+	animation: tl-doze 3.4s ease-in-out infinite;
+	transform: rotate(-4deg) scale(0.98);
+	opacity: 0.92;
+}
+body[data-dsh-tianlight] [data-tl-cat][data-tl-sleeping]::after {
+	content: "z z Z";
+	position: absolute;
+	top: -6px;
+	right: -6px;
+	font: 600 12px/1 var(--ds-font-family, system-ui);
+	color: var(--tl-accent);
+	opacity: 0.85;
+	animation: tl-float 2.6s ease-in-out infinite;
+}
+body[data-dsh-tianlight] [data-tl-cat][data-tl-near]::before {
+	content: "";
+	position: absolute;
+	inset: 8px;
+	border-radius: 50%;
+	background: radial-gradient(circle, var(--tl-glow) 0%, transparent 70%);
+	opacity: 0.5;
+	filter: blur(6px);
+}
+body[data-dsh-tianlight] [data-tl-cat] > [data-tl-say] {
+	position: absolute;
+	bottom: calc(100% + 10px);
+	left: 50%;
+	transform: translateX(-50%) translateY(4px);
+	max-width: 190px;
+	width: max-content;
+	padding: 7px 11px;
+	border-radius: 14px;
+	background: var(--tl-overlay);
+	color: var(--tl-ink);
+	font: 500 12px/1.45 var(--ds-font-family, system-ui);
+	text-align: center;
+	white-space: pre-wrap;
+	box-shadow: 0 6px 20px rgba(8, 26, 44, 0.18);
+	border: 0.5px solid var(--tl-line);
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 180ms ease, transform 180ms ease;
+}
+body[data-dsh-tianlight] [data-tl-cat] > [data-tl-say][data-tl-show] {
+	opacity: 1;
+	transform: translateX(-50%) translateY(0);
+}
+/* v0.7.0 duty bubble: an action-capable sibling of the say bubble. It is owned by
+   the duty channel (role pack adapter) and never overwrites ordinary pet speech. */
+body[data-dsh-tianlight] [data-tl-cat] > [data-tl-duty] {
+	position: absolute;
+	bottom: calc(100% + 12px);
+	left: 50%;
+	transform: translateX(-50%) translateY(4px);
+	width: max-content;
+	max-width: 240px;
+	padding: 9px 11px 8px;
+	border-radius: 14px;
+	background: var(--tl-overlay);
+	color: var(--tl-ink);
+	font: 500 12px/1.45 var(--ds-font-family, system-ui);
+	box-shadow: 0 10px 28px rgba(8, 26, 44, 0.24);
+	border: 0.5px solid var(--tl-line);
+	opacity: 0;
+	pointer-events: none;
+	z-index: 2;
+	transition: opacity 180ms ease, transform 180ms ease;
+}
+body[data-dsh-tianlight] [data-tl-cat] > [data-tl-duty][data-tl-show] {
+	opacity: 1;
+	transform: translateX(-50%) translateY(0);
+	pointer-events: auto;
+}
+body[data-dsh-tianlight] [data-tl-cat] > [data-tl-duty] > [data-tl-duty-text] {
+	white-space: pre-wrap;
+}
+body[data-dsh-tianlight] [data-tl-cat] > [data-tl-duty] > [data-tl-duty-choices] {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	margin-top: 7px;
+}
+body[data-dsh-tianlight] [data-tl-cat] > [data-tl-duty] > [data-tl-duty-choices][hidden] {
+	display: none;
+}
+body[data-dsh-tianlight] [data-tl-cat] > [data-tl-duty] button {
+	appearance: none;
+	border: 0.5px solid var(--tl-line);
+	background: var(--tl-accent-soft);
+	color: var(--tl-ink);
+	font: 600 11px/1 var(--ds-font-family, system-ui);
+	padding: 6px 9px;
+	border-radius: 999px;
+	cursor: pointer;
+}
+body[data-dsh-tianlight] [data-tl-cat] > [data-tl-duty] button:hover {
+	background: var(--tl-accent);
+	color: #fff;
+}
+body[data-dsh-tianlight] [data-tl-cat] > [data-tl-duty] button:focus-visible {
+	outline: 2px solid var(--tl-accent);
+	outline-offset: 2px;
+}
+body[data-dsh-tianlight] [data-tl-cat] > [data-tl-catmenu] {
+	position: absolute;
+	top: calc(100% + 8px);
+	left: 50%;
+	transform: translateX(-50%) translateY(-4px);
+	display: flex;
+	gap: 4px;
+	padding: 5px;
+	border-radius: 999px;
+	background: var(--tl-overlay);
+	border: 0.5px solid var(--tl-line);
+	box-shadow: 0 10px 26px rgba(8, 26, 44, 0.22);
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 160ms ease, transform 160ms ease;
+}
+body[data-dsh-tianlight] [data-tl-cat] > [data-tl-catmenu][data-tl-show] {
+	opacity: 1;
+	transform: translateX(-50%) translateY(0);
+	pointer-events: auto;
+}
+body[data-dsh-tianlight] [data-tl-cat] > [data-tl-catmenu] > button {
+	appearance: none;
+	border: 0;
+	background: transparent;
+	color: var(--tl-ink-soft);
+	font: 500 12px/1 var(--ds-font-family, system-ui);
+	padding: 6px 9px;
+	border-radius: 999px;
+	cursor: pointer;
+	white-space: nowrap;
+}
+body[data-dsh-tianlight] [data-tl-cat] > [data-tl-catmenu] > button:hover {
+	background: var(--tl-accent-soft);
+	color: var(--tl-ink);
+}
+
+@keyframes tl-breathe {
+	0%, 100% { transform: scale(1); }
+	50% { transform: scale(1.022); }
+}
+@keyframes tl-doze {
+	0%, 100% { transform: rotate(-4deg) scale(0.98); }
+	50% { transform: rotate(-2deg) scale(0.955); }
+}
+@keyframes tl-float {
+	0%, 100% { transform: translateY(0); opacity: 0.5; }
+	50% { transform: translateY(-7px); opacity: 0.9; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	body[data-dsh-tianlight] [data-tl-cat] > [data-tl-cat-body],
+	body[data-dsh-tianlight] [data-tl-cat][data-tl-sleeping] > [data-tl-cat-body],
+	body[data-dsh-tianlight] [data-tl-cat][data-tl-sleeping]::after {
+		animation: none !important;
+	}
+}
+
+/* ---- low power: freeze decorative animation while the wallpaper is parked ----
+   The supervisor pauses the moving wallpaper and its rail mirror; these rules keep
+   the remaining CSS animation off the compositor so the saving is real. */
+body[data-dsh-tianlight][data-tl-lowpower] [data-tl-cat] > [data-tl-cat-body],
+body[data-dsh-tianlight][data-tl-lowpower] [data-tl-cat][data-tl-sleeping] > [data-tl-cat-body] {
+	animation-play-state: paused;
+}
+body[data-dsh-tianlight][data-tl-lowpower] [data-tl-cat][data-tl-sleeping]::after {
+	animation: none;
+}
+
+/* ---- v1.0.0 replaceable pet media: still image OR muted looping video ---- */
+body[data-dsh-tianlight] [data-tl-cat] > [data-tl-cat-body] > video {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	pointer-events: none;
+	background: transparent;
+	-webkit-user-drag: none;
+}
+body[data-dsh-tianlight] [data-tl-cat][data-tl-cat-media="video"] > [data-tl-cat-body] {
+	animation: none;
+	transform-origin: 50% 92%;
+}
+body[data-dsh-tianlight] [data-tl-cat][data-tl-cat-media="video"][data-tl-near] > [data-tl-cat-body] {
+	transform: translateY(-2px) scale(1.04);
+}
+/* 6 menu entries since v1.0.0 (mute / focus added): allow a second row instead of
+   clipping, while keeping the single-row pill shape for the original four. */
+body[data-dsh-tianlight] [data-tl-cat] > [data-tl-catmenu] {
+	flex-wrap: wrap;
+	width: max-content;
+	max-width: 320px;
+	border-radius: 16px;
+	justify-content: center;
+}
+
+/* ---- legacy liquid-glass tokens (still consumed by the hub preview/pills) ----
+   v2.2.9: the depth is no longer painted on the scene layer. The token stack below
+   remains only for the small self-owned preview swatch; bounded panels use the new
+   host-tint / ::before-blur / ::after-edge recipe at the end of this sheet. */
+body[data-dsh-tianlight] {
+	--tl-liquid-blur: 0px;
+	--tl-liquid-sat: 1;
+	--tl-liquid-hi: 0;
+	--tl-liquid-lo: 0;
+	--tl-liquid-noise: 0;
+	--tl-liquid-sheen: 0;
+	/* v2.2.0 live mode: the only place the stylesheet re-samples the wallpaper in
+	   real time. These are the plain defaults; each depth and the dark theme tune
+	   them below, so the live look still follows the selected depth. */
+	--tl-liquid-live-blur: 2px;
+	--tl-liquid-live-sat: 1.9;
+	--tl-liquid-live-bright: 0.92;
+	--tl-liquid-live-contrast: 1.1;
+	/* v1.6.1 liquid glass v2, re-tuned in v2.2.0 against the white cast. The
+	   surface/size pairs below are the complete multi-layer recipe every glass
+	   surface paints: a baked feTurbulence grain tile (size --tl-liquid-grain), a
+	   cool bottom-right tint, the diagonal sheen, the top-left radial specular, and
+	   a faint bottom-edge thickness gradient. The flat pair is the same recipe
+	   without the tiled grain, for surfaces that appear in large numbers (transcript
+	   bubbles). Speculars are deliberately cool and low-alpha: white was the main
+	   reason every panel looked like a grey-white veil over the wallpaper. */
+	--tl-liquid-grain: 140px;
+	--tl-liquid-rim: 0;
+	--tl-liquid-grain-image: none;
+	--tl-liquid-surface:
+		var(--tl-liquid-grain-image),
+		radial-gradient(120% 100% at 100% 100%, rgba(120, 170, 235, calc(0.05 + var(--tl-liquid-noise) * 1.2)) 0%, rgba(96, 146, 214, calc(0.03 + var(--tl-liquid-noise) * 0.6)) 42%, rgba(80, 130, 200, 0) 72%),
+		linear-gradient(115deg, rgba(216, 233, 250, var(--tl-liquid-hi)) 0%, rgba(216, 233, 250, 0) 32%, rgba(216, 233, 250, 0) 62%, rgba(216, 233, 250, var(--tl-liquid-lo)) 100%),
+		radial-gradient(120% 80% at 14% 4%, rgba(220, 238, 252, var(--tl-liquid-hi)) 0%, rgba(220, 238, 252, 0) 56%),
+		linear-gradient(180deg, rgba(9, 24, 42, 0) 0%, rgba(9, 24, 42, 0) 76%, rgba(9, 24, 42, calc(0.05 + var(--tl-liquid-noise) * 0.55)) 100%);
+	--tl-liquid-surface-size: var(--tl-liquid-grain) var(--tl-liquid-grain), auto, auto, auto, auto;
+	--tl-liquid-surface-flat:
+		radial-gradient(120% 100% at 100% 100%, rgba(120, 170, 235, calc(0.05 + var(--tl-liquid-noise) * 1.2)) 0%, rgba(96, 146, 214, calc(0.03 + var(--tl-liquid-noise) * 0.6)) 42%, rgba(80, 130, 200, 0) 72%),
+		linear-gradient(115deg, rgba(216, 233, 250, var(--tl-liquid-hi)) 0%, rgba(216, 233, 250, 0) 32%, rgba(216, 233, 250, 0) 62%, rgba(216, 233, 250, var(--tl-liquid-lo)) 100%),
+		radial-gradient(120% 80% at 14% 4%, rgba(220, 238, 252, var(--tl-liquid-hi)) 0%, rgba(220, 238, 252, 0) 56%),
+		linear-gradient(180deg, rgba(9, 24, 42, 0) 0%, rgba(9, 24, 42, 0) 76%, rgba(9, 24, 42, calc(0.05 + var(--tl-liquid-noise) * 0.55)) 100%);
+	--tl-liquid-surface-flat-size: auto, auto, auto, auto;
+	--tl-liquid-fallback-boost: radial-gradient(120% 90% at 18% 6%, rgba(170, 215, 255, calc(0.03 + var(--tl-liquid-sheen) * 0.06)) 0%, rgba(120, 170, 230, 0) 62%);
+	/* v2.2.7: the shared 1px light/dark rim is gone, and so is the sidebar's 1px white
+	   right edge — those were the "every surface has an obvious line" report (the
+	   sidebar edge was worst). Separation is the surface stack, the broad inner lens
+	   shadow and the outer soft glow; only a 0.12-alpha hairline ring remains. */
+	--tl-liquid-rim-shadow: inset 0 0 0 0 rgba(0, 0, 0, 0);
+	/* v2.2.9: the 22px/60px inner lens shadow was the main "the pane base is too dark"
+	   contributor. Bounded surfaces now use one inset top/bottom hairline instead. */
+	--tl-liquid-glow-shadow: 0 0 calc(6px + 14px * var(--tl-liquid-sheen)) rgba(150, 200, 250, calc(var(--tl-liquid-sheen) * 0.10));
+}
+body[data-dsh-tianlight][data-tl-glass-effective="soft"] {
+	--tl-liquid-blur: 11px;
+	--tl-liquid-sat: 1.3;
+	--tl-liquid-hi: 0.08;
+	--tl-liquid-lo: 0.02;
+	--tl-liquid-noise: 0.03;
+	--tl-liquid-sheen: 0.18;
+	--tl-liquid-grain: 180px;
+	--tl-liquid-rim: 0.30;
+	--tl-liquid-live-blur: 2px;
+	--tl-liquid-live-sat: 1.8;
+	--tl-liquid-live-bright: 0.93;
+	--tl-liquid-live-contrast: 1.1;
+	--tl-liquid-grain-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'140'%20height%3D'140'%3E%3Cfilter%20id%3D'n'%3E%3CfeTurbulence%20type%3D'fractalNoise'%20baseFrequency%3D'0.9'%20numOctaves%3D'2'%20stitchTiles%3D'stitch'%2F%3E%3CfeColorMatrix%20type%3D'saturate'%20values%3D'0'%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D'140'%20height%3D'140'%20filter%3D'url(%23n)'%20opacity%3D'0.035'%2F%3E%3C%2Fsvg%3E");
+}
+body[data-dsh-tianlight][data-tl-glass-effective="real"] {
+	--tl-liquid-blur: 19px;
+	--tl-liquid-sat: 1.5;
+	--tl-liquid-hi: 0.12;
+	--tl-liquid-lo: 0.03;
+	--tl-liquid-noise: 0.045;
+	--tl-liquid-sheen: 0.35;
+	--tl-liquid-grain: 140px;
+	--tl-liquid-rim: 0.36;
+	--tl-liquid-live-blur: 3px;
+	--tl-liquid-live-sat: 1.95;
+	--tl-liquid-live-bright: 0.91;
+	--tl-liquid-live-contrast: 1.1;
+	--tl-liquid-grain-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'140'%20height%3D'140'%3E%3Cfilter%20id%3D'n'%3E%3CfeTurbulence%20type%3D'fractalNoise'%20baseFrequency%3D'0.9'%20numOctaves%3D'2'%20stitchTiles%3D'stitch'%2F%3E%3CfeColorMatrix%20type%3D'saturate'%20values%3D'0'%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D'140'%20height%3D'140'%20filter%3D'url(%23n)'%20opacity%3D'0.05'%2F%3E%3C%2Fsvg%3E");
+}
+body[data-dsh-tianlight][data-tl-glass-effective="frosted"] {
+	--tl-liquid-blur: 26px;
+	--tl-liquid-sat: 0.95;
+	--tl-liquid-hi: 0.16;
+	--tl-liquid-lo: 0.02;
+	--tl-liquid-noise: 0.10;
+	--tl-liquid-sheen: 0.08;
+	--tl-liquid-grain: 110px;
+	--tl-liquid-rim: 0.40;
+	--tl-liquid-live-blur: 6px;
+	--tl-liquid-live-sat: 1.1;
+	--tl-liquid-live-bright: 0.98;
+	--tl-liquid-live-contrast: 1.04;
+	--tl-liquid-grain-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'140'%20height%3D'140'%3E%3Cfilter%20id%3D'n'%3E%3CfeTurbulence%20type%3D'fractalNoise'%20baseFrequency%3D'0.9'%20numOctaves%3D'2'%20stitchTiles%3D'stitch'%2F%3E%3CfeColorMatrix%20type%3D'saturate'%20values%3D'0'%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D'140'%20height%3D'140'%20filter%3D'url(%23n)'%20opacity%3D'0.12'%2F%3E%3C%2Fsvg%3E");
+}
+/* v2.2.9: the scene layer is a wallpaper, not glass. The old full-viewport
+   grain + tint + inner vignette ::after here put a fog layer over every wallpaper
+   and fought the time-of-day dim rule in 35-context.js for the same pseudo element.
+   Glass is painted only on bounded controls now. The period dim keeps ::after. */
+
+/* ---- v2.2.9 real glass: tint on the host, blur on ::before, light on ::after ----
+   Contract (regression-tested by tools/check-css.mjs):
+   - the HOST never has filter / backdrop-filter / transform / will-change; those
+     properties would create a containing block for the product's position:fixed
+     sidebar toggle and every non-portaled tooltip;
+   - the blur lives on ::before, which is not an ancestor of those fixed children;
+   - the 1px edge is a GRADIENT on ::after, masked to the border, so it follows the
+     corner radius and never reads as a uniform white ring;
+   - large panels get a low-alpha tint (0.06-0.10 light / 0.16-0.24 dark), not an
+     opaque fill. Depth changes blur/saturation only. Live mode is the only path
+     that re-samples the wallpaper; low power removes every backdrop-filter. */
+body[data-dsh-tianlight] {
+	/* Compatibility tokens still consumed by the hub preview and the small pills. */
+	--tl-liquid-grain: 140px;
+	--tl-liquid-grain-image: none;
+	--tl-liquid-live-bright: 0.92;
+}
+body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) {
+	--tl-glass-sheen: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 30%);
+}
+body[data-dsh-tianlight][data-tl-glass-effective="soft"] {
+	--tl-glass-blur-live: 10px;
+	--tl-glass-sat-live: 1.5;
+	--tl-glass-menu-blur-live: 16px;
+}
+body[data-dsh-tianlight][data-tl-glass-effective="frosted"] {
+	--tl-glass-blur-live: 26px;
+	--tl-glass-sat-live: 1.2;
+	--tl-glass-menu-blur-live: 28px;
+	--tl-glass-tint: rgba(255, 255, 255, calc(0.14 * var(--tl-glass-m, 1)));
+	--tl-liquid-grain-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'140'%20height%3D'140'%3E%3Cfilter%20id%3D'n'%3E%3CfeTurbulence%20type%3D'fractalNoise'%20baseFrequency%3D'0.9'%20numOctaves%3D'2'%20stitchTiles%3D'stitch'%2F%3E%3CfeColorMatrix%20type%3D'saturate'%20values%3D'0'%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D'140'%20height%3D'140'%20filter%3D'url(%23n)'%20opacity%3D'0.05'%2F%3E%3C%2Fsvg%3E");
+}
+body[data-dsh-tianlight][data-ds-dark-theme] {
+	--tl-glass-sheen: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0) 30%);
+	--tl-liquid-live-bright: 0.92;
+}
+body[data-dsh-tianlight][data-ds-dark-theme][data-tl-glass-effective="frosted"] {
+	--tl-glass-tint: rgba(12, 18, 28, calc(0.26 * var(--tl-glass-m, 1)));
+}
+body[data-dsh-tianlight][data-ds-dark-theme][data-tl-glass-effective="real"] {
+	--tl-liquid-live-bright: 0.92;
+}
+
+/* One host recipe for every bounded glass surface. The sidebar column is included,
+   but only its runtime-stamped column node ([data-tl-sidebar-col]); the product frame
+   was the v2.2.8 full-window smoked overlay. */
+body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) :is([data-tl-sidebar-col], [data-tl-wall], [data-tl-settings], [data-tl-hub] [data-tl-hub-panel], [data-tl-menu], [data-tl-composer]) {
+	isolation: isolate;
+	background-color: var(--tl-glass-tint) !important;
+	background-image: var(--tl-glass-sheen) !important;
+	border-color: transparent !important;
+	box-shadow:
+		inset 0 1px 1px rgba(255, 255, 255, 0.18),
+		inset 0 -1px 1px rgba(0, 0, 0, 0.06),
+		0 8px 32px rgba(0, 0, 0, 0.12) !important;
+}
+body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) [data-tl-sidebar-col] {
+	/* Anchor for ::before/::after. position:relative alone does NOT change the
+	   containing block of position:fixed descendants; a filter would. */
+	position: relative;
+}
+body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) [data-tl-wall] {
+	background-color: var(--tl-wall-tint, var(--tl-glass-tint)) !important;
+}
+body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) [data-tl-menu] {
+	background-color: var(--tl-glass-tint-menu) !important;
+}
+body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) [data-tl-hub] [data-tl-hub-panel] {
+	background-color: var(--tl-glass-tint-menu) !important;
+}
+body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) :is([role="dialog"], [role="menu"], [role="listbox"], [role="tooltip"], [role="tabpanel"]) {
+	/* ARIA fallback surfaces that the bridge has not stamped. Tint only: these can be
+	   product-owned layers with their own fixed children, so they never gain a blur. */
+	background-color: var(--tl-glass-tint-menu) !important;
+	border-color: transparent !important;
+}
+body[data-dsh-tianlight][data-ds-dark-theme]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) :is([data-tl-sidebar-col], [data-tl-wall], [data-tl-settings], [data-tl-hub] [data-tl-hub-panel], [data-tl-menu], [data-tl-composer]) {
+	box-shadow:
+		inset 0 1px 1px rgba(255, 255, 255, 0.10),
+		inset 0 -1px 1px rgba(0, 0, 0, 0.10),
+		0 8px 32px rgba(0, 0, 0, 0.35) !important;
+}
+body[data-dsh-tianlight][data-tl-glass-effective="frosted"] :is([data-tl-sidebar-col], [data-tl-wall], [data-tl-settings], [data-tl-hub] [data-tl-hub-panel], [data-tl-composer]) {
+	background-image: var(--tl-liquid-grain-image), var(--tl-glass-sheen) !important;
+	background-size: 140px 140px, auto;
+	background-repeat: repeat, no-repeat;
+}
+body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) :is([data-tl-sidebar-col], [data-tl-wall], [data-tl-settings], [data-tl-hub] [data-tl-hub-panel], [data-tl-menu], [data-tl-composer])::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	pointer-events: none;
+	z-index: -1;
+	background: transparent;
+}
+body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) :is([data-tl-sidebar-col], [data-tl-wall], [data-tl-settings], [data-tl-hub] [data-tl-hub-panel], [data-tl-menu], [data-tl-composer])::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	padding: 1px;
+	pointer-events: none;
+	z-index: 1;
+	background: linear-gradient(135deg, var(--tl-glass-edge-hi) 0%, var(--tl-glass-edge-mid) 28%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.06) 72%, var(--tl-glass-edge-lo) 100%);
+	-webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+	-webkit-mask-composite: xor;
+	mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+	mask-composite: exclude;
+}
+/* The sidebar has a fixed child toggle; the pseudo is NOT its ancestor, so the
+   toggle stays anchored to the viewport. Never add a filter to the column itself. */
+
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+	/* Live on: the one real glass path. This is the only place a large panel samples
+	   the wallpaper; the pseudo layer keeps every fixed descendant anchored. */
+	body[data-dsh-tianlight][data-tl-glass-live-effective="on"] :is([data-tl-sidebar-col], [data-tl-wall], [data-tl-settings], [data-tl-hub] [data-tl-hub-panel], [data-tl-composer])::before {
+		-webkit-backdrop-filter: blur(var(--tl-glass-blur-live)) saturate(var(--tl-glass-sat-live)) brightness(var(--tl-glass-bright-live)) contrast(var(--tl-glass-contrast-live));
+		backdrop-filter: blur(var(--tl-glass-blur-live)) saturate(var(--tl-glass-sat-live)) brightness(var(--tl-glass-bright-live)) contrast(var(--tl-glass-contrast-live));
+	}
+	body[data-dsh-tianlight][data-tl-glass-live-effective="on"] [data-tl-menu]::before {
+		-webkit-backdrop-filter: blur(var(--tl-glass-menu-blur-live)) saturate(var(--tl-glass-sat-live)) brightness(var(--tl-glass-bright-live)) contrast(var(--tl-glass-contrast-live));
+		backdrop-filter: blur(var(--tl-glass-menu-blur-live)) saturate(var(--tl-glass-sat-live)) brightness(var(--tl-glass-bright-live)) contrast(var(--tl-glass-contrast-live));
+	}
+	/* Composer lens: the SVG filter only bends an 18px band at the rounded edge;
+	   the centre is untouched. It is gated on real depth + runtime support and is
+	   optional; the blur above still works when the browser rejects the SVG filter. */
+	body[data-dsh-tianlight][data-tl-glass-effective="real"][data-tl-glass-lens-support="1"][data-tl-glass-live-effective="on"] [data-tl-composer]::before {
+		-webkit-backdrop-filter: url(#tl-glass-lens-filter) blur(var(--tl-glass-blur-live)) saturate(var(--tl-glass-sat-live)) brightness(var(--tl-glass-bright-live)) contrast(var(--tl-glass-contrast-live));
+		backdrop-filter: url(#tl-glass-lens-filter) blur(var(--tl-glass-blur-live)) saturate(var(--tl-glass-sat-live)) brightness(var(--tl-glass-bright-live)) contrast(var(--tl-glass-contrast-live));
+	}
+}
+
+/* Static fallback = live off, low power and the 15 fps tier. Still tinted glass,
+   never an opaque sheet; and no sampling, so the wallpaper stays crisp. */
+body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"])[data-tl-glass-live-effective="off"] :is([data-tl-sidebar-col], [data-tl-wall], [data-tl-settings], [data-tl-hub] [data-tl-hub-panel], [data-tl-composer]) {
+	background-color: var(--tl-glass-tint-static) !important;
+}
+body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"])[data-tl-glass-live-effective="off"] [data-tl-menu] {
+	background-color: var(--tl-glass-tint-menu) !important;
+}
+body[data-dsh-tianlight][data-tl-lowpower]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) :is([data-tl-sidebar-col], [data-tl-wall], [data-tl-settings], [data-tl-hub] [data-tl-hub-panel], [data-tl-menu], [data-tl-composer]),
+body[data-dsh-tianlight][data-tl-render-tier="15"]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) :is([data-tl-sidebar-col], [data-tl-wall], [data-tl-settings], [data-tl-hub] [data-tl-hub-panel], [data-tl-menu], [data-tl-composer]) {
+	background-color: var(--tl-glass-tint-lowpower) !important;
+}
+/* Acceptance 5: at low power / 15 fps there is no backdrop-filter anywhere. This
+   includes the base composer fuzz and the small pills that predate the depth presets. */
+body[data-dsh-tianlight][data-tl-lowpower] :is([data-tl-composer], [data-tl-model], [data-tl-rheo][data-tl-rheo-empty], [data-tl-menu], [data-tl-new-chat], [data-tl-weather-chip], [data-tl-glass-preview])::before,
+body[data-dsh-tianlight][data-tl-render-tier="15"] :is([data-tl-composer], [data-tl-model], [data-tl-rheo][data-tl-rheo-empty], [data-tl-menu], [data-tl-new-chat], [data-tl-weather-chip], [data-tl-glass-preview])::before,
+body[data-dsh-tianlight][data-tl-lowpower] :is([data-tl-composer], [data-tl-model], [data-tl-rheo][data-tl-rheo-empty], [data-tl-menu], [data-tl-new-chat], [data-tl-weather-chip], [data-tl-glass-preview]),
+body[data-dsh-tianlight][data-tl-render-tier="15"] :is([data-tl-composer], [data-tl-model], [data-tl-rheo][data-tl-rheo-empty], [data-tl-menu], [data-tl-new-chat], [data-tl-weather-chip], [data-tl-glass-preview]) {
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+}
+body[data-dsh-tianlight][data-tl-lowpower] :is([data-tl-sidebar-col], [data-tl-wall], [data-tl-settings], [data-tl-hub] [data-tl-hub-panel], [data-tl-menu], [data-tl-composer])::before,
+body[data-dsh-tianlight][data-tl-render-tier="15"] :is([data-tl-sidebar-col], [data-tl-wall], [data-tl-settings], [data-tl-hub] [data-tl-hub-panel], [data-tl-menu], [data-tl-composer])::before {
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+}
+
+/* Small floating controls keep their existing compact glass. They are host-blurred
+   today; the low-power rule above removes that blur. At real depth the two existing
+   pills use the same saturation as the panels. */
+body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) :is([data-tl-model], [data-tl-rheo][data-tl-rheo-empty], [data-tl-new-chat], [data-tl-weather-chip], [data-tl-glass-preview]) {
+	border-color: transparent !important;
+	box-shadow:
+		inset 0 1px 1px rgba(255, 255, 255, 0.16),
+		0 6px 20px rgba(0, 0, 0, 0.14) !important;
+}
+body[data-dsh-tianlight][data-ds-dark-theme]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) :is([data-tl-model], [data-tl-rheo][data-tl-rheo-empty], [data-tl-new-chat], [data-tl-weather-chip], [data-tl-glass-preview]) {
+	box-shadow:
+		inset 0 1px 1px rgba(255, 255, 255, 0.10),
+		0 6px 20px rgba(0, 0, 0, 0.30) !important;
+}
+
+/* Scene-less fallback: a quiet depth wash behind the UI, never a full-screen blur. */
+body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) [data-tl-liquid-fallback] {
+	position: fixed;
+	inset: 0;
+	z-index: -1;
+	pointer-events: none;
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(8, 16, 28, 0.08) 100%);
+}
+body[data-dsh-tianlight][data-tl-glass-effective="off"] [data-tl-liquid-fallback] {
+	display: none;
+}
+body[data-dsh-tianlight][data-tl-lowpower] [data-tl-liquid-fallback] {
+	background: rgba(8, 16, 28, 0.12);
+}
+
+/* Inputs keep a hairline only; never a filter that could re-anchor IME/caret. */
+body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) textarea,
+body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) [contenteditable="true"],
+body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) [role="textbox"],
+body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) input:not([type="checkbox"]):not([type="radio"]):not([type="range"]) {
+	border-color: color-mix(in srgb, var(--tl-glass-edge-hi) 18%, transparent);
+	box-shadow: none;
+}
+
+/* Off-depth keeps the v2.2.8 look: only the rules gated on a non-off effective
+   depth above are new. The old 0.66/0.72 full-frame sidebar overlay is gone. */
+body[data-dsh-tianlight][data-ds-dark-theme][data-tl-glass-effective="off"] [data-tl-composer] {
+	background: var(--tl-glass-fill) !important;
+}
 
 
 
@@ -314,19 +1337,94 @@ body[data-dsh-tianlight] .tl-fx-readout {
 
 
 body[data-dsh-tianlight] {
-	--tl-legibility-solid: rgba(250, 252, 255, 0.97);
+	--tl-legibility-solid: rgba(250, 252, 255, 0.40);
 	--tl-legibility-shadow: 0 1px 2px rgba(8, 24, 44, 0.28);
 }
 body[data-dsh-tianlight][data-ds-dark-theme] {
-	--tl-legibility-solid: rgba(14, 22, 36, 0.97);
+	--tl-legibility-solid: rgba(14, 22, 36, 0.40);
 	--tl-legibility-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
 }
 body[data-dsh-tianlight][data-tl-legibility="boost"] [data-tl-wall],
 body[data-dsh-tianlight][data-tl-legibility="boost"] [data-tl-font-panel] {
+	--tl-wall-tint: var(--tl-legibility-solid) !important;
 	--tl-panel-fill: var(--tl-legibility-solid) !important;
 	background-color: var(--tl-legibility-solid) !important;
 	text-shadow: var(--tl-legibility-shadow);
 }
+body[data-dsh-tianlight][data-tl-legibility="boost"]:not([data-tl-lowpower]):not([data-tl-render-tier="15"]) :is([data-tl-wall], [data-tl-font-panel])::before {
+	-webkit-backdrop-filter: blur(max(var(--tl-glass-blur-live, 16px), 28px)) saturate(var(--tl-glass-sat-live, 1.6)) brightness(var(--tl-glass-bright-live, 1)) contrast(var(--tl-glass-contrast-live, 1.04));
+	backdrop-filter: blur(max(var(--tl-glass-blur-live, 16px), 28px)) saturate(var(--tl-glass-sat-live, 1.6)) brightness(var(--tl-glass-bright-live, 1)) contrast(var(--tl-glass-contrast-live, 1.04));
+}
+
+
+#film {
+  --ink: #EAF2FF;
+  --cyan: #7FE2FF;
+  --gold: #FFD696;
+  --sans: "Segoe UI Variable Text", "Segoe UI", "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+  --serif: "Source Han Serif SC Heavy", "Noto Serif SC", "STZhongsong", "SimSun", serif;
+  position: fixed; inset: 0; overflow: hidden; background: #000;
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  text-rendering: geometricPrecision;
+  user-select: none; -webkit-user-select: none;
+}
+#film * { box-sizing: border-box; }
+#film button { font: inherit; }
+#film .controls { display: none !important; }
+#film .debug-label { display: none !important; }
+#film .title-copy { transform-origin: 0 0; }
+#film { position: fixed; inset: 0; overflow: hidden; background: #000; }
+#film .canvas { position: absolute; inset: 0; z-index: 10; width: 100%; height: 100%; display: block; opacity: 0; transition: opacity 300ms linear; }
+#film .canvas.on { opacity: 1; }
+#film .subtitle { position: absolute; left: 8.5%; bottom: 30%; z-index: 22;
+  font-family: var(--serif); font-weight: 400; font-size: 22px; line-height: 1.4;
+  letter-spacing: .12em; color: rgba(255,255,255,.72);
+  text-shadow: 0 1px 22px rgba(0,0,0,.45); opacity: 0;
+  will-change: opacity; pointer-events: none; }
+#film .letterbox { position: absolute; inset: 0; z-index: 40; pointer-events: none; }
+#film .letterbox .bar { position: absolute; left: 0; right: 0; height: 0; background: #000; will-change: transform; }
+#film .letterbox .bar.top { top: 0; }
+#film .letterbox .bar.bottom { bottom: 0; }
+#film .letterbox .bar::after { content: ""; position: absolute; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent); }
+#film .letterbox .bar.top::after { bottom: 0; }
+#film .letterbox .bar.bottom::after { top: 0; }
+#film .controls { position: absolute; right: 26px; bottom: 24px; z-index: 60;
+  display: flex; align-items: center; gap: 8px; padding: 7px;
+  border-radius: 999px; border: 1px solid rgba(255,255,255,.13);
+  background: rgba(5,8,15,.38);
+  -webkit-backdrop-filter: blur(14px) saturate(1.15); backdrop-filter: blur(14px) saturate(1.15);
+  box-shadow: 0 10px 35px rgba(0,0,0,.2); opacity: .45; transition: opacity 220ms ease; }
+#film .controls:hover, #film .controls:focus-within { opacity: 1; }
+#film .controls .controls button:hover, #film .controls button:focus-visible { background: rgba(255,255,255,.1); color: #fff; outline: none; }
+#film .skip-hint { position: absolute; right: 30px; bottom: 74px; z-index: 59;
+  font-size: 11px; letter-spacing: .10em; color: rgba(255,255,255,.62);
+  text-shadow: 0 1px 10px rgba(0,0,0,.3); opacity: 0; pointer-events: none; will-change: opacity; }
+#film .skip-veil { position: absolute; inset: 0; z-index: 45; background: #03050B; opacity: 0; pointer-events: none; }
+#film .debug-label { position: absolute; left: 26px; top: 22px; z-index: 61; display: none; padding: 6px 9px; border-radius: 6px; background: rgba(0,0,0,.5); color: rgba(255,255,255,.7); font: 10px/1.4 ui-monospace, monospace; pointer-events: none; }
+#film .debug .debug-label { display: block; }
+#film .simple-veil { position: absolute; inset: 0; z-index: 50; display: none; background: #03050B; pointer-events: none; }
+#film[data-state="simple"] .simple-veil { display: block; }
+#film .simple-mark { position: absolute; left: 50%; top: 50%; z-index: 51; transform: translate(-50%, -50%); font-family: var(--serif); font-size: clamp(64px,7vw,112px); letter-spacing: .20em; padding-left: .20em; color: #fff; opacity: 0; }
+#film .simple-sub { margin-top: 24px; font-family: var(--sans); font-size: 11px; letter-spacing: .45em; text-align: center; color: rgba(255,255,255,.55); }
+#film .title-copy { position: absolute; inset: 0; z-index: 25; pointer-events: none; opacity: 0; will-change: opacity; }
+#film .tc-brand { position: absolute; left: 50%; top: 660px; transform: translateX(-50%);
+  font-family: var(--sans); font-weight: 800; font-size: 40px; line-height: 40px;
+  letter-spacing: 14px; padding-left: 14px; color: #f5fdff; white-space: nowrap; }
+#film .tc-credit { position: absolute; left: 50%; top: 712px; transform: translateX(-50%);
+  font-family: var(--serif); font-weight: 400; font-size: 27px; line-height: 28px;
+  letter-spacing: 3.2px; color: #faf0dc; white-space: nowrap; }
+#film .tc-l0 { position: absolute; left: 50%; top: 18px; transform: translateX(-50%);
+  font-family: "Cascadia Mono", Consolas, monospace; font-size: 12px; line-height: 16px;
+  letter-spacing: 1.8px; color: rgba(209,247,255,.82); white-space: nowrap; }
+#film .tc-l1, #film .tc-l2 { position: absolute; top: 492px; transform: translateX(-50%);
+  font-family: "Cascadia Mono", Consolas, monospace; font-size: 12px; line-height: 16px;
+  letter-spacing: 1.8px; color: rgba(209,247,255,.82); white-space: nowrap; }
+#film .tc-l1 { left: 376px; }
+#film .tc-l2 { left: 1544px; }
+#film .skip-hint { pointer-events: auto; cursor: pointer; padding: 6px 10px; border-radius: 999px; background: rgba(5,8,15,.35); border: 1px solid rgba(255,255,255,.12); }
+#film .skip-hint:hover { color: #fff; background: rgba(255,255,255,.10); }
 
 
 

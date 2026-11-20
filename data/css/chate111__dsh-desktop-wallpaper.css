@@ -1,45 +1,20 @@
 /* chate111/dsh-desktop-wallpaper — lib/client.js
-   fetched 2026-11-12 from https://raw.githubusercontent.com/chate111/dsh-desktop-wallpaper/main/lib/client.js
+   fetched 2026-11-20 from https://raw.githubusercontent.com/chate111/dsh-desktop-wallpaper/main/lib/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
-display: flex;
-  align-items: center;
-  gap: 8px;
+--dsw-wallpaper-panel-bg: var(--dsw-alias-bg-elevated, var(--dsw-alias-bg-base, #ffffff));
+  --dsw-wallpaper-panel-fg: var(--dsw-alias-label-primary, #1b1b1f);
+  --dsw-wallpaper-panel-line: var(--dsw-alias-line-regular, rgba(0, 0, 0, 0.12));
+  --dsw-wallpaper-panel-soft: var(--dsw-alias-fill-secondary, rgba(0, 0, 0, 0.05));
   box-sizing: border-box;
-  min-height: 36px;
-  margin: 0 2px;
-  padding: 7px 8px;
-  border: none;
-  border-radius: var(--dsw-radius-md);
-  background: transparent;
-  color: var(--dsw-alias-label-primary, inherit);
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-} background: var(--dsw-alias-interactive-bg-hover, rgba(127, 127, 127, 0.16)); } background: var(--dsw-alias-interactive-bg-active, rgba(127, 127, 127, 0.24)); } flex: none; }
-  --dsw-wallpaper-panel-bg: #ffffff;
-  --dsw-wallpaper-panel-fg: #1b1b1f;
-  --dsw-wallpaper-panel-line: rgba(0, 0, 0, 0.12);
-  --dsw-wallpaper-panel-soft: rgba(0, 0, 0, 0.05);
-  position: fixed;
-  z-index: 2147483000;
-  box-sizing: border-box;
-  max-height: min(78vh, 720px);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  padding: 14px;
-  border: 1px solid var(--dsw-wallpaper-panel-line);
-  border-radius: 12px;
-  background: var(--dsw-wallpaper-panel-bg);
+  width: 100%;
+  max-width: 720px;
+  min-width: 0;
+  padding: 14px 0;
   color: var(--dsw-wallpaper-panel-fg);
-  /* No drop shadow: 48px of 32%-black reads as a thick dark halo around a 332px
-     panel, especially over a dark theme. The 1px border is enough separation. */
-  box-shadow: none;
   font: 13px/1.5 system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
 }
-  --dsw-wallpaper-panel-bg: #1f2023;
-  --dsw-wallpaper-panel-fg: #ececf1;
-  --dsw-wallpaper-panel-line: rgba(255, 255, 255, 0.14);
-  --dsw-wallpaper-panel-soft: rgba(255, 255, 255, 0.07);
+  --dsw-wallpaper-panel-line: var(--dsw-alias-line-regular, rgba(255, 255, 255, 0.14));
+  --dsw-wallpaper-panel-soft: var(--dsw-alias-fill-secondary, rgba(255, 255, 255, 0.07));
 }
   display: flex;
   align-items: center;
@@ -81,15 +56,6 @@ display: flex;
   white-space: nowrap;
   cursor: pointer;
 } border-color: currentColor; } opacity: 0.5; cursor: default; }
-  padding: 2px 4px;
-  border: none;
-  background: transparent;
-  color: inherit;
-  opacity: 0.6;
-  font-size: 16px;
-  line-height: 1;
-  cursor: pointer;
-} opacity: 1; }
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
