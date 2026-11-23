@@ -1,13 +1,32 @@
 /* Joxos/dsh-theme-gallery — src/client/presets/cyber/style.css
-   fetched 2026-11-15 from https://raw.githubusercontent.com/Joxos/dsh-theme-gallery/main/src/client/presets/cyber/style.css
+   fetched 2026-11-23 from https://raw.githubusercontent.com/Joxos/dsh-theme-gallery/main/src/client/presets/cyber/style.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 :root{--dsw-radius-xs:10px;--dsw-radius-sm:14px;--dsw-radius-md:16px;--dsw-radius-lg:20px;--dsw-radius-xl:24px;--dsw-radius-panel:30px;--dsw-corner-shape:superellipse(1.8)}
 :root,body{--dsw-font-family:"Bahnschrift","DIN Alternate","Segoe UI Variable Display","Segoe UI",-apple-system,BlinkMacSystemFont,sans-serif!important}
 :root,body,body *{--dsw-elevation-panel:0 0 0 1px rgba(34,211,238,.28),0 20px 60px -14px rgba(34,211,238,.38);--dsw-elevation-prominent:0 0 0 1px rgba(34,211,238,.36),0 30px 80px -16px rgba(34,211,238,.5);--dsw-elevation-soft:0 12px 40px -12px rgba(34,211,238,.32);--dsw-elevation-stroke:0 0 0 1px rgba(34,211,238,.24)}
 body *{--dsw-shadow-lv3:0 0 0 1px rgba(34,211,238,.3),0 24px 60px -20px rgba(34,211,238,.42)!important}
-[class*="_card_38jqx"]{--dsw-hovercard-bg:#fbf9ff!important}
-body[data-ds-dark-theme] [class*="_card_38jqx"]{--dsw-hovercard-bg:#0d1222!important}
-[class*="_preview_38jqx"]{background:var(--dsw-specific-input-major)!important}
+/*
+ * Popups are control and reading surfaces, so every popup is opaque by
+ * default — one rule instead of one exception per component.
+ *
+ * DSH portals floating UI beside #root: modal dialogs, menus, anchored
+ * popovers, hover previews and the settings panel all mount as direct body
+ * children outside the application shell (base.css bounds the same region
+ * with `body > :not(#root)` for window-drag subtraction). Those primitives
+ * paint their surfaces from a handful of tokens — bg-base for full-screen
+ * overlay pages, layer-1/2 for preview, popover and modal cards,
+ * menu-surface-fill/specific-menu for menus — so rebinding those tokens on
+ * the portal roots makes every current popup opaque and covers any popup a
+ * future DSH build portals, without naming a hashed CSS-module class. The
+ * page shell under #root keeps the translucent glass tokens, so the aurora
+ * still reads through it.
+ *
+ * Inline popups that stay inside #root (role=dialog/menu/listbox, or the
+ * shortcut-modal marker) take the same binding, so a component that renders
+ * in place cannot fall back to glass. The popup surface is the composer's
+ * opaque `--dsw-specific-input-major`, the same fill the input box uses.
+ */
+body>:not(#root),:where([data-menu-material],[data-shortcut-modal],[role="dialog"],[role="alertdialog"],[role="menu"],[role="listbox"]){--dsw-alias-bg-base:var(--dsw-specific-input-major);--dsw-alias-bg-layer-1:var(--dsw-specific-input-major);--dsw-alias-bg-layer-2:var(--dsw-specific-input-major);--dsw-alias-bg-overlay:var(--dsw-specific-input-major);--dsw-menu-surface-fill:var(--dsw-specific-input-major);--dsw-specific-menu:var(--dsw-specific-input-major);--dsw-menu-backdrop-filter:none}
 :root,body{--dsw-menu-backdrop-filter:blur(28px) saturate(170%)}
 /*
  * Aurora background, canvas-sprite edition.

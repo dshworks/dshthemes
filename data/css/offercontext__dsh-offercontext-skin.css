@@ -1,5 +1,5 @@
 /* offercontext/dsh-offercontext-skin — src/theme.css
-   fetched 2026-11-15 from https://raw.githubusercontent.com/offercontext/dsh-offercontext-skin/main/src/theme.css
+   fetched 2026-11-23 from https://raw.githubusercontent.com/offercontext/dsh-offercontext-skin/main/src/theme.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* DSH 0.2.1-rc.5. Scope everything, including portal surfaces, to the skin. */
 body[data-oc-reading]:not([data-ds-dark-theme]) {
@@ -132,6 +132,17 @@ body[data-oc-reading] .V4vHZW_column {background:transparent;box-shadow:none;bor
 body[data-oc-reading] [data-chat-group-part=response] :is(h1,h2,h3,h4) {color:light-dark(#285b3d,#9fd9c9)}
 body[data-oc-reading] [data-conversation-region=chat] :not(pre)>code {background:light-dark(#edf0dc,#293333);border:1px solid light-dark(#cbbb85,#948471);border-radius:5px;padding:1px 5px;color:light-dark(#31472f,#e8e8ec)}
 body[data-oc-reading] [data-conversation-region=chat] pre {border:1px solid var(--oc-line);border-radius:10px}
+/* Reading typography is limited to chat prose UI, leaving code and controls alone. */
+body[data-oc-reading] [data-conversation-region=chat] [class*="_markdown_"] :is(p, li) {
+  font-family: "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", sans-serif;
+  font-size: 1rem; font-weight: 400; line-height: 1.75;
+}
+body[data-oc-reading] [data-conversation-region=chat] [class*="_markdown_"] :is(p, li) strong {
+  font-family: inherit; font-size: inherit; font-weight: 600; color: inherit;
+}
+body[data-oc-reading] [data-conversation-region=chat] [class*="_markdown_"] :is(h2,h3,h4):not(:first-child) {
+  margin-block-start: 1.25em; margin-block-end: .45em;
+}
 /* Native markdown deliberately expands >=4 columns beyond the chat column.
    Keep the scroll viewport inside the paper; do not clip or shrink cell text. */
 body[data-oc-reading] [data-conversation-region=chat] [class*="_tableScroll"] {

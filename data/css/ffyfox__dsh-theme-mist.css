@@ -1,5 +1,5 @@
 /* ffyfox/dsh-theme-mist — src/client/material.module.css
-   fetched 2026-11-15 from https://raw.githubusercontent.com/ffyfox/dsh-theme-mist/main/src/client/material.module.css
+   fetched 2026-11-23 from https://raw.githubusercontent.com/ffyfox/dsh-theme-mist/main/src/client/material.module.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /*
  * Material layer, part 1 — the page surface (T2.2) and the translucency that
@@ -24,24 +24,31 @@
  * right, the neighbouring haze at the bottom left, and the palette's own
  * vertical ramp underneath. Fixed attachment keeps the gradient still while the
  * panes scroll over it; without it the gradient would slide with the scrolling
- * content and read as a moving backdrop rather than as the page. */
+ * content and read as a moving backdrop rather than as the page.
+ *
+ * The geometry is upstream's, not an approximation of it. backdrop.dart:303-333
+ * paints a *circle* of radius 0.62 x the longest side anchored at (92%, 0),
+ * and the haze at (0, 100%) at 0.55 x the same side, each fading linearly to
+ * zero at its radius. vmax *is* the longest side, so 62vmax reproduces the
+ * same radius at any viewport — 793.6px at 1280x800, the number the Flutter
+ * painter uses.
+ *
+ * What this replaces: an ellipse of 120% x 80% cut off at 70%, which died
+ * 448px down the page instead of 794 and left the lower half of the window
+ * with no colour in it at all. Measured cost: the mean glow alpha over the
+ * page was 0.052 where DSH Go paints 0.084. */
 body[data-dsh-theme-mist] {
-  background-color: var(--dsh-theme-mist-page-base);
-  /* The geometry is upstream's, not an approximation of it. backdrop.dart:303-333
-     paints a *circle* of radius 0.62 x the longest side anchored at (92%, 0),
-     and the haze at (0, 100%) at 0.55 x the same side, each fading linearly to
-     zero at its radius. vmax *is* the longest side, so 62vmax reproduces the
-     same radius at any viewport — 793.6px at 1280x800, the number the Flutter
-     painter uses.
-
-     What this replaces: an ellipse of 120% x 80% cut off at 70%, which died
-     448px down the page instead of 794 and left the lower half of the window
-     with no colour in it at all. Measured cost: the mean glow alpha over the
-     page was 0.052 where DSH Go paints 0.084. */
-  background-image:
+  /* The three layers, named once. The page paints them, and so does every
+     surface that has to *be* the page rather than sit on it: the composer's
+     veil, the plugin page's title bar, and a right panel covering the
+     conversation. One list, one geometry — each of them then lands on the
+     page's own pixels instead of on a solid colour that bands at the glow. */
+  --dsh-theme-mist-page-image:
     radial-gradient(circle 62vmax at 92% 0%, var(--dsh-theme-mist-glow) 0%, transparent 100%),
     radial-gradient(circle 55vmax at 0% 100%, var(--dsh-theme-mist-haze) 0%, transparent 100%),
     linear-gradient(to bottom, var(--dsh-theme-mist-page-top), var(--dsh-theme-mist-page-bottom));
+  background-color: var(--dsh-theme-mist-page-base);
+  background-image: var(--dsh-theme-mist-page-image);
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
@@ -175,10 +182,119 @@ body[data-dsh-theme-mist][data-dsh-theme-mist-sidebar='flat'] [data-slot='root']
   box-shadow: inset -0.5px 0 0 var(--dsw-alias-border-l1);
 }
 
+/* --- ...until the sidebar leaves its column and becomes the drawer ------
+ *
+ * Below a 768px frame the host stops squeezing the centre and lays the column
+ * over the conversation (`data-sidebar-drawer` on the frame, AppFrame.module.css:
+ * `position: absolute` at z-index 71 over a mask at 70). "The page runs
+ * through the sidebar" then has the same hole as the fullscreen right panel:
+ * the page is not what is behind the drawer, the conversation is, and the
+ * mask only dims and blurs it. Measured at 757x903, mist / flat: the drawer's
+ * own rows (Plugins, Tasks, More, the session title) sat on top of the
+ * transcript's paragraphs — two sets of text on each other, neither readable.
+ *
+ * Same treatment as the covering right panel: paint the shared page image,
+ * viewport-anchored, on the element that already carries the column's fill —
+ * the sidebar's root. It is inside the drawer's own stacking level (71), above
+ * the mask, so one paint covers the whole column. The mask still dims the
+ * conversation to the right of the drawer; it is not ours and is not touched.
+ *
+ * Under `sheet` the drawer keeps the host's paint and changes tier only — the
+ * token is re-pointed to the solid twin on the drawer's subtree, because a
+ * drawer over a dimmed conversation has nothing left to be translucent over.
+ * That is the same rule the two OS-level degradation paths apply when a blur is
+ * unavailable, and it is scoped to `sheet` so that flat's own page paint is the
+ * only thing flat declares here. */
+body[data-dsh-theme-mist][data-dsh-theme-mist-sidebar='sheet'] [data-sidebar-drawer] [data-slot='sidebar'] {
+  --dsh-theme-mist-sheet-token: var(--dsh-theme-mist-sheet-solid);
+}
+
+body[data-dsh-theme-mist][data-dsh-theme-mist-sidebar='flat'] [data-sidebar-drawer] [data-slot='sidebar'] > :first-child {
+  background-color: var(--dsh-theme-mist-page-base);
+  background-image: var(--dsh-theme-mist-page-image);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* The right dock (terminal / files / web preview) follows the same choice.
+ *
+ * The host paints its tab host with bg-base, which is transparent, so the dock
+ * read as "no panel at all" while a sheet sidebar read as a drawer — one
+ * setting, two different answers on screen. Re-binding the token inside the
+ * dock hands it the sheet fill through the host's own background declaration;
+ * under `flat` nothing is re-bound here, and the page shows straight through,
+ * exactly as it does on the left. Nothing is painted by us — except when the
+ * panel covers the conversation instead of standing beside it, which is the
+ * next block. */
+body[data-dsh-theme-mist][data-dsh-theme-mist-sidebar='sheet'] [data-dockkit-host] {
+  --dsw-alias-bg-base: var(--dsh-theme-mist-sheet-token);
+}
+
+/* Mirror of the drawer above. The host closes its column with border-l4 (ink
+ * 0.30) on square corners; the sidebar's edge is border-l1 (ink 0.08) with a
+ * 28px corner and a 1px top highlight, so the two columns read as different
+ * materials. Same recipe here, turned around: round the edge that faces the
+ * content, drop the heavy divider, keep the hairline. Flat mode is untouched —
+ * there the two columns are one sheet on purpose. */
+body[data-dsh-theme-mist][data-dsh-theme-mist-sidebar='sheet'] [data-dockkit-host] > :first-child {
+  border-left: 0;
+  border-radius: 28px 0 0 28px;
+  box-shadow:
+    inset 0 0 0 0.5px var(--dsw-alias-border-l1),
+    inset 0 1px 0 var(--dsh-theme-mist-highlight);
+}
+
 body[data-dsh-theme-mist][data-dsh-theme-mist-sidebar='flat'] [data-slot='sidebar'] > :first-child {
   background-color: transparent;
   border-radius: 0;
   box-shadow: none;
+}
+
+/* --- A right panel that covers the conversation is not a column ---------
+ *
+ * "The page runs straight through the panel" holds only while the panel owns a
+ * track: the centre gives way, and the panel stands on page. Below a 768px
+ * frame the host drops that track and stretches the panel to `100vw` over the
+ * centre (`autoFullscreen` in sidebar-right's SidebarRight.tsx; explicit
+ * fullscreen does the same at any width, and a shown panel without a track is
+ * always fullscreen). Nothing paints there — the pane host's only fill is
+ * bg-base, which is transparent — so what ran through was the *conversation*.
+ * Measured at 757x903, mist / flat: the frame carries `data-rightbar-fullscreen`
+ * and `data-rightbar-collapsed`, the panel box is 757x903 at 0,0, and both the
+ * panel and its tab host compute to rgba(0,0,0,0); the Start guide's rows sat
+ * on top of the transcript's paragraphs and its code block.
+ *
+ * A solid page colour cannot stand in for it: the page is a fixed-attachment
+ * stack (glow, haze, ramp), so a flat fill bands against the glow corner — the
+ * same lesson as the composer veil (T5.12) and the plugin page bar (0.1.2). The
+ * pane host repaints the shared page image at the same attachment instead, so a
+ * covering panel *is* the page, only opaque.
+ *
+ * It has to be the pane host and not the panel box around it. The host is the
+ * element the kit already ranks for a covering panel (`z-index: 40`, from
+ * `--dsh-dockkit-dock-layer`), and the conversation keeps bands of its own
+ * above the unpositioned box: the composer seat (9) and a code block's sticky
+ * banner (6) are positioned with a positive z-index, so a page painted on the
+ * box left them floating over it — measured at 757x903 with the box painted:
+ * the composer card and the `bash` banner still sat on the page. The host is
+ * above both, covers the whole panel (757x903 at 0,0 including the tab strip),
+ * and its fill is the one the kit was already pointing at bg-base.
+ *
+ * The hook is sidebar-right's own `data-sidebar-right-panel="fullscreen"` —
+ * semantic, not a hashed class. Under `sheet` nothing is painted: the panel
+ * keeps the host's own background declaration and changes tier only, because a
+ * covering panel has nothing left to be translucent over, so it takes the
+ * sheet's solid twin — the same fallbackFill the two OS-level degradation paths
+ * swap in. */
+body[data-dsh-theme-mist][data-dsh-theme-mist-sidebar='flat'] [data-sidebar-right-panel='fullscreen'] [data-dockkit-host] {
+  background-color: var(--dsh-theme-mist-page-base);
+  background-image: var(--dsh-theme-mist-page-image);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+body[data-dsh-theme-mist][data-dsh-theme-mist-sidebar='sheet'] [data-sidebar-right-panel='fullscreen'] [data-dockkit-host] {
+  --dsw-alias-bg-base: var(--dsh-theme-mist-sheet-solid);
 }
 
 /* --- Glass tiers, re-bound (T5.5) ---------------------------------------
@@ -190,17 +306,79 @@ body[data-dsh-theme-mist][data-dsh-theme-mist-sidebar='flat'] [data-slot='sideba
  * host keep painting. Numbers are DSH Go's (surfaces.dart:159-259).
  *
  * Hooks, never class names: the host's class names carry a per-build hash.
- * The three surfaces we could not reach — cordis' business card, trajectory's
- * tool-catalog row and the conversation's image thumbnail — have no semantic
- * attribute; they are listed in README's known limits. */
+ * Re-checked 2026-11-19 against the installed runtime (0.2.2-rc.5) — three of
+ * the four surfaces once written off as hash-only now have a way in:
+ *
+ * | surface                     | hook                                        |
+ * | cordis business card        | [data-cordis-business-view]                 |
+ * | task-manager editor/footer | [data-testid='task-manager-page'] + element |
+ * | message image thumbnail     | button[data-variant]:has(img)               |
+ * | trajectory tool-catalog row | none — only <details> structure, not taken  |
+ */
 body[data-dsh-theme-mist] [data-message-bubble],
 body[data-dsh-theme-mist] [data-tool],
 body[data-dsh-theme-mist] [data-chat-call-id],
 body[data-dsh-theme-mist] [data-disclosure-header],
 body[data-dsh-theme-mist] [data-compaction-disclosure],
 body[data-dsh-theme-mist] [data-schedule-reminder-entry],
-body[data-dsh-theme-mist] [data-session-schedule-task] {
+body[data-dsh-theme-mist] [data-session-schedule-task],
+body[data-dsh-theme-mist] [data-cordis-business-view] {
   --dsw-alias-bg-base: var(--dsh-theme-mist-card-token);
+}
+
+/* The automation page's instruction editor and save footer paint bg-base
+   themselves but carry no attribute of their own; the page shell does.
+   `data-testid` is the host's own stable test contract — not a hash, and not a
+   class name, so it survives both rebuilds and restyles.
+   `input` is deliberately absent: the page's search box is a border-only field
+   in the host (`.searchField` sets a border and no background), so re-binding
+   the token there would change nothing; the one input that does paint bg-base
+   (`.zoneSearch`) lives in a portalled menu, outside this subtree. */
+body[data-dsh-theme-mist] [data-testid='task-manager-page'] :is(textarea, footer) {
+  --dsw-alias-bg-base: var(--dsh-theme-mist-card-token);
+}
+
+/* Deliberately its own rule, not another name in the list above: an engine
+   without :has() drops the entire rule a selector appears in, and that would
+   take the whole card tier with it. The thumbnail frame is a <button
+   data-variant> whose child is an <img>; no other host button pairs the two. */
+body[data-dsh-theme-mist] button[data-variant]:has(img) {
+  --dsw-alias-bg-base: var(--dsh-theme-mist-card-token);
+}
+
+/* The task editor's detail column paints bg-base as well. It is an <aside>, so
+ * the page shell plus the element name reaches it without a class. Sheet tier,
+ * not card: this is a full-height column, like the sidebar and the dock — and
+ * it gets the same edge, for the same reason. The host closes it with border-l4
+ * (ink 0.30) on square corners; the drawer's edge is border-l1 (ink 0.08) with
+ * a 28px corner and a 1px top highlight. Mirror of the dock, not a new recipe. */
+body[data-dsh-theme-mist][data-dsh-theme-mist-sidebar='sheet'] [data-testid='task-manager-page'] aside {
+  --dsw-alias-bg-base: var(--dsh-theme-mist-sheet-token);
+  border-left: 0;
+  border-radius: 28px 0 0 28px;
+  box-shadow:
+    inset 0 0 0 0.5px var(--dsw-alias-border-l1),
+    inset 0 1px 0 var(--dsh-theme-mist-highlight);
+}
+
+/* The save footer is the one child that reaches the panel's bottom edge, and it
+ * paints the card tier, so its square corner painted straight over the drawer's
+ * 28px corner (measured: 251,252,254 where the page should show through). Give
+ * it the same corner rather than clipping the whole column — a clip would also
+ * cut any popover the form opens. */
+body[data-dsh-theme-mist][data-dsh-theme-mist-sidebar='sheet'] [data-testid='task-manager-page'] aside footer {
+  border-bottom-left-radius: 28px;
+}
+
+/* Under `flat` the whole interface is one sheet, so this column stops being a
+ * drawer too: no fill, no corner, and the host's border-l4 divider gives way to
+ * the same hairline the sidebar keeps in that mode. Leaving the panel raised
+ * here was visible the moment someone switched the setting — one sheet on the
+ * left, a drawer on the right. */
+body[data-dsh-theme-mist][data-dsh-theme-mist-sidebar='flat'] [data-testid='task-manager-page'] aside {
+  border-left: 0;
+  border-radius: 0;
+  box-shadow: inset 0.5px 0 0 var(--dsw-alias-border-l1);
 }
 
 body[data-dsh-theme-mist] [role='menu'],
@@ -215,10 +393,11 @@ body[data-dsh-theme-mist] [role='listbox'] {
  * the composer seat, sticky at the bottom of the conversation, with the message
  * flow scrolling behind it.
  *
- * The blur sits on the seat, not on the card inside it. One blur then covers
- * the whole bottom band, while the card — a translucent fill painted above the
- * blurred backdrop — still reads as glass. A second blur on the card would
- * sample an already-blurred backdrop and pay for it twice.
+ * The blur covers the whole bottom band, not the card inside it, so the card — a
+ * translucent fill painted above the blurred backdrop — still reads as glass. A
+ * second blur on the card would sample an already-blurred backdrop and pay for
+ * it twice. In a session it lives on a pseudo-element of the seat rather than on
+ * the seat's own box; the reason is the popover, and it is the next block.
  *
  * The material variables are declared on the two surfaces themselves, never on
  * body. Measured on Chromium 156: a gradient built from an *inherited* custom
@@ -241,6 +420,52 @@ body[data-dsh-theme-mist] [data-composer-seat][data-conversation-region='compose
   backdrop-filter: var(--dsh-theme-mist-glass-blur);
 }
 
+/* --- ...but in a session the frost moves off the seat's own box ----------
+ *
+ * Any composer popover — the command menu the `+` button opens, `/`, `@` — is
+ * rendered *inside* this seat (`[data-composer-overlay]` sits in the card's
+ * overlay anchor). A backdrop-filter makes an element a backdrop root, and a
+ * descendant inside one can only sample what the root itself paints: the seat
+ * painted a veil and a blur, both opaque or flat, so the popover's own
+ * `backdrop-filter: blur(40px)` (host style, `--dsw-menu-surface-fill` 70 %
+ * white) had nothing to work with.
+ *
+ * T5.9 answered that by switching the whole band's material off while a popover
+ * was open — no frost, no veil — and paid for it with a see-through band: the
+ * composer card is 70 % white over a *blurred* backdrop, so dropping the blur
+ * left the transcript legible through it at 30 % (measured on the built app,
+ * 1524x903 @2x, mist light: worst 231/255 inside the band, 86,225 points off by
+ * more than 2). The band is not allowed to change when a menu opens.
+ *
+ * So the frost moves from the seat's box to a pseudo-element. A pseudo has no
+ * descendants, so it cannot be the popover's backdrop root, while it blurs
+ * exactly the same box at the same radius — measured 1:1 against the old paint:
+ * the whole band came out identical, worst 0/255, and the popover's own blur
+ * came back (its panel measured the same as with no frost above it at all).
+ *
+ * z-index -2 is deliberate: the veil paints at -1, i.e. *above* the frost, so
+ * the composite is still blur(transcript) with the page colour over it. Put the
+ * frost above the veil instead and it would blur the veil's own 36px feather.
+ *
+ * Only the phases where the seat is `position: sticky` — there it is already a
+ * containing block, which is what an absolutely positioned pseudo needs. The
+ * hero page keeps the rule above: its seat is static, nothing scrolls behind
+ * it, and a stray box resolved against an ancestor would blur the page. */
+body[data-dsh-theme-mist] :is([data-phase='active'], [data-content-phase='active']) [data-composer-seat][data-conversation-region='composer'] {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+body[data-dsh-theme-mist] :is([data-phase='active'], [data-content-phase='active']) [data-composer-seat][data-conversation-region='composer']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  -webkit-backdrop-filter: var(--dsh-theme-mist-glass-blur);
+  backdrop-filter: var(--dsh-theme-mist-glass-blur);
+}
+
 /* The veil: DSH Go's BackdropVeil, in CSS (backdrop.dart:111-230).
  *
  * The band under the composer has to hide the message flow scrolling behind it
@@ -251,8 +476,9 @@ body[data-dsh-theme-mist] [data-composer-seat][data-conversation-region='compose
  *
  * A pseudo rather than a mask on the seat, which would feather the composer
  * card sitting inside it. z-index -1 keeps it above the seat's own (now empty)
- * background and below that card: the seat is already a stacking context
- * (position: sticky, z-index 7).
+ * background — and above the frost at -2, so the page colour still lands on a
+ * blurred backdrop — and below that card: the seat is already a stacking
+ * context (position: sticky, z-index 7).
  *
  * The layers are anchored to the viewport, and the one CSS-native way to say that
  * is `background-attachment: fixed` — the same declaration the page canvas above
@@ -295,10 +521,7 @@ body[data-dsh-theme-mist] [data-composer-seat][data-conversation-region='compose
   z-index: -1;
   pointer-events: none;
   background-color: var(--dsh-theme-mist-page-base);
-  background-image:
-    radial-gradient(circle 62vmax at 92% 0%, var(--dsh-theme-mist-glow) 0%, transparent 100%),
-    radial-gradient(circle 55vmax at 0% 100%, var(--dsh-theme-mist-haze) 0%, transparent 100%),
-    linear-gradient(to bottom, var(--dsh-theme-mist-page-top), var(--dsh-theme-mist-page-bottom));
+  background-image: var(--dsh-theme-mist-page-image);
   background-repeat: no-repeat;
   background-attachment: fixed;
   -webkit-mask-image: var(--dsh-theme-mist-veil-mask);
@@ -316,32 +539,6 @@ body[data-dsh-theme-mist] [data-phase='active'] [data-composer-seat][data-conver
   background-attachment: scroll;
   background-size: 100vw 100vh;
   background-position: 100% 100%;
-}
-
-/* --- A menu opened from the composer keeps the page behind it (T5.9) -----
- *
- * `/` and `@` open the host's MenuSurface *inside* the composer: the popover's
- * ancestors are the composer card and this seat. Both of them are painted by
- * the theme in a way that puts a flat, opaque surface between the popover and
- * the page — the seat is a backdrop root (its own backdrop-filter) and its veil
- * paints the page colour at full opacity below 36px. The menu's own
- * `backdrop-filter: blur(40px)` (host style, `--dsw-menu-surface-fill` 58 %
- * white over it) then has nothing to sample, and a 58 % white panel over a flat
- * colour reads as "translucent with nothing behind it" — while the part of the
- * menu that reaches past the composer lets sharp text show through.
- *
- * Measured with the plugin disabled (host glass only): the menu blurs normally.
- * So while a menu is open the seat steps out of the way — no frost, no veil —
- * and hands the page back to the popover. Nothing is visible behind the menu's
- * own panel that the menu does not already cover, and the bar returns to its
- * frosted self the moment the menu closes. */
-body[data-dsh-theme-mist] [data-composer-seat]:has([data-menu-material]) {
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
-}
-
-body[data-dsh-theme-mist] [data-composer-seat]:has([data-menu-material])::before {
-  display: none;
 }
 
 /* The card itself: fill, hairline, top highlight, soft lift. Radius and
@@ -555,10 +752,7 @@ body[data-dsh-theme-mist] * {
  * does not. */
 body[data-dsh-theme-mist] [data-plugin-bar][data-natural]::before {
   background-color: var(--dsh-theme-mist-page-base);
-  background-image:
-    radial-gradient(circle 62vmax at 92% 0%, var(--dsh-theme-mist-glow) 0%, transparent 100%),
-    radial-gradient(circle 55vmax at 0% 100%, var(--dsh-theme-mist-haze) 0%, transparent 100%),
-    linear-gradient(to bottom, var(--dsh-theme-mist-page-top), var(--dsh-theme-mist-page-bottom));
+  background-image: var(--dsh-theme-mist-page-image);
   background-repeat: no-repeat;
   background-attachment: fixed;
 }

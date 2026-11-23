@@ -1,5 +1,5 @@
 /* tcgbp/dsh-flash-skin — src/client/skin.css
-   fetched 2026-11-15 from https://raw.githubusercontent.com/tcgbp/dsh-flash-skin/master/src/client/skin.css
+   fetched 2026-11-23 from https://raw.githubusercontent.com/tcgbp/dsh-flash-skin/master/src/client/skin.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 .flash-skin-backdrop {
   position: fixed;
@@ -51,7 +51,56 @@ body[data-flash-skin="on"] .flash-skin-backdrop {
   mask-image: linear-gradient(270deg, transparent 0%, rgb(0 0 0 / 20%) 10%, black 30%, black 100%);
 }
 
-.flash-skin-backdrop img {
+/* Horizontal flip of the rendered portrait MEDIA (independent of the dual
+   gate). The presenter sets `data-flip` on the backdrop root (=right/left/both).
+   A frame node IS the <img>/<video> element itself (upsertFrame puts the
+   frame class on the media node), so the flip must target the frame element
+   and NOT a nested img/video (which never exists and would match nothing).
+   Each flipped frame gets `scaleX(-1)` AND a REVERSED mask gradient: because
+   scaleX(-1) mirrors the element's own mask too, re-pointing the gradient to
+   the opposite 90/270deg restores the original fade orientation, so the only
+   visible effect is the mirrored image with the mask visually untouched:
+   - data-flip="right"/"both" -> mirror the primary (right) frame
+   - data-flip="left"/"both"  -> mirror the secondary (--left) frame
+   translateY(-50%) is restated so mirroring never drops the vertical
+   centering (transform is fully overridden). */
+.flash-skin-backdrop[data-flip="right"] .flash-skin-sequence-frame:not(.flash-skin-sequence-frame--left),
+.flash-skin-backdrop[data-flip="both"] .flash-skin-sequence-frame:not(.flash-skin-sequence-frame--left) {
+  transform: translateY(-50%) scaleX(-1);
+  mask-image: linear-gradient(270deg, transparent 0%, rgb(0 0 0 / 20%) 10%, black 30%, black 100%);
+}
+.flash-skin-backdrop[data-flip="left"] .flash-skin-sequence-frame--left,
+.flash-skin-backdrop[data-flip="both"] .flash-skin-sequence-frame--left {
+  transform: translateY(-50%) scaleX(-1);
+  mask-image: linear-gradient(90deg, transparent 0%, rgb(0 0 0 / 20%) 10%, black 30%, black 100%);
+}
+
+/* Automatic full-bleed: when the presenter flags the primary frame as
+   landscape (data-full-bleed="on"), let it stretch to cover the whole
+   viewport. Only active in the single-main-image layout gate
+   (data-flash-layout="left", i.e. dual OFF) and only on the sequence media
+   layer, so dual mode / colour backdrops fall back to the compact 42vw chip.
+   transform:none intentionally overrides any scaleX(-1) flip here — full-bleed
+   and horizontal flip are treated as non-combining (the cover fill is the
+   primary visual). object-fit:cover centers the crop at the portrait eye line
+   so heads stay in frame; the 90deg mask preserves the original left-fade. */
+body[data-flash-skin="on"][data-flash-layout="left"]
+  .flash-skin-backdrop[data-media="sequence"][data-full-bleed="on"]
+  .flash-skin-sequence-frame:not(.flash-skin-sequence-frame--left) {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 42%;
+  transform: none;
+  mask-image: linear-gradient(90deg, transparent 0%, rgb(0 0 0 / 20%) 10%, black 30%, black 100%);
+}
+
+/* Frames (both <img> and <video>) default to hidden; the presenter flips the
+   backdrop to data-media="sequence" only when a frame is really attached, and
+   the sequence rule below reveals whichever node carries the frame class. */
+.flash-skin-backdrop img,
+.flash-skin-backdrop video {
   display: none;
 }
 
@@ -85,7 +134,8 @@ body[data-flash-skin="on"][data-scrim="on"] .flash-skin-scrim {
   display: block;
 }
 
-.flash-skin-backdrop[data-media="color"] img {
+.flash-skin-backdrop[data-media="color"] img,
+.flash-skin-backdrop[data-media="color"] video {
   display: none;
 }
 
@@ -232,43 +282,196 @@ html[data-windows-titlebar] body[data-flash-skin="on"] #root [class*="_frame"]:h
   background: transparent !important;
 }
 
-/* Keep the right-hand column an opaque, skin-toned surface so the portrait
-   only shows through the center column. Applies in both the web shell and the
-   desktop host (the preceding :has() rule makes the whole frame transparent,
-   which would otherwise bleed the backdrop behind the rightbar too). The left
-   sidebar keeps its own native surface. */
-body[data-flash-skin="on"] #root [class*="_rightbarCol"] {
-  background: var(--flash-surface, #f5f6f8) !important;
+/* 右侧边栏（_rightbarCol）不涂整块表面：不做列级不透明、不设全表面浓度底、
+ * 不提层，完全保留宿主默认皮肤的原生面板。人像/透明背景只作用于中间内容列
+ * （_column）与整体 frame 透明规则之上。 */
+
+/* 右侧栏“只给文字”加文字背景浓度（复用中间列标题栏/时间线同款配方
+ * --flash-surface + --flash-text-bg-strength）：仅命中右栏面板内直接承载文字的
+ * 文本元素（标题/段落/列表项/单元格/标签/链接/行内文字），让每条文字自带一块
+ * 随 flashStage 白/暗与浓度滑块变化的皮肤小底，读起来清楚、又不整面涂半透明，
+ * 因此收起态不会残留“原位置的半透明面板”。不依赖 dsh-flash。 */
+body[data-flash-skin="on"] #root [class*="_rightbarCol"] [class*="_panelBody"] :is(p, h1, h2, h3, h4, h5, h6, li, td, th, label, summary, a, span, strong, em),
+body[data-flash-skin="on"] #root [class*="_rightbarCol"] [data-dockkit-surface="true"] :is(p, h1, h2, h3, h4, h5, h6, li, td, th, label, summary, a, span, strong, em) {
+  background: color-mix(in srgb, var(--flash-surface, #f5f6f8) var(--flash-text-bg-strength, 75%), transparent) !important;
+  /* 圆角药丸化：方形文字底太突兀 → 加圆角 + 少量横向留白做间隔；
+   * box-decoration-break:clone 让内联元素(span/a/strong…)每个片段也真正圆角，
+   * 而不是方形整块（块级元素本就圆角生效）。仅作用于逐“文字背景小底”，
+   * 不触碰整面面板/整列表面（那仍是平铺底）。不依赖 dsh-flash。 */
+  border-radius: 0.375em !important;
+  padding: 0.06em 0.3em !important;
+  box-decoration-break: clone !important;
+  -webkit-box-decoration-break: clone !important;
+  /* 去掉 Option B 继承下来的“辉光描边”（用户要求，范围=右栏）：右栏容器挂着
+   * 宽柔白辉光 text-shadow(3/9/16/24px)，叠在逐文字药丸底上会成倍扩散糊字。
+   * 这里对右栏直接承载文字的文本元素统一 text-shadow:none，只保留浓度药丸底，
+   * 深浅底色下都锐利。只命中右栏直文字，不影响左栏、中间列、插件面板。不依赖 dsh-flash。 */
+  text-shadow: none !important;
 }
 
-/* 右侧栏面板“全屏/最大化”时不透明且置顶（强健锚点）：
- * 需求：点右侧栏右上角“展开/全屏”最大化后，不得再让底层的中间列会话标题
- * header 与输入卡/composer 透出。此前规则只锚定猜测属性
- * data-sidebar-right-panel="fullscreen" + data-sidebar-right-open="true"，
- * 但未命中真实 DOM，导致最大化后面板透出底层内容。
- * 打包前端不可读、当前又无浏览器控制，无法取到真实全屏属性；改为结构强健锚点：
- *  —— 右侧栏列(_rightbarCol，已知稳定)内的面板表面(_panelBody /
- *     data-dockkit-surface="true")一律强制为不透明皮肤面(随 flashStage 白/暗），
- *     让任何占满整屏的右侧栏内容都以实底盖住中间列的会话头与输入卡；
- *     正常三栏布局下列间不重叠，这些选择器只命中右侧栏内部表面，不误伤普通卡片。
- *  —— 顺带把右侧栏列层级提到中心列之上(position:relative 使 z-index 生效)，
- *     处理“中心内容叠在展开面板之上”的堆叠情形；正常布局下列互不重叠，无副作用。
- *  —— 保留原猜测属性分支，避免个别构建确实设置该属性时漏网（无害）。
- * 锚点只依赖宿主稳定属性与后缀类名约定，不依赖 dsh-flash。 */
-body[data-flash-skin="on"]
-  [data-sidebar-right-panel="fullscreen"][data-sidebar-right-open="true"],
-body[data-flash-skin="on"]
-  [data-sidebar-right-panel="fullscreen"][data-sidebar-right-open="true"] [class*="_panelBody"],
-body[data-flash-skin="on"]
-  [data-sidebar-right-panel="fullscreen"][data-sidebar-right-open="true"] [data-dockkit-surface="true"],
+/* 左侧边栏透明化 + 文字可读底（用户要求）：左侧导航栏本体是 host AppFrame 的
+ * _sidebarCol（grid-area:1/1，即最左列，已在 app.asar 源码核实；并无 _leftbarCol 这类名），
+ * 其背景用的是独立的实心 token --dsw-specific-sidebar-fill —— 全局透明规则只覆写了
+ * --dsw-alias-bg-base，故左栏仍是不透明白。这里把该 token 连同 _sidebarCol 自身背景一并
+ * 覆写为 transparent，让人像/皮肤从左侧栏透出；同时给左栏内直接承载文字的文本元素套中间
+ * 列同款“文字背景浓度”配方 (--flash-surface + --flash-text-bg-strength)，让导航文字始终立在
+ * 可读的皮肤小底上，深色人像也不会透糊。仅命中左栏列体与其中文本，不触碰中间列(_centerCol)、
+ * 右侧栏(_rightbarCol)、插件面板([data-plugin-panel])。不依赖 dsh-flash。 */
+body[data-flash-skin="on"] #root [class*="_sidebarCol"] {
+  --dsw-specific-sidebar-fill: transparent !important;
+  background: transparent !important;
+}
+body[data-flash-skin="on"] #root [class*="_sidebarCol"] :is(p, h1, h2, h3, h4, h5, h6, li, td, th, label, summary, a, strong, em) {
+  background: color-mix(in srgb, var(--flash-surface, #f5f6f8) var(--flash-text-bg-strength, 80%), transparent) !important;
+  /* 与右栏一致：圆角药丸化文字底（方形突兀），横向留白 + box-decoration-break:clone
+   * 让内联文本也能真正圆角。仅作用于逐文字小底，不触碰整列/整面表面。不依赖 dsh-flash。 */
+  border-radius: 0.375em !important;
+  padding: 0.06em 0.3em !important;
+  box-decoration-break: clone !important;
+  -webkit-box-decoration-break: clone !important;
+}
+
+/* 左栏文字纳入浓度控制（用户提供真实 DOM，多段异构结构：会话行 wnFoaW_sessionRow
+ * → wnFoaW_title/wnFoaW_time，工作区行 wnFoaW_projectRow → wnFoaW_projectText>wnFoaW_title，
+ * 区块标题 GAkraW_sectionHeader → GAkraW_sectionLabel，前缀 wnFoaW/GAkraW 各异）。
+ * 与其逐后缀枚举，这里用一条通用结构规则：左栏列体(_sidebarCol)内“直接承载文字”的
+ * span —— 不含 svg 图标，也不是包着其它 span 的父容器 —— 统一连到同一个
+ * --flash-text-bg-strength 浓度控制（80% 兜底，由滑块驱动），并沿用圆角药丸文字底。
+ * 图标槽(_slot/_folder/_chevron，含 svg)、行上动作按钮、输入框均被排除；中间列、右栏、
+ * 插件面板不受影响。:has() 为现代 Chromium/Electron 支持，宿主可视环境安全。不依赖 dsh-flash。 */
+body[data-flash-skin="on"] #root [class*="_sidebarCol"] span:not(:has(svg)):not(:has(span)) {
+  background: color-mix(in srgb, var(--flash-surface, #f5f6f8) var(--flash-text-bg-strength, 80%), transparent) !important;
+  border-radius: 0.375em !important;
+  padding: 0.06em 0.3em !important;
+  box-decoration-break: clone !important;
+  -webkit-box-decoration-break: clone !important;
+  /* 去掉继承的“辉光描边”（用户要求，范围=左栏所有直文字）：左栏容器挂着 Option B
+   * 的宽柔白辉光 text-shadow(3/9/16/24px)，对小号/淡字（时间戳“4天”、区块label
+   * “工作区”等）成倍扩散会糊成一团。这里对左栏所有直接承载文字的 span 统一
+   * text-shadow:none，保留浓度药丸底，深浅底色下都锐利。只命中左栏直文字，
+   * 不影响中间列、右栏、插件面板。不依赖 dsh-flash。 */
+  text-shadow: none !important;
+  /* 贴字底：只让文字下的背景裹住字，空余不铺。左栏标题 span 是 flex:1 的
+   * 弹性项（为省略号与把时间戳推到右侧），会拉伸整行；这里去掉拉伸并让宽度
+   * 按内容收缩，同时 max-width:100% + overflow/text-overflow 保住长名的省略号，
+   * margin-right:auto 把右侧的时间戳/动作位原样推到最右。非弹性 span
+   * （时间戳、区块标题）这些属性本无副作用。 */
+  width: fit-content !important;
+  max-width: 100% !important;
+  flex: 0 1 auto !important;
+  margin-right: auto !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/* 贴字底（所有文字，用户要求“只在文字下加背景、没字的地方不要”）：
+ * 把三处（左栏 _sidebarCol、右栏 _panelBody / data-dockkit-surface、正文
+ * _centerCol>_column）里真正“承载文字”的块级元素（标题/段落/列表项/标签/
+ * 摘要）统一用 width:fit-content 按内容宽度收缩——仍是块级、保持逐块占一行、
+ * 边距正常，只是背景不再横跨整行/整列，空余处不铺。内联元素(a/strong/em/
+ * span)本就是逐字贴底，加上无害。**表格单元格 td/th 不收缩**（那会压坏表格
+ * 布局），故这里不列出 td/th；单元格背景仍铺整格属正常表格样式。长度超宽时
+ * 由 max-width:100% 兜住，不横向溢出。此规则只收窄文字底，不触碰整面面板/
+ * 卡片/标题栏/时间线整面表面（那仍是平铺底，见各容器规则）。不依赖 dsh-flash。 */
+body[data-flash-skin="on"] #root [class*="_sidebarCol"] :is(p, h1, h2, h3, h4, h5, h6, li, label, summary),
+body[data-flash-skin="on"] #root [class*="_rightbarCol"] [class*="_panelBody"] :is(p, h1, h2, h3, h4, h5, h6, li, label, summary),
+body[data-flash-skin="on"] #root [class*="_rightbarCol"] [data-dockkit-surface="true"] :is(p, h1, h2, h3, h4, h5, h6, li, label, summary),
+body[data-flash-skin="on"] #root [class*="_centerCol"] [class*="_column"] :is(p, h1, h2, h3, h4, h5, h6, li, label, summary) {
+  width: fit-content !important;
+  max-width: 100% !important;
+}
+
+/* 左栏「新建会话」主导按钮纳入浓度控制（用户要求）：
+ * 皮肤把左侧 _sidebarCol 列体整体透明化后，左上角那条横向“新建会话”主导按钮
+ * (宿主: <button aria-label="新建会话" aria-keyshortcuts="Control+N">，内含
+ * new-chat 图标 + label + 快捷键) 仍是宿主给的一整块不透明实心底——它既不像列体
+ * 那样被透明规则覆盖，也不被上方左栏/正文文字规则命中(它是 <button> 而非那些
+ * 文本元素，且内藏图标使 span 规则被 :not(:has(svg)) 排除)。
+ * 这里给这条按钮套上“正文文字底同款”的浓度药丸底，随文字背景浓度滑块驱动
+ * (--flash-surface + --flash-text-bg-strength)，并把 label 文字与快捷键提示的颜色
+ * 同步为 --flash-ink / --flash-secondary（随浅/深 flashStage 自动翻转，保证在
+ * 半透明浓度底上深浅两种外壳都清晰可读）。
+ * 锚点用稳定语义属性 aria-label="新建会话"，不依赖宿主随机 hash 类名前缀
+ * (wtg9ga_ 等)；若切到英文界面，把选择器里的“新建会话”换成对应英文标签即可。
+ * 仅命中左栏列体内这条按钮，不触碰会话行/工作区行按钮、中间列、右栏、插件面板。
+ * 不依赖 dsh-flash。 */
+body[data-flash-skin="on"] #root [class*="_sidebarCol"] button[aria-label="新建会话"] {
+  background: color-mix(in srgb, var(--flash-surface, #f5f6f8) var(--flash-text-bg-strength, 80%), transparent) !important;
+  color: var(--flash-ink, #191b1e) !important;
+  border-radius: 0.5em !important;
+}
+body[data-flash-skin="on"] #root [class*="_sidebarCol"] button[aria-label="新建会话"] [class*="_newSessionLabel"] {
+  color: var(--flash-ink, #191b1e) !important;
+}
+body[data-flash-skin="on"] #root [class*="_sidebarCol"] button[aria-label="新建会话"] [class*="_newSessionShortcut"] {
+  color: var(--flash-secondary, #6b7280) !important;
+}
+
+/* 会话标题栏动作文字纳入浓度控制（用户提供真实 DOM，选择“随浓度+圆角底”）：
+ * 会话头部的动作条在中心列 headerResponsive 的 .an3WzG_headerActions 里，可见文字
+ * 是“标准模式”等 agent 预设标签(.dscfja_label)与“1 个后台任务”计数(.Ag-ohG_count)。
+ * 把它们连到同一个 --flash-text-bg-strength 浓度控制（80% 兜底，由滑块驱动），并沿用
+ * 圆角药丸文字底。同时 text-shadow:none 去掉文章栏容器级继承下来的“辉光描边”，让
+ * 这批动作文字只随浓度、不叠辉光（用户明确要求去掉）。仅命中 _headerActions 内的
+ * _label/_count 文字，不动图标、触发器按钮及面包屑/标题本体；中间列外、右栏、插件
+ * 面板不受影响。不依赖 dsh-flash。 */
+body[data-flash-skin="on"] #root [class*="_centerCol"] [class*="_headerActions"] [class*="_label"],
+body[data-flash-skin="on"] #root [class*="_centerCol"] [class*="_headerActions"] [class*="_count"] {
+  background: color-mix(in srgb, var(--flash-surface, #f5f6f8) var(--flash-text-bg-strength, 80%), transparent) !important;
+  border-radius: 0.375em !important;
+  padding: 0.06em 0.3em !important;
+  box-decoration-break: clone !important;
+  -webkit-box-decoration-break: clone !important;
+  text-shadow: none !important;
+}
+
+/* 当前选中的会话行高亮（用户要求）：
+ * 皮肤把左栏列体(_sidebarCol)背景调成透明以透出人像/皮肤。宿主原生
+ * .sessionRow.selected 用的是 --dsw-alias-interactive-bg-hover（默认浅灰药丸），在
+ * 透明列体上叠深色人像时几乎不可见。这里给选中的会话行套一层随 flashStage 自适应
+ * 的 flash-accent 半透明底，并在行左缘用 inset box-shadow 画一条实心 accent 标记
+ * 条，让“当前会话”在浅/深外壳、浅/深人像上都一眼可辨。仅命中左栏会话行
+ * ([class*="_sessionRow"][class*="_selected"])，不碰项目行/其它行、中间列、右栏及
+ * 插件面板；背景与 box-shadow 均不参与布局，不改行动/高度，收起态零残留。
+ * 不依赖 dsh-flash。 */
+body[data-flash-skin="on"] #root [class*="_sidebarCol"] [class*="_sessionRow"][class*="_selected"] {
+  background: color-mix(in srgb, var(--flash-accent, #4176e6) 16%, var(--flash-surface, #f5f6f8)) !important;
+  box-shadow: inset 3px 0 0 var(--flash-accent, #4176e6) !important;
+}
+
+/* 选项 B —— “深/浅底色都能看清”的描边文字（相框式双重描边）。
+ * 用户选择用这一种单一样式来提升可见性：给文字本体套一层中性描边+投影，
+ * 不依赖底下有没有浓度底、也不管人像/皮肤此刻是深是浅。因为本皮肤正文文字
+ * 颜色会随 flashStage 在深/浅间翻转（浅相=深字、深相=浅字），单一“白字黑边”
+ * 不够，这里用“一层浅色光晕 + 一层深色投影”双保险：
+ *   - 浅色光晕：在深相（深底浅字）时把浅字从暗背景里托出来；
+ *   - 深色投影：在浅相（浅底深字）时给深字描出硬边、压住浅底。
+ * 深浅底色、深浅文字都能读。text-shadow 是继承属性，故把描边设在左栏列体
+ * (_sidebarCol)、右栏面板(_panelBody / data-dockkit-surface)、标题栏 header
+ * 这三个容器上，即可继承作用于容器内**所有**文本节点——导航标签多为 span 等
+ * 非文中列举标签、逐标签枚举会漏，设容器层最稳，无需关心内层元素是 span/按钮/div。
+ * 纯 text-shadow，不做任何背景涂面或提层，收起态零残留。不依赖 dsh-flash。
+ *
+ * 注意最难的组合是“浅相深字落在深色人像上”（浅色主题、深色背景）：深字要靠
+ * 白色光晕从暗底上托出。这里用**宽而软的白色辉光**（多层模糊：9/16/24px，靠
+ * 扩散宽度把深字从暗底上托出）——**刻意不用紧贴字形的实心硬边圈**，因为那种
+ * 每向 1px 的满 alpha 描边会把笔画描粗，让字体显得额外加粗（用户明确不要）。
+ * 白辉光在浅底上是“白对白”不可见，不破坏正常可读文字；保留一条向下的深色投影
+ * 处理另一头——“深相浅字落在浅色人像上”（向下投影与辉光不同位，互不遮蔽）。
+ * 四象限仍靠这一条统一描边兜住。 */
+body[data-flash-skin="on"] #root [class*="_sidebarCol"],
 body[data-flash-skin="on"] #root [class*="_rightbarCol"] [class*="_panelBody"],
-body[data-flash-skin="on"] #root [class*="_rightbarCol"] [data-dockkit-surface="true"] {
-  background: var(--flash-surface, #f5f6f8) !important;
+body[data-flash-skin="on"] #root [class*="_rightbarCol"] [data-dockkit-surface="true"],
+body[data-flash-skin="on"] #root [class*="_centerCol"] header[data-window-drag] {
+  text-shadow:
+    0 0 3px rgba(255, 255, 255, 0.95),
+    0 0 9px rgba(255, 255, 255, 0.85),
+    0 0 16px rgba(255, 255, 255, 0.7),
+    0 0 24px rgba(255, 255, 255, 0.5),
+    0 1px 2px rgba(8, 12, 18, 0.45);
 }
-body[data-flash-skin="on"] #root [class*="_rightbarCol"] {
-  position: relative !important;
-  z-index: 2 !important;
-}
+
 
 /* Plugin manager / market / detail renders as the root main slot global panel
  * inside the center column, whose --dsw-alias-bg-base is transparent so the
@@ -281,33 +484,98 @@ body[data-flash-skin="on"] #root [data-plugin-panel] {
   background: var(--flash-surface, #f5f6f8) !important;
 }
 
-/* 会话标题栏可读性（深色人像盲区修复）：中间内容列
- * ([class*="_centerCol"]) 的常驻导航 header（conversation.header，
- * ConversationRoot.module.css 的 .header，是个 <header data-window-drag>）
- * 自身没有任何不透明表面，而宿主的 --dsw-alias-bg-base 又已被本皮肤设为
- * transparent，于是深色的背景人像会直接透到标题文字与图标之后，造成标题不可读。
- * 这里给该 header 一块与正文可读性面板同款的“浓度”配方背景
- * (--flash-surface + --flash-text-bg-strength)，让标题始终立在皮肤面上，
- * 人像仍只从它下方的聊天内容区透出。选择器仅命中“中间内容列内、且为
- * <header data-window-drag>”的常驻标题栏：不触碰左侧栏（自带
- * --dsw-specific-sidebar-fill）、右侧栏（_rightbarCol，另设不透明）、
- * 插件市场（[data-plugin-panel]，另设不透明）。不依赖 dsh-flash。 */
-body[data-flash-skin="on"] #root [class*="_centerCol"] header[data-window-drag] {
-  background: color-mix(in srgb, var(--flash-surface, #f5f6f8) var(--flash-text-bg-strength, 80%), transparent) !important;
+/* Right-sidebar fullscreen panel: opaque, fully covering the chat view.
+ * The host sidebar-right panel is position:absolute (top/bottom/right:0) over
+ * the content area; when [data-sidebar-right-panel="fullscreen"] its dock
+ * layer is elevated (--dsh-dockkit-dock-layer:40) so it sits above the
+ * conversation. Because the chat view lies underneath, giving the panel frame
+ * and every dockkit surface inside an opaque, skin-toned background makes the
+ * fullscreen panel completely hide the conversation's content (including the
+ * transparent-backdrop portrait) instead of showing through a translucent
+ * panel. Scoped to the stable fullscreen data attribute on the right sidebar
+ * only; the left sidebar rail, the collapsed state and the chat surface are
+ * untouched. Does not depend on dsh-flash. */
+body[data-flash-skin="on"] #root [data-sidebar-right-panel="fullscreen"],
+body[data-flash-skin="on"] #root [data-sidebar-right-panel="fullscreen"] [data-dockkit-host="dock"],
+body[data-flash-skin="on"] #root [data-sidebar-right-panel="fullscreen"] [data-dockkit-pane],
+body[data-flash-skin="on"] #root [data-sidebar-right-panel="fullscreen"] [data-dockkit-empty],
+body[data-flash-skin="on"] #root [data-sidebar-right-panel="fullscreen"] [class*="_panelBody"] {
+  background: var(--flash-surface, #f5f6f8) !important;
 }
 
-/* 聊天时间线可读性（深色人像盲区修复）：消息列（dsh-client-ui-chat 的
- * .column，居左布局里就是整条消息时间线，宽度 = --dsh-chat-content-width）
- * 自身是透明的，宿主又把 --dsw-alias-bg-base 设为 transparent，于是深色人像会
- * 直接透到分隔符、时间戳、折叠摘要、运行状态等所有“直接落在列上”的文字之后，
- * 造成时间线不可读。这里给整条消息列一块与正文可读性面板同款的“浓度”配方半
- * 透明底 (--flash-surface + --flash-text-bg-strength)，让时间线上所有内容都立在
- * 皮肤面上，人像仍从左侧/滚动区的空隙（timeline 槽与侧边距）以及消息之间的间
- * 隙透出。选择器控制在中间内容列([class*="_centerCol"])内的 [class*="_column"]：
- * 不触碰左侧栏、右侧栏(_rightbarCol)、插件面板([data-plugin-panel]，另设不透明)、
- * 输入卡(_body/_card 结构，不共用 _column)。不依赖 dsh-flash。 */
-body[data-flash-skin="on"] #root [class*="_centerCol"] [class*="_column"] {
+/* Right-sidebar fullscreen panel: lift text to the primary label color.
+ * With the fullscreen overlay now opaque (rule above), the host's low-contrast
+ * secondary text tokens (--dsw-alias-label-tertiary/secondary, e.g. #81858c on
+ * the light surface) make command/shell output hard to read. Within the stable
+ * fullscreen panel anchor only, blanket the common text elements with the
+ * primary label color: text that is already primary is unchanged, while
+ * grey secondary/tertiary labels are raised for readability. Explicit semantic
+ * colors set with concrete color values (ANSI/status) are untouched. The left
+ * rail, other tabs, the collapsed state and the chat surface are unaffected.
+ * Does not depend on dsh-flash. */
+body[data-flash-skin="on"] #root [data-sidebar-right-panel="fullscreen"] :where(p, h1, h2, h3, h4, h5, h6, li, td, th, label, summary, pre, code, span, strong, em) {
+  color: var(--dsw-alias-label-primary) !important;
+}
+
+/* Right-sidebar tab pane body: also lift text to the primary label color.
+ * The command/shell page the user reads sits in the expanded right sidebar's
+ * tab pane body ([class*="_paneBody"] matches the terminal tab host's
+ * _paneBody_3oazc_321, pane not panel — it never matches the _panelBody used
+ * by the text-density rules above, so those are left alone). The host renders
+ * much of this page with the low-contrast label-tertiary/secondary tokens;
+ * raising them to the primary label color keeps output readable whether the
+ * panel is expanded or fullscreen. Primary text is unchanged, concrete-color
+ * semantics (ANSI/status) are untouched, and the left rail, other panels, the
+ * tab strip chrome and the chat surface are unaffected. Does not depend on
+ * dsh-flash. */
+body[data-flash-skin="on"] #root [class*="_rightbarCol"] [class*="_paneBody"] :where(p, h1, h2, h3, h4, h5, h6, li, td, th, label, summary, pre, code, span, strong, em) {
+  color: var(--dsw-alias-label-primary) !important;
+}
+
+/* 会话标题栏表面完全透明（用户要求）：中间内容列
+ * ([class*="_centerCol"]) 的常驻导航 header（conversation.header，
+ * ConversationRoot.module.css 的 .header，是个 <header data-window-drag>）
+ * 原来的“浓度”配方整面半透明底被移除，改成完全透明，让皮肤/人像从标题栏的
+ * 空白处（两侧留白、标题文字之外的区域）透出来——与“只在文字下加背景、没字的
+ * 地方不要”的方向一致。标题栏内的文字可读性改由下一条逐文字药丸规则承担，
+ * 所以标题不会因透明而看不清。选择器仅命中“中间内容列内、且为
+ * <header data-window-drag>”的常驻标题栏：不触碰左侧栏、右栏(_rightbarCol)、
+ * 插件面板([data-plugin-panel])、输入卡(_body/_card)。不依赖 dsh-flash。 */
+body[data-flash-skin="on"] #root [class*="_centerCol"] header[data-window-drag] {
+  background: transparent !important;
+}
+
+/* 标题栏文字“贴字”药丸（配合上一条透明表面）：标题栏透明后，深色人像会直接
+ * 透到标题文字之后造成不可读（就是原来那面整块底的用途）。这里只给标题栏内的
+ * 纯文字叶子 span（面包屑路径 crumb、tab 标签这类）加同款浓度药丸：结构化
+ * span:not(:has(span)) 避开容器（crumbSeg/titleCluster），:not(:has(:is(button,svg,img)))
+ * 避开图标按钮与带图标的标签，仅剩直排文字的 span 会被披上背景，文字依旧清晰，
+ * 图标与按钮保持原样。不依赖 dsh-flash。 */
+body[data-flash-skin="on"] #root [class*="_centerCol"] header[data-window-drag] span:not(:has(span)):not(:has(:is(button, svg, img))) {
   background: color-mix(in srgb, var(--flash-surface, #f5f6f8) var(--flash-text-bg-strength, 80%), transparent) !important;
+  border-radius: 0.375em !important;
+  padding: 0.06em 0.3em !important;
+  box-decoration-break: clone !important;
+  -webkit-box-decoration-break: clone !important;
+  /* 去掉 Option B 继承下来的“辉光描边”（用户要求，范围=中间标题栏标题）：标题栏
+   * 容器挂着宽柔白辉光 text-shadow(3/9/16/24px)，叠在直排文字药丸底上会成倍糊字。
+   * 这里对标题栏纯文字叶子 span 统一 text-shadow:none，只保留浓度药丸底，深浅底色
+   * 下都锐利。图标/按钮保持原样；只命中中间列标题栏直文字，不影响左栏、右栏、插件面板。
+   * 不依赖 dsh-flash。 */
+  text-shadow: none !important;
+}
+
+/* 会话文字区域最下层那层面板完全透明（用户要求）：中间内容列
+ * ([class*="_centerCol"]) 里的消息列 [class*="_column"]（居左布局即整条消息
+ * 时间线，宽度 = --dsh-chat-content-width）原是上一条“浓度”配方整面半透明底，
+ * 现在改为完全透明，让皮肤/人像从其后的空白处（timeline 槽、侧边距、消息之间
+ * 的间隙）直接透出来——与“只在文字下加背景、没字的地方不要”的方向一致。
+ * 上层逐文字小块（p/h1-h6/li/code/td/th 等，见上方正文可读性规则）仍在列上，
+ * 各自带 --flash-text-bg-strength 浓度底，文字依旧可读，不受本规则影响。
+ * 仅命中中间内容列内的列体，不触碰左栏、右栏(_rightbarCol)、插件面板
+ * ([data-plugin-panel])、输入卡(_body/_card)。不依赖 dsh-flash。 */
+body[data-flash-skin="on"] #root [class*="_centerCol"] [class*="_column"] {
+  background: transparent !important;
 }
 
 /* In desktop modes the host owns a top frame (caption/controls); offset the
@@ -485,11 +753,20 @@ body[data-flash-skin="on"] textarea {
 
 .flash-appearance-choice__identity {
   display: flex;
-  flex: 0 0 auto;
+  flex: 0 1 auto;
   align-items: center;
   gap: 8px;
   min-width: 92px;
+  max-width: 44%;
   white-space: nowrap;
+  overflow: hidden;
+}
+
+.flash-appearance-choice__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 
 .flash-appearance-choice__filmstrip {
@@ -920,7 +1197,8 @@ body[data-flash-skin="on"] textarea {
   min-height: 128px;
 }
 
-.flash-portrait-group__image img {
+.flash-portrait-group__image img,
+.flash-portrait-group__image video {
   display: block;
   width: 100%;
   aspect-ratio: 1 / 1;
@@ -1623,6 +1901,69 @@ body[data-flash-skin="on"][data-flash-layout="left"] [class*="_toBottomSlot"] {
   height: auto;
   flex-wrap: wrap;
   align-items: flex-start;
+}
+
+/* 幻灯片驱动控件：暂停/继续按钮 + 速度滑杆 + 当前帧计数横排一行。
+ * 覆盖基类的固定宽高，随内容自适应。配色沿用 flash-level-control 令牌，
+ * 明暗两套主题都可辨。
+ */
+.flash-level-control--slideshow {
+  width: auto;
+  height: auto;
+  align-items: center;
+  margin: 0 3px;
+}
+
+.flash-slideshow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.flash-slideshow__toggle {
+  min-width: 44px;
+  padding: 3px 8px;
+  border: 1px solid var(--flash-accent, #4176e6);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--flash-accent, #4176e6);
+  font-size: 12px;
+  line-height: 16px;
+  cursor: pointer;
+}
+
+.flash-slideshow__toggle[aria-pressed="true"] {
+  background: var(--flash-accent, #4176e6);
+  border-color: var(--flash-accent, #4176e6);
+  color: #fff;
+}
+
+.flash-slideshow__toggle:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.flash-slideshow__speed {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--flash-secondary, #5b6470);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.flash-slideshow__speed input[type="range"] {
+  width: 88px;
+  accent-color: var(--flash-accent, #4176e6);
+  cursor: pointer;
+}
+
+.flash-slideshow__speed b {
+  min-width: 34px;
+  color: var(--flash-ink, #191b1e);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
 }
 
 .flash-level-control__gauge {
@@ -2465,5 +2806,76 @@ body[data-flash-skin="on"][data-flash-layout="left"] [class*="_toBottomSlot"] {
 
 .flash-preview__done:hover:not(:disabled) {
   background: color-mix(in srgb, var(--dsw-alias-interactive-fg-default, #4073e0) 12%, transparent);
+}
+
+/* 轮次导航（round/turn nav）可见性优化（用户要求）：左侧时间线槽里纵向的
+ * “第几轮”刻度轨，结构 nav[aria-label="轮次导航"] > .scroller(.fadeTop) >
+ * .marks > button.mark(Unloaded=未加载, Active=当前轮)。皮肤当前冻结在深色盘
+ * (--flash-surface≈#1a1d24，--flash-accent 金 #c19a49，--flash-secondary 灰蓝)，
+ * 透明底带 + 文字药丸让轨道前的空白已全透出人像，但这些浅刻度点在深色/人像上
+ * 偏淡。这里只强化“看得见”的层面，不动宿主用内联 translate3d 摆放的位置：
+ * 1) marks 列包一条半透明深色胶囊底带（--flash-surface+浓度，强度略低于正文，
+ *    托住刻度又保留轨道两侧空白透出人像）；
+ * 2) 三态分明：未加载=淡色细空心点，已加载=清晰实心灰点，当前=强调色实心点+
+ *    同色浅光晕环，hover 整体提亮。
+ * 仅命中该 aria 命名的轮次导航，不触碰其它条目。不依赖 dsh-flash。 */
+body[data-flash-skin="on"] #root nav[aria-label="轮次导航"] [class*="_marks"] {
+  width: fit-content !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+  padding: 4px 5px !important;
+  border-radius: 999px !important;
+  background: color-mix(in srgb, var(--flash-surface, #1a1d24) calc(var(--flash-text-bg-strength, 80%) * 0.62), transparent) !important;
+}
+
+/* 所有刻度点统一圆角（胶囊点形）。 */
+body[data-flash-skin="on"] #root nav[aria-label="轮次导航"] button[class*="_mark"] {
+  border-radius: 999px !important;
+}
+
+/* 未加载轮次：淡色细空心点，低调不抢眼。 */
+body[data-flash-skin="on"] #root nav[aria-label="轮次导航"] button[class*="_markUnloaded"] {
+  background: transparent !important;
+  border: 1px solid color-mix(in srgb, var(--flash-secondary, #98a2b3) 55%, transparent) !important;
+  opacity: 0.85 !important;
+}
+
+/* 已加载轮次（非未加载、非当前）：清晰实心灰点。 */
+body[data-flash-skin="on"] #root nav[aria-label="轮次导航"] button[class*="_mark"]:not([class*="_markUnloaded"]):not([class*="_markActive"]) {
+  background: color-mix(in srgb, var(--flash-secondary, #98a2b3) 72%, transparent) !important;
+  border: 1px solid transparent !important;
+  opacity: 1 !important;
+}
+
+/* 当前轮：强调色实心点 + 同色浅光晕环，一眼定位。 */
+body[data-flash-skin="on"] #root nav[aria-label="轮次导航"] button[class*="_markActive"] {
+  background: var(--flash-accent, #c19a49) !important;
+  border: 1px solid transparent !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--flash-accent, #c19a49) 45%, transparent) !important;
+  opacity: 1 !important;
+}
+
+/* hover 提亮，便于点击前定位目标刻度。 */
+body[data-flash-skin="on"] #root nav[aria-label="轮次导航"] button[class*="_mark"]:hover {
+  background: var(--flash-accent, #c19a49) !important;
+  border-color: transparent !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--flash-accent, #c19a49) 40%, transparent) !important;
+  opacity: 1 !important;
+}
+
+/* 文字背景浓度不改浮层提示（tooltip）：宿主悬浮提示普遍以无障碍标准 [role="tooltip"]
+ * 承载，提示文本多是正文/右栏/左栏“文字背景浓度”规则命中的 span、p、strong、em 等。
+ * 这里把落入 tooltip 容器内的这些文本从“文字背景浓度”还原为透明底（底色/配色仍由
+ * tooltip 宿主容器自带承担），提示只保留自身观感，不再叠一层半透明灰；同时撤掉浓度药丸
+ * 加的圆角/留白/片段拆行，避免提示文字糊在一块。仅命中 [role="tooltip"] 容器，
+ * 不影响正文/右栏/左栏的真实文字。置于文件末尾以覆盖其上所有同 important 浓度规则
+ * （含轮次导航胶囊底）。不依赖 dsh-flash。 */
+body[data-flash-skin="on"] [role="tooltip"] :is(p, h1, h2, h3, h4, h5, h6, li, td, th, label, summary, pre, code, span, strong, em, a) {
+  background: transparent !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  box-decoration-break: initial !important;
+  -webkit-box-decoration-break: initial !important;
+  text-shadow: none !important;
 }
 
