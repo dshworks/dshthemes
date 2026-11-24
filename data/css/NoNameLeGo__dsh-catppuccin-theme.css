@@ -1,5 +1,5 @@
 /* NoNameLeGo/dsh-catppuccin-theme — src/client/glass/glass.module.css
-   fetched 2026-11-16 from https://raw.githubusercontent.com/NoNameLeGo/dsh-catppuccin-theme/main/src/client/glass/glass.module.css
+   fetched 2026-11-24 from https://raw.githubusercontent.com/NoNameLeGo/dsh-catppuccin-theme/main/src/client/glass/glass.module.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* ============================================================================
  * Catppuccin glass layer — a toggleable glassmorphism skin for the DeepSeek
@@ -49,6 +49,13 @@
   --dsh-glass-card: color-mix(in srgb, var(--dsw-alias-bg-layer-1) calc(52% * var(--dsh-glass-frost, 1)), transparent);
   --dsh-glass-card-raised: color-mix(in srgb, var(--dsw-alias-bg-layer-1) calc(64% * var(--dsh-glass-frost, 1)), transparent);
   --dsh-glass-card-hover: color-mix(in srgb, var(--dsw-alias-bg-layer-1) calc(76% * var(--dsh-glass-frost, 1)), transparent);
+  /* Issue #41 material half: the alpha the HOST's own menu-surface token uses
+     (`palettes.ts`: `--dsw-menu-surface-fill` = `--dsw-alias-bg-layer-3` at 58%
+     light / 45% dark). Written out here because a custom property cannot
+     reference the very token it overrides, and the card subtree has to rebuild
+     that fill from a multiplier. `tests/glass-css.spec.ts` pins this pair
+     against `palettes.ts`, so the two cannot drift apart silently. */
+  --dsh-glass-menu-fill-base: 58%;
   /* Rim: a real hairline so the pane's silhouette stays readable over a
      busy backdrop (the bare border-l2 token was too faint to carve the
      glass out of the page ground). `rim-strong` is the one step up,
@@ -113,6 +120,9 @@
      of edge light, and a deep neutral drop for separation from the
      backdrop. */
   --dsh-glass-rim: color-mix(in srgb, var(--dsw-alias-label-primary) 24%, transparent);
+  /* Issue #41 material half: the dark half of the stock menu-surface alpha
+     (see the light value and the comment there). */
+  --dsh-glass-menu-fill-base: 45%;
   --dsh-glass-rim-soft: color-mix(in srgb, var(--dsw-alias-label-primary) 16%, transparent);
   /* Same 30% as the light block on purpose: the same alpha reads WEAKER on
      a dark ground, so the dark step must never go below the light one
@@ -233,6 +243,17 @@
         calc(var(--dsh-glass-wash-mix) * var(--dsh-glass-ambience))) 0%,
       var(--dsh-glass-ground) 55%,
       color-mix(in srgb, var(--dsh-glass-ground), #000000 calc(5% * var(--dsh-glass-ambience))) 100%);
+}
+
+/* issue #40 minimal verification, second surface: the schedule page root
+   joins the shared ground declaration above, but its BOX is not body-sized —
+   the glows' `at %` resolve against that box, so its field is shifted and
+   squeezed relative to the real ground and the plate's boundary reads as a
+   hard edge (reporter's screenshot, glow at 150%/250%). Re-anchoring to the
+   viewport puts it on the same pixels as the body ground. Float-only is
+   inherited from the declaration above; compat keeps the host's own plate. */
+[data-dsh-glass-float] [data-testid='task-manager-page'] {
+  background-attachment: fixed;
 }
 
 [data-dsh-glass] [data-dsh-glass-frame] {
@@ -1074,20 +1095,136 @@ html[data-dsh-glass-float] [data-turn-trigger]:hover {
    the band instead of being sliced. 12px is the ramp: long enough to read as a
    melt, short enough to leave the tab row (which sits at the band's bottom)
    fully covered. Guard: `tests/glass-css.spec.ts` › plugin page sticky band. */
+/* issue #40, SECOND ATTEMPT (2026-11-16, merged from PR #42 by @aurasuisui
+   as `1d60603`; ships with the next release — `0.7.4` on npm is v1, above).
+   The 0.7.4 recipe just above approximated the ground with ONE flat colour
+   (ground ⊕ wash-tint). That colour only equals the ground when the glows are
+   off: with 光斑 on, BOTH radial glows peak inside this band's own box
+   (centres 18%/6% and 86%/14% = the top 14% of the page, the band is ~13%),
+   and a flat fill omits them entirely — Δ up to 20/255 measured on the
+   reporter's machine. The 12px mask softened the EDGE, never the COLOUR
+   ERROR, and `backdrop-filter: blur()` is an identity over a low-frequency
+   field (issue #13), so it could not help either.
+   The fix reproduces the same FIELD instead of sampling it:
+   `background-attachment: fixed` anchors this identical three-layer
+   expression to the VIEWPORT rather than to the pseudo-element's own box, so
+   the paint lands on the same pixels the body's ground occupies no matter how
+   tall the band is. (That box mismatch is also why the schedule page could
+   reuse the declaration verbatim and this one could not: that plate is
+   body-sized, this one is ~129px — the wash would be squeezed into the band.)
+   Opaque + same field ⇒ invisible over bare ground BY CONSTRUCTION and still
+   fully occludes scrolled content — the #29 70% floor is not needed, so the
+   #28 "text reads through" risk is removed rather than traded. blur and both
+   masks are gone: there is nothing left to blur or to fade.
+   Headless-Chrome A/B, two independent runs:
+   - the author's (1600×700, real three-layer ground, glow 150% / size 250%),
+     over the band rect: shipped flat fill maxΔ 79 / meanΔ 63, this rule maxΔ 0.
+   - the maintainer's, at the reporter's viewport (1646×1028, Latte, 39,000 px
+     inside the band, reference = the same page with NO band at all), ΔRGB vs
+     that reference: stock 22.15 / v1 19.56 / v1 made fully opaque 26.15 /
+     this field WITHOUT `fixed` 10.86 / this rule 0.44 (max 3, zero pixels
+     over 3/255). That opaque row is the load-bearing one: raising alpha made
+     v1 *worse* than stock, i.e. alpha was never the axis — the fill has to
+     BE the field, not sample it. The 10.86 row is the second: copying a
+     body-sized declaration into a 129px box is still wrong without the
+     viewport anchor. Same rule measured 0.43 at DPR 1.75, 0.41 with the
+     content column pushed down 24px, 0.44 scrolled 200px ⇒ the anchor, not
+     the geometry, is what makes it match. Harness: `.debug/issue-40-band-ab/`
+     (`page.html` + `diff.mjs`, dependency-free PNG decode).
+   ⚠️ Still unmeasured: the scroll cost of `background-attachment: fixed`
+   inside the page's own scroll container (it replaces a full-width
+   `backdrop-filter` read, but a fixed background may force repaint per
+   frame). Also unverified: 4 flavours × mica/compat on real hardware, and
+   the `app.asar`-level premise that the document itself never scrolls. */
 [data-dsh-glass-float] [data-plugin-bar][data-natural]::before {
-  background: color-mix(
-    in srgb,
-    color-mix(
-        in srgb,
-        var(--dsh-glass-ground),
-        var(--dsh-glass-wash-tint) calc(var(--dsh-glass-wash-mix) * var(--dsh-glass-ambience))
-      )
-      calc(70% + 10% * var(--dsh-glass-frost, 1)),
-    transparent
-  );
-  backdrop-filter: blur(var(--dsh-glass-blur, 14px));
-  -webkit-mask-image: linear-gradient(180deg, black calc(100% - 12px), transparent);
-  mask-image: linear-gradient(180deg, black calc(100% - 12px), transparent);
+  background:
+    radial-gradient(calc(58% * var(--dsh-glass-glow-size, 1)) calc(46% * var(--dsh-glass-glow-size, 1)) at 18% 6%,
+      color-mix(in srgb, var(--dsw-alias-brand-primary-new-colorprimary-new-color)
+        calc(12% * var(--dsh-glass-ambience) * var(--dsh-glass-glow, 0)
+          * var(--dsh-glass-glow-strength, 1)), transparent), transparent 68%),
+    radial-gradient(calc(48% * var(--dsh-glass-glow-size, 1)) calc(42% * var(--dsh-glass-glow-size, 1)) at 86% 14%,
+      color-mix(in srgb, var(--dsw-alias-state-success-tertiary)
+        calc(10% * var(--dsh-glass-ambience) * var(--dsh-glass-glow, 0)
+          * var(--dsh-glass-glow-strength, 1)), transparent), transparent 62%),
+    linear-gradient(165deg,
+      color-mix(in srgb, var(--dsh-glass-ground), var(--dsh-glass-wash-tint)
+        calc(var(--dsh-glass-wash-mix) * var(--dsh-glass-ambience))) 0%,
+      var(--dsh-glass-ground) 55%,
+      color-mix(in srgb, var(--dsh-glass-ground), #000000 calc(5% * var(--dsh-glass-ambience))) 100%);
+  background-attachment: fixed;
+}
+
+/* ---------- Third-party market: the sticky rows (dshmarket >= 1.73.21).
+
+   Surface: `dshmarket`'s plugin tab pins TWO rows over the scrolling list —
+   the banner+tabs row and the category row — and each paints
+   `var(--dsw-alias-bg-base)` so the list cannot read through while they hold
+   the top. Stock: that token IS the page, so the rows are invisible. Over the
+   #25 ground they became flat `#EFF1F5` plates on a wash+glow field (measured
+   by the reporter next to `rgb(210,222,245)`) — the "白板" in issue #40's
+   thread.
+
+   THE HOOK — upstream solved the seat for us (`dsh-market#1237`, PR #1246,
+   shipped in `1.73.21`): every sticky rule reads
+   `var(--dshm-sticky-bg, …)`, and the two rows that can be pinned get
+   `data-dshm-stuck="true"` while they sit on their line, which swaps the read
+   to `var(--dshm-stuck-bg, …)`. NEITHER variable is declared in their own
+   sheet — a local declaration would shadow whatever a theme sets above them —
+   so the value can only arrive from here, and unset both fall back to
+   `--dsw-alias-bg-base` (a host without this skin renders unchanged).
+   That is why this needs no hashed class: `[class*='_head']` is the door
+   issues #17 / #21 retired.
+
+   TWO STATES, TWO ANSWERS:
+   - at rest the rows belong to the page, so the honest fill is NONE: hand the
+     ground back (`transparent`). Any fill here is the白板 again.
+   - once pinned they must occlude, and the only fill that occludes without
+     becoming a band is the ground FIELD itself — the body rule's three-layer
+     declaration verbatim, anchored to the viewport (a 46px row cannot hold a
+     100vh wash; the same declaration would be squeezed into a colour step —
+     exactly the #40 v1 failure). Being opaque it occludes more than the #29
+     70% alpha floor ever did.
+
+   WHY NOT `--dsh-glass-card`: layer-1 sits a step ABOVE the ground on the dark
+   flavours, so a pinned row would paint LIGHTER than the page under it — the
+   #40 reply's own argument.
+
+   SCOPE — float only. In compat the host paints its own opaque plate and
+   `--dsw-alias-bg-base` IS that plate, so the rows already match; painting the
+   ground there would be the mismatch #37 removed.
+
+   NOT COVERED (deliberate): `--dshm-sticky-bg` is shared by all three sticky
+   rules, and the third one, `.stickyHead`, carries no stuck state. Inside the
+   plugin tab it is `display: contents` (rect 0x0, measured on 1.73.21) and
+   only paints on the market's own screens, which we have never measured — so
+   it inherits the `transparent` rest value and is otherwise left alone. Ask
+   upstream for a stuck mark there before painting it. */
+[data-dsh-glass-float] [data-dsh-market-root][data-dsh-market-plugins-tab='true'] {
+  --dshm-sticky-bg: transparent;
+  --dshm-stuck-bg:
+    radial-gradient(calc(58% * var(--dsh-glass-glow-size, 1)) calc(46% * var(--dsh-glass-glow-size, 1)) at 18% 6%,
+      color-mix(in srgb, var(--dsw-alias-brand-primary-new-colorprimary-new-color)
+        calc(12% * var(--dsh-glass-ambience) * var(--dsh-glass-glow, 0)
+          * var(--dsh-glass-glow-strength, 1)), transparent), transparent 68%),
+    radial-gradient(calc(48% * var(--dsh-glass-glow-size, 1)) calc(42% * var(--dsh-glass-glow-size, 1)) at 86% 14%,
+      color-mix(in srgb, var(--dsw-alias-state-success-tertiary)
+        calc(10% * var(--dsh-glass-ambience) * var(--dsh-glass-glow, 0)
+          * var(--dsh-glass-glow-strength, 1)), transparent), transparent 62%),
+    linear-gradient(165deg,
+      color-mix(in srgb, var(--dsh-glass-ground), var(--dsh-glass-wash-tint)
+        calc(var(--dsh-glass-wash-mix) * var(--dsh-glass-ambience))) 0%,
+      var(--dsh-glass-ground) 55%,
+      color-mix(in srgb, var(--dsh-glass-ground), #000000 calc(5% * var(--dsh-glass-ambience))) 100%);
+}
+
+/* The viewport anchor lives on the row, not in the variable: a custom property
+   cannot carry `background-attachment`. `data-dshm-stuck` is upstream's own
+   attribute, so this still needs no hashed class. `background-attachment:
+   fixed` only changes where the gradient is sampled — it is NOT one of the
+   containing-block makers (filter / transform / backdrop-filter), so the
+   #19 / #33 / #41 hygiene is untouched. */
+[data-dsh-glass-float] [data-dsh-market-root][data-dsh-market-plugins-tab='true'] [data-dshm-stuck='true'] {
+  background-attachment: fixed;
 }
 
 /* ---------- Sidebar (侧边栏): header-style glass card; the token fill on
@@ -1334,6 +1471,46 @@ html[data-dsh-glass-float] [data-turn-trigger]:hover {
      also replaces the host's own `--dsw-specific-input-major` fill. */
   isolation: isolate;
   background: none;
+  /* ---------- Issue #41, MATERIAL half (2026-11-16). A third-party panel
+     rendered INSIDE this card may borrow the host's menu material —
+     `background: var(--dsw-menu-surface-fill)` +
+     `backdrop-filter: var(--dsw-menu-backdrop-filter, blur(40px) saturate(150%))`
+     (that is `dsh-compact-suite` 2.9.2's `.dcs-panel`, verbatim). Its backdrop
+     is this card's translucent plane over the scrolling transcript, and the
+     stock 40px blur turns that moving text into flat grey — the reporter's
+     「灰糊」.
+     Shrinking the radius does NOT fix it. Measured headless
+     (`.debug/issue-41/`, 420×320 panel over 13px body text, 124k sampled px,
+     surviving high-pass structure as a share of the unpaneled pixels):
+     stock 40px = 0.2%, our 14px knob = 0.8%, no blur = 30–37%. 40 vs 14 is
+     invisible; the axis is blur itself, not its radius.
+     So the token collapses here instead of being retuned. Real menu SURFACES
+     are unaffected: they re-declare the token themselves on
+     `[data-menu-material='translucent']` (mica: the blur knob, compat: 12px),
+     which is nearer than this ancestor and therefore wins.
+     Scope: float AND compat. Not a mode choice — the rule that released the
+     seat plate (`[data-phase] [class*='composerSeat'] { background: none }`,
+     above) is not mode-gated, so both modes put the transcript behind the
+     panel and both produce the same mush.
+     ⚠️ Replica evidence only: compact-suite cannot mount on the shell we
+     verify against (0.2.2-rc.3 dropped `primitives.useAnchoredPosition`), so
+     this rule has NOT been seen on a real panel yet. See
+     docs/issue-41-composer-stacking-trap.md §9. */
+  --dsw-menu-backdrop-filter: none;
+  /* Issue #41 MATERIAL half, part 2 (2026-11-17): the knob. With the blur
+     collapsed above, what is left to trade is how much the panel HIDES what is
+     behind it — low fill = you can still read the transcript through the panel,
+     high fill = a clean plate. A MULTIPLIER on the host's own menu-surface alpha
+     (`--dsh-glass-menu-fill-base`, 45% dark / 58% light) so that 1 reproduces
+     stock in BOTH schemes; an absolute-alpha default would have to pick one
+     scheme and restyle the other. Measured inside a 420×320 panel, `none` blur:
+     45% kept 56% of the backdrop's structure, 60% → 35%, 75% → 10%, 90% → 4%.
+     Guarded by `tests/glass-css.spec.ts` (base pairing with `palettes.ts`). */
+  --dsw-menu-surface-fill: color-mix(
+    in srgb,
+    var(--dsw-alias-bg-layer-3) calc(var(--dsh-glass-menu-fill-base, 45%) * var(--dsh-glass-card-overlay, 1)),
+    transparent
+  );
   /* Main input surface (issue #22 follow-up): the stronger rim — the hero
      card sits flat on the page ground, where the generic 18% rim measures
      invisible (see the rim-strong note in the variable block). */
@@ -1890,6 +2067,18 @@ html[data-dsh-glass-float] [data-turn-trigger]:hover {
   isolation: isolate;
   background: none;
   backdrop-filter: none;
+  /* Issue #41 material half — same reason as the float block above: a panel
+     that borrows the host menu blur reads this card's translucent plane over
+     a live transcript, and 40px turns it into flat grey. Surfaces keep their
+     own token (compat's `[data-menu-material='translucent']` rule sets 12px). */
+  --dsw-menu-backdrop-filter: none;
+  /* Same fill knob as the float block above — one axis, both modes (the rule
+     that released the seat plate is not mode-gated). */
+  --dsw-menu-surface-fill: color-mix(
+    in srgb,
+    var(--dsw-alias-bg-layer-3) calc(var(--dsh-glass-menu-fill-base, 45%) * var(--dsh-glass-card-overlay, 1)),
+    transparent
+  );
 }
 
 [data-dsh-glass-compat] [data-composer-card]::before {

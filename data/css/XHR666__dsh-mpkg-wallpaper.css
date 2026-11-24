@@ -1,5 +1,5 @@
 /* XHR666/dsh-mpkg-wallpaper — lib/client.js
-   fetched 2026-11-16 from https://raw.githubusercontent.com/XHR666/dsh-mpkg-wallpaper/main/lib/client.js
+   fetched 2026-11-24 from https://raw.githubusercontent.com/XHR666/dsh-mpkg-wallpaper/main/lib/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 body[data-mpw-theme] .pI_x6G_sidebarCol {
 	background-color: color-mix(in srgb, var(--mpw-theme-color) 30%, transparent) !important;
@@ -385,13 +385,17 @@ html body header.wSkVaW_header :has([class*="dsh-conv-panel"]) {
 
 /* ③(#3 真机实测) 右栏全屏时收纳态左栏会盖到右栏上 → 右栏/浮层层级高于左栏 */
 /* ③(#3) 右栏层级只比左栏高，但**必须低于设置弹层**（官方设置层 z=20；此前写 40 会压住设置） */
-html body:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))) [data-sidebar-right-panel],
-html body:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))) [data-dockkit-pane],
-html body:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))) [data-dockkit-strip],
-html body:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))) [data-dockkit-surface] {
+html body:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))) [data-sidebar-right-panel],
+html body:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))) [data-dockkit-pane],
+html body:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))) [data-dockkit-strip],
+html body:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))) [data-dockkit-surface] {
 	z-index: 12 !important;
 }
-html body:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))) [class*="sidebarCol"]:not([data-sidebar-right-panel]) { z-index: 1 !important; }
+html body:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))) [class*="sidebarCol"]:not([data-sidebar-right-panel]) { z-index: 1 !important; }
+/* 左栏收起时，展开按钮的 tooltip 画在左栏自己的层叠上下文里（上面这条把它钉在 1）。
+   标题栏是 5，会话名会压住 tooltip 伸过去的那一截。收起态把左栏抬到 6：
+   高于标题栏，仍低于右栏 12。只改绘制顺序，不改尺寸。 */
+html body:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))) [data-sidebar-collapsed] [class*="sidebarCol"]:not([data-sidebar-right-panel]) { z-index: 6 !important; }
 /* ②(2026-10-05 真机："设置 → Agent 预设 → 查看，弹出的框被压在设置底下")
    根因：宿主把设置弹层渲染在**左栏子树里**（真机读数 VOzbGW_overlay[z=2000] 是 pI_x6G_sidebarCol
    的后代），而上面那条把左栏钉成 z-index:1 ⇒ 连同里面的弹窗一起被困在 z=1 的层叠上下文里，
@@ -409,20 +413,20 @@ html body [data-mpw-side-lift] { z-index: 2500 !important; }
 /* ①(2026-09-12 用户再次反馈) 右栏内层的"文件界面"面板同样带 data-sidebar-right-panel →
    外层浮起后内层也浮起 = 悬浮窗里又套一个悬浮窗。这里把**任何内层面板**一律还原为普通矩形
    （不限属性取值，覆盖 push/true/其他；同时覆盖 dockkit 内层）。 */
-html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))) [data-sidebar-right-panel] [data-sidebar-right-panel],
-html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))) [data-sidebar-right-panel] [data-dockkit-pane],
-html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))) [data-sidebar-right-panel] [data-dockkit-surface],
-html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))) [data-dockkit-pane] [data-sidebar-right-panel],
-html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))) [data-dockkit-pane] [data-dockkit-pane] {
+html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))) [data-sidebar-right-panel] [data-sidebar-right-panel],
+html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))) [data-sidebar-right-panel] [data-dockkit-pane],
+html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))) [data-sidebar-right-panel] [data-dockkit-surface],
+html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))) [data-dockkit-pane] [data-sidebar-right-panel],
+html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))) [data-dockkit-pane] [data-dockkit-pane] {
 	top: 0 !important; bottom: 0 !important; right: 0 !important; left: auto !important;
 	margin: 0 !important; border-radius: 0 !important; border: none !important; box-shadow: none !important;
 	height: 100% !important; max-height: none !important; overflow: visible !important;
 }
-html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))) [data-sidebar-right-panel="push"] [data-sidebar-right-panel] {
+html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))) [data-sidebar-right-panel="push"] [data-sidebar-right-panel] {
 	top: 0 !important; bottom: 0 !important; right: 0 !important;
 	margin: 0 !important; border-radius: 0 !important; border: none !important; box-shadow: none !important;
 }
-html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))) [data-sidebar-right-panel="push"] {
+html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))) [data-sidebar-right-panel="push"] {
 	top: 10px !important;
 	bottom: 10px !important;
 	right: 10px !important;
@@ -447,7 +451,7 @@ html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-
         └─ [pane scroller] ← overflow-y:auto（内容滚动；本体无 backdrop-filter）
    max-height 取 calc(100vh - 60px)：面板 max-height(100vh-20px) − 上下 margin(20px)
    − strip 预留(~28px) 的近似；真机验收后可微调。 */
-html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))) [data-dockkit-pane] {
+html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))) [data-dockkit-pane] {
 	margin: 10px 10px 10px 0 !important;
 	border: 1px solid rgba(148,180,220,0.28) !important;
 	border-radius: var(--mpw-side-radius) !important;
@@ -457,7 +461,7 @@ html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-
 	box-shadow: var(--mpw-float-shadow, 0 6px 24px rgba(0,0,0,0.10));
 	transition: margin .18s ease, border-radius .18s ease, border-color .18s ease;
 }
-html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))) [data-dockkit-strip] {
+html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))) [data-dockkit-strip] {
 	margin: 10px 10px 10px 0 !important;
 	border: 1px solid rgba(148,180,220,0.28) !important;
 	border-radius: var(--mpw-side-radius) !important;
@@ -468,16 +472,16 @@ html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-
 /* ⭐(2026-11-03 第四轮 D1 读数定案) 面板 flex 链 min-height:0：
    标准 flexbox 滚动修复——中间每一层都要 min-height:0，否则子内容把高度撑开
    （D1 读数：_paneBody 长到 1276 > panelBody 817 ⇒ 裁剪但不可滚）。 */
-html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))) [data-sidebar-right-panel="push"] {
+html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))) [data-sidebar-right-panel="push"] {
 	display: flex !important;
 	flex-direction: column !important;
 }
-html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))) [data-sidebar-right-panel="push"] > * {
+html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))) [data-sidebar-right-panel="push"] > * {
 	min-height: 0 !important;
 	min-width: 0 !important;
 }
-html body[data-dsh-sidebar-dragging][data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))) [data-dockkit-pane],
-html body[data-dsh-sidebar-dragging][data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))) [data-dockkit-strip] {
+html body[data-dsh-sidebar-dragging][data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))) [data-dockkit-pane],
+html body[data-dsh-sidebar-dragging][data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))) [data-dockkit-strip] {
 	margin: 0 !important;
 	border-radius: 0 !important;
 	transition: none !important;
@@ -494,13 +498,13 @@ html body[data-dsh-sidebar-dragging][data-mpw-float]:not([data-mpw-rightbar-park
    垂直居中交给 DSH 自己的 align-items:center（这里只做保险，不改尺寸）。
    ⚠ 注意：本段位于 JS 模板字符串内，注释里**禁止出现反引号**（会提前终止模板 → buildCss 抛错
    → 整张样式表为空 → 画面错乱；panel-smoke 的 CSS 结构校验会拦住）。 */
-html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))) [data-sidebar-right-panel] [data-dockkit-strip],
-html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))) [data-sidebar-right-panel] [class*="_tabStrip"] {
+html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))) [data-sidebar-right-panel] [data-dockkit-strip],
+html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))) [data-sidebar-right-panel] [class*="_tabStrip"] {
 	margin-left: 10px !important;
 	align-items: center !important;
 }
-html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))) [data-sidebar-right-panel] [data-dockkit-strip] > *,
-html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))) [data-sidebar-right-panel] [class*="_tabStrip"] > * {
+html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))) [data-sidebar-right-panel] [data-dockkit-strip] > *,
+html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))) [data-sidebar-right-panel] [class*="_tabStrip"] > * {
 	align-self: center !important;
 }
 /* ①(修正 2026-09-13 第12项，按需求收窄选择器) 悬浮模式下，**只针对轨迹页**：其"总览"区块
@@ -508,18 +512,18 @@ html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-
    其它面板/弹层。选择器同时写 hash 类与结构类名，兼容 DSH 重编译后的 hash 变化。
    （qBU-ya_root 轨迹根 / fV0t5q_root 顶部工具条 / Y0dWHa_overview 总览 / _1p9O6q_root 轨道区）
    回退：给 body 加 data-mpw-traject-clip="off"。 */
-html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))):not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))):not([data-mpw-traject-clip="off"]) .qBU-ya_root,
-html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))):not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))):not([data-mpw-traject-clip="off"]) [class$="_root"][class*="qBU-ya"],
-html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))):not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))):not([data-mpw-traject-clip="off"]) .Y0dWHa_overview,
-html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))):not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))):not([data-mpw-traject-clip="off"]) [class*="_overview"] {
+html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))):not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))):not([data-mpw-traject-clip="off"]) .qBU-ya_root,
+html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))):not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))):not([data-mpw-traject-clip="off"]) [class$="_root"][class*="qBU-ya"],
+html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))):not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))):not([data-mpw-traject-clip="off"]) .Y0dWHa_overview,
+html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))):not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))):not([data-mpw-traject-clip="off"]) [class*="_overview"] {
 	max-width: 100% !important;
 	box-sizing: border-box !important;
 }
-html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))):not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))):not([data-mpw-traject-clip="off"]) .qBU-ya_root,
-html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))):not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))):not([data-mpw-traject-clip="off"]) [class*="qBU-ya"] {
+html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))):not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))):not([data-mpw-traject-clip="off"]) .qBU-ya_root,
+html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))):not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))):not([data-mpw-traject-clip="off"]) [class*="qBU-ya"] {
 	overflow-x: clip !important;
 }
-html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))):not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))):not([data-mpw-traject-clip="off"]) [class*="_overview"] {
+html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))):not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))):not([data-mpw-traject-clip="off"]) [class*="_overview"] {
 	overflow-x: auto !important;            /* 需要时总览自己内部横滚，而不是画到面板外 */
 	overscroll-behavior-x: contain !important;
 }
@@ -573,6 +577,19 @@ body:not([data-ds-dark-theme]) .mpw_dialog {
 
 
 
+html body[data-mpw-float] header.wSkVaW_header:not([data-code-block-banner]):not([data-disclosure-header])::before {
+	content: "" !important;
+	position: absolute !important;
+	inset: 0 !important;
+	z-index: -1 !important;
+	pointer-events: none !important;
+	border-radius: inherit !important;
+	-webkit-backdrop-filter: blur(var(--mpw-hdr-blur, 24px)) !important;
+	backdrop-filter: blur(var(--mpw-hdr-blur, 24px)) !important;
+}
+
+
+
 .mpw-bgWrap .mpw-webInteract{position:fixed;inset:0;z-index:1;display:none;background:transparent;cursor:crosshair;pointer-events:auto;touch-action:none;user-select:none;-webkit-user-select:none;}
 .mpw-bgWrap.mpw-webInteract-on .mpw-webInteract{display:block;}
 html[data-mpw-interact="on"] body{pointer-events:none !important;}
@@ -581,130 +598,6 @@ html[data-mpw-interact="on"] .mpw-bgWrap .mpw-webInteract{pointer-events:auto !i
 html[data-mpw-interact="on"] .mpw-bgWrap .mpw-webInteractExit{display:block;}
 .mpw-bgWrap .mpw-webInteractBtn{position:fixed;right:12px;bottom:12px;z-index:2;pointer-events:auto;cursor:pointer;font:12px/1.6 ui-sans-serif,system-ui,sans-serif;color:#fff;background:rgba(24,26,34,.72);border:1px solid rgba(255,255,255,.22);border-radius:8px;padding:6px 10px;display:none;}
 .mpw-bgWrap.mpw-web .mpw-webInteractBtn{display:block;}
-
-
-
-html, body {
-	background: transparent !important;
-}
-.mpw-bgWrap {
-	position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none;
-	/* 缩放 <100% 时边缘露出底色（③），避免透明露白 */
-	background-color: var(--dsw-alias-bg-base, #0e1420);
-}
-/* ①(加固) img/video 显示由 CSS 类控制（避免切换残留） */
-.mpw-bgWrap.mpw-img video { display: none !important; }
-.mpw-bgWrap.mpw-video img { display: none !important; }
-/* ①(新) 网页壁纸 iframe：全屏覆盖，与 img/video 互斥（类控制显示） */
-.mpw-bgWrap.mpw-web img,
-.mpw-bgWrap.mpw-web video { display: none !important; }
-.mpw-bgWrap iframe.mpw-webFrame {
-	position: absolute; inset: 0; width: 100%; height: 100%; border: 0;
-	background: transparent; display: none;
-}
-.mpw-bgWrap.mpw-web iframe.mpw-webFrame { display: block; }
-/* ⑧(2026-11-06 需求) 场景壁纸设置接线：水平翻转/画面亮度/播放速度/帧率上限改由渲染器原生
-   生效（宿主 postMessage 下发，见 mpwScenePushDisplay）；垂直翻转渲染器无等价项 ⇒ 仍由宿主 CSS
-   镜像 iframe（只镜像 Y，不与原生 flipH 叠加）。 */
-.mpw-bgWrap.mpw-web iframe.mpw-webFrame { transform: scaleY(var(--mpw-flip-y, 1)); transform-origin: center center; }
-/* ①(新) 场景图层合成 canvas：全屏覆盖，与 img/video/iframe 互斥 */
-.mpw-bgWrap.mpw-scene img,
-.mpw-bgWrap.mpw-scene video,
-.mpw-bgWrap.mpw-scene iframe.mpw-webFrame { display: none !important; }
-.mpw-bgWrap canvas.mpw-bgCanvas {
-	position: absolute; inset: 0; width: 100%; height: 100%; display: none;
-}
-.mpw-bgWrap.mpw-scene canvas.mpw-bgCanvas { display: block; }
-/* ①(批次15 B1) 场景首帧看门狗兜底：mpw-scene-fallback 出现在场景壁纸（mpw-web）上时
-   隐藏 iframe、显示静态帧 img（img 需 !important 压过 ensureBgDom/showWebEl 的内联 display:none；
-   iframe 需 !important 压过 .mpw-web iframe 的 display:block）。看门狗确认/重试时移除该类即恢复。 */
-/* ⑨(2026-11-07 #1 长时运行后只有静态层) 兜底期**必须保留 iframe 的布局盒**：
-   旧写法 display:none ⇒ 浏览器不为该帧产帧 ⇒ 渲染器 rAF 停摆 ⇒ 首帧永远来不了；
-   而撤兜底的三条通道（首帧 cap / 迟到首帧 / 看门狗确认）全以首帧为前提 ⇒ 永久静态（只能手动刷新）。
-   改为 display:block + opacity:0：画面仍由静态帧 img 盖住，但帧内 rAF 继续跑，迟到首帧可自愈。
-   （分析报告（临时目录文件，已清理）场景生命周期诊断 §P0；真机读数：bloom 时 iframe rect 0x0、rAF 0 次） */
-.mpw-bgWrap.mpw-scene-fallback iframe.mpw-webFrame {
-	display: block !important;
-	opacity: 0 !important;
-	pointer-events: none !important;
-}
-.mpw-bgWrap.mpw-scene-fallback img.mpw-bgImg { display: block !important; z-index: 2 !important; }
-.mpw-bgWrap.mpw-scene-fallback canvas.mpw-bgCanvas { display: none !important; }
-/* 2026-11-05 首帧前海报：场景 iframe 首帧到达前先显示缩略图/静态帧，绝不黑屏 */
-.mpw-bgWrap.mpw-web.mpw-scene-loading img.mpw-bgImg {
-	display: block !important; position: absolute !important; inset: 0 !important;
-	width: 100% !important; height: 100% !important; object-fit: cover !important;
-	z-index: 0 !important; background: var(--dsw-alias-bg-base, #fff) !important;
-}
-.mpw-bgWrap.mpw-web.mpw-scene-loading iframe.mpw-webFrame { opacity: 0 !important; }
-.mpw-bgWrap.mpw-web.mpw-scene-loading { background-color: var(--dsw-alias-bg-base, #fff) !important; }
-/* ①(修正) Edge 视频 canvas 渲染路径：showVideoEdge 给 wrap 加 mpw-video 类 + 清空
-   canvas 内联 display（=回退到 CSS）——但原 CSS 只有 .mpw-scene 才 display:block，
-   Edge 走视频路径时 canvas 被 CSS display:none 藏住 → 壁纸空白（真机实测：Edge
-   转码/原生都空白，Firefox/Via 走原生 video 正常）。补 .mpw-video 时 canvas 显示。 */
-.mpw-bgWrap.mpw-video canvas.mpw-bgCanvas { display: block; }
-.mpw-bgWrap img,
-.mpw-bgWrap video {
-	width: 100%; height: 100%; object-fit: cover;
-	/* ④(修正) 镜头：translate 在前、scale 在后 → 平移量不被缩放影响
-	   （原 scale 在前导致 zoom>100 时平移被放大、zoom<100 时平移不够，
-	   现象："只能渲染整个屏幕的位置"）。transform 列表从左到右复合，
-	   translate() scale() = 先缩放后平移（平移是原始像素）。 */
-	transform: translate(var(--mpw-lensX, 0), var(--mpw-lensY, 0)) scale(var(--mpw-zoom, 1)) scaleX(var(--mpw-flip-x, 1)) scaleY(var(--mpw-flip-y, 1));
-	transform-origin: center center;
-}
-.mpw-bgWrap.mpw-sharp {
-	/* ②(修正) sharp 类不能覆盖掉 brightness（原来只写 contrast/saturate → 亮度失效） */
-	filter: brightness(var(--mpw-brightness, 1)) contrast(1.06) saturate(1.12);
-}
-.pI_x6G_frame {
-	background-color: transparent !important;
-}
-	border-color: color-mix(in srgb, var(--dsw-alias-border-l2) 65%, transparent) !important;
-}
-/* ⑬(新) 取消工作区列表底部的自带渐变 fade（需求直接去掉白色虚化带） */
-.hHd-Xa_regionArea [class*="fade"],
-[data-slot*="workspaces"] [class*="fade"],
-[data-slot="sidebar"] [class*="fade"] {
-	display: none !important;
-}
-/* 聊天区 / 详情面板根：背景透明，由 token override 的 --dsw-alias-bg-base
-   控制半透明（避免双重透明叠加） */
-.wSkVaW_root {
-	background-color: transparent !important;
-}
-/* ⑤(修正) 输入框座（composerSeat）：去掉白色渐变特效（现象拉高不透明度时
-   输入框附近出现白渐变、有边界、收起也延伸）。保持透明透出壁纸。 */
-.wSkVaW_root[data-phase="active"] .wSkVaW_composerSeat {
-	background: transparent !important;
-}
-.ydkMvW_root {
-	/* ③(新) unify 开 → 与聊天区同色系（static 色）；关 → 原 bg-base 混色 */
-	background-color: var(--mpw-surface-content) !important;
-}
-}
-	background-color: transparent !important;
-}
-/* ⑩(新) 第三方插件注入侧边栏的内容（DSH-better-sidebar/account-balance 等）：
-   兜底 45% 雾底保证在壁纸上可读；不加 !important → 插件自己的背景样式优先。
-   ①(2026-09-18 §5 第1项) 宿主 token 消费收进 SSOT（--mpw-surface-side-plugin）。 */
-[data-slot="sidebar"] [data-plugin] {
-	background-color: var(--mpw-surface-side-plugin);
-	border-radius: 8px;
-}
-/* ⭐(2026-11-03 第四轮 §2④ D2/E 读数定案) 聊天滚动容器 overflow-x: clip：
-   宿主发送键 tooltip 被渲染在有 transform 的按钮/卡片内（fixed ⇒ 相对卡片定位），
-   坐标偏出视口右缘 ⇒ 绝对定位盒撑出容器级横向滚动条 ⇒ 布局位移 ⇒ 跳动循环。
-   clip（非 hidden）不强制另一轴变 scroll、不创建滚动容器（不破坏竖向滚动/sticky），
-   仅视觉裁切横向溢出 ⇒ 滚动条不再出现，跳动循环断链。 */
-html body [class*="scrollBody"]:not([data-code-block-banner]) {
-	overflow-x: clip !important;
-}
-.wSkVaW_scrollBody {
-	backdrop-filter: none !important;
-}
-.ydkMvW_body {
-}
 
 
 
@@ -1059,7 +952,7 @@ html body:has([class*="_modal"]) [class*="sidebarCol"]::before {
 	backdrop-filter: none !important;
 	background-color: transparent !important;
 }
-html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"])) [data-mpw-rs-surface]::before {
+html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"])) [data-mpw-rs-surface]::before {
 	-webkit-backdrop-filter: none !important;
 	backdrop-filter: none !important;
 }
@@ -1070,14 +963,14 @@ html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"])) 
    data-mpw-rightbar-parked 由 JS 在收纳态广播（展开即摘），命中时把这棵子树的
    背景/边框/阴影/玻璃/层级全部交还（transparent + none + auto），展开动画本身不受影响
    （宿主用的是 transform/尺寸过渡，这里只清绘制属性）。 */
-html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"])) [data-sidebar-right-panel],
-html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"])) [data-sidebar-right-float-host],
-html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"])) [data-dockkit-surface],
-html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"])) [data-dockkit-pane],
-html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"])) [data-dockkit-strip],
-html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"])) [class*="P3OORG_panel"],
-html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"])) [class*="_tabHost"],
-html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"])) [class*="_emptyTabHost"] {
+html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"])) [data-sidebar-right-panel],
+html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"])) [data-sidebar-right-float-host],
+html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"])) [data-dockkit-surface],
+html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"])) [data-dockkit-pane],
+html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"])) [data-dockkit-strip],
+html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"])) [class*="P3OORG_panel"],
+html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"])) [class*="_tabHost"],
+html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"])) [class*="_emptyTabHost"] {
 	background-color: transparent !important;
 	border-color: transparent !important;
 	box-shadow: none !important;
@@ -1094,26 +987,26 @@ html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"])) 
    · "背景模糊最后才收起"（内容先没了、玻璃还留一会儿）—— 宿主用 transition 把面板挪走，
      我们的 backdrop-filter 跟着一起走 ⇒ 所见"模糊停留"。transition:none + opacity:0
      让它在标记落地的那一帧就消失（标记由 mpwTagSurfaceOuter 在同一个 mutation 批次里写）。 */
-html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"])) [data-sidebar-right-panel],
-html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"])) [data-sidebar-right-float-host],
-html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"])) [data-dockkit-surface],
-html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"])) [data-dockkit-pane],
-html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"])) [data-dockkit-strip],
-html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"])) [class*="P3OORG_panel"],
-html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"])) [class*="_tabHost"],
-html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"])) [class*="_emptyTabHost"] {
+html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"])) [data-sidebar-right-panel],
+html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"])) [data-sidebar-right-float-host],
+html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"])) [data-dockkit-surface],
+html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"])) [data-dockkit-pane],
+html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"])) [data-dockkit-strip],
+html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"])) [class*="P3OORG_panel"],
+html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"])) [class*="_tabHost"],
+html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"])) [class*="_emptyTabHost"] {
 	opacity: 0 !important;
 }
 /* 2026-11-05：即使 JS marker 陈旧，右栏已打开（data-sidebar-right-open=true）也绝不允许停靠态
    的 opacity:0 把面板/按钮一起藏掉。 */
-html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"])) [data-sidebar-right-panel][data-sidebar-right-open="true"] {
+html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"])) [data-sidebar-right-panel][data-sidebar-right-open="true"] {
 	opacity: 1 !important;
 }
 
 /* 2026-11-05 用户：右栏收起后仍残留一层悬浮边框。宿主收起后 frame 带 data-rightbar-collapsed，
    但浮窗外层是 absolute（不占列宽）且 opacity 仍为 1 ⇒ 边框/阴影留在原地。
    收起态直接隐藏整块右栏面板；展开时宿主会摘掉该属性。 */
-html body:not(:has([data-sidebar-right-open="true"])) [data-rightbar-collapsed="true"] [data-sidebar-right-panel] {
+html body:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"])) [data-rightbar-collapsed="true"] [data-sidebar-right-panel] {
 	opacity: 0 !important;
 	visibility: hidden !important;
 	pointer-events: none !important;
@@ -1123,15 +1016,15 @@ html body:not(:has([data-sidebar-right-open="true"])) [data-rightbar-collapsed="
 /* 2026-11-06 用户：右栏收起首帧宿主还没打 data-rightbar-collapsed 时，浮窗外层仍会
    带边框/阴影留在原地。这里不再等宿主状态：只要页面没有 open，就先隐藏边框/阴影
    （opening 首帧短暂无边框，可接受；closed 首帧不再有描边）。 */
-html body:not(:has([data-sidebar-right-open="true"])) [data-sidebar-right-panel],
-html body:not(:has([data-sidebar-right-open="true"])) [data-sidebar-right-float-host] {
+html body:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"])) [data-sidebar-right-panel],
+html body:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"])) [data-sidebar-right-float-host] {
 	border-color: transparent !important;
 	box-shadow: none !important;
 }
 /* 右栏内容层（宿主 tabHost/tabHostBody）也会被停靠态 opacity:0 命中；打开时一并恢复，
    否则外层面板看得见、里面整块空白（真机反馈）。 */
-html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"])) [data-sidebar-right-panel][data-sidebar-right-open="true"] [class*="_tabHost"],
-html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"])) [data-sidebar-right-panel][data-sidebar-right-open="true"] [class*="_emptyTabHost"] {
+html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"])) [data-sidebar-right-panel][data-sidebar-right-open="true"] [class*="_tabHost"],
+html body[data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"])) [data-sidebar-right-panel][data-sidebar-right-open="true"] [class*="_emptyTabHost"] {
 	opacity: 1 !important;
 }
 /* 抑制：弹窗/设置面板打开时（backdrop-filter 会成为 fixed 弹窗的 containing block → 必须摘除）
@@ -1602,9 +1495,9 @@ body {
 	body[data-mpw-float] .pI_x6G_sidebarCol,
 	body[data-mpw-float] [class*="sidebarCol"],
 	body[data-mpw-float] [data-mpw-sidebar-root],
-	html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))) [data-sidebar-right-panel="push"],
-	html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))) [data-dockkit-pane],
-	html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-open="true"]))) [data-dockkit-strip] {
+	html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))) [data-sidebar-right-panel="push"],
+	html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))) [data-dockkit-pane],
+	html body[data-mpw-float]:not([data-mpw-rightbar-parked]:not(:has([data-sidebar-right-session]:not([hidden]) [data-sidebar-right-open="true"]))) [data-dockkit-strip] {
 		/* ①(2026-11-02 现象：悬浮卡圆角要和"发消息框"一致) 直接复用宿主 token
 		   --dsw-corner-shape（= superellipse(1.5)，宿主 composer 用的就是这个档），
 		   不再用我们自己的 superellipse(4)（4 比宿主更"方"，观感不一致）。
@@ -1688,6 +1581,7 @@ body[data-ds-dark-theme] .mpw_glassHost {
 	/* ①(修正) tab 增多后超出屏宽 → 最后一个被切。改横向滚动（隐藏滚动条但可滚），
 	   保证所有 tab 都能滑到；配合下一条的紧凑字号/间距尽量一屏放下。 */
 	overflow-x: auto; overflow-y: hidden;
+	overflow-anchor: none; overscroll-behavior: contain;
 	scrollbar-width: none; /* 隐藏滚动条（Firefox） */
 }
 .mpw_tabBar::-webkit-scrollbar { display: none; } /* 隐藏滚动条（WebKit） */
@@ -1783,6 +1677,8 @@ html body [data-mpw-scan-grid].mpw_scanGrid {
   max-height: calc(100vh - 300px) !important;
   overflow-y: auto !important;
   overflow-x: hidden !important;
+  overflow-anchor: none !important;
+  overscroll-behavior: contain !important;
   padding: 2px 2px 8px 2px !important;
 }
 html body [data-mpw-scan-grid] > .mpw_scanCell {
@@ -1951,6 +1847,7 @@ html body [data-mpw-bs-scan] .mpw_reset {
 .mpw_presetRow {
 	display: flex; align-items: center; gap: 6px;
 	overflow-x: auto; overflow-y: hidden; white-space: nowrap;
+	overflow-anchor: none; overscroll-behavior: contain;
 	scrollbar-width: none; padding: 2px 0;
 	min-width: 0;
 }
@@ -2320,6 +2217,23 @@ html body [data-mpw-bs-tab] .mpw_preset, html body [data-mpw-bs-tab] .mpw_sectio
     border-radius: 10px !important;
     box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18) !important;
     color: rgb(24, 26, 32) !important;
+  }
+  /* 改动文件的悬停预览（FileDiff 的 header/body 挂在 HoverCard 里，类名 hash 随构建变）。
+     卡片底是 --dsw-alias-bg-layer-1，有壁纸时被压成半透明且自身没有 backdrop-filter。
+     增删行自带红/绿底，未改行是透明的，于是只剩一层白纱、后面的字直接透出来。
+     模糊加在包住预览的那张卡片上，不改行底色。锚点是稳定属性，不写 hash。 */
+  html body :has(> [data-changes-hover-preview]) {
+    -webkit-backdrop-filter: var(--dsw-menu-backdrop-filter, blur(40px) saturate(150%)) !important;
+    backdrop-filter: var(--dsw-menu-backdrop-filter, blur(40px) saturate(150%)) !important;
+  }
+  /* 插件页 Header 后面那条白条是 [data-natural]::before，底色用 --dsw-alias-bg-base。
+     有壁纸时这个 token 是半透明白，高度又接近悬浮关掉时的标题栏，看起来像多了一层白底。
+     这里去掉白底，只留一层模糊，滚动内容仍可读。 */
+  html body [data-natural]::before {
+    background: transparent !important;
+    background-color: transparent !important;
+    -webkit-backdrop-filter: var(--dsw-menu-backdrop-filter, blur(24px) saturate(140%)) !important;
+    backdrop-filter: var(--dsw-menu-backdrop-filter, blur(24px) saturate(140%)) !important;
   }
   /* ②(2026-11-01 Issue#5 B / T17 真机定案) 插件市场（dshmarket）「发现」页的**搜索+分类吸顶条**
      （.nUhMVa_stickyHead，position:sticky z:5，bg rgba(248,249,250,0.58)，无边框无阴影）：
@@ -2778,6 +2692,7 @@ html body[data-ds-dark-theme] .mpw_dialog.mpw_dialog_dirpick {
 .mpw_errlog {
 	margin: 2px 0 4px; padding: 10px 12px;
 	max-height: 45vh; overflow: auto;
+	overflow-anchor: none; overscroll-behavior: contain;
 	white-space: pre-wrap; word-break: break-word;
 	user-select: text; -webkit-user-select: text;
 	font: 12px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -2791,6 +2706,7 @@ body[data-ds-dark-theme] .mpw_errlog {
 }
 .mpw_errBlocks {
 	max-height: 45vh; overflow: auto;
+	overflow-anchor: none; overscroll-behavior: contain;
 	display: flex; flex-direction: column; gap: 6px;
 }
 .mpw_errBlock {

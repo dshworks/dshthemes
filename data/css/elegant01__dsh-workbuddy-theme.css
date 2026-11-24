@@ -1,0 +1,315 @@
+/* elegant01/dsh-workbuddy-theme — client.js
+   fetched 2026-11-24 from https://raw.githubusercontent.com/elegant01/dsh-workbuddy-theme/main/client.js
+   CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
+/* ============ 26. 设置页排版（P2 支撑）============
+   新设置页（settings.section: workbuddy）的样式。
+   WorkBuddy 的设置项是一行标题 + 一行说明 + 右侧控件，行间距 24px。 */
+.dsh-wb-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 24px 24px;
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--dsw-alias-label-primary);
+}
+.dsh-wb-panel-title {
+  margin: 22px 0 8px;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  color: var(--dsw-alias-label-primary);
+}
+.dsh-wb-panel-title:first-child { margin-top: 8px; }
+.dsh-wb-panel-hint {
+  margin: -4px 0 8px;
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--dsw-alias-label-tertiary);
+}
+.dsh-wb-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 14px 0;
+  border-bottom: .5px solid var(--dsw-alias-border-l2);
+}
+.dsh-wb-row:last-child { border-bottom: 0; }
+.dsh-wb-row-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.dsh-wb-row-label { font-size: 14px; line-height: 22px; color: var(--dsw-alias-label-primary); }
+.dsh-wb-row-desc { font-size: 12px; line-height: 20px; color: var(--dsw-alias-label-tertiary); }
+.dsh-wb-segmented {
+  display: inline-flex;
+  flex: none;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 8px;
+  background-color: var(--dsw-alias-interactive-bg-hover);
+}
+.dsh-wb-segmented > button {
+  border: 0;
+  border-radius: 6px;
+  padding: 4px 12px;
+  font: inherit;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--dsw-alias-label-secondary);
+  background: transparent;
+  cursor: pointer;
+}
+.dsh-wb-segmented > button[aria-pressed="true"] {
+  color: var(--dsw-alias-label-primary);
+  background-color: var(--dsw-alias-bg-base);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 8%);
+}
+.dsh-wb-segmented > button:disabled { opacity: .45; cursor: default; }
+.dsh-wb-row-stack { flex-direction: column; align-items: stretch; gap: 12px; }
+.dsh-wb-skins {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.dsh-wb-skin-card {
+  position: relative;
+  display: block;
+  padding: 0;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: var(--dsw-alias-bg-layer-1);
+  color: var(--dsw-alias-label-primary);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color .15s, box-shadow .15s;
+}
+.dsh-wb-skin-card:hover { border-color: var(--dsw-alias-border-l3); box-shadow: 0 2px 8px rgb(0 0 0 / 7%); }
+.dsh-wb-skin-card.is-on { border-color: var(--bk-accent); box-shadow: inset 0 0 0 1px var(--bk-accent); }
+.dsh-wb-skin-thumb {
+  height: 104px;
+  padding: 9px;
+  box-sizing: border-box;
+  background-color: var(--bk-bg);
+}
+.dsh-wb-skin-win {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--bk-line);
+  border-radius: 6px;
+  background-color: var(--bk-card);
+  box-shadow: 0 1px 3px rgb(20 30 50 / 8%);
+}
+.dsh-wb-skin-bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 12px;
+  padding: 0 6px;
+  border-bottom: 1px solid var(--bk-line);
+}
+.dsh-wb-skin-bar i { width: 3px; height: 3px; border-radius: 50%; background: currentColor; opacity: .28; }
+.dsh-wb-skin-body { flex: 1; display: flex; min-height: 0; }
+.dsh-wb-skin-side {
+  flex: none;
+  width: 36px;
+  padding: 7px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background-color: var(--bk-side);
+}
+.dsh-wb-skin-side i { display: block; height: 3px; border-radius: 2px; background: currentColor; opacity: .18; }
+.dsh-wb-skin-ava { width: 9px; height: 9px; margin-bottom: 1px; border-radius: 50%; background-color: var(--bk-accent); opacity: .85; }
+.dsh-wb-skin-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 7px 8px 6px;
+}
+.dsh-wb-skin-main > i { height: 3px; border-radius: 2px; background: currentColor; opacity: .16; }
+.dsh-wb-skin-main > i.l1 { width: 78%; }
+.dsh-wb-skin-main > i.l2 { width: 56%; }
+.dsh-wb-skin-bub {
+  align-self: flex-end;
+  width: 58%;
+  height: 13px;
+  box-sizing: border-box;
+  border: 1px solid var(--bk-line);
+  border-radius: 5px 5px 2px 5px;
+  background-color: var(--bk-bubble);
+}
+.dsh-wb-skin-composer {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 14px;
+  padding: 0 3px;
+  border: 1px solid var(--bk-line);
+  border-radius: 5px;
+  background-color: var(--bk-card);
+}
+.dsh-wb-skin-composer span { width: 12px; height: 7px; border-radius: 3.5px; background-color: var(--bk-accent); }
+.dsh-wb-skin-cap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px 8px;
+  border-top: 1px solid var(--dsw-alias-border-l2);
+}
+.dsh-wb-skin-name { font-size: 12px; line-height: 18px; color: var(--dsw-alias-label-primary); }
+.dsh-wb-skin-sub { margin-left: auto; font-size: 11px; line-height: 16px; color: var(--dsw-alias-label-tertiary); }
+.dsh-wb-skin-check {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: var(--bk-accent);
+  color: #fff;
+  font-size: 10px;
+  line-height: 16px;
+  text-align: center;
+}
+.dsh-wb-pet-chip { display: inline-flex; align-items: center; gap: 8px; }
+.dsh-wb-pet-thumb {
+  flex: none;
+  width: 30px;
+  height: 33px;
+  border-radius: 6px;
+  background-color: var(--dsw-alias-interactive-bg-hover);
+  background-repeat: no-repeat;
+}
+.dsh-wb-pet-name { font-size: 13px; line-height: 20px; color: var(--dsw-alias-label-primary); }
+
+/* ============ 28. 会话行徽标（P2）============
+   挂在 sidebar.session.row.trailing（list，inline: true），
+   渲染在时间戳右边、行 hover 时随 .rowResting 一起隐藏。
+   WorkBuddy 的会话行右边是一个小圆点 + 极小的状态字。 */
+.dsh-wb-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--dsw-alias-label-tertiary);
+  opacity: .55;
+}
+
+/* ============ 29. 会话头统计（P2）============
+   挂在 conversation.session.header.utilities（list，scope: session）。
+   宿主容器本身 gap 8px、margin-left 20px，这里只定义胶囊本身。 */
+.dsh-wb-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 9999px;
+  padding: 2px 10px;
+  font-size: 12px;
+  line-height: 20px;
+  font-variant-numeric: tabular-nums;
+  color: var(--dsw-alias-label-tertiary);
+  background-color: var(--dsw-alias-interactive-bg-hover);
+  white-space: nowrap;
+  cursor: default;
+}
+.dsh-wb-stat-label { color: var(--dsw-alias-label-tertiary); }
+.dsh-wb-stat-value { color: var(--dsw-alias-label-secondary); }
+
+/* ============ 27. 输入框上方的快捷条（P2）============
+   挂在 conversation.input.dock（list，scope: session），位于输入卡正上方。
+   WorkBuddy 的同类条：浅灰胶囊、12px 字号、6px 圆角、横排可换行。 */
+.dsh-wb-actions {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 2px 2px;
+}
+.dsh-wb-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: .5px solid var(--dsw-alias-border-l3);
+  border-radius: 8px;
+  padding: 4px 10px;
+  font: inherit;
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--dsw-alias-label-secondary);
+  background-color: var(--dsw-alias-bg-layer-1);
+  cursor: pointer;
+  transition: background-color .15s ease, color .15s ease;
+}
+.dsh-wb-action:hover {
+  color: var(--dsw-alias-label-primary);
+  background-color: var(--dsw-alias-interactive-bg-hover);
+}
+.dsh-wb-action[disabled] { opacity: .45; cursor: default; }
+
+/* ============ 30. 切换淡入淡出 ============
+   主题开关与交互色/密度切换都走 document.startViewTransition，
+   这里把默认 ~250ms 收到 200ms。不支持的宿主直接跳过动画、即时切换。 */
+::view-transition-old(root),
+::view-transition-new(root) { animation-duration: .2s; }
+
+/* ============ 31. 控件预览与适配告警 ============
+   设置页底部的控件全家福：一格一件，主题生效时按主题渲染、
+   关闭时回落宿主原生，哪格不对就说明哪处坏了。
+   琥珀色告警（#b45309/#d97706）在明暗两态都成立。 */
+.dsh-wb-stat-warn {
+  color: #b45309;
+  background-color: transparent;
+  border: .5px solid #d97706;
+}
+.dsh-wb-stat-warn .dsh-wb-stat-value { color: inherit; }
+
+.dsh-wb-preview {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+  padding: 12px;
+  border: .5px solid var(--dsw-alias-border-l2);
+  border-radius: 12px;
+}
+.dsh-wb-preview-item { display: flex; flex-direction: column; gap: 6px; }
+.dsh-wb-preview-label { font-size: 12px; line-height: 18px; color: var(--dsw-alias-label-tertiary); }
+.dsh-wb-preview-row { display: flex; align-items: center; gap: 10px; min-height: 24px; }
+.dsh-wb-swatch {
+  width: 24px;
+  height: 16px;
+  border-radius: 4px;
+  border: .5px solid rgb(128 128 128 / 30%);
+}
+
+/* ============ 32. 宠物联动（dsh-codex-pet）============
+   浮宠颜色派生自宿主令牌，主题生效即跟随；这里补两处：
+   1) 新会话（composerHero 布局）把宠物摆在输入卡右上角，脚踩边框；
+   2) 宠物气泡换成 WorkBuddy 风格：14px 圆角、细描边、elevation 阴影。
+   宠物插件未安装时两条规则都遇不到目标元素。 */
+.dsh-wb-perch {
+  display: none;
+  position: absolute;
+  right: 18px;
+  bottom: 100%;
+  margin-bottom: -10px;
+  width: 72px;
+  height: 78px;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 2px 3px rgb(0 0 0 / 12%));
+}
+html[data-dsh-wb-pet="on"] .an3WzG_composerHero .dsh-wb-perch { display: block; }
+html[data-dsh-wb-pet="on"] .dcp .dcp-bubble {
+  border-radius: 14px !important;
+  border-color: var(--dsw-alias-border-l2) !important;
+  background: var(--dsw-alias-bg-layer-3) !important;
+  box-shadow: var(--dsw-elevation-panel) !important;
+}
+html[data-dsh-wb-pet="on"] .dcp .dcp-bubble strong { color: var(--dsw-alias-label-primary); }

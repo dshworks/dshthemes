@@ -1,5 +1,5 @@
 /* xiaobaga281/dsh-ink-splash — lib/ink-ui.css
-   fetched 2026-11-16 from https://raw.githubusercontent.com/xiaobaga281/dsh-ink-splash/main/lib/ink-ui.css
+   fetched 2026-11-24 from https://raw.githubusercontent.com/xiaobaga281/dsh-ink-splash/main/lib/ink-ui.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* 水墨江湖 · component layer.
  *
@@ -10,7 +10,7 @@
  * sheet is inert, which is what makes it safe to ship inside the same injected row as the
  * splash stylesheet.
  *
- * TWO HARD RULES, both learned the expensive way on his machine:
+ * TWO HARD RULES, both learned from the installed app's DOM:
  *
  *   1. A `data-slot` element is `display: contents` (measured: all 207 of them in the
  *      shell, every box 0x0). It cannot carry a background, a border or a blur — a rule
@@ -36,7 +36,7 @@
  * Two reasons it is not the obvious alternative:
  *   - `filter: brightness()` cannot go on any of these boxes. The frame and the reading
  *     column are window-wide elements, and a filter also makes its element the containing
- *     block for `position: fixed` descendants — the same trap that moved his 侧栏 toggle.
+ *     block for `position: fixed` descendants — the same trap that moved the sidebar toggle.
  *   - `background-blend-mode` could scale the picture down (multiply with a grey) but has no
  *     inverse for lifting it, and it would blend the fibre and the washes too.
  * A source-over veil is both halves of a brightness control anyway: black at alpha (1-b)
@@ -45,31 +45,77 @@
  * The lists must stay the same length in every rule: a background layer with no matching
  * size/repeat/position entry silently borrows the wrong one, which moves the picture rather
  * than dimming it. A check derives those counts from the shipped sheet. */
+/* The UI ground follows the same artwork axis as the splash. `data-dsh-ink-art`
+ * is written by client.js whenever the saved artwork changes; without it the hero
+ * pair remains the fallback, exactly as before. Keeping the two pictures in one
+ * variable pair means every glass strip swaps with the wallpaper at once. */
+:root[data-dsh-ink-theme="ink-jianghu"] {
+	--dsh-ink-wall-full: url("/ink-splash/bg-xuan.jpg");
+	--dsh-ink-wall-blur: url("/ink-splash/bg-xuan-blur-hi.jpg");
+	--dsh-ink-wall-top: #e4cfb3;
+	--dsh-ink-wall-body: #e9dfc7;
+}
+:root[data-dsh-ink-theme="ink-jianghu-dark"] {
+	--dsh-ink-wall-full: url("/ink-splash/bg-night.jpg");
+	--dsh-ink-wall-blur: url("/ink-splash/bg-night-blur-hi.jpg");
+	--dsh-ink-wall-top: #2f3131;
+	--dsh-ink-wall-body: #0f0e0c;
+}
+:root[data-dsh-ink-theme="ink-jianghu"][data-dsh-ink-art="whale"] {
+	--dsh-ink-wall-full: url("/ink-splash/bg-whale-xuan.jpg");
+	--dsh-ink-wall-blur: url("/ink-splash/bg-whale-xuan-blur-hi.jpg");
+	--dsh-ink-wall-top: #e6d8be;
+	--dsh-ink-wall-body: #e6d8be;
+}
+:root[data-dsh-ink-theme="ink-jianghu-dark"][data-dsh-ink-art="whale"] {
+	--dsh-ink-wall-full: url("/ink-splash/bg-whale-night.jpg");
+	--dsh-ink-wall-blur: url("/ink-splash/bg-whale-night-blur-hi.jpg");
+	--dsh-ink-wall-top: #191919;
+	--dsh-ink-wall-body: #191919;
+}
+/* All four wallpapers are 1.751:1. `cover` is still the right size, but its box is the
+ * element. The frame animates `grid-template-columns`, so the centre sheet's box is the
+ * moving track. `max(100vw, 175.1vh)` is the same cover size resolved only against the
+ * viewport: a column change then clips the sheet instead of becoming its image's sizing
+ * box. Used only by the three column surfaces; the cards keep their existing glass. */
+:root[data-dsh-ink-theme] {
+	--dsh-ink-wall-cover: max(100vw, 175.1vh);
+}
 :root[data-dsh-ink-theme] body {
-	background-color: #e9dfc7;
+	background-color: var(--dsh-ink-wall-body);
 	background-image:
 		url("/ink-splash/grain.png"),
 		linear-gradient(to top, rgba(58, 44, 26, .34) 0 18%, rgba(58, 44, 26, 0) 62%),
 		linear-gradient(to bottom, rgba(250, 246, 236, .34), rgba(250, 246, 236, 0) 40%),
 		linear-gradient(var(--dsh-ink-walllight, transparent), var(--dsh-ink-walllight, transparent)),
-		url("/ink-splash/bg-xuan-blur.jpg");
+		var(--dsh-ink-wall-blur);
 	background-size: 220px 220px, auto, auto, auto, cover;
 	background-repeat: repeat, no-repeat, no-repeat, no-repeat, no-repeat;
 	background-position: 0 0, 0 0, 0 0, 0 0, center;
 	background-blend-mode: multiply, normal, normal, normal, normal;
 }
 :root[data-dsh-ink-theme="ink-jianghu-dark"] body {
-	background-color: #0f0e0c;
+	background-color: var(--dsh-ink-wall-body);
 	background-image:
 		url("/ink-splash/grain.png"),
 		linear-gradient(to top, rgba(0, 0, 0, .58) 0 22%, rgba(0, 0, 0, 0) 66%),
 		linear-gradient(to bottom, rgba(10, 9, 8, .42), rgba(10, 9, 8, 0) 44%),
 		linear-gradient(var(--dsh-ink-walllight, transparent), var(--dsh-ink-walllight, transparent)),
-		url("/ink-splash/bg-night-blur.jpg");
+		var(--dsh-ink-wall-blur);
 	background-size: 220px 220px, auto, auto, auto, cover;
 	background-repeat: repeat, no-repeat, no-repeat, no-repeat, no-repeat;
 	background-position: 0 0, 0 0, 0 0, 0 0, center;
 	background-blend-mode: overlay, normal, normal, normal, normal;
+}
+/* The fibre is a 220px multiply/overlay tile. While the kernel's frameless boot node is
+ * the only thing over the body, it covers the whole window and its horizontal grain
+ * reads as a scanned/tearing loading frame for an instant before React paints. Hold the
+ * boot sheet flat; the normal paper (fibre included) resumes the moment the node goes. */
+:root[data-dsh-ink-theme="ink-jianghu"] [data-dsh-boot] {
+	background-color: #efeade;
+}
+:root[data-dsh-ink-theme="ink-jianghu-dark"] [data-dsh-boot] {
+	background-color: #15161b;
 }
 
 /* ---------- 山水: the ground is one picture across the whole window ----------
@@ -84,17 +130,17 @@
 :root[data-dsh-ink-theme] [data-slot="conversation.composer.bar"] > * {
 	/* The composer bar's root rides the same coordinates as the reading sheet: the
 	 * app's own side clearance (`--dsh-composer-side-clearance`) then shows the very
-	 * same painting as the sheet beside it — no frost, no seam (his 11:14 report: the
-	 * clearance read as frosted glass; what he wants there is the wallpaper itself). */
+	 * same painting as the sheet beside it — no frost, no seam (the installed app's report: the
+	 * clearance read as frosted glass; the wallpaper itself is the intended ground). */
 	/* The painting is width-fitted and floor-anchored, so a narrow reading column (the
 	 * rightbar docked open) leaves sky above it — painted with the picture's own
 	 * top-row tone, the slack IS the sky: the scrim composites identically on both
-	 * sides of the seam, so there is no seam to see. Sampled: bg-xuan top ≈ #e4cfb3. */
-	background-color: #e4cfb3;
+	 * sides of the seam, so there is no seam to see. Sampled per artwork. */
+	background-color: var(--dsh-ink-wall-top);
 	background-image:
 		linear-gradient(to bottom, rgba(245, 240, 230, .66) 0 22%, rgba(245, 240, 230, .56) 45%, rgba(245, 240, 230, .34) 74%, rgba(245, 240, 230, .12)),
 		linear-gradient(var(--dsh-ink-walllight, transparent), var(--dsh-ink-walllight, transparent)),
-		url("/ink-splash/bg-xuan.jpg");
+		var(--dsh-ink-wall-full);
 	background-attachment: fixed, fixed, fixed;
 	background-size: auto, auto, 100% auto;
 	background-position: 0 0, 0 0, 50% 100%;
@@ -107,39 +153,105 @@
  *
  * An arc is only visible if the surface inside it differs from the ground behind it, and
  * stock gives that for free (white sheet on a `#f9fafb` frame). The rule below is what buys
- * it back here; a +6 inset lift on the sheet alone was measured and did not — his verdict:
- * 「还是直角啊」 — because the edge he was seeing was not the sheet's. */
+ * it back here; a +6 inset lift on the sheet alone was measured and did not — the check showed
+ * 「还是直角啊」 — because the visible edge was not the sheet's. */
 :root[data-dsh-ink-theme] [data-slot="main.conversation"] > * {
 	border-radius: var(--dsw-radius-panel) 0 0 0;
 }
 /* The corner sliver — inside the column's box but outside the sheet's arc — was painting the
- * SAME viewport-anchored picture as the sheet (measured on his instance: sliver R200 against
+ * SAME viewport-anchored picture as the sheet (measured in the installed app: sliver R200 against
  * sheet R200, and R238 for the frosted sidebar and the caption strip either side of it). Two
  * identical surfaces have no edge between them, so the 28 arc did not exist there: what the
  * eye reached was the FRAME's square box edge against a 38-level ground. No radius on the
  * sheet can round an edge that is not the sheet's, and lifting the sheet only moved one of
- * the two identical halves — his verdict on that attempt: 「还是直角啊」.
+ * the two identical halves — the same check 「还是直角啊」.
  *
- * So the sliver has to be the ground, not the picture. The parent box is the thing that owns
- * it, and it is given the application's OWN ground token — `--dsw-specific-sidebar-fill`,
- * which this theme sets to #efe8d9 / #2d2a27 and which the app itself paints the caption
- * strip with (measured at that pixel: rgb(239,232,217) for the strip, rgb(238,232,217) for
- * the frosted sidebar — one level apart, so the parent's own square edge disappears into it
- * and the only boundary left is the sheet's arc). Square corner, both palettes, no number of
- * ours. */
+ * So the sliver has to be the ground, not the picture. It used to be the flat
+ * `--dsw-specific-sidebar-fill`; that left a grey wedge beside the frosted caption and
+ * sidebar. It now carries the same glass as the margin on its own `::before`, so the
+ * sheet's arc continues into the same material instead of a painted corner.
+ * The column keeps the app's square shape; only the paint changes. */
 :root[data-dsh-ink-theme] [class$="centerCol"] {
-	background: var(--dsw-specific-sidebar-fill);
+	position: relative;
+	isolation: isolate;
+	background: transparent;
 	border-radius: 0;
+}
+/* The centre's paint is the column's own pre-blurred sheet (installed at the
+ * `centerCol` rule below), plus this tint layer. It is never a live
+ * `backdrop-filter`: the column is the one full-height surface whose width
+ * changes on every rightbar toggle, and a live blur here re-sampled the whole
+ * centre on each animation frame, making the conversation edge visibly step
+ * while the grid track eased. A plain translucent fill can resize without
+ * touching the compositor's backdrop pass. */
+:root[data-dsh-ink-theme] [class$="centerCol"]::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	pointer-events: none;
+	border-radius: inherit;
+	background-color: color-mix(in srgb, var(--dsw-alias-bg-layer-1) 20%, transparent);
+}
+/* The titlebar and the left column must not merely share a tint; they must see the
+ * same ground. The frame's own top strip is the flat paper slack above the
+ * floor-anchored wallpaper, while the frosted columns read the blurred body sheet.
+ * Give the strip the same pre-blurred sheet at viewport scale, then the same 20%
+ * layer-1 tint and the same 28px / saturate(1.3) glass. */
+:root[data-dsh-ink-theme="ink-jianghu-dark"][data-windows-titlebar] [class$="frame"]::before {
+	background-color: transparent;
+	background-image:
+		linear-gradient(color-mix(in srgb, var(--dsw-alias-bg-layer-1) 20%, transparent), color-mix(in srgb, var(--dsw-alias-bg-layer-1) 20%, transparent)),
+		var(--dsh-ink-wall-blur);
+	background-size: auto, cover;
+	background-position: 0 0, center top;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+}
+:root[data-dsh-ink-theme="ink-jianghu"][data-windows-titlebar] [class$="frame"]::before {
+	background-color: transparent;
+	background-image:
+		linear-gradient(color-mix(in srgb, var(--dsw-alias-bg-layer-1) 20%, transparent), color-mix(in srgb, var(--dsw-alias-bg-layer-1) 20%, transparent)),
+		var(--dsh-ink-wall-blur);
+	background-size: auto, cover;
+	background-position: 0 0, center top;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+}
+/* The Plugins panel owns a sticky page bar whose `::before` is painted with the
+ * app's opaque `--dsw-alias-bg-base` — a flat band against the theme's blurred
+ * sheet, and the one strip the centre-column glass never reached. The class prefix
+ * is per-build, so key on the stable `_pageBar` suffix and the bar's own
+ * `data-natural` marker; the material is the centre column's, layer for layer. */
+:root[data-dsh-ink-theme="ink-jianghu"] [class*="_pageBar"][data-natural]::before {
+	background-color: transparent;
+	background-image:
+		linear-gradient(color-mix(in srgb, var(--dsw-alias-bg-layer-1) 20%, transparent), color-mix(in srgb, var(--dsw-alias-bg-layer-1) 20%, transparent)),
+		var(--dsh-ink-wall-blur);
+	background-size: auto, cover;
+	background-position: 0 0, center top;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+}
+:root[data-dsh-ink-theme="ink-jianghu-dark"] [class*="_pageBar"][data-natural]::before {
+	background-color: transparent;
+	background-image:
+		linear-gradient(color-mix(in srgb, var(--dsw-alias-bg-layer-1) 20%, transparent), color-mix(in srgb, var(--dsw-alias-bg-layer-1) 20%, transparent)),
+		var(--dsh-ink-wall-blur);
+	background-size: auto, cover;
+	background-position: 0 0, center top;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
 }
 :root[data-dsh-ink-theme="ink-jianghu-dark"] [data-slot="root"] > *,
 :root[data-dsh-ink-theme="ink-jianghu-dark"] [data-slot="main.conversation"] > *,
 :root[data-dsh-ink-theme="ink-jianghu-dark"] [data-slot="conversation.composer.bar"] > * {
 	/* bg-night top ≈ #303232 — same slack-as-sky treatment as the paper sheet. */
-	background-color: #2f3131;
+	background-color: var(--dsh-ink-wall-top);
 	background-image:
 		linear-gradient(to bottom, rgba(23, 21, 19, .70) 0 22%, rgba(23, 21, 19, .55) 48%, rgba(23, 21, 19, .32) 76%, rgba(23, 21, 19, .14)),
 		linear-gradient(var(--dsh-ink-walllight, transparent), var(--dsh-ink-walllight, transparent)),
-		url("/ink-splash/bg-night.jpg");
+		var(--dsh-ink-wall-full);
 	background-attachment: fixed, fixed, fixed;
 	background-size: auto, auto, 100% auto;
 	background-position: 0 0, 0 0, 50% 100%;
@@ -152,22 +264,21 @@
  * as glass rather than as paint. At 12 px the picture still resolves as detail; at 34 px it
  * is atmosphere.
  *
- * Scope is exactly what he asked for: 左栏, 右栏, 输入框. The conversation area is NOT in
- * this list — frosting it washed the painting out of the one place he wants to see it.
+ * Scope: 左栏, 右栏, 输入框, plus the blank sliver at the centre column's top-left
+ * corner where the rounded sheet exposes its parent. The conversation sheet itself is NOT
+ * frosted — washing that out would remove the painting from the place he wants to read.
  *
  * The filter lives on a `::before`, never on the column's own box. `backdrop-filter` makes
  * an element the containing block for `position: fixed` and `absolute` descendants, and
- * measured in his window the 侧栏 toggle is `position: fixed` — frosting the box pulled it
+ * measured in the installed app the sidebar toggle is `position: fixed` — frosting the box pulled it
  * out of the title strip and onto the whale logo. A pseudo-element carries the same filter
- * and adopts no descendants. (The frame's `::before` is taken: the app paints the caption
- * strip with it, which is why the frost stops at the columns.) */
+ * and adopts no descendants. The frame's `::before` is the app's Windows drag strip; the
+ * rule around line 223 repaints it as the same glass without touching its drag role. */
 /* The columns, by their CSS-module local name. The shipped layout paints the left column
  * opaque on the element itself (`.BynINW_sidebarCol { background:
- * var(--dsw-specific-sidebar-fill) }`, asar 0.2.0-rc.2) and declares no
- * `data-slot="sidebar"` in the layout at all — the slots are written dynamically
- * (`"data-slot": slotKey`) and the sidebar is a plain div. A hook on the slot wrapper
- * therefore dressed a layer that the column's own fill was covering, which is why the
- * margins read as flat paint. The local name is the stable tail of the composed class
+ * var(--dsw-specific-sidebar-fill) }`); 0.2.2 also paints a second opaque fill on the
+ * `SidebarRoot` child, so both layers have to be cleared before the column can read as
+ * glass. The local name is the stable tail of the composed class
  * (`BynINW_sidebarCol` → `[class$="sidebarCol"]`), so the hook survives the next rehash. */
 :root[data-dsh-ink-theme] [class$="sidebarCol"],
 :root[data-dsh-ink-theme] [class$="rightbarCol"],
@@ -180,6 +291,17 @@
 	 * without becoming a containing block for fixed descendants (a filter would). */
 	isolation: isolate;
 	background-color: transparent;
+}
+/* 0.2.2 moved the sidebar's fill one level deeper: `SidebarRoot` paints its
+ * `.root` child with the same `--dsw-specific-sidebar-fill` that the layout
+ * column used to own. The column itself is already transparent, so the frost
+ * below it sits behind that opaque child and reads as flat paint. Clear the
+ * sidebar outlet and its child; the sidebar's own controls keep their fills.
+ * The outlet is a `display: contents` slot anchor, so it can sit between the
+ * column and `.root`; both shapes are covered here. */
+:root[data-dsh-ink-theme] [class$="sidebarCol"] > *,
+:root[data-dsh-ink-theme] [class$="sidebarCol"] [data-slot="sidebar"] > * {
+	background: transparent;
 }
 /* The bar's ROOT paints the wallpaper itself now (it joined the 山水 rule above), so
  * the app's side clearance shows the same picture as the reading sheet — no frost, no
@@ -200,6 +322,193 @@
 	background-color: color-mix(in srgb, var(--dsw-alias-bg-layer-1) 24%, transparent);
 	backdrop-filter: blur(34px) saturate(1.4);
 	-webkit-backdrop-filter: blur(34px) saturate(1.4);
+}
+/* The sidebar is the one margin that sits beside the reading surface at this width, so
+ * its frost can be a notch lighter than the rest of the material: 34 px erased the
+ * mountain silhouette behind the narrow column; 28 px keeps the paper mist without
+ * flattening the picture. Same colour family, just less of it. */
+:root[data-dsh-ink-theme] [class$="sidebarCol"]::before {
+	background-color: color-mix(in srgb, var(--dsw-alias-bg-layer-1) 20%, transparent);
+	backdrop-filter: blur(28px) saturate(1.3);
+	-webkit-backdrop-filter: blur(28px) saturate(1.3);
+}
+/* The control strip is already the glass the user wants (same pre-blurred sheet,
+ * same 20% layer-1 tint, same 28px / saturate(1.3)). The left column used to sit
+ * over a different ground, so it read darker even with identical glass values.
+ * Give the column the strip's exact stack — viewport-anchored blurred sheet plus
+ * the same tint — instead of letting the frame underneath decide its colour. */
+:root[data-dsh-ink-theme="ink-jianghu"] [class$="sidebarCol"]::before {
+	background-color: transparent;
+	background-image:
+		linear-gradient(color-mix(in srgb, var(--dsw-alias-bg-layer-1) 20%, transparent), color-mix(in srgb, var(--dsw-alias-bg-layer-1) 20%, transparent)),
+		var(--dsh-ink-wall-blur);
+	background-size: auto, cover;
+	background-position: 0 0, center top;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	/* The sheet above is already blurred. A live 28 px backdrop filter over it repeats
+	 * the full-height sample on every scroll, typing tick and resize; the screenshot
+	 * comparison put the two results within 0.14/255 per channel. */
+	backdrop-filter: none;
+	-webkit-backdrop-filter: none;
+}
+:root[data-dsh-ink-theme="ink-jianghu-dark"] [class$="sidebarCol"]::before {
+	background-color: transparent;
+	background-image:
+		linear-gradient(color-mix(in srgb, var(--dsw-alias-bg-layer-1) 20%, transparent), color-mix(in srgb, var(--dsw-alias-bg-layer-1) 20%, transparent)),
+		var(--dsh-ink-wall-blur);
+	background-size: auto, cover;
+	background-position: 0 0, center top;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	backdrop-filter: none;
+	-webkit-backdrop-filter: none;
+}
+/* Hero's reading pane and the sidebar must show the same part of the same painting.
+ * The sidebar's frosted copy is cover / centre-top; the conversation sheet and composer
+ * were still 100%-width / bottom-anchored, so the moon and branch sat at a different
+ * place on each side. Align only the full-wallpaper surfaces to the sidebar's existing
+ * crop. No blur, tint, saturation or sidebar material is changed here. */
+:root[data-dsh-ink-theme="ink-jianghu"][data-dsh-ink-art="hero"] [data-slot="root"] > *,
+:root[data-dsh-ink-theme="ink-jianghu"][data-dsh-ink-art="hero"] [data-slot="main.conversation"] > *,
+:root[data-dsh-ink-theme="ink-jianghu"][data-dsh-ink-art="hero"] [data-slot="conversation.composer.bar"] > *,
+:root[data-dsh-ink-theme="ink-jianghu-dark"][data-dsh-ink-art="hero"] [data-slot="root"] > *,
+:root[data-dsh-ink-theme="ink-jianghu-dark"][data-dsh-ink-art="hero"] [data-slot="main.conversation"] > *,
+:root[data-dsh-ink-theme="ink-jianghu-dark"][data-dsh-ink-art="hero"] [data-slot="conversation.composer.bar"] > * {
+	background-size: auto, auto, cover;
+	background-position: 0 0, 0 0, center top;
+}
+/* The hero reading sheet keeps the same viewport-cover crop, but the size is pinned to
+ * the viewport rather than re-derived from the sheet's changing track box. */
+:root[data-dsh-ink-theme="ink-jianghu"][data-dsh-ink-art="hero"] [data-slot="main.conversation"] > *,
+:root[data-dsh-ink-theme="ink-jianghu-dark"][data-dsh-ink-art="hero"] [data-slot="main.conversation"] > * {
+	background-size: auto, auto, var(--dsh-ink-wall-cover) auto;
+}
+/* The whale reading sheet was the one column surface still sized by a percentage
+ * (`100% auto`) while the frame animates `grid-template-columns` for every column
+ * change. Pin its width to the viewport: the track then only clips the sheet, it
+ * never becomes the image's sizing box, so the painting cannot rescale under the
+ * easing edge. Hero already uses the viewport-cover crop above. */
+:root[data-dsh-ink-theme][data-dsh-ink-art="whale"] [data-slot="main.conversation"] > * {
+	background-size: auto, auto, 100vw auto;
+}
+
+/* The square outside the sheet's 28px arc is the centre column's own ground, not a
+ * separate patch: paint that ground with the exact sidebar sheet and tint. The
+ * conversation sheet already carries the same full picture inside its rounded
+ * silhouette, so the sliver and the sidebar read as one material; the sheet and its
+ * 28px radius are not touched. */
+:root[data-dsh-ink-theme] [class$="centerCol"] {
+	background-color: transparent;
+	background-image:
+		linear-gradient(color-mix(in srgb, var(--dsw-alias-bg-layer-1) 20%, transparent), color-mix(in srgb, var(--dsw-alias-bg-layer-1) 20%, transparent)),
+		var(--dsh-ink-wall-blur);
+	background-size: auto, cover;
+	background-position: 0 0, center top;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+}
+
+/* The right panel opens by animating its grid column, not by transforming a layer.
+ * A live `backdrop-filter` on that pseudo has to re-sample the page every frame while
+ * the column grows, which is the one-frame lag visible when it slides in and out.
+ * Paint the same pre-blurred fixed sheet the sidebar uses instead: the pixels are
+ * already blurred, so the panel can resize without asking the compositor to blur the
+ * backdrop again. */
+:root[data-dsh-ink-theme="ink-jianghu"] [class$="rightbarCol"]::before,
+:root[data-dsh-ink-theme="ink-jianghu"] [data-rightbar-fullscreen] [class*="_tabHost_"]::before {
+	background-color: transparent;
+	background-image:
+		linear-gradient(color-mix(in srgb, var(--dsw-alias-bg-layer-1) 20%, transparent), color-mix(in srgb, var(--dsw-alias-bg-layer-1) 20%, transparent)),
+		var(--dsh-ink-wall-blur);
+	background-size: auto, cover;
+	background-position: 0 0, center top;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	backdrop-filter: none;
+	-webkit-backdrop-filter: none;
+}
+:root[data-dsh-ink-theme="ink-jianghu-dark"] [class$="rightbarCol"]::before,
+:root[data-dsh-ink-theme="ink-jianghu-dark"] [data-rightbar-fullscreen] [class*="_tabHost_"]::before {
+	background-color: transparent;
+	background-image:
+		linear-gradient(color-mix(in srgb, var(--dsw-alias-bg-layer-1) 20%, transparent), color-mix(in srgb, var(--dsw-alias-bg-layer-1) 20%, transparent)),
+		var(--dsh-ink-wall-blur);
+	background-size: auto, cover;
+	background-position: 0 0, center top;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	backdrop-filter: none;
+	-webkit-backdrop-filter: none;
+}
+/* Paint the panel's own final-width box, not just the grid track. The panel is
+ * anchored to the right edge at its full width and slides in while the track
+ * eases up from zero; the track-only pseudo therefore leaves the leading slice
+ * of the incoming panel transparent, and the sharp centre wallpaper shows
+ * through until the track catches up. The panel root already has its final
+ * width on the first frame. This sheet is clipped from the panel's left edge
+ * with the same duration/easing as the dock's translateX, so it follows the
+ * visible content instead of hanging over the conversation at its final
+ * width. Closed, the clip has zero width, so no frost strip is left at the
+ * window edge. */
+:root[data-dsh-ink-theme="ink-jianghu"] [class$="rightbarCol"] [data-sidebar-right-panel="push"]::before,
+:root[data-dsh-ink-theme="ink-jianghu-dark"] [class$="rightbarCol"] [data-sidebar-right-panel="push"]::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	pointer-events: none;
+	background-color: transparent;
+	background-image:
+		linear-gradient(color-mix(in srgb, var(--dsw-alias-bg-layer-1) 20%, transparent), color-mix(in srgb, var(--dsw-alias-bg-layer-1) 20%, transparent)),
+		var(--dsh-ink-wall-blur);
+	background-size: auto, cover;
+	background-position: 0 0, center top;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	backdrop-filter: none;
+	-webkit-backdrop-filter: none;
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, .07);
+	clip-path: inset(0 0 0 100%);
+	transition: clip-path var(--ds-transition-duration-slow) var(--ds-ease-in-out);
+	will-change: clip-path;
+}
+:root[data-dsh-ink-theme="ink-jianghu"] [class$="rightbarCol"] [data-sidebar-right-panel="push"][data-sidebar-right-open]::before,
+:root[data-dsh-ink-theme="ink-jianghu-dark"] [class$="rightbarCol"] [data-sidebar-right-panel="push"][data-sidebar-right-open]::before {
+	clip-path: inset(0 0 0 0%);
+}
+@media (prefers-reduced-motion: reduce) {
+	:root[data-dsh-ink-theme] [class$="rightbarCol"] [data-sidebar-right-panel="push"]::before {
+		transition: none;
+		will-change: auto;
+	}
+}
+:root[data-dsh-ink-theme] [class$="sidebarCol"] [class*="_scrollFade"],
+:root[data-dsh-ink-theme] [class$="sidebarCol"] [class*="_fade"] {
+	background: none;
+}
+:root[data-dsh-ink-theme] [class$="sidebarCol"] [class*="_scrollArea"],
+:root[data-dsh-ink-theme] [class$="sidebarCol"] :has(> [class*="_fade"]) > [class*="_list"] {
+	-webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 24px), transparent 100%);
+	mask-image: linear-gradient(to bottom, #000 calc(100% - 24px), transparent 100%);
+}
+/* Windows caption row: the app's drag strip is a `frame::before` filled with the opaque
+ * sidebar token. It sits above the wallpaper, so it reads as a flat band beside the
+ * glass column. Give it the sidebar's exact material; the strip keeps its drag behaviour
+ * because only the paint and the filter change, never `-webkit-app-region`. */
+:root[data-dsh-ink-theme][data-windows-titlebar] [class$="frame"]::before,
+:root[data-dsh-ink-theme][data-windows-titlebar] [data-slot="root"] > *::before {
+	background-color: color-mix(in srgb, var(--dsw-alias-bg-layer-1) 20%, transparent);
+	backdrop-filter: blur(28px) saturate(1.3);
+	-webkit-backdrop-filter: blur(28px) saturate(1.3);
+}
+/* The caption strip already paints the pre-blurred sheet (the two rules above); the
+ * backdrop filter is a second full-width sample of the same pixels on every window
+ * drag and scroll. The screenshot comparison was within 0.14/255 per channel. */
+:root[data-dsh-ink-theme="ink-jianghu"][data-windows-titlebar] [class$="frame"]::before,
+:root[data-dsh-ink-theme="ink-jianghu-dark"][data-windows-titlebar] [class$="frame"]::before {
+	backdrop-filter: none;
+	-webkit-backdrop-filter: none;
 }
 /* ---------- 右栏全屏: one material across the window ----------
  * In `data-rightbar-fullscreen` the right panel is the reading surface, but the frame's
@@ -228,6 +537,26 @@
 	backdrop-filter: blur(34px) saturate(1.4);
 	-webkit-backdrop-filter: blur(34px) saturate(1.4);
 }
+/* The pre-blurred sheet above is already the blur; keep the fullscreen host from
+ * layering a second live backdrop-filter over it. This also prevents the tab host
+ * from re-sampling the page while the right panel changes width. */
+:root[data-dsh-ink-theme="ink-jianghu"] [data-rightbar-fullscreen] [class*="_tabHost_"]::before,
+:root[data-dsh-ink-theme="ink-jianghu-dark"] [data-rightbar-fullscreen] [class*="_tabHost_"]::before {
+	backdrop-filter: none;
+	-webkit-backdrop-filter: none;
+}
+
+/* The three column surfaces are viewport-cover-sized, not element-cover-sized. When
+ * the frame's grid track eases, the surface's own box changes; this size does not, so
+ * the compositor clips an already-decoded viewport sheet instead of scaling it. The
+ * card glasses below are outside this rule and are untouched. */
+:root[data-dsh-ink-theme] [class$="sidebarCol"]::before,
+:root[data-dsh-ink-theme] [class$="rightbarCol"]::before,
+:root[data-dsh-ink-theme] [class$="centerCol"],
+:root[data-dsh-ink-theme] [data-rightbar-fullscreen] [class*="_tabHost_"]::before,
+:root[data-dsh-ink-theme] [class$="rightbarCol"] [data-sidebar-right-panel="push"]::before {
+	background-size: auto, var(--dsh-ink-wall-cover) auto;
+}
 
 /* The specular edge is for the margin sheets only. The pseudo-element is a square layer
  * behind a rounded card, so an inset line on the input's sheet would draw a straight edge
@@ -236,12 +565,18 @@
 :root[data-dsh-ink-theme] [class$="rightbarCol"]::before {
 	box-shadow: inset 0 1px 0 rgba(255, 255, 255, .07);
 }
+/* The Windows caption row and the sidebar now share one material. The specular inset
+ * above belongs to the margin sheet's own top edge; at the caption boundary it drew the
+ * exact hairline he flagged as a seam, so it is removed only for the sidebar. */
+:root[data-dsh-ink-theme][data-windows-titlebar] [class$="sidebarCol"]::before {
+	box-shadow: none;
+}
 
 /* ---------- 停靠面板: square, exactly as the application ships it ----------
  * This used to round the docked host's two top corners with `--dsw-radius-panel` on the
  * theory that its 40 % fill made the app's own square corner read as a 「直角」 against the
- * landscape. He has now asked for the opposite, twice over: 右栏「左上角和右上角都变为直角」.
- * The rounding was ours — `el.matches()` on the docked host in his instance returned true for
+ * landscape. The requested state is the opposite: 右栏「左上角和右上角都变为直角」.
+ * The rounding was ours — `el.matches()` on the docked host in the installed app returned true for
  * that selector and the app leaves it at 0 — so it is deleted rather than overridden, and the
  * host keeps the application's shape. Nothing here rounds a docked panel; a check asserts it
  * stays that way. */
@@ -250,7 +585,7 @@
 	background-color: color-mix(in srgb, var(--dsw-alias-bg-layer-2) 36%, transparent);
 }
 /* The dock row (session stats) sits on the painting directly: the same viewport-aligned
- * recipe as the sheet, painted over the card's frost beneath it — he asked for the
+ * recipe as the sheet, painted over the card's frost beneath it — the intended state is the
  * wallpaper under the numbers, not glass. The pills register into
  * `conversation.composer.dock` (asar: dsh-client-ui-chat).
  *
@@ -262,11 +597,11 @@
  * the app's `*` rule already gives it the continuous corner. */
 :root[data-dsh-ink-theme] :has(> [data-slot="conversation.composer.dock"]) {
 	border-radius: var(--dsw-radius-md);
-	background-color: #e4cfb3;
+	background-color: var(--dsh-ink-wall-top);
 	background-image:
 		linear-gradient(to bottom, rgba(245, 240, 230, .66) 0 22%, rgba(245, 240, 230, .56) 45%, rgba(245, 240, 230, .34) 74%, rgba(245, 240, 230, .12)),
 		linear-gradient(var(--dsh-ink-walllight, transparent), var(--dsh-ink-walllight, transparent)),
-		url("/ink-splash/bg-xuan.jpg");
+		var(--dsh-ink-wall-full);
 	background-attachment: fixed, fixed, fixed;
 	background-size: auto, auto, 100% auto;
 	background-position: 0 0, 0 0, 50% 100%;
@@ -274,11 +609,11 @@
 }
 :root[data-dsh-ink-theme="ink-jianghu-dark"] :has(> [data-slot="conversation.composer.dock"]) {
 	border-radius: var(--dsw-radius-md);
-	background-color: #2f3131;
+	background-color: var(--dsh-ink-wall-top);
 	background-image:
 		linear-gradient(to bottom, rgba(23, 21, 19, .70) 0 22%, rgba(23, 21, 19, .55) 48%, rgba(23, 21, 19, .32) 76%, rgba(23, 21, 19, .14)),
 		linear-gradient(var(--dsh-ink-walllight, transparent), var(--dsh-ink-walllight, transparent)),
-		url("/ink-splash/bg-night.jpg");
+		var(--dsh-ink-wall-full);
 	background-attachment: fixed, fixed, fixed;
 	background-size: auto, auto, 100% auto;
 	background-position: 0 0, 0 0, 50% 100%;
@@ -290,9 +625,9 @@
  * bar inside the same painted column. Their shipped material is a menu surface —
  * `--dsw-specific-menu` fill + `--dsw-menu-backdrop-filter` + `--dsw-elevation-panel`
  * shadow — and on this theme that slab's edge is a full-width horizontal line across the
- * painting (his 19:0x report: 输入框上方一出现计划/目标/队列，对话背景就有一道鲜明分界线).
+ * painting (a reported edge case: 输入框上方一出现计划/目标/队列，对话背景就有一道鲜明分界线).
  *
- * Removing the surface fixed the line and lost the container (his next report: 没了但是
+ * Removing the surface fixed the line and lost the container (a follow-up: 没了但是
  * 对应队列容器也看不见了). So the fill is the input card's OWN glass — the same 36 %
  * layer-2 tint and 34 px frost its `::before` uses — while the queue panel keeps the
  * app's hairline outline. A glass card is a container the eye can find; it is not an
@@ -322,15 +657,34 @@
 	backdrop-filter: blur(34px) saturate(1.4);
 	-webkit-backdrop-filter: blur(34px) saturate(1.4);
 }
+/* The goal strip above the input is registered in the same dock as the queue panel,
+ * but it is a `_bar`, not a `_panel`: it never received the queue's glass and read as
+ * a bare tinted line over the painting. Give it the identical input-card glass. */
+:root[data-dsh-ink-theme] [data-slot="conversation.input.dock"] [class$="_bar"] {
+	position: relative;
+	isolation: isolate;
+	background: none;
+}
+:root[data-dsh-ink-theme] [data-slot="conversation.input.dock"] [class$="_bar"]::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	pointer-events: none;
+	border-radius: inherit;
+	background-color: color-mix(in srgb, var(--dsw-alias-bg-layer-2) 36%, transparent);
+	backdrop-filter: blur(34px) saturate(1.4);
+	-webkit-backdrop-filter: blur(34px) saturate(1.4);
+}
 /* The columns already carry the app's own hairline borders (`border-right`/`border-left`
  * on the same elements), so no second border is drawn here. */
 :root[data-dsh-ink-theme] [data-slot="conversation.header"] > * {
 	border-block-end: .5px solid var(--dsw-alias-border-l1);
 }
-/* The caption is measured from `--dsw-specific-sidebar-fill` by the app's own preload, and
- * that token stays opaque: the OS band cannot be frosted, so it is set to the flattened
- * colour of the sidebar glass over the top of the ground — where the scrim makes the
- * ground paper, which is why band and column match at y=40. */
+/* The Windows caption is the app's own `frame::before` drag strip, not the OS titlebar:
+ * it lives inside the frameless window and sits over the wallpaper, so it can carry the
+ * same glass as the sidebar. The rule above changes only its paint and filter; its
+ * `-webkit-app-region: drag` behaviour is left to the application. */
 
 /* ---------- 砚: the input is the same glass, just thicker ----------
  * Frost only. A border, radius or shadow here draws a second container around the input
@@ -444,7 +798,7 @@
 }
 
 /* ---------- 输入框那一条的背景：一幅画，不是两幅 ----------
- * 用户的报告（2026-10-18，宣纸/夜山都出现）：「输入框上边有队列/目标/计划时，背景层会有
+ * 实测（宣纸/夜山都出现）：「输入框上边有队列/目标/计划时，背景层会有
  * 一道明显的光影分界线」。真机 DOM 量出来的机制：阅读列与输入条各自画了同一张山水，
  * 但两者画幅宽度不同（1067px 与 1050px）、各自用 `background-size: 100% auto` 定标，
  * 于是同一张画在输入条的盒顶被裁断——那条横贯画面的亮/暗线就是两次定位的接缝。

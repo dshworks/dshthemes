@@ -1,5 +1,5 @@
 /* bigm4ngo/dsh-skin — src/client/styles.ts
-   fetched 2026-11-16 from https://raw.githubusercontent.com/bigm4ngo/dsh-skin/main/src/client/styles.ts
+   fetched 2026-11-24 from https://raw.githubusercontent.com/bigm4ngo/dsh-skin/main/src/client/styles.ts
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 /* Background layer sits behind the app shell. */
 #dsh-skin-bg {
@@ -46,6 +46,16 @@ body[data-dsh-skin='on'] [class*='_frame'] {
   background-color: transparent !important;
 }
 
+/* The chat pane and the tab hosts cover most of the window and are the app's
+   backdrop, not panels. Left tinted, they darkened the whole wallpaper exactly
+   like Background dim, so Panel opacity looked like a second dim slider. Keep
+   them clear: Dim owns the wallpaper, Panel opacity owns the panels. */
+body[data-dsh-skin='on'] [class*='_root'][data-phase],
+body[data-dsh-skin='on'] [class*='_tabHost']:not([class*='_float']),
+body[data-dsh-skin='on'] [class*='_emptyTabHost'] {
+  background-color: transparent !important;
+}
+
 /* The sidebar is a content surface, not a window edge: give it the same
    translucent tint as cards so the wallpaper reads through it and the rail
    stops looking like a flat painted slab. */
@@ -55,6 +65,7 @@ body[data-dsh-skin='on'] [class*='sidebarCol'] {
     var(--dsh-skin-panel-tint, #0b1524) calc(var(--dsh-skin-panel-alpha, 0.72) * 100%),
     transparent
   ) !important;
+  backdrop-filter: var(--dsh-skin-panel-backdrop, none);
 }
 
 /* The sidebar column's own wrapper paints an opaque literal; a column is
@@ -69,6 +80,7 @@ body[data-dsh-skin='on'] [class*='_card'] {
     var(--dsh-skin-panel-tint, #0b1524) calc(var(--dsh-skin-panel-alpha, 0.72) * 100%),
     transparent
   ) !important;
+  backdrop-filter: var(--dsh-skin-panel-backdrop, none);
 }
 
 /* Dialogs and menus carry text that must stay readable over any wallpaper:

@@ -1,5 +1,5 @@
 /* cndoin/dsh-custom-theme — client.js
-   fetched 2026-11-16 from https://raw.githubusercontent.com/cndoin/dsh-custom-theme/main/client.js
+   fetched 2026-11-24 from https://raw.githubusercontent.com/cndoin/dsh-custom-theme/main/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 background-color: transparent !important;
   background-size: cover !important;
@@ -543,3 +543,28 @@ background-color: transparent !important;
   overflow: auto;
 }
 .cctDivider { height: 0.5px; background: var(--dsw-alias-border-l1); }
+@media (max-width: 640px) {
+  .cctSliderRow { grid-template-columns: minmax(0, 1fr) 85px; }
+  .cctSliderValue { text-align: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cctButton { transition: none; }
+}
+
+
+
+@media (prefers-reduced-motion: no-preference) {
+    transition: translate 140ms ease-out, opacity 140ms ease-out,
+      background-color 140ms ease-out, border-color 140ms ease-out, color 140ms ease-out;
+  }
+    translate: 0 1px;
+    opacity: 0.82;
+    transition-duration: 75ms;
+  } animation: dsh-custom-theme-enter 160ms ease-out; }
+  @keyframes dsh-custom-theme-enter { from { opacity: 0; translate: 0 3px; } }
+}
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+    translate: 0 -1px;
+  }
+}
+@media (prefers-reduced-motion: no-preference) and (forced-colors: none) {

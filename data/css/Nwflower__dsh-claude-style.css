@@ -1,5 +1,5 @@
 /* Nwflower/dsh-claude-style — packages/client/src/theme/sidebar.css
-   fetched 2026-11-16 from https://raw.githubusercontent.com/Nwflower/dsh-claude-style/master/packages/client/src/theme/sidebar.css
+   fetched 2026-11-24 from https://raw.githubusercontent.com/Nwflower/dsh-claude-style/master/packages/client/src/theme/sidebar.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* ---------- Claude Code layout: sidebar brand ---------- */
 /* The shipped whale and wordmark give way to the selected brand, each painted as
@@ -551,13 +551,6 @@ body[data-dsh-claude-style] [data-dsh-claude-part~="project-row"] [data-dsh-clau
   display: none;
 }
 body[data-dsh-claude-style] [data-dsh-claude-part~="project-row"] [data-dsh-claude-part~="row-chevron"]::after {
-  content: "";
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  background: currentColor;
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27 fill=%27none%27 stroke=%27black%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M4 6l4 4 4-4%27/%3E%3C/svg%3E") center / contain no-repeat;
-  mask: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27 fill=%27none%27 stroke=%27black%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M4 6l4 4 4-4%27/%3E%3C/svg%3E") center / contain no-repeat;
   transition: transform var(--dsh-claude-duration-surface) var(--dsh-claude-ease-in-out);
 }
 body[data-dsh-claude-style] [data-dsh-claude-part~="project-row"][aria-expanded="false"] [data-dsh-claude-part~="row-chevron"]::after {
@@ -607,7 +600,7 @@ body[data-dsh-claude-style] :is(svg[data-state="ongoing"], .dsh-claude-ongoing-m
   background: var(--dsw-alias-label-secondary);
   /* The shared pulse, whose whole motion is opacity: a light that changes size
      with its brightness reads as a growing dot, not as a lamp. */
-  animation: dsh-claude-pulse var(--dsh-claude-period-breathe) var(--dsh-claude-ease-in-out) infinite;
+  animation: dsh-claude-pulse var(--dsh-claude-period-breathe) var(--dsh-claude-ease-in-out) infinite var(--dsh-claude-loop-play-state, running);
   display: inline-block;
   flex: none;
   color: transparent;
@@ -623,7 +616,7 @@ body[data-dsh-claude-style][data-dsh-claude-ongoing-indicator="ring"] svg[data-s
   border: 1.5px solid rgba(255, 255, 255, 0.18);
   border-top-color: var(--dsw-alias-label-primary);
   background: transparent;
-  animation: dsh-claude-ongoing-spin var(--dsh-claude-period-spin) linear infinite;
+  animation: dsh-claude-ongoing-spin var(--dsh-claude-period-spin) linear infinite var(--dsh-claude-loop-play-state, running);
   transform-origin: center center;
 }
 body[data-dsh-claude-style]:not([data-ds-dark-theme]) .dsh-claude-ongoing-mark[data-look="ring"],
