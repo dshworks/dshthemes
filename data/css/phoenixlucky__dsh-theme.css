@@ -1,13 +1,6 @@
 /* phoenixlucky/dsh-theme — src/client/styles.css
-   fetched 2026-11-18 from https://raw.githubusercontent.com/phoenixlucky/dsh-theme/main/src/client/styles.css
+   fetched 2026-11-26 from https://raw.githubusercontent.com/phoenixlucky/dsh-theme/main/src/client/styles.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
-@font-face {
-  font-family:DshVipDream;
-  src:url(__VIP_FONT_ASSET__)format("woff2");
-  font-style:normal;
-  font-weight:400;
-  font-display:swap
-}
 /* The wallpaper gallery is its own Settings page. */
 .dsh-theme-page {
   --dsh-theme-effect-motion-duration:180ms;
@@ -132,9 +125,9 @@
 }
 .dsh-theme-opacity-controls {
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));
   gap:16px;
-  padding:4px 0 12px
+  padding:4px 0 10px
 }
 .dsh-theme-opacity-control {
   display:grid;
@@ -285,6 +278,195 @@
   padding:2px 4px;
   cursor:pointer
 }
+.dsh-theme-field-label {
+  color:var(--dsw-alias-label-secondary);
+  font-size:12px
+}
+/* Editor shell: header, fields, footer. */
+.dsh-theme-editor {
+  gap:18px;
+  padding:22px
+}
+.dsh-theme-editor-head {
+  display:flex;
+  flex-direction:column;
+  gap:6px
+}
+.dsh-theme-editor-lede {
+  margin:0;
+  max-width:56ch;
+  color:var(--dsw-alias-label-tertiary);
+  font-size:12.5px;
+  line-height:19px
+}
+.dsh-theme-editor-foot {
+  align-items:center;
+  padding-top:14px;
+  border-top:1px solid var(--dsw-alias-border-l4)
+}
+.dsh-theme-editor-cancel,
+.dsh-theme-editor-save {
+  min-width:96px
+}
+/* The single local upload: drop zone, preview, actions. */
+.dsh-theme-wallpaper {
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  padding:12px;
+  border:1px dashed var(--dsw-alias-border-l2);
+  border-radius:12px;
+  background:color-mix(in srgb, var(--dsw-alias-bg-module-platform) 70%, transparent);
+  transition:border-color var(--dsh-theme-effect-motion-duration) var(--dsh-theme-effect-motion-easing), background-color var(--dsh-theme-effect-motion-duration) var(--dsh-theme-effect-motion-easing)
+}
+.dsh-theme-wallpaper[data-dragging="true"] {
+  border-style:solid;
+  border-color:var(--dsw-alias-brand-primary);
+  background:color-mix(in srgb, var(--dsw-alias-brand-primary) 10%, transparent)
+}
+.dsh-theme-wallpaper-head {
+  display:flex;
+  flex-wrap:wrap;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:8px
+}
+.dsh-theme-wallpaper-pill {
+  padding:2px 9px;
+  border-radius:999px;
+  color:var(--dsw-alias-label-secondary);
+  background:color-mix(in srgb, var(--dsw-alias-brand-primary) 12%, transparent);
+  font-size:11.5px;
+  font-variant-numeric:tabular-nums;
+  line-height:17px
+}
+.dsh-theme-wallpaper-preview {
+  display:block;
+  width:100%;
+  max-height:260px;
+  aspect-ratio:16/9;
+  object-fit:cover;
+  border-radius:10px;
+  background:var(--dsw-alias-bg-module-platform)
+}
+.dsh-theme-wallpaper-actions {
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:8px
+}
+.dsh-theme-wallpaper-actions .dsh-theme-gallery-action {
+  min-height:32px
+}
+.dsh-theme-wallpaper-actions input[type="file"] {
+  display:none
+}
+.dsh-theme-color-control {
+  display:flex;
+  align-items:center;
+  gap:8px
+}
+.dsh-theme-color-control input {
+  flex:none;
+  width:52px
+}
+.dsh-theme-color-control code {
+  color:var(--dsw-alias-label-tertiary);
+  font-family:ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size:12px;
+  text-transform:lowercase
+}
+.dsh-theme-segmented {
+  display:inline-flex;
+  padding:3px;
+  border:1px solid var(--dsw-alias-border-l2);
+  border-radius:9px;
+  background:var(--dsw-alias-bg-module-platform)
+}
+.dsh-theme-segmented-option {
+  min-width:64px;
+  min-height:28px;
+  padding:0 12px;
+  border:0;
+  border-radius:7px;
+  color:var(--dsw-alias-label-secondary);
+  background:transparent;
+  font:inherit;
+  font-size:12.5px;
+  cursor:pointer;
+  transition:background-color var(--dsh-theme-effect-motion-duration) var(--dsh-theme-effect-motion-easing), color var(--dsh-theme-effect-motion-duration) var(--dsh-theme-effect-motion-easing)
+}
+.dsh-theme-segmented-option[aria-pressed="true"] {
+  color:var(--dsw-alias-label-primary);
+  background:color-mix(in srgb, var(--dsw-alias-brand-primary) 16%, transparent)
+}
+.dsh-theme-segmented-option:focus-visible {
+  outline:var(--dsh-theme-effect-focus-ring-width) solid var(--dsw-alias-brand-primary);
+  outline-offset:var(--dsh-theme-effect-focus-ring-offset)
+}
+.dsh-theme-gallery-action:disabled {
+  opacity:.6;
+  cursor:default
+}
+/* Frosted glass. One plugin-owned layer carries the wallpaper, so the blur
+   applies to whichever wallpaper theme is active, built-ins included. */
+.dsh-theme-glass-layer {
+  position:fixed;
+  inset:-8%;
+  z-index:-1;
+  background-image:var(--dsh-theme-wallpaper);
+  background-position:center;
+  background-size:cover;
+  background-repeat:no-repeat;
+  opacity:0;
+  pointer-events:none;
+  transform:translateZ(0)
+}
+.dsh-theme-glass-layer::after {
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg, #ffffff10, #ffffff05 42%, #080c160f);
+  opacity:calc(var(--dsh-theme-glass, 0) / 300)
+}
+body[data-dsh-theme-glass-mode] .dsh-theme-glass-layer {
+  opacity:1;
+  filter:blur(calc(var(--dsh-theme-glass, 0) * 0.26px)) saturate(calc(100% + var(--dsh-theme-glass, 0) * 0.6%))
+}
+/*
+ * Windows desktop: stop the conversation area riding on the sidebar's paint.
+ *
+ * `[data-windows-titlebar]` makes AppFrame paint its own background — the ground
+ * behind every column — with `--dsw-specific-sidebar-fill`, and gives the centre
+ * column `--dsw-alias-bg-base` on top. So the sidebar slider was the base under
+ * the whole conversation area: it moved the conversation's real transparency,
+ * and at 0 it capped that area at opaque whatever its own slider said.
+ *
+ * Clear just that frame. `[data-shell-bottom]` is the frame's own bottom row, so
+ * `:has(> …)` names the frame without a generated class name; without `:has()`
+ * the rule is dropped and the window simply keeps today's paint. The sidebar
+ * column, its rows and the caption strip keep their fill, and the conversation
+ * column is left on the wallpaper alone. The caption strip is repainted here
+ * twice so it matches the column, which the Host also paints twice.
+ */
+html[data-windows-titlebar] div:has(> [data-shell-bottom]) {
+  background:transparent !important
+}
+html[data-windows-titlebar] div:has(> [data-shell-bottom])::before {
+  background:transparent;
+  background-image:linear-gradient(var(--dsw-specific-sidebar-fill),var(--dsw-specific-sidebar-fill)),linear-gradient(var(--dsw-specific-sidebar-fill),var(--dsw-specific-sidebar-fill))
+}
+/* Our own surfaces read as glass too when the effect is on. */
+body[data-dsh-theme-glass-mode] .dsh-theme-gallery-card,
+body[data-dsh-theme-glass-mode] .dsh-theme-gallery-dialog {
+  backdrop-filter:blur(calc(6px + var(--dsh-theme-glass, 0) * 0.2px)) saturate(122%)
+}
+body[data-dsh-theme-glass-mode] .dsh-theme-gallery-card {
+  background:color-mix(in srgb, var(--dsw-alias-settings-card-fill) 74%, transparent)
+}
+body[data-dsh-theme-glass-mode] .dsh-theme-gallery-dialog {
+  background:color-mix(in srgb, var(--dsw-alias-settings-card-fill) 80%, transparent)
+}
 .dsh-theme-editor-error {
   margin:0;
   color:var(--dsw-alias-state-error-primary, #c2353f);
@@ -380,7 +562,6 @@ body[data-dsh-theme][data-ds-dark-theme]:not([data-dsh-theme=dsh-theme]) {
 }
 body[data-dsh-theme=dsh-theme] {
   color-scheme:light;
-  --dsh-font-family-text:DshVipDream;
   --dsh-appearance-hero-width:fit-content;
   --dsh-appearance-hero-title-size:42px;
   --dsh-appearance-hero-title-offset-y:-31px;
@@ -458,6 +639,12 @@ body[data-dsh-theme=dsh-theme] {
 body[data-dsh-theme=dsh-theme][data-dsh-theme-glass] {
   --dsh-theme-hero-surface:transparent
 }
+/* The licensed display font is served by this plugin's own /theme-font route
+   (the Host asset route publishes images only). The client probes that route
+   first and keeps the host stack when it is absent. */
+body[data-dsh-theme=dsh-theme][data-dsh-theme-font] {
+  --dsh-font-family-text:DshVipDream,"Microsoft YaHei","PingFang SC","Noto Sans SC",system-ui,sans-serif
+}
 @keyframes dsh-vip-gold-glow {
   0%,
   to {
@@ -474,6 +661,14 @@ body[data-dsh-theme=dsh-theme][data-dsh-theme-glass] {
   82% {
     background-position: 100% 50%;
   }
+}
+/* This bundle's own plugin-detail panel: the Host's Markdown images are display:block, so a
+   badge row stacks vertically. Keep them inline; the eager-load effect next to the stylesheet
+   registration is what makes the request start at all. Host data attribute only. */
+[data-plugin-detail="@tinyforge/dsh-theme"] img {
+  display: inline;
+  vertical-align: middle;
+  margin: 0 4px 0 0;
 }
 @media (prefers-reduced-motion: reduce) {
   body[data-dsh-theme] {

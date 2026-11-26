@@ -1,5 +1,5 @@
 /* jackxiao17/dsh-ocean-theme — lib/client.js
-   fetched 2026-11-18 from https://raw.githubusercontent.com/jackxiao17/dsh-ocean-theme/main/lib/client.js
+   fetched 2026-11-26 from https://raw.githubusercontent.com/jackxiao17/dsh-ocean-theme/main/lib/client.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
 /* ═══ 画布：body::before 铺满屏渐变（不透明，自带兜底色） ══════════════
  * body 背景置透明 → 画布即渐变；面板半透明浮在其上。
@@ -68,6 +68,14 @@ html body {
   --dsw-alias-interactive-bg-hover: rgba(47, 84, 138, 0.08) !important;
   --dsw-alias-interactive-bg-active: rgba(47, 84, 138, 0.14) !important;
   --dsw-alias-interactive-bg-hover-solid: #e4edf8 !important;
+  /* 输入框两个强调钮（0.1.4）：发送圆钮走 --dsw-alias-button-info-fill/-hover，
+   * 附件「+」钮走 --dsw-specific-selector，两处 hover 共用上面这支
+   * --dsw-alias-interactive-bg-hover-solid。产品在 design-platform 把这两族钉
+   * 死为品牌蓝 / 中性灰；主题统一改成蜜琥珀 CTA 身份（与 Markdown 强调色同源
+   * #8a4b00），按钮字色保持产品默认 label-on-color（#fff），不动文字对比度 */
+  --dsw-alias-button-info-fill: #8a4b00 !important;
+  --dsw-alias-button-info-hover: #743f00 !important;
+  --dsw-specific-selector: #edf3fb !important;
   --dsw-alias-scrollbar-bg-l1: #c3d4ea !important;
   --dsw-alias-scrollbar-bg-l2: #b0c6e2 !important;
   --dsw-alias-scrollbar-hover-l1: #a2bbdb !important;
@@ -128,6 +136,11 @@ body[data-ds-dark-theme] {
   --dsw-alias-interactive-bg-hover: rgba(197, 220, 251, 0.10) !important;
   --dsw-alias-interactive-bg-active: rgba(209, 228, 253, 0.16) !important;
   --dsw-alias-interactive-bg-hover-solid: #1f4167 !important;
+  /* 发送圆钮深色档取亮金（与 Markdown 强调色 --sea-accent 同值），hover 再亮半
+   * 档；附件钮深海军蓝，被上面这支 hover-solid 提亮一档 */
+  --dsw-alias-button-info-fill: #f5a742 !important;
+  --dsw-alias-button-info-hover: #ffbf70 !important;
+  --dsw-specific-selector: #19355a !important;
   --dsw-alias-scrollbar-bg-l1: #244361 !important;
   --dsw-alias-scrollbar-bg-l2: #345a7d !important;
   --dsw-alias-scrollbar-hover-l1: #5b7fa7 !important;
@@ -275,17 +288,29 @@ body[data-ds-dark-theme] [role='dialog'] > [class$='_content'] > [class$='_heade
   border-color: rgba(210, 230, 255, 0.12) !important;
 }
 
-/* 详情列（右侧面板）。只匹配 detailsCol——宽松的 [class*='details'] 会误杀
- * 一切模块里本地名叫 details 的容器（如文件交付卡的 .K5rwea_details 文件名区，
- * 其上晕出一片渐变深蓝，即 0.12.4–0.12.13「文件名底色」顽症的真凶） */
-[class*='detailsCol'] {
+/* 右侧面板（0.1.4 重写）：0.2.2 把旧 detailsCol 列整体重构为 rightbarCol +
+ * dockkit——列容器带稳定属性 data-rightbar-col，面板内各 pane 挂 data-dockkit-
+ * pane / data-dockkit-host / data-dockkit-empty。旧选择器在新构建里一个都匹配
+ * 不到（整个 @deepseek-ai 源码树已无 detailsCol），右侧面板会掉回产品默认的
+ * 中性灰。这里改锚自定义属性而非类名：panel 本地类现形 acoR2W_panel 没有下划
+ * 线后缀，[class*='_panel_'] 一族同样落空；data-*-col / data-dockkit-* 不随构
+ * 建哈希漂移，与本主题其余结构锚点同策略 */
+[data-rightbar-col] {
+  background: transparent !important;
+}
+
+[data-rightbar-col] [data-dockkit-host],
+[data-rightbar-col] [data-dockkit-pane],
+[data-rightbar-col] [data-dockkit-empty] {
   background: rgba(255, 255, 255, 0.78) !important;
   border-color: rgba(23, 58, 110, 0.12) !important;
   backdrop-filter: blur(20px) saturate(120%);
   -webkit-backdrop-filter: blur(20px) saturate(120%);
 }
 
-body[data-ds-dark-theme] [class*='detailsCol'] {
+body[data-ds-dark-theme] [data-rightbar-col] [data-dockkit-host],
+body[data-ds-dark-theme] [data-rightbar-col] [data-dockkit-pane],
+body[data-ds-dark-theme] [data-rightbar-col] [data-dockkit-empty] {
   background: linear-gradient(180deg, rgba(12, 32, 58, 0.82), rgba(5, 16, 31, 0.92)) !important;
   border-color: rgba(203, 223, 250, 0.14) !important;
 }
@@ -332,6 +357,11 @@ body[data-ds-dark-theme] [aria-current='true'] {
   background: linear-gradient(135deg, rgba(97, 132, 171, 0.46), rgba(44, 79, 121, 0.42)) !important;
 }
 
+/* 多轮导航条：当前轮由产品自身的 ::before 小横条指示，不额外铺按钮底色。 */
+button[aria-current='true'][data-index] {
+  background: transparent !important;
+}
+
 [role='tab'] {
   background: transparent !important;
   border-color: transparent !important;
@@ -352,7 +382,7 @@ body[data-ds-dark-theme] button[role='tab']:hover:not(:disabled) {
 }
 
 /* 分隔条 hover：一道主题色细光 */
-[class*='_splitRow_'] > [class*='_divider_']:hover::after {
+[data-dockkit-split] > [data-dockkit-divider]:hover::after {
   background: linear-gradient(to bottom, transparent, rgba(96, 149, 212, 0.30) 50%, transparent) center / 1px 100% no-repeat !important;
 }
 
@@ -379,7 +409,7 @@ body[data-ds-dark-theme] input::placeholder {
  * text-shadow 会继承，若挂在消息行（flowItem）上，文件卡等子表面的文字
  * 也会带光晕，在卡片底色上晕出一片「渐变深蓝色块」（0.12.12 时代顽症的
  * 真凶：它不是背景色，background 探针照不到） */
-body[data-ds-dark-theme] [class*='_markdown_'] {
+body[data-ds-dark-theme] div[class*="_markdown"] {
   text-shadow: 0 1px 4px rgba(0, 7, 20, 0.72), 0 0 12px rgba(0, 7, 20, 0.38);
 }
 

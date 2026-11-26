@@ -1,5 +1,5 @@
 /* XiaoSiKe/zero-one-lingjie-theme — src/theme.css
-   fetched 2026-11-18 from https://raw.githubusercontent.com/XiaoSiKe/zero-one-lingjie-theme/main/src/theme.css
+   fetched 2026-11-26 from https://raw.githubusercontent.com/XiaoSiKe/zero-one-lingjie-theme/main/src/theme.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* A complete, neutral shell. Token overrides handle portals and future views. */
 html[data-zero-one-theme] { color-scheme:dark; --dsw-radius-xs:0px; --dsw-radius-sm:2px; --dsw-radius-md:2px; --dsw-radius-lg:3px; --dsw-radius-xl:3px; --dsw-radius-panel:3px; --dsw-focus-ring-color:#fff; }
@@ -19,10 +19,8 @@ html[data-zero-one-theme] [data-slot="sidebar"] [class*="_root"]:has(>nav) { bac
 html[data-zero-one-theme] [data-slot="sidebar"] [class*="_logoRow"] { height:88px; padding:12px 10px 14px; border-bottom:2px solid #222; margin-bottom:18px; }
 html[data-zero-one-theme] [data-slot="sidebar"] [class*="_brandIdentity"] { height:auto; width:100%; }
 html[data-zero-one-theme] [data-zero-one-brand] > :not(.zero-one-sidebar-brand) { display:none!important; }
-.zero-one-sidebar-brand { display:flex; align-items:center; gap:12px; color:#111; white-space:nowrap; }
-.zero-one-sidebar-brand { padding-left:4px; }
-.zero-one-sidebar-brand strong { display:block; font-size:15px; line-height:1.6; letter-spacing:.08em; font-weight:600; }
-.zero-one-sidebar-brand small { display:block; color:#4c4c4c; font-size:8px; letter-spacing:.2em; line-height:1.7; }
+.zero-one-sidebar-brand { display:flex; width:100%; min-width:0; align-items:center; }
+.zero-one-sidebar-brand img { display:block; width:min(100%, 196px); height:auto; }
 html[data-zero-one-theme] [data-slot="sidebar"] [class*="_newSession"]:not([class*="Label"]):not([class*="Content"]):not([class*="Shortcut"]) { background:#111!important; color:#fff!important; border:0; border-radius:0; min-height:44px; clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px)); }
 html[data-zero-one-theme] [data-slot="sidebar"] [class*="_newSession"]:hover { background:#333!important; }
 html[data-zero-one-theme] [data-slot="sidebar"] [class*="_panelRow"] { border-radius:0; margin-block:2px; border:1px solid #a0a0a0; min-height:40px; background:#ececec; padding-inline:12px; }
@@ -62,7 +60,7 @@ html[data-zero-one-theme] ::selection { background:#ffffff40; color:#fff; }
 .zero-one-chassis[data-paused="true"] * { animation-play-state:paused!important; }
 @keyframes chassis-travel { 0%,100% { transform:translateY(0); opacity:.4; } 50% { transform:translateY(calc(100vh - 220px)); opacity:.9; } }
 @media(prefers-reduced-motion:reduce) { .zero-one-chassis * { animation:none!important; } }
-@media(max-width:640px) { .zero-one-chassis .chassis-bottom { display:none; } .zero-one-sidebar-brand strong{font-size:13px;} }
+@media(max-width:640px) { .zero-one-chassis .chassis-bottom { display:none; } }
 
 /* Silver sidebar uses its own semantic palette, including nested icons and menus' triggers. */
 html[data-zero-one-theme] [class*="_sidebarCol"] {
