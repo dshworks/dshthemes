@@ -1,5 +1,5 @@
 /* proglop/dsh-skin-silver-wolf-topic — skin.css
-   fetched 2026-11-19 from https://raw.githubusercontent.com/proglop/dsh-skin-silver-wolf-topic/main/skin.css
+   fetched 2026-11-27 from https://raw.githubusercontent.com/proglop/dsh-skin-silver-wolf-topic/main/skin.css
    verbatim; rendered on the stock rc.6 shell at dshthemes.com */
 /* ==========================================================================
    Silver Wolf // Pixel Intrusion — dark-only DSH skin
@@ -23,7 +23,7 @@ body[data-dsh-silver-wolf] {
   --sw-line-700: #222b47;
   --sw-line-600: #2d395c;
   --sw-line-500: #3b4a76;
-  --sw-text-100: #98a1c4;
+  --sw-text-100: #bfcaf5;
   --sw-text-200: #9aaad7;
   --sw-text-300: #92a1c9;
   --sw-text-400: #6f7b9c;
@@ -138,7 +138,7 @@ body[data-dsh-silver-wolf] {
 
   --dsw-alias-link: var(--sw-cyan-500);
   --dsw-alias-markdown-citation: var(--sw-cyan-500);
-  --dsw-alias-markdown-inline-code: #b9c8ff;
+  --dsw-alias-markdown-inline-code: #1a2440;
   --dsw-alias-markdown-code-block: #080c17;
   --dsw-alias-markdown-code-block-banner: #0d1425;
   --dsw-alias-markdown-code-segment-selected: #1a2750;
@@ -170,7 +170,7 @@ body[data-dsh-silver-wolf] {
   --dsw-alias-scrollbar-hover-l1: #34446e;
   --dsw-alias-scrollbar-hover-l2: #425486;
 
-  --dsw-focus-ring-color: var(--sw-pink-500);
+  --dsw-focus-ring-color: var(--sw-blue-500);
   --dsw-focus-ring-width: 1px;
   --dsw-menu-backdrop-filter: none;
   --dsw-mask-blur: none;
@@ -361,19 +361,63 @@ body[data-dsh-silver-wolf] :is(
   input,
   textarea,
   select,
-  [contenteditable="true"],
   [role="button"],
   [role="menuitem"],
   [role="option"],
   [role="tab"]
 ):focus-visible {
-  outline: 1px solid var(--sw-pink-500) !important;
-  outline-offset: 2px !important;
-  box-shadow: 0 0 0 1px var(--sw-pink-500) !important;
+  outline: 1px solid var(--sw-blue-500) !important;
+  outline-offset: 1px !important;
+  box-shadow: none !important;
+}
+
+/* The file/document preview pane and its reading surfaces: never paint a focus
+   frame around the whole content area. Only the tab strip and the toolbar
+   buttons keep a focus ring. */
+body[data-dsh-silver-wolf] :is(
+  [role="tabpanel"],
+  [data-document-preview],
+  [data-textpreview-body],
+  [data-textpreview-plain],
+  [data-textpreview-page],
+  [data-textpreview-state],
+  [data-code-preview]
+):focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 body[data-dsh-silver-wolf] [class*="tabActive"]::after {
   background: var(--sw-pink-500) !important;
+}
+
+/* File / document tab strip (top of the sidebar preview pane): every tab gets
+   a visible 1px border, and the selected tab is brighter (lighter fill, blue
+   accent border and underline). */
+body[data-dsh-silver-wolf] [role="tablist"] {
+  background: var(--sw-base-950) !important;
+  border-bottom: 1px solid var(--sw-line-700) !important;
+}
+
+body[data-dsh-silver-wolf] [role="tab"] {
+  border: 1px solid var(--sw-line-700) !important;
+  border-radius: 0 !important;
+  background: var(--sw-panel-900) !important;
+  color: var(--sw-text-300) !important;
+}
+
+body[data-dsh-silver-wolf] [role="tab"]:hover {
+  border-color: var(--sw-line-600) !important;
+  color: var(--sw-text-200) !important;
+}
+
+body[data-dsh-silver-wolf] [role="tab"][aria-selected="true"] {
+  border-color: var(--sw-blue-500) !important;
+  background: var(--sw-panel-800) !important;
+  color: var(--sw-text-100) !important;
+  /* Keep all four edges at the same 1px thickness; the selected tab is
+     distinguished by colour and fill only, with no thicker bottom underline. */
+  box-shadow: none !important;
 }
 
 body[data-dsh-silver-wolf] [class*="session"]:is([aria-current="page"], [aria-selected="true"], [data-active="true"])::before {
@@ -1019,5 +1063,31 @@ body[data-dsh-silver-wolf] .lc-title,
 body[data-dsh-silver-wolf] .lc-title-label {
   color: var(--sw-text-100) !important;
 }
+
+/* --------------------------------------------------------------------------
+   15. DSH 0.2.2 file / document preview reading surfaces. The scrollport can
+   take focus, and DSH's global :focus-visible then paints a 1px ring around
+   the whole file content. Keep that ring off the reading surface (inputs,
+   selects and buttons keep their own focus ring elsewhere).
+   -------------------------------------------------------------------------- */
+body[data-dsh-silver-wolf] :is(
+  [data-document-preview],
+  [data-textpreview-body],
+  [data-textpreview-plain],
+  [data-textpreview-page],
+  [data-textpreview-state],
+  [data-code-preview]
+),
+body[data-dsh-silver-wolf] :is(
+  [data-document-preview],
+  [data-textpreview-body],
+  [data-textpreview-plain],
+  [data-textpreview-page],
+  [data-textpreview-state],
+  [data-code-preview]
+):focus-visible {
+  outline: none !important;
+}
+
 
 
