@@ -1,77 +1,6 @@
-/* MilkySnowWay123/dsh-client-ui-skin-tianlight — lib/client.js
-   fetched 2026-11-20 from https://raw.githubusercontent.com/MilkySnowWay123/dsh-client-ui-skin-tianlight/main/lib/client.js
+/* MilkySnowWay123/dsh-client-ui-skin-tianlight — src/20-stylesheet.js
+   fetched 2026-11-28 from https://raw.githubusercontent.com/MilkySnowWay123/dsh-client-ui-skin-tianlight/main/src/20-stylesheet.js
    CSS strings extracted from the source; rendered on the stock rc.6 shell at dshthemes.com */
-body[data-dsh-tianlight] .tl5-eng {
-		display: flex;
-		flex-direction: column;
-		gap: 8px;
-	}
-	body[data-dsh-tianlight] .tl5-eng-block {
-		display: flex;
-		flex-direction: column;
-		gap: 4px;
-	}
-	body[data-dsh-tianlight] .tl5-eng-label {
-		margin: 0;
-		font-size: 10px;
-		font-weight: 600;
-		letter-spacing: 0.06em;
-		color: var(--tl-ink-faint);
-	}
-	body[data-dsh-tianlight] .tl5-eng-grid {
-		display: grid;
-		grid-template-columns: auto 1fr;
-		gap: 2px 10px;
-		font-size: 11px;
-	}
-	body[data-dsh-tianlight] .tl5-eng-key {
-		color: var(--tl-ink-soft);
-		white-space: nowrap;
-	}
-	body[data-dsh-tianlight] .tl5-eng-value {
-		min-width: 0;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-		text-align: right;
-		color: var(--tl-ink);
-		font-variant-numeric: tabular-nums;
-	}
-	body[data-dsh-tianlight] .tl5-eng-value[data-tone="warn"] {
-		color: color-mix(in srgb, #e8b45a 82%, var(--tl-ink));
-	}
-	body[data-dsh-tianlight] .tl5-eng-value[data-tone="alert"] {
-		color: color-mix(in srgb, #e8776b 82%, var(--tl-ink));
-	}
-	body[data-dsh-tianlight] .tl5-eng-modules {
-		display: flex;
-		flex-direction: column;
-		gap: 3px;
-	}
-	body[data-dsh-tianlight] .tl5-eng-module {
-		display: flex;
-		align-items: center;
-		gap: 8px;
-		font-size: 12px;
-		color: var(--tl-ink);
-	}
-	body[data-dsh-tianlight] .tl5-eng-module-label {
-		flex: 1;
-		min-width: 0;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-		color: var(--tl-ink-soft);
-	}
-	body[data-dsh-tianlight] .tl5-eng-module > button {
-		flex: none;
-		min-width: 44px;
-		padding: 2px 10px;
-		font-size: 11px;
-	}
-
-
-
 body[data-dsh-tianlight] {
 	/* The app frame AND the conversation column both paint --dsw-alias-bg-base, so
 	   their alphas COMPOUND: effective = 1-(1-a)^2. A high single-layer value here
@@ -95,24 +24,55 @@ body[data-dsh-tianlight] {
 	/* v2.2.2 "clear glass": the panel is a lens, not a white sheet. The fill is a
 	   near-transparent cool tint; the visible body comes from the backdrop filter and
 	   the 1px light/dark rim, so bright wallpapers stay coloured instead of milky. */
-	--tl-glass-fill: rgba(205, 228, 250, calc(0.05 * var(--tl-glass-m, 1)));
+	--tl-glass-fill: rgba(250, 252, 255, calc(0.52 * var(--tl-glass-m, 1)));
 	--tl-glass-line: rgba(255, 255, 255, 0);
 	--tl-glass-blur: 12px;
 	/* v2.2.9: real-glass recipe. The tint is a low-alpha colour wash on the HOST;
 	   the blur lives on ::before. All values are final alphas, not stacked
 	   color-mix percentages. The --tl-glass-m multiplier is the opacity slider. */
-	--tl-glass-tint: rgba(255, 255, 255, calc(0.08 * var(--tl-glass-m, 1)));
-	--tl-glass-tint-menu: rgba(255, 255, 255, calc(0.14 * var(--tl-glass-m, 1)));
-	--tl-glass-tint-static: rgba(255, 255, 255, 0.30);
-	--tl-glass-tint-lowpower: rgba(255, 255, 255, 0.35);
-	--tl-glass-blur-live: 16px;
-	--tl-glass-sat-live: 1.8;
-	--tl-glass-bright-live: 1.06;
-	--tl-glass-contrast-live: 1.04;
+	/* v2.3.0 light «晴空»: white frosted glass, not a transparent hole. The tint carries
+	   the panel identity (0.40 base), and --tl-day-lift raises it on a dark wallpaper so
+	   the transcript keeps contrast. --tl-glass-m is still the user's opacity slider. */
+	--tl-glass-tint: rgba(250, 252, 255, calc((0.40 + 0.20 * var(--tl-day-lift, 0)) * var(--tl-glass-m, 1)));
+	--tl-glass-tint-menu: rgba(252, 253, 255, calc(0.66 * var(--tl-glass-m, 1)));
+	--tl-glass-tint-static: rgba(248, 251, 255, 0.62);
+	--tl-glass-tint-lowpower: rgba(248, 251, 255, 0.74);
+	--tl-glass-blur-live: 22px;
+	/* Saturation was the "刺眼的青→黄" defect: 1.8 amplified the wallpaper's own hue.
+	   Light glass stays near-neutral (1.15) and slightly lowers contrast to read soft. */
+	--tl-glass-sat-live: 1.15;
+	--tl-glass-bright-live: 1.03;
+	--tl-glass-contrast-live: 0.98;
 	--tl-glass-menu-blur-live: 20px;
-	--tl-glass-edge-hi: rgba(255, 255, 255, 0.55);
-	--tl-glass-edge-mid: rgba(255, 255, 255, 0.12);
-	--tl-glass-edge-lo: rgba(255, 255, 255, 0.22);
+	--tl-glass-edge-hi: rgba(255, 255, 255, 0.80);
+	--tl-glass-edge-mid: rgba(255, 255, 255, 0.20);
+	--tl-glass-edge-lo: rgba(24, 52, 90, 0.10);
+	/* v2.3.0: light shadows are cool and low-contrast; the inset pair is the white-glass
+	   highlight (top) and a deep hairline (bottom) that separates white from bright paper. */
+	--tl-shadow-panel: 0 10px 30px rgba(22, 46, 78, 0.10), 0 1px 2px rgba(22, 46, 78, 0.08);
+	--tl-shadow-float: 0 6px 18px rgba(22, 46, 78, 0.10);
+	--tl-shadow-drawer: 18px 0 44px rgba(22, 46, 78, 0.12);
+	--tl-glass-shadow:
+		inset 0 1px 0 rgba(255, 255, 255, 0.65),
+		inset 0 -1px 0 rgba(24, 52, 90, 0.06),
+		0 10px 30px rgba(22, 46, 78, 0.10);
+	/* Top highlight of the small pills (model / rheostat / weather / scheme toggle). */
+	--tl-pill-inset: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+	/* v2.3.0 canvas painters (zone mirror letterbox, ambient particles) read concrete
+	   colours on a scheme flip; var() cannot cross into a 2D context. */
+	--tl-letterbox: #e9f1f9;
+	--tl-particle-rain-rgb: 120, 150, 190;
+	--tl-particle-snow-rgb: 214, 228, 244;
+	--tl-particle-snow-edge: rgba(40, 70, 110, 0.18);
+	/* v2.3.0 light rail: frosted white like a macOS light sidebar. The depth recipes
+	   only run when liquid glass is on; with depth off the rail would otherwise be a
+	   transparent hole, and dark body text on a dark wallpaper is unreadable — so the
+	   light theme carries its own base fill at every glass level. */
+	--tl-sidebar-fill: rgba(252, 253, 255, calc(0.80 + 0.20 * var(--tl-day-lift, 0)));
+	/* Role-hub scrim/panel/shadow (dark values below are the shipped v2.2.x ones). */
+	--tl-hub-mask: rgba(20, 40, 70, 0.10);
+	--tl-hub-panel: rgba(250, 252, 255, 0.86);
+	--tl-hub-shadow: 0 24px 64px rgba(22, 46, 78, 0.16);
 	/* Modal-grade surface: a settings panel has to stay readable over the chat, so
 	   it needs its own fill instead of the zeroed bg-layer tokens. The value is high
 	   on purpose: the panel carries NO backdrop blur unless live mode is on (see
@@ -122,21 +82,33 @@ body[data-dsh-tianlight] {
 	   reads as "duplicate stacked UI". Data surfaces keep a hard floor.
 	   v2.2.0: slightly less opaque and less pure-white; live mode lowers it further
 	   because its own real backdrop blur carries the legibility. */
-	--tl-panel-fill: rgba(235, 245, 255, max(0.68, calc(0.62 * var(--tl-glass-m, 1))));
-	--tl-ink: #0f2438;
-	--tl-ink-soft: #3a5a78;
-	--tl-ink-faint: #5d7d99;
-	--tl-line: rgba(112, 156, 202, 0.06);
-	--tl-line-strong: rgba(86, 134, 186, 0.12);
-	--tl-accent: #2b74c9;
-	--tl-accent-soft: rgba(43, 116, 201, 0.14);
-	--tl-code: rgba(236, 244, 252, 0.40);
+	--tl-panel-fill: rgba(246, 249, 253, max(0.74, calc(0.80 * var(--tl-glass-m, 1))));
+	/* v2.2.13: DSH's OWN pages and popovers. The product paints those surfaces with
+	   its own layer tokens (bg-layer-2 for the settings panel, bg-base for the
+	   plugin manager / automation pages, specific-menu for popovers, the card
+	   tokens for settings and onboarding cards). The skin zeroed those tokens on
+	   purpose so the conversation column shows the wallpaper, which left every
+	   native page fully transparent and its text sitting on the picture. These
+	   three fills restore a smoked surface with a legibility floor: the glass
+	   slider may lighten them, never dissolve them. Kept separate from the
+	   conversation's own glass so the chat page stays immersive. */
+	--tl-native-page: rgba(243, 248, 255, max(0.70, calc(0.70 * var(--tl-glass-m, 1))));
+	--tl-native-card: rgba(249, 252, 255, max(0.76, calc(0.76 * var(--tl-glass-m, 1))));
+	--tl-native-menu: rgba(247, 251, 255, max(0.78, calc(0.78 * var(--tl-glass-m, 1))));
+	--tl-ink: #0d2136;
+	--tl-ink-soft: #36536f;
+	--tl-ink-faint: #5f7891;
+	--tl-line: rgba(28, 62, 104, 0.08);
+	--tl-line-strong: rgba(28, 62, 104, 0.14);
+	--tl-accent: #2c6fd1;
+	--tl-accent-soft: rgba(44, 111, 209, 0.10);
+	--tl-code: rgba(255, 255, 255, 0.58);
 	--tl-glow: rgba(150, 210, 255, 0.55);
 
 	--dsw-alias-bg-base: var(--tl-shell) !important;
 	--dsw-alias-bg-layer-1: var(--tl-shell-strong) !important;
-	--dsw-alias-bg-layer-2: var(--tl-shell-soft) !important;
-	--dsw-alias-bg-overlay: var(--tl-overlay) !important;
+	--dsw-alias-bg-layer-2: var(--tl-native-page) !important;
+	--dsw-alias-bg-overlay: var(--tl-native-card) !important;
 	--dsw-specific-sidebar-fill: var(--tl-shell-soft) !important;
 	--dsw-alias-border-l1: var(--tl-line) !important;
 	--dsw-alias-border-l2: var(--tl-line-strong) !important;
@@ -146,6 +118,9 @@ body[data-dsh-tianlight] {
 	--dsw-alias-label-primary: var(--tl-ink) !important;
 	--dsw-alias-label-secondary: var(--tl-ink-soft) !important;
 	--dsw-alias-label-tertiary: var(--tl-ink-faint) !important;
+	/* v2.3.0 light only: captions/placeholders are the faint tier; leaving the product's
+	   own caption colour on a white glass card measured 2.85:1 (below the 3:1 floor). */
+	--dsw-alias-label-caption: var(--tl-ink-faint) !important;
 	--dsw-alias-state-error-primary: #c0392b !important;
 	--dsw-alias-state-success-primary: #0e8a63 !important;
 	--dsw-alias-state-warn-primary: #b4690e !important;
@@ -156,14 +131,14 @@ body[data-dsh-tianlight] {
 	/* Text-bearing surfaces keep a legibility floor: the anti-white pass lowers the
 	   decorative veil, not the contrast the dark-ink transcript needs on a night
 	   wallpaper. Bubbles/tips are the two the legibility guard does not cover. */
-	--dsw-specific-bubble: rgba(236, 245, 255, 0.30) !important;
-	--dsw-specific-tip: rgba(238, 247, 255, 0.32) !important;
-	--dsw-specific-menu: var(--tl-overlay) !important;
-	--dsw-alias-bg-layer-3: rgba(236, 245, 255, 0.20) !important;
-	--dsw-alias-bg-module-platform: rgba(236, 245, 255, 0.18) !important;
+	--dsw-specific-bubble: rgba(236, 245, 255, 0.56) !important;
+	--dsw-specific-tip: rgba(238, 247, 255, 0.60) !important;
+	--dsw-specific-menu: var(--tl-native-menu) !important;
+	--dsw-alias-bg-layer-3: rgba(236, 245, 255, 0.40) !important;
+	--dsw-alias-bg-module-platform: rgba(236, 245, 255, 0.42) !important;
 	--dsw-alias-interactive-bg-hover-solid: rgba(104, 156, 210, 0.22) !important;
-	--dsw-alias-turn-trigger-bg: rgba(236, 245, 255, 0.18) !important;
-	--dsw-alias-markdown-code-block-banner: rgba(226, 238, 250, 0.40) !important;
+	--dsw-alias-turn-trigger-bg: rgba(236, 245, 255, 0.42) !important;
+	--dsw-alias-markdown-code-block-banner: rgba(226, 238, 250, 0.52) !important;
 	/* Remaining large surfaces that 0.2.0 still paints opaque: terminal, settings
 	   cards, document preview, masks, skeletons, selectors, nav items. Translucent
 	   only — deliberately NO new backdrop-filter, so playback cost stays flat. */
@@ -177,10 +152,10 @@ body[data-dsh-tianlight] {
 	--dsw-mask-blur: none !important;
 	--dsw-alias-bg-mask-drop: rgba(236, 243, 251, 0.20) !important;
 	--dsw-alias-bg-skeleton: var(--tl-line) !important;
-	--dsw-alias-fill-l1: rgba(236, 245, 255, 0.30) !important;
-	--dsw-alias-fill-l2: rgba(236, 245, 255, 0.22) !important;
-	--dsw-alias-fill-tertiary: rgba(236, 245, 255, 0.18) !important;
-	--dsw-alias-fill-tsp-secondary: rgba(236, 245, 255, 0.22) !important;
+	--dsw-alias-fill-l1: rgba(236, 245, 255, 0.48) !important;
+	--dsw-alias-fill-l2: rgba(236, 245, 255, 0.40) !important;
+	--dsw-alias-fill-tertiary: rgba(236, 245, 255, 0.42) !important;
+	--dsw-alias-fill-tsp-secondary: rgba(236, 245, 255, 0.40) !important;
 	--dsw-alias-interactive-bg-active: var(--tl-accent-soft) !important;
 	--dsw-alias-interactive-bg-hover-danger: rgba(192, 57, 43, 0.16) !important;
 	/* v1.6.1: the sidebar "new chat" button lives on an opaque product fill token
@@ -190,11 +165,11 @@ body[data-dsh-tianlight] {
 	   the stamped button is in the v1.6.1 section at the end of this sheet. */
 	--dsw-alias-button-elevated-fill: var(--tl-glass-fill) !important;
 	--dsw-alias-button-floating-hover: var(--tl-accent-soft) !important;
-	--dsw-alias-onboarding-card-fill: var(--tl-glass-fill) !important;
-	--dsw-alias-onboarding-secondary-fill: rgba(236, 245, 255, 0.18) !important;
-	--dsw-alias-settings-card-fill: var(--tl-glass-fill) !important;
+	--dsw-alias-onboarding-card-fill: var(--tl-native-card) !important;
+	--dsw-alias-onboarding-secondary-fill: rgba(236, 245, 255, 0.42) !important;
+	--dsw-alias-settings-card-fill: var(--tl-native-card) !important;
 	--dsw-specific-input-major: var(--tl-glass-fill) !important;
-	--dsw-specific-selector: rgba(236, 245, 255, 0.30) !important;
+	--dsw-specific-selector: rgba(236, 245, 255, 0.56) !important;
 	--dsw-specific-sidebar-nav-item-active: var(--tl-accent-soft) !important;
 	--dsw-specific-sidebar-nav-item-active-accent: var(--tl-accent) !important;
 	--dsw-specific-sidebar-nav-item-hover: var(--tl-accent-soft) !important;
@@ -222,6 +197,34 @@ body[data-dsh-tianlight][data-ds-dark-theme] {
 	--tl-glass-edge-mid: rgba(255, 255, 255, 0.10);
 	--tl-glass-edge-lo: rgba(255, 255, 255, 0.16);
 	--tl-panel-fill: rgba(10, 18, 32, max(0.96, calc(0.88 * var(--tl-glass-m, 1))));
+	/* v2.2.13: smoked native-page surfaces for the dark theme (see the light block).
+	   0.68/0.72/0.74 at the default glass level: the wallpaper outline stays
+	   readable behind the surface, the text stays legible on top of it. */
+	--tl-native-page: rgba(8, 15, 26, max(0.62, calc(0.68 * var(--tl-glass-m, 1))));
+	--tl-native-card: rgba(12, 21, 35, max(0.66, calc(0.72 * var(--tl-glass-m, 1))));
+	--tl-native-menu: rgba(10, 18, 31, max(0.68, calc(0.74 * var(--tl-glass-m, 1))));
+	/* v2.3.0: dark shadows keep the shipped values exactly (moved into tokens so the
+	   light theme can paint its own without touching these pixels). */
+	--tl-shadow-panel: 0 10px 30px rgba(4, 10, 20, 0.45), 0 1px 2px rgba(4, 10, 20, 0.35);
+	--tl-shadow-float: 0 6px 18px rgba(4, 10, 20, 0.38);
+	--tl-shadow-drawer: 18px 0 44px rgba(4, 10, 20, 0.45);
+	--tl-glass-shadow:
+		inset 0 1px 1px rgba(255, 255, 255, 0.10),
+		inset 0 -1px 1px rgba(0, 0, 0, 0.10),
+		0 8px 32px rgba(0, 0, 0, 0.35);
+	--tl-pill-inset: inset 0 1px 1px rgba(255, 255, 255, 0.10);
+	/* v2.3.0 canvas painters: the shipped dark values (letterbox #0a1420, rain
+	   196,218,255, white snow, no edge) — identical to the v2.2.x constants. */
+	--tl-letterbox: #0a1420;
+	--tl-particle-rain-rgb: 196, 218, 255;
+	--tl-particle-snow-rgb: 255, 255, 255;
+	--tl-particle-snow-edge: transparent;
+	/* Declared for light/dark symmetry; the dark rail keeps its shipped transparent
+	   look (the depth recipes paint it), so this token is never applied in the dark. */
+	--tl-sidebar-fill: transparent;
+	--tl-hub-mask: rgba(6, 16, 28, 0.18);
+	--tl-hub-panel: rgba(12, 22, 38, 0.30);
+	--tl-hub-shadow: 0 28px 80px rgba(4, 14, 26, 0.45);
 	--tl-ink: #eaf3ff;
 	--tl-ink-soft: #a9c2dc;
 	--tl-ink-faint: #7f9bb8;
@@ -237,7 +240,7 @@ body[data-dsh-tianlight][data-ds-dark-theme] {
 	--dsw-alias-state-warn-primary: #ffc46b !important;
 	--dsw-specific-bubble: rgba(18, 30, 48, 0.42) !important;
 	--dsw-specific-tip: rgba(18, 30, 48, 0.46) !important;
-	--dsw-specific-menu: var(--tl-overlay) !important;
+	--dsw-specific-menu: var(--tl-native-menu) !important;
 	--dsw-alias-bg-layer-3: rgba(18, 30, 48, 0.36) !important;
 	--dsw-alias-bg-module-platform: rgba(18, 30, 48, 0.34) !important;
 	--dsw-alias-interactive-bg-hover-solid: rgba(70, 118, 170, 0.28) !important;
@@ -259,9 +262,9 @@ body[data-dsh-tianlight][data-ds-dark-theme] {
 	/* v1.6.1: same glass handover for the elevated button family in the dark theme. */
 	--dsw-alias-button-elevated-fill: var(--tl-glass-fill) !important;
 	--dsw-alias-button-floating-hover: var(--tl-accent-soft) !important;
-	--dsw-alias-onboarding-card-fill: var(--tl-glass-fill) !important;
+	--dsw-alias-onboarding-card-fill: var(--tl-native-card) !important;
 	--dsw-alias-onboarding-secondary-fill: rgba(18, 30, 48, 0.30) !important;
-	--dsw-alias-settings-card-fill: var(--tl-glass-fill) !important;
+	--dsw-alias-settings-card-fill: var(--tl-native-card) !important;
 	--dsw-specific-input-major: var(--tl-glass-fill) !important;
 	--dsw-specific-selector: rgba(18, 30, 48, 0.46) !important;
 	--dsw-specific-sidebar-nav-item-active: var(--tl-accent-soft) !important;
@@ -275,6 +278,25 @@ body[data-dsh-tianlight] {
 	/* Glass multiplier. installGlassOpacity() overwrites it from the saved level; the
 	   declaration lives here so every var the stylesheet reads is also declared. */
 	--tl-glass-m: 1;
+}
+
+/* ---- DSH's own pages are surfaces, not a hole in the wallpaper ----
+   The plugin manager and the automation-task page paint --dsw-alias-bg-base on
+   their own page root (the same token the conversation column uses), and the skin
+   zeroes that token so the chat can be pure wallpaper. Inside a product PAGE that
+   zero turned the picture into the page background: every native page read as
+   transparent, its text sitting straight on the wallpaper.
+   The two selectors below are class-name SEGMENTS in the same upgrade-proof style
+   as the selector bridge (a hash-prefixed _page token on the root, _pageBody inside
+   the plugin manager, _listPane inside the automation page) — never a build hash.
+   The :has() gate is what keeps the document/PDF panes untouched: their _page nodes
+   carry neither, so a rendered document never gets a dark sheet painted on it.
+   The fill goes through the token as well, so the product's own headers and
+   sticky rows that repaint bg-base follow the same colour. */
+body[data-dsh-tianlight] [class*='_page']:has([class*='_pageBody']),
+body[data-dsh-tianlight] [class*='_page']:has([class*='_listPane']) {
+	--dsw-alias-bg-base: var(--tl-native-page);
+	background-color: var(--tl-native-page) !important;
 }
 
 /* ---- wallpaper, painted strictly beneath the application ---- */
@@ -300,8 +322,10 @@ body[data-dsh-tianlight] [data-tl-scene] {
 	   recomposites whenever the video advances a frame. */
 	contain: paint;
 	transform: translateZ(0);
+	/* v2.3.0 light sky: noon blue at the top, warm white at the horizon — the Shinkai
+	   "sunny sky" the light mode is built around. Dark keeps its own radial below. */
 	background:
-		radial-gradient(120% 90% at 18% 8%, #cfe9ff 0%, #9fcdf5 32%, #6aa8de 62%, #2f6ea8 100%);
+		linear-gradient(180deg, #a9d3f5 0%, #cfe6fa 38%, #eef6fd 70%, #fbf4e8 100%);
 }
 body[data-dsh-tianlight][data-ds-dark-theme] [data-tl-scene] {
 	/* Night sky, deliberately NOT near-black: this layer is what shows whenever the
@@ -340,11 +364,21 @@ body[data-dsh-tianlight] [data-tl-scene][data-tl-filter] > [data-tl-photo] {
 body[data-dsh-tianlight] [data-tl-scene] > [data-tl-veil] {
 	position: absolute;
 	inset: 0;
+	/* v2.3.0 light «晨雾»: a white reading-area fog whose alpha follows --tl-day-lift
+	   (0 on a bright wallpaper, up to ~0.44 in the centre on a dark one). The transition
+	   makes a wallpaper swap fade the fog instead of jumping. */
 	background:
-		linear-gradient(180deg, rgba(240, 248, 255, 0.05) 0%, transparent 40%, rgba(12, 28, 48, 0.12) 100%);
+		radial-gradient(70% 85% at 50% 52%, rgba(250, 252, 255, calc(0.10 + 0.34 * var(--tl-day-lift, 0))) 0%, rgba(250, 252, 255, 0) 100%),
+		linear-gradient(180deg, rgba(246, 250, 255, calc(0.06 + 0.20 * var(--tl-day-lift, 0))) 0%, rgba(246, 250, 255, calc(0.04 + 0.14 * var(--tl-day-lift, 0))) 100%);
+	transition: background 900ms ease;
 }
 body[data-dsh-tianlight][data-ds-dark-theme] [data-tl-scene] > [data-tl-veil] {
+	/* v2.3.0: the shipped night gradient is kept verbatim as the second layer; the first
+	   layer is the symmetric guard for a very bright wallpaper and is invisible
+	   (alpha 0) until --tl-night-lift rises above 0.38 luma, so mid/dark wallpapers are
+	   pixel-identical to the v2.2.x baseline. */
 	background:
+		linear-gradient(180deg, rgba(4, 10, 20, calc(0.30 * var(--tl-night-lift, 0))) 0%, rgba(4, 10, 20, calc(0.30 * var(--tl-night-lift, 0))) 100%),
 		linear-gradient(180deg, rgba(120, 180, 240, 0.06) 0%, transparent 42%, rgba(2, 8, 18, 0.30) 100%);
 }
 /* v1.6.2: the fixed top-left "dawn burst" corner artwork was removed on user feedback
@@ -541,1630 +575,4 @@ body[data-dsh-tianlight] [data-tl-rheo][data-tl-drag] [data-tl-rheo-label] {
 	body[data-dsh-tianlight] [data-tl-rheo-label] {
 		animation: none;
 	}
-}
-
-
-
-
-
-/* ---- companion: a mint chibi cat that lives on top of the workbench ---- */
-body[data-dsh-tianlight] [data-tl-cat] {
-	position: fixed;
-	z-index: 95;
-	width: 150px;
-	height: 86px;
-	touch-action: none;
-	cursor: grab;
-	user-select: none;
-	-webkit-user-select: none;
-	will-change: transform;
-	filter: drop-shadow(0 10px 18px rgba(8, 26, 44, 0.28));
-}
-body[data-dsh-tianlight] [data-tl-cat][data-tl-dragging] {
-	cursor: grabbing;
-	filter: drop-shadow(0 16px 26px rgba(8, 26, 44, 0.38));
-}
-body[data-dsh-tianlight] [data-tl-cat] > [data-tl-cat-body] {
-	position: absolute;
-	inset: 0;
-	display: grid;
-	place-items: center;
-	transform-origin: 50% 92%;
-	transition: transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1);
-	animation: tl-breathe 4.2s ease-in-out infinite;
-}
-body[data-dsh-tianlight] [data-tl-cat] > [data-tl-cat-body] > img {
-	width: 100%;
-	height: 100%;
-	object-fit: contain;
-	pointer-events: none;
-	-webkit-user-drag: none;
-}
-body[data-dsh-tianlight] [data-tl-cat][data-tl-near] > [data-tl-cat-body] {
-	transform: rotate(calc(var(--tl-look, 0) * 7deg)) translateY(-2px) scale(1.04);
-}
-body[data-dsh-tianlight] [data-tl-cat][data-tl-dragging] > [data-tl-cat-body] {
-	transform: scale(1.09) rotate(calc(var(--tl-look, 0) * 3deg));
-	animation-play-state: paused;
-}
-body[data-dsh-tianlight] [data-tl-cat][data-tl-sleeping] > [data-tl-cat-body] {
-	animation: tl-doze 3.4s ease-in-out infinite;
-	transform: rotate(-4deg) scale(0.98);
-	opacity: 0.92;
-}
-body[data-dsh-tianlight] [data-tl-cat][data-tl-sleeping]::after {
-	content: "z z Z";
-	position: absolute;
-	top: -6px;
-	right: -6px;
-	font: 600 12px/1 var(--ds-font-family, system-ui);
-	color: var(--tl-accent);
-	opacity: 0.85;
-	animation: tl-float 2.6s ease-in-out infinite;
-}
-body[data-dsh-tianlight] [data-tl-cat][data-tl-near]::before {
-	content: "";
-	position: absolute;
-	inset: 8px;
-	border-radius: 50%;
-	background: radial-gradient(circle, var(--tl-glow) 0%, transparent 70%);
-	opacity: 0.5;
-	filter: blur(6px);
-}
-body[data-dsh-tianlight] [data-tl-cat] > [data-tl-say] {
-	position: absolute;
-	bottom: calc(100% + 10px);
-	left: 50%;
-	transform: translateX(-50%) translateY(4px);
-	max-width: 190px;
-	width: max-content;
-	padding: 7px 11px;
-	border-radius: 14px;
-	background: var(--tl-overlay);
-	color: var(--tl-ink);
-	font: 500 12px/1.45 var(--ds-font-family, system-ui);
-	text-align: center;
-	white-space: pre-wrap;
-	box-shadow: 0 6px 20px rgba(8, 26, 44, 0.18);
-	border: 0.5px solid var(--tl-line);
-	opacity: 0;
-	pointer-events: none;
-	transition: opacity 180ms ease, transform 180ms ease;
-}
-body[data-dsh-tianlight] [data-tl-cat] > [data-tl-say][data-tl-show] {
-	opacity: 1;
-	transform: translateX(-50%) translateY(0);
-}
-/* v0.7.0 duty bubble: an action-capable sibling of the say bubble. It is owned by
-   the duty channel (role pack adapter) and never overwrites ordinary pet speech. */
-body[data-dsh-tianlight] [data-tl-cat] > [data-tl-duty] {
-	position: absolute;
-	bottom: calc(100% + 12px);
-	left: 50%;
-	transform: translateX(-50%) translateY(4px);
-	width: max-content;
-	max-width: 240px;
-	padding: 9px 11px 8px;
-	border-radius: 14px;
-	background: var(--tl-overlay);
-	color: var(--tl-ink);
-	font: 500 12px/1.45 var(--ds-font-family, system-ui);
-	box-shadow: 0 10px 28px rgba(8, 26, 44, 0.24);
-	border: 0.5px solid var(--tl-line);
-	opacity: 0;
-	pointer-events: none;
-	z-index: 2;
-	transition: opacity 180ms ease, transform 180ms ease;
-}
-body[data-dsh-tianlight] [data-tl-cat] > [data-tl-duty][data-tl-show] {
-	opacity: 1;
-	transform: translateX(-50%) translateY(0);
-	pointer-events: auto;
-}
-body[data-dsh-tianlight] [data-tl-cat] > [data-tl-duty] > [data-tl-duty-text] {
-	white-space: pre-wrap;
-}
-body[data-dsh-tianlight] [data-tl-cat] > [data-tl-duty] > [data-tl-duty-choices] {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 4px;
-	margin-top: 7px;
-}
-body[data-dsh-tianlight] [data-tl-cat] > [data-tl-duty] > [data-tl-duty-choices][hidden] {
-	display: none;
-}
-body[data-dsh-tianlight] [data-tl-cat] > [data-tl-duty] button {
-	appearance: none;
-	border: 0.5px solid var(--tl-line);
-	background: var(--tl-accent-soft);
-	color: var(--tl-ink);
-	font: 600 11px/1 var(--ds-font-family, system-ui);
-	padding: 6px 9px;
-	border-radius: 999px;
-	cursor: pointer;
-}
-body[data-dsh-tianlight] [data-tl-cat] > [data-tl-duty] button:hover {
-	background: var(--tl-accent);
-	color: #fff;
-}
-body[data-dsh-tianlight] [data-tl-cat] > [data-tl-duty] button:focus-visible {
-	outline: 2px solid var(--tl-accent);
-	outline-offset: 2px;
-}
-body[data-dsh-tianlight] [data-tl-cat] > [data-tl-catmenu] {
-	position: absolute;
-	top: calc(100% + 8px);
-	left: 50%;
-	transform: translateX(-50%) translateY(-4px);
-	display: flex;
-	gap: 4px;
-	padding: 5px;
-	border-radius: 999px;
-	background: var(--tl-overlay);
-	border: 0.5px solid var(--tl-line);
-	box-shadow: 0 10px 26px rgba(8, 26, 44, 0.22);
-	opacity: 0;
-	pointer-events: none;
-	transition: opacity 160ms ease, transform 160ms ease;
-}
-body[data-dsh-tianlight] [data-tl-cat] > [data-tl-catmenu][data-tl-show] {
-	opacity: 1;
-	transform: translateX(-50%) translateY(0);
-	pointer-events: auto;
-}
-body[data-dsh-tianlight] [data-tl-cat] > [data-tl-catmenu] > button {
-	appearance: none;
-	border: 0;
-	background: transparent;
-	color: var(--tl-ink-soft);
-	font: 500 12px/1 var(--ds-font-family, system-ui);
-	padding: 6px 9px;
-	border-radius: 999px;
-	cursor: pointer;
-	white-space: nowrap;
-}
-body[data-dsh-tianlight] [data-tl-cat] > [data-tl-catmenu] > button:hover {
-	background: var(--tl-accent-soft);
-	color: var(--tl-ink);
-}
-
-@keyframes tl-breathe {
-	0%, 100% { transform: scale(1); }
-	50% { transform: scale(1.022); }
-}
-@keyframes tl-doze {
-	0%, 100% { transform: rotate(-4deg) scale(0.98); }
-	50% { transform: rotate(-2deg) scale(0.955); }
-}
-@keyframes tl-float {
-	0%, 100% { transform: translateY(0); opacity: 0.5; }
-	50% { transform: translateY(-7px); opacity: 0.9; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-	body[data-dsh-tianlight] [data-tl-cat] > [data-tl-cat-body],
-	body[data-dsh-tianlight] [data-tl-cat][data-tl-sleeping] > [data-tl-cat-body],
-	body[data-dsh-tianlight] [data-tl-cat][data-tl-sleeping]::after {
-		animation: none !important;
-	}
-}
-
-/* ---- low power: freeze decorative animation while the wallpaper is parked ----
-   The supervisor pauses the moving wallpaper and its rail mirror; these rules keep
-   the remaining CSS animation off the compositor so the saving is real. */
-body[data-dsh-tianlight][data-tl-lowpower] [data-tl-cat] > [data-tl-cat-body],
-body[data-dsh-tianlight][data-tl-lowpower] [data-tl-cat][data-tl-sleeping] > [data-tl-cat-body] {
-	animation-play-state: paused;
-}
-body[data-dsh-tianlight][data-tl-lowpower] [data-tl-cat][data-tl-sleeping]::after {
-	animation: none;
-}
-
-/* ---- v1.0.0 replaceable pet media: still image OR muted looping video ---- */
-body[data-dsh-tianlight] [data-tl-cat] > [data-tl-cat-body] > video {
-	width: 100%;
-	height: 100%;
-	object-fit: contain;
-	pointer-events: none;
-	background: transparent;
-	-webkit-user-drag: none;
-}
-body[data-dsh-tianlight] [data-tl-cat][data-tl-cat-media="video"] > [data-tl-cat-body] {
-	animation: none;
-	transform-origin: 50% 92%;
-}
-body[data-dsh-tianlight] [data-tl-cat][data-tl-cat-media="video"][data-tl-near] > [data-tl-cat-body] {
-	transform: translateY(-2px) scale(1.04);
-}
-/* 6 menu entries since v1.0.0 (mute / focus added): allow a second row instead of
-   clipping, while keeping the single-row pill shape for the original four. */
-body[data-dsh-tianlight] [data-tl-cat] > [data-tl-catmenu] {
-	flex-wrap: wrap;
-	width: max-content;
-	max-width: 320px;
-	border-radius: 16px;
-	justify-content: center;
-}
-
-/* ---- legacy liquid-glass tokens (still consumed by the hub preview/pills) ----
-   v2.2.9: the depth is no longer painted on the scene layer. The token stack below
-   remains only for the small self-owned preview swatch; bounded panels use the new
-   host-tint / ::before-blur / ::after-edge recipe at the end of this sheet. */
-body[data-dsh-tianlight] {
-	--tl-liquid-blur: 0px;
-	--tl-liquid-sat: 1;
-	--tl-liquid-hi: 0;
-	--tl-liquid-lo: 0;
-	--tl-liquid-noise: 0;
-	--tl-liquid-sheen: 0;
-	/* v2.2.0 live mode: the only place the stylesheet re-samples the wallpaper in
-	   real time. These are the plain defaults; each depth and the dark theme tune
-	   them below, so the live look still follows the selected depth. */
-	--tl-liquid-live-blur: 2px;
-	--tl-liquid-live-sat: 1.9;
-	--tl-liquid-live-bright: 0.92;
-	--tl-liquid-live-contrast: 1.1;
-	/* v1.6.1 liquid glass v2, re-tuned in v2.2.0 against the white cast. The
-	   surface/size pairs below are the complete multi-layer recipe every glass
-	   surface paints: a baked feTurbulence grain tile (size --tl-liquid-grain), a
-	   cool bottom-right tint, the diagonal sheen, the top-left radial specular, and
-	   a faint bottom-edge thickness gradient. The flat pair is the same recipe
-	   without the tiled grain, for surfaces that appear in large numbers (transcript
-	   bubbles). Speculars are deliberately cool and low-alpha: white was the main
-	   reason every panel looked like a grey-white veil over the wallpaper. */
-	--tl-liquid-grain: 140px;
-	--tl-liquid-rim: 0;
-	--tl-liquid-grain-image: none;
-	--tl-liquid-surface:
-		var(--tl-liquid-grain-image),
-		radial-gradient(120% 100% at 100% 100%, rgba(120, 170, 235, calc(0.05 + var(--tl-liquid-noise) * 1.2)) 0%, rgba(96, 146, 214, calc(0.03 + var(--tl-liquid-noise) * 0.6)) 42%, rgba(80, 130, 200, 0) 72%),
-		linear-gradient(115deg, rgba(216, 233, 250, var(--tl-liquid-hi)) 0%, rgba(216, 233, 250, 0) 32%, rgba(216, 233, 250, 0) 62%, rgba(216, 233, 250, var(--tl-liquid-lo)) 100%),
-		radial-gradient(120% 80% at 14% 4%, rgba(220, 238, 252, var(--tl-liquid-hi)) 0%, rgba(220, 238, 252, 0) 56%),
-		linear-gradient(180deg, rgba(9, 24, 42, 0) 0%, rgba(9, 24, 42, 0) 76%, rgba(9, 24, 42, calc(0.05 + var(--tl-liquid-noise) * 0.55)) 100%);
-	--tl-liquid-surface-size: var(--tl-liquid-grain) var(--tl-liquid-grain), auto, auto, auto, auto;
-	--tl-liquid-surface-flat:
-		radial-gradient(120% 100% at 100% 100%, rgba(120, 170, 235, calc(0.05 + var(--tl-liquid-noise) * 1.2)) 0%, rgba(96, 146, 214, calc(0.03 + var(--tl-liquid-noise) * 0.6)) 42%, rgba(80, 130, 200, 0) 72%),
-		linear-gradient(115deg, rgba(216, 233, 250, var(--tl-liquid-hi)) 0%, rgba(216, 233, 250, 0) 32%, rgba(216, 233, 250, 0) 62%, rgba(216, 233, 250, var(--tl-liquid-lo)) 100%),
-		radial-gradient(120% 80% at 14% 4%, rgba(220, 238, 252, var(--tl-liquid-hi)) 0%, rgba(220, 238, 252, 0) 56%),
-		linear-gradient(180deg, rgba(9, 24, 42, 0) 0%, rgba(9, 24, 42, 0) 76%, rgba(9, 24, 42, calc(0.05 + var(--tl-liquid-noise) * 0.55)) 100%);
-	--tl-liquid-surface-flat-size: auto, auto, auto, auto;
-	--tl-liquid-fallback-boost: radial-gradient(120% 90% at 18% 6%, rgba(170, 215, 255, calc(0.03 + var(--tl-liquid-sheen) * 0.06)) 0%, rgba(120, 170, 230, 0) 62%);
-	/* v2.2.7: the shared 1px light/dark rim is gone, and so is the sidebar's 1px white
-	   right edge — those were the "every surface has an obvious line" report (the
-	   sidebar edge was worst). Separation is the surface stack, the broad inner lens
-	   shadow and the outer soft glow; only a 0.12-alpha hairline ring remains. */
-	--tl-liquid-rim-shadow: inset 0 0 0 0 rgba(0, 0, 0, 0);
-	/* v2.2.9: the 22px/60px inner lens shadow was the main "the pane base is too dark"
-	   contributor. Bounded surfaces now use one inset top/bottom hairline instead. */
-	--tl-liquid-glow-shadow: 0 0 calc(6px + 14px * var(--tl-liquid-sheen)) rgba(150, 200, 250, calc(var(--tl-liquid-sheen) * 0.10));
-}
-body[data-dsh-tianlight][data-tl-glass-effective="soft"] {
-	--tl-liquid-blur: 11px;
-	--tl-liquid-sat: 1.3;
-	--tl-liquid-hi: 0.08;
-	--tl-liquid-lo: 0.02;
-	--tl-liquid-noise: 0.03;
-	--tl-liquid-sheen: 0.18;
-	--tl-liquid-grain: 180px;
-	--tl-liquid-rim: 0.30;
-	--tl-liquid-live-blur: 2px;
-	--tl-liquid-live-sat: 1.8;
-	--tl-liquid-live-bright: 0.93;
-	--tl-liquid-live-contrast: 1.1;
-	--tl-liquid-grain-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'140'%20height%3D'140'%3E%3Cfilter%20id%3D'n'%3E%3CfeTurbulence%20type%3D'fractalNoise'%20baseFrequency%3D'0.9'%20numOctaves%3D'2'%20stitchTiles%3D'stitch'%2F%3E%3CfeColorMatrix%20type%3D'saturate'%20values%3D'0'%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D'140'%20height%3D'140'%20filter%3D'url(%23n)'%20opacity%3D'0.035'%2F%3E%3C%2Fsvg%3E");
-}
-body[data-dsh-tianlight][data-tl-glass-effective="real"] {
-	--tl-liquid-blur: 19px;
-	--tl-liquid-sat: 1.5;
-	--tl-liquid-hi: 0.12;
-	--tl-liquid-lo: 0.03;
-	--tl-liquid-noise: 0.045;
-	--tl-liquid-sheen: 0.35;
-	--tl-liquid-grain: 140px;
-	--tl-liquid-rim: 0.36;
-	--tl-liquid-live-blur: 3px;
-	--tl-liquid-live-sat: 1.95;
-	--tl-liquid-live-bright: 0.91;
-	--tl-liquid-live-contrast: 1.1;
-	--tl-liquid-grain-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'140'%20height%3D'140'%3E%3Cfilter%20id%3D'n'%3E%3CfeTurbulence%20type%3D'fractalNoise'%20baseFrequency%3D'0.9'%20numOctaves%3D'2'%20stitchTiles%3D'stitch'%2F%3E%3CfeColorMatrix%20type%3D'saturate'%20values%3D'0'%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D'140'%20height%3D'140'%20filter%3D'url(%23n)'%20opacity%3D'0.05'%2F%3E%3C%2Fsvg%3E");
-}
-body[data-dsh-tianlight][data-tl-glass-effective="frosted"] {
-	--tl-liquid-blur: 26px;
-	--tl-liquid-sat: 0.95;
-	--tl-liquid-hi: 0.16;
-	--tl-liquid-lo: 0.02;
-	--tl-liquid-noise: 0.10;
-	--tl-liquid-sheen: 0.08;
-	--tl-liquid-grain: 110px;
-	--tl-liquid-rim: 0.40;
-	--tl-liquid-live-blur: 6px;
-	--tl-liquid-live-sat: 1.1;
-	--tl-liquid-live-bright: 0.98;
-	--tl-liquid-live-contrast: 1.04;
-	--tl-liquid-grain-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'140'%20height%3D'140'%3E%3Cfilter%20id%3D'n'%3E%3CfeTurbulence%20type%3D'fractalNoise'%20baseFrequency%3D'0.9'%20numOctaves%3D'2'%20stitchTiles%3D'stitch'%2F%3E%3CfeColorMatrix%20type%3D'saturate'%20values%3D'0'%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D'140'%20height%3D'140'%20filter%3D'url(%23n)'%20opacity%3D'0.12'%2F%3E%3C%2Fsvg%3E");
-}
-/* v2.2.9: the scene layer is a wallpaper, not glass. The old full-viewport
-   grain + tint + inner vignette ::after here put a fog layer over every wallpaper
-   and fought the time-of-day dim rule in 35-context.js for the same pseudo element.
-   Glass is painted only on bounded controls now. The period dim keeps ::after. */
-
-/* ---- v2.2.9 real glass: tint on the host, blur on ::before, light on ::after ----
-   Contract (regression-tested by tools/check-css.mjs):
-   - the HOST never has filter / backdrop-filter / transform / will-change; those
-     properties would create a containing block for the product's position:fixed
-     sidebar toggle and every non-portaled tooltip;
-   - the blur lives on ::before, which is not an ancestor of those fixed children;
-   - the 1px edge is a GRADIENT on ::after, masked to the border, so it follows the
-     corner radius and never reads as a uniform white ring;
-   - large panels get a low-alpha tint (0.06-0.10 light / 0.16-0.24 dark), not an
-     opaque fill. Depth changes blur/saturation only. Live mode is the only path
-     that re-samples the wallpaper; low power removes every backdrop-filter. */
-body[data-dsh-tianlight] {
-	/* Compatibility tokens still consumed by the hub preview and the small pills. */
-	--tl-liquid-grain: 140px;
-	--tl-liquid-grain-image: none;
-	--tl-liquid-live-bright: 0.92;
-}
-body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) {
-	--tl-glass-sheen: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 30%);
-}
-body[data-dsh-tianlight][data-tl-glass-effective="soft"] {
-	--tl-glass-blur-live: 10px;
-	--tl-glass-sat-live: 1.5;
-	--tl-glass-menu-blur-live: 16px;
-}
-body[data-dsh-tianlight][data-tl-glass-effective="frosted"] {
-	--tl-glass-blur-live: 26px;
-	--tl-glass-sat-live: 1.2;
-	--tl-glass-menu-blur-live: 28px;
-	--tl-glass-tint: rgba(255, 255, 255, calc(0.14 * var(--tl-glass-m, 1)));
-	--tl-liquid-grain-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'140'%20height%3D'140'%3E%3Cfilter%20id%3D'n'%3E%3CfeTurbulence%20type%3D'fractalNoise'%20baseFrequency%3D'0.9'%20numOctaves%3D'2'%20stitchTiles%3D'stitch'%2F%3E%3CfeColorMatrix%20type%3D'saturate'%20values%3D'0'%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D'140'%20height%3D'140'%20filter%3D'url(%23n)'%20opacity%3D'0.05'%2F%3E%3C%2Fsvg%3E");
-}
-body[data-dsh-tianlight][data-ds-dark-theme] {
-	--tl-glass-sheen: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0) 30%);
-	--tl-liquid-live-bright: 0.92;
-}
-body[data-dsh-tianlight][data-ds-dark-theme][data-tl-glass-effective="frosted"] {
-	--tl-glass-tint: rgba(12, 18, 28, calc(0.26 * var(--tl-glass-m, 1)));
-}
-body[data-dsh-tianlight][data-ds-dark-theme][data-tl-glass-effective="real"] {
-	--tl-liquid-live-bright: 0.92;
-}
-
-/* One host recipe for every bounded glass surface. The sidebar column is included,
-   but only its runtime-stamped column node ([data-tl-sidebar-col]); the product frame
-   was the v2.2.8 full-window smoked overlay. */
-body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) :is([data-tl-sidebar-col], [data-tl-wall], [data-tl-settings], [data-tl-hub] [data-tl-hub-panel], [data-tl-menu], [data-tl-composer]) {
-	isolation: isolate;
-	background-color: var(--tl-glass-tint) !important;
-	background-image: var(--tl-glass-sheen) !important;
-	border-color: transparent !important;
-	box-shadow:
-		inset 0 1px 1px rgba(255, 255, 255, 0.18),
-		inset 0 -1px 1px rgba(0, 0, 0, 0.06),
-		0 8px 32px rgba(0, 0, 0, 0.12) !important;
-}
-body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) [data-tl-sidebar-col] {
-	/* Anchor for ::before/::after. position:relative alone does NOT change the
-	   containing block of position:fixed descendants; a filter would. */
-	position: relative;
-}
-body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) [data-tl-wall] {
-	background-color: var(--tl-wall-tint, var(--tl-glass-tint)) !important;
-}
-body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) [data-tl-menu] {
-	background-color: var(--tl-glass-tint-menu) !important;
-}
-body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) [data-tl-hub] [data-tl-hub-panel] {
-	background-color: var(--tl-glass-tint-menu) !important;
-}
-body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) :is([role="dialog"], [role="menu"], [role="listbox"], [role="tooltip"], [role="tabpanel"]) {
-	/* ARIA fallback surfaces that the bridge has not stamped. Tint only: these can be
-	   product-owned layers with their own fixed children, so they never gain a blur. */
-	background-color: var(--tl-glass-tint-menu) !important;
-	border-color: transparent !important;
-}
-body[data-dsh-tianlight][data-ds-dark-theme]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) :is([data-tl-sidebar-col], [data-tl-wall], [data-tl-settings], [data-tl-hub] [data-tl-hub-panel], [data-tl-menu], [data-tl-composer]) {
-	box-shadow:
-		inset 0 1px 1px rgba(255, 255, 255, 0.10),
-		inset 0 -1px 1px rgba(0, 0, 0, 0.10),
-		0 8px 32px rgba(0, 0, 0, 0.35) !important;
-}
-body[data-dsh-tianlight][data-tl-glass-effective="frosted"] :is([data-tl-sidebar-col], [data-tl-wall], [data-tl-settings], [data-tl-hub] [data-tl-hub-panel], [data-tl-composer]) {
-	background-image: var(--tl-liquid-grain-image), var(--tl-glass-sheen) !important;
-	background-size: 140px 140px, auto;
-	background-repeat: repeat, no-repeat;
-}
-body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) :is([data-tl-sidebar-col], [data-tl-wall], [data-tl-settings], [data-tl-hub] [data-tl-hub-panel], [data-tl-menu], [data-tl-composer])::before {
-	content: "";
-	position: absolute;
-	inset: 0;
-	border-radius: inherit;
-	pointer-events: none;
-	z-index: -1;
-	background: transparent;
-}
-body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) :is([data-tl-sidebar-col], [data-tl-wall], [data-tl-settings], [data-tl-hub] [data-tl-hub-panel], [data-tl-menu], [data-tl-composer])::after {
-	content: "";
-	position: absolute;
-	inset: 0;
-	border-radius: inherit;
-	padding: 1px;
-	pointer-events: none;
-	z-index: 1;
-	background: linear-gradient(135deg, var(--tl-glass-edge-hi) 0%, var(--tl-glass-edge-mid) 28%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.06) 72%, var(--tl-glass-edge-lo) 100%);
-	-webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-	-webkit-mask-composite: xor;
-	mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-	mask-composite: exclude;
-}
-/* The sidebar has a fixed child toggle; the pseudo is NOT its ancestor, so the
-   toggle stays anchored to the viewport. Never add a filter to the column itself. */
-
-@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-	/* Live on: the one real glass path. This is the only place a large panel samples
-	   the wallpaper; the pseudo layer keeps every fixed descendant anchored. */
-	body[data-dsh-tianlight][data-tl-glass-live-effective="on"] :is([data-tl-sidebar-col], [data-tl-wall], [data-tl-settings], [data-tl-hub] [data-tl-hub-panel], [data-tl-composer])::before {
-		-webkit-backdrop-filter: blur(var(--tl-glass-blur-live)) saturate(var(--tl-glass-sat-live)) brightness(var(--tl-glass-bright-live)) contrast(var(--tl-glass-contrast-live));
-		backdrop-filter: blur(var(--tl-glass-blur-live)) saturate(var(--tl-glass-sat-live)) brightness(var(--tl-glass-bright-live)) contrast(var(--tl-glass-contrast-live));
-	}
-	body[data-dsh-tianlight][data-tl-glass-live-effective="on"] [data-tl-menu]::before {
-		-webkit-backdrop-filter: blur(var(--tl-glass-menu-blur-live)) saturate(var(--tl-glass-sat-live)) brightness(var(--tl-glass-bright-live)) contrast(var(--tl-glass-contrast-live));
-		backdrop-filter: blur(var(--tl-glass-menu-blur-live)) saturate(var(--tl-glass-sat-live)) brightness(var(--tl-glass-bright-live)) contrast(var(--tl-glass-contrast-live));
-	}
-	/* Composer lens: the SVG filter only bends an 18px band at the rounded edge;
-	   the centre is untouched. It is gated on real depth + runtime support and is
-	   optional; the blur above still works when the browser rejects the SVG filter. */
-	body[data-dsh-tianlight][data-tl-glass-effective="real"][data-tl-glass-lens-support="1"][data-tl-glass-live-effective="on"] [data-tl-composer]::before {
-		-webkit-backdrop-filter: url(#tl-glass-lens-filter) blur(var(--tl-glass-blur-live)) saturate(var(--tl-glass-sat-live)) brightness(var(--tl-glass-bright-live)) contrast(var(--tl-glass-contrast-live));
-		backdrop-filter: url(#tl-glass-lens-filter) blur(var(--tl-glass-blur-live)) saturate(var(--tl-glass-sat-live)) brightness(var(--tl-glass-bright-live)) contrast(var(--tl-glass-contrast-live));
-	}
-}
-
-/* Static fallback = live off, low power and the 15 fps tier. Still tinted glass,
-   never an opaque sheet; and no sampling, so the wallpaper stays crisp. */
-body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"])[data-tl-glass-live-effective="off"] :is([data-tl-sidebar-col], [data-tl-wall], [data-tl-settings], [data-tl-hub] [data-tl-hub-panel], [data-tl-composer]) {
-	background-color: var(--tl-glass-tint-static) !important;
-}
-body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"])[data-tl-glass-live-effective="off"] [data-tl-menu] {
-	background-color: var(--tl-glass-tint-menu) !important;
-}
-body[data-dsh-tianlight][data-tl-lowpower]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) :is([data-tl-sidebar-col], [data-tl-wall], [data-tl-settings], [data-tl-hub] [data-tl-hub-panel], [data-tl-menu], [data-tl-composer]),
-body[data-dsh-tianlight][data-tl-render-tier="15"]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) :is([data-tl-sidebar-col], [data-tl-wall], [data-tl-settings], [data-tl-hub] [data-tl-hub-panel], [data-tl-menu], [data-tl-composer]) {
-	background-color: var(--tl-glass-tint-lowpower) !important;
-}
-/* Acceptance 5: at low power / 15 fps there is no backdrop-filter anywhere. This
-   includes the base composer fuzz and the small pills that predate the depth presets. */
-body[data-dsh-tianlight][data-tl-lowpower] :is([data-tl-composer], [data-tl-model], [data-tl-rheo][data-tl-rheo-empty], [data-tl-menu], [data-tl-new-chat], [data-tl-weather-chip], [data-tl-glass-preview])::before,
-body[data-dsh-tianlight][data-tl-render-tier="15"] :is([data-tl-composer], [data-tl-model], [data-tl-rheo][data-tl-rheo-empty], [data-tl-menu], [data-tl-new-chat], [data-tl-weather-chip], [data-tl-glass-preview])::before,
-body[data-dsh-tianlight][data-tl-lowpower] :is([data-tl-composer], [data-tl-model], [data-tl-rheo][data-tl-rheo-empty], [data-tl-menu], [data-tl-new-chat], [data-tl-weather-chip], [data-tl-glass-preview]),
-body[data-dsh-tianlight][data-tl-render-tier="15"] :is([data-tl-composer], [data-tl-model], [data-tl-rheo][data-tl-rheo-empty], [data-tl-menu], [data-tl-new-chat], [data-tl-weather-chip], [data-tl-glass-preview]) {
-	-webkit-backdrop-filter: none !important;
-	backdrop-filter: none !important;
-}
-body[data-dsh-tianlight][data-tl-lowpower] :is([data-tl-sidebar-col], [data-tl-wall], [data-tl-settings], [data-tl-hub] [data-tl-hub-panel], [data-tl-menu], [data-tl-composer])::before,
-body[data-dsh-tianlight][data-tl-render-tier="15"] :is([data-tl-sidebar-col], [data-tl-wall], [data-tl-settings], [data-tl-hub] [data-tl-hub-panel], [data-tl-menu], [data-tl-composer])::before {
-	-webkit-backdrop-filter: none !important;
-	backdrop-filter: none !important;
-}
-
-/* Small floating controls keep their existing compact glass. They are host-blurred
-   today; the low-power rule above removes that blur. At real depth the two existing
-   pills use the same saturation as the panels. */
-body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) :is([data-tl-model], [data-tl-rheo][data-tl-rheo-empty], [data-tl-new-chat], [data-tl-weather-chip], [data-tl-glass-preview]) {
-	border-color: transparent !important;
-	box-shadow:
-		inset 0 1px 1px rgba(255, 255, 255, 0.16),
-		0 6px 20px rgba(0, 0, 0, 0.14) !important;
-}
-body[data-dsh-tianlight][data-ds-dark-theme]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) :is([data-tl-model], [data-tl-rheo][data-tl-rheo-empty], [data-tl-new-chat], [data-tl-weather-chip], [data-tl-glass-preview]) {
-	box-shadow:
-		inset 0 1px 1px rgba(255, 255, 255, 0.10),
-		0 6px 20px rgba(0, 0, 0, 0.30) !important;
-}
-
-/* Scene-less fallback: a quiet depth wash behind the UI, never a full-screen blur. */
-body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) [data-tl-liquid-fallback] {
-	position: fixed;
-	inset: 0;
-	z-index: -1;
-	pointer-events: none;
-	background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(8, 16, 28, 0.08) 100%);
-}
-body[data-dsh-tianlight][data-tl-glass-effective="off"] [data-tl-liquid-fallback] {
-	display: none;
-}
-body[data-dsh-tianlight][data-tl-lowpower] [data-tl-liquid-fallback] {
-	background: rgba(8, 16, 28, 0.12);
-}
-
-/* Inputs keep a hairline only; never a filter that could re-anchor IME/caret. */
-body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) textarea,
-body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) [contenteditable="true"],
-body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) [role="textbox"],
-body[data-dsh-tianlight]:is([data-tl-glass-effective="soft"], [data-tl-glass-effective="frosted"], [data-tl-glass-effective="real"]) input:not([type="checkbox"]):not([type="radio"]):not([type="range"]) {
-	border-color: color-mix(in srgb, var(--tl-glass-edge-hi) 18%, transparent);
-	box-shadow: none;
-}
-
-/* Off-depth keeps the v2.2.8 look: only the rules gated on a non-off effective
-   depth above are new. The old 0.66/0.72 full-frame sidebar overlay is gone. */
-body[data-dsh-tianlight][data-ds-dark-theme][data-tl-glass-effective="off"] [data-tl-composer] {
-	background: var(--tl-glass-fill) !important;
-}
-
-
-
-/* ---- B4 transitions: keyed off [data-tl-transition] on the scene ---- */
-body[data-dsh-tianlight] [data-tl-scene] {
-	--tl-tx-ms: 600ms;
-	--tl-flip: 1 1;
-}
-/* R6 D: the mirror uses the independent scale property (fed by --tl-flip), so a
-   slide/zoom transition animating transform composes with it instead of
-   overriding the flip for the whole transition. */
-body[data-dsh-tianlight] [data-tl-scene] > video {
-	scale: var(--tl-flip, 1 1);
-}
-body[data-dsh-tianlight] [data-tl-scene] > [data-tl-web] {
-	position: absolute;
-	inset: 0;
-	width: 100%;
-	height: 100%;
-	border: 0;
-	background: transparent;
-	pointer-events: none;
-}
-body[data-dsh-tianlight] [data-tl-scene][data-tl-web-on] > [data-tl-web] {
-	display: block;
-}
-body[data-dsh-tianlight] [data-tl-scene][data-tl-transition] > video,
-body[data-dsh-tianlight] [data-tl-scene][data-tl-transition] > [data-tl-shader],
-body[data-dsh-tianlight] [data-tl-scene][data-tl-transition] > [data-tl-scene-frame],
-body[data-dsh-tianlight] [data-tl-scene][data-tl-transition] > [data-tl-web],
-body[data-dsh-tianlight] [data-tl-scene][data-tl-transition] > [data-tl-photo][data-tl-photo-role="media"],
-body[data-dsh-tianlight] [data-tl-scene][data-tl-transition] > [data-tl-photo][data-tl-photo-role="held"] {
-	animation-duration: var(--tl-tx-ms, 600ms);
-	animation-timing-function: cubic-bezier(0.22, 0.7, 0.2, 1);
-	animation-fill-mode: both;
-}
-body[data-dsh-tianlight] [data-tl-scene][data-tl-transition="fade"] > video,
-body[data-dsh-tianlight] [data-tl-scene][data-tl-transition="fade"] > [data-tl-shader],
-body[data-dsh-tianlight] [data-tl-scene][data-tl-transition="fade"] > [data-tl-scene-frame],
-body[data-dsh-tianlight] [data-tl-scene][data-tl-transition="fade"] > [data-tl-web],
-body[data-dsh-tianlight] [data-tl-scene][data-tl-transition="fade"] > [data-tl-photo][data-tl-photo-role="media"] {
-	animation-name: tl5-tx-fade-in;
-}
-body[data-dsh-tianlight] [data-tl-scene][data-tl-transition="fade"] > [data-tl-photo][data-tl-photo-role="held"] {
-	animation-name: tl5-tx-fade-out;
-}
-body[data-dsh-tianlight] [data-tl-scene][data-tl-transition="slide"] > video,
-body[data-dsh-tianlight] [data-tl-scene][data-tl-transition="slide"] > [data-tl-shader],
-body[data-dsh-tianlight] [data-tl-scene][data-tl-transition="slide"] > [data-tl-scene-frame],
-body[data-dsh-tianlight] [data-tl-scene][data-tl-transition="slide"] > [data-tl-web],
-body[data-dsh-tianlight] [data-tl-scene][data-tl-transition="slide"] > [data-tl-photo][data-tl-photo-role="media"] {
-	animation-name: tl5-tx-slide-in;
-}
-body[data-dsh-tianlight] [data-tl-scene][data-tl-transition="slide"] > [data-tl-photo][data-tl-photo-role="held"] {
-	animation-name: tl5-tx-slide-out;
-}
-body[data-dsh-tianlight] [data-tl-scene][data-tl-transition="zoom"] > video,
-body[data-dsh-tianlight] [data-tl-scene][data-tl-transition="zoom"] > [data-tl-shader],
-body[data-dsh-tianlight] [data-tl-scene][data-tl-transition="zoom"] > [data-tl-scene-frame],
-body[data-dsh-tianlight] [data-tl-scene][data-tl-transition="zoom"] > [data-tl-web],
-body[data-dsh-tianlight] [data-tl-scene][data-tl-transition="zoom"] > [data-tl-photo][data-tl-photo-role="media"] {
-	animation-name: tl5-tx-zoom-in;
-}
-body[data-dsh-tianlight] [data-tl-scene][data-tl-transition="zoom"] > [data-tl-photo][data-tl-photo-role="held"] {
-	animation-name: tl5-tx-zoom-out;
-}
-body[data-dsh-tianlight] [data-tl-scene][data-tl-transition="dissolve"] > video,
-body[data-dsh-tianlight] [data-tl-scene][data-tl-transition="dissolve"] > [data-tl-shader],
-body[data-dsh-tianlight] [data-tl-scene][data-tl-transition="dissolve"] > [data-tl-scene-frame],
-body[data-dsh-tianlight] [data-tl-scene][data-tl-transition="dissolve"] > [data-tl-web],
-body[data-dsh-tianlight] [data-tl-scene][data-tl-transition="dissolve"] > [data-tl-photo][data-tl-photo-role="media"] {
-	animation-name: tl5-tx-dissolve-in;
-}
-body[data-dsh-tianlight] [data-tl-scene][data-tl-transition="dissolve"] > [data-tl-photo][data-tl-photo-role="held"] {
-	animation-name: tl5-tx-dissolve-out;
-}
-@keyframes tl5-tx-fade-in {
-	from { opacity: 0; }
-	to { opacity: 1; }
-}
-@keyframes tl5-tx-fade-out {
-	from { opacity: 1; }
-	to { opacity: 0; }
-}
-@keyframes tl5-tx-slide-in {
-	from { opacity: 0.55; transform: translate3d(5%, 0, 0) scale(1.03); }
-	to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
-}
-@keyframes tl5-tx-slide-out {
-	from { opacity: 1; transform: translate3d(0, 0, 0); }
-	to { opacity: 0; transform: translate3d(-6%, 0, 0); }
-}
-@keyframes tl5-tx-zoom-in {
-	from { opacity: 0.5; transform: scale(1.09); }
-	to { opacity: 1; transform: scale(1); }
-}
-@keyframes tl5-tx-zoom-out {
-	from { opacity: 1; transform: scale(1); }
-	to { opacity: 0; transform: scale(0.93); }
-}
-@keyframes tl5-tx-dissolve-in {
-	from { opacity: 0; filter: blur(10px); }
-	to { opacity: 1; filter: blur(0); }
-}
-@keyframes tl5-tx-dissolve-out {
-	from { opacity: 1; filter: blur(0); }
-	to { opacity: 0; filter: blur(12px); }
-}
-@media (prefers-reduced-motion: reduce) {
-	body[data-dsh-tianlight] [data-tl-scene][data-tl-transition] > video,
-	body[data-dsh-tianlight] [data-tl-scene][data-tl-transition] > [data-tl-shader],
-	body[data-dsh-tianlight] [data-tl-scene][data-tl-transition] > [data-tl-scene-frame],
-	body[data-dsh-tianlight] [data-tl-scene][data-tl-transition] > [data-tl-web],
-	body[data-dsh-tianlight] [data-tl-scene][data-tl-transition] > [data-tl-photo] {
-		animation: none;
-	}
-}
-/* ---- engine/audio panel sections (registered here, mounted by 70) ---- */
-body[data-dsh-tianlight] .tl5-eng-kv {
-	display: grid;
-	grid-template-columns: minmax(72px, auto) 1fr;
-	gap: 3px 10px;
-	font-size: 12px;
-	line-height: 1.5;
-	color: var(--tl-ink-soft);
-}
-body[data-dsh-tianlight] .tl5-eng-kv > b {
-	font-weight: 500;
-	color: var(--tl-ink);
-}
-body[data-dsh-tianlight] .tl5-eng-actions {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 6px;
-	margin: 6px 0;
-}
-body[data-dsh-tianlight] .tl5-eng-item {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 8px;
-	padding: 3px 0;
-	font-size: 12px;
-}
-body[data-dsh-tianlight] .tl5-eng-name {
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-}
-body[data-dsh-tianlight] .tl5-audio-dot {
-	display: inline-block;
-	width: 7px;
-	height: 7px;
-	margin-right: 6px;
-	border-radius: 50%;
-	background: var(--tl-accent);
-	opacity: 0.45;
-	transform-origin: center;
-}
-body[data-dsh-tianlight] [data-tl-beat] .tl5-audio-dot {
-	opacity: 1;
-	animation: tl5-audio-pulse 1.6s ease-in-out infinite;
-}
-/* Loopback ON: the dot is driven by the real analyser level at ~10 Hz (inline
-   transform/opacity from the panel), so the decorative animation must yield. */
-body[data-dsh-tianlight] .tl5-audio-dot[data-tl-audio-driven] {
-	animation: none;
-}
-body[data-dsh-tianlight] .tl5-audio-beat {
-	display: flex;
-	align-items: center;
-	gap: 6px;
-	margin: 4px 0;
-	font-size: 12px;
-	color: var(--tl-ink-soft);
-}
-body[data-dsh-tianlight] .tl5-audio-beat .tl5-audio-dot {
-	margin-right: 0;
-}
-body[data-dsh-tianlight] .tl5-eng-url {
-	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-	font-size: 11px;
-	word-break: break-all;
-}
-@keyframes tl5-audio-pulse {
-	0%, 100% { transform: scale(0.85); opacity: 0.6; }
-	50% { transform: scale(1.25); opacity: 1; }
-}
-/* Low power freezes both the decorative pulse and any level-driven paint. */
-body[data-dsh-tianlight][data-tl-lowpower] [data-tl-beat] .tl5-audio-dot,
-body[data-dsh-tianlight][data-tl-lowpower] .tl5-audio-dot[data-tl-audio-driven] {
-	animation: none;
-}
-@media (prefers-reduced-motion: reduce) {
-	body[data-dsh-tianlight] [data-tl-beat] .tl5-audio-dot,
-	body[data-dsh-tianlight] .tl5-audio-dot[data-tl-audio-driven] {
-		animation: none;
-	}
-}
-
-
-
-/* ---- v0.5.0 B1/B2/B3: one composited effects plane above the wallpaper ---- */
-body[data-dsh-tianlight] [data-tl-fx] {
-	position: fixed;
-	inset: 0;
-	width: 100%;
-	height: 100%;
-	z-index: 0;
-	pointer-events: none;
-	contain: paint;
-}
-body[data-dsh-tianlight] [data-tl-scene][data-tl-parallax] {
-	will-change: transform;
-}
-/* extension panel rows reuse the wallpaper panel's group/label/slider language */
-body[data-dsh-tianlight] .tl-fx-grid {
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-}
-body[data-dsh-tianlight] .tl-fx-row {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 8px;
-	flex-wrap: wrap;
-}
-body[data-dsh-tianlight] .tl-fx-hint {
-	font-size: 10px;
-	line-height: 1.5;
-	color: var(--tl-ink-faint);
-}
-body[data-dsh-tianlight] .tl-fx-readout {
-	font-family: var(--ds-font-family-code, monospace);
-	font-size: 10px;
-	line-height: 1.6;
-	color: var(--tl-ink-soft);
-	white-space: pre-wrap;
-	word-break: break-word;
-}
-
-
-
-body[data-dsh-tianlight] {
-	--tl-legibility-solid: rgba(250, 252, 255, 0.40);
-	--tl-legibility-shadow: 0 1px 2px rgba(8, 24, 44, 0.28);
-}
-body[data-dsh-tianlight][data-ds-dark-theme] {
-	--tl-legibility-solid: rgba(14, 22, 36, 0.40);
-	--tl-legibility-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
-}
-body[data-dsh-tianlight][data-tl-legibility="boost"] [data-tl-wall],
-body[data-dsh-tianlight][data-tl-legibility="boost"] [data-tl-font-panel] {
-	--tl-wall-tint: var(--tl-legibility-solid) !important;
-	--tl-panel-fill: var(--tl-legibility-solid) !important;
-	background-color: var(--tl-legibility-solid) !important;
-	text-shadow: var(--tl-legibility-shadow);
-}
-body[data-dsh-tianlight][data-tl-legibility="boost"]:not([data-tl-lowpower]):not([data-tl-render-tier="15"]) :is([data-tl-wall], [data-tl-font-panel])::before {
-	-webkit-backdrop-filter: blur(max(var(--tl-glass-blur-live, 16px), 28px)) saturate(var(--tl-glass-sat-live, 1.6)) brightness(var(--tl-glass-bright-live, 1)) contrast(var(--tl-glass-contrast-live, 1.04));
-	backdrop-filter: blur(max(var(--tl-glass-blur-live, 16px), 28px)) saturate(var(--tl-glass-sat-live, 1.6)) brightness(var(--tl-glass-bright-live, 1)) contrast(var(--tl-glass-contrast-live, 1.04));
-}
-
-
-#film {
-  --ink: #EAF2FF;
-  --cyan: #7FE2FF;
-  --gold: #FFD696;
-  --sans: "Segoe UI Variable Text", "Segoe UI", "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
-  --serif: "Source Han Serif SC Heavy", "Noto Serif SC", "STZhongsong", "SimSun", serif;
-  position: fixed; inset: 0; overflow: hidden; background: #000;
-  color: var(--ink);
-  font-family: var(--sans);
-  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
-  text-rendering: geometricPrecision;
-  user-select: none; -webkit-user-select: none;
-}
-#film * { box-sizing: border-box; }
-#film button { font: inherit; }
-#film .controls { display: none !important; }
-#film .debug-label { display: none !important; }
-#film .title-copy { transform-origin: 0 0; }
-#film { position: fixed; inset: 0; overflow: hidden; background: #000; }
-#film .canvas { position: absolute; inset: 0; z-index: 10; width: 100%; height: 100%; display: block; opacity: 0; transition: opacity 300ms linear; }
-#film .canvas.on { opacity: 1; }
-#film .subtitle { position: absolute; left: 8.5%; bottom: 30%; z-index: 22;
-  font-family: var(--serif); font-weight: 400; font-size: 22px; line-height: 1.4;
-  letter-spacing: .12em; color: rgba(255,255,255,.72);
-  text-shadow: 0 1px 22px rgba(0,0,0,.45); opacity: 0;
-  will-change: opacity; pointer-events: none; }
-#film .letterbox { position: absolute; inset: 0; z-index: 40; pointer-events: none; }
-#film .letterbox .bar { position: absolute; left: 0; right: 0; height: 0; background: #000; will-change: transform; }
-#film .letterbox .bar.top { top: 0; }
-#film .letterbox .bar.bottom { bottom: 0; }
-#film .letterbox .bar::after { content: ""; position: absolute; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent); }
-#film .letterbox .bar.top::after { bottom: 0; }
-#film .letterbox .bar.bottom::after { top: 0; }
-#film .controls { position: absolute; right: 26px; bottom: 24px; z-index: 60;
-  display: flex; align-items: center; gap: 8px; padding: 7px;
-  border-radius: 999px; border: 1px solid rgba(255,255,255,.13);
-  background: rgba(5,8,15,.38);
-  -webkit-backdrop-filter: blur(14px) saturate(1.15); backdrop-filter: blur(14px) saturate(1.15);
-  box-shadow: 0 10px 35px rgba(0,0,0,.2); opacity: .45; transition: opacity 220ms ease; }
-#film .controls:hover, #film .controls:focus-within { opacity: 1; }
-#film .controls .controls button:hover, #film .controls button:focus-visible { background: rgba(255,255,255,.1); color: #fff; outline: none; }
-#film .skip-hint { position: absolute; right: 30px; bottom: 74px; z-index: 59;
-  font-size: 11px; letter-spacing: .10em; color: rgba(255,255,255,.62);
-  text-shadow: 0 1px 10px rgba(0,0,0,.3); opacity: 0; pointer-events: none; will-change: opacity; }
-#film .skip-veil { position: absolute; inset: 0; z-index: 45; background: #03050B; opacity: 0; pointer-events: none; }
-#film .debug-label { position: absolute; left: 26px; top: 22px; z-index: 61; display: none; padding: 6px 9px; border-radius: 6px; background: rgba(0,0,0,.5); color: rgba(255,255,255,.7); font: 10px/1.4 ui-monospace, monospace; pointer-events: none; }
-#film .debug .debug-label { display: block; }
-#film .simple-veil { position: absolute; inset: 0; z-index: 50; display: none; background: #03050B; pointer-events: none; }
-#film[data-state="simple"] .simple-veil { display: block; }
-#film .simple-mark { position: absolute; left: 50%; top: 50%; z-index: 51; transform: translate(-50%, -50%); font-family: var(--serif); font-size: clamp(64px,7vw,112px); letter-spacing: .20em; padding-left: .20em; color: #fff; opacity: 0; }
-#film .simple-sub { margin-top: 24px; font-family: var(--sans); font-size: 11px; letter-spacing: .45em; text-align: center; color: rgba(255,255,255,.55); }
-#film .title-copy { position: absolute; inset: 0; z-index: 25; pointer-events: none; opacity: 0; will-change: opacity; }
-#film .tc-brand { position: absolute; left: 50%; top: 660px; transform: translateX(-50%);
-  font-family: var(--sans); font-weight: 800; font-size: 40px; line-height: 40px;
-  letter-spacing: 14px; padding-left: 14px; color: #f5fdff; white-space: nowrap; }
-#film .tc-credit { position: absolute; left: 50%; top: 712px; transform: translateX(-50%);
-  font-family: var(--serif); font-weight: 400; font-size: 27px; line-height: 28px;
-  letter-spacing: 3.2px; color: #faf0dc; white-space: nowrap; }
-#film .tc-l0 { position: absolute; left: 50%; top: 18px; transform: translateX(-50%);
-  font-family: "Cascadia Mono", Consolas, monospace; font-size: 12px; line-height: 16px;
-  letter-spacing: 1.8px; color: rgba(209,247,255,.82); white-space: nowrap; }
-#film .tc-l1, #film .tc-l2 { position: absolute; top: 492px; transform: translateX(-50%);
-  font-family: "Cascadia Mono", Consolas, monospace; font-size: 12px; line-height: 16px;
-  letter-spacing: 1.8px; color: rgba(209,247,255,.82); white-space: nowrap; }
-#film .tc-l1 { left: 376px; }
-#film .tc-l2 { left: 1544px; }
-#film .skip-hint { pointer-events: auto; cursor: pointer; padding: 6px 10px; border-radius: 999px; background: rgba(5,8,15,.35); border: 1px solid rgba(255,255,255,.12); }
-#film .skip-hint:hover { color: #fff; background: rgba(255,255,255,.10); }
-
-
-
-body[data-dsh-tianlight] .tl-wall-sort-row {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 4px 6px;
-	align-items: center;
-}
-body[data-dsh-tianlight] .tl-wall-facet-row {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 4px;
-	align-items: center;
-}
-body[data-dsh-tianlight] .tl-wall-share-strip {
-	display: flex;
-	flex-direction: column;
-	gap: 6px;
-	margin: 2px 0 4px;
-	padding: 7px 9px;
-	border-radius: 10px;
-	border: 0.5px solid var(--tl-accent);
-	background: color-mix(in srgb, var(--tl-accent) 12%, var(--tl-glass-fill));
-	color: var(--tl-ink);
-	font-size: 11px;
-	line-height: 1.45;
-}
-body[data-dsh-tianlight] .tl-wall-share-strip[data-tone="warn"] {
-	border-color: var(--tl-line-strong);
-	background: var(--tl-glass-fill);
-	color: var(--tl-ink-soft);
-}
-body[data-dsh-tianlight] .tl-wall-share-strip-text {
-	margin: 0;
-	font-weight: 600;
-}
-body[data-dsh-tianlight] .tl-wall-share-strip-actions {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 4px;
-	align-items: center;
-}
-body[data-dsh-tianlight] .tl-wall-bundle-row {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 6px;
-	align-items: center;
-}
-body[data-dsh-tianlight] .tl-wall-progress {
-	width: 100%;
-	height: 6px;
-	accent-color: var(--tl-accent);
-}
-body[data-dsh-tianlight] .tl-wall-v05-note {
-	margin: 0;
-	font-size: 10px;
-	line-height: 1.5;
-	color: var(--tl-ink-faint);
-}
-/* v0.5.2: the English copy is longer than the Chinese one. Rows already wrap
-   (.tl-wall-tabs does); long button/chip labels must wrap too instead of pushing
-   the fixed-width panel wider (measured on the 296px sidebar). */
-body[data-dsh-tianlight] [data-tl-wall] .tl-font-option,
-body[data-dsh-tianlight] [data-tl-wall] .tl-wall-filter-chip,
-body[data-dsh-tianlight] [data-tl-wall] .tl-wall-import-btn,
-body[data-dsh-tianlight] [data-tl-wall] .tl-font-reset {
-	max-width: 100%;
-	white-space: normal;
-	overflow-wrap: anywhere;
-	word-break: break-word;
-}
-body[data-dsh-tianlight] [data-tl-wall] .tl-wall-tabs,
-body[data-dsh-tianlight] [data-tl-wall] .tl-wall-import-row,
-body[data-dsh-tianlight] [data-tl-wall] .tl-wall-sort-row,
-body[data-dsh-tianlight] [data-tl-wall] .tl-wall-bundle-row,
-body[data-dsh-tianlight] [data-tl-wall] .tl-wall-share-strip-actions,
-body[data-dsh-tianlight] [data-tl-wall] .tl-wall-filter-row,
-body[data-dsh-tianlight] [data-tl-wall] .tl-wall-filters {
-	flex-wrap: wrap;
-}
-body[data-dsh-tianlight] [data-tl-wall] .tl-font-input,
-body[data-dsh-tianlight] [data-tl-wall] .tl-font-select,
-body[data-dsh-tianlight] [data-tl-wall] .tl-wall-textarea,
-body[data-dsh-tianlight] [data-tl-wall] .tl-source-card {
-	max-width: 100%;
-	box-sizing: border-box;
-	overflow-wrap: anywhere;
-}
-/* ---- v0.5.3 quick picker -------------------------------------------------
-   The pick view is a wallpaper chooser, not a settings page: compact header,
-   visual 2-column grid, no upload/import rows. The advanced view keeps the full
-   v0.5.2 guide. All rules stay scoped to the skin body + panel. */
-body[data-dsh-tianlight] [data-tl-wall] .tl-wall-more-settings {
-	margin-left: auto;
-	border-color: var(--tl-accent);
-	background: color-mix(in srgb, var(--tl-accent) 14%, transparent);
-	color: var(--tl-ink);
-	font-weight: 600;
-	padding: 4px 10px;
-}
-body[data-dsh-tianlight] [data-tl-wall] .tl-wall-more-settings:hover {
-	background: color-mix(in srgb, var(--tl-accent) 22%, transparent);
-}
-body[data-dsh-tianlight] [data-tl-wall] .tl-wall-back-quick {
-	border-color: var(--tl-accent);
-	background: color-mix(in srgb, var(--tl-accent) 12%, transparent);
-	color: var(--tl-ink);
-	font-weight: 600;
-}
-body[data-dsh-tianlight] [data-tl-wall] .tl-wall-pick-status {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	gap: 6px;
-	margin: 2px 0 0;
-}
-body[data-dsh-tianlight] [data-tl-wall] .tl-wall-pick-status .tl-wall-status {
-	margin: 0;
-}
-body[data-dsh-tianlight] [data-tl-wall] .tl-wall-pick-error {
-	margin: 0;
-	width: 100%;
-	font-size: 11px;
-	line-height: 1.5;
-	color: var(--tl-ink);
-	border-left: 2px solid var(--tl-line-strong);
-	padding-left: 6px;
-}
-/* In the pick view the sticky block is a compact bar; its guide only keeps the
-   source chips (and a pending share-recipe strip). */
-body[data-dsh-tianlight] [data-tl-wall] [data-tl-view="pick"] .tl-wall-guide {
-	gap: 4px;
-	margin-bottom: 0;
-}
-body[data-dsh-tianlight] [data-tl-wall] [data-tl-view="pick"] .tl-wall-view-switch {
-	display: none;
-}
-body[data-dsh-tianlight] [data-tl-wall] [data-tl-view="pick"] .tl-wall-head {
-	gap: 6px;
-}
-/* The grid is the body of the picker: two large columns, bigger previews. */
-body[data-dsh-tianlight] [data-tl-wall] .tl-wall-grid-pick {
-	gap: 10px;
-	margin: 2px 0 0;
-}
-body[data-dsh-tianlight] [data-tl-wall] .tl-wall-grid-pick .tl-wall-cell > .tl-wall-card {
-	padding: 7px;
-	gap: 7px;
-	border-radius: 14px;
-}
-body[data-dsh-tianlight] [data-tl-wall] .tl-wall-grid-pick .tl-wall-thumb {
-	aspect-ratio: 4 / 3;
-	border-radius: 10px;
-}
-/* "Click anywhere on the card switches": preview media must not eat the gesture. */
-body[data-dsh-tianlight] [data-tl-wall] .tl-wall-grid-pick .tl-wall-thumb > img,
-body[data-dsh-tianlight] [data-tl-wall] .tl-wall-grid-pick .tl-wall-thumb > video {
-	pointer-events: none;
-}
-body[data-dsh-tianlight] [data-tl-wall] .tl-wall-grid-pick .tl-wall-name {
-	font-size: 12px;
-	font-weight: 600;
-	line-height: 1.35;
-	white-space: normal;
-	overflow-wrap: anywhere;
-}
-body[data-dsh-tianlight] [data-tl-wall] .tl-wall-grid-pick .tl-wall-tags-mini {
-	white-space: normal;
-	line-height: 1.35;
-}
-body[data-dsh-tianlight] [data-tl-wall] .tl-wall-grid-pick .tl-wall-card[data-active] {
-	border-color: var(--tl-accent);
-	box-shadow: 0 0 0 2px color-mix(in srgb, var(--tl-accent) 40%, transparent);
-}
-body[data-dsh-tianlight] [data-tl-wall] .tl-wall-using {
-	align-self: flex-start;
-	padding: 1px 7px;
-	border-radius: 999px;
-	background: var(--tl-accent);
-	color: #ffffff;
-	font-size: 10px;
-	font-weight: 700;
-	line-height: 1.5;
-	letter-spacing: 0.02em;
-}
-/* Transient "switched to …" feedback. The host is a transformed fixed layer, so a
-   fixed toast is positioned against the panel itself. */
-body[data-dsh-tianlight] [data-tl-wall] .tl-wall-toast {
-	position: fixed;
-	left: 14px;
-	right: 14px;
-	bottom: calc(18px + env(safe-area-inset-bottom, 0px));
-	z-index: 6;
-	padding: 8px 12px;
-	border-radius: 12px;
-	border: 0.5px solid var(--tl-glass-line);
-	background: color-mix(in srgb, var(--tl-panel-fill) 92%, var(--tl-accent));
-	color: var(--tl-ink);
-	font-size: 12px;
-	line-height: 1.4;
-	box-shadow: 0 8px 24px rgba(8, 26, 48, 0.22);
-	pointer-events: none;
-	overflow-wrap: anywhere;
-	animation: tl-wall-toast-in 0.16s ease-out;
-}
-@keyframes tl-wall-toast-in {
-	from { opacity: 0; transform: translateY(6px); }
-	to { opacity: 1; transform: translateY(0); }
-}
-/* ---- v0.6.0 Wallpaper Engine library ------------------------------------- */
-/* Four source chips (all/local/legacy-WE/engine) must wrap inside the 296px panel
-   instead of being squeezed into the old 3-column grid. */
-body[data-dsh-tianlight] [data-tl-wall] .tl-wall-filter-row {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 4px;
-}
-body[data-dsh-tianlight] [data-tl-wall] .tl-wall-filter-row .tl-wall-filter-chip {
-	flex: 0 1 auto;
-	max-width: 100%;
-}
-body[data-dsh-tianlight] [data-tl-wall] .tl-we-auto {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 6px;
-	align-items: center;
-	margin: 2px 0 0;
-}
-body[data-dsh-tianlight] [data-tl-wall] .tl-we-auto-text {
-	flex: 1 1 150px;
-	min-width: 0;
-	overflow-wrap: anywhere;
-}
-body[data-dsh-tianlight] [data-tl-wall] .tl-we-open-library {
-	flex: 0 0 auto;
-	border-color: var(--tl-accent);
-	background: color-mix(in srgb, var(--tl-accent) 14%, transparent);
-	color: var(--tl-ink);
-	font-weight: 600;
-}
-body[data-dsh-tianlight] [data-tl-wall] .tl-we-open-library:hover {
-	background: color-mix(in srgb, var(--tl-accent) 22%, transparent);
-}
-/* The manual-path fallback is a nested collapsed details; keep it quiet. */
-body[data-dsh-tianlight] [data-tl-wall] .tl-we-manual {
-	margin-top: 2px;
-	padding: 5px 7px;
-	border-style: dashed;
-	background: transparent;
-}
-body[data-dsh-tianlight] [data-tl-wall] .tl-we-manual > summary {
-	font-size: 11px;
-	font-weight: 500;
-	color: var(--tl-ink-soft);
-}
-body[data-dsh-tianlight] [data-tl-wall] .tl-we-manual-body {
-	display: flex;
-	flex-direction: column;
-	gap: 6px;
-}
-body[data-dsh-tianlight] [data-tl-wall] .tl-wall-badge-hint {
-	align-self: flex-start;
-	padding: 0 6px;
-	border-radius: 999px;
-	border: 0.5px solid var(--tl-line-strong);
-	color: var(--tl-ink-soft);
-	font-size: 9px;
-	font-weight: 600;
-	line-height: 1.6;
-	cursor: help;
-}
-
-
-
-		/* ---- WE library: shared page inside the DSH settings content column ---- */
-		body[data-dsh-tianlight] [data-tl-we-page] {
-			display: flex;
-			flex-direction: column;
-			gap: 10px;
-			max-width: 100%;
-			min-width: 0;
-			color: var(--tl-ink);
-		}
-		body[data-dsh-tianlight] .tl-we-head {
-			display: flex;
-			align-items: flex-start;
-			justify-content: space-between;
-			gap: 12px;
-			flex-wrap: wrap;
-		}
-		body[data-dsh-tianlight] .tl-we-head-main {
-			min-width: 0;
-			flex: 1 1 260px;
-		}
-		body[data-dsh-tianlight] .tl-we-title {
-			margin: 0;
-			font-size: 16px;
-			font-weight: 600;
-			line-height: 1.4;
-			color: var(--tl-ink);
-		}
-		body[data-dsh-tianlight] .tl-we-subtitle {
-			margin: 2px 0 0;
-			font-size: 12px;
-			line-height: 1.5;
-			color: var(--tl-ink-soft);
-		}
-		body[data-dsh-tianlight] .tl-we-meta {
-			margin: 3px 0 0;
-			font-size: 11px;
-			line-height: 1.4;
-			color: var(--tl-ink-faint);
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-		}
-		body[data-dsh-tianlight] .tl-we-actions {
-			display: flex;
-			gap: 6px;
-			flex-wrap: wrap;
-			align-items: center;
-		}
-		body[data-dsh-tianlight] .tl-we-btn {
-			appearance: none;
-			border: 1px solid var(--tl-line-strong);
-			background: var(--tl-accent-soft);
-			color: var(--tl-ink);
-			font: inherit;
-			font-size: 12px;
-			line-height: 1.2;
-			border-radius: 8px;
-			padding: 6px 10px;
-			cursor: pointer;
-		}
-		body[data-dsh-tianlight] .tl-we-btn:hover {
-			border-color: var(--tl-accent);
-		}
-		body[data-dsh-tianlight] .tl-we-btn[disabled] {
-			opacity: 0.55;
-			cursor: default;
-		}
-		body[data-dsh-tianlight] .tl-we-btn[data-active] {
-			background: var(--tl-accent);
-			border-color: var(--tl-accent);
-			color: #ffffff;
-		}
-		body[data-dsh-tianlight] .tl-we-search-row {
-			display: flex;
-			gap: 6px;
-			flex-wrap: wrap;
-			align-items: center;
-		}
-		body[data-dsh-tianlight] .tl-we-search {
-			flex: 1 1 220px;
-			min-width: 140px;
-			border: 1px solid var(--tl-line);
-			background: var(--tl-code);
-			color: var(--tl-ink);
-			font: inherit;
-			font-size: 13px;
-			border-radius: 8px;
-			padding: 6px 10px;
-			outline: none;
-		}
-		body[data-dsh-tianlight] .tl-we-search:focus {
-			border-color: var(--tl-accent);
-		}
-		body[data-dsh-tianlight] .tl-we-chips {
-			display: flex;
-			gap: 6px;
-			flex-wrap: wrap;
-			align-items: center;
-		}
-		body[data-dsh-tianlight] .tl-we-scroll {
-			min-height: 0;
-			max-width: 100%;
-			overflow: auto;
-			padding: 2px 2px 12px;
-		}
-		body[data-dsh-tianlight] .tl-we-grid {
-			display: grid;
-			grid-template-columns: repeat(auto-fill, minmax(176px, 1fr));
-			gap: 10px;
-			max-width: 100%;
-		}
-		@media (max-width: 560px) {
-			body[data-dsh-tianlight] .tl-we-grid {
-				grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-			}
-		}
-		body[data-dsh-tianlight] .tl-we-card {
-			position: relative;
-			min-width: 0;
-			border: 1px solid var(--tl-line);
-			border-radius: 12px;
-			background: var(--tl-code);
-			overflow: hidden;
-			display: flex;
-			flex-direction: column;
-		}
-		body[data-dsh-tianlight] .tl-we-card[data-tl-we-in-use] {
-			border-color: var(--tl-accent);
-			box-shadow: 0 0 0 1px var(--tl-accent), 0 6px 20px var(--tl-accent-soft);
-		}
-		body[data-dsh-tianlight] .tl-we-thumb {
-			appearance: none;
-			display: block;
-			position: relative;
-			width: 100%;
-			aspect-ratio: 16 / 9;
-			padding: 0;
-			margin: 0;
-			border: 0;
-			background: rgba(128, 128, 128, 0.14);
-			cursor: pointer;
-			overflow: hidden;
-		}
-		body[data-dsh-tianlight] .tl-we-thumb img,
-		body[data-dsh-tianlight] .tl-we-thumb video {
-			display: block;
-			width: 100%;
-			height: 100%;
-			object-fit: cover;
-		}
-		body[data-dsh-tianlight] .tl-we-thumb[data-tl-we-preview="failed"] img,
-		body[data-dsh-tianlight] .tl-we-thumb[data-tl-we-preview="failed"] video {
-			display: none;
-		}
-		body[data-dsh-tianlight] .tl-we-fallback {
-			position: absolute;
-			inset: 0;
-			display: none;
-			align-items: center;
-			justify-content: center;
-			font-size: 12px;
-			color: var(--tl-ink-faint);
-			background: rgba(128, 128, 128, 0.1);
-			text-align: center;
-			padding: 8px;
-		}
-		body[data-dsh-tianlight] .tl-we-thumb[data-tl-we-preview="failed"] .tl-we-fallback,
-		body[data-dsh-tianlight] .tl-we-thumb[data-tl-we-preview="none"] .tl-we-fallback {
-			display: flex;
-		}
-		body[data-dsh-tianlight] .tl-we-badge {
-			position: absolute;
-			top: 6px;
-			left: 6px;
-			font-size: 10px;
-			line-height: 1;
-			padding: 4px 6px;
-			border-radius: 999px;
-			background: rgba(6, 12, 20, 0.66);
-			color: #f2f7ff;
-			backdrop-filter: blur(4px);
-		}
-		body[data-dsh-tianlight] .tl-we-badge[data-tl-we-in-use] {
-			left: auto;
-			right: 6px;
-			background: var(--tl-accent);
-			color: #ffffff;
-		}
-		body[data-dsh-tianlight] .tl-we-type-badge {
-			position: absolute;
-			bottom: 6px;
-			right: 6px;
-			font-size: 10px;
-			line-height: 1;
-			padding: 4px 6px;
-			border-radius: 6px;
-			background: rgba(6, 12, 20, 0.6);
-			color: #eaf3ff;
-		}
-		body[data-dsh-tianlight] .tl-we-caption {
-			display: flex;
-			flex-direction: column;
-			gap: 4px;
-			padding: 7px 8px 8px;
-			min-width: 0;
-		}
-		body[data-dsh-tianlight] .tl-we-name {
-			font-size: 12px;
-			line-height: 1.35;
-			color: var(--tl-ink);
-			display: -webkit-box;
-			-webkit-line-clamp: 2;
-			-webkit-box-orient: vertical;
-			overflow: hidden;
-			word-break: break-word;
-		}
-		body[data-dsh-tianlight] .tl-we-sub {
-			font-size: 10px;
-			line-height: 1.3;
-			color: var(--tl-ink-faint);
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-		}
-		body[data-dsh-tianlight] .tl-we-scene-row {
-			display: flex;
-			gap: 6px;
-			flex-wrap: wrap;
-			align-items: center;
-		}
-		body[data-dsh-tianlight] .tl-we-scene-note {
-			font-size: 10px;
-			line-height: 1.35;
-			color: var(--tl-ink-soft);
-		}
-		body[data-dsh-tianlight] .tl-we-scene-error {
-			font-size: 10px;
-			line-height: 1.35;
-			color: #c0392b;
-		}
-		body[data-dsh-tianlight][data-ds-dark-theme] .tl-we-scene-error {
-			color: #ff9c8a;
-		}
-		body[data-dsh-tianlight] .tl-we-state {
-			border: 1px dashed var(--tl-line-strong);
-			border-radius: 12px;
-			padding: 18px 16px;
-			background: var(--tl-code);
-			color: var(--tl-ink-soft);
-			font-size: 12px;
-			line-height: 1.6;
-		}
-		body[data-dsh-tianlight] .tl-we-state-title {
-			margin: 0 0 4px;
-			font-size: 13px;
-			font-weight: 600;
-			color: var(--tl-ink);
-		}
-		body[data-dsh-tianlight] .tl-we-state-hint {
-			margin: 0 0 8px;
-		}
-		body[data-dsh-tianlight] .tl-we-toast {
-			position: fixed;
-			left: 50%;
-			bottom: 28px;
-			transform: translateX(-50%);
-			z-index: 2610;
-			max-width: min(560px, 86vw);
-			padding: 8px 14px;
-			border-radius: 999px;
-			background: rgba(12, 20, 32, 0.86);
-			color: #f2f7ff;
-			font-size: 12px;
-			line-height: 1.4;
-			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
-			pointer-events: none;
-		}
-		/* ---- sidebar footer action (skin-styled, works in 56px rail and wide) ---- */
-		body[data-dsh-tianlight] .tl-we-nav-btn {
-			appearance: none;
-			display: inline-flex;
-			align-items: center;
-			justify-content: center;
-			gap: 8px;
-			width: 100%;
-			min-height: 32px;
-			border: 1px solid var(--tl-line);
-			border-radius: 8px;
-			background: var(--tl-accent-soft);
-			color: var(--tl-ink);
-			font: inherit;
-			font-size: 12px;
-			padding: 4px 8px;
-			cursor: pointer;
-		}
-		body[data-dsh-tianlight] .tl-we-nav-btn:hover {
-			border-color: var(--tl-accent);
-		}
-		body[data-dsh-tianlight] .tl-we-nav-btn[data-tl-we-wide="false"] {
-			width: 32px;
-			min-height: 32px;
-			padding: 0;
-			gap: 0;
-			border-color: transparent;
-			background: transparent;
-		}
-		body[data-dsh-tianlight] .tl-we-nav-icon {
-			display: inline-flex;
-			width: 16px;
-			height: 16px;
-			flex: none;
-		}
-		body[data-dsh-tianlight] .tl-we-nav-label {
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-		}
-		/* ---- fullscreen overlay entry (z above the skin panel and the settings modal) ---- */
-		body[data-dsh-tianlight] [data-tl-we-overlay] {
-			position: fixed;
-			inset: 0;
-			z-index: 2600;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			padding: max(16px, 3vh) max(16px, 3vw);
-			color: var(--tl-ink);
-		}
-		body[data-dsh-tianlight] [data-tl-we-overlay][hidden] {
-			display: none;
-		}
-		body[data-dsh-tianlight] .tl-we-mask {
-			position: absolute;
-			inset: 0;
-			background: rgba(4, 10, 18, 0.55);
-			backdrop-filter: blur(10px) saturate(1.1);
-			cursor: pointer;
-		}
-		body[data-dsh-tianlight][data-ds-dark-theme] .tl-we-mask {
-			background: rgba(2, 6, 12, 0.68);
-		}
-		body[data-dsh-tianlight] .tl-we-shell {
-			position: relative;
-			display: flex;
-			flex-direction: column;
-			width: min(1180px, 94vw);
-			height: min(820px, 88vh);
-			min-height: 320px;
-			border: 1px solid var(--tl-line-strong);
-			border-radius: 16px;
-			background: var(--tl-panel-fill);
-			box-shadow: 0 24px 80px rgba(0, 0, 0, 0.36);
-			overflow: hidden;
-		}
-		body[data-dsh-tianlight] .tl-we-shell-head {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			gap: 10px;
-			padding: 12px 14px;
-			border-bottom: 1px solid var(--tl-line);
-		}
-		body[data-dsh-tianlight] .tl-we-shell-title {
-			margin: 0;
-			font-size: 15px;
-			font-weight: 600;
-			color: var(--tl-ink);
-		}
-		body[data-dsh-tianlight] .tl-we-close {
-			appearance: none;
-			display: inline-flex;
-			align-items: center;
-			justify-content: center;
-			width: 30px;
-			height: 30px;
-			border-radius: 8px;
-			border: 1px solid var(--tl-line);
-			background: var(--tl-accent-soft);
-			color: var(--tl-ink);
-			font-size: 16px;
-			line-height: 1;
-			cursor: pointer;
-		}
-		body[data-dsh-tianlight] .tl-we-close:hover {
-			border-color: var(--tl-accent);
-		}
-		body[data-dsh-tianlight] .tl-we-shell-body {
-			flex: 1 1 auto;
-			min-height: 0;
-			overflow: auto;
-			padding: 12px 14px 18px;
-		}
-		
-
-
-body[data-dsh-tianlight] {
-	--tl-content-width: 860px;
-	--tl-para-gap: 0.5em;
-	--tl-code-size: 13px;
-	--tl-reading-family: inherit;
-}
-body[data-dsh-tianlight] [data-tl-bubble] {
-	max-width: var(--tl-content-width);
-	font-family: var(--tl-reading-family);
-}
-body[data-dsh-tianlight] [data-tl-bubble] p,
-body[data-dsh-tianlight] [data-tl-bubble] ul,
-body[data-dsh-tianlight] [data-tl-bubble] ol,
-body[data-dsh-tianlight] [data-tl-bubble] blockquote,
-body[data-dsh-tianlight] [data-tl-bubble] pre {
-	margin-block: calc(var(--tl-para-gap) * 0.5);
-}
-body[data-dsh-tianlight] [data-tl-bubble] pre,
-body[data-dsh-tianlight] [data-tl-bubble] code {
-	font-size: var(--tl-code-size);
-}
-
-
-
-body[data-dsh-tianlight] [data-tl-a11y-live] {
-	position: fixed;
-	width: 1px;
-	height: 1px;
-	margin: -1px;
-	padding: 0;
-	overflow: hidden;
-	clip: rect(0 0 0 0);
-	clip-path: inset(50%);
-	white-space: nowrap;
-	border: 0;
-}
-body[data-dsh-tianlight] .tl5-a11y-body {
-	display: flex;
-	flex-direction: column;
-	gap: 7px;
-	padding: 2px 2px 4px;
-}
-body[data-dsh-tianlight] .tl5-a11y-row {
-	display: flex;
-	align-items: baseline;
-	justify-content: space-between;
-	gap: 10px;
-}
-body[data-dsh-tianlight] .tl5-a11y-kbd {
-	flex: none;
-	min-width: 92px;
-	padding: 2px 8px;
-	border-radius: 7px;
-	border: 0.5px solid var(--tl-line-strong);
-	background: var(--tl-glass-fill);
-	color: var(--tl-ink);
-	font-family: var(--ds-font-family-code, monospace);
-	font-size: 11px;
-	line-height: 1.5;
-	text-align: center;
-}
-body[data-dsh-tianlight] .tl5-a11y-desc {
-	font-size: 12px;
-	line-height: 1.45;
-	color: var(--tl-ink-soft);
-	text-align: right;
-}
-body[data-dsh-tianlight] .tl5-a11y-note {
-	margin: 2px 0 0;
-	font-size: 11px;
-	line-height: 1.55;
-	color: var(--tl-ink-faint);
 }
